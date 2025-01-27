@@ -113,6 +113,7 @@ export default {
         class="gl-align-center gl-max-w-26 gl-rounded-none gl-rounded-br-base gl-rounded-tr-base"
         :value="value"
         :state="state"
+        :aria-labelledby="label"
         @input="handleColorChange"
       >
         <template #prepend>

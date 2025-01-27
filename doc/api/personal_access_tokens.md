@@ -275,7 +275,7 @@ Example response:
 
 Requires:
 
-- `api` scope.
+- `api` or `self_rotate` scope.
 
 In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date is subject to the [maximum allowable lifetime limits](../user/profile/personal_access_tokens.md#access-token-expiration).
 
@@ -300,7 +300,7 @@ Example response:
     "user_id": 1337,
     "last_used_at": null,
     "active": true,
-    "expires_at": "2023-08-15",
+    "expires_at": "2023-08-08",
     "token": "s3cr3t"
 }
 ```

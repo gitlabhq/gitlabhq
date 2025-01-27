@@ -7,6 +7,9 @@ module Gitlab
     # Scopes used for GitLab internal API (Kubernetes cluster access)
     K8S_PROXY_SCOPE = :k8s_proxy
 
+    # Scopes used for token allowed to rotate themselves
+    SELF_ROTATE_SCOPE = :self_rotate
+
     # Scopes used for GitLab API access
     API_SCOPE = :api
     READ_API_SCOPE = :read_api
@@ -17,7 +20,8 @@ module Gitlab
       API_SCOPE, READ_API_SCOPE,
       READ_USER_SCOPE,
       CREATE_RUNNER_SCOPE, MANAGE_RUNNER_SCOPE,
-      K8S_PROXY_SCOPE
+      K8S_PROXY_SCOPE,
+      SELF_ROTATE_SCOPE
     ].freeze
 
     # Scopes for Duo

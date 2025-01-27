@@ -152,13 +152,20 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Rotate a project access token
 
+Rotate a project access token. Revokes the previous token and creates a new token that expires in one week.
+
+You can either:
+
+- Use a project access token ID.
+- In GitLab 17.9 and later, pass the project access token to the API in a request header.
+
+### Use a project access token ID
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
 
 Prerequisites:
 
 - You must have a [personal access token with the `api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
-
-Rotate a project access token. Revokes the previous token and creates a new token that expires in one week.
 
 In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
 
@@ -173,7 +180,8 @@ POST /projects/:id/access_tokens/:token_id/rotate
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. If undefined, the token expires after one week. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>/rotate"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+"https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>/rotate"
 ```
 
 Example response:
@@ -184,6 +192,7 @@ Example response:
     "name": "Rotated Token",
     "revoked": false,
     "created_at": "2023-08-01T15:00:00.000Z",
+    "description": "Test project access token",
     "scopes": ["api"],
     "user_id": 1337,
     "last_used_at": null,
@@ -194,14 +203,68 @@ Example response:
 }
 ```
 
-### Responses
+#### Responses
 
 - `200: OK` if the existing token is successfully revoked and the new token is successfully created.
 - `400: Bad Request` if not rotated successfully.
 - `401: Unauthorized` if either the:
   - User does not have access to the token with the specified ID.
   - Token with the specified ID does not exist.
+- `401: Unauthorized` if any of the following conditions are true:
+  - You do not have access to the specified token.
+  - The specified token does not exist.
+  - You're authenticating with a project access token. Use [`/projects/:id/access_tokens/self/rotate`](#use-a-request-header). instead.
 - `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
+
+### Use a request header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178111) in GitLab 17.9
+
+Requires:
+
+- `api` or `self_rotate` scope.
+
+In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date is subject to the [maximum allowable lifetime limits](../user/profile/personal_access_tokens.md#access-token-expiration).
+
+```plaintext
+POST /projects/:id/access_tokens/self/rotate
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_project_access_token>" \
+"https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/self/rotate"
+```
+
+Example response:
+
+```json
+{
+    "id": 42,
+    "name": "Rotated Token",
+    "revoked": false,
+    "created_at": "2025-01-19T15:00:00.000Z",
+    "description": "Test project access token",
+    "scopes": ["read_api","self_rotate"],
+    "user_id": 1337,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2025-01-26",
+    "access_level": 30,
+    "token": "s3cr3t"
+}
+```
+
+#### Responses
+
+- `200: OK` if the existing project access token is successfully revoked and the new token successfully created.
+- `400: Bad Request` if not rotated successfully.
+- `401: Unauthorized` if any of the following conditions are true:
+  - The token does not exist.
+  - The token has expired.
+  - The token was revoked.
+  - The token is not a project access token associated with the specified project.
+- `403: Forbidden` if the token is not allowed to rotate itself.
+- `405: Method Not Allowed` if the token is not a project access token.
 
 ### Automatic reuse detection
 

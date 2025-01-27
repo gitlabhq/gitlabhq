@@ -332,6 +332,7 @@ module API
         mount ::API::Release::Links
         mount ::API::RemoteMirrors
         mount ::API::Repositories
+        mount ::API::ResourceAccessTokens::SelfRotation
         mount ::API::ResourceAccessTokens
         mount ::API::ResourceMilestoneEvents
         mount ::API::RpmProjectPackages

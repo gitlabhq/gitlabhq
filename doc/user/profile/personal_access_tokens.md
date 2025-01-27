@@ -187,6 +187,7 @@ To view the last time a token was used, and the IP addresses from where the toke
 > - Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
 > - `read_service_ping` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42692#note_1222832412) in GitLab 17.1.
 > - `manage_runner` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460721) in GitLab 17.1.
+> - `self_rotate` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178111) in GitLab 17.9. Enabled by default.
 
 A personal access token can perform actions based on the assigned scopes.
 
@@ -205,6 +206,7 @@ A personal access token can perform actions based on the assigned scopes.
 | `manage_runner`    | Grants permission to manage runners.                                                                    |
 | `ai_features`      | This scope:<br>- Grants permission to perform API actions for features like GitLab Duo, Code Suggestions API and Duo Chat API.<br>- Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7.<br>For GitLab Duo plugin for JetBrains, this scope:<br>- Supports users with AI features enabled in the GitLab Duo plugin for JetBrains.<br>- Addresses a security vulnerability in JetBrains IDE plugins that could expose personal access tokens.<br>- Is designed to minimize potential risks for GitLab Duo plugin users by limiting the impact of compromised tokens.<br>For all other extensions, see the individual scope requirements in their documentation.                                                                                                                                |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
+| `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../api/personal_access_tokens.md#use-a-request-header). Does not allow rotation of other tokens. |
 | `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
 
 WARNING:

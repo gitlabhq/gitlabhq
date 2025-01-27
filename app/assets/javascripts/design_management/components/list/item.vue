@@ -136,7 +136,7 @@ export default {
       params: { id: filename },
       query: $route.query,
     }"
-    class="gl-text-default hover:gl-text-default"
+    class="gl-block gl-rounded-base gl-text-default hover:gl-text-default focus:gl-focus"
   >
     <gl-card
       class="js-design-list-item design-list-item gl-mb-0"

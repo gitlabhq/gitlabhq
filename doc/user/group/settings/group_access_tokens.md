@@ -147,6 +147,7 @@ To revoke or rotate a group access token:
 
 > - `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
 > - Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
+> - `self_rotate` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178111) in GitLab 17.9. Enabled by default.
 
 The scope determines the actions you can perform when you authenticate with a group access token.
 
@@ -162,6 +163,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 | `manage_runner`    | Grants permission to manage runners in a group.                                                                                                                                                                                                                                                            |
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.                                                                                                                                                                                                               |
+| `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#use-a-request-header). Does not allow rotation of other tokens. |
 
 ## Restrict the creation of group access tokens
 
