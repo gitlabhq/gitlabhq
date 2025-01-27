@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: https://jihulab.com/gitlab-cn/gitlab
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
 # Guidelines for reviewing JiHu (JH) Edition related merge requests
@@ -25,7 +25,7 @@ We have two kinds of changes related to JH:
     [JiHu guidelines for database changes](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process/)
     for details.
 
-If needed, review the corresponding JH merge request located at [JH repository](https://jihulab.com/gitlab-cn/gitlab).
+If needed, review the corresponding JH merge request located in the [JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
 ## When to merge files to the GitLab Inc. repository
 

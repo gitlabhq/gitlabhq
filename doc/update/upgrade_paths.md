@@ -45,7 +45,7 @@ To determine your upgrade path:
      - [`17.1.8`](versions/gitlab_17_changes.md#long-running-pipeline-messages-data-change). Instances with large `ci_pipeline_messages` tables.
      - [`17.3.7`](versions/gitlab_17_changes.md#1730). The latest GitLab 17.3 release.
      - [`17.5.z`](versions/gitlab_17_changes.md#1750). The latest GitLab 17.5 release.
-     - `17.8.z`. Not yet released.
+     - [`17.8.z`](versions/gitlab_17_changes.md#1780). The latest GitLab 17.8 release.
      - `17.11.z`. Not yet released.
 
 1. Consult the version-specific upgrade instructions:

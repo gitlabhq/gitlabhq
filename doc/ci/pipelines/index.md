@@ -370,7 +370,7 @@ Select **pipeline IID** to display the pipeline IIDs (internal ID, unique across
 
 For example:
 
-![Pipelines list page](img/pipeline_list_v16_11.png)
+![A list of pipelines displayed on the Pipelines page, with filters for trigger author, branch name, status, tag, and source.](img/pipeline_list_v16_11.png)
 
 To view the pipelines that relate to a specific merge request, go to the **Pipelines** tab
 in the merge request.

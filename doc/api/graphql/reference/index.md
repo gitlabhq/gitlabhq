@@ -40175,6 +40175,7 @@ The status of the workflow.
 | <a id="duoworkflowstatuscreated"></a>`CREATED` | The workflow is created. |
 | <a id="duoworkflowstatusfailed"></a>`FAILED` | The workflow is failed. |
 | <a id="duoworkflowstatusfinished"></a>`FINISHED` | The workflow is finished. |
+| <a id="duoworkflowstatusinput_required"></a>`INPUT_REQUIRED` | The workflow is input_required. |
 | <a id="duoworkflowstatuspaused"></a>`PAUSED` | The workflow is paused. |
 | <a id="duoworkflowstatusrunning"></a>`RUNNING` | The workflow is running. |
 | <a id="duoworkflowstatusstopped"></a>`STOPPED` | The workflow is stopped. |

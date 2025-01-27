@@ -36,7 +36,7 @@ These versions of Amazon Linux are supported.
 
 | Operating system  | First supported GitLab version | Architecture     | Installation documentation                                                                         | Operating system EOL | Details |
 |:------------------|:-------------------------------|:-----------------|:---------------------------------------------------------------------------------------------------|:---------------------|:--------|
-| Amazon Linux 2    | GitLab CE / GitLab EE 14.9.0   | `amd64`, `arm64` | [Amazon Linux 2 installation documentation](https://about.gitlab.com/install/#amazonlinux-2)       | June 2025            | [Amazon Linux details](https://aws.amazon.com/amazon-linux-2/faqs/) |
+| Amazon Linux 2    | GitLab CE / GitLab EE 14.9.0   | `amd64`, `arm64` | [Amazon Linux 2 installation documentation](https://about.gitlab.com/install/#amazonlinux-2)       | June 2026            | [Amazon Linux details](https://aws.amazon.com/amazon-linux-2/faqs/) |
 | Amazon Linux 2023 | GitLab CE / GitLab EE 16.3.0   | `amd64`, `arm64` | [Amazon Linux 2023 installation documentation](https://about.gitlab.com/install/#amazonlinux-2023) | 2028                 | [Amazon Linux details](https://docs.aws.amazon.com/linux/al2023/ug/release-cadence.html) |
 
 ## Debian

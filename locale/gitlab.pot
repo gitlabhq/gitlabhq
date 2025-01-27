@@ -17203,6 +17203,9 @@ msgstr ""
 msgid "CredentialsInventory|Created date"
 msgstr ""
 
+msgid "CredentialsInventory|Deleted user"
+msgstr ""
+
 msgid "CredentialsInventory|Expiration date"
 msgstr ""
 
