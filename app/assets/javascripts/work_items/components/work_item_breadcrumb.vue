@@ -40,7 +40,8 @@ export default {
       return (
         !this.isGroup &&
         this.glFeatures.workItemsViewPreference &&
-        gon.current_user_use_work_items_view
+        gon.current_user_use_work_items_view &&
+        this.glFeatures.workItemsAlpha
       );
     },
     crumbs() {

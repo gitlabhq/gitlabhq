@@ -487,11 +487,13 @@ export default {
 
             <input
               v-if="canSelectDesign(design.filename)"
+              :name="design.filename"
               :checked="isDesignSelected(design.filename)"
               type="checkbox"
               class="design-checkbox gl-absolute gl-left-6 gl-top-4 gl-ml-2"
               data-testid="design-checkbox"
               :data-qa-design="design.filename"
+              :aria-label="design.filename"
               @change="changeSelectedDesigns(design.filename)"
             />
           </li>

@@ -15,6 +15,7 @@ describe('WorkItemBreadcrumb', () => {
     listPath = '/epics',
     isGroup = true,
     workItemsViewPreference = false,
+    workItemsAlpha = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemBreadcrumb, {
       provide: {
@@ -22,6 +23,7 @@ describe('WorkItemBreadcrumb', () => {
         glFeatures: {
           workItemEpicsList,
           workItemsViewPreference,
+          workItemsAlpha,
         },
         listPath,
         isGroup,
@@ -104,7 +106,7 @@ describe('WorkItemBreadcrumb', () => {
         ]);
       });
 
-      it('renders root breadcrumb with router link if user turned work item view on', () => {
+      it('renders root breadcrumb with router link if user turned work item view on and alpha flag is on', () => {
         window.gon.current_user_use_work_items_view = true;
 
         createComponent({
@@ -112,6 +114,7 @@ describe('WorkItemBreadcrumb', () => {
           listPath: '/issues',
           workItemEpicsList: false,
           workItemsViewPreference: true,
+          workItemsAlpha: true,
         });
 
         expect(findBreadcrumb().props('items')).toEqual([
@@ -121,6 +124,25 @@ describe('WorkItemBreadcrumb', () => {
               name: 'workItemList',
               query: undefined,
             },
+          },
+        ]);
+      });
+
+      it('renders root breadcrumb with href if user turned work item view on and alpha flag is off', () => {
+        window.gon.current_user_use_work_items_view = true;
+
+        createComponent({
+          isGroup: false,
+          listPath: '/issues',
+          workItemEpicsList: false,
+          workItemsViewPreference: true,
+          workItemsAlpha: false,
+        });
+
+        expect(findBreadcrumb().props('items')).toEqual([
+          {
+            text: 'Issues',
+            href: '/issues',
           },
         ]);
       });

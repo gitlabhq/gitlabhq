@@ -49,19 +49,19 @@ To add a new file from the command line:
    git status
    ```
 
-   The filename should be green. The file is tracked locally by Git, but
+   The filename should be green. The file is staged (tracked locally) by Git, but
    has not been [committed and pushed](commit.md).
 
 ## Add a file to the last commit
 
-To add changes to a file to the last commit, instead of to a new commit:
+To add changes to a file to the last commit, instead of to a new commit, amend the existing commit:
 
 ```shell
 git add <filename>
 git commit --amend
 ```
 
-Append `--no-edit` to the `commit` command if you do not want to edit the commit message.
+If you do not want to edit the commit message, append `--no-edit` to the `commit` command.
 
 ## Related topics
 
