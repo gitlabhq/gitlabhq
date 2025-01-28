@@ -78,6 +78,7 @@ export default {
           key: FIELD_NAME,
           label: __('Name'),
           thClass: this.columnWidths[FIELD_NAME],
+          isRowHeader: true,
         },
         {
           key: FIELD_ORGANIZATION_ROLE,
@@ -128,7 +129,7 @@ export default {
     :tbody-tr-attr="{ 'data-testid': 'user-row-content' }"
   >
     <template #cell(name)="{ item: user }">
-      <user-avatar :user="user" :admin-user-path="adminUserPath" />
+      <user-avatar :user="user" :admin-user-path="adminUserPath" class="gl-font-normal" />
     </template>
 
     <template v-if="$scopedSlots['organization-role']" #cell(organizationRole)="{ item: user }">

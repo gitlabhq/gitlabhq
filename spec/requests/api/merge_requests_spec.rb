@@ -2027,6 +2027,46 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/raw_diffs' do
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        :simple,
+        author: user,
+        assignees: [user],
+        source_project: project,
+        target_project: project,
+        source_branch: 'markdown',
+        title: "Test",
+        created_at: base_time
+      )
+    end
+
+    it 'returns a 404 when merge_request_iid not found' do
+      get api("/projects/#{project.id}/merge_requests/0/raw_diffs", user)
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns a 404 when merge_request id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/raw_diffs", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs" }
+      end
+    end
+
+    it 'returns the a workhorse git-diff url' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/pipelines' do
     let_it_be(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 

@@ -195,9 +195,13 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
   describe 'validation' do
     describe 'name uniqueness' do
-      subject { create(:work_item_type) }
+      it 'validates uniqueness with a custom validator' do
+        create(:work_item_type, :non_default, name: 'Test Type')
 
-      it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
+        new_type = build(:work_item_type, :non_default, name: ' TesT Type ')
+        expect(new_type).to be_invalid
+        expect(new_type.errors.full_messages).to include('Name has already been taken')
+      end
     end
 
     it { is_expected.not_to allow_value('s' * 256).for(:icon_name) }

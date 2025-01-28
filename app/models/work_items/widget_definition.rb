@@ -7,7 +7,7 @@ module WorkItems
     belongs_to :work_item_type, class_name: 'WorkItems::Type', inverse_of: :widget_definitions
 
     validates :name, presence: true
-    validates :name, uniqueness: { case_sensitive: false, scope: :work_item_type_id }
+    validates :name, custom_uniqueness: { unique_sql: 'TRIM(BOTH FROM lower(?))', scope: :work_item_type_id }
     validates :name, length: { maximum: 255 }
 
     validates :widget_options, if: :weight?,

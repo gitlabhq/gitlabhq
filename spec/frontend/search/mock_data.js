@@ -1791,3 +1791,13 @@ export const mockAuthorsAxiosResponse = [
     path: '/jane',
   },
 ];
+
+export const mockgetBlobSearchCountQuery = {
+  data: {
+    blobSearch: {
+      fileCount: 10,
+      matchCount: 123,
+      __typename: 'BlobSearch',
+    },
+  },
+};

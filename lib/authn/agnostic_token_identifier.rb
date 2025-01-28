@@ -12,7 +12,8 @@ module Authn
       ::Authn::Tokens::ClusterAgentToken,
       ::Authn::Tokens::RunnerAuthenticationToken,
       ::Authn::Tokens::CiTriggerToken,
-      ::Authn::Tokens::CiJobToken
+      ::Authn::Tokens::CiJobToken,
+      ::Authn::Tokens::FeatureFlagsClientToken
     ].freeze
 
     def self.token_for(plaintext, source)

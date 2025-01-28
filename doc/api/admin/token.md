@@ -32,6 +32,7 @@ Prerequisites:
 > - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987) in GitLab 17.7.
 > - [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174030) in GitLab 17.7.
 > - [CI/CD Job Tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175234) in GitLab 17.9.
+> - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431) in GitLab 17.9.
 
 Gets information for a given token. This endpoint supports the following tokens:
 
@@ -44,6 +45,7 @@ Gets information for a given token. This endpoint supports the following tokens:
 - [Runner authentication tokens](../../security/tokens/index.md#runner-authentication-tokens)
 - [Pipeline trigger tokens](../../ci/triggers/index.md#create-a-pipeline-trigger-token)
 - [CI/CD Job Tokens](../../security/tokens/index.md#cicd-job-tokens)
+- [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 
 ```plaintext
 POST /api/v4/admin/token

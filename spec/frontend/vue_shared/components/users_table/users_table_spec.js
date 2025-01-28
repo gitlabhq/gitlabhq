@@ -19,7 +19,7 @@ describe('UsersTable component', () => {
       .find('tbody')
       .findAll('tr')
       .at(trIdx)
-      .find(`[data-label="${label}"][role="cell"]`);
+      .find(`[data-label="${label}"]`);
   };
 
   const initComponent = (props = {}, scopedSlots = {}) => {

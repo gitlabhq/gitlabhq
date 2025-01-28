@@ -40,8 +40,8 @@ class ProjectCiCdSetting < ApplicationRecord
     allow_nil: true,
     numericality: {
       only_integer: true,
-      greater_than_or_equal_to: 1.day.seconds,
-      less_than_or_equal_to: 1.year.seconds,
+      greater_than_or_equal_to: ChronicDuration.parse('1 day'),
+      less_than_or_equal_to: ChronicDuration.parse('1 year'),
       message: N_('must be between 1 day and 1 year')
     }
 

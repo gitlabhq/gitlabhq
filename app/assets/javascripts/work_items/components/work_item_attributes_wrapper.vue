@@ -19,7 +19,6 @@ import {
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
-  WIDGET_TYPE_CUSTOM_FIELDS,
 } from '../constants';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
 
@@ -50,8 +49,6 @@ export default {
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemRolledupDates: () =>
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
-    WorkItemCustomFields: () =>
-      import('ee_component/work_items/components/work_item_custom_fields.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['hasSubepicsFeature'],
@@ -167,13 +164,6 @@ export default {
     },
     workItemCrmContacts() {
       return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
-    },
-    workItemCustomFields() {
-      // @todo: Added flag and mocked CUSTOM_FIELDS widget while not suported by backend
-      return (
-        this.glFeatures.customFieldsFeature &&
-        this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_CUSTOM_FIELDS)
-      );
     },
   },
   methods: {
@@ -316,13 +306,6 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <work-item-custom-fields
-      v-if="workItemCustomFields"
-      :custom-field-values="workItemCustomFields.customFieldValues"
-      :work-item-type="workItemType"
-      :full-path="fullPath"
-      :can-update="canUpdate"
-    />
     <template v-if="workItemHierarchy && showParent">
       <work-item-parent
         class="work-item-attributes-item"

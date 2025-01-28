@@ -82,7 +82,7 @@ module WorkItems
     # TODO: review validation rules
     # https://gitlab.com/gitlab-org/gitlab/-/issues/336919
     validates :name, presence: true
-    validates :name, uniqueness: { case_sensitive: false }
+    validates :name, custom_uniqueness: { unique_sql: 'TRIM(BOTH FROM lower(?))' }
     validates :name, length: { maximum: 255 }
     validates :icon_name, length: { maximum: 255 }
 

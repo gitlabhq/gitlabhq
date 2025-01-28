@@ -1,0 +1,10 @@
+query getBlobSearchCountQuery(
+  $search: String!
+  $groupId: GroupID
+  $projectId: ProjectID
+  $regex: Boolean
+) {
+  blobSearch(search: $search, groupId: $groupId, projectId: $projectId, regex: $regex) {
+    matchCount
+  }
+}

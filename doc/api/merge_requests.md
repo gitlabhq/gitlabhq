@@ -1952,6 +1952,67 @@ NOTE:
 This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
 Merge requests that exceed the diff limits return limited results.
 
+## Show merge request raw diffs
+
+Show raw diffs of the files changed in a merge request.
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/raw_diffs
+```
+
+Supported attributes:
+
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The internal ID of the merge request. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and a raw diff response to use programmatically:
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/raw_diffs"
+```
+
+Example response:
+
+```diff
+        diff --git a/lib/api/helpers.rb b/lib/api/helpers.rb
+index 31525ad523553c8d7eff163db3e539058efd6d3a..f30e36d6fdf4cd4fa25f62e08ecdbf4a7b169681 100644
+--- a/lib/api/helpers.rb
++++ b/lib/api/helpers.rb
+@@ -944,6 +944,10 @@ def send_git_blob(repository, blob)
+       body ''
+     end
+
++    def send_git_diff(repository, diff_refs)
++      header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
++    end
++
+     def send_git_archive(repository, **kwargs)
+       header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
+
+diff --git a/lib/api/merge_requests.rb b/lib/api/merge_requests.rb
+index e02d9eea1852f19fe5311acda6aa17465eeb422e..f32b38585398a18fea75c11d7b8ebb730eeb3fab 100644
+--- a/lib/api/merge_requests.rb
++++ b/lib/api/merge_requests.rb
+@@ -6,6 +6,8 @@ class MergeRequests < ::API::Base
+     include PaginationParams
+     include Helpers::Unidiff
+
++    helpers ::API::Helpers::HeadersHelpers
++
+     CONTEXT_COMMITS_POST_LIMIT = 20
+
+     before { authenticate_non_get! }
+```
+
+NOTE:
+This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
+Merge requests that exceed the diff limits return limited results.
+
 ## List merge request pipelines
 
 Get a list of merge request pipelines.

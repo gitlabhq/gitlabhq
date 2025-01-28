@@ -6,6 +6,8 @@ module API
     include PaginationParams
     include Helpers::Unidiff
 
+    helpers ::API::Helpers::HeadersHelpers
+
     CONTEXT_COMMITS_POST_LIMIT = 20
 
     before { authenticate_non_get! }
@@ -586,6 +588,22 @@ module API
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
         present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff, enable_unidiff: declared_params[:unidiff]
+      end
+
+      desc 'Get the merge request raw diffs' do
+        detail 'Get the raw diffs of a merge request that can used programmatically.'
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[merge_requests]
+      end
+      get ':id/merge_requests/:merge_request_iid/raw_diffs', feature_category: :code_review_workflow, urgency: :low do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+
+        no_cache_headers
+
+        send_git_diff(merge_request.project.repository, merge_request.diff_refs)
       end
 
       desc 'Get single merge request pipelines' do

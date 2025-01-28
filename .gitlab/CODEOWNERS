@@ -2,7 +2,7 @@
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
 # As described in https://docs.gitlab.com/ee/user/project/codeowners/index.html
 
-* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/qe-maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
+* @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
 
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
@@ -110,13 +110,13 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /.gitlab/ci/
 /.gitlab/ci/docs.gitlab-ci.yml @gl-pipeline-maintainers @gl-docsteam
 /.gitlab/ci/frontend.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/maintainers/frontend
-/.gitlab/ci/test-on-omnibus/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
-/.gitlab/ci/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/qe-maintainers
-/.gitlab/ci/qa-common/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
+/.gitlab/ci/test-on-omnibus/ @gl-pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/qa-common/ @gl-pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/releases.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-org/delivery
 /.gitlab/ci/reports.gitlab-ci.yml @gl-pipeline-maintainers @gitlab-com/gl-security/appsec
-/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/qe-maintainers
-/.gitlab/ci/test-on-gdk/ @gl-pipeline-maintainers @gl-dx/qe-maintainers
+/.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/test-on-gdk/ @gl-pipeline-maintainers @gl-dx/maintainers
 /gems/gem.gitlab-ci.yml
 
 [Tooling] @gl-dx/eng-prod
@@ -1749,7 +1749,7 @@ ee/app/workers/ai/repository_xray/
 /ee/spec/fixtures/remote_development/
 /ee/spec/controllers/remote_development/
 /ee/spec/services/remote_development/
-/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-dx/qe-maintainers
+/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-dx/maintainers
 
 ^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
 /app/assets/javascripts/ide/components/shared/tokened_input.vue

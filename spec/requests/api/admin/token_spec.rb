@@ -54,6 +54,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
   let(:impersonation_token) { create(:personal_access_token, :impersonation, user: user) }
   let(:ci_trigger) { create(:ci_trigger) }
   let(:ci_build) { create(:ci_build, status: :running) }
+  let(:feature_flags_client) { create(:operations_feature_flags_client) }
 
   let(:plaintext) { nil }
   let(:params) { { token: plaintext } }
@@ -73,7 +74,8 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             [ref(:cluster_agent_token), lazy { cluster_agent_token.token }],
             [ref(:runner_authentication_token), lazy { runner_authentication_token.token }],
             [ref(:impersonation_token), lazy { impersonation_token.token }],
-            [ref(:ci_trigger), lazy { ci_trigger.token }]
+            [ref(:ci_trigger), lazy { ci_trigger.token }],
+            [ref(:feature_flags_client), lazy { feature_flags_client.token }]
           ]
         end
 

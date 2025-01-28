@@ -944,6 +944,14 @@ module API
       body ''
     end
 
+    def send_git_diff(repository, diff_refs)
+      header(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
+
+      headers['Content-Disposition'] = 'inline'
+
+      body ''
+    end
+
     def send_git_archive(repository, **kwargs)
       header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
 
