@@ -27,16 +27,16 @@ GitLab SAST is designed to be used in its default configuration, but you can [co
 
 ## Source of rules
 
-### Advanced SAST
+### GitLab Advanced SAST
 
 DETAILS:
 **Tier:** Ultimate
 
-GitLab creates, maintains, and supports the rules for [Advanced SAST](gitlab_advanced_sast.md).
-Its rules are custom-built to leverage the Advanced SAST scanning engine's cross-file, cross-function analysis capabilities.
-The Advanced SAST ruleset is not open source, and is not the same ruleset as any other analyzer.
+GitLab creates, maintains, and supports the rules for [GitLab Advanced SAST](gitlab_advanced_sast.md).
+Its rules are custom-built to leverage the GitLab Advanced SAST scanning engine's cross-file, cross-function analysis capabilities.
+The GitLab Advanced SAST ruleset is not open source, and is not the same ruleset as any other analyzer.
 
-For details of which types of vulnerabilities Advanced SAST detects, see [When vulnerabilities are reported](gitlab_advanced_sast.md#when-vulnerabilities-are-reported).
+For details of which types of vulnerabilities GitLab Advanced SAST detects, see [When vulnerabilities are reported](gitlab_advanced_sast.md#when-vulnerabilities-are-reported).
 
 ### Semgrep-based analyzer
 

@@ -100,44 +100,44 @@ For more information about our plans for language support in SAST, see the [cate
 | Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                                                | Minimum supported GitLab version  |
 |------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
 | .NET (all versions, C# only) | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 15.4                              |
-| .NET (all versions, C# only) | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
+| .NET (all versions, C# only) | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 | Apex (Salesforce)            | [PMD](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                                                                 | 12.1                              |
 | C                            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 14.2                              |
 | C/C++                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | Elixir (Phoenix)             | [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                                                              | 11.1                              |
 | Go                           | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 14.4                              |
-| Go                           | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
+| Go                           | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 | Groovy<sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin                              | 11.3 (Gradle) & 11.9 (Maven, SBT) |
 | Helm Charts                  | [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                                                              | 13.1                              |
 | Java (any build system)      | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 14.10                             |
 | Java (Android)               | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
-| Java (any build system)      | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
+| Java (any build system)      | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 | JavaScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 13.10                             |
-| JavaScript                   | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
+| JavaScript                   | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 | Kotlin (Android)             | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | Kotlin (General)<sup>1</sup> | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | Kubernetes manifests         | [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                                                              | 12.6                              |
 | Node.js                      | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
-| Node.js                      | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
+| Node.js                      | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 | Objective-C (iOS)            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | PHP                          | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | Python                       | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 13.9                              |
-| Python                       | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
+| Python                       | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 | React                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 13.10                             |
 | Ruby                         | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
-| Ruby                         | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.5                              |
+| Ruby                         | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.5                              |
 | Ruby on Rails                | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | Rust <sup>2</sup>            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with user-provided [Custom rules](customize_rulesets.md)     | 17.1                              |
 | Scala (any build system)     | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.0                              |
 | Scala <sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin                              | 11.0 (SBT) & 11.9 (Gradle, Maven) |
 | Swift (iOS)                  | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 16.11                             |
 | TypeScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) | 13.10                             |
-| TypeScript                   | [Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
+| TypeScript                   | [GitLab Advanced SAST](gitlab_advanced_sast.md)                                      | 17.3                              |
 
 <html>
   Footnotes:
   <ol>
-    <li>The SpotBugs-based analyzer supports <a href="https://gradle.org/">Gradle</a>, <a href="https://maven.apache.org/">Maven</a>, and <a href="https://www.scala-sbt.org/">SBT</a>. It can also be used with variants like the <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html">Gradle wrapper</a>, <a href="https://grails.org/">Grails</a>, and the <a href="https://github.com/takari/maven-wrapper">Maven wrapper</a>. However, SpotBugs has <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/350801">limitations</a> when used against <a href="https://ant.apache.org/">Ant</a>-based projects. You should use the Advanced SAST or Semgrep-based analyzer for Ant-based Java or Scala projects.</li>
+    <li>The SpotBugs-based analyzer supports <a href="https://gradle.org/">Gradle</a>, <a href="https://maven.apache.org/">Maven</a>, and <a href="https://www.scala-sbt.org/">SBT</a>. It can also be used with variants like the <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html">Gradle wrapper</a>, <a href="https://grails.org/">Grails</a>, and the <a href="https://github.com/takari/maven-wrapper">Maven wrapper</a>. However, SpotBugs has <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/350801">limitations</a> when used against <a href="https://ant.apache.org/">Ant</a>-based projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or Scala projects.</li>
     <li>Requires a custom ruleset and an override to the semgrep-sast CI job. See <a href="https://docs.gitlab.com/ee/user/application_security/sast/index.html#scanning-rust-applications">Scanning Rust applications</a> for an example.</li>
   </ol>
 </html>
@@ -161,12 +161,12 @@ Advanced vulnerability tracking is available in a subset of the [supported langu
 
 - C, in the Semgrep-based only
 - C++, in the Semgrep-based only
-- C#, in the Advanced SAST and Semgrep-based analyzers
-- Go, in the Advanced SAST and Semgrep-based analyzers
-- Java, in the Advanced SAST and Semgrep-based analyzers
-- JavaScript, in the Advanced SAST and Semgrep-based analyzers
+- C#, in the GitLab Advanced SAST and Semgrep-based analyzers
+- Go, in the GitLab Advanced SAST and Semgrep-based analyzers
+- Java, in the GitLab Advanced SAST and Semgrep-based analyzers
+- JavaScript, in the GitLab Advanced SAST and Semgrep-based analyzers
 - PHP, in the Semgrep-based analyzer only
-- Python, in the Advanced SAST and Semgrep-based analyzers
+- Python, in the GitLab Advanced SAST and Semgrep-based analyzers
 - Ruby, in the Semgrep-based analyzer only
 
 Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
@@ -211,7 +211,7 @@ include:
   - template: Jobs/SAST.gitlab-ci.yml
 ```
 
-A FIPS-compliant image is only available for the Advanced SAST and Semgrep-based analyzer.
+A FIPS-compliant image is only available for the GitLab Advanced SAST and Semgrep-based analyzer.
 
 WARNING:
 To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#run-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
@@ -755,7 +755,7 @@ Some analyzers can be customized with CI/CD variables.
 
 | CI/CD variable              | Analyzer   | Description                                                                                                                                                                                                                        |
 |-----------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED` | GitLab Advanced SAST | Set to `true` to enable [Advanced SAST](gitlab_advanced_sast.md) scanning (available in GitLab Ultimate only). Default: `false`. |
+| `GITLAB_ADVANCED_SAST_ENABLED` | GitLab Advanced SAST | Set to `true` to enable [GitLab Advanced SAST](gitlab_advanced_sast.md) scanning (available in GitLab Ultimate only). Default: `false`. |
 | `SCAN_KUBERNETES_MANIFESTS` | Kubesec    | Set to `"true"` to scan Kubernetes manifests.                                                                                                                                                                                      |
 | `KUBESEC_HELM_CHARTS_PATH`  | Kubesec    | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
 | `KUBESEC_HELM_OPTIONS`      | Kubesec    | Additional arguments for the `helm` executable.                                                                                                                                                                                    |

@@ -72,7 +72,7 @@ RSpec.describe 'User visits the profile preferences page', :js, feature_category
         find('[data-track-label="gitlab_logo_link"]').click
         wait_for_requests
 
-        expect(page).to have_content("You don't have any projects yet.")
+        expect(page).to have_content("You haven't starred any projects yet.")
         expect(page).to have_current_path starred_dashboard_projects_path, ignore_query: true
       end
     end

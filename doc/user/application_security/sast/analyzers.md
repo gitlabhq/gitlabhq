@@ -30,7 +30,7 @@ For each scanner, an analyzer:
 
 SAST supports the following official analyzers:
 
-- [Advanced SAST](gitlab_advanced_sast.md), providing cross-file and cross-function taint analysis and improved detection accuracy. Ultimate only.
+- [GitLab Advanced SAST](gitlab_advanced_sast.md), providing cross-file and cross-function taint analysis and improved detection accuracy. Ultimate only.
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec), based on Kubesec. Off by default; see [Enabling KubeSec analyzer](index.md#enabling-kubesec-analyzer).
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex), based on PMD with rules for the Apex language.
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep), based on the Semgrep OSS engine [with GitLab-managed rules](rules.md#semgrep-based-analyzer).
@@ -109,7 +109,7 @@ These rules replace language-specific analyzers that were used in previous relea
 
 ### Vulnerability translation
 
-The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible. For translation to the Advanced SAST, please refer to the [Advanced SAST documentation](gitlab_advanced_sast.md).
+The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible. For translation to the GitLab Advanced SAST analyzer, please refer to the [GitLab Advanced SAST documentation](gitlab_advanced_sast.md).
 
 When this happens, the system combines the vulnerabilities from each analyzer into a single record.
 

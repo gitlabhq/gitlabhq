@@ -21,7 +21,7 @@ repository being scanned. There are two kinds of customization:
 - Replacing predefined rules by [building a custom configuration](#build-a-custom-configuration)
   using **passthroughs**. Available only for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 
-Advanced SAST supports only modifying the behavior of **predefined rules**, not replacing predefined rules.
+GitLab Advanced SAST supports only modifying the behavior of **predefined rules**, not replacing predefined rules.
 
 ## Disable predefined rules
 
@@ -319,14 +319,14 @@ analyzer fails to parse your custom ruleset unless the indentation is represente
 
 ## Examples
 
-### Disable predefined Advanced SAST rules
+### Disable predefined GitLab Advanced SAST rules
 
-You can disable Advanced SAST rules or edit their metadata.
+You can disable GitLab Advanced SAST rules or edit their metadata.
 The following example disables rules based on different criteria:
 
 - A CWE identifier, which identifies an entire class of vulnerabilities.
-- An Advanced SAST rule ID, which identifies a specific detection strategy used in Advanced SAST.
-- An associated Semgrep rule ID, which is included in Advanced SAST findings for compatibility. This additional metadata allows findings to be automatically transitioned when both analyzers create similar findings in the same location.
+- An GitLab Advanced SAST rule ID, which identifies a specific detection strategy used in GitLab Advanced SAST.
+- An associated Semgrep rule ID, which is included in GitLab Advanced SAST findings for compatibility. This additional metadata allows findings to be automatically transitioned when both analyzers create similar findings in the same location.
 
 These identifiers are shown in the [vulnerability details](../vulnerabilities/index.md) of each vulnerability.
 You can also see each identifier and its associated `type` in the [downloadable SAST report artifact](index.md#download-a-sast-report).

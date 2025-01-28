@@ -16,14 +16,6 @@
     }
   }
 
-  .cancel-btn {
-    color: $red-600;
-
-    &:hover {
-      color: $red-600;
-    }
-  }
-
   .file-title {
     @apply gl-font-monospace;
   }

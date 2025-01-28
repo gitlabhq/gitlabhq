@@ -8,7 +8,14 @@
  * - Button Actions.
  * [Mockup](https://gitlab.com/gitlab-org/gitlab-foss/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
  */
-import { GlLoadingIcon, GlLink, GlTooltip, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLoadingIcon,
+  GlLink,
+  GlTooltip,
+  GlTooltipDirective,
+  GlSprintf,
+} from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
@@ -21,6 +28,7 @@ export default {
   components: {
     InstanceComponent,
     CanaryIngress,
+    GlButton,
     GlLoadingIcon,
     GlLink,
     GlSprintf,
@@ -194,13 +202,14 @@ export default {
               rel="nofollow"
               >{{ __('Rollback') }}</gl-link
             >
-            <gl-link
+            <gl-button
               v-if="abortUrl"
               :href="abortUrl"
-              class="btn btn-danger btn-inverted"
+              category="secondary"
+              variant="danger"
               data-method="post"
               rel="nofollow"
-              >{{ __('Abort') }}</gl-link
+              >{{ __('Abort') }}</gl-button
             >
           </section>
         </div>

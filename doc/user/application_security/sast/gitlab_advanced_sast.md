@@ -28,7 +28,7 @@ The Semgrep analyzer will not scan these files.
 All vulnerabilities identified by the GitLab Advanced SAST analyzer will be reported,
 including vulnerabilities previously reported by the Semgrep-based analyzer.
 An automated transition automatically de-duplicates findings
-when Advanced SAST locates the same type of vulnerability in the same location as the Semgrep-based analyzer.
+when GitLab Advanced SAST locates the same type of vulnerability in the same location as the Semgrep-based analyzer.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced SAST: Accelerating Vulnerability Resolution](https://youtu.be/xDa1MHOcyn8).
@@ -43,13 +43,13 @@ where untrusted data can influence the execution of your application in unsafe w
 ensuring that injection vulnerabilities, such as SQL injection and cross-site scripting (XSS),
 are detected even when they span multiple functions and files.
 
-To minimize noise, Advanced SAST only reports taint-based vulnerabilities when there is a verifiable flow that brings untrusted user input source to a sensitive sink.
+To minimize noise, GitLab Advanced SAST only reports taint-based vulnerabilities when there is a verifiable flow that brings untrusted user input source to a sensitive sink.
 Other products may report vulnerabilities with less validation.
 
-Advanced SAST is tuned to emphasize input that crosses trust boundaries, like values that are sourced from HTTP requests.
+GitLab Advanced SAST is tuned to emphasize input that crosses trust boundaries, like values that are sourced from HTTP requests.
 The set of untrusted input sources does not include command-line arguments, environment variables, or other inputs that are typically provided by the user operating the program.
 
-For details of which types of vulnerabilities Advanced SAST detects, see [Advanced SAST CWE coverage](advanced_sast_coverage.md).
+For details of which types of vulnerabilities GitLab Advanced SAST detects, see [GitLab Advanced SAST CWE coverage](advanced_sast_coverage.md).
 
 ## Supported languages
 
@@ -64,25 +64,25 @@ GitLab Advanced SAST supports the following languages with cross-function and cr
 
 ## Configuration
 
-Enable the Advanced SAST analyzer to discover vulnerabilities in your application by performing
+Enable the GitLab Advanced SAST analyzer to discover vulnerabilities in your application by performing
 cross-function and cross-file taint analysis. You can then adjust its behavior by using CI/CD
 variables.
 
 ### Requirements
 
-Like other GitLab SAST analyzers, the Advanced SAST analyzer requires a runner and a CI/CD pipeline; see [SAST requirements](index.md#requirements) for details.
+Like other GitLab SAST analyzers, the GitLab Advanced SAST analyzer requires a runner and a CI/CD pipeline; see [SAST requirements](index.md#requirements) for details.
 
-On GitLab Self-Managed, you must also use a GitLab version that supports Advanced SAST:
+On GitLab Self-Managed, you must also use a GitLab version that supports GitLab Advanced SAST:
 
 - You should use GitLab 17.4 or later if possible. GitLab 17.4 includes a new code-flow view, vulnerability deduplication, and further updates to the SAST CI/CD template.
-- The [SAST CI/CD templates](index.md#stable-vs-latest-sast-templates) were updated to include Advanced SAST in the following releases:
-  - The stable template includes Advanced SAST in GitLab 17.3 or later.
-  - The latest template includes Advanced SAST in GitLab 17.2 or later. Note that you [should not mix latest and stable templates](../detect/roll_out_security_scanning.md#template-editions) in a single project.
+- The [SAST CI/CD templates](index.md#stable-vs-latest-sast-templates) were updated to include GitLab Advanced SAST in the following releases:
+  - The stable template includes GitLab Advanced SAST in GitLab 17.3 or later.
+  - The latest template includes GitLab Advanced SAST in GitLab 17.2 or later. Note that you [should not mix latest and stable templates](../detect/roll_out_security_scanning.md#template-editions) in a single project.
 - At a minimum, GitLab Advanced SAST requires version 17.1 or later.
 
-### Enable Advanced SAST scanning
+### Enable GitLab Advanced SAST scanning
 
-Advanced SAST is included in the standard GitLab SAST CI/CD template, but isn't yet enabled by default.
+GitLab Advanced SAST is included in the standard GitLab SAST CI/CD template, but isn't yet enabled by default.
 To enable it, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
 You can set this variable in different ways depending on how you manage your CI/CD configuration.
 
@@ -90,7 +90,7 @@ You can set this variable in different ways depending on how you manage your CI/
 
 If you've already enabled GitLab SAST scanning in your project, add a new CI/CD variable to enable GitLab SAST.
 
-This minimal YAML file includes the [stable SAST template](index.md#stable-vs-latest-sast-templates) and enables Advanced SAST:
+This minimal YAML file includes the [stable SAST template](index.md#stable-vs-latest-sast-templates) and enables GitLab Advanced SAST:
 
 ```yaml
 include:
@@ -102,7 +102,7 @@ variables:
 
 #### Enforce it in a Scan Execution Policy
 
-To enable Advanced SAST in a [Scan Execution Policy](../policies/scan_execution_policies.md), update your policy's scan action to set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
+To enable GitLab Advanced SAST in a [Scan Execution Policy](../policies/scan_execution_policies.md), update your policy's scan action to set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
 You can set this variable by:
 
 - Selecting it from the menu in the [policy editor](../policies/scan_execution_policies.md#scan-execution-policy-editor).
@@ -110,7 +110,7 @@ You can set this variable by:
 
 #### By using the pipeline editor
 
-To enable Advanced SAST by using the pipeline editor:
+To enable GitLab Advanced SAST by using the pipeline editor:
 
 1. In your project, select **Build > Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
@@ -118,8 +118,8 @@ To enable Advanced SAST by using the pipeline editor:
 1. Update the CI/CD configuration to:
    - Include one of the GitLab-managed [SAST CI/CD templates](index.md#stable-vs-latest-sast-templates) if it is not [already included](index.md#configure-sast-in-your-cicd-yaml).
        - In GitLab 17.3 or later, you should use the stable template, `Jobs/SAST.gitlab-ci.yml`.
-       - In GitLab 17.2, Advanced SAST is only available in the latest template, `Jobs/SAST.latest.gitlab-ci.yml`. Note that you [should not mix latest and stable templates](../detect/roll_out_security_scanning.md#template-editions) in a single project.
-       - In GitLab 17.1, you must manually copy the contents of the Advanced SAST job into your CI/CD pipeline definition.
+       - In GitLab 17.2, GitLab Advanced SAST is only available in the latest template, `Jobs/SAST.latest.gitlab-ci.yml`. Note that you [should not mix latest and stable templates](../detect/roll_out_security_scanning.md#template-editions) in a single project.
+       - In GitLab 17.1, you must manually copy the contents of the GitLab Advanced SAST job into your CI/CD pipeline definition.
    - Set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
 
    See the [minimal YAML example above](#edit-the-cicd-pipeline-definition-manually).
@@ -134,7 +134,7 @@ To enable Advanced SAST by using the pipeline editor:
    merge request**.
 1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
-Pipelines now include an Advanced SAST job.
+Pipelines now include a GitLab Advanced SAST job.
 
 ## Vulnerability code flow
 
@@ -171,10 +171,10 @@ On GitLab Self-Managed, you can activate the view by [enabling the required feat
 
 If you encounter issues while using GitLab Advanced SAST, refer to the [troubleshooting guide](troubleshooting.md).
 
-## Customize Advanced SAST
+## Customize GitLab Advanced SAST
 
-You can disable Advanced SAST rules or edit their metadata, just as you can other analyzers.
-For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-advanced-sast-rules).
+You can disable GitLab Advanced SAST rules or edit their metadata, just as you can other analyzers.
+For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-gitlab-advanced-sast-rules).
 
 ## Feedback
 

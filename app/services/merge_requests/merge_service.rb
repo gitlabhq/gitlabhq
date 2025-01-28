@@ -117,11 +117,7 @@ module MergeRequests
     end
 
     def branch_deletion_user
-      if Feature.enabled?(:switch_deletion_branch_user, project)
-        current_user
-      else
-        @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
-      end
+      current_user
     end
 
     # Verify again that the source branch can be removed, since branch may be protected,

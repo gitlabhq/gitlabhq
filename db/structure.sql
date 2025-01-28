@@ -6996,7 +6996,8 @@ CREATE TABLE alert_management_alert_metric_images (
     project_id bigint,
     CONSTRAINT check_2587666252 CHECK ((char_length(url_text) <= 128)),
     CONSTRAINT check_4d811d9007 CHECK ((char_length(url) <= 255)),
-    CONSTRAINT check_70fafae519 CHECK ((char_length(file) <= 255))
+    CONSTRAINT check_70fafae519 CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_7e9ef22adc CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE alert_management_alert_metric_images_id_seq

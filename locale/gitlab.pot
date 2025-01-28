@@ -45574,10 +45574,34 @@ msgstr ""
 msgid "Projects|Projects are where you can store your code, access issues, wiki, and other features of GitLab."
 msgstr ""
 
+msgid "Projects|Projects that are archived or pending deletion will appear here."
+msgstr ""
+
+msgid "Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here."
+msgstr ""
+
 msgid "Projects|Scheduled for deletion on %{date}"
 msgstr ""
 
+msgid "Projects|Visit a project and select the star icon to save projects you want to find later."
+msgstr ""
+
+msgid "Projects|You aren't a member of any projects yet."
+msgstr ""
+
+msgid "Projects|You don't have any inactive projects."
+msgstr ""
+
+msgid "Projects|You don't have any personal projects yet."
+msgstr ""
+
 msgid "Projects|You don't have any projects yet."
+msgstr ""
+
+msgid "Projects|You haven't contributed to any projects yet."
+msgstr ""
+
+msgid "Projects|You haven't starred any projects yet."
 msgstr ""
 
 msgid "Project|already in use"
@@ -47806,9 +47830,6 @@ msgstr ""
 msgid "Request details"
 msgstr ""
 
-msgid "Request for a Duo Code Review queued."
-msgstr ""
-
 msgid "Request queued for administrator approval."
 msgstr ""
 
@@ -47840,9 +47861,6 @@ msgid "Requested states are invalid"
 msgstr ""
 
 msgid "Requests"
-msgstr ""
-
-msgid "Requests a Duo Code Review"
 msgstr ""
 
 msgid "Requests a review from %{reviewer_users_sentence}."

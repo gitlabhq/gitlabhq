@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlButton, GlTooltipDirective, GlIcon, GlModal, GlToggle } from '@gitlab/ui';
+import { GlBadge, GlButton, GlTooltipDirective, GlModal, GlToggle } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { labelForStrategy } from '../utils';
 
@@ -14,7 +14,6 @@ export default {
   components: {
     GlBadge,
     GlButton,
-    GlIcon,
     GlModal,
     GlToggle,
     StrategyLabel,
@@ -162,11 +161,14 @@ export default {
                 {{ featureFlag.name }}
               </div>
               <div class="feature-flag-description">
-                <gl-icon
+                <gl-button
                   v-if="featureFlag.description"
                   v-gl-tooltip.hover="featureFlag.description"
-                  class="gl-ml-3 gl-mr-3"
-                  name="information-o"
+                  :aria-label="featureFlag.description"
+                  class="gl-mx-3 !gl-p-0"
+                  category="tertiary"
+                  size="small"
+                  icon="information-o"
                 />
               </div>
             </div>

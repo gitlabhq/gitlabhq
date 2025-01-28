@@ -117,7 +117,7 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
         visit(starred_dashboard_projects_path)
         wait_for_requests
 
-        expect(page).to have_text("You don't have any projects yet.")
+        expect(page).to have_text("You haven't starred any projects yet.")
       end
 
       it 'shows only starred projects' do

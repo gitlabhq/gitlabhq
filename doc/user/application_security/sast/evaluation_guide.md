@@ -29,7 +29,7 @@ For details, see [Supported languages and frameworks](index.md#supported-languag
 
 GitLab SAST [analyzers](analyzers.md) and their [rules](rules.md) are designed to minimize noise for development and security teams.
 
-For details on when the Advanced SAST analyzer reports vulnerabilities, see [When vulnerabilities are reported](gitlab_advanced_sast.md#when-vulnerabilities-are-reported).
+For details on when the GitLab Advanced SAST analyzer reports vulnerabilities, see [When vulnerabilities are reported](gitlab_advanced_sast.md#when-vulnerabilities-are-reported).
 
 ### Other platform features
 
@@ -50,8 +50,8 @@ When choosing a codebase to test SAST, you should:
   SAST scans run in your CI/CD pipeline, so you'll need to make a small edit to the CI/CD configuration to [enable SAST](index.md#configuration).
   - You can make a fork or copy of an existing repository for testing. This way, you can set up your testing environment without any chance of interrupting normal development.
 - Use a codebase that matches your organization's typical technology stack.
-- Use a language that [Advanced SAST supports](gitlab_advanced_sast.md#supported-languages).
-  Advanced SAST produces more accurate results than other [analyzers](analyzers.md).
+- Use a language that [GitLab Advanced SAST supports](gitlab_advanced_sast.md#supported-languages).
+  GitLab Advanced SAST produces more accurate results than other [analyzers](analyzers.md).
 
 Your test project must have GitLab Ultimate. Only Ultimate includes [features](index.md#features) like:
 
@@ -90,11 +90,11 @@ GitLab SAST is not designed to report vulnerabilities in these cases.
 After you choose a codebase to test with, you're ready to conduct the test. You can follow these steps:
 
 1. [Enable SAST](index.md#configuration) by creating a merge request (MR) that adds SAST to the CI/CD configuration.
-   - Be sure to set the CI/CD variable to [enable Advanced SAST](gitlab_advanced_sast.md#enable-advanced-sast-scanning) for more accurate results.
+   - Be sure to set the CI/CD variable to [enable GitLab Advanced SAST](gitlab_advanced_sast.md#enable-gitlab-advanced-sast-scanning) for more accurate results.
 1. Merge the MR to the repository's default branch.
 1. Open the [Vulnerability Report](../vulnerability_report/index.md) to see the vulnerabilities found on the default branch.
-   - If you're using Advanced SAST, you can use the [Tool filter](../vulnerability_report/index.md#tool-filter) to show results only from that scanner.
+   - If you're using GitLab Advanced SAST, you can use the [Tool filter](../vulnerability_report/index.md#tool-filter) to show results only from that scanner.
 1. Review vulnerability results.
-   - Check the [code flow view](../vulnerabilities/index.md#vulnerability-code-flow) for Advanced SAST vulnerabilities that involve tainted user input, like SQL injection or path traversal.
+   - Check the [code flow view](../vulnerabilities/index.md#vulnerability-code-flow) for GitLab Advanced SAST vulnerabilities that involve tainted user input, like SQL injection or path traversal.
    - If you have GitLab Duo Enterprise, [explain](../vulnerabilities/index.md#explaining-a-vulnerability) or [resolve](../vulnerabilities/index.md#resolve-a-vulnerability) a vulnerability.
 1. To see how scanning works as new code is developed, create a new merge request that changes application code and adds a new vulnerability or weakness.

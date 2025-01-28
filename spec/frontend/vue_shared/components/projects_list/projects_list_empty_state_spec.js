@@ -24,16 +24,39 @@ describe('ProjectsListEmptyState', () => {
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   describe('without search', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
     it('renders empty state correctly', () => {
+      createComponent();
+
       expect(findGlEmptyState().props()).toMatchObject({
         title: "You don't have any projects yet.",
         description:
           'Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
         svgPath: MOCK_EMPTY_STATE_PROJECTS_SVG_PATH,
+      });
+    });
+
+    describe('when title prop is passed', () => {
+      const title = "You haven't starred any projects yet.";
+
+      beforeEach(() => {
+        createComponent({ title });
+      });
+
+      it('correctly passes to `GlEmptyState` component', () => {
+        expect(findGlEmptyState().props('title')).toBe(title);
+      });
+    });
+
+    describe('when description prop is passed', () => {
+      const description =
+        'Visit a project and select the star icon to save projects you want to find later.';
+
+      beforeEach(() => {
+        createComponent({ description });
+      });
+
+      it('correctly passes to `GlEmptyState` component', () => {
+        expect(findGlEmptyState().props('description')).toBe(description);
       });
     });
   });

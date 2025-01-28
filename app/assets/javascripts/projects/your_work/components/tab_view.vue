@@ -146,6 +146,9 @@ export default {
     apolloClient() {
       return this.$apollo.provider.defaultClient;
     },
+    emptyState() {
+      return this.tab.emptyState || {};
+    },
   },
   methods: {
     onRefetch() {
@@ -182,5 +185,10 @@ export default {
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
-  <projects-list-empty-state v-else :search="search" />
+  <projects-list-empty-state
+    v-else
+    :title="emptyState.title"
+    :description="emptyState.description"
+    :search="search"
+  />
 </template>

@@ -10,46 +10,6 @@
   }
 }
 
-@mixin btn-outline($background, $text, $border, $hover-background, $hover-text, $hover-border, $active-background, $active-border, $active-text) {
-  background-color: $background;
-  color: $text;
-  border-color: $border;
-
-  > .icon {
-    color: $text;
-  }
-
-  &:hover,
-  &:focus {
-    background-color: $hover-background;
-    border-color: $hover-border;
-    color: $hover-text;
-
-    > .icon {
-      color: $hover-text;
-    }
-  }
-
-  &:focus {
-    box-shadow: 0 0 4px 1px $blue-300;
-  }
-
-  &:active {
-    background-color: $active-background;
-    border-color: $active-border;
-    box-shadow: inset 0 2px 4px 0 rgba($black, 0.2);
-    color: $active-text;
-
-    > .icon {
-      color: $active-text;
-    }
-
-    &:focus {
-      box-shadow: inset 0 2px 4px 0 rgba($black, 0.2);
-    }
-  }
-}
-
 @mixin btn-with-margin {
   margin-left: $gl-spacing-scale-3;
   float: left;
@@ -65,12 +25,6 @@
 
   &:focus:active {
     outline: 0;
-  }
-
-  &.btn-inverted:not(.disabled):not(:disabled) {
-    &.btn-danger {
-      @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
-    }
   }
 
   &.btn-grouped {

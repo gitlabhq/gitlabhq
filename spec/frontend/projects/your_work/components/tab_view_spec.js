@@ -283,14 +283,15 @@ describe('TabView', () => {
     describe('when there are no results', () => {
       beforeEach(async () => {
         createComponent({
-          handler: [PERSONAL_TAB.query, jest.fn().mockResolvedValue({ nodes: [] })],
-          propsData: { tab: PERSONAL_TAB },
+          handler: [CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue({ nodes: [] })],
+          propsData: { tab: CONTRIBUTED_TAB },
         });
         await waitForPromises();
       });
 
-      it('renders an empty state', () => {
-        expect(findEmptyState().exists()).toBe(true);
+      it('renders an empty state and passes title and description prop', () => {
+        expect(findEmptyState().props('title')).toBe(CONTRIBUTED_TAB.emptyState.title);
+        expect(findEmptyState().props('description')).toBe(CONTRIBUTED_TAB.emptyState.description);
       });
     });
 

@@ -18,10 +18,10 @@ CWE identifiers are an industry-standard way to identify security weaknesses, bu
 - CWEs are arranged in a tree structure.
 For example, [CWE-22: Path Traversal](https://cwe.mitre.org/data/definitions/22.html) is a parent of [CWE-23: Relative Path Traversal](https://cwe.mitre.org/data/definitions/23.html).
 A scanner that specifically detects _relative_ path traversal weaknesses (CWE-23) by definition also detects a portion of the more general path traversal category (CWE-22).
-- For clarity, this table identifies the exact CWE identifiers that are assigned to Advanced SAST rules.
+- For clarity, this table identifies the exact CWE identifiers that are assigned to GitLab Advanced SAST rules.
 It doesn't report parent identifiers.
 
-To learn more about the rules used in GitLab Advanced SAST, see [SAST rules](rules.md#advanced-sast).
+To learn more about the rules used in GitLab Advanced SAST, see [SAST rules](rules.md#gitlab-advanced-sast).
 
 ## CWE coverage by language
 

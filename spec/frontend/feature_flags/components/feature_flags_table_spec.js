@@ -1,4 +1,4 @@
-import { GlIcon, GlToggle } from '@gitlab/ui';
+import { GlIcon, GlButton, GlToggle } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -154,7 +154,7 @@ describe('Feature flag table', () => {
         const icon = wrapper
           .findByTestId(featureFlag.id)
           .find('.feature-flag-description')
-          .findComponent(GlIcon);
+          .findComponent(GlButton);
         const tooltip = getBinding(icon.element, 'gl-tooltip');
 
         expect(tooltip).toBeDefined();

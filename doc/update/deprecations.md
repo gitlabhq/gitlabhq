@@ -379,7 +379,7 @@ required, security patches will be backported within the latest 3 minor releases
 Specifically, the following analyzers are being deprecated and will no longer be updated after
 the GitLab 18.0 release:
 
-- Advanced SAST: version 1
+- GitLab Advanced SAST: version 1
 - Container Scanning: version 7
 - Dependency Scanning: version 0
 - Gemnasium: [all versions](https://gitlab.com/gitlab-org/gitlab/-/issues/501308)

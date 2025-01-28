@@ -255,26 +255,6 @@
     }
   }
 
-  // In IDE, the only inverted buttons are `.btn-remove`
-  .btn-inverted.btn-remove:not(.gl-button) {
-    color: var(--ide-input-color, $red-500) !important;
-    background-color: var(--ide-input-background, $white) !important;
-    border-color: var(--ide-btn-default-border, $red-500);
-
-    &:hover,
-    &:focus {
-      color: var(--ide-input-color, $red-700) !important;
-      background-color: var(--ide-input-background, $red-100) !important;
-      border-color: var(--ide-btn-default-hover-border, $red-500) !important;
-    }
-
-    &:active {
-      color: var(--ide-input-color, $red-800) !important;
-      background-color: var(--ide-input-background, $red-200) !important;
-      border-color: var(--ide-btn-default-hover-border, $red-600) !important;
-    }
-  }
-
   // todo: remove this block after all default buttons have been migrated to gl-button
   .btn-default:not(.gl-button) {
     background-color: var(--ide-btn-default-background, $white) !important;
