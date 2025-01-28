@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
+  using RSpec::Parameterized::TableSyntax
+
   subject { described_class.new(index, logger: logger).perform }
 
   let(:table_name) { '_test_reindex_table' }
@@ -43,19 +45,23 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
   end
 
   context 'when the index is a dangling temporary index from a previous reindexing run' do
-    context 'with the temporary index prefix' do
-      let(:index_name) { '_test_reindex_index_ccnew' }
+    where(:suffix) { %w[ccnew ccold] }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(described_class::ReindexError, /left-over temporary index/)
+    with_them do
+      context 'with the temporary index prefix' do
+        let(:index_name) { "_test_reindex_index_#{suffix}" }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(described_class::ReindexError, /left-over temporary index/)
+        end
       end
-    end
 
-    context 'with the temporary index prefix with a counter' do
-      let(:index_name) { '_test_reindex_index_ccnew1' }
+      context 'with the temporary index prefix with a counter' do
+        let(:index_name) { "_test_reindex_index_#{suffix}1" }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(described_class::ReindexError, /left-over temporary index/)
+        it 'raises an error' do
+          expect { subject }.to raise_error(described_class::ReindexError, /left-over temporary index/)
+        end
       end
     end
   end
@@ -73,11 +79,14 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
   context 'with dangling indexes matching TEMPORARY_INDEX_PATTERN, i.e. /some\_index\_ccnew(\d)*/' do
     before do
       # dangling indexes
-      connection.execute("CREATE INDEX #{iname(index_name, '_ccnew')} ON #{table_name} (#{column_name})")
-      connection.execute("CREATE INDEX #{iname(index_name, '_ccnew2')} ON #{table_name} (#{column_name})")
+      connection.execute("create index #{iname(index_name, '_ccnew')} on #{table_name} (#{column_name})")
+      connection.execute("create index #{iname(index_name, '_ccnew2')} on #{table_name} (#{column_name})")
+      connection.execute("create index #{iname(index_name, '_ccold')} on #{table_name} (#{column_name})")
+      connection.execute("create index #{iname(index_name, '_ccold2')} on #{table_name} (#{column_name})")
 
       # Unrelated index - don't drop
       connection.execute("CREATE INDEX some_other_index_ccnew ON #{table_name} (#{column_name})")
+      connection.execute("CREATE INDEX some_other_index_ccold ON #{table_name} (#{column_name})")
     end
 
     shared_examples_for 'dropping the dangling index' do
@@ -94,6 +103,14 @@ RSpec.describe Gitlab::Database::Reindexing::ReindexConcurrently, '#perform' do
           # Drop _ccnew2 index
           "SET lock_timeout TO '60000ms'",
           "DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"#{iname(index_name, '_ccnew2')}\"",
+          "RESET idle_in_transaction_session_timeout; RESET lock_timeout",
+          # Drop _ccold index
+          "SET lock_timeout TO '60000ms'",
+          "DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"#{iname(index_name, '_ccold')}\"",
+          "RESET idle_in_transaction_session_timeout; RESET lock_timeout",
+          # Drop _ccold2 index
+          "SET lock_timeout TO '60000ms'",
+          "DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"#{iname(index_name, '_ccold2')}\"",
           "RESET idle_in_transaction_session_timeout; RESET lock_timeout"
         )
 

@@ -162,6 +162,11 @@ export default {
       required: false,
       default: false,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -1075,6 +1080,7 @@ export default {
               :report-abuse-path="reportAbusePath"
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="workItem.confidential"
+              :new-comment-template-paths="newCommentTemplatePaths"
               class="gl-pt-5"
               :use-h2="!isModal"
               :parent-id="parentWorkItemId"

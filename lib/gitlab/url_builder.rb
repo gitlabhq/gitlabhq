@@ -22,6 +22,8 @@ module Gitlab
           board_url(object, **options)
         when ::Ci::Build
           instance.project_job_url(object.project, object, **options)
+        when ::Ci::Pipeline
+          instance.project_pipeline_url(object.project, object, **options)
         when Commit
           commit_url(object, **options)
         when Compare

@@ -94,6 +94,11 @@ export default {
       required: false,
       default: '',
     },
+    newCommentTemplatePathsProp: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     drawioEnabled: {
       type: Boolean,
       required: false,
@@ -120,6 +125,11 @@ export default {
     };
   },
   computed: {
+    commentTemplatePaths() {
+      return this.newCommentTemplatePaths.length > 0
+        ? this.newCommentTemplatePaths
+        : this.newCommentTemplatePathsProp;
+    },
     mdTable() {
       const header = s__('MarkdownEditor|header');
       const divider = '-'.repeat(header.length);
@@ -560,8 +570,8 @@ export default {
             tracking-property="quickAction"
           />
           <comment-templates-modal
-            v-if="!previewMarkdown && newCommentTemplatePaths.length"
-            :new-comment-template-paths="newCommentTemplatePaths"
+            v-if="!previewMarkdown && commentTemplatePaths.length"
+            :new-comment-template-paths="commentTemplatePaths"
             @select="insertSavedReply"
           />
           <template v-if="!previewMarkdown && canSummarizeChanges">

@@ -70,6 +70,11 @@ export default {
       type: String,
       required: true,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     autocompleteDataSources: {
       type: Object,
       required: false,
@@ -344,6 +349,7 @@ export default {
             :is-new-discussion="isNewDiscussion"
             :autocomplete-data-sources="autocompleteDataSources"
             :markdown-preview-path="markdownPreviewPath"
+            :new-comment-template-paths="newCommentTemplatePaths"
             :work-item-state="workItemState"
             :work-item-id="workItemId"
             :autofocus="autofocus"

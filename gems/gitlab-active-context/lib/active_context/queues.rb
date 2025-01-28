@@ -10,24 +10,28 @@ module ActiveContext
       @raw_queues ||= []
     end
 
-    def self.register!(key, shards:)
-      raise ArgumentError, "ActiveContext Queue '#{key}' is already registered" if @queues&.include?(key)
+    def self.register!(queue_class)
+      key = queue_class.redis_key
 
       @raw_queues ||= []
       @queues = Set.new(@queues || [])
 
+      return if @queues.include?(key)
+
       @queues.add(key)
 
-      shards.times do |shard|
-        @raw_queues << "#{key}:#{shard}"
+      queue_class.number_of_shards.times do |shard|
+        unless @raw_queues.any? { |q| q.instance_of?(queue_class) && q.shard == shard }
+          @raw_queues << queue_class.new(shard)
+        end
       end
     end
 
     def self.all_queued_items
       {}.tap do |hash|
-        @raw_queues&.each do |queue_key|
+        @raw_queues&.each do |raw_queue|
+          queue_key = "#{raw_queue.redis_key}:zset"
           references = ActiveContext::Redis.with_redis do |redis|
-            queue_key = "#{queue_key}:zset"
             redis.zrangebyscore(queue_key, '-inf', '+inf')
           end
           hash[queue_key] = references if references.present?

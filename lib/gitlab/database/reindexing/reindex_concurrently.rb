@@ -7,7 +7,7 @@ module Gitlab
       class ReindexConcurrently
         ReindexError = Class.new(StandardError)
 
-        TEMPORARY_INDEX_PATTERN = '\_ccnew[0-9]*'
+        TEMPORARY_INDEX_PATTERN = '\_cc(new|old)[0-9]*'
         STATEMENT_TIMEOUT = 24.hours
         PG_MAX_INDEX_NAME_LENGTH = 63
 

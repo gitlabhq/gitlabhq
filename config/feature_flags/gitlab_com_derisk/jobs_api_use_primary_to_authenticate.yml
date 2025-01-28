@@ -1,0 +1,9 @@
+---
+name: jobs_api_use_primary_to_authenticate
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512524
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179189
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515187
+milestone: '17.9'
+group: group::environments
+type: gitlab_com_derisk
+default_enabled: false

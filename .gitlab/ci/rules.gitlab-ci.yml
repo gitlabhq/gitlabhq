@@ -31,6 +31,7 @@
           || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/
           || $CI_COMMIT_REF_NAME =~ /^security\//
           || $CI_COMMIT_REF_NAME =~ /^ruby-next$/
+          || $CI_COMMIT_REF_NAME =~ /^rails-next$/
         )
       )
       ||
@@ -215,6 +216,9 @@
 
 .if-ruby-branch: &if-ruby-branch
   if: '$CI_COMMIT_BRANCH == "ruby-next" || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
+
+.if-rails-next-branch: &if-rails-next-branch
+  if: '$CI_COMMIT_BRANCH == "rails-next"'
 
 .if-observability-skip-e2e-jobs: &if-observability-skip-e2e-jobs
   if: '$SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER || $GITLAB_OBSERVABILITY_BACKEND_PIPELINE_TRIGGER_TOKEN == null || $GITLAB_OBSERVABILITY_BACKEND_TOKEN_FOR_CI_SCRIPTS == null'
@@ -731,6 +735,12 @@
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
+.ci-job-token-policies-patterns: &ci-job-token-policies-patterns
+  - "{,ee/}lib/api/*.rb"
+  - "app/validators/json_schemas/ci_job_token_policies.json"
+  - "doc/ci/jobs/fine_grained_permissions.md"
+  - "tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb"
+
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
   - "qa/gems/gitlab-cng/**/*.rb"
   - "qa/gems/gitlab-cng/{Gemfile,Gemfile.lock}"
@@ -1022,6 +1032,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-ruby-branch
+    - <<: *if-rails-next-branch
     - <<: *if-force-ci
     - <<: *if-auto-deploy-branches
       variables:
@@ -1082,6 +1093,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
+    - <<: *if-rails-next-branch
     # We include the job under the matching conditions below, but unlike in .qa:rules:e2e:test-on-gdk we don't need to
     # set OMNIBUS_GITLAB_BUILD_ON_ALL_OS when testing against GDK
     - <<: *if-merge-request
@@ -1268,6 +1280,16 @@
     - <<: *if-default-refs
       changes: *custom-roles-patterns
 
+#############################
+# CI job token policy rules #
+#############################
+.ci-job-token-policies:rules:ci-job-token-policies-verify:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *ci-job-token-policies-patterns
+
 ##################
 # Frontend rules #
 ##################
@@ -1288,6 +1310,7 @@
   rules:
     - <<: *if-auto-deploy-branches
     - <<: *if-ruby-branch
+    - <<: *if-rails-next-branch
     - <<: *if-force-ci
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-labels-run-review-app
@@ -1656,6 +1679,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - *if-ruby-branch
+    - *if-rails-next-branch
     - *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
@@ -1709,6 +1733,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
+    - <<: *if-rails-next-branch
     - <<: *if-force-ci
       when: manual
     - <<: *if-merge-request

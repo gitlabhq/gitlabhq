@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import {
   GROUP_VISIBILITY_TYPE,
@@ -10,6 +10,7 @@ import {
 export default {
   components: {
     GlIcon,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -53,12 +54,13 @@ export default {
 </script>
 
 <template>
-  <gl-icon
-    v-gl-tooltip="{ placement: tooltipPlacement, boundary: 'viewport' }"
+  <gl-button
+    v-gl-tooltip="{ title: visibilityTooltip, placement: tooltipPlacement, boundary: 'viewport' }"
     :aria-label="visibilityTooltip"
-    :name="visibilityIcon"
-    :title="visibilityTooltip"
-    class="gl-inline-flex"
-    variant="subtle"
-  />
+    category="tertiary"
+    size="small"
+    class="!gl-min-h-5 !gl-min-w-5 !gl-p-0"
+  >
+    <gl-icon variant="subtle" :name="visibilityIcon" />
+  </gl-button>
 </template>

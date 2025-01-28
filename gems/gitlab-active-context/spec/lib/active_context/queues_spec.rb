@@ -1,45 +1,58 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::Queues do
+  let(:test_queue_class) do
+    Class.new do
+      def self.name
+        "TestModule::TestQueue"
+      end
+
+      def self.number_of_shards
+        3
+      end
+
+      include ActiveContext::Concerns::Queue
+    end
+  end
+
+  let(:redis) { instance_double(Redis) }
+
   before do
+    stub_const('TestModule::TestQueue', test_queue_class)
+    allow(ActiveContext::Redis).to receive(:with_redis).and_yield(redis)
     described_class.instance_variable_set(:@queues, nil)
     described_class.instance_variable_set(:@raw_queues, nil)
   end
 
   describe '.register!' do
-    it 'adds the queue key to queues set' do
-      described_class.register!('test_queue', shards: 1)
-      expect(described_class.queues).to include('test_queue')
+    it 'registers the queue class' do
+      expect(described_class.queues).to be_empty
+      expect(described_class.raw_queues).to be_empty
+
+      described_class.register!(test_queue_class)
+
+      expect(described_class.queues.size).to eq(1)
+      expect(described_class.queues.first).to eq('testmodule:{test_queue}')
     end
 
-    it 'creates sharded queue names in raw_queues' do
-      described_class.register!('test_queue', shards: 3)
-      expected_raw_queues = ['test_queue:0', 'test_queue:1', 'test_queue:2']
-      expect(described_class.raw_queues).to eq(expected_raw_queues)
+    it 'creates instances for each shard' do
+      expect { described_class.register!(test_queue_class) }.to change { described_class.raw_queues.size }.by(3)
+
+      raw_queues = described_class.raw_queues
+      expect(raw_queues.size).to eq(3)
+      expect(raw_queues.all?(test_queue_class)).to be true
+      expect(raw_queues.map(&:shard)).to eq([0, 1, 2])
     end
 
-    it 'handles multiple queue registrations' do
-      described_class.register!('queue1', shards: 2)
-      described_class.register!('queue2', shards: 1)
-
-      expect(described_class.queues).to eq(Set.new(%w[queue1 queue2]))
-      expect(described_class.raw_queues).to eq(['queue1:0', 'queue1:1', 'queue2:0'])
+    it 'does not register the same queue class twice' do
+      described_class.register!(test_queue_class)
+      expect { described_class.register!(test_queue_class) }.not_to change { described_class.queues.size }
+      expect { described_class.register!(test_queue_class) }.not_to change { described_class.raw_queues.size }
     end
 
-    it 'raises an error when register is called for the same key multiple times' do
-      described_class.register!('test_queue', shards: 2)
-
-      expect(described_class.queues).to eq(Set.new(['test_queue']))
-      expect(described_class.raw_queues).to eq(['test_queue:0', 'test_queue:1'])
-
-      expect { described_class.register!('test_queue', shards: 1) }.to raise_error(ArgumentError)
-    end
-
-    it 'appends new sharded queues to existing raw_queues' do
-      described_class.register!('queue1', shards: 1)
-      described_class.register!('queue2', shards: 2)
-
-      expect(described_class.raw_queues).to eq(['queue1:0', 'queue2:0', 'queue2:1'])
+    it 'adds the correct key to the queues set' do
+      described_class.register!(test_queue_class)
+      expect(described_class.queues.first).to eq('testmodule:{test_queue}')
     end
   end
 end

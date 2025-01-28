@@ -19284,6 +19284,9 @@ msgid_plural "Dependencies|%d vulnerabilities detected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Dependencies|%{link_start}Download the export%{link_end}."
+msgstr ""
+
 msgid "Dependencies|%{locationCount} location"
 msgid_plural "Dependencies|%{locationCount} locations"
 msgstr[0] ""
@@ -19309,6 +19312,9 @@ msgstr ""
 msgid "Dependencies|Component name"
 msgstr ""
 
+msgid "Dependencies|Dependency list export"
+msgstr ""
+
 msgid "Dependencies|Direct dependents"
 msgstr ""
 
@@ -19322,6 +19328,9 @@ msgid "Dependencies|Export as JSON"
 msgstr ""
 
 msgid "Dependencies|Filtering unavailable"
+msgstr ""
+
+msgid "Dependencies|Follow the link below to download the export."
 msgstr ""
 
 msgid "Dependencies|Learn more about direct dependents"
@@ -19354,6 +19363,12 @@ msgstr ""
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the latest successful scan of each project."
 msgstr ""
 
+msgid "Dependencies|The dependency list was succesfully exported."
+msgstr ""
+
+msgid "Dependencies|The dependency list was successfully exported for %{exportable}."
+msgstr ""
+
 msgid "Dependencies|The location includes the lock file. For transitive dependencies a list of its direct dependents is shown."
 msgstr ""
 
@@ -19376,6 +19391,9 @@ msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We 
 msgstr ""
 
 msgid "Dependencies|This group exceeds the maximum number of sub-groups of 600. We cannot accurately display a project list at this time. Please access a sub-group dependency list to view this information or see the %{linkStart}dependency list help %{linkEnd} page to learn more."
+msgstr ""
+
+msgid "Dependencies|This link will expire in %{number} days."
 msgstr ""
 
 msgid "Dependencies|Toggle vulnerability list"

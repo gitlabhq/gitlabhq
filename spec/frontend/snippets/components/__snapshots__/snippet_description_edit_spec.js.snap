@@ -18,6 +18,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
       enablepreview="true"
       linecontent=""
       markdownpreviewpath="foo/"
+      newcommenttemplatepathsprop=""
       restrictedtoolbaritems=""
       suggestionstartindex="0"
       uploadspath=""

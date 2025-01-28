@@ -113,6 +113,11 @@ export default {
       required: false,
       default: false,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -267,6 +272,7 @@ export default {
           ref="toolbar"
           :supports-quick-actions="supportsQuickActions"
           :hide-attachment-button="disableAttachments"
+          :new-comment-template-paths-prop="newCommentTemplatePaths"
           @enableMarkdownEditor="$emit('enableMarkdownEditor')"
         >
           <template #header-buttons><slot name="header-buttons"></slot></template>

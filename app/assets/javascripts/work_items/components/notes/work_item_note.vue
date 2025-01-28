@@ -76,6 +76,11 @@ export default {
       type: String,
       required: true,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     autocompleteDataSources: {
       type: Object,
       required: false,
@@ -403,6 +408,7 @@ export default {
             :comment-button-text="__('Save comment')"
             :autocomplete-data-sources="autocompleteDataSources"
             :markdown-preview-path="markdownPreviewPath"
+            :new-comment-template-paths="newCommentTemplatePaths"
             :work-item-id="workItemId"
             :autofocus="isEditing"
             :is-work-item-confidential="isWorkItemConfidential"

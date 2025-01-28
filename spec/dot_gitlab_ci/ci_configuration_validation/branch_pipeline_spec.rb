@@ -58,6 +58,23 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
       end
     end
 
+    context 'with gitlab.com gitlab-org/gitlab rails-next branch scheduled pipeline' do
+      let(:ci_commit_branch) { 'rails-next' }
+      let(:ci_pipeline_source) { 'schedule' }
+      let(:expected_job_name) { 'ruby_syntax: [${RUBY_VERSION_DEFAULT}]' }
+
+      before do
+        sync_local_files_to_project(
+          gitlab_org_gitlab_project,
+          user,
+          ci_commit_branch,
+          files: ci_glob_with_common_file_globs
+        )
+      end
+
+      it_behaves_like 'default branch pipeline'
+    end
+
     context 'with gitlab.com gitlab-org/gitlab ruby-next branch scheduled pipeline' do
       let(:ci_commit_branch) { 'ruby-next' }
       let(:ci_pipeline_source) { 'schedule' }

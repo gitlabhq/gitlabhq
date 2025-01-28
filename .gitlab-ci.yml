@@ -115,7 +115,7 @@ workflow:
     # This variable can be specified in manual or scheduled pipelines to run CI with the next Rails version.
     # Specifying BUNDLE_GEMFILE: Gemfile.next wouldn't work because QA jobs require
     # BUNDLE_GEMFILE to be Gemfile even with the next Rails version pipelines.
-    - if: '$RUN_WITH_NEXT_RAILS_VERSION'
+    - if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: *next-ruby-variables
         BUNDLE_GEMFILE: Gemfile.next

@@ -1,6 +1,6 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import VisibilityIcon from '~/vue_shared/components/visibility_icon.vue';
+import VisibilityIconButton from '~/vue_shared/components/visibility_icon_button.vue';
 import {
   GROUP_VISIBILITY_TYPE,
   PROJECT_VISIBILITY_TYPE,
@@ -10,23 +10,27 @@ import {
   VISIBILITY_TYPE_ICON,
 } from '~/visibility_level/constants';
 
-describe('Visibility icon', () => {
+describe('Visibility icon button', () => {
   let glTooltipDirectiveMock;
   let wrapper;
 
   const createComponent = (props = {}) => {
     glTooltipDirectiveMock = jest.fn();
 
-    wrapper = shallowMountExtended(VisibilityIcon, {
+    wrapper = shallowMountExtended(VisibilityIconButton, {
       directives: {
         GlTooltip: glTooltipDirectiveMock,
       },
       propsData: {
         ...props,
       },
+      stubs: {
+        GlIcon,
+      },
     });
   };
 
+  const findIconButton = () => wrapper.findComponent(GlButton);
   const findIcon = () => wrapper.findComponent(GlIcon);
 
   describe('visibilityTooltip', () => {
@@ -41,15 +45,22 @@ describe('Visibility icon', () => {
         ({ visibilityLevel, visibilityTooltip, visibilityIcon, tooltipPlacement }) => {
           createComponent({ isGroup: true, visibilityLevel, tooltipPlacement });
 
-          expect(findIcon().attributes()).toMatchObject({
-            arialabel: visibilityTooltip,
-            name: visibilityIcon,
-            title: visibilityTooltip,
-          });
+          expect(findIconButton().attributes()).toEqual(
+            expect.objectContaining({
+              'aria-label': visibilityTooltip,
+            }),
+          );
+
+          expect(findIcon().props()).toEqual(
+            expect.objectContaining({
+              name: visibilityIcon,
+            }),
+          );
 
           expect(glTooltipDirectiveMock.mock.calls[0][1].value).toEqual({
             placement: tooltipPlacement,
             boundary: 'viewport',
+            title: visibilityTooltip,
           });
         },
       );
@@ -67,15 +78,22 @@ describe('Visibility icon', () => {
         ({ visibilityLevel, visibilityTooltip, visibilityIcon, tooltipPlacement }) => {
           createComponent({ visibilityLevel, tooltipPlacement });
 
-          expect(findIcon().attributes()).toMatchObject({
-            arialabel: visibilityTooltip,
-            name: visibilityIcon,
-            title: visibilityTooltip,
-          });
+          expect(findIconButton().attributes()).toEqual(
+            expect.objectContaining({
+              'aria-label': visibilityTooltip,
+            }),
+          );
+
+          expect(findIcon().props()).toEqual(
+            expect.objectContaining({
+              name: visibilityIcon,
+            }),
+          );
 
           expect(glTooltipDirectiveMock.mock.calls[0][1].value).toEqual({
             placement: tooltipPlacement,
             boundary: 'viewport',
+            title: visibilityTooltip,
           });
         },
       );

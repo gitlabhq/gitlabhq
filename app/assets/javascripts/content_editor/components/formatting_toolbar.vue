@@ -39,6 +39,11 @@ export default {
       default: false,
       required: false,
     },
+    newCommentTemplatePathsProp: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     const modifierKey = getModifierKey();
@@ -64,6 +69,11 @@ export default {
   computed: {
     codeSuggestionsEnabled() {
       return this.contentEditor.codeSuggestionsConfig?.canSuggest;
+    },
+    commentTemplatePaths() {
+      return this.newCommentTemplatePaths.length > 0
+        ? this.newCommentTemplatePaths
+        : this.newCommentTemplatePathsProp;
     },
   },
   methods: {
@@ -202,11 +212,11 @@ export default {
         :label="__('Add a quick action')"
         @execute="trackToolbarControlExecution"
       />
-      <header-divider v-if="newCommentTemplatePaths.length" />
+      <header-divider v-if="commentTemplatePaths.length" />
     </div>
     <comment-templates-modal
-      v-if="newCommentTemplatePaths.length"
-      :new-comment-template-paths="newCommentTemplatePaths"
+      v-if="commentTemplatePaths.length"
+      :new-comment-template-paths="commentTemplatePaths"
       @select="insertSavedReply"
     />
     <toolbar-more-dropdown data-testid="more" @execute="trackToolbarControlExecution" />

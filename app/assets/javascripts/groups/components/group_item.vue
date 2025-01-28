@@ -11,7 +11,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
-import VisibilityIcon from '~/vue_shared/components/visibility_icon.vue';
+import VisibilityIconButton from '~/vue_shared/components/visibility_icon_button.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 import { VISIBILITY_LEVELS_STRING_TO_INTEGER } from '~/visibility_level/constants';
@@ -39,7 +39,7 @@ export default {
     ItemActions,
     ItemStats,
     ProjectAvatar,
-    VisibilityIcon,
+    VisibilityIconButton,
   },
   inject: {
     currentGroupVisibility: {
@@ -189,31 +189,30 @@ export default {
       <div class="group-text-container gl-flex gl-flex-auto gl-items-center">
         <div class="group-text gl-shrink gl-grow">
           <div
-            class="title namespace-title gl-mr-3 gl-flex gl-flex-wrap gl-items-center gl-font-bold"
+            class="title namespace-title gl-mr-3 gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-font-bold"
           >
             <a
               v-gl-tooltip.bottom
               data-testid="group-name"
               :href="group.relativePath"
               :title="group.fullName"
-              class="no-expand gl-mr-3 !gl-text-default gl-break-anywhere"
+              class="no-expand !gl-text-default gl-break-anywhere"
               :itemprop="microdata.nameItemprop"
             >
               <!-- ending bracket must be by closing tag to prevent -->
               <!-- link hover text-decoration from over-extending -->
               {{ group.name }}
             </a>
-            <visibility-icon
+            <visibility-icon-button
               :is-group="isGroup"
               :visibility-level="group.visibility"
-              class="gl-mr-3"
               data-testid="group-visibility-icon"
               tooltip-placement="bottom"
             />
             <template v-if="shouldShowVisibilityWarning">
               <gl-button
                 ref="visibilityWarningButton"
-                class="gl-mr-3 !gl-bg-transparent !gl-p-1"
+                class="!gl-bg-transparent !gl-p-1"
                 category="tertiary"
                 icon="warning"
                 :aria-label="$options.i18n.popoverTitle"

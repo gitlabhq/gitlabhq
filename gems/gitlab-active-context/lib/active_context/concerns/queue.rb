@@ -8,6 +8,16 @@ module ActiveContext
         base.register!
       end
 
+      def initialize(shard)
+        @shard = shard
+      end
+
+      def redis_key
+        "#{self.class.redis_key}:#{shard}"
+      end
+
+      attr_reader :shard
+
       module ClassMethods
         SLICE_SIZE = 1_000
         SHARD_LIMIT = 1_000
@@ -17,7 +27,7 @@ module ActiveContext
         end
 
         def register!
-          ActiveContext::Queues.register!(redis_key, shards: number_of_shards)
+          ActiveContext::Queues.register!(self)
         end
 
         def push(references)

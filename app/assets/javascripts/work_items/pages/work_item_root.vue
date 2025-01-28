@@ -21,6 +21,11 @@ export default {
       type: String,
       required: true,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -63,6 +68,10 @@ export default {
 <template>
   <div>
     <gl-alert v-if="error" variant="danger" @dismiss="error = ''">{{ error }}</gl-alert>
-    <work-item-detail :work-item-iid="iid" @deleteWorkItem="deleteWorkItem($event)" />
+    <work-item-detail
+      :new-comment-template-paths="newCommentTemplatePaths"
+      :work-item-iid="iid"
+      @deleteWorkItem="deleteWorkItem($event)"
+    />
   </div>
 </template>

@@ -246,6 +246,29 @@ RSpec.shared_examples 'work items description' do
     end
   end
 
+  it 'has expected toolbar buttons' do
+    click_button 'Edit', match: :first
+
+    within_testid('work-item-description-wrapper') do
+      expect(page).to have_button 'Preview'
+      expect(page).to have_button 'Add bold text'
+      expect(page).to have_button 'Add italic text'
+      expect(page).to have_button 'Add strikethrough text'
+      expect(page).to have_button 'Insert a quote'
+      expect(page).to have_button 'Insert code'
+      expect(page).to have_button 'Add a link'
+      expect(page).to have_button 'Add a bullet list'
+      expect(page).to have_button 'Add a numbered list'
+      expect(page).to have_button 'Add a checklist'
+      expect(page).to have_button 'Add a collapsible section'
+      expect(page).to have_button 'Add a table'
+      expect(page).to have_button 'Attach a file or image'
+      expect(page).to have_button 'Add a quick action'
+      expect(page).not_to have_button 'Insert comment template'
+      expect(page).to have_button 'Go full screen'
+    end
+  end
+
   it 'autocompletes available quick actions', :aggregate_failures do
     click_button 'Edit', match: :first
     fill_in _('Description'), with: '/'

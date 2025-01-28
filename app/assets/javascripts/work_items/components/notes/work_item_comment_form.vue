@@ -101,6 +101,11 @@ export default {
       type: String,
       required: true,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     autocompleteDataSources: {
       type: Object,
       required: false,
@@ -345,6 +350,7 @@ export default {
             :value="commentText"
             :render-markdown-path="markdownPreviewPath"
             :markdown-docs-path="$options.constantOptions.markdownDocsPath"
+            :new-comment-template-paths="newCommentTemplatePaths"
             :autocomplete-data-sources="autocompleteDataSources"
             :form-field-props="formFieldProps"
             :add-spacing-classes="false"
