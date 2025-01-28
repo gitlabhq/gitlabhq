@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# logger is needed here as workaround for https://github.com/rails/rails/issues/54260.
+# We can drop that once we upgrade to a version of Rails that has the fix.
+require 'logger'
 require 'rails'
 require 'png_quantizator'
 require 'parallel'

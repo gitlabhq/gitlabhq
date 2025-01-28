@@ -339,6 +339,8 @@ jest vue3:
     - .vue3
   needs:
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
+  script:
+    - run_timed_command "scripts/frontend/jest_ci.js --vue3"
 
 jest-with-fixtures vue3:
   extends:
@@ -350,6 +352,8 @@ jest-with-fixtures vue3:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
+  script:
+    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures"
 
 jest vue3 mr:
   extends:

@@ -14,10 +14,11 @@ For the coverage analysis to work, you have to provide a properly formatted
 [Cobertura XML](https://cobertura.github.io/cobertura/) report to
 [`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report).
 This format was originally developed for Java, but most coverage analysis frameworks
-for other languages have plugins to add support for it, like:
+for other languages and platforms have plugins to add support for it, like:
 
 - [simplecov-cobertura](https://rubygems.org/gems/simplecov-cobertura) (Ruby)
 - [gocover-cobertura](https://github.com/boumenot/gocover-cobertura) (Go)
+- [cobertura](https://www.npmjs.com/package/cobertura) (Node.js)
 
 Other coverage analysis frameworks support the format out of the box, for example:
 

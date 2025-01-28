@@ -32007,6 +32007,7 @@ Represents the pipeline execution policy.
 | <a id="pipelineexecutionpolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
 | <a id="pipelineexecutionpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="pipelineexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="pipelineexecutionpolicywarnings"></a>`warnings` | [`[String!]!`](#string) | Warnings associated with the policy. |
 | <a id="pipelineexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
 ### `PipelineManualVariable`

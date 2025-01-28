@@ -35,7 +35,7 @@ module WorkItems
 
         def post_move_cleanup
           work_item.subscriptions.each_batch(of: BATCH_SIZE) do |subscriptions_batch|
-            subscriptions_batch.delete_all
+            ::Subscription.id_in(subscriptions_batch.select(:id)).delete_all
           end
 
           # When moving sent notifications for any work item this can entail deleting many records in some instances.

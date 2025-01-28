@@ -15,7 +15,7 @@ module WorkItems
 
         def post_move_cleanup
           work_item.award_emoji.each_batch(of: BATCH_SIZE) do |award_emoji_batch|
-            award_emoji_batch.delete_all
+            ::AwardEmoji.id_in(award_emoji_batch.select(:id)).delete_all
           end
         end
 
@@ -23,12 +23,12 @@ module WorkItems
 
         def new_work_item_award_emoji(awards_batch)
           awards_batch.map do |award|
-            new_award = award.attributes
-
-            new_award.delete("id")
-            new_award['awardable_id'] = target_work_item.id
-
-            new_award
+            award.attributes.except("id").tap do |attr|
+              attr['awardable_id'] = target_work_item.id
+              # we want to explicitly set this because for legacy Epic we can have some emoji linked to the
+              # Epic Work Item(i.e. target_type=Issue) and some to the legacy Epic(i.e target_type=Epic)
+              attr['awardable_type'] = target_work_item.class.base_class.name
+            end
           end
         end
       end

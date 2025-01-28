@@ -57323,6 +57323,9 @@ msgstr ""
 msgid "The pipeline has been deleted"
 msgstr ""
 
+msgid "The policy is associated with a non-existing Pipeline configuration file."
+msgstr ""
+
 msgid "The policy is disabled"
 msgstr ""
 

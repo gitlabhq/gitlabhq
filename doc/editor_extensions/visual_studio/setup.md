@@ -13,7 +13,7 @@ and install it.
 
 The extension requires:
 
-- Visual Studio 2022, either AMD64 or Arm64.
+- Visual Studio 2022 version 17.6 or later, either AMD64 or Arm64.
 - The [IntelliCode](https://visualstudio.microsoft.com/services/intellicode/) component for Visual Studio.
 - GitLab version 16.1 and later.
   - GitLab Duo Code Suggestions requires GitLab version 16.8 or later.

@@ -225,6 +225,14 @@
   - 1
 - - cluster_agent
   - 1
+- - clusters_agents_auto_flow_work_items_closed_event
+  - 1
+- - clusters_agents_auto_flow_work_items_created_event
+  - 1
+- - clusters_agents_auto_flow_work_items_reopened_event
+  - 1
+- - clusters_agents_auto_flow_work_items_updated_event
+  - 1
 - - compliance_management_chain_of_custody_report
   - 1
 - - compliance_management_framework_export_mailer

@@ -67,6 +67,10 @@ module WorkItems
         end
 
         def move_children
+          # Reload as the child_links association was just changed by relinking child items
+          # in `relink_children_to_target_work_item`
+          target_work_item.reset
+
           # We iterate over "new work item" child links now, because we have relinked child items from moved work item
           # to the new work item in `relink_children_to_target_work_item`.
           target_work_item.child_links.each do |link|

@@ -52,6 +52,11 @@ RSpec.shared_examples 'cloneable and moveable work item' do
 
     expect(new_work_item).to be_persisted
     expect(new_work_item).to have_attributes(original_work_item_attrs)
+
+    if new_work_item.work_item_type.epic?
+      expect(new_work_item.sync_object).to be_persisted
+      expect(new_work_item.sync_object.title).to eq(original_work_item.sync_object.title)
+    end
   end
 
   it 'handles original work item state' do
@@ -64,52 +69,59 @@ end
 RSpec.shared_examples 'cloneable and moveable widget data' do
   include DesignManagementTestHelpers
 
-  def work_item_assignees(work_item)
+  def wi_assignees(work_item)
     work_item.reload.assignees
   end
 
-  def work_item_award_emoji(work_item)
+  def wi_award_emoji(work_item)
     work_item.reload.award_emoji.pluck(:user_id, :name)
   end
 
-  def work_item_emails(work_item)
+  def wi_emails(work_item)
     work_item.reload.email_participants.pluck(:email)
   end
 
-  def work_item_milestone(work_item)
+  def wi_milestone(work_item)
     work_item.reload.milestone&.title
   end
 
-  def work_item_subscriptions(work_item)
+  def wi_subscriptions(work_item)
     work_item.reload.subscriptions.pluck(:user_id)
   end
 
-  def work_item_sent_notifications(work_item)
+  def wi_sent_notifications(work_item)
     work_item.reload.sent_notifications.pluck(:recipient_id)
   end
 
-  def work_item_timelogs(work_item)
+  def wi_timelogs(work_item)
     work_item.reload.timelogs.pluck(:user_id, :time_spent)
   end
 
-  def work_item_crm_contacts(work_item)
+  def wi_crm_contacts(work_item)
     work_item.reload.customer_relations_contacts
   end
 
-  def work_item_designs(work_item)
+  def wi_designs(work_item)
     work_item.reload.designs.pluck(:filename)
   end
 
-  def work_item_labels(work_item)
+  def wi_labels(work_item)
     work_item.reload.labels.pluck(:title)
   end
 
-  def work_item_children(work_item)
+  def wi_children(work_item)
     work_item.reload.work_item_children.pluck(:title)
   end
 
-  def work_item_parent(work_item)
+  def wi_parent(work_item)
     work_item.reload.work_item_parent
+  end
+
+  def wi_linked_items(work_item)
+    [
+      IssueLink.for_source(work_item).map(&:target).pluck(:title),
+      IssueLink.for_target(work_item).map(&:source).pluck(:title)
+    ]
   end
 
   let_it_be(:users) { create_list(:user, 3) }
@@ -119,7 +131,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
 
   let_it_be(:subscriptions) do
     create_list(:subscription, 2, subscribable: original_work_item)
-    # create subscriptions for original work item and return subscribers as `expected_data` for later comparison.
+    # create subscriptions for original work item and return subscribers as `expected` value for later comparison.
     original_work_item.reload.subscriptions.pluck(:user_id)
   end
 
@@ -127,7 +139,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     create_list(:sent_notification, 2, noteable: original_work_item,
       project: original_work_item.project, recipient: create(:user)
     )
-    # create sent notification for original work item and return recipients as `expected_data` for later comparison.
+    # create sent notification for original work item and return recipients as `expected` value for later comparison.
     original_work_item.reload.sent_notifications.pluck(:recipient_id)
   end
 
@@ -148,20 +160,20 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
 
     contacts = create_list(:contact, 2, group: crm_group)
     original_work_item.customer_relations_contacts << contacts
-    # set the crm_contacts on the before_all call and return the contacts as `expected_data` for later comparison as the
-    # cleanup callback will delete the association
+    # set the crm_contacts on the before_all call and return the contacts as `expected` value for later comparison
+    # as the cleanup callback will delete the association
     contacts
   end
 
   let_it_be(:emails) do
     create_list(:issue_email_participant, 2, issue: original_work_item)
-    # create email participants on original work item and return emails as `expected_data` for later comparison.
+    # create email participants on original work item and return emails as `expected` value for later comparison.
     original_work_item.reload.email_participants.map(&:email)
   end
 
   let_it_be(:assignees) do
     original_work_item.assignee_ids = users.map(&:id)
-    # set assignees and return assigned users as `expected_data` for later comparison.
+    # set assignees and return assigned users as `expected` value for later comparison.
     users
   end
 
@@ -232,24 +244,45 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     parent
   end
 
+  let_it_be(:related_items) do
+    namespace_params = [project: original_work_item.project] if original_work_item.project
+    namespace_params = [:group_level, { namespace: original_work_item.namespace }] unless original_work_item.project
+
+    create(:work_item, :issue, *namespace_params).tap do |related_work_item|
+      create(:issue_link, source: original_work_item, target: related_work_item,
+        link_type: ::Enums::IssuableLink::TYPE_BLOCKS)
+    end
+
+    create(:work_item, :issue, *namespace_params).tap do |related_work_item|
+      create(:issue_link, source: related_work_item, target: original_work_item,
+        link_type: ::Enums::IssuableLink::TYPE_RELATES_TO)
+    end
+
+    [
+      IssueLink.for_source(original_work_item).map(&:target).pluck(:title),
+      IssueLink.for_target(original_work_item).map(&:source).pluck(:title)
+    ]
+  end
+
   let_it_be(:move) { WorkItems::DataSync::MoveService }
   let_it_be(:clone) { WorkItems::DataSync::CloneService }
 
   # rubocop: disable Layout/LineLength -- improved readability with one line per widget
   let_it_be(:widgets) do
     [
-      { widget_name: :assignees,                   eval_value: :work_item_assignees,          expected_data: assignees,     operations: [move, clone] },
-      { widget_name: :award_emoji,                 eval_value: :work_item_award_emoji,        expected_data: award_emojis,  operations: [move] },
-      { widget_name: :email_participants,          eval_value: :work_item_emails,             expected_data: emails,        operations: [move] },
-      { widget_name: :milestone,                   eval_value: :work_item_milestone,          expected_data: milestone,     operations: [move, clone] },
-      { widget_name: :subscriptions,               eval_value: :work_item_subscriptions,      expected_data: subscriptions, operations: [move] },
-      { widget_name: :sent_notifications,          eval_value: :work_item_sent_notifications, expected_data: notifications, operations: [move] },
-      { widget_name: :timelogs,                    eval_value: :work_item_timelogs,           expected_data: timelogs,      operations: [move] },
-      { widget_name: :customer_relations_contacts, eval_value: :work_item_crm_contacts,       expected_data: crm_contacts,  operations: [move, clone] },
-      { widget_name: :designs,                     eval_value: :work_item_designs,            expected_data: designs,       operations: [move, clone] },
-      { widget_name: :labels,                      eval_value: :work_item_labels,             expected_data: labels,        operations: [move, clone] },
-      { widget_name: :work_item_children,          eval_value: :work_item_children,           expected_data: child_items,   operations: [move] },
-      { widget_name: :work_item_parent,            eval_value: :work_item_parent,             expected_data: parent,        operations: [move, clone] }
+      { widget: :assignees,          assoc_name: :assignees,                   eval_value: :wi_assignees,          expected: assignees,     operations: [move, clone] },
+      { widget: :award_emoji,        assoc_name: :award_emoji,                 eval_value: :wi_award_emoji,        expected: award_emojis,  operations: [move] },
+      { widget: :email_participants, assoc_name: :email_participants,          eval_value: :wi_emails,             expected: emails,        operations: [move] },
+      { widget: :milestone,          assoc_name: :milestone,                   eval_value: :wi_milestone,          expected: milestone,     operations: [move, clone] },
+      { widget: :notifications,      assoc_name: :subscriptions,               eval_value: :wi_subscriptions,      expected: subscriptions, operations: [move] },
+      { widget: :notifications,      assoc_name: :sent_notifications,          eval_value: :wi_sent_notifications, expected: notifications, operations: [move] },
+      { widget: :time_tracking,      assoc_name: :timelogs,                    eval_value: :wi_timelogs,           expected: timelogs,      operations: [move] },
+      { widget: :crm_contacts,       assoc_name: :customer_relations_contacts, eval_value: :wi_crm_contacts,       expected: crm_contacts,  operations: [move, clone] },
+      { widget: :designs,            assoc_name: :designs,                     eval_value: :wi_designs,            expected: designs,       operations: [move, clone] },
+      { widget: :labels,             assoc_name: :labels,                      eval_value: :wi_labels,             expected: labels,        operations: [move, clone] },
+      { widget: :hierarchy,          assoc_name: :work_item_children,          eval_value: :wi_children,           expected: child_items,   operations: [move] },
+      { widget: :hierarchy,          assoc_name: :work_item_parent,            eval_value: :wi_parent,             expected: parent,        operations: [move, clone] },
+      { widget: :linked_items,       assoc_name: :linked_work_items,           eval_value: :wi_linked_items,       expected: related_items, operations: [move], widget_args: [current_user] }
     ]
   end
   # rubocop: enable Layout/LineLength
@@ -271,30 +304,37 @@ RSpec.shared_examples 'for clone and move services' do
     new_work_item = service.execute[:work_item]
 
     widgets.each do |widget|
+      # - skip if new WI does not support the widget, e.g. Epic WI tested in EE does not support milestone widget
+      # - do not consider cases where widget is missing, because that covers the cases of non-widget associations,
+      #   e.g. related_vulnerabilities in EE
+      next if widget[:widget].present? && new_work_item.get_widget(widget[:widget]).blank?
+
       # This example is being called from EE spec where we text move/clone on a group level work item(Epic).
       # Designs are only available for project level work items so we will skip the spec group level work items.
-      next if widget[:widget_name] == :designs && original_work_item.project.blank?
+      next if widget[:assoc_name] == :designs && original_work_item.project.blank?
 
       widget_value = send(widget[:eval_value], new_work_item)
 
       if widget[:operations].include?(described_class)
-        expect(widget_value).not_to be_blank
         # trick to compare single values and arrays with a single statement
-        expect([widget_value].flatten).to match_array([widget[:expected_data]].flatten)
+        expect([widget_value].flatten).to match_array([widget[:expected]].flatten)
       else
-        expect(widget_value).to be_blank
+        expect([widget_value].flatten).to be_blank
       end
 
       non_cleanupable_widgets = [:sent_notifications, :work_item_children]
       cleanup_data = Feature.enabled?(:cleanup_data_source_work_item_data, original_work_item.resource_parent)
 
       if cleanup_data && described_class == move
-        expect(original_work_item.reload.public_send(widget[:widget_name])).to be_blank
-      elsif non_cleanupable_widgets.exclude?(widget[:widget_name])
+        expect(original_work_item.reload.public_send(widget[:assoc_name], *widget[:widget_args])).to be_blank
+      elsif non_cleanupable_widgets.exclude?(widget[:assoc_name])
         # sent notifications and child work items are re-linked to new work item during the `move`
         # rather than deleted afterwards, so the original work item loses these items even before getting to the
         # cleanup data step.
-        expect(original_work_item.reload.public_send(widget[:widget_name])).not_to be_blank
+
+        unless widget[:expected].blank?
+          expect(original_work_item.reload.public_send(widget[:assoc_name], *widget[:widget_args])).not_to be_blank
+        end
       end
     end
   end
