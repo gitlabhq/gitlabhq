@@ -6,3 +6,6 @@ Gemfile/MissingFeatureCategory:
 
 Search/NamespacedClass:
   Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 25

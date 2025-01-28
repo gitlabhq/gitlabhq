@@ -53,7 +53,7 @@ ActiveContext.configure do |config|
 
   config.databases = {
     es1: {
-      adapter: 'elasticsearch',
+      adapter: 'ActiveContext::Databases::Elasticsearch::Adapter',
       prefix: 'gitlab_active_context',
       options: ::Gitlab::CurrentSettings.elasticsearch_config
     }
@@ -70,6 +70,36 @@ end
 | `client_request_timeout` | The timeout for client requests in seconds | No | N/A | `60` |
 | `retry_on_failure` | The number of times to retry a failed request | No | `0` (no retries) | `3` |
 | `debug` | Enable or disable debug logging | No | `false` | `true` |
+| `max_bulk_size_bytes` | Maximum size before forcing a bulk operation in megabytes | No | `10.megabytes` | `5242880` | 
+
+### Scheduling a cron worker for async processing
+
+Create a file which includes the `BulkAsyncProcess` concern and other worker-specific concerns:
+
+```ruby
+# frozen_string_literal: true
+
+module Ai
+  module Context
+    class BulkProcessWorker
+      include ActiveContext::Concerns::BulkAsyncProcess
+      include ::ApplicationWorker
+      include ::CronjobQueue
+      include Search::Worker
+      include Gitlab::ExclusiveLeaseHelpers
+      prepend ::Geo::SkipSecondary
+
+      idempotent!
+      worker_resource_boundary :cpu
+      urgency :low
+      data_consistency :sticky
+      loggable_arguments 0, 1
+    end
+  end
+end
+```
+
+Schedule the worker on a cron schedule in `config/initializers/1_settings.rb`.
 
 ### Registering a queue
 

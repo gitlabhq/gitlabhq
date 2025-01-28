@@ -73,7 +73,8 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
       expect { compactor.compact(5) }.to raise_error(Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry)
     end
 
-    it 'raises when a redundant compaction entry is found' do
+    it 'raises when a redundant compaction entry is found',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508889' do
       allow(Gitlab::Utils::TraversalIdCompactor).to receive(:compact).and_wrap_original do |original_method, *args|
         original_response = original_method.call(*args)
         original_response << ns6.traversal_ids

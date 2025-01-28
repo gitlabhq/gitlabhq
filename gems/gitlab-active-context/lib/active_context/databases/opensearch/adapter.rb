@@ -9,6 +9,10 @@ module ActiveContext
         def client_klass
           ActiveContext::Databases::Opensearch::Client
         end
+
+        def indexer_klass
+          ActiveContext::Databases::Opensearch::Indexer
+        end
       end
     end
   end

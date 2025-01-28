@@ -9,6 +9,10 @@ module ActiveContext
         def client_klass
           ActiveContext::Databases::Postgresql::Client
         end
+
+        def indexer_klass
+          ActiveContext::Databases::Postgresql::Indexer
+        end
       end
     end
   end

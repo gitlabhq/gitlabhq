@@ -249,7 +249,8 @@ NOTE:
 Tracing is available in Development and Testing environment only.
 It's not available in Production environment.
 
-1. Access to [LangSmith](https://smith.langchain.com/) site and create an account (You can also be added to GitLab organization).
+1. Access [LangSmith](https://smith.langchain.com/) and create an account
+   1. Optional: [Create an Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=Individual_Bulk_Access_Request) to be added to the GitLab organization in LangSmith.
 1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key) (be careful where you create API key - they can be created in personal namespace or in GL namespace).
 1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
 

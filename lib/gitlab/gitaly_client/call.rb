@@ -3,7 +3,7 @@
 module Gitlab
   module GitalyClient
     class Call
-      def initialize(storage, service, rpc, request, remote_storage, timeout)
+      def initialize(storage, service, rpc, request, remote_storage, timeout, gitaly_context: {})
         @storage = storage
         @service = service
         @rpc = rpc
@@ -11,11 +11,12 @@ module Gitlab
         @remote_storage = remote_storage
         @timeout = timeout
         @duration = 0
+        @gitaly_context = gitaly_context
       end
 
       def call(&block)
         response = recording_request do
-          GitalyClient.execute(@storage, @service, @rpc, @request, remote_storage: @remote_storage, timeout: @timeout, &block)
+          GitalyClient.execute(@storage, @service, @rpc, @request, remote_storage: @remote_storage, timeout: @timeout, gitaly_context: @gitaly_context, &block)
         end
 
         if response.is_a?(Enumerator)

@@ -9,6 +9,10 @@ module ActiveContext
         def client_klass
           ActiveContext::Databases::Elasticsearch::Client
         end
+
+        def indexer_klass
+          ActiveContext::Databases::Elasticsearch::Indexer
+        end
       end
     end
   end

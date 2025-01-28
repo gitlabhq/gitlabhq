@@ -164,7 +164,7 @@ Hosted runners for GitLab Dedicated have the following configurations:
 
 You can also [enable private connections](#outbound-private-link) from hosted runners to your AWS account.
 
-For more information, see the architecture diagram for [Hosted runners for GitLab Dedicated](index.md#hosted-runners-for-gitlab-dedicated).
+For more information, see the architecture diagram for [hosted runners for GitLab Dedicated](architecture.md#hosted-runners-for-gitlab-dedicated).
 
 ### Outbound private link
 

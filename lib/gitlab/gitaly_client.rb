@@ -277,16 +277,16 @@ module Gitlab
     # `remote_storage: 'gitaly-2'`. And then the metadata would say
     # "gitaly-2 is at network address tcp://10.0.1.2:8075".
     #
-    def self.call(storage, service, rpc, request, remote_storage: nil, timeout: default_timeout, &block)
-      Gitlab::GitalyClient::Call.new(storage, service, rpc, request, remote_storage, timeout).call(&block)
+    def self.call(storage, service, rpc, request, remote_storage: nil, timeout: default_timeout, gitaly_context: {}, &block)
+      Gitlab::GitalyClient::Call.new(storage, service, rpc, request, remote_storage, timeout, gitaly_context: gitaly_context).call(&block)
     end
 
-    def self.execute(storage, service, rpc, request, remote_storage:, timeout:)
+    def self.execute(storage, service, rpc, request, remote_storage:, timeout:, gitaly_context: {})
       enforce_gitaly_request_limits(:call)
       Gitlab::RequestContext.instance.ensure_deadline_not_exceeded!
       raise_if_concurrent_ruby!
 
-      kwargs = request_kwargs(storage, timeout: timeout.to_f, remote_storage: remote_storage)
+      kwargs = request_kwargs(storage, timeout: timeout.to_f, remote_storage: remote_storage, gitaly_context: gitaly_context)
       kwargs = yield(kwargs) if block_given?
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
@@ -324,12 +324,12 @@ module Gitlab
     end
     private_class_method :authorization_token
 
-    def self.request_kwargs(storage, timeout:, remote_storage: nil)
+    def self.request_kwargs(storage, timeout:, remote_storage: nil, gitaly_context: {})
       metadata = {
         'authorization' => "Bearer #{authorization_token(storage)}",
         'client_name' => CLIENT_NAME
       }
-      gitaly_context = {}
+
       relative_path = fetch_relative_path
 
       ::Gitlab::Auth::Identity.currently_linked do |identity|

@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
-require "active_context"
+require 'active_context'
+require 'active_support/all'
 require 'logger'
 require 'elasticsearch'
 require 'opensearch'
 require 'aws-sdk-core'
-require 'active_support/concern'
 require 'redis'
 require 'byebug'
-require 'active_support'
-require 'active_support/core_ext/numeric/time'
-require 'active_context/concerns/bulk_async_process'
 
 Dir[File.join(__dir__, 'support/**/*.rb')].each { |f| require f }
 

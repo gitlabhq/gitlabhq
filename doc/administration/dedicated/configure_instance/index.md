@@ -13,12 +13,11 @@ DETAILS:
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [**Admin** area](../../../administration/admin_area.md).
+Administrators can configure additional settings in their GitLab application by using the [**Admin** area](../../../administration/admin_area.md).
 
-Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
-These environment settings cannot be changed by tenants.
+As a GitLab-managed solution, you cannot change any GitLab functionality controlled by SaaS environment settings. Examples of such SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 
-GitLab Dedicated Engineers also don't have direct access to tenant environments, except for [break glass situations](../../../subscriptions/gitlab_dedicated/index.md#access-controls).
+GitLab Dedicated engineers do not have direct access to your environment, except for [break glass situations](../../../subscriptions/gitlab_dedicated/index.md#access-controls).
 
 NOTE:
 An instance refers to a GitLab Dedicated deployment, whereas a tenant refers to a customer.
@@ -46,7 +45,7 @@ To make a configuration change:
 1. Follow the instructions in the relevant sections below.
 
 For all other instance configurations, submit a support ticket according to the
-[configuration change request policy](../configure_instance/index.md#configuration-change-request-policy).
+[configuration change request policy](../configure_instance/index.md#request-configuration-changes-with-a-support-ticket).
 
 ### Apply configuration changes in Switchboard
 
@@ -98,9 +97,9 @@ To view the configuration change log:
 
 Each configuration change appears as an entry in the table. Select **View details** to see more information about each change.
 
-## Configuration change request policy
+## Request configuration changes with a support ticket
 
-This policy does not apply to configuration changes made by a GitLab Dedicated instance admin using Switchboard.
+Certain configuration changes require that you submit a support ticket to request the changes. For more information on how to create a support ticket, see [creating a ticket](https://about.gitlab.com/support/portal/#creating-a-ticket).
 
 Configuration changes requested with a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) adhere to the following policies:
 
