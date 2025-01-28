@@ -155,6 +155,12 @@ class GroupsController < Groups::ApplicationController
     @badge_api_endpoint = expose_path(api_v4_groups_badges_path(id: @group.id))
   end
 
+  def merge_requests
+    return if ::Feature.enabled?(:vue_merge_request_list, current_user)
+
+    render_merge_requests
+  end
+
   def projects
     @projects = @group.projects.with_statistics.page(params[:page])
   end

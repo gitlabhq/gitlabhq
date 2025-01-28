@@ -19225,6 +19225,7 @@ Represents an admin member role.
 | ---- | ---- | ----------- |
 | <a id="adminmemberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in GitLab 16.5. **Status**: Experiment. Base access level for the custom role. |
 | <a id="adminmemberrolecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the member role was created. |
+| <a id="adminmemberroledependentsecuritypolicies"></a>`dependentSecurityPolicies` | [`[ApprovalPolicy!]`](#approvalpolicy) | Array of security policies dependent on the custom role. |
 | <a id="adminmemberroledescription"></a>`description` | [`String`](#string) | Role description. |
 | <a id="adminmemberroledetailspath"></a>`detailsPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.4. **Status**: Experiment. URL path to the role details webpage. |
 | <a id="adminmemberroleeditpath"></a>`editPath` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web UI path to edit the custom role. |
@@ -21197,6 +21198,18 @@ CI/CD variables given to a manual job.
 | <a id="ciminutesprojectmonthlyusagename"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.6. Use `project.name`. |
 | <a id="ciminutesprojectmonthlyusageproject"></a>`project` | [`Project`](#project) | Project having the recorded usage. |
 | <a id="ciminutesprojectmonthlyusagesharedrunnersduration"></a>`sharedRunnersDuration` | [`Int`](#int) | Total duration (in seconds) of shared runners use by the project for the month. |
+
+### `CiPipelineCreationRequest`
+
+Information about an asynchronous pipeline creation request.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cipipelinecreationrequesterror"></a>`error` | [`String`](#string) | Error message if pipeline creation failed. |
+| <a id="cipipelinecreationrequestpipelineid"></a>`pipelineId` | [`CiPipelineID`](#cipipelineid) | ID of the created pipeline if creation was successful. |
+| <a id="cipipelinecreationrequeststatus"></a>`status` | [`CiPipelineCreationStatus!`](#cipipelinecreationstatus) | Current status of the pipeline creation. |
 
 ### `CiProjectSubscription`
 
@@ -28296,6 +28309,7 @@ Represents a member role.
 | ---- | ---- | ----------- |
 | <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in GitLab 16.5. **Status**: Experiment. Base access level for the custom role. |
 | <a id="memberrolecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the member role was created. |
+| <a id="memberroledependentsecuritypolicies"></a>`dependentSecurityPolicies` | [`[ApprovalPolicy!]`](#approvalpolicy) | Array of security policies dependent on the custom role. |
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Role description. |
 | <a id="memberroledetailspath"></a>`detailsPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.4. **Status**: Experiment. URL path to the role details webpage. |
 | <a id="memberroleeditpath"></a>`editPath` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web UI path to edit the custom role. |
@@ -32722,6 +32736,22 @@ Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectciconfigvariablesref"></a>`ref` | [`String!`](#string) | Ref. |
+
+##### `Project.ciPipelineCreationRequest`
+
+Get information about an asynchronous pipeline creation request.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Returns [`CiPipelineCreationRequest`](#cipipelinecreationrequest).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcipipelinecreationrequestrequestid"></a>`requestId` | [`String!`](#string) | ID of the pipeline creation request. |
 
 ##### `Project.ciTemplate`
 
@@ -39552,6 +39582,16 @@ Ci Pipeline Ci sources enum.
 | <a id="cipipelinecisourcestrigger"></a>`TRIGGER` | Pipeline created by a trigger event. |
 | <a id="cipipelinecisourcesunknown"></a>`UNKNOWN` | Pipeline created by an unknown event. |
 | <a id="cipipelinecisourcesweb"></a>`WEB` | Pipeline created by a web event. |
+
+### `CiPipelineCreationStatus`
+
+The status of a pipeline creation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cipipelinecreationstatusfailed"></a>`FAILED` | The pipeline creation is failed. |
+| <a id="cipipelinecreationstatusin_progress"></a>`IN_PROGRESS` | The pipeline creation is in progress. |
+| <a id="cipipelinecreationstatussucceeded"></a>`SUCCEEDED` | The pipeline creation is succeeded. |
 
 ### `CiRunnerAccessLevel`
 

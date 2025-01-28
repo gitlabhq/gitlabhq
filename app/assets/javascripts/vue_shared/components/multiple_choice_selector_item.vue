@@ -34,7 +34,7 @@ export default {
 </script>
 
 <template>
-  <div class="multiple-choice-selector-item gl-p-5">
+  <div class="multiple-choice-selector-item gl-p-5" :class="{ 'gl-bg-disabled': disabled }">
     <gl-form-checkbox :value="value" :disabled="disabled">
       <div class="multiple-choice-selector-click-area"></div>
       <div

@@ -72,11 +72,13 @@ describe('Work item comment form component', () => {
     isDiscussionResolvable = false,
     hasEmailParticipantsWidget = false,
     canMarkNoteAsInternal = true,
+    canUpdate = true,
     emailParticipantsResponseHandler = emailParticipantsSuccessHandler,
     parentId = null,
   } = {}) => {
     workItemResponse = workItemByIidResponseFactory({
       canMarkNoteAsInternal,
+      canUpdate,
     });
 
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
@@ -168,6 +170,24 @@ describe('Work item comment form component', () => {
     createComponent();
 
     expect(findMarkdownEditor().props('value')).toBe('');
+  });
+
+  describe('state toggle button', () => {
+    it('renders state toggle button', async () => {
+      createComponent({ isNewDiscussion: true });
+
+      await waitForPromises();
+
+      expect(findWorkItemToggleStateButton().exists()).toBe(true);
+    });
+
+    it('does not render state toggle button when canUpdate is false', async () => {
+      createComponent({ isNewDiscussion: true, canUpdate: false });
+
+      await waitForPromises();
+
+      expect(findWorkItemToggleStateButton().exists()).toBe(false);
+    });
   });
 
   describe('email participants', () => {
@@ -315,6 +335,8 @@ describe('Work item comment form component', () => {
       createComponent({
         isNewDiscussion: true,
       });
+      await waitForPromises();
+
       findWorkItemToggleStateButton().vm.$emit(
         'error',
         'Something went wrong while updating the task. Please try again.',
@@ -331,6 +353,7 @@ describe('Work item comment form component', () => {
       createComponent({
         isNewDiscussion: true,
       });
+      await waitForPromises();
 
       findWorkItemToggleStateButton().vm.$emit('submit-comment');
 
@@ -440,8 +463,9 @@ describe('Work item comment form component', () => {
     });
   });
 
-  it('passes the `parentId` prop down to the `WorkItemStateToggle` component', () => {
+  it('passes the `parentId` prop down to the `WorkItemStateToggle` component', async () => {
     createComponent({ isNewDiscussion: true, parentId: 'example-id' });
+    await waitForPromises();
 
     expect(findWorkItemToggleStateButton().props('parentId')).toBe('example-id');
   });

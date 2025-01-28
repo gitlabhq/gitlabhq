@@ -195,7 +195,7 @@ export default {
         >#{{ pipeline[pipelineIdType] }}</gl-link
       >
       <!--Commit row-->
-      <div class="gl-inline-flex gl-rounded-base gl-bg-gray-50 gl-px-2 gl-text-subtle">
+      <div class="gl-inline-flex gl-rounded-base gl-bg-strong gl-px-2">
         <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
           <gl-icon
             v-gl-tooltip
@@ -208,7 +208,7 @@ export default {
           <gl-link
             v-if="mergeRequestRef"
             :href="mergeRequestRef.path"
-            class="gl-text-sm !gl-text-subtle gl-font-monospace"
+            class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
             :class="refClass"
             data-testid="merge-request-ref"
             @click="trackClick('click_mr_ref')"
@@ -217,7 +217,7 @@ export default {
           <gl-link
             v-else
             :href="refUrl"
-            class="gl-text-sm !gl-text-subtle gl-font-monospace"
+            class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
             :class="refClass"
             data-testid="commit-ref-name"
             @click="trackClick('click_commit_name')"
@@ -226,18 +226,19 @@ export default {
         </tooltip-on-truncate>
       </div>
 
-      <div class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2 gl-text-sm gl-text-default">
+      <div class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2 gl-text-sm">
         <gl-icon
           v-gl-tooltip
           name="commit"
-          class="commit-icon gl-mr-1"
+          class="gl-mr-1"
           :title="__('Commit')"
           :size="12"
           data-testid="commit-icon"
+          variant="subtle"
         />
         <gl-link
           :href="commitUrl"
-          class="gl-mr-0 gl-text-sm !gl-text-subtle gl-font-monospace"
+          class="gl-mr-0 gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
           data-testid="commit-short-sha"
           @click="trackClick('click_commit_sha')"
           >{{ commitShortSha }}</gl-link

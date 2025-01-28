@@ -389,6 +389,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
+  def set_issuables_index
+    return if ::Feature.enabled?(:vue_merge_request_list, current_user) && request.format.html?
+
+    super
+  end
+
   def show_merge_request
     close_merge_request_if_no_source_project
     @merge_request.check_mergeability(async: true)

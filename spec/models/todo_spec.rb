@@ -665,6 +665,24 @@ RSpec.describe Todo, feature_category: :notifications do
     end
   end
 
+  describe '.sort_by_snoozed_and_creation_dates' do
+    let_it_be(:todo1) { create(:todo) }
+    let_it_be(:todo2) { create(:todo, created_at: 3.hours.ago) }
+    let_it_be(:todo3) { create(:todo, snoozed_until: 1.hour.ago) }
+
+    context 'when sorting by ascending date' do
+      subject { described_class.sort_by_snoozed_and_creation_dates(direction: :asc) }
+
+      it { is_expected.to eq([todo2, todo3, todo1]) }
+    end
+
+    context 'when sorting by descending date' do
+      subject { described_class.sort_by_snoozed_and_creation_dates }
+
+      it { is_expected.to eq([todo1, todo3, todo2]) }
+    end
+  end
+
   describe '.distinct_user_ids' do
     subject { described_class.distinct_user_ids }
 

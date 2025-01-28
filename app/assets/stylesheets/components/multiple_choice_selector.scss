@@ -2,7 +2,8 @@
   &-item {
     @include gl-prefers-reduced-motion-transition;
     transition: background-color $gl-transition-duration-medium $gl-easing-out-cubic,
-                border-color $gl-transition-duration-medium $gl-easing-out-cubic;
+                border-color $gl-transition-duration-medium $gl-easing-out-cubic,
+                box-shadow $gl-transition-duration-medium $gl-easing-out-cubic;
 
     &:not(:last-child) {
       @apply gl-border-b;
@@ -25,6 +26,10 @@
 
     &:has(input:checked) {
       border: 1px solid var(--gl-control-border-color-selected-default);
+      box-shadow: 0 -1px 0 0 var(--gl-control-border-color-selected-default),
+                  inset -1px 0 0 0 var(--gl-control-border-color-selected-default),
+                  inset 0 -1px 0 0 var(--gl-control-border-color-selected-default),
+                  inset 1px 0 0 0 var(--gl-control-border-color-selected-default);
       @apply gl-bg-subtle gl-rounded-base;
     }
 

@@ -348,7 +348,7 @@ deploy-pages:
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"
   variables:
-    PAGES_PREFIX: "" # No prefix by default (master)
+    PAGES_PREFIX: "" # No prefix by default (main)
   pages:  # specifies that this is a Pages job
     path_prefix: "$PAGES_PREFIX"
   artifacts:
@@ -356,7 +356,7 @@ deploy-pages:
     - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run on default branch (with default PAGES_PREFIX)
-    - if: $CI_COMMIT_BRANCH == "staging" # Run on master (with default PAGES_PREFIX)
+    - if: $CI_COMMIT_BRANCH == "staging" # Run on main (with default PAGES_PREFIX)
       variables:
         PAGES_PREFIX: '_stg' # Prefix with _stg for the staging branch
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Conditionally change the prefix for Merge Requests
@@ -461,7 +461,7 @@ deploy-pages-review-app:
   script:
     - npm run build
   pages:  # specifies that this is a Pages job
-    path_prefix: '/_staging'
+    path_prefix: '_staging'
   artifacts:
     paths:
     - public

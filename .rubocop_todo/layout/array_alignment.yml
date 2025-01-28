@@ -35,7 +35,6 @@ Layout/ArrayAlignment:
     - 'ee/spec/graphql/resolvers/analytics/contribution_analytics/contributions_resolver_spec.rb'
     - 'ee/spec/graphql/types/dast_scanner_profile_type_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/loaders/oncall_participant_loader_spec.rb'
-    - 'ee/spec/lib/gitlab/search/index_curator_spec.rb'
     - 'ee/spec/lib/gitlab/visibility_level_spec.rb'
     - 'ee/spec/lib/incident_management/oncall_shift_generator_spec.rb'
     - 'ee/spec/models/dora/base_metric_spec.rb'

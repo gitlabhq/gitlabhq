@@ -6,7 +6,17 @@ module API
       def finder_params(current_user)
         user_param =
           if current_user.can_admin_all_resources?
-            { user: user(params[:user_id]) }
+            if params[:user_id].present?
+              user = user(params[:user_id])
+
+              not_found! if user.nil?
+
+              { user: user }
+            else
+              not_found! if params.key?(:user_id)
+
+              {}
+            end
           else
             { user: current_user, impersonation: false }
           end

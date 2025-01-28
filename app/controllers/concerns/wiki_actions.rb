@@ -397,7 +397,7 @@ module WikiActions
   def view_file_button(commit_sha, *args)
     path = wiki_page_path(wiki, page, version_id: page.version.id)
 
-    helpers.link_to(path, class: 'btn') do
+    helpers.link_button_to(path) do
       helpers.raw(_('View page @ ')) + helpers.content_tag(:span, Commit.truncate_sha(commit_sha), class: 'commit-sha')
     end
   end

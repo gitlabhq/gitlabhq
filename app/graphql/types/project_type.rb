@@ -31,6 +31,15 @@ module Types
         description: 'Ref.'
     end
 
+    field :ci_pipeline_creation_request, Types::Ci::PipelineCreation::RequestType,
+      authorize: :create_pipeline,
+      description: 'Get information about an asynchronous pipeline creation request.',
+      experiment: { milestone: '17.9' } do
+      argument :request_id, GraphQL::Types::String,
+        required: true,
+        description: 'ID of the pipeline creation request.'
+    end
+
     field :full_path, GraphQL::Types::ID,
       null: false,
       description: 'Full path of the project.'
@@ -791,6 +800,10 @@ module Types
     field :pages_use_unique_domain, GraphQL::Types::Boolean,
       null: false,
       description: "Project's Pages site uses a unique subdomain."
+
+    def ci_pipeline_creation_request(request_id:)
+      ::Ci::PipelineCreation::Requests.get_request(object, request_id)
+    end
 
     def pages_force_https
       project.pages_https_only?

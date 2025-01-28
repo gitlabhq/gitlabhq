@@ -35,7 +35,8 @@ module Types
         description: 'ID for a detailed status.',
         extras: [:parent]
       field :label, GraphQL::Types::String, null: true,
-        description: 'Human-readable label of the status (e.g. success).'
+        description: 'Human-readable label of the status (e.g. success).',
+        calls_gitaly: true
       field :name, GraphQL::Types::String, null: true,
         description: 'Machine-readable status name (e.g. SUCCESS).'
       field :text, GraphQL::Types::String, null: true,

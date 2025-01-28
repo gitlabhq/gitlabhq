@@ -15266,6 +15266,9 @@ msgstr ""
 msgid "Confirm password"
 msgstr ""
 
+msgid "Confirm project name"
+msgstr ""
+
 msgid "Confirm this email address within %{cut_off_days} days, otherwise the email address is removed."
 msgstr ""
 
@@ -30358,6 +30361,9 @@ msgid "Integrations|Add an integration"
 msgstr ""
 
 msgid "Integrations|Add exclusions"
+msgstr ""
+
+msgid "Integrations|Add integration"
 msgstr ""
 
 msgid "Integrations|All details"

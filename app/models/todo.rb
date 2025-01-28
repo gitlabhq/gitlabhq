@@ -182,6 +182,8 @@ class Todo < ApplicationRecord
     def sort_by_attribute(method)
       sorted =
         case method.to_s
+        when 'snoozed_and_creation_dates_asc' then sort_by_snoozed_and_creation_dates(direction: :asc)
+        when 'snoozed_and_creation_dates_desc' then sort_by_snoozed_and_creation_dates
         when 'priority', 'label_priority', 'label_priority_asc' then order_by_labels_priority(asc: true)
         when 'label_priority_desc' then order_by_labels_priority(asc: false)
         else order_by(method)
@@ -191,6 +193,24 @@ class Todo < ApplicationRecord
 
       # Break ties with the ID column for pagination
       sorted.order(id: :desc)
+    end
+
+    def sort_by_snoozed_and_creation_dates(direction: :desc)
+      coalesced_column = Arel.sql('COALESCE(todos.snoozed_until, todos.created_at)')
+      order_expression = direction == :asc ? coalesced_column.asc : coalesced_column.desc
+
+      order = Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'id',
+            order_expression: order_expression,
+            nullable: :not_nullable,
+            order_direction: direction
+          )
+        ]
+      )
+
+      order(order)
     end
 
     # Order by priority depending on which issue/merge request the Todo belongs to

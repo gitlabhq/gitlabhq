@@ -131,7 +131,7 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
         it 'only returns snoozed todos' do
           todos = resolve_todos(args: { is_snoozed: true, sort: 'CREATED_ASC' }, context: { current_user: new_user })
 
-          expect(todos.items).to eq([todo2, todo3])
+          expect(todos.items).to eq([todo3, todo2])
         end
       end
     end

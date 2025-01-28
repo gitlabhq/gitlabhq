@@ -372,7 +372,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/gitlab/ci/reports/metrics/reports_comparer.rb'
     - 'ee/lib/gitlab/code_owners/loader.rb'
     - 'ee/lib/gitlab/custom_file_templates.rb'
-    - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'ee/lib/gitlab/elastic/project_search_results.rb'
     - 'ee/lib/gitlab/expiring_subscription_message.rb'
     - 'ee/lib/gitlab/geo/health_check.rb'

@@ -872,7 +872,7 @@ We also plan to make this easier to manage by adding an option to control this f
 
 <div class="deprecation-notes">
 
-- Announced in GitLab <span class="milestone">17.4</span>
+- Announced in GitLab <span class="milestone">17.9</span>
 - Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/426659).
 

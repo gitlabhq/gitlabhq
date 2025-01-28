@@ -1,0 +1,9 @@
+---
+name: snoozed_todos_sort_order
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/17712
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178170
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513521
+milestone: '17.9'
+group: group::personal productivity
+type: beta
+default_enabled: false

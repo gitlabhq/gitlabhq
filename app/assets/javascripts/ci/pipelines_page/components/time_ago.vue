@@ -41,7 +41,7 @@ export default {
       class="gl-m-0 gl-inline-flex gl-items-center gl-whitespace-nowrap gl-text-subtle"
       data-testid="duration"
     >
-      <gl-icon name="timer" class="gl-mr-2" :size="12" />
+      <gl-icon name="timer" class="gl-mr-2" :size="12" variant="subtle" />
       {{ durationFormatted }}
     </p>
 
@@ -50,7 +50,13 @@ export default {
       class="gl-m-0 gl-inline-flex gl-items-center gl-whitespace-nowrap gl-text-subtle"
       data-testid="finished-at"
     >
-      <gl-icon name="calendar" class="gl-mr-2" :size="12" data-testid="calendar-icon" />
+      <gl-icon
+        name="calendar"
+        class="gl-mr-2"
+        :size="12"
+        data-testid="calendar-icon"
+        variant="subtle"
+      />
 
       <time
         v-gl-tooltip

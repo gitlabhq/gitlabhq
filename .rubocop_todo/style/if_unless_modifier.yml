@@ -376,7 +376,6 @@ Style/IfUnlessModifier:
     - 'ee/lib/gitlab/authority_analyzer.rb'
     - 'ee/lib/gitlab/code_owners/file.rb'
     - 'ee/lib/gitlab/custom_file_templates.rb'
-    - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/gitlab/geo/health_check.rb'
     - 'ee/lib/gitlab/geo/log_cursor/daemon.rb'

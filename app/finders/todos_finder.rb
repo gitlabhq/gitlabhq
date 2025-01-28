@@ -148,21 +148,24 @@ class TodosFinder
   end
 
   def sort(items)
-    if params[:sort]
-      # For users with a lot of todos, sorting by created_at can be unusably slow.
-      # Given that todos have sequential ids, we can simply sort by them instead
-      sort_by = case params[:sort]
-                when :created_desc
-                  :id_desc
-                when :created_asc
-                  :id_asc
-                else
-                  params[:sort]
-                end
-      items.sort_by_attribute(sort_by)
-    else
-      items.order_id_desc
-    end
+    sort_by = case params[:sort]
+                # For users with a lot of todos, sorting by created_at can be unusably slow.
+                # Given that todos have sequential ids, we can simply sort by them instead
+              when :created_desc, nil
+                use_snooze_custom_sort? ? :snoozed_and_creation_dates_desc : :id_desc
+              when :created_asc
+                use_snooze_custom_sort? ? :snoozed_and_creation_dates_asc : :id_asc
+              else
+                params[:sort]
+              end
+
+    items.sort_by_attribute(sort_by)
+  end
+
+  # We only need to surface snoozed to-dos when querying pending items. The special sort order is
+  # unnecessary in the `Done` and `All` tabs where we can simply sort by ID (= creation date).
+  def use_snooze_custom_sort?
+    Feature.enabled?(:snoozed_todos_sort_order, current_user) && filter_pending_only?
   end
 
   def by_action(items)

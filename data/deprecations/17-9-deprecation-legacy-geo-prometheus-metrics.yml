@@ -1,9 +1,9 @@
 - title: "Legacy Geo Prometheus repository checks metrics"
   removal_milestone: "18.0"
-  announcement_milestone: "17.4"
+  announcement_milestone: "17.9"
   breaking_change: true
   reporter: sranasinghe
-  stage: enablement
+  stage: tenant scale
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426659
   body: |
     Following the migration of projects to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html) we have removed the support for [repository checks](https://docs.gitlab.com/ee/administration/repository_checks.html) using `git fsck` on Geo secondary sites.
