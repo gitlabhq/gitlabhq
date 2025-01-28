@@ -8,6 +8,9 @@ description: Used to store group or project import failures that occur when usin
   the Import/Export feature
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20727
 milestone: '12.6'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854
+gitlab_schema: gitlab_main_cell
 table_size: small
+sharding_key:
+   project_id: projects
+   group_id: namespaces
+   organization_id: organizations

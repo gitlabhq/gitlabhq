@@ -17,6 +17,8 @@ module Ci
           allowlist.project_links.autopopulated.delete_all
           allowlist.group_links.autopopulated.delete_all
         end
+
+        ServiceResponse.success
       end
 
       private

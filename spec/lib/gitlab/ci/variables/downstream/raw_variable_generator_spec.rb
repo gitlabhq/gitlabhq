@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Downstream::RawVariableGenerator, feature_category: :secrets_management do
+RSpec.describe Gitlab::Ci::Variables::Downstream::RawVariableGenerator, feature_category: :ci_variables do
   let(:context) { Gitlab::Ci::Variables::Downstream::Generator::Context.new }
 
   subject(:generator) { described_class.new(context) }

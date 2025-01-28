@@ -30,21 +30,6 @@ module ProfilesHelper
     params[:controller] == 'users'
   end
 
-  def middle_dot_divider_classes(stacking, breakpoint)
-    ['gl-mb-3'].tap do |classes|
-      if stacking
-        classes.concat(%w[middle-dot-divider-sm gl-block sm:gl-inline-block])
-      else
-        classes << 'gl-inline-block'
-        classes << if breakpoint.nil?
-                     'middle-dot-divider'
-                   else
-                     "middle-dot-divider-#{breakpoint}"
-                   end
-      end
-    end
-  end
-
   def ssh_key_usage_types
     {
       s_('SSHKey|Authentication & Signing') => 'auth_and_signing',

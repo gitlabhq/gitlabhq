@@ -91,6 +91,7 @@ module Ci
             autopopulated: autopopulated,
             added_by: user,
             job_token_policies: job_token_policies,
+            direction: @direction,
             created_at: now
           )
         end

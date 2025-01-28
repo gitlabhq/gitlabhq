@@ -53,7 +53,22 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def group_by_status
-          group([@query_builder.table[:status]])
+          group(@query_builder.table[:status])
+        end
+
+        def group_by_timestamp_bin
+          group(timestamp_alias)
+        end
+
+        def timestamp_bin_function(time_series_period)
+          Arel::Nodes::NamedFunction.new(
+            'dateTrunc',
+            [
+              Arel::Nodes.build_quoted(time_series_period.to_s),
+              @query_builder.table[:started_at_bucket],
+              timezone
+            ]
+          ).as(timestamp_alias)
         end
 
         def count_pipelines_function
@@ -72,8 +87,16 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           Arel::Nodes::NamedFunction.new('toDateTime64', [
             Arel::Nodes::SqlLiteral.new(date.utc.strftime("'%Y-%m-%d %H:%M:%S'")),
             6,
-            Arel::Nodes.build_quoted('UTC')
+            timezone
           ])
+        end
+
+        def timestamp_alias
+          Arel.sql('timestamp')
+        end
+
+        def timezone
+          Arel::Nodes.build_quoted('UTC')
         end
       end
     end

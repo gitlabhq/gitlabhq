@@ -13,9 +13,6 @@ instrumentation_class: GitlabConfigMetric
 options:
   config:
     dependency_proxy: enabled
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

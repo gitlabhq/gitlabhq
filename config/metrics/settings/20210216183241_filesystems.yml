@@ -9,9 +9,6 @@ value_type: string
 status: active
 time_frame: all
 data_source: system
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

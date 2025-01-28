@@ -8,9 +8,6 @@ status: active
 time_frame: none
 data_source: system
 instrumentation_class: ReplyByEmailEnabledMetric
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

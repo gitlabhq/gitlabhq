@@ -104,22 +104,6 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     it { is_expected.to eq(s_('Profiles|Optional but recommended. If set, key becomes invalid on the specified date.')) }
   end
 
-  describe '#middle_dot_divider_classes' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:stacking, :breakpoint, :expected) do
-      nil  | nil | %w[gl-mb-3 gl-inline-block middle-dot-divider]
-      true | nil | %w[gl-mb-3 middle-dot-divider-sm gl-block sm:gl-inline-block]
-      nil  | :sm | %w[gl-mb-3 gl-inline-block middle-dot-divider-sm]
-    end
-
-    with_them do
-      it 'returns CSS classes needed to render the middle dot divider' do
-        expect(helper.middle_dot_divider_classes(stacking, breakpoint)).to eq expected
-      end
-    end
-  end
-
   describe '#prevent_delete_account?' do
     it 'returns false' do
       expect(helper.prevent_delete_account?).to eq false

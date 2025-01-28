@@ -62,7 +62,9 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
     end
 
     it 'creates the expected group and project links for the given limit' do
-      service.execute
+      result = service.execute
+
+      expect(result).to be_success
 
       expect(Ci::JobToken::GroupScopeLink.autopopulated.pluck(:target_group_id)).to match_array([ns2.id, ns4.id])
       expect(Ci::JobToken::ProjectScopeLink.autopopulated.pluck(:target_project_id)).to match_array([pns1.project.id,
@@ -73,8 +75,9 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
       let(:compaction_limit) { 3 }
 
       it 'creates the expected group and project links' do
-        service.execute
+        result = service.execute
 
+        expect(result).to be_success
         expect(Ci::JobToken::GroupScopeLink.autopopulated.pluck(:target_group_id)).to match_array([ns1.id])
         expect(Ci::JobToken::ProjectScopeLink.autopopulated.pluck(:target_project_id)).to match_array([pns8.project.id])
       end
@@ -84,9 +87,10 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
       let(:compaction_limit) { 1 }
 
       it 'logs a CompactionLimitCannotBeAchievedError error' do
-        expect do
-          service.execute
-        end.to raise_error(Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError)
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError')
 
         expect(Ci::JobToken::GroupScopeLink.count).to be(0)
         expect(Ci::JobToken::ProjectScopeLink.count).to be(0)
@@ -102,7 +106,10 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
           original_response << [1, 2, 3]
         end
 
-        expect { service.execute }.to raise_error(Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry)
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry')
       end
 
       it 'logs a RedundantCompactionEntry error' do
@@ -111,7 +118,10 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
           original_response << original_response.last.first(2)
         end
 
-        expect { service.execute }.to raise_error(Gitlab::Utils::TraversalIdCompactor::RedundantCompactionEntry)
+        result = service.execute
+
+        expect(result).to be_error
+        expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::RedundantCompactionEntry')
       end
     end
 
@@ -137,9 +147,15 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
         let(:compaction_limit) { 2 }
 
         it 'raises when the limit cannot be achieved' do
-          expect do
-            service.execute
-          end.to raise_error(Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError)
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+            kind_of(Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError),
+            { project_id: accessed_project.id, user_id: maintainer.id }
+          )
+          result = service.execute
+
+          expect(result).to be_error
+          expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError')
+
           expect(Ci::JobToken::GroupScopeLink.count).to be(0)
           expect(Ci::JobToken::ProjectScopeLink.count).to be(0)
         end

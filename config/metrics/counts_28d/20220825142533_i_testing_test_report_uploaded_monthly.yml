@@ -16,9 +16,6 @@ options:
   events:
     - i_testing_test_report_uploaded
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

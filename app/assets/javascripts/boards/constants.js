@@ -203,10 +203,16 @@ export const BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS = [
   {
     text: BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION,
     action: () => {},
+    extraAttrs: {
+      role: 'button',
+    },
   },
   {
     text: BOARD_CARD_MOVE_TO_POSITIONS_END_OPTION,
     action: () => {},
+    extraAttrs: {
+      role: 'button',
+    },
   },
 ];
 

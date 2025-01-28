@@ -18,9 +18,6 @@ events:
     unique: user.id
     filter:
       label: license_compliance
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

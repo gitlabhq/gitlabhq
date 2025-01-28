@@ -24,6 +24,15 @@ module Ci
           allowlist.bulk_add_groups!(groups, user: @user, autopopulated: true)
           allowlist.bulk_add_projects!(projects, user: @user, autopopulated: true)
         end
+
+        ServiceResponse.success
+      rescue Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError,
+        Gitlab::Utils::TraversalIdCompactor::RedundantCompactionEntry,
+        Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry,
+        Ci::JobToken::AuthorizationsCompactor::UnexpectedCompactionEntry,
+        Ci::JobToken::AuthorizationsCompactor::RedundantCompactionEntry => e
+        Gitlab::ErrorTracking.log_exception(e, { project_id: @project.id, user_id: @user.id })
+        ServiceResponse.error(message: e.message)
       end
 
       private

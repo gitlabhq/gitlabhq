@@ -42,7 +42,7 @@ export default {
     anchor: 'get-a-list-of-object-ids',
   }),
   removeBlobsWarningHelpLink: helpPagePath('/user/project/repository/repository_size', {
-    anchor: 'remove-files',
+    anchor: 'remove-blobs',
   }),
   components: { GlButton, GlDrawer, GlLink, GlFormTextarea, WarningModal },
   mixins: [trackingMixin],

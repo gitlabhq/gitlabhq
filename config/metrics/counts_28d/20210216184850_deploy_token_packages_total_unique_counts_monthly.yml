@@ -31,9 +31,6 @@ events:
   unique: user.id
 - name: i_package_terraform_module_deploy_token
   unique: user.id
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

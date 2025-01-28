@@ -14,9 +14,6 @@ options:
   source_type: project_entity
   status: 2
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

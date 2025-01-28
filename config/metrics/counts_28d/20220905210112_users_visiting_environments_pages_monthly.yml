@@ -16,9 +16,6 @@ performance_indicator_type: []
 options:
   events:
     - users_visiting_environments_pages
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

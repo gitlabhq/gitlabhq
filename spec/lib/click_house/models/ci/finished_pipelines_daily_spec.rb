@@ -8,15 +8,15 @@ RSpec.describe ClickHouse::Models::Ci::FinishedPipelinesDaily, feature_category:
   describe '.time_window_valid?', :freeze_time do
     subject(:time_window_valid?) { described_class.time_window_valid?(from_time, to_time) }
 
-    context 'with time window of less than 366 days' do
+    context 'with time window of 366 days' do
       let(:from_time) { 1.second.after(366.days.ago) }
       let(:to_time) { Time.current }
 
       it { is_expected.to eq true }
     end
 
-    context 'with time window of 366 days' do
-      let(:from_time) { 366.days.ago }
+    context 'with time window of 367 days' do
+      let(:from_time) { 367.days.ago }
       let(:to_time) { Time.current }
 
       it { is_expected.to eq false }
@@ -33,8 +33,8 @@ RSpec.describe ClickHouse::Models::Ci::FinishedPipelinesDaily, feature_category:
       it { is_expected.to be_nil }
     end
 
-    context 'with time window of 366 days' do
-      let(:from_time) { 366.days.ago }
+    context 'with time window of 367 days' do
+      let(:from_time) { 367.days.ago }
       let(:to_time) { Time.current }
 
       it { is_expected.to eq("Maximum of 366 days can be requested") }

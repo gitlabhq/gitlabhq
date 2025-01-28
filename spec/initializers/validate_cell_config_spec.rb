@@ -27,7 +27,7 @@ RSpec.describe 'validate database config', feature_category: :cell do
 
   context 'when topology service is correctly configured' do
     before do
-      stub_config(cell: { id: 1 }, topology_service: { enabled: true })
+      stub_config(cell: { id: 1, topology_service: { enabled: true } })
     end
 
     it 'does not raise exception' do
@@ -37,7 +37,7 @@ RSpec.describe 'validate database config', feature_category: :cell do
 
   context 'when topology service is not configured' do
     before do
-      stub_config(cell: { id: nil }, topology_service: { enabled: false })
+      stub_config(cell: { id: nil, topology_service: { enabled: false } })
     end
 
     it 'does not raise exception' do
@@ -48,7 +48,7 @@ RSpec.describe 'validate database config', feature_category: :cell do
   context 'when configuration is wrong' do
     context 'when only cell.id is configured' do
       before do
-        stub_config(cell: { id: 1 }, topology_service: { enabled: false })
+        stub_config(cell: { id: 1, topology_service: { enabled: false } })
       end
 
       it 'does not raise exception' do
@@ -60,7 +60,7 @@ RSpec.describe 'validate database config', feature_category: :cell do
 
     context 'when only topology service is enabled' do
       before do
-        stub_config(cell: { id: nil }, topology_service: { enabled: true })
+        stub_config(cell: { id: nil, topology_service: { enabled: true } })
       end
 
       it 'does not raise exception' do

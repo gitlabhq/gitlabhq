@@ -124,7 +124,7 @@ Be aware of the following impacts when redacting text from your repository:
 - Commit signatures are dropped during the rewrite process.
 
 Alternatively, to completely delete specific files from a repository, see
-[Remove blobs](../../../user/project/repository/repository_size.md#remove-files).
+[Remove blobs](../../../user/project/repository/repository_size.md#remove-blobs).
 
 Prerequisites:
 

@@ -979,6 +979,9 @@ msgstr ""
 msgid "%{labelStart}Assert:%{labelEnd} %{assertion}"
 msgstr ""
 
+msgid "%{labelStart}CVSS:%{labelEnd} %{cvss}"
+msgstr ""
+
 msgid "%{labelStart}Class:%{labelEnd} %{class}"
 msgstr ""
 
@@ -994,10 +997,16 @@ msgstr ""
 msgid "%{labelStart}Crash Type:%{labelEnd} %{crash_type}"
 msgstr ""
 
+msgid "%{labelStart}EPSS:%{labelEnd} %{epss}"
+msgstr ""
+
 msgid "%{labelStart}Evidence:%{labelEnd} %{evidence}"
 msgstr ""
 
 msgid "%{labelStart}File:%{labelEnd} %{file}"
+msgstr ""
+
+msgid "%{labelStart}Has Known Exploit (KEV):%{labelEnd} %{kev}"
 msgstr ""
 
 msgid "%{labelStart}Image:%{labelEnd} %{image}"
@@ -24147,6 +24156,9 @@ msgstr ""
 msgid "Failed to update compliance requirement"
 msgstr ""
 
+msgid "Failed to update compliance requirement control. Error: %{error_message}"
+msgstr ""
+
 msgid "Failed to update environment!"
 msgstr ""
 
@@ -24728,9 +24740,6 @@ msgid "Followed Users' Activity"
 msgstr ""
 
 msgid "Followed users"
-msgstr ""
-
-msgid "Following"
 msgstr ""
 
 msgid "Following tags don't exist"
@@ -38009,6 +38018,9 @@ msgid "Not permitted to reset user feed token"
 msgstr ""
 
 msgid "Not permitted to update requirement"
+msgstr ""
+
+msgid "Not permitted to update requirement control"
 msgstr ""
 
 msgid "Not ready yet. Try again later."
@@ -63234,6 +63246,9 @@ msgstr ""
 msgid "Vulnerability|Bug Bounty"
 msgstr ""
 
+msgid "Vulnerability|CISA (the Cybersecurity & Infrastructure Security Agency, a part of the U.S. Department of Homeland Security) maintains the Known Exploited Vulnerabilities (aka \"KEV\") catalog of vulnerabilities that have been exploited in the wild."
+msgstr ""
+
 msgid "Vulnerability|CVSS v3"
 msgstr ""
 
@@ -63378,6 +63393,12 @@ msgstr ""
 msgid "Vulnerability|Steps"
 msgstr ""
 
+msgid "Vulnerability|The CVSS (Common Vulnerability Scoring System) is a standardized framework for assessing and communicating the severity of security vulnerabilities in software. It provides a numerical score (ranging from 0.0 to 10.0) to indicate the severity risk of the vulnerability."
+msgstr ""
+
+msgid "Vulnerability|The Exploit Prediction Scoring System model produces a probability score between 0 and 1 indicating the likelihood that a vulnerability will be exploited in the next 30 days."
+msgstr ""
+
 msgid "Vulnerability|The scanner determined this vulnerability to be a false positive. Verify the evaluation before changing its status. %{linkStart}Learn more about false positive detection.%{linkEnd}"
 msgstr ""
 
@@ -63412,6 +63433,15 @@ msgid "Vulnerability|Vulnerable class:"
 msgstr ""
 
 msgid "Vulnerability|Vulnerable method:"
+msgstr ""
+
+msgid "Vulnerability|What is 'Has known exploit (KEV)'?"
+msgstr ""
+
+msgid "Vulnerability|What is CVSS?"
+msgstr ""
+
+msgid "Vulnerability|What is EPSS?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"

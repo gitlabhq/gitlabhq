@@ -16,9 +16,6 @@ events:
     filter:
       label: code_quality
 data_category: optional
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

@@ -17,9 +17,6 @@ events:
     filter:
       label: accessibility
       property: failed
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

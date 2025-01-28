@@ -11,8 +11,6 @@ data_source: database
 data_category: optional
 instrumentation_class: GitlabEnvironmentToolkitMetric
 performance_indicator_type: []
-distribution:
-- ee
 tiers:
 - premium
 - ultimate

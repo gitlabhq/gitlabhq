@@ -11,9 +11,6 @@ data_source: database
 data_category: operational
 instrumentation_class: InstallationCreationDateApproximationMetric
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

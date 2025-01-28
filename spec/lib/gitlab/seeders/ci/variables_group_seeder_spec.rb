@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Seeders::Ci::VariablesGroupSeeder, feature_category: :secrets_management do
+RSpec.describe ::Gitlab::Seeders::Ci::VariablesGroupSeeder, feature_category: :ci_variables do
   let_it_be(:group) { create(:group) }
 
   let(:seeder) { described_class.new(name: group.name) }

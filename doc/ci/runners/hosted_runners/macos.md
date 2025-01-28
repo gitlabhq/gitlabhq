@@ -13,7 +13,7 @@ DETAILS:
 
 Hosted runners on macOS provide an on-demand macOS environment, fully integrated with GitLab [CI/CD](../../../ci/index.md).
 You can use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS).
-Our [Mobile DevOps section](../../../ci/jobs/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
+Our [Mobile DevOps section](../../../ci/mobile_devops/mobile_devops_tutorial_ios.md#set-up-your-build-environment) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
 Hosted runners on macOS are in [beta](../../../policy/development_stages_support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
 [General availability](../../../policy/development_stages_support.md#generally-available) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
@@ -88,7 +88,7 @@ Before you can integrate GitLab with Apple services, install to a device, or dep
 Included in each runner on macOS VM image is [fastlane](https://fastlane.tools/),
 an open-source solution aimed at simplifying mobile app deployment.
 
-For information about how to set up code signing for your application, see the instructions in the [Mobile DevOps documentation](../../../ci/jobs/mobile_devops.md#code-sign-ios-projects-with-fastlane).
+For information about how to set up code signing for your application, see the instructions in the [Mobile DevOps documentation](../../../ci/mobile_devops/mobile_devops_tutorial_ios.md#configure-code-signing-with-fastlane).
 
 Related topics:
 

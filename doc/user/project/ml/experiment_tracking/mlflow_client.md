@@ -52,6 +52,88 @@ After experiments are logged, they are listed under `/<your project>/-/ml/experi
 
 Runs are registered and can be explored by selecting an experiment, model, or model version.
 
+### Creating an experiment
+
+```python
+import mlflow
+
+# Create a new experiment
+experiment_id = mlflow.create_experiment(name="<your_experiment>")
+
+# Setting the active experiment also creates a new experiment if it doesn't exist.
+mlflow.set_experiment(experiment_name="<your_experiment>")
+```
+
+### Creating a run
+
+```python
+import mlflow
+
+# Creating a run requires an experiment ID or an active experiment
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+# Runs can be created with or without a context manager
+with mlflow.start_run() as run:
+    print(run.info.run_id)
+    # Your training code
+
+with mlflow.start_run():
+    # Your training code
+```
+
+### Logging parameters and metrics
+
+```python
+import mlflow
+
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+with mlflow.start_run():
+    # Parameter keys need to be unique in the scope of the run
+    mlflow.log_param(key="param_1", value=1)
+
+    # Metrics can be updated throughout the run
+    mlflow.log_metric(key="metrics_1", value=1)
+    mlflow.log_metric(key="metrics_1", value=2)
+```
+
+### Logging artifacts
+
+```python
+import mlflow
+
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+with mlflow.start_run():
+    # Plaintext text files can be logged as artifacts using `log_text`
+    mlflow.log_text('Hello, World!', artifact_file='hello.txt')
+
+    mlflow.log_artifact(
+        local_path='<local/path/to/file.txt>',
+        artifact_path='<optional relative path to log the artifact at>'
+    )
+```
+
+### Logging models
+
+Models can be logged using one of the supported [MLflow Model flavors](https://mlflow.org/docs/latest/models.html#built-in-model-flavors).
+Logging with a model flavor records the metadata, making it easier to manage, load, and deploy models across different tools and environments.
+
+```python
+import mlflow
+from sklearn.ensemble import RandomForestClassifier
+
+mlflow.set_experiment(experiment_name="<your_experiment>")
+
+with mlflow.start_run():
+    # Create and train a simple model
+    model = RandomForestClassifier(n_estimators=10, random_state=42)
+    model.fit(X_train, y_train)
+
+    # Log the model using MLflow sklearn mode flavour
+    mlflow.sklearn.log_model(model, artifact_path="model")
+```
+
 ### Associating a run to a CI/CD job
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
@@ -184,7 +266,7 @@ client.create_model_version(model_name, version, description=description, tags=t
 
 #### Updating a model
 
-```python\
+```python
 from mlflow import MlflowClient
 
 client = MlflowClient()

@@ -8,11 +8,11 @@ info: Analysis of Application Settings for Cells 1.0.
 ## Statistics
 
 - Number of attributes: 511
-- Number of encrypted attributes: 41 (8.0%)
-- Number of attributes documented: 311 (61.0%)
-- Number of attributes on GitLab.com different from the defaults: 221 (43.0%)
+- Number of encrypted attributes: 45 (9.0%)
+- Number of attributes documented: 312 (61.0%)
+- Number of attributes on GitLab.com different from the defaults: 222 (44.0%)
 - Number of attributes with `clusterwide` set: 511 (100.0%)
-- Number of attributes with `clusterwide: true` set: 126 (25.0%)
+- Number of attributes with `clusterwide: true` set: 124 (24.0%)
 
 ## Individual columns
 
@@ -64,7 +64,6 @@ info: Analysis of Application Settings for Cells 1.0.
 | `ci_max_includes` | `false` | `integer` | `integer` | `true` | `150` | `false` | `false`| `true` |
 | `ci_max_total_yaml_size_bytes` | `false` | `integer` | `integer` | `true` | `314572800` | `false` | `false`| `true` |
 | `clickhouse` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
-| `cloud_connector_keys` | `false` | `jsonb` | `` | `false` | `null` | `false` | `true`| `false` |
 | `cloud_license_auth_token` | `true` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `cluster_agents` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `code_creation` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |

@@ -181,11 +181,11 @@ Settings = GitlabSettings.load(file, Rails.env) do
 
   # This method dictates whether the GitLab instance is part of a cells cluster
   def topology_service_enabled?
-    topology_service && topology_service.respond_to?(:enabled) && topology_service.enabled
+    cell.topology_service.enabled
   end
 
   def skip_sequence_alteration?
-    cell.respond_to?(:skip_sequence_alteration) && cell.skip_sequence_alteration
+    cell.database.respond_to?(:skip_sequence_alteration) && cell.database.skip_sequence_alteration
   end
 
   private

@@ -14,9 +14,6 @@ time_frame: 28d
 data_source: database
 data_category: optional
 instrumentation_class: CountMergeRequestAuthorsMetric
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

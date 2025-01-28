@@ -446,3 +446,15 @@ query {
 
 More about pagination and cursors:
 [GraphQL documentation](https://graphql.org/learn/pagination/)
+
+## Changing the query URL
+
+Sometimes, it is necessary to send GraphQL requests to a different URL. An example are the `GeoNode` queries, which only work against a secondary Geo site URL.
+
+To change the URL of a GraphQL request in the GraphiQL explorer, set a custom header in the Header area of GraphiQL (bottom left area, right where Variables are):
+
+```JSON
+{
+  "REQUEST_PATH": "<the URL to make the graphQL request against>"
+}
+```

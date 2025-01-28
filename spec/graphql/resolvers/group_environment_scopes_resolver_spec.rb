@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupEnvironmentScopesResolver, feature_category: :secrets_management do
+RSpec.describe Resolvers::GroupEnvironmentScopesResolver, feature_category: :ci_variables do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

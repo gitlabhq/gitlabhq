@@ -17,9 +17,6 @@ events:
   unique: user.id
 - name: o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

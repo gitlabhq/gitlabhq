@@ -23,13 +23,6 @@ Some permissions depend on other permissions.
 For example, the `admin_vulnerability` permission requires you to also include the `read_vulnerability` permission.
 Any dependencies are noted in the `Description` column for each permission.
 
-## Admin
-
-| Permission | Description | API Attribute | Scope | Introduced |
-|:-----------|:------------|:--------------|:------|:-----------|
-| View CI/CD | Read CI/CD details including runners and jobs. | [`read_admin_cicd`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177233) | Instance | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/507960) |
-| Read-only access to admin dashboard | Read-only access to admin dashboard | [`read_admin_dashboard`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171581) | Instance | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/501549) |
-
 ## Code review workflow
 
 | Permission | Description | API Attribute | Scope | Introduced |
@@ -96,7 +89,6 @@ Any dependencies are noted in the `Description` column for each permission.
 | Approve merge request | Allows approval of merge requests. | [`admin_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) | Project | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/412708) |
 |  | Create, read, update, and delete protected branches for a project. | [`admin_protected_branch`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162208) | Project | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/448823) |
 | Manage push rules | Configure push rules for repositories at the group or project level. | [`admin_push_rules`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147872) | Group,<br> Project | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/421786) |
-| Manage Protected Tags | Create, read, update, and delete protected tags. | [`manage_protected_tags`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178059) | Project | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/471386) |
 | View repository code | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. | [`read_code`](https://gitlab.com/gitlab-org/gitlab/-/issues/376180) | Group,<br> Project | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/20277) |
 
 ## System access

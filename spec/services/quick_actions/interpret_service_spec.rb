@@ -1281,6 +1281,16 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         end
       end
 
+      context 'when users are not set' do
+        let(:content) { "/request_review , " }
+
+        it 'returns an error message' do
+          _, explanations = service.explain(content, issuable)
+
+          expect(explanations).to eq(['Failed to request a review because no user was specified.'])
+        end
+      end
+
       context 'with "me" alias' do
         let(:content) { '/request_review me' }
 
@@ -3356,6 +3366,16 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
 
         expect(explanations).to eq([formatted_message])
+      end
+
+      context 'when users are not set' do
+        let(:content) { "/assign_reviewer , " }
+
+        it 'returns an error message' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to eq(['Failed to assign a reviewer because no user was specified.'])
+        end
       end
     end
 

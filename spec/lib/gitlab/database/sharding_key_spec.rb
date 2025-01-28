@@ -206,15 +206,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199"
     }
 
-    # Link to any discussions for tables where an exception to this rule was agreed.
-    exceptions = {
-      "bulk_import_entities" => "https://gitlab.com/gitlab-org/gitlab/-/issues/463854#note_2162355315"
-    }
-
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
     organization_id_columns = ApplicationRecord.connection.select_rows(sql)
-    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] || exceptions[column[0]] }
+    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] }
     messages = checks.filter_map do |check|
       table_name, *violations = check
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_house, feature_category: :fleet_visibility do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project).tap(&:reload) } # NOTE: reload is necessary to compute traversal_ids
+  let_it_be_with_reload(:project) { create(:project) } # NOTE: reload is necessary to compute traversal_ids
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:pipelines_data) do

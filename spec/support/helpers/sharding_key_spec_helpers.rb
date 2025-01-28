@@ -32,7 +32,7 @@ module ShardingKeySpecHelpers
     AND (
       pg_get_constraintdef(pg_constraint.oid) ILIKE '%#{column_name} IS NOT NULL%'
       OR
-      pg_get_constraintdef(pg_constraint.oid) ILIKE '%num_nonnulls%#{column_name}%> 0%'
+      pg_get_constraintdef(pg_constraint.oid)  ~ '.*num_nonnulls.*#{column_name}.*(= 1|> 0).*'
     )
     SQL
 

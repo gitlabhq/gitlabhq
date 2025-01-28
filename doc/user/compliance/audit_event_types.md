@@ -200,6 +200,7 @@ Audit event types belong to the following product categories.
 | [`update_compliance_framework`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74292) | A compliance framework is updated | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/340649) | Group |
 | [`update_compliance_requirement`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169485) | A compliance framework requirement is updated. | **{check-circle}** Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/470695) | Group |
 | [`update_status_check`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | An external status check is updated | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
+| [`updated_compliance_requirement_control`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177557) | Compliance requirement control updated. | **{check-circle}** Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/512381) | Group |
 
 ### Container registry
 

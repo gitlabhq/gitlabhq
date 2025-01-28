@@ -14,9 +14,6 @@ options:
   source_type: group_entity
   status: -1
 performance_indicator_type: []
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

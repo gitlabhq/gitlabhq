@@ -12,9 +12,6 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47040
 time_frame: none
 data_source: prometheus
 instrumentation_class: GitalyApdexMetric
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

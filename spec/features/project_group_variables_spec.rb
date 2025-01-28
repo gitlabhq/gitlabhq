@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project group variables', :js, feature_category: :secrets_management do
+RSpec.describe 'Project group variables', :js, feature_category: :ci_variables do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }

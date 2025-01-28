@@ -26,7 +26,7 @@ RSpec.describe ClickHouse::Models::Ci::FinishedPipelinesHourly, feature_category
   describe '.validate_time_window', :freeze_time do
     subject(:validate_time_window) { described_class.validate_time_window(from_time, to_time) }
 
-    context 'with time window of one week and one hour' do
+    context 'with time window of less than one week and one hour' do
       let(:from_time) { (1.hour - 1.second).before(1.week.ago) }
       let(:to_time) { Time.current }
 

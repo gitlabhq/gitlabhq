@@ -8,7 +8,7 @@ module Ci
 
     ALLOWED_PERCENTILES = [50, 75, 90, 95, 99].freeze
 
-    attr_reader :status_groups, :from_time, :to_time
+    attr_reader :current_user, :project, :from_time, :to_time, :source, :ref, :status_groups, :duration_percentiles
 
     def initialize(
       current_user:, project:, from_time:, to_time:,
@@ -16,25 +16,21 @@ module Ci
     )
       @current_user = current_user
       @project = project
+      @from_time = from_time || 1.week.ago.utc
+      @to_time = to_time || Time.now.utc
       @status_groups = status_groups
       @source = source
       @ref = ref
       @duration_percentiles = duration_percentiles
-      @from_time = from_time || 1.week.ago.utc
-      @to_time = to_time || Time.now.utc
     end
 
     def execute
-      return ServiceResponse.error(message: 'Project must be specified') unless @project
+      error_response = validate_arguments
+      return error_response if error_response
 
       unless ::Gitlab::ClickHouse.configured?
         return ServiceResponse.error(message: 'ClickHouse database is not configured')
       end
-
-      return ServiceResponse.error(message: 'Not allowed') unless allowed?
-
-      error_message = clickhouse_model.validate_time_window(@from_time, @to_time)
-      return ServiceResponse.error(message: error_message) if error_message
 
       fetch_response
     end
@@ -42,15 +38,11 @@ module Ci
     private
 
     def allowed?
-      @current_user&.can?(:read_ci_cd_analytics, @project)
-    end
-
-    def allowed_duration_percentiles
-      @duration_percentiles & ALLOWED_PERCENTILES
+      current_user&.can?(:read_ci_cd_analytics, project)
     end
 
     def clickhouse_model
-      if ::ClickHouse::Models::Ci::FinishedPipelinesHourly.time_window_valid?(@from_time, @to_time)
+      if ::ClickHouse::Models::Ci::FinishedPipelinesHourly.time_window_valid?(from_time, to_time)
         return ::ClickHouse::Models::Ci::FinishedPipelinesHourly
       end
 
@@ -58,11 +50,28 @@ module Ci
     end
 
     def base_query
-      query = clickhouse_model.for_project(@project).within_dates(@from_time, @to_time)
-      query = query.for_source(@source) if @source
-      query = query.for_ref(@ref) if @ref
+      query = clickhouse_model.for_project(project).within_dates(from_time, to_time)
+      query = query.for_source(source) if source
+      query = query.for_ref(ref) if ref
 
       query
+    end
+
+    def duration_percentile_symbols
+      duration_percentiles.map { |p| :"p#{p}" }
+    end
+
+    def validate_arguments
+      if (duration_percentiles & ALLOWED_PERCENTILES) != duration_percentiles
+        return ServiceResponse.error(message: 'Invalid duration percentiles specified')
+      end
+
+      return ServiceResponse.error(message: 'Project must be specified') if project.nil?
+      return ServiceResponse.error(message: 'Not allowed') unless allowed?
+      return ServiceResponse.error(message: 'Invalid time window') if from_time > to_time
+
+      error_message = clickhouse_model.validate_time_window(from_time, to_time)
+      ServiceResponse.error(message: error_message) if error_message
     end
 
     def fetch_response

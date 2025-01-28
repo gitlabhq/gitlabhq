@@ -12,9 +12,6 @@ data_source: system
 instrumentation_class: GitlabSettingsMetric
 options:
   setting_method: auto_devops_enabled?
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

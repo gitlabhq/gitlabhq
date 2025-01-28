@@ -42,17 +42,13 @@ module Ci
     end
 
     def calculate_aggregate_duration_percentiles(query, result)
-      return if allowed_duration_percentiles.empty?
+      return if duration_percentiles.empty?
 
-      duration_query = query.select(*allowed_duration_percentiles.map { |p| query.duration_quantile_function(p) })
+      duration_query = query.select(*duration_percentiles.map { |p| query.duration_quantile_function(p) })
       duration_result = ::ClickHouse::Client.select(duration_query.to_sql, :main)
       result[:duration_statistics] = duration_result.first.symbolize_keys.transform_values do |interval|
-        interval ? interval.to_f.round(3).seconds : 0.0
+        interval.to_f.round(3).seconds
       end
-    end
-
-    def allowed_duration_percentiles
-      @duration_percentiles & ALLOWED_PERCENTILES
     end
   end
 end

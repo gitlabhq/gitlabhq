@@ -4,6 +4,6 @@ class AddCloudConnectorKeysToApplicationSettings < Gitlab::Database::Migration[2
   milestone '17.9'
 
   def change
-    add_column :application_settings, :cloud_connector_keys, :jsonb
+    # no-op due to https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19182
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :secrets_management do
+RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :ci_variables do
   let(:variable_key) { 'VAR' }
   let(:variable_value) { 'something' }
   let(:expected_value) { variable_value }

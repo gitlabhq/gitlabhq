@@ -25,11 +25,15 @@ The Docker image for the AI gateway is around 340 MB (compressed) for the `linux
 
 Find the GitLab official Docker image at:
 
-- [AI Gateway Docker image on Container Registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/).
-- [AI Gateway Docker image on DockerHub](https://hub.docker.com/repository/docker/gitlab/model-gateway/tags).
+- AI Gateway Docker image on Container Registry: 
+  - [Stable](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284)
+  - [Nightly](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/8086262)
+- AI Gateway Docker image on DockerHub:
+  - [Stable](https://hub.docker.com/r/gitlab/model-gateway/tags)
+  - [Nightly](https://hub.docker.com/r/gitlab/model-gateway-self-hosted/tags)
 - [Release process for self-hosted AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
-Use the image tag that corresponds to your GitLab version. For example, if your GitLab version is `v17.6.0`, use the `self-hosted-17.6.0-ee` tag. It is critical to ensure that the image version matches your GitLab version to avoid compatibility issues.
+Use the image tag that corresponds to your GitLab version. For example, if your GitLab version is `v17.6.0`, use the `self-hosted-17.6.0-ee` tag. It is critical to ensure that the image version matches your GitLab version to avoid compatibility issues. Nightly builds are available to have access to newer features, but backwards compatibility is not guaranteed.
 
 NOTE:
 Using the `:latest` tag is **not recommended** as it can cause incompatibility if your GitLab version lags behind or jumps ahead of the AI Gateway release. Always use an explicit version tag.

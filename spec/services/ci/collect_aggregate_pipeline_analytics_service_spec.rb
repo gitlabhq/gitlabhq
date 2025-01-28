@@ -6,12 +6,7 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
   feature_category: :fleet_visibility do
   include ClickHouseHelpers
 
-  let_it_be(:project1) { create(:project).tap(&:reload) } # reload required to calculate traversal path
-  let_it_be(:project2) { create(:project).tap(&:reload) }
-  let_it_be(:current_user) { create(:user, reporter_of: [project1, project2]) }
-
-  let_it_be(:starting_time) { Time.utc(2023) }
-  let_it_be(:ending_time) { 1.week.after(Time.utc(2023)) }
+  include_context 'with pipelines executed on different projects'
 
   let(:project) { project1 }
   let(:status_groups) { [:any] }
@@ -29,58 +24,27 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
       duration_percentiles: duration_percentiles)
   end
 
-  let(:pipelines) do
-    [
-      create_pipeline(project1, :running, 35.minutes.before(ending_time), 30.minutes),
-      create_pipeline(project1, :success, 1.day.before(ending_time), 30.minutes),
-      create_pipeline(project1, :canceled, 1.hour.before(ending_time), 1.minute),
-      create_pipeline(project1, :failed, 5.days.before(ending_time), 2.hours),
-      create_pipeline(project1, :failed, 1.week.before(ending_time), 45.minutes),
-      create_pipeline(project1, :skipped, 5.days.before(ending_time), 1.second),
-      create_pipeline(project1, :skipped, 1.second.before(starting_time), 45.minutes),
-      create_pipeline(project1, :success, ending_time, 30.minutes)
-    ]
-  end
-
   subject(:result) { service.execute }
 
   before do
     insert_ci_pipelines_to_click_house(pipelines)
   end
 
-  context 'when ClickHouse database is not configured' do
-    before do
-      allow(::Gitlab::ClickHouse).to receive(:configured?).and_return(false)
-    end
-
-    it 'returns error' do
-      expect(result.error?).to be true
-      expect(result.errors).to contain_exactly('ClickHouse database is not configured')
-    end
-  end
-
-  shared_examples 'returns Not allowed error' do
-    it 'returns error' do
-      expect(result.error?).to be true
-      expect(result.errors).to contain_exactly('Not allowed')
-    end
-  end
-
   shared_examples 'a service returning aggregate analytics' do
     using RSpec::Parameterized::TableSyntax
 
     where(:status_groups, :duration_percentiles, :expected_aggregate) do
-      %i[any]           | []       | { count: { any: 6 } }
-      %i[any]           | [50, 75] | { count: { any: 6 }, duration_statistics: { p50: 30.minutes, p75: 2475.seconds } }
-      %i[any success]   | []       | { count: { any: 6, success: 1 } }
-      %i[success other] | []       | { count: { success: 1, other: 2 } }
-      %i[failed]        | [50,
-        75] | { count: { failed: 2 }, duration_statistics: { p50: 30.minutes, p75: 2475.seconds } }
+      %i[any]           | []       | { count: { any: 7 } }
+      %i[any]           | [50, 75] | { count: { any: 7 }, duration_statistics: { p50: 30.minutes, p75: 82.5.minutes } }
+      %i[any success]   | []       | { count: { any: 7, success: 2 } }
+      %i[success other] | []       | { count: { success: 2, other: 2 } }
+      %i[failed]        | [50, 75] |
+        { count: { failed: 2 }, duration_statistics: { p50: 30.minutes, p75: 82.5.minutes } }
     end
 
     with_them do
       it 'returns aggregate analytics' do
-        expect(result.success?).to be true
+        expect(result).to be_success
         expect(result.errors).to eq([])
         expect(result.payload[:aggregate]).to eq(expected_aggregate)
       end
@@ -93,18 +57,18 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
 
       context 'and there are pipelines in the last week', time_travel_to: '2023-01-08' do
         it 'returns aggregate analytics from last week' do
+          expect(result).to be_success
           expect(result.errors).to eq([])
-          expect(result.success?).to be true
           expect(result.payload[:aggregate]).to eq(
-            count: { any: 6 }, duration_statistics: { p50: 30.minutes, p99: 6975.seconds }
+            count: { any: 7 }, duration_statistics: { p50: 30.minutes, p99: 67.8.hours }
           )
         end
       end
 
       context 'and there are no pipelines in the last week', time_travel_to: '2023-01-15 00:00:01' do
         it 'returns empty aggregate analytics' do
+          expect(result).to be_success
           expect(result.errors).to eq([])
-          expect(result.success?).to be true
           expect(result.payload[:aggregate]).to eq(count: { any: 0 }, duration_statistics: { p50: 0, p99: 0 })
         end
       end
@@ -115,9 +79,9 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
       let(:to_time) { 1.second.before(ending_time) }
 
       it 'does not include job starting 1 second before start of week' do
+        expect(result).to be_success
         expect(result.errors).to eq([])
-        expect(result.success?).to be true
-        expect(result.payload[:aggregate]).to eq(count: { any: 6 })
+        expect(result.payload[:aggregate]).to eq(count: { any: 7 })
       end
     end
 
@@ -126,9 +90,9 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
       let(:to_time) { 1.second.before(ending_time) }
 
       it 'includes job starting 1 second before start of week' do
+        expect(result).to be_success
         expect(result.errors).to eq([])
-        expect(result.success?).to be true
-        expect(result.payload[:aggregate]).to eq(count: { any: 7 })
+        expect(result.payload[:aggregate]).to eq(count: { any: 8 })
       end
     end
 
@@ -152,52 +116,19 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
       end
 
       it 'returns aggregate analytics for specified project only' do
-        expect(result.success?).to be true
+        expect(result).to be_success
         expect(result.errors).to eq([])
         expect(result.payload[:aggregate]).to eq(count: { any: 1, success: 0, failed: 1 })
       end
     end
   end
 
+  it_behaves_like 'a pipeline analytics service'
   it_behaves_like 'a service returning aggregate analytics'
 
-  context 'when user is nil' do
-    let(:current_user) { nil }
-
-    include_examples 'returns Not allowed error'
-  end
-
-  context 'when project has analytics disabled' do
-    let_it_be(:project) { create(:project, :analytics_disabled) }
-
-    include_examples 'returns Not allowed error'
-  end
-
-  context 'when project is not specified' do
-    let(:project) { nil }
-
-    it 'returns error' do
-      expect(result.error?).to be true
-      expect(result.errors).to contain_exactly('Project must be specified')
-    end
-  end
-
   context 'when user is an admin' do
-    let(:current_user) { create(:admin) }
+    let_it_be(:current_user) { create(:admin) }
 
     it_behaves_like 'a service returning aggregate analytics'
-  end
-
-  context 'when user is a guest' do
-    let_it_be(:current_user) { create(:user, guest_of: project1) }
-
-    include_examples 'returns Not allowed error'
-  end
-
-  def create_pipeline(project, status, started_at, duration)
-    build_stubbed(:ci_pipeline, status,
-      project: project,
-      created_at: 1.second.before(started_at), started_at: started_at, finished_at: duration.after(started_at),
-      duration: duration)
   end
 end

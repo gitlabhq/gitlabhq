@@ -11,9 +11,6 @@ instrumentation_class: GitlabConfigMetric
 options:
   config:
     ldap: enabled
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

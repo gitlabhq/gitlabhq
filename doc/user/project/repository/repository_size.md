@@ -41,31 +41,51 @@ and uploading LFS objects are restricted.
 
 The following methods are available to reduce the size of a repository:
 
-- [Purge files from history](#purge-files-from-repository-history)
-- [Clean up repository](#clean-up-repository)
-- [Remove blobs](#remove-files)
+- [Purge files from history](#purge-files-from-repository-history): Remove large files from the entire Git history.
+- [Clean up repository](#clean-up-repository): Remove internal Git references and unreferenced objects.
+- [Remove blobs](#remove-blobs): Permanently delete blobs containing sensitive or confidential information.
+
+Before you reduce your repository size, you should [create a full backup of your repository](../../../administration/backup_restore/index.md).
+These methods are irreversible and can potentially affect your project's history and data.
+
+When you reduce your repository size with any of the available methods, you don't need to block
+access to your project. You can perform these operations while your project remains accessible to
+users. These methods don't have any known performance implications and don't cause downtime.
+However, you should perform these actions during periods of low activity to minimize
+the potential impact on users.
 
 ### Purge files from repository history
 
-Use this method to remove large files from the entire Git history.
-
-It is not suitable for removing sensitive data like passwords or keys from your repository.
-Information about commits, including file content, is cached in the database, and remain visible
-even after they have been removed from the repository. To remove sensitive data, use the method
-described in [Remove blobs](#remove-files).
-
-For more information, see [use Git to purge files from repository history](../../../topics/git/repository.md#purge-files-from-repository-history).
-
-### Clean up repository
-
-Use this method to remove internal Git references and unreferenced objects.
+You can [purge files with `git filter-repo`](../../../topics/git/repository.md#purge-files-from-repository-history)
+to remove large files from Git history. Do not use this method to remove sensitive data like passwords or keys.
+Instead use [Remove blobs](#remove-blobs).
 
 This process:
 
-- Removes any internal Git references to old commits.
-- Runs `git gc --prune=30.minutes.ago` against the repository to remove unreferenced objects.
-- Unlinks any unused LFS objects attached to your project, freeing up storage space.
-- Recalculates the size of your repository on disk.
+- Modifies the entire Git history.
+- Might affect open merge requests.
+- Might affect existing pipelines.
+- Requires re-cloning of local repositories.
+- Does not affect LFS objects.
+- Does not specify commit signatures.
+- Is irreversible.
+
+NOTE:
+Information about commits, including file content, is cached in the database, and remains visible
+even after they have been removed from the repository.
+
+### Clean up repository
+
+Use this method to remove internal Git references and unreferenced objects from your repository.
+Do not use this method to remove sensitive data.
+Instead use [Remove blobs](#remove-blobs).
+
+This process:
+
+- Runs `git gc --prune=30.minutes.ago` to remove unreferenced objects.
+- Unlinks unused LFS objects, freeing storage space.
+- Recalculates repository size on disk.
+- Is irreversible.
 
 WARNING:
 Removing internal Git references causes associated merge request commits, pipelines, and change
@@ -95,25 +115,27 @@ To clean up a repository:
 
 GitLab sends an email notification with the recalculated repository size after the cleanup completes.
 
-### Remove files
+### Remove blobs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
 > - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472018) in GitLab 17.9. Feature flag `rewrite_history_ui` removed.
 
-Use this method to permanently delete files containing sensitive or confidential information from your repository.
+A Git binary large object (blob) stores file contents without metadata.
+Each blob has a unique SHA hash that represents a specific version of a file in the repository.
 
-WARNING:
-**This action is irreversible.**
-After rewriting history and running housekeeping, the changes are permanent.
-Be aware of the following impacts when removing blobs from your repository:
+Use this method to permanently delete blobs that contain sensitive or confidential information.
 
-- Open merge requests might fail to merge and require manual rebasing.
-- Existing local clones are incompatible with the updated repository and must be re-cloned.
-- Pipelines referencing old commit SHAs might break and require reconfiguration.
-- Historical tags and branches based on the old commit history might not function correctly.
-- Commit signatures are dropped during the rewrite process.
+This process:
+
+- Rewrites Git history.
+- Drops commit signatures.
+- Might cause open merge requests to fail to merge, requiring a manual rebase.
+- Might cause pipelines referencing old commit SHAs to break.
+- Might affect historical tags and branches based on old commit history.
+- Requires re-cloning of local repositories.
+- Is irreversible.
 
 NOTE:
 To replace strings with `***REMOVED***`, see [Redact information](../../../topics/git/undo.md#redact-information).
@@ -147,7 +169,7 @@ Prerequisites:
 
 - The repository must be cloned to your local machine.
 
-To get a list of files at a given commit or branch sorted by size:
+To get a list of blobs at a given commit or branch sorted by size:
 
 1. Open a terminal and go to your repository directory.
 1. Run the following command:

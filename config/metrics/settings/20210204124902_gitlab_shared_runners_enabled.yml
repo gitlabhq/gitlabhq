@@ -13,9 +13,6 @@ instrumentation_class: GitlabConfigMetric
 options:
   config:
     gitlab_ci: shared_runners_enabled
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

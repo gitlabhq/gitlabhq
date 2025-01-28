@@ -331,7 +331,7 @@ Prerequisites:
 
 You can use the API to [create](../api/graphql/reference/index.md#mutationmemberroleadmincreate) and [assign](../api/graphql/reference/index.md#mutationmemberroletouserassign) custom admin roles. These roles allow you to grant limited access to administrator resources.
 
-For information on available permissions, see [custom permissions](custom_roles/abilities.md#admin).
+For information on available permissions, see [custom permissions](custom_roles/abilities.md).
 
 ## Known issues
 

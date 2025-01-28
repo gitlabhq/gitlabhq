@@ -13,9 +13,6 @@ performance_indicator_type: []
 events:
   - name: g_project_management_issue_design_comments_removed
     unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

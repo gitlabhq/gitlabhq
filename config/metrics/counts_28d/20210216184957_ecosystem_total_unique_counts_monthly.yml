@@ -37,9 +37,6 @@ events:
   unique: user.id
 - name: i_ecosystem_slack_service_confidential_issue_notification
   unique: user.id
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

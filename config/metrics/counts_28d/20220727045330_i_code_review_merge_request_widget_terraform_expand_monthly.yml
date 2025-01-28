@@ -16,9 +16,6 @@ events:
     unique: user.id
     filter:
       label: terraform
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium

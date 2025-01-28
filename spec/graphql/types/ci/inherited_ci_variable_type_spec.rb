@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['InheritedCiVariable'], feature_category: :secrets_management do
+RSpec.describe GitlabSchema.types['InheritedCiVariable'], feature_category: :ci_variables do
   specify do
     expect(described_class).to have_graphql_fields(
       :id,

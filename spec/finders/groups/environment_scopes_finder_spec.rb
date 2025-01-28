@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::EnvironmentScopesFinder, feature_category: :secrets_management do
+RSpec.describe Groups::EnvironmentScopesFinder, feature_category: :ci_variables do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group, :public) }

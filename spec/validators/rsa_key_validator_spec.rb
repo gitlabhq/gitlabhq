@@ -19,38 +19,19 @@ RSpec.describe RsaKeyValidator do
 
   subject(:validator) { described_class.new(attributes: [:signing_key]) }
 
-  it 'is not valid when single invalid RSA key is provided' do
+  it 'is not valid when invalid RSA key is provided' do
     record = validatable.new('invalid RSA key')
 
     validator.validate(record)
 
     aggregate_failures do
       expect(record).not_to be_valid
-      expect(record.errors[:signing_key]).to include('contains invalid RSA keys')
+      expect(record.errors[:signing_key]).to include('is not a valid RSA key')
     end
   end
 
-  it 'is not valid when list containing invalid RSA key is provided' do
-    record = validatable.new([OpenSSL::PKey::RSA.new(1024).to_pem, 'invalid RSA key'])
-
-    validator.validate(record)
-
-    aggregate_failures do
-      expect(record).not_to be_valid
-      expect(record.errors[:signing_key]).to include('contains invalid RSA keys')
-    end
-  end
-
-  it 'is valid when single valid RSA key is provided' do
+  it 'is valid when valid RSA key is provided' do
     record = validatable.new(OpenSSL::PKey::RSA.new(1024).to_pem)
-
-    validator.validate(record)
-
-    expect(record).to be_valid
-  end
-
-  it 'is valid when multiple valid RSA keys are provided' do
-    record = validatable.new([OpenSSL::PKey::RSA.new(1024).to_pem])
 
     validator.validate(record)
 

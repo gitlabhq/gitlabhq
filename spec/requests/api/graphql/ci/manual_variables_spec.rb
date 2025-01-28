@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature_category: :secrets_management do
+RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature_category: :ci_variables do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

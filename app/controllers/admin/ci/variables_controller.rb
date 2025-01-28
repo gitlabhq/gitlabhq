@@ -3,7 +3,7 @@
 module Admin
   module Ci
     class VariablesController < ApplicationController
-      feature_category :secrets_management
+      feature_category :ci_variables
 
       def show
         respond_to do |format|

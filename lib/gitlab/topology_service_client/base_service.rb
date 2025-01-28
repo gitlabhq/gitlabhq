@@ -19,7 +19,10 @@ module Gitlab
       end
 
       def cell_name
-        @cell_name ||= Gitlab.config.cell.name
+        # This should be removed in
+        # https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/issues/60
+        # then we should pass cell.id instead
+        @cell_name ||= "cell-#{Gitlab.config.cell.id}"
       end
 
       def service_credentials
@@ -28,7 +31,7 @@ module Gitlab
       end
 
       def topology_service_address
-        Gitlab.config.topology_service.address
+        Gitlab.config.cell.topology_service.address
       end
 
       def enabled?

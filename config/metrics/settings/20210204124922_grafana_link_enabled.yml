@@ -10,8 +10,6 @@ data_source: system
 instrumentation_class: GitlabSettingsMetric
 options:
   setting_method: grafana_enabled?
-distribution:
-- ce
 tiers:
 - free
 performance_indicator_type: []

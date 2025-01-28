@@ -1,4 +1,5 @@
-<% custom_abilities_by_feature_category = MemberRole.all_customizable_permissions.group_by { |_k, definition| definition[:feature_category] } %>
+<% active_custom_abilities = MemberRole.all_customizable_permissions.filter { |p| !::Feature::Definition.get("custom_ability_#{p}") } %>
+<% custom_abilities_by_feature_category = active_custom_abilities.group_by { |_k, definition| definition[:feature_category] } %>
 <% def humanize(feature_category) %>
 <%   case feature_category %>
 <%   when 'mlops' %>

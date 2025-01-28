@@ -15,9 +15,6 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_ecosystem_slack_service_issue_notification
-distribution:
-- ee
-- ce
 tiers:
 - free
 - premium

@@ -16,9 +16,6 @@ performance_indicator_type:
 - customer_health_score
 events:
   - name: i_code_review_user_create_mr
-distribution:
-- ce
-- ee
 tiers:
 - free
 - premium
