@@ -506,6 +506,20 @@ queue.each do |job|
 end
 ```
 
+### Remove Sidekiq jobs for a specific worker (destructive)
+
+```ruby
+queue = Sidekiq::Queue.new("default")
+
+queue.each do |job|
+  if job.klass == "TodosDestroyer::PrivateFeaturesWorker"
+    # Uncomment the line below to actually delete jobs
+    #job.delete
+    puts "Deleted job ID #{job.jid}"
+  end
+end
+```
+
 ## Canceling running jobs (destructive)
 
 This is highly risky operation and use it as last resort.

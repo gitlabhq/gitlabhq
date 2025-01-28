@@ -75,8 +75,8 @@
         - if show_legacy_ci_icon && commit_status
           = render_commit_status(commit, commit_status, ref: ref)
         .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
-        .commit-sha-group.btn-group.gl-hidden.sm:gl-flex
-          .label.label-monospace.monospace
+        .btn-group.gl-hidden.sm:gl-flex
+          = render Pajamas::ButtonComponent.new(label: true, button_text_classes: 'gl-font-monospace', button_options: { class: 'dark:!gl-bg-neutral-800' }) do
             = commit.short_id
           = clipboard_button(text: commit.id, category: :primary, size: :medium, title: _("Copy commit SHA"))
           = link_to_browse_code(project, commit)

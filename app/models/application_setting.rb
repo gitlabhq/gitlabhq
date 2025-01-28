@@ -8,6 +8,7 @@ class ApplicationSetting < ApplicationRecord
   include Sanitizable
 
   ignore_columns %i[
+    cloud_connector_keys
     encrypted_openai_api_key
     encrypted_openai_api_key_iv
     encrypted_anthropic_api_key

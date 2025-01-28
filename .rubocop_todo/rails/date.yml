@@ -76,7 +76,6 @@ Rails/Date:
     - 'ee/spec/lib/gitlab/sitemaps/sitemap_file_spec.rb'
     - 'ee/spec/models/analytics/forecasting/deployment_frequency_forecast_spec.rb'
     - 'ee/spec/models/analytics/forecasting/forecast_spec.rb'
-    - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/burndown_spec.rb'
     - 'ee/spec/models/ci/minutes/namespace_monthly_usage_spec.rb'
     - 'ee/spec/models/dora/performance_score_spec.rb'

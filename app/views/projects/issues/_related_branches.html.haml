@@ -3,7 +3,8 @@
     icon: 'branch',
     count: @related_branches.size,
     options: { class: 'gl-mt-5' },
-    body_options: { class: 'gl-p-3' }) do |c|
+    body_options: { class: 'gl-p-3' },
+    is_collapsible: true) do |c|
     - c.with_body do
       %ul.related-merge-requests.content-list
         - @related_branches.each do |branch|

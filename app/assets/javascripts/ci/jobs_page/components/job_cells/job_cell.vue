@@ -67,7 +67,7 @@ export default {
 
 <template>
   <div>
-    <div class="-gl-mx-3 -gl-mb-2 -gl-mt-3 gl-truncate gl-p-3">
+    <div class="-gl-mx-3 -gl-mb-2 -gl-mt-3 gl-truncate gl-p-3 gl-font-normal">
       <gl-icon
         v-if="jobStuck"
         v-gl-tooltip="$options.i18n.stuckText"

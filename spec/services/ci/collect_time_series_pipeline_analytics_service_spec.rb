@@ -37,6 +37,17 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
     insert_ci_pipelines_to_click_house(pipelines)
   end
 
+  shared_examples 'a service reporting metrics for time series analytics' do
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'collect_time_series_pipeline_analytics' }
+      let(:category) { described_class.name }
+      let(:user) { current_user }
+      let(:additional_properties) do
+        { property: time_series_period.to_s }
+      end
+    end
+  end
+
   shared_examples 'a service returning time series analytics' do
     using RSpec::Parameterized::TableSyntax
 
@@ -111,6 +122,8 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
       context 'with weekly period' do
         let(:time_series_period) { :week }
 
+        it_behaves_like 'a service reporting metrics for time series analytics'
+
         it 'returns weekly time series analytics' do
           expect(result).to be_success
           expect(result.errors).to eq([])
@@ -123,6 +136,8 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
 
       context 'with monthly period' do
         let(:time_series_period) { :month }
+
+        it_behaves_like 'a service reporting metrics for time series analytics'
 
         it 'returns monthly time series analytics' do
           expect(result).to be_success
@@ -138,6 +153,8 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
       let(:from_time) { nil }
       let(:to_time) { nil }
       let(:duration_percentiles) { [50, 99] }
+
+      it_behaves_like 'a service reporting metrics for time series analytics'
 
       context 'and there are pipelines in the last week', time_travel_to: '2023-01-08' do
         it 'returns time series analytics from last week' do

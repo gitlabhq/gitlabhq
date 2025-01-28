@@ -9,7 +9,7 @@ class RemoveCloudConnectorKeysFromApplicationSettings < Gitlab::Database::Migrat
   # This removes a column that was added in a previous migration that is now a no-op
   # See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19182
   def up
-    remove_column :application_settings, :cloud_connector_keys, if_exists: true # rubocop:disable Migration/RemoveColumn -- the original migration was turned to a no-op
+    # no-op: we need to do this in a separate deploy since the original MR reached canary
   end
 
   def down

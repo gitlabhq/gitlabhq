@@ -490,18 +490,12 @@ RSpec.describe SearchService, feature_category: :global_search do
     let(:search) { 'foobar' }
 
     where(:scope, :feature_flag, :enabled, :expected) do
-      'blobs'          | :global_search_code_tab           | false | false
-      'blobs'          | :global_search_code_tab           | true  | true
-      'commits'        | :global_search_commits_tab        | false | false
-      'commits'        | :global_search_commits_tab        | true  | true
       'issues'         | :global_search_issues_tab         | false | false
       'issues'         | :global_search_issues_tab         | true  | true
       'merge_requests' | :global_search_merge_requests_tab | false | false
       'merge_requests' | :global_search_merge_requests_tab | true  | true
       'snippet_titles' | :global_search_snippet_titles_tab | false | false
       'snippet_titles' | :global_search_snippet_titles_tab | true  | true
-      'wiki_blobs'     | :global_search_wiki_tab           | false | false
-      'wiki_blobs'     | :global_search_wiki_tab           | true  | true
       'users'          | :global_search_users_tab          | false | false
       'users'          | :global_search_users_tab          | true  | true
       'random'         | :random                           | nil   | true

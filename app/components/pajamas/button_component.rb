@@ -42,6 +42,7 @@ module Pajamas
     # @param [Boolean] disabled
     # @param [Boolean] loading
     # @param [Boolean] block
+    # @param [Boolean] label
     # @param [Boolean] selected
     # @param [String] icon
     # @param [String] href
@@ -59,6 +60,7 @@ module Pajamas
       disabled: false,
       loading: false,
       block: false,
+      label: false,
       selected: false,
       icon: nil,
       href: nil,
@@ -76,6 +78,7 @@ module Pajamas
       @disabled = disabled
       @loading = loading
       @block = block
+      @label = label
       @selected = selected
       @icon = icon
       @href = href
@@ -94,6 +97,7 @@ module Pajamas
       classes.push('disabled') if @disabled || @loading
       classes.push('selected') if @selected
       classes.push('btn-block') if @block
+      classes.push('btn-label') if @label
       classes.push('btn-icon') if @icon && !content
 
       classes.push(SIZE_CLASSES[@size])

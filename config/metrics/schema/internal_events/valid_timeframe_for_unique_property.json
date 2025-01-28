@@ -1,0 +1,50 @@
+{
+  "if": {
+    "description": "metric is counting unique values",
+    "properties": {
+      "events": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "unique": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "unique"
+          ]
+        }
+      }
+    },
+    "required": [
+      "events"
+    ]
+  },
+  "then": {
+    "description": "time_frame should represent a fixed duration",
+    "properties": {
+      "time_frame": {
+        "anyOf": [
+          {
+            "type": "string",
+            "enum": [
+              "7d",
+              "28d"
+            ]
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "7d",
+                "28d"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

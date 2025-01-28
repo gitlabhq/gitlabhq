@@ -378,7 +378,6 @@ RSpec/ContextWording:
     - 'ee/spec/mailers/notify_spec.rb'
     - 'ee/spec/models/alert_management/alert_payload_field_spec.rb'
     - 'ee/spec/models/allowed_email_domain_spec.rb'
-    - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'

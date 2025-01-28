@@ -258,27 +258,59 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       end
 
       context 'internal metric' do
+        let(:default_values) do
+          {
+            data_source: 'internal_events',
+            time_frame: '7d',
+            events: [{ name: 'a', unique: 'user.id' }]
+          }
+        end
+
         before do
-          attributes[:data_source] = 'internal_events'
+          attributes.merge!(default_values)
         end
 
-        where(:instrumentation_class, :options, :events, :is_valid) do
-          'AnotherClass'     | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
-          'RedisHLLMetric'   | { events: ['a'] } | nil | false
-          nil                | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | true
+        context 'with instrumentation_class' do
+          where(:instrumentation_class, :options, :events, :is_valid) do
+            'AnotherClass'     | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
+            'RedisHLLMetric'   | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | false
+            'RedisHLLMetric'   | { events: ['a'] } | nil | false
+            nil                | { events: ['a'] } | [{ name: 'a', unique: 'user.id' }] | true
+          end
+
+          with_them do
+            it 'has validation errors when invalid' do
+              attributes[:instrumentation_class] = instrumentation_class if instrumentation_class
+              attributes[:options] = options if options
+              attributes[:events] = events if events
+
+              if is_valid
+                expect_no_validation_errors
+              else
+                expect_validation_errors
+              end
+            end
+          end
         end
 
-        with_them do
-          it 'has validation errors when invalid' do
-            attributes[:instrumentation_class] = instrumentation_class if instrumentation_class
-            attributes[:options] = options if options
-            attributes[:events] = events if events
+        context 'with time_frame' do
+          where(:time_frame, :is_valid) do
+            ['7d']     | true
+            %w[7d 28d] | true
+            '7d'       | true
+            'none'     | false
+            nil        | false
+          end
 
-            if is_valid
-              expect_no_validation_errors
-            else
-              expect_validation_errors
+          with_them do
+            it 'has validation errors when invalid' do
+              attributes[:time_frame] = time_frame
+
+              if is_valid
+                expect_no_validation_errors
+              else
+                expect_validation_errors
+              end
             end
           end
         end

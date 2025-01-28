@@ -312,6 +312,8 @@ stateDiagram
 
 ## Vulnerability is no longer detected
 
+> - A link to the commit that resolved the vulnerability was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372799) and made [generally available on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178748) in GitLab 17.9. Feature flag `vulnerability_representation_information` removed.
+
 A vulnerability may be no longer detected because of changes made deliberately to remediate it or
 as a side effect of other changes. When a security scan runs and a vulnerability is no longer
 detected in the default branch, the scanner adds **No longer detected** to the record's activity log
@@ -320,6 +322,8 @@ vulnerability has been resolved and if so,
 [manually change its status to **Resolved**](#change-the-status-of-a-vulnerability). You can also
 use a [vulnerability management policy](../policies/vulnerability_management_policy.md) to
 automatically change the status of vulnerabilities matching specific criteria to **Resolved**.
+
+You can find a link to the commit that resolved the vulnerability at the top or bottom of the vulnerability page.
 
 ## Vulnerability dismissal reasons
 

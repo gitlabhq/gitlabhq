@@ -21,12 +21,11 @@ module InternalEventsCli
           [
             metric.identifier.value,
             conflicting_metric_exists?(metric),
-            metric.filters_expected?,
-            metric.time_frame.value == 'all'
+            metric.filters_expected?
           ]
         end
 
-        options = options.filter_map do |(identifier, defined, filtered, _), metrics|
+        options = options.filter_map do |(identifier, defined, filtered), metrics|
           # Hide the filtered version of an option if unsupported; it just adds noise without value. Still,
           # showing unsupported options is valuable, because it advertises possibilities and explains why
           # those options aren't available.

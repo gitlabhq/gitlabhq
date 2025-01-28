@@ -196,7 +196,6 @@ RSpec/BeEq:
     - 'ee/spec/models/allowed_email_domain_spec.rb'
     - 'ee/spec/models/analytics/forecasting/forecast_spec.rb'
     - 'ee/spec/models/analytics/value_stream_dashboard/count_spec.rb'
-    - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'

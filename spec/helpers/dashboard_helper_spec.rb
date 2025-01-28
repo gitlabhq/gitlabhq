@@ -78,7 +78,7 @@ RSpec.describe DashboardHelper do
 
   describe '.user_groups_requiring_reauth', feature_category: :system_access do
     it 'returns an empty array' do
-      expect(helper.user_groups_requiring_reauth).to match_array([])
+      expect(helper.user_groups_requiring_reauth).to be_empty
     end
   end
 

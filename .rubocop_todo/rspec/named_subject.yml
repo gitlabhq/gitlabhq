@@ -472,7 +472,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/analytics/cycle_analytics/group_level_spec.rb'
     - 'ee/spec/models/analytics/forecasting/deployment_frequency_forecast_spec.rb'
     - 'ee/spec/models/analytics/forecasting/forecast_spec.rb'
-    - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/approval_state_spec.rb'

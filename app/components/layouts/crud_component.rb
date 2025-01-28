@@ -14,10 +14,12 @@ module Layouts
     # @param [Hash] form_options
     # @param [Hash] toggle_options
     # @param [Hash] footer_options
+    # @param [Boolean] is_collapsible
     def initialize(
       title, description: nil, count: nil, icon: nil, icon_class: nil,
       toggle_text: nil, options: {}, count_options: {}, body_options: {},
-      form_options: {}, toggle_options: {}, footer_options: {}
+      form_options: {}, toggle_options: {}, footer_options: {},
+      is_collapsible: false
     )
       @title = title
       @description = description
@@ -31,6 +33,7 @@ module Layouts
       @form_options = form_options
       @toggle_options = toggle_options
       @footer_options = footer_options
+      @is_collapsible = is_collapsible
     end
 
     renders_one :description
@@ -40,10 +43,23 @@ module Layouts
     renders_one :footer
     renders_one :pagination
 
+    def id
+      @title.downcase.strip.gsub(" ", "-").gsub(/[^\w-]/, "") # rubocop:disable Performance/StringReplacement -- Not possible with tr
+    end
+
+    def options_attrs
+      default_classes = [
+        ('js-toggle-container' if @toggle_text),
+        ('js-crud-collapsible-section' if @is_collapsible)
+      ]
+      @options.merge(default_attrs(@options, nil, default_classes))
+    end
+
     def body_options_attrs
       default_testid = 'crud-body'
       default_classes = [
-        ('gl-rounded-b-base' unless footer)
+        ('gl-rounded-b-base' unless footer),
+        ('js-crud-collapsible-content' if @is_collapsible)
       ]
       @body_options.merge(default_attrs(@body_options, default_testid, default_classes))
     end
@@ -64,14 +80,18 @@ module Layouts
       default_testid = 'crud-form'
       default_classes = [
         ('js-toggle-content' if @toggle_text),
-        ('gl-hidden' if @toggle_text && !@form_options[:form_errors])
+        ('gl-hidden' if @toggle_text && !@form_options[:form_errors]),
+        ('js-crud-collapsible-content' if @is_collapsible)
       ]
       @form_options.merge(default_attrs(@form_options, default_testid, default_classes))
     end
 
     def footer_options_attrs
       default_testid = 'crud-footer'
-      @footer_options.merge(default_attrs(@footer_options, default_testid))
+      default_classes = [
+        ('js-crud-collapsible-content' if @is_collapsible)
+      ]
+      @footer_options.merge(default_attrs(@footer_options, default_testid, default_classes))
     end
 
     delegate :sprite_icon, to: :helpers

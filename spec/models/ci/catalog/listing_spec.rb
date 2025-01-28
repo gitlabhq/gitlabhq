@@ -36,11 +36,13 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     let(:params) { {} }
 
     let_it_be(:public_resource_a) do
-      create(:ci_catalog_resource, :published, project: public_namespace_project, last_30_day_usage_count: 100)
+      create(:ci_catalog_resource, :published, project: public_namespace_project,
+        last_30_day_usage_count: 100, verification_level: 100)
     end
 
     let_it_be(:public_resource_b) do
-      create(:ci_catalog_resource, :published, project: public_project, last_30_day_usage_count: 70)
+      create(:ci_catalog_resource, :published, project: public_project,
+        last_30_day_usage_count: 70, verification_level: 100)
     end
 
     let_it_be(:internal_resource) do
@@ -185,6 +187,14 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
         it 'contains catalog resources sorted by last_30_day_usage_count ascending' do
           is_expected.to eq([public_resource_b, internal_resource, private_namespace_resource, public_resource_a])
         end
+      end
+    end
+
+    context 'with a verification_level parameter' do
+      let(:params) { { verification_level: :gitlab_maintained } }
+
+      it 'returns the resources with matching verification level' do
+        is_expected.to contain_exactly(public_resource_a, public_resource_b)
       end
     end
   end

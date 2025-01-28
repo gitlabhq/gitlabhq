@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ReferenceExtractor do
+RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
   let_it_be(:project) { create(:project) }
 
   before do
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::ReferenceExtractor do
       > @offteam
     ))
 
-    expect(subject.users).to match_array([])
+    expect(subject.users).to be_empty
   end
 
   describe 'directly addressed users' do

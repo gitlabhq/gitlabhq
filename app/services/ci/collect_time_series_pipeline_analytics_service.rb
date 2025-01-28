@@ -4,6 +4,8 @@ module Ci
   class CollectTimeSeriesPipelineAnalyticsService < CollectPipelineAnalyticsServiceBase
     extend ::Gitlab::Utils::Override
 
+    include Gitlab::InternalEventsTracking
+
     VALID_TIME_SERIES_PERIODS = %i[day week month].freeze
 
     attr_reader :time_series_period
@@ -34,6 +36,7 @@ module Ci
       query = base_query
 
       calculate_time_series_duration_percentiles(query, time_series)
+      collect_metrics
 
       ServiceResponse.success(payload: {
         time_series: time_series.map do |date, value|
@@ -112,6 +115,15 @@ module Ci
 
     def parse_in_utc(timestamp)
       to_utc(Time.parse(timestamp)) # rubocop:disable Rails/TimeZone -- false positive, to_utc takes care of this
+    end
+
+    def collect_metrics
+      track_internal_event(
+        'collect_time_series_pipeline_analytics',
+        project: project,
+        user: current_user,
+        additional_properties: { property: time_series_period.to_s }
+      )
     end
   end
 end

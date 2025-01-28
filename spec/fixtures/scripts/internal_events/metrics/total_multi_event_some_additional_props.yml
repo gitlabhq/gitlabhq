@@ -1,6 +1,6 @@
 ---
 key_path: counts.count_total_failed_usage_attempts
-description: Total count of when someone tried and failed to define an internal event using the CLI
+description: Count of when someone tried and failed to define an internal event using the CLI
 product_group: analytics_instrumentation
 product_categories:
 - service_ping
@@ -9,7 +9,10 @@ value_type: number
 status: active
 milestone: '16.6'
 introduced_by_url: TODO
-time_frame: all
+time_frame:
+- 28d
+- 7d
+- all
 data_source: internal_events
 data_category: optional
 tiers:

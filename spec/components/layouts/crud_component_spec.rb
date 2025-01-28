@@ -155,4 +155,19 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       expect(page).to have_css('[data-testid="crud-pagination"]', text: pagination)
     end
   end
+
+  describe 'collapsible functionality' do
+    it 'renders collapse/expand button when is_collapsible is true' do
+      render_inline described_class.new(title, is_collapsible: true)
+
+      expect(page).to have_css('.js-crud-collapsible-button', text: '')
+      expect(page).to have_css('.js-crud-collapsible-button[aria-expanded="true"]')
+      expect(page).to have_css('.js-crud-collapsible-button[aria-controls]')
+      expect(page).to have_css('.js-crud-collapsible-button[title="Collapse"]')
+      expect(page).to have_css('.js-crud-collapsible-button[data-collapse-title="Expand"]')
+      expect(page).to have_css('.js-crud-collapsible-button[data-expand-title="Collapse"]')
+      expect(page).to have_css('.js-crud-collapsible-collapse')
+      expect(page).to have_css('.js-crud-collapsible-expand.gl-hidden')
+    end
+  end
 end

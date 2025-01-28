@@ -10,10 +10,11 @@ module Ci
         @current_user = current_user
       end
 
-      def resources(sort: nil, search: nil, scope: :all)
+      def resources(sort: nil, search: nil, scope: :all, verification_level: nil)
         relation = Ci::Catalog::Resource.published.includes(:project)
         relation = by_scope(relation, scope)
         relation = by_search(relation, search)
+        relation = by_verification_level(relation, verification_level)
 
         case sort.to_s
         when 'name_desc' then relation.order_by_name_desc
@@ -57,6 +58,12 @@ module Ci
         else
           relation.public_or_visible_to_user(current_user)
         end
+      end
+
+      def by_verification_level(relation, level)
+        return relation unless level
+
+        relation.for_verification_level(level)
       end
     end
   end

@@ -271,7 +271,7 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       it 'returns no classes' do
         stub_user
 
-        expect(helper.custom_diff_color_classes).to match_array([])
+        expect(helper.custom_diff_color_classes).to be_empty
       end
     end
   end

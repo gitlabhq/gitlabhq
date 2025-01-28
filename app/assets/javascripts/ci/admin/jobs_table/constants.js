@@ -22,7 +22,7 @@ export const RUNNER_NO_DESCRIPTION = s__('Runners|No description');
 /* The field list is based on app/assets/javascripts/jobs/components/table/constants.js */
 export const DEFAULT_FIELDS_ADMIN = [
   { key: 'status', label: __('Status'), columnClass: 'gl-w-3/20' },
-  { key: 'job', label: __('Job'), columnClass: 'gl-w-4/20' },
+  { key: 'job', label: __('Job'), columnClass: 'gl-w-4/20', isRowHeader: true },
   { key: 'project', label: __('Project'), columnClass: 'gl-w-4/20' },
   { key: 'runner', label: __('Runner'), columnClass: 'gl-w-3/20' },
   { key: 'pipeline', label: __('Pipeline'), columnClass: 'gl-w-2/20' },

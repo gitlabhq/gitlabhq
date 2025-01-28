@@ -5,7 +5,7 @@
     - commit_committer_link = commit_committer_link(commit)
     - commit_committer_timeago = time_ago_with_tooltip(commit.committed_date, placement: 'bottom')
     - commit_committer_avatar = commit_committer_avatar(commit.committer, size: 16, has_tooltip: false)
-    - commit_text =  _('%{commit_author_link} authored %{commit_authored_timeago} and %{commit_committer_avatar} %{commit_committer_link} committed %{commit_committer_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago, commit_committer_avatar: commit_committer_avatar, commit_committer_link: commit_committer_link, commit_committer_timeago: commit_committer_timeago }
+    - commit_text = _('%{commit_author_link} authored %{commit_authored_timeago} and %{commit_committer_avatar} %{commit_committer_link} committed %{commit_committer_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago, commit_committer_avatar: commit_committer_avatar, commit_committer_link: commit_committer_link, commit_committer_timeago: commit_committer_timeago }
   - else
-    - commit_text =  _('%{commit_author_link} authored %{commit_authored_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago }
+    - commit_text = _('%{commit_author_link} authored %{commit_authored_timeago}') % { commit_author_link: commit_author_link, commit_authored_timeago: commit_authored_timeago }
   #{ commit_text.html_safe }

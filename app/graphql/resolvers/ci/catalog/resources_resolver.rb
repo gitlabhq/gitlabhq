@@ -21,11 +21,15 @@ module Resolvers
           required: false,
           description: 'Sort catalog resources by given criteria.'
 
-        def resolve_with_lookahead(scope:, search: nil, sort: nil)
+        argument :verification_level, ::Types::Ci::Catalog::Resources::VerificationLevelEnum,
+          required: false,
+          description: 'Filter catalog resources by verification level.'
+
+        def resolve_with_lookahead(scope:, search: nil, sort: nil, verification_level: nil)
           apply_lookahead(
             ::Ci::Catalog::Listing
               .new(context[:current_user])
-              .resources(sort: sort, search: search, scope: scope)
+              .resources(sort: sort, search: search, scope: scope, verification_level: verification_level)
           )
         end
 

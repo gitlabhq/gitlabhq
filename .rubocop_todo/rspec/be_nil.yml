@@ -17,7 +17,6 @@ RSpec/BeNil:
     - 'ee/spec/lib/gitlab/llm/tanuki_bot_spec.rb'
     - 'ee/spec/lib/gitlab/vulnerability_scanning/finding_builder_spec.rb'
     - 'ee/spec/models/ai/feature_setting_spec.rb'
-    - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/search/zoekt/task_spec.rb'
     - 'ee/spec/models/work_items/widgets/progress_spec.rb'

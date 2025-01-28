@@ -11,15 +11,15 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   let_it_be_with_reload(:resource_a) do
     create(:ci_catalog_resource, project: project_a, latest_released_at: '2023-02-01T00:00:00Z',
-      last_30_day_usage_count: 150)
+      last_30_day_usage_count: 150, verification_level: 100)
   end
 
   let_it_be(:resource_b) do
     create(:ci_catalog_resource, project: project_b, latest_released_at: '2023-01-01T00:00:00Z',
-      last_30_day_usage_count: 100)
+      last_30_day_usage_count: 100, verification_level: 10)
   end
 
-  let_it_be(:resource_c) { create(:ci_catalog_resource, project: project_c) }
+  let_it_be(:resource_c) { create(:ci_catalog_resource, project: project_c, verification_level: 50) }
 
   it { is_expected.to belong_to(:project) }
 
@@ -165,6 +165,15 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
       ordered_resources = described_class.order_by_last_30_day_usage_count_asc
 
       expect(ordered_resources).to eq([resource_c, resource_b, resource_a])
+    end
+  end
+
+  describe '.for_verification_level' do
+    it 'returns catalog resources for required verification_level' do
+      verified_resources = described_class
+        .for_verification_level(Ci::Catalog::VerifiedNamespace::VERIFICATION_LEVELS[:gitlab_maintained])
+
+      expect(verified_resources).to eq([resource_a])
     end
   end
 

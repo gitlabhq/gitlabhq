@@ -69,20 +69,26 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 
 ## Filter dependency list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.7  [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) dependency filtering for groups in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
+> - Dependency filtering for group [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags.md). Disabled by default.
 
 You can filter the dependency list to focus on only a subset of dependencies. The dependency
-list is only available for groups.
+list is available for groups and projects.
 
-You can filter by:
+For groups, you can filter by:
 
 - Project
 - License
+- Components
+
+For projects, you can filter by:
+
+- Components
 
 To filter the dependency list:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group or project.
 1. Select **Secure > Dependency list**.
 1. Select the filter bar.
 1. Select a filter, then from the dropdown list select one or more criteria.

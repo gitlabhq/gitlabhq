@@ -63,4 +63,54 @@ $(() => {
     toggleContainer(container, true);
     anchor.scrollIntoView();
   }
+
+  function crudToggleSection(section, toggleState) {
+    const collapseIcon = section.querySelector('.js-crud-collapsible-collapse');
+    const expandIcon = section.querySelector('.js-crud-collapsible-expand');
+    const crudBody = section.querySelector('.crud-body');
+    const crudHeader = section.querySelector('.crud-header');
+    const crudFooter = section.querySelector('[data-testid="crud-footer"]');
+    const crudForm = section.querySelector('[data-testid="crud-form"]');
+    const toggleButton = section.querySelector('.js-crud-collapsible-button');
+    const isExpanded = toggleButton.ariaExpanded === 'true';
+
+    if (isExpanded && !toggleState) {
+      toggleButton.ariaExpanded = 'false';
+      collapseIcon?.classList.add('gl-hidden');
+      expandIcon?.classList.remove('gl-hidden');
+      crudBody?.classList.add('!gl-hidden');
+      crudFooter?.classList.add('!gl-hidden');
+      crudForm?.classList.add('!gl-hidden');
+      crudHeader?.classList.add('gl-rounded-base', 'gl-border-b-transparent');
+    } else {
+      toggleButton.ariaExpanded = 'true';
+      expandIcon?.classList.add('gl-hidden');
+      collapseIcon?.classList.remove('gl-hidden');
+      crudBody?.classList.remove('!gl-hidden');
+      crudFooter?.classList.remove('!gl-hidden');
+      crudForm?.classList.remove('!gl-hidden');
+      crudHeader?.classList.remove('gl-rounded-base', 'gl-border-b-transparent');
+    }
+
+    toggleButton.setAttribute(
+      'title',
+      isExpanded ? toggleButton.dataset.collapseTitle : toggleButton.dataset.expandTitle,
+    );
+    fixTitle(toggleButton);
+  }
+
+  // Crud section collapsible.
+  document.body.addEventListener('click', (e) => {
+    if (e.target.closest('.js-crud-collapsible-button')) {
+      const button = e.target.closest('.js-crud-collapsible-button');
+      const containerEl = button.closest('.js-crud-collapsible-section');
+
+      crudToggleSection(containerEl);
+
+      const targetTag = e.target.tagName.toLowerCase();
+      if (targetTag === 'a' || targetTag === 'button') {
+        e.preventDefault();
+      }
+    }
+  });
 });

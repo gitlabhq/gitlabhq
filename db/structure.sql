@@ -1555,6 +1555,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_2cb7e7147818() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "notes"
+  WHERE "notes"."id" = NEW."note_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_2dafd0d13605() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -6945,6 +6961,11 @@ CREATE TABLE ai_testing_terms_acceptances (
     user_id bigint NOT NULL,
     user_email text NOT NULL,
     CONSTRAINT check_5efe98894e CHECK ((char_length(user_email) <= 255))
+);
+
+CREATE TABLE ai_user_metrics (
+    user_id bigint NOT NULL,
+    last_duo_activity_on date NOT NULL
 );
 
 CREATE TABLE ai_vectorizable_files (
@@ -15828,7 +15849,7 @@ CREATE TABLE merge_requests_compliance_violations (
     reason smallint NOT NULL,
     severity_level smallint DEFAULT 0 NOT NULL,
     merged_at timestamp with time zone,
-    target_project_id bigint,
+    target_project_id bigint NOT NULL,
     title text,
     target_branch text
 );
@@ -26213,6 +26234,9 @@ ALTER TABLE ONLY ai_settings
 
 ALTER TABLE ONLY ai_testing_terms_acceptances
     ADD CONSTRAINT ai_testing_terms_acceptances_pkey PRIMARY KEY (user_id);
+
+ALTER TABLE ONLY ai_user_metrics
+    ADD CONSTRAINT ai_user_metrics_pkey PRIMARY KEY (user_id);
 
 ALTER TABLE ONLY ai_vectorizable_files
     ADD CONSTRAINT ai_vectorizable_files_pkey PRIMARY KEY (id);
@@ -37348,6 +37372,8 @@ CREATE TRIGGER trigger_2a994bb5629f BEFORE INSERT OR UPDATE ON incident_manageme
 
 CREATE TRIGGER trigger_2b8fdc9b4a4e BEFORE INSERT OR UPDATE ON ml_experiment_metadata FOR EACH ROW EXECUTE FUNCTION trigger_2b8fdc9b4a4e();
 
+CREATE TRIGGER trigger_2cb7e7147818 BEFORE INSERT OR UPDATE ON wiki_page_meta_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_2cb7e7147818();
+
 CREATE TRIGGER trigger_2dafd0d13605 BEFORE INSERT OR UPDATE ON pages_domain_acme_orders FOR EACH ROW EXECUTE FUNCTION trigger_2dafd0d13605();
 
 CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_alert_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_30209d0fba3e();
@@ -41064,6 +41090,9 @@ ALTER TABLE ONLY board_group_recent_visits
 
 ALTER TABLE ONLY relation_import_trackers
     ADD CONSTRAINT fk_rails_ca9bd1ef8a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_user_metrics
+    ADD CONSTRAINT fk_rails_cafde02a0c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_cb4563dd6e FOREIGN KEY (epic_board_id) REFERENCES boards_epic_boards(id) ON DELETE CASCADE;

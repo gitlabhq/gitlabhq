@@ -235,6 +235,7 @@ module API
         mount ::API::Ci::PipelineSchedules
         mount ::API::Ci::Triggers
         mount ::API::Ci::Variables
+        mount ::API::ClusterDiscovery
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
         mount ::API::Commits

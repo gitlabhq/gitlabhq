@@ -115,6 +115,23 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
       end
     end
 
+    describe 'label' do
+      context 'with defaults (false)' do
+        it 'does not render a span with "btn-label" CSS class' do
+          expect(page).not_to have_css "span.btn-label"
+        end
+      end
+
+      context 'when set to true' do
+        let(:options) { { label: true } }
+
+        it 'renders a span with "btn-label" CSS class' do
+          expect(page).not_to have_css "button[type='button']"
+          expect(page).to have_css "span.btn-label"
+        end
+      end
+    end
+
     describe 'selected' do
       context 'with defaults (false)' do
         it 'does not have selected styling and behavior' do

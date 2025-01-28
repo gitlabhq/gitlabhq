@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SQL::Pattern do
+RSpec.describe Gitlab::SQL::Pattern, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   describe '.fuzzy_search' do
@@ -130,7 +130,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'fo' }
 
       it 'returns empty array' do
-        expect(select_fuzzy_terms).to match_array([])
+        expect(select_fuzzy_terms).to be_empty
       end
     end
 

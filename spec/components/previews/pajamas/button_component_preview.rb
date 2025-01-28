@@ -12,6 +12,7 @@ module Pajamas
     # @param disabled toggle
     # @param loading toggle
     # @param block toggle
+    # @param label toggle
     # @param selected toggle
     # @param icon select [~, star-o, issue-closed, tanuki]
     # @param text text
@@ -23,6 +24,7 @@ module Pajamas
       disabled: false,
       loading: false,
       block: false,
+      label: false,
       selected: false,
       icon: nil,
       text: "Edit"
@@ -35,6 +37,7 @@ module Pajamas
         disabled: disabled,
         loading: loading,
         block: block,
+        label: label,
         selected: selected,
         icon: icon
       )) do

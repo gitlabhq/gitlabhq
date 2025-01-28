@@ -255,7 +255,7 @@ refer to our [Vue style guide](style/vue.md#basic-rules).
 When composing a form with Rails, the `name`, `id`, and `value` attributes of form inputs are generated
 to match the backend. It can be helpful to have access to these generated attributes when converting
 a Rails form to Vue, or when [integrating components](https://gitlab.com/gitlab-org/gitlab/-/blob/8956ad767d522f37a96e03840595c767de030968/app/assets/javascripts/access_tokens/index.js#L15) (such as a date picker or project selector) into it.
-The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility can be used to parse the generated form input attributes so they can be passed to the Vue application.
+The [`parseRailsFormFields`](https://gitlab.com/gitlab-org/gitlab/-/blob/fe88797f682c7ff0b13f2c2223a3ff45ada751c1/app/assets/javascripts/lib/utils/forms.js#L107) utility function can be used to parse the generated form input attributes so they can be passed to the Vue application.
 This enables us to integrate Vue components without changing how the form submits.
 
 ```haml
@@ -425,7 +425,7 @@ This approach has a few benefits:
 
 #### Redirecting to page and displaying alerts
 
-If you need to redirect to another page and display alerts, you can use the [`visitUrlWithAlerts`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/url_utility.js#L731) util.
+If you need to redirect to another page and display alerts, you can use the [`visitUrlWithAlerts`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/url_utility.js#L731) utility function.
 This can be useful when you're redirecting to a newly created resource and showing a success alert.
 
 By default the alerts will be cleared when the page is reloaded. If you need an alert to be persisted on a page you can set the
@@ -444,7 +444,7 @@ visitUrlWithAlerts('/dashboard/groups', [
 ])
 ```
 
-If you need to manually remove a persisted alert, you can use the [`removeGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/global_alerts.js#L31) util.
+If you need to manually remove a persisted alert, you can use the [`removeGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/global_alerts.js#L31) utility function.
 
 ### A folder for Components
 
@@ -573,7 +573,7 @@ Based on the Vue guidance:
 - **Do** encapsulate complex state management with cohesive decoupled components or [a state manager](state_management.md).
 - **Do** maintain existing implementations using such approaches.
 - **Do** Migrate components to a pure object model when there are substantial changes to it.
-- **Do** add business logic to helpers or utilities, so you can test them separately from your component.
+- **Do** move business logic to separate files, so you can test them separately from your component.
 
 #### Why
 

@@ -34,7 +34,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/advanced_search/distribution_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/advanced_search/lucene_version_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/advanced_search/version_metric_spec.rb'
-    - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/concerns/ee/issuable_spec.rb'
     - 'ee/spec/models/concerns/geo/replicable_model_spec.rb'
     - 'ee/spec/models/dora/daily_metrics_spec.rb'

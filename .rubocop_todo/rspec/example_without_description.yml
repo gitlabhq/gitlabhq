@@ -65,7 +65,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/lib/web_ide/settings/settings_integration_spec.rb'
     - 'ee/spec/models/ai/code_suggestion_event_spec.rb'
     - 'ee/spec/models/analytics/cycle_analytics/value_stream_setting_spec.rb'
-    - 'ee/spec/models/application_setting_spec.rb'
     - 'ee/spec/models/approval_merge_request_rule_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'
     - 'ee/spec/models/audit_events/external_audit_event_destination_spec.rb'

@@ -1157,7 +1157,6 @@
 - './ee/spec/models/analytics/devops_adoption/enabled_namespace_spec.rb'
 - './ee/spec/models/analytics/devops_adoption/snapshot_spec.rb'
 - './ee/spec/models/analytics/language_trend/repository_language_spec.rb'
-- './ee/spec/models/application_setting_spec.rb'
 - './ee/spec/models/approval_merge_request_rule_spec.rb'
 - './ee/spec/models/approval_project_rule_spec.rb'
 - './ee/spec/models/approvals/scan_finding_wrapped_rule_set_spec.rb'

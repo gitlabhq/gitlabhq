@@ -39,6 +39,7 @@ export const DEFAULT_FIELDS = [
   {
     key: 'job',
     label: __('Job'),
+    isRowHeader: true,
     columnClass: 'gl-w-5/20',
   },
   {
