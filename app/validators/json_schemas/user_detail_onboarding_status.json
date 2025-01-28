@@ -32,6 +32,10 @@
       "description": "Setting to understand if a user is joining a project or not during onboarding",
       "type": "boolean"
     },
+    "setup_for_company": {
+      "description": "Setting to understand if a user is registering their gitlab account for their company",
+      "type": "boolean"
+    },
     "registration_objective": {
       "description": "Goal of registration collected during onboarding",
       "type": "integer",

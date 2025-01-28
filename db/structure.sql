@@ -11303,6 +11303,28 @@ CREATE SEQUENCE clusters_kubernetes_namespaces_id_seq
 
 ALTER SEQUENCE clusters_kubernetes_namespaces_id_seq OWNED BY clusters_kubernetes_namespaces.id;
 
+CREATE TABLE clusters_managed_resources (
+    id bigint NOT NULL,
+    build_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    environment_id bigint NOT NULL,
+    cluster_agent_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    template_name text,
+    CONSTRAINT check_4f81a98847 CHECK ((char_length(template_name) <= 1024))
+);
+
+CREATE SEQUENCE clusters_managed_resources_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE clusters_managed_resources_id_seq OWNED BY clusters_managed_resources.id;
+
 CREATE TABLE commit_user_mentions (
     id bigint NOT NULL,
     mentioned_users_ids bigint[],
@@ -24560,6 +24582,8 @@ ALTER TABLE ONLY clusters ALTER COLUMN id SET DEFAULT nextval('clusters_id_seq':
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces ALTER COLUMN id SET DEFAULT nextval('clusters_kubernetes_namespaces_id_seq'::regclass);
 
+ALTER TABLE ONLY clusters_managed_resources ALTER COLUMN id SET DEFAULT nextval('clusters_managed_resources_id_seq'::regclass);
+
 ALTER TABLE ONLY commit_user_mentions ALTER COLUMN id SET DEFAULT nextval('commit_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY compliance_framework_security_policies ALTER COLUMN id SET DEFAULT nextval('compliance_framework_security_policies_id_seq'::regclass);
@@ -26775,6 +26799,9 @@ ALTER TABLE ONLY clusters_integration_prometheus
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT clusters_kubernetes_namespaces_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY clusters_managed_resources
+    ADD CONSTRAINT clusters_managed_resources_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT clusters_pkey PRIMARY KEY (id);
@@ -31565,6 +31592,14 @@ CREATE INDEX index_clusters_kubernetes_namespaces_on_cluster_project_id ON clust
 CREATE INDEX index_clusters_kubernetes_namespaces_on_environment_id ON clusters_kubernetes_namespaces USING btree (environment_id);
 
 CREATE INDEX index_clusters_kubernetes_namespaces_on_project_id ON clusters_kubernetes_namespaces USING btree (project_id);
+
+CREATE UNIQUE INDEX index_clusters_managed_resources_on_build_id ON clusters_managed_resources USING btree (build_id);
+
+CREATE INDEX index_clusters_managed_resources_on_cluster_agent_id ON clusters_managed_resources USING btree (cluster_agent_id);
+
+CREATE INDEX index_clusters_managed_resources_on_environment_id ON clusters_managed_resources USING btree (environment_id);
+
+CREATE INDEX index_clusters_managed_resources_on_project_id ON clusters_managed_resources USING btree (project_id);
 
 CREATE INDEX index_clusters_on_enabled_and_provider_type_and_id ON clusters USING btree (enabled, provider_type, id);
 
@@ -37633,6 +37668,9 @@ ALTER TABLE ONLY ai_settings
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_06067f5644 FOREIGN KEY (latest_merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY clusters_managed_resources
+    ADD CONSTRAINT fk_068dba90c3 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities
     ADD CONSTRAINT fk_07b81e3a81 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
@@ -38662,6 +38700,9 @@ ALTER TABLE ONLY agent_activity_events
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_9c4516d665 FOREIGN KEY (duplicated_to_id) REFERENCES issues(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY clusters_managed_resources
+    ADD CONSTRAINT fk_9c7b561962 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_conan_recipe_revisions
     ADD CONSTRAINT fk_9cdec8a86b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
@@ -39378,6 +39419,9 @@ ALTER TABLE ONLY application_settings
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT fk_f9df19ecb6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY clusters_managed_resources
+    ADD CONSTRAINT fk_fad3c3b2e2 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_stages
     ADD CONSTRAINT fk_fb57e6cc56_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

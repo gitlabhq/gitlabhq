@@ -400,6 +400,14 @@ RSpec.shared_examples 'work items confidentiality' do
   end
 end
 
+RSpec.shared_examples 'work items submit as spam' do
+  it 'shows link to submit as spam' do
+    click_button _('More actions'), match: :first
+
+    expect(page).to have_link 'Submit as spam'
+  end
+end
+
 RSpec.shared_examples 'work items todos' do
   it 'adds item to to-do list', :aggregate_failures do
     expect(page).to have_button s_('WorkItem|Add a to-do item')

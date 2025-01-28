@@ -201,6 +201,10 @@ ci_variables:
   - table: projects
     column: project_id
     on_delete: async_delete
+clusters_managed_resources:
+  - table: ci_builds
+    column: build_id
+    on_delete: async_delete
 country_access_logs:
   - table: users
     column: user_id

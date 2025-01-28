@@ -1352,6 +1352,22 @@ If you need to use the cache when scanning a project, you can restore the previo
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Secret detection analyzer doesn't run as root user by default
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476160).
+
+</div>
+
+From GitLab 18.0, the secret detection analyzer will no longer use the root user by default. You shouldn't experience any impact as a result of this change. However, you might experience issues if you use `before_script` or `after_script` to make changes to the image. GitLab doesn't support this use of `before_script` and `after_script`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">

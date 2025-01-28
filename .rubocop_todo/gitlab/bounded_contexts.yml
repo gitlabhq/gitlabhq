@@ -3086,7 +3086,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/dependencies/export_serializers/project_dependencies_service.rb'
     - 'ee/app/services/dependencies/export_serializers/sbom/pipeline_service.rb'
     - 'ee/app/services/dependencies/export_service.rb'
-    - 'ee/app/services/dependencies/fetch_export_service.rb'
     - 'ee/app/services/deployments/approval_service.rb'
     - 'ee/app/services/deployments/auto_rollback_service.rb'
     - 'ee/app/services/dora/aggregate_metrics_service.rb'

@@ -98,6 +98,9 @@ export default {
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
+    canReportSpam() {
+      return this.workItem.userPermissions?.reportSpam;
+    },
     isDiscussionLocked() {
       return this.workItem.widgets?.find(isNotesWidget)?.discussionLocked;
     },
@@ -188,6 +191,7 @@ export default {
             :work-item-type="workItemType"
             :work-item-type-id="workItemTypeId"
             :can-delete="canDelete"
+            :can-report-spam="canReportSpam"
             :can-update="canUpdate"
             :is-confidential="workItem.confidential"
             :is-discussion-locked="isDiscussionLocked"

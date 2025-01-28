@@ -1,0 +1,52 @@
+extends: script
+message: "Front matter must have valid 'title' and be closed."
+link: https://docs.gitlab.com/ee/development/documentation/metadata/
+level: error
+scope: raw
+script: |
+  text := import("text")
+  matches := []
+
+  // Initialize variables
+  frontmatterDelimiterCount := 0
+  frontmatter := ""
+  hasError := false
+
+  // Check if frontmatter exists
+  if !text.re_match("^---\n", scope) {
+    hasError = true
+  }
+
+  if !hasError {
+    for line in text.split(scope, "\n") {
+      if frontmatterDelimiterCount == 1 {
+        frontmatter += line + "\n"
+      }
+      if frontmatterDelimiterCount == 2 {
+        break
+      }
+      if text.re_match("^---", line) {
+        frontmatterDelimiterCount++
+        start := text.index(scope, line)
+        matches = append(matches, {begin: start, end: start + len(line)})
+      }
+    }
+
+    // Check for unclosed frontmatter
+    if frontmatterDelimiterCount != 2 {
+      hasError = true
+    }
+
+    // First check if we have a title key at all
+    hasTitleKey := text.re_match("(?m)^[tT]itle:", frontmatter)
+    // Then check if it has content (anything but whitespace) after the colon
+    hasValidTitle := text.re_match("(?m)^[tT]itle:[^\\n]*[^\\s][^\\n]*$", frontmatter)
+
+    if !hasError && (!hasTitleKey || !hasValidTitle) {
+      hasError = true
+    }
+  }
+
+  if !hasError {
+    matches = []
+  }

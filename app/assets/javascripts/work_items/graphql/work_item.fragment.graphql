@@ -39,6 +39,7 @@ fragment WorkItem on WorkItem {
     createNote
     adminWorkItemLink
     markNoteAsInternal
+    reportSpam
   }
   mockWidgets @client {
     type

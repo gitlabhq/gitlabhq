@@ -594,6 +594,7 @@ export const setNewWorkItemCache = async (
                 createNote: true,
                 adminWorkItemLink: true,
                 markNoteAsInternal: true,
+                reportSpam: true,
                 __typename: 'WorkItemPermissions',
               },
               widgets,
@@ -613,6 +614,7 @@ export const optimisticUserPermissions = {
   createNote: false,
   adminWorkItemLink: false,
   markNoteAsInternal: false,
+  reportSpam: false,
   __typename: 'WorkItemPermissions',
 };
 

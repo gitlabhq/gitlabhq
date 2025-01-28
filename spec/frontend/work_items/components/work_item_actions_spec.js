@@ -70,6 +70,7 @@ describe('WorkItemActions component', () => {
   const findCopyCreateNoteEmailButton = () =>
     wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
   const findReportAbuseButton = () => wrapper.findByTestId(TEST_ID_REPORT_ABUSE);
+  const findSubmitAsSpamItem = () => wrapper.findByTestId('submit-as-spam-item');
   const findNewRelatedItemButton = () => wrapper.findByTestId(TEST_ID_NEW_RELATED_WORK_ITEM);
   const findChangeTypeButton = () => wrapper.findByTestId(TEST_ID_CHANGE_TYPE_ACTION);
   const findReportAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
@@ -120,6 +121,7 @@ describe('WorkItemActions component', () => {
   const createComponent = ({
     canUpdate = true,
     canDelete = true,
+    canReportSpam = true,
     hasOkrsFeature = true,
     isConfidential = false,
     isDiscussionLocked = false,
@@ -155,10 +157,11 @@ describe('WorkItemActions component', () => {
         fullPath: 'gitlab-org/gitlab-test',
         workItemId: 'gid://gitlab/WorkItem/1',
         workItemIid: '1',
-        workItemWebUrl: 'web/url',
+        workItemWebUrl: 'gitlab-org/gitlab-test/-/work_items/1',
         isGroup,
         canUpdate,
         canDelete,
+        canReportSpam,
         isConfidential,
         isDiscussionLocked,
         subscribed,
@@ -257,6 +260,10 @@ describe('WorkItemActions component', () => {
       {
         testId: TEST_ID_REPORT_ABUSE,
         text: 'Report abuse',
+      },
+      {
+        testId: 'submit-as-spam-item',
+        text: 'Submit as spam',
       },
       {
         testId: TEST_ID_DELETE_ACTION,
@@ -612,6 +619,23 @@ describe('WorkItemActions component', () => {
     });
   });
 
+  describe('submit as spam item', () => {
+    it('renders the "Submit as spam" action', () => {
+      createComponent();
+
+      expect(findSubmitAsSpamItem().props('item')).toEqual({
+        href: 'gitlab-org/gitlab-test/-/issues/1/mark_as_spam',
+        text: 'Submit as spam',
+      });
+    });
+
+    it('does not render the "Submit as spam" action when not allowed', () => {
+      createComponent({ canReportSpam: false });
+
+      expect(findSubmitAsSpamItem().exists()).toBe(false);
+    });
+  });
+
   describe('new related item', () => {
     it('passes related item data to create work item modal', () => {
       createComponent();
@@ -620,7 +644,7 @@ describe('WorkItemActions component', () => {
         id: 'gid://gitlab/WorkItem/1',
         reference: 'gitlab-org/gitlab-test#1',
         type: 'Task',
-        webUrl: 'web/url',
+        webUrl: 'gitlab-org/gitlab-test/-/work_items/1',
       });
     });
 

@@ -309,6 +309,9 @@ export default {
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
+    canReportSpam() {
+      return this.workItem.userPermissions?.reportSpam;
+    },
     canSetWorkItemMetadata() {
       return this.workItem.userPermissions?.setWorkItemMetadata;
     },
@@ -867,6 +870,7 @@ export default {
                 :work-item-type-id="workItemTypeId"
                 :work-item-iid="iid"
                 :can-delete="canDelete"
+                :can-report-spam="canReportSpam"
                 :can-update="canUpdate"
                 :is-confidential="workItem.confidential"
                 :is-discussion-locked="isDiscussionLocked"

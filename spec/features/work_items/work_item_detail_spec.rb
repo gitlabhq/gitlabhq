@@ -79,6 +79,26 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items change type', 'Issue', '[data-testid="issue-type-issue-icon"]'
   end
 
+  context 'for signed in admin' do
+    let_it_be(:admin) { create(:admin) }
+
+    context 'with akismet integration' do
+      let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: work_item) }
+
+      before_all do
+        project.add_maintainer(admin)
+      end
+
+      before do
+        stub_application_setting(akismet_enabled: true)
+        sign_in(admin)
+        visit work_items_path
+      end
+
+      it_behaves_like 'work items submit as spam'
+    end
+  end
+
   context 'for signed in owner' do
     before_all do
       project.add_owner(user)

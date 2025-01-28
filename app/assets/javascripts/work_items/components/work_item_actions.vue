@@ -143,6 +143,11 @@ export default {
       required: false,
       default: false,
     },
+    canReportSpam: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isConfidential: {
       type: Boolean,
       required: false,
@@ -310,6 +315,10 @@ export default {
     },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
+    },
+    submitAsSpamItem() {
+      const href = this.workItemWebUrl.replaceAll('work_items', 'issues').concat('/mark_as_spam');
+      return { text: __('Submit as spam'), href };
     },
     isAuthor() {
       return this.workItemAuthorId === window.gon.current_user_id;
@@ -600,6 +609,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-dropdown-divider />
+
       <gl-disclosure-dropdown-item
         v-if="!isAuthor"
         :data-testid="$options.reportAbuseActionTestId"
@@ -607,6 +617,12 @@ export default {
       >
         <template #list-item>{{ $options.i18n.reportAbuse }}</template>
       </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
+        v-if="glFeatures.workItemsBeta && canReportSpam"
+        :item="submitAsSpamItem"
+        data-testid="submit-as-spam-item"
+      />
 
       <template v-if="canDelete">
         <gl-disclosure-dropdown-item
