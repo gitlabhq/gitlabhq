@@ -40,7 +40,7 @@ To access the DLE's services, you can:
   provides `EXPLAIN` (analyze, buffers) plans for queries executed there.
 - Migration testing by triggering a job as a part of a merge request.
 - Direct `psql` access to DLE instead of a production replica. Available to authorized users only.
-  To request `psql` access, file an [access request](https://handbook.gitlab.com/handbook/business-technology/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+  To request `psql` access, file an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
 
 For more assistance, use the `#database` Slack channel.
 
@@ -138,7 +138,7 @@ You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to 
 
 To access the database lab instances, you must:
 
-- File an [access request](https://handbook.gitlab.com/handbook/business-technology/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
+- File an [access request](https://handbook.gitlab.com/handbook/it/end-user-services/onboarding-access-requests/access-requests/#individual-or-bulk-access-request).
 - Have a user data bag entry in [chef-repo](https://gitlab.com/gitlab-com/gl-infra/chef-repo) with your SSH key and the `db-lab` role.
 - Configure `ssh` as follows:
 

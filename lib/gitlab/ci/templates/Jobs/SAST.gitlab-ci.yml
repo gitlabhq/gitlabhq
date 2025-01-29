@@ -36,16 +36,6 @@ sast:
   script:
     - /analyzer run
 
-.deprecated-16.8:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 16.8 and removed in GitLab 17.0"
-    - echo "For more information see https://docs.gitlab.com/ee/update/deprecations.html#sast-analyzer-coverage-changing-in-gitlab-170"
-    - exit 1
-  rules:
-    - when: never
-
-
 gitlab-advanced-sast:
   extends: .sast-analyzer
   image:
@@ -77,30 +67,6 @@ gitlab-advanced-sast:
         - '**/*.cs'
         - '**/*.rb'
 
-bandit-sast:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.4"
-    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/352554"
-    - exit 1
-  rules:
-    - when: never
-
-brakeman-sast:
-  extends: .deprecated-16.8
-
-eslint-sast:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.4"
-    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/352554"
-    - exit 1
-  rules:
-    - when: never
-
-flawfinder-sast:
-  extends: .deprecated-16.8
-
 kubesec-sast:
   extends: .sast-analyzer
   image:
@@ -115,27 +81,6 @@ kubesec-sast:
       when: never
     - if: $CI_COMMIT_BRANCH &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
-
-gosec-sast:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 14.8 and removed in GitLab 15.4"
-    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/352554"
-    - exit 1
-  rules:
-    - when: never
-
-mobsf-android-sast:
-  extends: .deprecated-16.8
-
-mobsf-ios-sast:
-  extends: .deprecated-16.8
-
-nodejs-scan-sast:
-  extends: .deprecated-16.8
-
-phpcs-security-audit-sast:
-  extends: .deprecated-16.8
 
 pmd-apex-sast:
   extends: .sast-analyzer
@@ -152,15 +97,6 @@ pmd-apex-sast:
     - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.cls'
-
-security-code-scan-sast:
-  extends: .sast-analyzer
-  script:
-    - echo "This job was deprecated in GitLab 15.9 and removed in GitLab 16.0"
-    - echo "For more information see https://gitlab.com/gitlab-org/gitlab/-/issues/390416"
-    - exit 1
-  rules:
-    - when: never
 
 semgrep-sast:
   extends: .sast-analyzer

@@ -98,7 +98,7 @@ is created in `project-A`, add the following job to project A's `.gitlab-ci.yml`
 trigger_pipeline:
   stage: deploy
   script:
-    - 'curl --fail --request POST --form token=$MY_TRIGGER_TOKEN --form ref=main "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"'
+    - 'curl --fail --request POST --form token=$MY_TRIGGER_TOKEN --form ref=main "${CI_API_V4_URL}/projects/123456/trigger/pipeline"'
   rules:
     - if: $CI_COMMIT_TAG
   environment: production
