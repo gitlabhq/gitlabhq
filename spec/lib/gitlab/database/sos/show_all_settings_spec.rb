@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::Sos::ShowAllSettings, feature_category: :databa
   describe '#run' do
     let(:temp_directory) { Dir.mktmpdir }
     let(:output_file_path) { temp_directory }
-    let(:expected_file_path) { File.join(temp_directory, 'pg_settings.csv') }
+    let(:expected_file_path) { File.join(output_file_path, 'pg_settings.csv') }
     let(:output) { Gitlab::Database::Sos::Output.new(output_file_path, mode: :directory) }
 
     after do

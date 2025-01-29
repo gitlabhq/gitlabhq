@@ -5,7 +5,8 @@ module Gitlab
   module Database
     module Sos
       TASKS = [
-        Sos::ShowAllSettings
+        Sos::ShowAllSettings,
+        Sos::PgConstraints
       ].freeze
 
       def self.run(output_file)
