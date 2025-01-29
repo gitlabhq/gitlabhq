@@ -162,9 +162,11 @@ export default {
           "
         >
           <template #link="{ content }">
-            <gl-link href="https://github.com/google/re2/wiki/syntax" target="_blank">{{
-              content
-            }}</gl-link>
+            <gl-link
+              href="https://docs.gitlab.com/ee/user/packages/container_registry/protected_container_tags.html#regex-pattern-examples"
+              target="_blank"
+              >{{ content }}</gl-link
+            >
           </template>
         </gl-sprintf>
       </template>

@@ -67,6 +67,9 @@
     "read_admin_dashboard": {
       "type": "boolean"
     },
+    "read_admin_monitoring": {
+      "type": "boolean"
+    },
     "read_code": {
       "type": "boolean"
     },

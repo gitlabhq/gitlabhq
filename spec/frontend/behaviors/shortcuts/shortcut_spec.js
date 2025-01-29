@@ -29,26 +29,26 @@ describe('Shortcut Vue Component', () => {
       // A number
       ['5', '<kbd>5</kbd>'],
     ])('renders platform agnostic key %p as: %p', (key, rendered) => {
-      expect(render([key])).toEqual(`<div>${rendered}</div>`);
+      expect(render([key])).toEqual(`<span>${rendered}</span>`);
     });
 
     it('renders keys combined with plus ("+") correctly', () => {
       expect(render(['shift+a+b+c'])).toEqual(
-        `<div><kbd>Shift</kbd> + <kbd>a</kbd> + <kbd>b</kbd> + <kbd>c</kbd></div>`,
+        `<span><kbd>Shift</kbd> + <kbd>a</kbd> + <kbd>b</kbd> + <kbd>c</kbd></span>`,
       );
     });
 
     it('renders keys combined with space (" ") correctly', () => {
       expect(render(['shift a b c'])).toEqual(
-        `<div><kbd>Shift</kbd> then <kbd>a</kbd> then <kbd>b</kbd> then <kbd>c</kbd></div>`,
+        `<span><kbd>Shift</kbd> then <kbd>a</kbd> then <kbd>b</kbd> then <kbd>c</kbd></span>`,
       );
     });
 
     it('renders multiple shortcuts correctly', () => {
-      expect(render(['shift+[', 'shift+k'])).toEqual(
-        `<div><kbd>Shift</kbd> + <kbd>[</kbd> or <br><kbd>Shift</kbd> + <kbd>k</kbd></div>`,
+      expect(render(['shift+j', 'shift+k'])).toEqual(
+        `<span><kbd>Shift</kbd> + <kbd>j</kbd> or <br><kbd>Shift</kbd> + <kbd>k</kbd></span>`,
       );
-      expect(render(['[', 'k'])).toEqual(`<div><kbd>[</kbd> or <kbd>k</kbd></div>`);
+      expect(render(['j', 'k'])).toEqual(`<span><kbd>j</kbd> or <kbd>k</kbd></span>`);
     });
   });
 
@@ -64,12 +64,12 @@ describe('Shortcut Vue Component', () => {
       ['option', '<kbd>⌥</kbd>'],
       ['alt', '<kbd>⌥</kbd>'],
     ])('renders platform specific key %p as: %p', (key, rendered) => {
-      expect(render([key])).toEqual(`<div>${rendered}</div>`);
+      expect(render([key])).toEqual(`<span>${rendered}</span>`);
     });
 
     it('does render Mac specific shortcuts', () => {
-      expect(render(['command+[', 'ctrl+k'])).toEqual(
-        `<div><kbd>⌘</kbd> + <kbd>[</kbd> or <br><kbd>Ctrl</kbd> + <kbd>k</kbd></div>`,
+      expect(render(['command+j', 'ctrl+k'])).toEqual(
+        `<span><kbd>⌘</kbd> + <kbd>j</kbd> or <br><kbd>Ctrl</kbd> + <kbd>k</kbd></span>`,
       );
     });
   });
@@ -86,11 +86,21 @@ describe('Shortcut Vue Component', () => {
       ['option', '<kbd>Alt</kbd>'],
       ['alt', '<kbd>Alt</kbd>'],
     ])('renders platform specific key %p as: %p', (key, rendered) => {
-      expect(render([key])).toEqual(`<div>${rendered}</div>`);
+      expect(render([key])).toEqual(`<span>${rendered}</span>`);
     });
 
     it('does not render Mac specific shortcuts', () => {
-      expect(render(['command+[', 'ctrl+k'])).toEqual(`<div><kbd>Ctrl</kbd> + <kbd>k</kbd></div>`);
+      expect(render(['command+[', 'ctrl+k'])).toEqual(
+        `<span><kbd>Ctrl</kbd> + <kbd>k</kbd></span>`,
+      );
+    });
+  });
+
+  describe('Symbols', () => {
+    it('verbalizes symbols for screen readers', () => {
+      expect(render(['\\'])).toEqual(
+        `<span><span class="gl-sr-only">Backslash</span><kbd aria-hidden="true">\\</kbd></span>`,
+      );
     });
   });
 });

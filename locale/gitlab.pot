@@ -32653,6 +32653,12 @@ msgstr ""
 msgid "KeyboardKey|Alt"
 msgstr ""
 
+msgid "KeyboardKey|Backslash"
+msgstr ""
+
+msgid "KeyboardKey|Closing square bracket"
+msgstr ""
+
 msgid "KeyboardKey|Ctrl"
 msgstr ""
 
@@ -32663,6 +32669,18 @@ msgid "KeyboardKey|Enter"
 msgstr ""
 
 msgid "KeyboardKey|Esc"
+msgstr ""
+
+msgid "KeyboardKey|Forward slash"
+msgstr ""
+
+msgid "KeyboardKey|Opening square bracket"
+msgstr ""
+
+msgid "KeyboardKey|Question mark"
+msgstr ""
+
+msgid "KeyboardKey|Semicolon"
 msgstr ""
 
 msgid "KeyboardKey|Shift"
