@@ -218,15 +218,15 @@ Duo Workflow officially supports the following languages:
 
 GitLab Duo Workflow is aware of the context you're working in, specifically:
 
-| Area           | How to use GitLab Duo Workflow                                                                     |
-|----------------|----------------------------------------------------------------------------------------------------|
-| Local files | Duo Workflow can access all files available to Git in the project you have open in your editor. |
-| Merge requests | Enter the merge request ID if the MR is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites). |
-| Issues | Enter the issue ID if the MR is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites). |
-| Epics | Enter the epic ID and the name of the group the epic is in. The group must include a project that fulfills the Duo Workflow [prerequisites](#prerequisites). |
-| CI Pipeline for Merge Request | Enter the merge request ID of the pipeline, if the pipeline is in the current project. In addition, enter the project ID if it is in a separate project. The accessed project must also fulfill the Duo Workflow [prerequisites](#prerequisites).  |
+| Area                          | How to use GitLab Duo Workflow |
+|-------------------------------|--------------------------------|
+| Epics                         | Enter the epic ID and the name of the group the epic is in. The group must include a project that meets the [prerequisites](#prerequisites). |
+| Issues                        | Enter the issue ID if it's in the current project. In addition, enter the project ID if it is in a different project. The other project must also meet the [prerequisites](#prerequisites). |
+| Local files                   | Duo Workflow can access all files available to Git in the project you have open in your editor. Enter the file path to reference a specific file. |
+| Merge requests                | Enter the merge request ID if it's in the current project. In addition, enter the project ID if it's in a different project. The other project must also meet the [prerequisites](#prerequisites). |
+| Merge request pipelines       | Enter the merge request ID that has the pipeline, if it's in the current project. In addition, enter the project ID if it's in a different project. The other project must also meet the [prerequisites](#prerequisites).  |
 
-Duo Workflow also has access to the GitLab Search API to find related issues, merge requests, code or commits.
+Duo Workflow also has access to the GitLab [Search API](../../api/search.md) to find related issues or merge requests.
 
 ## APIs that Duo Workflow has access to
 
@@ -252,8 +252,8 @@ Duo Workflow has the following limitations:
 
 - Requires the workspace folder in VS Code to have a Git repository for a GitLab project.
 - Only runs workflows for the GitLab project that's open in VS Code.
-- Only changes files in the current branch and cannot check out other branches.
-- Only accesses references for the current project, and cannot access external sources or the web.
+- Only accesses files in the current branch and project.
+- Only accesses GitLab references in the GitLab instance of your project. For example, if your project is in GitLab.com, Duo Workflow only accesses GitLab references in that instance. It cannot access external sources or the web.
 - Only reliably accesses GitLab references if provided with their IDs. For example, issue ID and not issue URL.
 - Can be slow or fail in large repositories.
 

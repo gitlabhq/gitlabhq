@@ -58,6 +58,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   ```
 
 - Migration failures when upgrading from GitLab 16.x directly to GitLab 17.1.0 or 17.1.1.
+  This bug has been fixed with GitLab 17.1.2.
+  Upgrading from GitLab 16.x directly to 17.1.2 does not cause these issues.
 
   Due to a bug in GitLab 17.1.0 and 17.1.1 where a background job completion did not get enforced correctly, there
   can be failures when upgrading directly to GitLab 17.1.0 and 17.1.1.
@@ -74,7 +76,6 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   STDERR:
   ```
 
-  This issue occurs because the background migration that got introduced in GitLab 17.0 didn't complete.
   To upgrade, either:
 
   - Upgrade to GitLab 17.0 and wait until all background migrations are completed.
@@ -86,8 +87,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
     ```
 
   Now you should be able to complete the migrations in GitLab 17.1 and finish
-  the upgrade. This bug has been fixed with GitLab 17.1.2 and upgrading from GitLab 16.x directly to 17.1.2 will not
-  cause these issues.
+  the upgrade.
 
 - A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476542) in the Git versions shipped with 
   GitLab 17.0.x and GitLab 17.1.x causes a noticeable increase in CPU usage when under load. The primary cause of 
