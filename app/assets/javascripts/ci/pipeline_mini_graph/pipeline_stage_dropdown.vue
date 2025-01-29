@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlDisclosureDropdown, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDisclosureDropdown,
+  GlDropdownDivider,
+  GlLoadingIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
@@ -7,23 +13,17 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagStagePath } from '~/ci/pipeline_details/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
+import { PIPELINE_POLL_INTERVAL_DEFAULT, FAILED_STATUS } from '~/ci/constants';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import getPipelineStageJobsQuery from './graphql/queries/get_pipeline_stage_jobs.query.graphql';
 
 export default {
   name: 'PipelineStageDropdown',
-  i18n: {
-    loadingText: __('Loading...'),
-    mergeTrainMessage: s__('Pipeline|Merge train pipeline jobs can not be retried'),
-    stage: __('Stage'),
-    stageJobsFetchError: __('There was a problem fetching the pipeline stage jobs.'),
-    viewStageLabel: __('View Stage: %{title}'),
-  },
   components: {
     CiIcon,
     GlButton,
     GlDisclosureDropdown,
+    GlDropdownDivider,
     GlLoadingIcon,
     JobDropdownItem,
   },
@@ -67,23 +67,37 @@ export default {
         return data?.ciPipelineStage?.jobs?.nodes || [];
       },
       error(error) {
-        createAlert({ message: this.$options.i18n.stageJobsFetchError });
+        createAlert({
+          message: s__('Pipelines|There was a problem fetching the pipeline stage jobs.'),
+        });
         reportToSentry(this.$options.name, error);
       },
     },
   },
   computed: {
     dropdownHeaderText() {
-      return `${this.$options.i18n.stage}: ${this.stage.name}`;
+      return sprintf(__('Stage: %{stageName}'), { stageName: this.stage.name });
     },
     dropdownTooltipTitle() {
       return this.isDropdownOpen ? '' : `${this.stage.name}: ${this.stage.detailedStatus.tooltip}`;
     },
+    failedJobs() {
+      return this.stageJobs.filter((job) => job.detailedStatus.group === FAILED_STATUS);
+    },
     graphqlEtag() {
       return graphqlEtagStagePath('/api/graphql', getIdFromGraphQLId(this.stage.id));
     },
+    hasFailedJobs() {
+      return Boolean(this.failedJobs.length);
+    },
+    hasPassedJobs() {
+      return Boolean(this.passedJobs.length);
+    },
     isLoading() {
       return this.$apollo.queries.stageJobs.loading;
+    },
+    passedJobs() {
+      return this.stageJobs.filter((job) => job.detailedStatus.group !== FAILED_STATUS);
     },
   },
   mounted() {
@@ -102,7 +116,7 @@ export default {
       this.$emit('miniGraphStageClick');
     },
     stageAriaLabel(title) {
-      return sprintf(this.$options.i18n.viewStageLabel, { title });
+      return sprintf(__('View Stage: %{title}'), { title });
     },
   },
 };
@@ -139,7 +153,7 @@ export default {
 
     <div v-if="isLoading" class="gl-flex gl-gap-3 gl-px-4 gl-py-3">
       <gl-loading-icon size="sm" />
-      <span class="gl-leading-normal">{{ $options.i18n.loadingText }}</span>
+      <span class="gl-leading-normal">{{ __('Loading...') }}</span>
     </div>
     <ul
       v-else
@@ -147,10 +161,19 @@ export default {
       data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
+      <span v-if="hasFailedJobs" class="gl-flex gl-px-4 gl-py-3 gl-text-sm gl-font-bold">
+        {{ s__('Pipelines|Failed jobs') }}
+      </span>
       <job-dropdown-item
-        v-for="job in stageJobs"
+        v-for="job in failedJobs"
         :key="job.id"
-        :dropdown-length="stageJobs.length"
+        :job="job"
+        @jobActionExecuted="$emit('jobActionExecuted')"
+      />
+      <gl-dropdown-divider v-if="hasPassedJobs && hasFailedJobs" />
+      <job-dropdown-item
+        v-for="job in passedJobs"
+        :key="job.id"
         :job="job"
         @jobActionExecuted="$emit('jobActionExecuted')"
       />
@@ -162,7 +185,7 @@ export default {
         class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-subtle"
         data-testid="merge-train-message"
       >
-        {{ $options.i18n.mergeTrainMessage }}
+        {{ s__('Pipeline|Merge train pipeline jobs can not be retried') }}
       </div>
     </template>
   </gl-disclosure-dropdown>

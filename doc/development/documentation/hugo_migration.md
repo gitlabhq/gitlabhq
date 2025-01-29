@@ -6,9 +6,12 @@ info: For assistance with this Style Guide page, see https://handbook.gitlab.com
 
 # Hugo migration reference for writers
 
-GitLab Docs is migrating from Nanoc to Hugo. This guide describes the required changes you'll need to make when writing or updating documentation to ensure it builds properly with Hugo.
+We are moving GitLab Docs from Nanoc to Hugo. This guide outlines the formatting
+requirements for documentation after the migration.
 
-These changes will be applied automatically to existing content during migration. All new or updated content must follow these formatting requirements after launch.
+While existing content will be automatically updated, any new or modified documentation must follow these guidelines to ensure proper building with Hugo.
+
+For the latest migration status, see [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/44).
 
 ## Formatting changes
 
@@ -46,9 +49,9 @@ A GitLab Rails instance accesses...
 **Why:** Hugo can generate automated listings of pages. For these to work, Hugo needs the page title to be handled more like data than regular content.
 We are not using these initially, but may do so in the future.
 
-**When:** Prior to launch, exact timing TBD.
+**When:** Currently in-progress. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for details.
 
-**Testing:** Error-level Vale rule (see [implementation issue](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/issues/178)).
+**Testing:** Error-level Vale rule ([`FrontMatter.yml`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/doc/.vale/gitlab_docs/FrontMatter.yml?ref_type=heads)).
 
 ### Shortcodes
 
@@ -209,7 +212,7 @@ doc/
 **Why:** Hugo requires this specific naming convention for section index pages (pages that serve as the main page for a directory).
 See Hugo's documentation on [Page bundles](https://gohugo.io/content-management/page-bundles/) for more information.
 
-**When:** Prior to launch, exact timing TBD.
+**When:** Currently in-progress. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for details.
 
 **Testing:** We will test for this on the pipeline and prevent merges that include an `index.md` file (see [this issue](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/issues/161) for details).
 
@@ -241,7 +244,7 @@ inaccessible.
 somewhat different paths than the Nanoc website does. We've opted for `prettyURLs` because it's
 Hugo's default, and Hugo's pattern for `uglyURLs` is different from most other static site generators.
 
-**When:** Ideally, start avoiding these now because each one requires a manual fix: a rename and a redirect.
+**When:** Try to start avoiding these now because each one requires a manual fix: a rename and a redirect.
 
 **Testing:** After launch, Hugo will throw an error on docs pipelines if it detects a new path clash.
 
@@ -303,10 +306,10 @@ is viewed on a large screen.
 
 | Change           |  When     | Action needed |
 | ---------------- | --------- | --------- |
-| Path clashes     | Now | Avoid creating new clashing paths. If possible, remove and redirect [existing clashing paths](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/snippets/4797439) for pages in your groups. |
+| Path clashes     | Now | Avoid creating new clashing paths. If possible, remove and redirect [existing clashing paths](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/snippets/4797439) for pages in your groups. |
 | Kramdown         | Now | Do not add new Kramdown tags to page content. |
-| Page titles<sup>1</sup>      | TBD; pre-launch | None |
-| Index file names<sup>1</sup> | TBD; pre-launch | None |
+| Page titles<sup>1</sup>      | Now (in-progress) | Use new format in projects where this change is complete. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for current status. |
+| Index file names<sup>1</sup> | Now (in-progress) | Use new format in projects where this change is complete. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for current status. |
 | Shortcodes<sup>1</sup>       | Post-launch | None |
 | Release process  | Post-launch | None |
 | Chores process   | Post-launch | None |

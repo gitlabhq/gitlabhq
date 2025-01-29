@@ -9770,6 +9770,26 @@ Input type: `SecurityFindingRevertToDetectedInput`
 | <a id="mutationsecurityfindingreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsecurityfindingreverttodetectedsecurityfinding"></a>`securityFinding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Finding reverted to detected. |
 
+### `Mutation.securityFindingSeverityOverride`
+
+Input type: `SecurityFindingSeverityOverrideInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingseverityoverrideclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingseverityoverrideseverity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | New severity value for the finding. |
+| <a id="mutationsecurityfindingseverityoverrideuuid"></a>`uuid` | [`String!`](#string) | UUID of the finding to modify. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingseverityoverrideclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingseverityoverrideerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsecurityfindingseverityoverridesecurityfinding"></a>`securityFinding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Finding of which the severity was modified. |
+
 ### `Mutation.securityPolicyProjectAssign`
 
 Assigns the specified project(`security_policy_project_id`) as security policy project for the given project(`full_path`). If the project already has a security policy project, this reassigns the project's security policy project with the given `security_policy_project_id`.

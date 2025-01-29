@@ -242,7 +242,7 @@ $comparison-empty-state-height: 62px;
 .merge-request-details .file-finder-overlay.diff-file-finder {
   position: fixed;
   z-index: 99999;
-  background: $t-gray-a-24;
+  @apply gl-bg-overlay;
 }
 
 .mr-compare {

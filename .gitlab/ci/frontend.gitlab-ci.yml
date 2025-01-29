@@ -340,7 +340,7 @@ jest vue3:
   needs:
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
   script:
-    - run_timed_command "scripts/frontend/jest_ci.js --vue3"
+    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --include-vue3-quarantined"
 
 jest-with-fixtures vue3:
   extends:
@@ -353,7 +353,7 @@ jest-with-fixtures vue3:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
   script:
-    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures"
+    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures --include-vue3-quarantined"
 
 jest vue3 mr:
   extends:

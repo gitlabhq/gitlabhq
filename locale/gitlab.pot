@@ -3114,6 +3114,9 @@ msgstr ""
 msgid "Action required: %{project_name} is read-only"
 msgstr ""
 
+msgid "Action required: Unusually high storage usage on %{project_name}"
+msgstr ""
+
 msgid "Action to take when receiving an alert. %{docsLink}"
 msgstr ""
 
@@ -42057,6 +42060,9 @@ msgstr ""
 msgid "Pipelines|Explore CI/CD Catalog"
 msgstr ""
 
+msgid "Pipelines|Failed jobs"
+msgstr ""
+
 msgid "Pipelines|Failed to update. Please reload page to update the list of artifacts."
 msgstr ""
 
@@ -42214,6 +42220,9 @@ msgid "Pipelines|There are no merge trains for the %{branch} target branch in %{
 msgstr ""
 
 msgid "Pipelines|There was a problem fetching the pipeline iid."
+msgstr ""
+
+msgid "Pipelines|There was a problem fetching the pipeline stage jobs."
 msgstr ""
 
 msgid "Pipelines|There was a problem with loading the pipeline data."
@@ -55015,6 +55024,9 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
+msgid "Stage: %{stageName}"
+msgstr ""
+
 msgid "Standard"
 msgstr ""
 
@@ -57713,9 +57725,6 @@ msgstr ""
 msgid "There was a problem fetching the keep latest artifacts setting."
 msgstr ""
 
-msgid "There was a problem fetching the pipeline stage jobs."
-msgstr ""
-
 msgid "There was a problem fetching the pipeline summary."
 msgstr ""
 
@@ -59180,6 +59189,12 @@ msgid "To learn more about this project, read %{link_to_wiki}"
 msgstr ""
 
 msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
+msgstr ""
+
+msgid "To manage your usage and prevent your project from being placed in a read-only state, %{support_link_start}contact support%{link_end} immediately."
+msgstr ""
+
+msgid "To manage your usage and prevent your project from being placed in a read-only state, contact support immediately: %{support_link}."
 msgstr ""
 
 msgid "To merge, either the title or description must reference a Jira issue."
@@ -63585,6 +63600,12 @@ msgstr ""
 msgid "We've detected unusual activity"
 msgstr ""
 
+msgid "We've noticed an unusually high storage usage on %{project_name}"
+msgstr ""
+
+msgid "We've noticed an unusually high storage usage on %{strong_start}%{project_name}%{strong_end}"
+msgstr ""
+
 msgid "Web IDE"
 msgstr ""
 
@@ -67667,6 +67688,9 @@ msgid "failed"
 msgstr ""
 
 msgid "failed to assign runner to project"
+msgstr ""
+
+msgid "failed to change severity of security finding: %{message}"
 msgstr ""
 
 msgid "failed to destroy runner project"

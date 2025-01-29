@@ -165,7 +165,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::PipelineArtifacts::CreateQualityReportWorker' => 3,
         'Ci::PipelineCleanupRefWorker' => 3,
         'Ci::PipelineBridgeStatusWorker' => 3,
-        'Ci::PipelineSuccessUnlockArtifactsWorker' => 3,
         'Ci::RefDeleteUnlockArtifactsWorker' => 3,
         'Ci::Refs::UnlockPreviousPipelinesWorker' => 3,
         'Ci::ResourceGroups::AssignResourceFromResourceGroupWorker' => 3,

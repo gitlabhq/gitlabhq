@@ -86,7 +86,7 @@
         font-size: $code-font-size;
         line-height: $code-line-height;
         white-space: nowrap;
-        color: $t-gray-a-24;
+        @apply gl-text-alpha-dark-24;
         min-width: 30px;
       }
 

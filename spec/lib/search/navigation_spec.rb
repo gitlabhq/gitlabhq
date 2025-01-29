@@ -56,6 +56,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     before do
       allow(search_navigation)
         .to receive_messages(can?: true, tab_enabled_for_project?: false, feature_flag_tab_enabled?: false)
+      allow(search_navigation).to receive(:tab_enabled_for_project?).and_call_original
     end
 
     subject(:tabs) { search_navigation.tabs }
@@ -160,25 +161,16 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     end
 
     context 'for commits tab' do
-      where(:feature_flag_enabled, :show_elasticsearch_tabs, :project, :tab_enabled, :condition) do
-        false | false | nil | true | true
-        false | false | ref(:project_double) | true | true
-        false | false | nil | false | false
-        false | true | ref(:project_double) | false | false
-        false | true | nil | false | false
-        true | false | nil | false | false
-        true | false | ref(:project_double) | false | false
-        true | true | ref(:project_double) | false | false
-        true | true | nil | false | true
+      where(:project, :ability_enabled, :condition) do
+        nil                  | true  | false
+        nil                  | false | false
+        ref(:project_double) | true  | true
+        ref(:project_double) | false | false
       end
 
       with_them do
-        let(:options) { { show_elasticsearch_tabs: show_elasticsearch_tabs } }
-
         it 'data item condition is set correctly' do
-          allow(search_navigation).to receive(:feature_flag_tab_enabled?)
-            .with(:global_search_commits_tab).and_return(feature_flag_enabled)
-          allow(search_navigation).to receive(:tab_enabled_for_project?).with(:commits).and_return(tab_enabled)
+          allow(search_navigation).to receive(:can?).with(user, :read_code, project).and_return(ability_enabled)
 
           expect(tabs[:commits][:condition]).to eq(condition)
         end

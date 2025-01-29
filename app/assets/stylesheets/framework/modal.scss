@@ -78,7 +78,7 @@ body.modal-open {
 }
 
 .modal {
-  background-color: $t-gray-a-24;
+  @apply gl-bg-overlay;
 
   .modal-content {
     border-radius: $modal-border-radius;

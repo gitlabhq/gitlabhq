@@ -88,7 +88,7 @@
     }
 
     .line-numbers {
-      color: $t-gray-a-24;
+      @apply gl-text-alpha-dark-24;
     }
 
     .view-overlays {

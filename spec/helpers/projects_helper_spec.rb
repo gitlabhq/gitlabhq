@@ -2008,10 +2008,11 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     with_them do
       let(:request) { instance_double(ActionDispatch::Request, path: helper.send(request_path)) }
+      let(:collection) { Project.where(id: authorized_projects) }
 
       before do
         allow(helper).to receive(:request).and_return(request)
-        allow(user).to receive(:authorized_projects).and_return(authorized_projects)
+        allow(user).to receive(:authorized_projects).and_return(collection)
       end
 
       it 'returns the correct boolean response' do

@@ -139,9 +139,7 @@ module Search
     end
 
     def show_commits_search_tab?
-      return true if tab_enabled_for_project?(:commits)
-
-      project.nil? && show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_commits_tab)
+      tab_enabled_for_project?(:commits)
     end
 
     def show_issues_search_tab?

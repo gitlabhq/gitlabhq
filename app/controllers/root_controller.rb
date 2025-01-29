@@ -19,6 +19,10 @@ class RootController < Dashboard::ProjectsController
   skip_before_action :projects
 
   def index
+    # When your_work_projects_vue FF is enabled we load the projects via GraphQL query
+    # so we don't want to preload the projects at the controller level to avoid duplicate queries.
+    return if Feature.enabled?(:your_work_projects_vue, current_user)
+
     # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/40260
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       projects

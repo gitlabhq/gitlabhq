@@ -726,7 +726,7 @@ module ProjectsHelper
       contributed_dashboard_projects_path
     ]
 
-    dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.present?
+    dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.exists?
   end
 
   def delete_immediately_message(project)
