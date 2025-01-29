@@ -169,7 +169,6 @@ Style/RedundantSelf:
     - 'ee/app/models/ee/group.rb'
     - 'ee/app/models/ee/issue.rb'
     - 'ee/app/models/ee/member.rb'
-    - 'ee/app/models/ee/packages/package_file.rb'
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/ee/project_import_state.rb'
     - 'ee/app/models/ee/snippet_repository.rb'

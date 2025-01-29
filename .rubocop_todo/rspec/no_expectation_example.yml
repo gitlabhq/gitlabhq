@@ -126,7 +126,6 @@ RSpec/NoExpectationExample:
     - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/models/deploy_key_spec.rb'
     - 'spec/models/group_spec.rb'
-    - 'spec/models/integrations/bamboo_spec.rb'
     - 'spec/models/integrations/pipelines_email_spec.rb'
     - 'spec/models/remote_mirror_spec.rb'
     - 'spec/models/repository_spec.rb'

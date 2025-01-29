@@ -1241,7 +1241,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/merge_requests/update_reviewers_service_spec.rb'
     - 'spec/services/notes/build_service_spec.rb'
     - 'spec/services/notes/create_service_spec.rb'
-    - 'spec/services/notes/quick_actions_service_spec.rb'
     - 'spec/services/notification_recipients/builder/new_note_spec.rb'
     - 'spec/services/notification_service_spec.rb'
     - 'spec/services/packages/mark_packages_for_destruction_service_spec.rb'

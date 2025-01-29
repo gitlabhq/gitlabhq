@@ -36,7 +36,6 @@ Style/BlockDelimiters:
     - 'spec/models/ci/group_variable_spec.rb'
     - 'spec/models/container_registry/protection/rule_spec.rb'
     - 'spec/models/environment_status_spec.rb'
-    - 'spec/models/hooks/web_hook_spec.rb'
     - 'spec/models/incident_management/timeline_event_tag_spec.rb'
     - 'spec/models/packages/npm/metadatum_spec.rb'
     - 'spec/models/packages/protection/rule_spec.rb'
@@ -45,4 +44,3 @@ Style/BlockDelimiters:
     - 'spec/presenters/tree_entry_presenter_spec.rb'
     - 'spec/requests/api/graphql/mutations/container_registry/protection/rule/create_spec.rb'
     - 'spec/requests/jira_connect/subscriptions_controller_spec.rb'
-    - 'spec/services/packages/nuget/extract_remote_metadata_file_service_spec.rb'

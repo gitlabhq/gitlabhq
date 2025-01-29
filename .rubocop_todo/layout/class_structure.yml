@@ -65,7 +65,6 @@ Layout/ClassStructure:
     - 'app/models/environment_status.rb'
     - 'app/models/error_tracking/project_error_tracking_setting.rb'
     - 'app/models/gpg_key.rb'
-    - 'app/models/hooks/web_hook.rb'
     - 'app/models/identity.rb'
     - 'app/models/integrations/buildkite.rb'
     - 'app/models/integrations/clickup.rb'

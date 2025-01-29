@@ -155,7 +155,6 @@ RSpec/ContainExactly:
     - 'spec/models/concerns/members/enumerable_spec.rb'
     - 'spec/models/design_management/version_spec.rb'
     - 'spec/models/group_spec.rb'
-    - 'spec/models/hooks/web_hook_spec.rb'
     - 'spec/models/member_spec.rb'
     - 'spec/models/members/members/members_with_parents_spec.rb'
     - 'spec/models/organizations/organization_spec.rb'

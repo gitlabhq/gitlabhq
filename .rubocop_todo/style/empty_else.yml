@@ -9,7 +9,6 @@ Style/EmptyElse:
     - 'app/models/resource_state_event.rb'
     - 'app/models/resource_timebox_event.rb'
     - 'app/services/award_emojis/add_service.rb'
-    - 'app/workers/post_receive.rb'
     - 'config/initializers/doorkeeper_openid_connect.rb'
     - 'ee/app/helpers/ee/kerberos_helper.rb'
     - 'ee/app/services/gitlab_subscriptions/check_future_renewal_service.rb'

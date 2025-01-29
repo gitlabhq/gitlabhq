@@ -432,7 +432,6 @@ Style/GuardClause:
     - 'lib/gitlab/instrumentation/global_search_api.rb'
     - 'lib/gitlab/instrumentation/rate_limiting_gates.rb'
     - 'lib/gitlab/instrumentation/uploads.rb'
-    - 'lib/gitlab/issuable/clone/copy_resource_events_service.rb'
     - 'lib/gitlab/legacy_github_import/client.rb'
     - 'lib/gitlab/legacy_github_import/issuable_formatter.rb'
     - 'lib/gitlab/marginalia.rb'

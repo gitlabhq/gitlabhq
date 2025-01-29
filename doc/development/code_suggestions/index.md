@@ -121,6 +121,10 @@ The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-
 1. Purchase the GitLab Duo Pro add-on using the same test credit card from the above steps.
 1. Go back to <https://staging.gitlab.com> and verify that your group has access to Duo Pro by navigating to `Settings > GitLab Duo` and managing seats.
 
+### Setup instructions to use the Duo Enteprise add-on with a **staging** GitLab.com account
+
+Internal use only: Given that purchasing a license for Duo Enterprise is not self-serviceable, post a request in the **#g_provision** Slack channel to grant access to your customer staging account with a Duo Enterprise license.
+
 ### Video demonstrations of installing and using Code Suggestions in IDEs
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>

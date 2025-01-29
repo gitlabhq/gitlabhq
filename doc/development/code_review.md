@@ -116,7 +116,7 @@ It picks reviewers and maintainers from the list at the
 [engineering projects](https://handbook.gitlab.com/handbook/engineering/projects/)
 page, with these behaviors:
 
-- It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
+- It doesn't pick people whose Slack or [GitLab status](../user/profile/index.md#set-your-status):
   - Contains the string `OOO`, `PTO`, `Parental Leave`, `Friends and Family`, or `Conference`.
   - Emoji is from one of these categories:
     - **On leave** - 🌴 `palm_tree`, 🏖️ `beach`, ⛱ `beach_umbrella`, 🏖 `beach_with_umbrella`, 🌞 `sun_with_face`, 🎡 `ferris_wheel`, 🏙 `cityscape`
@@ -125,7 +125,7 @@ page, with these behaviors:
 - It doesn't pick people who are already assigned a number of reviews that is equal to
   or greater than their chosen "review limit". The review limit is the maximum number of
   reviews people are ready to handle at a time. Set a review limit by using one of the following
-  as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
+  as a Slack or [GitLab status](../user/profile/index.md#set-your-status):
   - 2️⃣ - `two`
   - 3️⃣ - `three`
   - 4️⃣ - `four`
@@ -143,7 +143,7 @@ page, with these behaviors:
   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
   that it can be stable for backport branches.
-- People whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+- People whose Slack or [GitLab status](../user/profile/index.md#set-your-status) emoji
   is Ⓜ `:m:`are only suggested as reviewers on projects they are a maintainer of.
 
 The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) contains:

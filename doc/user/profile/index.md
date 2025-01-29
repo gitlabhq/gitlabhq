@@ -228,43 +228,26 @@ To add your name pronunciation:
 1. In the **Pronunciation** text box, enter how your name is pronounced. The pronunciation must be plain text and 255 characters or less.
 1. Select **Update profile settings**.
 
-## Set your current status
+## Set your status
 
-You can provide a custom status message for your user profile along with an emoji that describes it.
-This may be helpful when you are out of office or otherwise not available.
+Set your status to let others know your availability. Others can see your status when they hover over your avatar, name, or username. Your status is publicly visible even if you've [made your user profile page private](#make-your-user-profile-page-private).
 
-Your status is publicly visible even if your [profile is private](#make-your-user-profile-page-private).
+Your status consists of the following elements. You can use each separately to indicate your status.
+
+- An emoji to indicate your status.
+- A message that describes your availability. You can include emoji codes like `:palm_tree:` or `:bulb:`. Maximum of 100 characters.
+- A checkbox that adds a `Busy` badge to your status.
 
 To set your current status:
 
 1. On the left sidebar, select your avatar.
-1. Select **Set status** or, if you have already set a status, **Edit status**.
-1. Set the desired emoji and status message. Status messages must be plain text and 100 characters or less.
-   They can also contain emoji codes like, `I'm on vacation :palm_tree:`.
-1. Select a value from the **Clear status after** dropdown list.
-1. Select **Set status**. Alternatively, you can select **Remove status** to remove your user status entirely.
+1. Select **Set status**. If you've previously set a status, select **Edit status** instead.
+1. Optional. Enter a status message.
+1. Optional. Select the **Set yourself as busy** checkbox.
+1. Optional. Select a value from the **Clear status after** dropdown list.
+1. Select **Set status**.
 
-You can also set your current status from [your user settings](#access-your-user-settings) or by [using the API](../../api/users.md#set-your-user-status).
-
-If you select the **Busy** checkbox, remember to clear it when you become available again.
-
-## Set a busy status indicator
-
-To indicate to others that you are busy, you can set an indicator.
-
-To set the busy status indicator, either:
-
-- Set it directly:
-  1. On the left sidebar, select your avatar.
-  1. Select **Set status** or, if you have already set a status, **Edit status**.
-  1. Select the **Set yourself as busy** checkbox.
-
-- Set it on your profile:
-  1. On the left sidebar, select your avatar.
-  1. Select **Edit profile**.
-  1. In the **Current status** section, select the **Set yourself as busy** checkbox.
-
-  The busy status is displayed next to your name, every time your name is shown in the user interface.
+Your status is updated. You can also set your status from the [user settings](#access-your-user-settings) page or with the [Users API](../../api/users.md#set-your-user-status).
 
 ## Set your time zone
 

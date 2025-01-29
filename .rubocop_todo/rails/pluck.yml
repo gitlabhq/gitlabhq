@@ -32,7 +32,6 @@ Rails/Pluck:
     - 'ee/spec/controllers/projects/feature_flag_issues_controller_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/graphql/api/vulnerabilities_spec.rb'
-    - 'ee/spec/helpers/ee/geo_helper_spec.rb'
     - 'ee/spec/helpers/ee/operations_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/group/tree_saver_spec.rb'
     - 'ee/spec/lib/gitlab/custom_file_templates_spec.rb'

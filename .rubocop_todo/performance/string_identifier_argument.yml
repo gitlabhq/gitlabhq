@@ -66,7 +66,6 @@ Performance/StringIdentifierArgument:
     - 'ee/spec/models/namespace_setting_spec.rb'
     - 'ee/spec/models/project_feature_spec.rb'
     - 'ee/spec/models/project_import_data_spec.rb'
-    - 'ee/spec/models/project_import_state_spec.rb'
     - 'ee/spec/policies/audit_events/group/namespace_filter_policy_spec.rb'
     - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/requests/api/dependency_proxy/packages/maven_spec.rb'

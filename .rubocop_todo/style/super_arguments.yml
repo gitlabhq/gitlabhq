@@ -30,7 +30,6 @@ Style/SuperArguments:
     - 'app/models/concerns/time_trackable.rb'
     - 'app/models/current.rb'
     - 'app/models/hooks/service_hook.rb'
-    - 'app/models/hooks/web_hook.rb'
     - 'app/models/integrations/discord.rb'
     - 'app/models/integrations/matrix.rb'
     - 'app/models/integrations/microsoft_teams.rb'

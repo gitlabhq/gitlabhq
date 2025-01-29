@@ -412,7 +412,6 @@ RSpec/ExpectInHook:
     - 'spec/workers/incident_management/close_incident_worker_spec.rb'
     - 'spec/workers/integrations/create_external_cross_reference_worker_spec.rb'
     - 'spec/workers/packages/helm/extraction_worker_spec.rb'
-    - 'spec/workers/post_receive_spec.rb'
     - 'spec/workers/projects/git_garbage_collect_worker_spec.rb'
     - 'spec/workers/projects/refresh_build_artifacts_size_statistics_worker_spec.rb'
     - 'spec/workers/run_pipeline_schedule_worker_spec.rb'

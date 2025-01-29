@@ -63,7 +63,6 @@ Style/FormatString:
     - 'app/models/design_management/design.rb'
     - 'app/models/diff_note.rb'
     - 'app/models/diff_viewer/base.rb'
-    - 'app/models/integrations/asana.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/emails_on_push.rb'

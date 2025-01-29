@@ -2862,7 +2862,6 @@ RSpec/ContextWording:
     - 'spec/workers/packages/nuget/extraction_worker_spec.rb'
     - 'spec/workers/packages/rubygems/extraction_worker_spec.rb'
     - 'spec/workers/pages_domain_removal_cron_worker_spec.rb'
-    - 'spec/workers/post_receive_spec.rb'
     - 'spec/workers/project_export_worker_spec.rb'
     - 'spec/workers/projects/git_garbage_collect_worker_spec.rb'
     - 'spec/workers/projects/post_creation_worker_spec.rb'

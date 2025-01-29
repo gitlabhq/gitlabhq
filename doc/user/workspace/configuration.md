@@ -35,7 +35,7 @@ To set up infrastructure for workspaces:
    1. Point [`dns_zone`](gitlab_agent_configuration.md#dns_zone) and `*.<dns_zone>`
       to the load balancer exposed by the Ingress controller.
       This load balancer must support WebSockets.
-   1. [Set up the GitLab workspaces proxy](set_up_workspaces_proxy.md).
+   1. [Set up the GitLab workspaces proxy](set_up_gitlab_agent_and_proxies.md).
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
 
@@ -149,7 +149,7 @@ Prerequisites:
 - You must enable SSH access for the images specified in your [devfile](index.md#devfile).
   For more information, see [update your workspace container image](#update-your-workspace-container-image).
 - You must configure a TCP load balancer that points to the GitLab workspaces proxy.
-  For more information, see [update your DNS records](set_up_workspaces_proxy.md#update-your-dns-records).
+  For more information, see [update your DNS records](set_up_gitlab_agent_and_proxies.md#update-your-dns-records).
 
 To connect to a workspace with an SSH client:
 
