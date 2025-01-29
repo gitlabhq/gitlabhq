@@ -6,7 +6,7 @@ require 'gitlab/rspec/all'
 require_relative '../../../../tooling/lib/tooling/gettext_extractor'
 require_relative '../../../support/tmpdir'
 
-RSpec.describe Tooling::GettextExtractor, feature_category: :tooling do
+RSpec.describe Tooling::GettextExtractor, feature_category: :tooling, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/486873' do
   include StubENV
   include TmpdirHelper
 

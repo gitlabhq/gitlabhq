@@ -1462,10 +1462,10 @@
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.0.tgz#ac877aa76a9c45368c979471e461b520d38e6cf5"
   integrity sha512-56VPujlHscP5q/e7Jlpqc40sja4vOhC4uJD1llBCWolVI8ND4+VzisDVkUMl+z5y0MpIImW6HjhNc+ZvuizgOw==
 
-"@gitlab/web-ide@^0.0.1-dev-20250110172049":
-  version "0.0.1-dev-20250110172049"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250110172049.tgz#c10d85535f272039613866082d9aa6a9068f63b1"
-  integrity sha512-3duzCxQGRqSoPnOMG8dtepIxHlE2KvysSVrOGDMijajDpi6N68loFaUSM2E/shy+NtSPKQgltYiG1JXPxZlWaw==
+"@gitlab/web-ide@^0.0.1-dev-20250128095641":
+  version "0.0.1-dev-20250128095641"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250128095641.tgz#06279d78773d65c72e046ba95168f0506bd7798b"
+  integrity sha512-cHEya9pENuypJ1LXW5oWk2Jivx/WEsybylIT4l/kPSFPJ25/mjHeUSTRGUragrnlH+ElgYEyvxElBaSMDMAG9g==
 
 "@gleam-lang/highlight.js-gleam@^1.5.0":
   version "1.5.0"

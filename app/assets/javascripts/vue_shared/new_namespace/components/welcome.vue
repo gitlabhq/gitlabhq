@@ -38,7 +38,7 @@ export default {
             <img aria-hidden="true" :src="panel.imageSrc" :alt="panel.title" />
           </div>
           <div class="gl-pl-4">
-            <h3 class="gl-text-size-h2 gl-text-inherit">
+            <h3 class="gl-text-color-heading gl-text-size-h2">
               {{ panel.title }}
             </h3>
             <p class="gl-text-default">

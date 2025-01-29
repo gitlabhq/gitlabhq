@@ -198,6 +198,16 @@ function setup_db_praefect() {
 function setup_db() {
   section_start "setup-db" "Setting up DBs"
 
+  if [ -f pg_dumpall.sql ]; then
+    echo "Found pg_dumpall.sql, applying!"
+
+    psql -h postgres -U postgres -q < pg_dumpall.sql > /dev/null
+    rm pg_dumpall.sql
+
+    section_end "setup-db"
+    return 0
+  fi
+
   setup_db_user_only
   run_timed_command_with_metric "bundle exec rake db:drop db:create db:schema:load db:migrate gitlab:db:lock_writes" "setup_db"
   setup_db_praefect

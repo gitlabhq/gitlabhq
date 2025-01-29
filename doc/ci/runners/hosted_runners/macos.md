@@ -50,7 +50,7 @@ The images and installed components are updated with each GitLab release, to kee
 Major and minor releases of macOS and Xcode are made available in the milestone subsequent to the Apple release.
 
 A new major release image is initially made available as beta, and becomes generally available with the release of the first minor release.
-Because only two generally available images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](../index.md#supported-image-lifecycle).
+Because only two generally available images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](index.md#supported-image-lifecycle).
 
 When a new major release is generally available, it becomes the default image for all macOS jobs.
 

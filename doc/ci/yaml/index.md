@@ -5290,8 +5290,13 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 
 **Related topics**:
 
-- [Use tags to control which jobs a runner can run](../runners/configure_runners.md#control-jobs-that-a-runner-can-run).
-- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
+- [Use tags to control which jobs a runner can run](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)
+- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job)
+- Runner tags for hosted runners:
+  - [Hosted runners on Linux](../../ci/runners/hosted_runners/linux.md)
+  - [GPU-enabled hosted runners](../../ci/runners/hosted_runners/gpu_enabled.md)
+  - [Hosted runners on macOS](../../ci/runners/hosted_runners/macos.md)
+  - [Hosted runners on Windows](../../ci/runners/hosted_runners/windows.md)
 
 ### `timeout`
 
