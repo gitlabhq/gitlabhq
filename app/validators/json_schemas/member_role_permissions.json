@@ -28,6 +28,9 @@
     "admin_runners": {
       "type": "boolean"
     },
+    "admin_security_testing": {
+      "type": "boolean"
+    },
     "admin_terraform_state": {
       "type": "boolean"
     },

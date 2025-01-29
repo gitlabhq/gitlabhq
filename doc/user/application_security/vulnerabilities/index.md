@@ -348,6 +348,7 @@ When you dismiss a vulnerability you must choose one of the following reasons:
 ## Change the status of a vulnerability
 
 > - The permission allowing users with the `Developer` role to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/424133) in GitLab 16.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) in GitLab 17.0.
+> - The **Comment** text box was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/451480) in GitLab 17.9.
 
 Prerequisites:
 
@@ -359,11 +360,10 @@ To change a vulnerability's status from its Vulnerability Page:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
-1. From the **Status** dropdown list select a status, then select **Change status**.
-
-   In GitLab 15.11 and later, you must select a [dismissal reason](#vulnerability-dismissal-reasons) when you change a vulnerability's status to **Dismissed**.
-
-1. Optionally, at the bottom of the page, add a comment to the log entry.
+1. Select **Change status**.
+1. From the **Status** dropdown list, select a status or a [dismissal reason](#vulnerability-dismissal-reasons)
+   when you want to change the vulnerability's status to **Dismissed**.
+1. In the **Comment** text box, provide a comment with more details about the reasons for dismissal. When you apply the **Dismissed** status, a comment is required.
 
 Details of the status change, including who made the change and when, are recorded in the
 vulnerability's action log.

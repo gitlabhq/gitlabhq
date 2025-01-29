@@ -542,11 +542,17 @@ Example response:
 
 ## Remove a billable member from a group
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217851) in GitLab 13.10.
+
 Removes a billable member from a group and its subgroups and projects.
 
 The user does not need to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group, you can
 still use this API to remove them.
+
+NOTE:
+Member removal is handled asynchronously, so the changes complete within a few minutes.
+Asynchronous removal is being rolled out, and may not become available to all groups at the same time.
 
 ```plaintext
 DELETE /groups/:id/billable_members/:user_id

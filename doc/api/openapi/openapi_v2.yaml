@@ -44037,6 +44037,8 @@ definitions:
         type: boolean
       admin_vulnerability:
         type: boolean
+      admin_security_testing:
+        type: boolean
       admin_web_hook:
         type: boolean
       archive_project:

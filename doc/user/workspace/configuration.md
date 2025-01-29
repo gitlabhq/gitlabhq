@@ -37,6 +37,7 @@ To set up infrastructure for workspaces:
       This load balancer must support WebSockets.
    1. [Set up the GitLab workspaces proxy](set_up_gitlab_agent_and_proxies.md).
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
+1. Optional. [Build and run containers in a workspace](#build-and-run-containers-in-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
 
 ## Create a workspace
@@ -139,6 +140,14 @@ To configure sudo access for a workspace with user namespaces:
 1. In the Kubernetes cluster, [configure user namespaces](https://kubernetes.io/blog/2024/04/22/userns-beta/).
 1. In the GitLab agent for workspaces, set [`use_kubernetes_user_namespaces`](gitlab_agent_configuration.md#use_kubernetes_user_namespaces)
    and [`allow_privilege_escalation`](gitlab_agent_configuration.md#allow_privilege_escalation) to `true`.
+
+## Build and run containers in a workspace
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+Development environments often require building and running containers to manage and use dependencies
+during runtime.
+To build and run containers in a workspace, see [configure sudo access for a workspace with Sysbox](#with-sysbox).
 
 ## Connect to a workspace with SSH
 

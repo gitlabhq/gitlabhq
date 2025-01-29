@@ -84,8 +84,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
-  const findHeaders = () => findTable().findAll('th > div > span');
-  const findCells = () => findTable().findAll('td');
+  const findHeaders = () => findTable().findAll('thead th > div > span');
+  const findCells = () => findTable().findAll('tbody td, tbody th');
   const findPagination = () => wrapper.findComponent(GlPagination);
 
   beforeEach(() => {

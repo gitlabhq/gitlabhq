@@ -268,6 +268,9 @@ export default {
           stacked="sm"
           :busy="busy"
         >
+          <template #cell(name)="{ item: { name } }">
+            <span class="gl-font-normal">{{ name }}</span>
+          </template>
           <template #cell(createdAt)="{ item: { createdAt } }">
             <user-date :date="createdAt" />
           </template>

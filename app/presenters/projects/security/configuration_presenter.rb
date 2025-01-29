@@ -45,7 +45,7 @@ module Projects
       end
 
       def user_is_project_admin?
-        can?(current_user, :admin_project, self)
+        can?(current_user, :admin_security_testing, self)
       end
 
       def gitlab_ci_history_path
