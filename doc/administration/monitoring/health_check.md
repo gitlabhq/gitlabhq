@@ -16,7 +16,7 @@ database connection, Redis connection, and access to the file system. These
 endpoints [can be provided to schedulers like Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) to hold
 traffic until the system is ready or restart the container as needed.
 
-Health check endpoints are normally used for load balancers
+Health check endpoints are typically used for load balancers
 and other Kubernetes scheduling systems that need to determine
 service availability before redirecting traffic.
 

@@ -41,7 +41,7 @@ The alert list displays the following information:
 
 Each level of alert contains a uniquely shaped and color-coded icon to help you identify the severity of a particular alert. These severity icons help you immediately identify which alerts you should prioritize investigating:
 
-![Alert Management Severity System](img/alert_management_severity_v13_0.png)
+![Alert severity icons showing different colors and shapes for critical, high, medium, low, info, and unknown levels](img/alert_management_severity_v13_0.png)
 
 Alerts contain one of the following icons:
 

@@ -17,7 +17,7 @@ export const member = {
     integerValue: 50,
     stringValue: 'Owner',
     description:
-      'The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.',
+      'The Owner role is typically assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.',
   },
   source: {
     id: 178,

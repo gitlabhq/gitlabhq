@@ -57,7 +57,7 @@ class Todo < ApplicationRecord
     else
       self
     end
-  }, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+  }, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   belongs_to :user
   belongs_to :issue, -> { where("target_type = 'Issue'") }, foreign_key: :target_id

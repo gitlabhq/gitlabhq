@@ -533,14 +533,23 @@ Examples:
 - Use code generation to create code based on your comments.
 - Adjust your code generation results by adding code comments to your file.
 
-## Code Owner, `CODEOWNER`
+## Code Owner, code owner, `CODEOWNER`
 
-Use **Code Owner** for:
+Use **Code Owners** to refer to the feature name or concept. For example:
 
-- A person or group responsible for specific parts of your project's codebase.
-- The feature that defines the responsible person or group.
+- Use the Code Owners approval rules to protect your code.
 
-Use `CODEOWNER` for the filename that define ownership rules.
+Use **code owner** or **code owners**, lowercase, to refer to a person or group with code ownership responsibilities.
+For example:
+
+- Assign a code owner to the project.
+- Contact the code owner for a review.
+
+Do not use **codeowner**, **CodeOwner**, or **code-owner**.
+
+Use `CODEOWNERS`, uppercase and in backticks, to refer to the filename. For example:
+
+- Edit the `CODEOWNERS` file to define the code ownership rules.
 
 ## Code Review Summary
 

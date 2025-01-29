@@ -10,7 +10,7 @@ RSpec.describe Todo, feature_category: :notifications do
     it { is_expected.to belong_to(:note) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:group) }
-    it { is_expected.to belong_to(:target).touch(true) }
+    it { is_expected.to belong_to(:target).touch(false) }
     it { is_expected.to belong_to(:user) }
   end
 

@@ -74,7 +74,7 @@ module Gitlab
           REPORTER => s_('MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code.'),
           DEVELOPER => s_('MemberRole|The Developer role gives users access to contribute code while restricting sensitive administrative actions.'),
           MAINTAINER => s_('MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships.'),
-          OWNER => s_('MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.')
+          OWNER => s_('MemberRole|The Owner role is typically assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners.')
         }
       end
 

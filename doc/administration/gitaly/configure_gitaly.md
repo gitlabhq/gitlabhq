@@ -887,7 +887,7 @@ SSHUploadPack Gitaly RPCs. Gitaly runs PostUploadPack when a
 user does a Git fetch by using HTTP, or SSHUploadPack when a
 user does a Git fetch by using SSH.
 When the cache is enabled, anything that uses PostUploadPack or SSHUploadPack can
-benefit from it. It is orthogonal to:
+benefit from it. It is independent of and unaffected by:
 
 - The transport (HTTP or SSH).
 - Git protocol version (v0 or v2).
@@ -934,11 +934,9 @@ In `/etc/gitlab/gitlab.rb`, set:
 gitaly['configuration'] = {
   # ...
   pack_objects_cache: {
-    # ...
     enabled: true,
-    # dir: '/var/opt/gitlab/git-data/repositories/+gitaly/PackObjectsCache',
-    # max_age: '5m',
-    # min_occurrences: 1,
+    # The default settings for "dir", "max_age" and "min_occurences" should be fine.
+    # If you want to customize these, see details below.
   },
 }
 ```
@@ -960,6 +958,10 @@ should be:
   fetches start failing.
 - On a disk with enough IO bandwidth. If the cache disk runs out of IO bandwidth, all
   fetches, and probably the entire server, slows down.
+
+WARNING:
+All existing data in the specified directory will be removed. 
+Take care not to use a directory with existing data.
 
 By default, the cache storage directory is set to a subdirectory of the first Gitaly storage
 defined in the configuration file.

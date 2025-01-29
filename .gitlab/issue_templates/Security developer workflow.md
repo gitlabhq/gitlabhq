@@ -73,7 +73,7 @@ After your merge request has been approved according to our [approval guidelines
 | Date detected                       | YYYY-MM-DD | #TODO for AppSec - please follow the format               |
 | GitLab EE only                      | Yes/No     |                                                           |
 | Upgrade notes                       |            |                                                           |
-| GitLab Settings updated             | Yes/No     |                                                           |
+| Creates, updates or removes GitLab settings?             | Yes/No     |                                                           |
 | Migration required                  | Yes/No     |                                                           |
 | Breaking change to UI or public API | Yes/No     | <!-- How should the breaking change be communicated? -->  |
 | Thanks                              |            |                                                           |
