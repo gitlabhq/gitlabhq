@@ -43,7 +43,7 @@ In the following example:
 - Three sections have been collapsed and can be expanded.
 - Three sections are expanded and can be collapsed.
 
-![Collapsible sections](img/collapsible_log_v13_10.png)
+![A job log with expandable and collapsible sections](img/collapsible_log_v13_10.png)
 
 ### Custom collapsible sections
 
@@ -91,7 +91,7 @@ this line should be hidden when collapsed
 
 Sample job console log:
 
-![Custom collapsible sections](img/collapsible_job_v16_10.png)
+![A job log showing a collapsed section with hidden content](img/collapsible_job_v16_10.png)
 
 #### Use a script to improve display of collapsible sections
 
@@ -195,7 +195,7 @@ job:
 
 Here's an example log output with `FF_TIMESTAMPS` enabled:
 
-![Timestamps for each log line](img/ci_log_timestamp_v17_6.png)
+![A job log showing timestamps in UTC for each line](img/ci_log_timestamp_v17_6.png)
 
 To provide feedback on this feature, leave a comment on [issue 463391](https://gitlab.com/gitlab-org/gitlab/-/issues/463391).
 

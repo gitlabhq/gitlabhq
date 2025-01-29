@@ -170,9 +170,6 @@ open in tabs in your IDE as context.
 These files give GitLab Duo more information about the standards and practices
 in your code project.
 
-For more information on possible future context expansion to improve the quality
-of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
-
 #### Turn on open files as context
 
 By default, Code Suggestions uses the open files in your IDE for context when making suggestions.

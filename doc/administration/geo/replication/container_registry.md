@@ -12,7 +12,7 @@ DETAILS:
 
 You can set up a container registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site. This container registry replication is used only for disaster recovery purposes.
 
-Do not push to the container registry on the **secondary** Geo site, because the data is not be propagated to the **primary** site.
+Do not push to the container registry on the **secondary** Geo site, because the data is not propagated to the **primary** site.
 
 We do not recommend pulling container registry data from the **secondary** site because it may be stale. The feature request [issue 365864](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) would solve this problem. You are encouraged to upvote the issue to register your interest.
 

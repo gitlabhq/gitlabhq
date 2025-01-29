@@ -171,7 +171,7 @@ When uploading screenshot artifacts:
 After the attachment is uploaded, [the pipeline test report](#view-unit-test-reports-on-gitlab)
 contains a link to the screenshot, for example:
 
-![Unit test report screenshot example](img/unit_test_report_screenshot_v13_12.png)
+![A failed unit test report with test details and screenshot attachment](img/unit_test_report_screenshot_v13_12.png)
 
 ## Troubleshooting
 

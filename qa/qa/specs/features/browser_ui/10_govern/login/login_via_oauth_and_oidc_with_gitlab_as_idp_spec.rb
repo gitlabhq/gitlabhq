@@ -3,7 +3,10 @@
 module QA
   RSpec.describe 'Govern', :skip_live_env, requires_admin: 'creates users and instance OAuth application',
     only: { condition: -> { Runtime::Env.release } },
-    product_group: :authentication do
+    product_group: :authentication, quarantine: {
+      type: :investigating,
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/515686'
+    } do
     let!(:user) { Runtime::User::Store.test_user }
     let(:consumer_host) { "http://#{consumer_name}.#{Runtime::Env.running_in_ci? ? 'test' : 'bridge'}" }
 
