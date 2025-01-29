@@ -171,10 +171,36 @@ On GitLab Self-Managed, you can activate the view by [enabling the required feat
 
 If you encounter issues while using GitLab Advanced SAST, refer to the [troubleshooting guide](troubleshooting.md).
 
+### Locate the GitLab Advanced SAST analyzer version
+
+To locate the GitLab Advanced SAST analyzer version:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Jobs**.
+1. Locate the `gitlab-advanced-sast` job.
+1. In the output of the job, search for the string `GitLab GitLab Advanced SAST analyzer`.
+
+You should find the version at the end of line with that string. For example:
+
+```plaintext
+[INFO] [GitLab Advanced SAST] [2025-01-24T15:51:03Z] ▶ GitLab GitLab Advanced SAST analyzer v1.1.1
+```
+
+In this example, the version is `1.1.1`.
+
 ## Customize GitLab Advanced SAST
 
 You can disable GitLab Advanced SAST rules or edit their metadata, just as you can other analyzers.
 For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-gitlab-advanced-sast-rules).
+
+## Request source code of LGPL-licensed components in GitLab Advanced SAST
+
+To request information about the source code of LGPL-licensed components in GitLab Advanced SAST, please
+[contact GitLab Support](https://about.gitlab.com/support/).
+
+To ensure a quick response, include the GitLab Advanced SAST analyzer version in your request.
+
+Because this feature is only available at the Ultimate tier, you must be associated with an organization with that level of support entitlement.
 
 ## Feedback
 

@@ -17039,6 +17039,9 @@ msgstr ""
 msgid "CreateValueStreamForm|Plan stage start"
 msgstr ""
 
+msgid "CreateValueStreamForm|Please select a start event"
+msgstr ""
+
 msgid "CreateValueStreamForm|Please select a start event first"
 msgstr ""
 
