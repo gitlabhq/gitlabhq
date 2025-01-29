@@ -7,7 +7,7 @@ RSpec.describe 'Destroying a package', feature_category: :package_registry do
 
   include GraphqlHelpers
 
-  let_it_be_with_reload(:package) { create(:package) }
+  let_it_be_with_reload(:package) { create(:generic_package) }
   let_it_be(:user) { create(:user) }
 
   let(:project) { package.project }
@@ -26,7 +26,9 @@ RSpec.describe 'Destroying a package', feature_category: :package_registry do
   shared_examples 'destroying the package' do
     it 'marks the package as pending destruction' do
       expect(::Packages::MarkPackageForDestructionService)
-          .to receive(:new).with(container: package, current_user: user).and_call_original
+        # rubocop:disable Cop/AvoidBecomes -- MarkPackageForDestructionService should work with all package types, hence Packages::Package
+        .to receive(:new).with(container: package.becomes(::Packages::Package), current_user: user).and_call_original
+      # rubocop:enable Cop/AvoidBecomes
       expect_next_found_instance_of(::Packages::Package) do |package|
         expect(package).to receive(:mark_package_files_for_destruction)
       end

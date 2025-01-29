@@ -123,7 +123,7 @@ The top-level section contains one or more _configuration sections_, defined as 
 
 | Setting | Description |
 | --------| ----------- |
-| `[$analyzer]` | Declares a configuration section for an analyzer. The name follows the snake-case names defined in the list of [SAST analyzers](analyzers.md#sast-analyzers). |
+| `[$analyzer]` | Declares a configuration section for an analyzer. The name follows the names defined in the list of [SAST analyzers](analyzers.md#official-analyzers). |
 
 Configuration example:
 

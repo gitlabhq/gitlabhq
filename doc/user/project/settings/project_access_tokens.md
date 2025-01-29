@@ -186,10 +186,8 @@ Your expired access tokens are listed in the [inactive project access tokens tab
 
 ## Bot users for projects
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default. When enabled new bot users are made members with no expiry date and, when the token is later revoked or expires, the bot user is retained. It is not deleted and its records are not moved to the Ghost User.
-
-FLAG:
-The behavior of the bot user after the project access token is revoked is controlled by a feature flag. For more information, see the history.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default. When enabled new bot users are made members with no expiry date and, when the token is later revoked or expires, the bot user is retained for 30 days.
+> - Inactive bot users retention is [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
@@ -206,15 +204,15 @@ API calls made with a project access token are associated with the corresponding
 
 Bot users for projects:
 
-- Are included in a project's member list but cannot be modified. The membership expires when the token expires.
+- Are included in a project's member list but cannot be modified.
 - Cannot be added to any other project.
 - Can have a maximum role of Owner for a project. For more information, see
   [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
 
 When the project access token is [revoked](#revoke-or-rotate-a-project-access-token):
 
-- The bot user is deleted.
-- All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
+- The bot user is retained for 30 days.
+- After 30 days the bot user is deleted. All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
 
 See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
 

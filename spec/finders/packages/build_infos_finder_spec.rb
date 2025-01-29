@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe ::Packages::BuildInfosFinder do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:package) { create(:package) }
+  let_it_be(:package) { create(:generic_package) }
   let_it_be(:build_infos) { create_list(:package_build_info, 5, :with_pipeline, package: package) }
   let_it_be(:build_info_with_empty_pipeline) { create(:package_build_info, package: package) }
 
-  let_it_be(:other_package) { create(:package) }
+  let_it_be(:other_package) { create(:generic_package) }
   let_it_be(:other_build_infos) { create_list(:package_build_info, 5, :with_pipeline, package: other_package) }
   let_it_be(:other_build_info_with_empty_pipeline) { create(:package_build_info, package: other_package) }
 

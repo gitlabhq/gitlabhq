@@ -72,7 +72,7 @@ RSpec.describe ::Packages::Pypi::SimpleIndexPresenter, :aggregate_failures, feat
 
     context 'with package files pending destruction' do
       let_it_be(:package_pending_destruction) do
-        create(:package, :pending_destruction, project: project, name: "package_pending_destruction")
+        create(:pypi_package, :pending_destruction, project: project, name: 'package_pending_destruction')
       end
 
       let(:project_or_group) { project }

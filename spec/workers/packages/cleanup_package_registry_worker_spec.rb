@@ -12,7 +12,7 @@ RSpec.describe Packages::CleanupPackageRegistryWorker, type: :worker, feature_ca
   describe '#perform' do
     let_it_be_with_reload(:package_files) { create_list(:package_file, 2, :pending_destruction) }
     let_it_be(:policy) { create(:packages_cleanup_policy, :runnable) }
-    let_it_be(:package) { create(:package, project: policy.project) }
+    let_it_be(:package) { create(:generic_package, project: policy.project) }
 
     let(:worker) { described_class.new }
 

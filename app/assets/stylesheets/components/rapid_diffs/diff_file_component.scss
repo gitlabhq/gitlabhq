@@ -28,7 +28,7 @@
 }
 
 .rd-lines-removed {
-  color: $red-500;
+  @apply gl-text-danger;
   margin-left: $gl-padding-4;
 }
 

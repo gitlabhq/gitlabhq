@@ -69,18 +69,19 @@ describe('IssueToken', () => {
 
   describe('with state supplied', () => {
     it.each`
-      state         | icon              | cssClass
-      ${'opened'}   | ${'issue-open-m'} | ${'issue-token-state-icon-open'}
-      ${'reopened'} | ${'issue-open-m'} | ${'issue-token-state-icon-open'}
-      ${'closed'}   | ${'issue-close'}  | ${'issue-token-state-icon-closed'}
-    `('shows "$icon" icon when "$state"', ({ state, icon, cssClass }) => {
+      state         | icon              | variant
+      ${'opened'}   | ${'issue-open-m'} | ${'success'}
+      ${'reopened'} | ${'issue-open-m'} | ${'success'}
+      ${'closed'}   | ${'issue-close'}  | ${'info'}
+    `('shows "$icon" icon when "$state"', ({ state, icon, variant }) => {
       createComponent({
         path,
         state,
       });
 
       expect(findReferenceIcon().props('name')).toBe(icon);
-      expect(findReferenceIcon().classes()).toContain(cssClass);
+      expect(findReferenceIcon().classes()).toContain('issue-token-state-icon');
+      expect(findReferenceIcon().props('variant')).toBe(variant);
     });
   });
 

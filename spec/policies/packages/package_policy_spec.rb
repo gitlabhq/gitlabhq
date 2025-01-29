@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::PackagePolicy do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:package) { create(:package, project: project) }
+  let_it_be(:package) { create(:generic_package, project: project) }
 
   subject(:policy) { described_class.new(user, package) }
 

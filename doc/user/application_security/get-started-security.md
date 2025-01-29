@@ -33,8 +33,8 @@ This process is part of a larger workflow:
 Secret Detection scans your repository to help prevent your secrets from being exposed.
 It works with all programming languages.
 
-Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
-dependencies are scanned, including transitive dependencies, also known as nested dependencies.
+Dependency Scanning analyzes your application's dependencies for known vulnerabilities.
+It works with certain languages and package managers.
 
 For more information, see:
 

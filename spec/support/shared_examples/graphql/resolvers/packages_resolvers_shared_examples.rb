@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'group and projects packages resolver' do
   context 'without sort' do
-    let_it_be(:npm_package) { create(:package, project: project) }
+    let_it_be(:npm_package) { create(:generic_package, project: project) }
 
     it 'returns the proper packages' do
       expect(::Packages::Package).not_to receive(:preload_pipelines)

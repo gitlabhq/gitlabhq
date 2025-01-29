@@ -38,13 +38,13 @@ RSpec.describe API::Entities::Package do
   end
 
   context 'when package has status deprecated' do
-    let(:package) { create(:package, :deprecated) }
+    let(:package) { create(:generic_package, :deprecated) }
 
     it_behaves_like 'expose correct web_path in _links'
   end
 
   context 'when package has status error' do
-    let(:package) { create(:package, :error) }
+    let(:package) { create(:generic_package, :error) }
 
     it 'does not expose web_path in _links' do
       expect(subject[:_links]).not_to have_key(:web_path)

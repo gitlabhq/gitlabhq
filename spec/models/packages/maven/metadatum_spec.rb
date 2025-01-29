@@ -38,7 +38,7 @@ RSpec.describe Packages::Maven::Metadatum, type: :model do
     end
 
     context 'with a package' do
-      let_it_be(:package) { create(:package) }
+      let_it_be(:package) { create(:maven_package, maven_metadatum: nil, package_files: []) }
 
       describe '.for_package_ids' do
         let_it_be(:metadata) { create_list(:maven_metadatum, 3, package: package) }

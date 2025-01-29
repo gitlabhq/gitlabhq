@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::DependencyLink, type: :model, feature_category: :package_registry do
-  let_it_be(:package1) { create(:package) }
-  let_it_be(:package2) { create(:package) }
+  let_it_be(:package1) { create(:npm_package, package_files: []) }
+  let_it_be(:package2) { create(:npm_package, package_files: []) }
   let_it_be(:dependency1) { create(:packages_dependency) }
   let_it_be(:dependency2) { create(:packages_dependency) }
 

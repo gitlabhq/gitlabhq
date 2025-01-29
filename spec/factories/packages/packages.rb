@@ -30,16 +30,20 @@ FactoryBot.define do
     end
 
     factory :maven_package do
-      maven_metadatum
-
-      after :build do |package|
-        package.maven_metadatum.path = package.version? ? "#{package.name}/#{package.version}" : package.name
+      maven_metadatum do
+        association(
+          :maven_metadatum,
+          package: instance,
+          path: instance.version? ? "#{instance.name}/#{instance.version}" : instance.name
+        )
       end
 
-      after :create do |package|
-        create :package_file, :xml, package: package
-        create :package_file, :jar, package: package
-        create :package_file, :pom, package: package
+      package_files do
+        [
+          association(:package_file, :xml, package: instance),
+          association(:package_file, :jar, package: instance),
+          association(:package_file, :pom, package: instance)
+        ]
       end
     end
 

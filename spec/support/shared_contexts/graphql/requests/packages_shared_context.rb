@@ -2,7 +2,7 @@
 
 RSpec.shared_context 'package details setup' do
   let_it_be(:project) { create(:project) }
-  let_it_be(:package) { create(:package, project: project) }
+  let_it_be(:package) { create(:generic_package, project: project) }
 
   let(:package_global_id) { global_id_of(package) }
 

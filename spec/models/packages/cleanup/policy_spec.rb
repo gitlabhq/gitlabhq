@@ -30,7 +30,7 @@ RSpec.describe Packages::Cleanup::Policy, type: :model do
   describe '.with_packages' do
     let_it_be(:policy_with_packages) { create(:packages_cleanup_policy) }
     let_it_be(:policy_without_packages) { create(:packages_cleanup_policy) }
-    let_it_be(:package) { create(:package, project: policy_with_packages.project) }
+    let_it_be(:package) { create(:generic_package, project: policy_with_packages.project) }
 
     subject { described_class.with_packages }
 
@@ -43,8 +43,8 @@ RSpec.describe Packages::Cleanup::Policy, type: :model do
     let_it_be(:non_runnable_policy_with_packages) { create(:packages_cleanup_policy) }
     let_it_be(:non_runnable_policy_without_packages) { create(:packages_cleanup_policy) }
 
-    let_it_be(:package1) { create(:package, project: runnable_policy_with_packages.project) }
-    let_it_be(:package2) { create(:package, project: non_runnable_policy_with_packages.project) }
+    let_it_be(:package1) { create(:generic_package, project: runnable_policy_with_packages.project) }
+    let_it_be(:package2) { create(:generic_package, project: non_runnable_policy_with_packages.project) }
 
     subject { described_class.runnable }
 

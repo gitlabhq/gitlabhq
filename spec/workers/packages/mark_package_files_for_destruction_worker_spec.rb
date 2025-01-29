@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::MarkPackageFilesForDestructionWorker, :aggregate_failures, feature_category: :package_registry do
   describe '#perform' do
-    let_it_be(:package) { create(:package) }
+    let_it_be(:package) { create(:generic_package) }
     let_it_be(:package_files) { create_list(:package_file, 3, package: package) }
 
     let(:worker) { described_class.new }

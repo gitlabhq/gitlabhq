@@ -178,7 +178,7 @@ span.idiff {
 
   .deleted-file {
     a {
-      color: $red-500;
+      @apply gl-text-danger;
     }
   }
 

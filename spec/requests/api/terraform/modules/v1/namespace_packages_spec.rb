@@ -434,8 +434,7 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     context 'with package file pending destruction' do
       let_it_be(:package) do
-        create(:package, package_type: :terraform_module, project: project, name: "module-555/pending-destruction",
-          version: '1.0.0')
+        create(:terraform_module_package, project: project, name: 'module-555/pending-destruction', version: '1.0.0')
       end
 
       let_it_be(:package_file_pending_destruction) do

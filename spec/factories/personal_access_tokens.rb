@@ -54,11 +54,7 @@ FactoryBot.define do
     end
 
     after(:create) do |token, evaluator|
-      if Feature.enabled?(:retain_resource_access_token_user_after_revoke, evaluator.resource.root_ancestor)
-        evaluator.resource.add_member(token.user, evaluator.access_level)
-      else
-        evaluator.resource.add_member(token.user, evaluator.access_level, expires_at: token.expires_at)
-      end
+      evaluator.resource.add_member(token.user, evaluator.access_level)
     end
 
     trait :with_rotated_token do

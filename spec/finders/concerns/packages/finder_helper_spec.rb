@@ -21,10 +21,10 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
   describe '#packages_for_project' do
     let_it_be_with_reload(:project1) { create(:project) }
-    let_it_be(:package1) { create(:package, project: project1) }
-    let_it_be(:package2) { create(:package, :error, project: project1) }
+    let_it_be(:package1) { create(:generic_package, project: project1) }
+    let_it_be(:package2) { create(:generic_package, :error, project: project1) }
     let_it_be(:project2) { create(:project) }
-    let_it_be(:package3) { create(:package, project: project2) }
+    let_it_be(:package3) { create(:generic_package, project: project2) }
 
     subject { finder.packages_for_project(project1) }
 
@@ -38,9 +38,9 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be(:project) { create(:project, namespace: group) }
     let_it_be(:project2) { create(:project, namespace: subgroup) }
-    let_it_be(:package1) { create(:package, project: project) }
-    let_it_be(:package2) { create(:package, project: project2) }
-    let_it_be(:package3) { create(:package, :error, project: project2) }
+    let_it_be(:package1) { create(:generic_package, project: project) }
+    let_it_be(:package2) { create(:generic_package, project: project2) }
+    let_it_be(:package3) { create(:generic_package, :error, project: project2) }
 
     subject { finder.packages_for(user, within_group: group) }
 
@@ -129,11 +129,11 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:project1) { create(:project, namespace: group) }
-    let_it_be(:package1) { create(:package, project: project1) }
+    let_it_be(:package1) { create(:generic_package, project: project1) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:project2) { create(:project, namespace: subgroup) }
-    let_it_be(:package2) { create(:package, project: project2) }
-    let_it_be(:package3) { create(:package, :error, project: project2) }
+    let_it_be(:package2) { create(:generic_package, project: project2) }
+    let_it_be(:package3) { create(:generic_package, :error, project: project2) }
 
     shared_examples 'returning both packages' do
       it { is_expected.to contain_exactly(package1, package2) }

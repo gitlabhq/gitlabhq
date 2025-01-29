@@ -1,9 +1,0 @@
----
-name: retain_resource_access_token_user_after_revoke
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462217
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157130
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/468606
-milestone: '17.2'
-group: group::authentication
-type: beta
-default_enabled: false

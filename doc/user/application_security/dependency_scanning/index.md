@@ -320,19 +320,15 @@ analyzers. We recommend not specifying the analyzers so you automatically use th
 best coverage, avoiding the need to make adjustments when there are deprecations or removals.
 However, you can override the selection using the variable `DS_EXCLUDED_ANALYZERS`.
 
-The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) and searches a
-maximum of two directory levels from the repository's root. For example, the
-`gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
-`api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is
-`api/v1/client/Gemfile`.
+The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) to detect
+[supported dependency file](#how-analyzers-are-triggered)
 
 For Java and Python, when a supported dependency file is detected, Dependency Scanning attempts to
 build the project and execute some Java or Python commands to get the list of dependencies. For all
 other projects, the lock file is parsed to obtain the list of dependencies without needing to build
 the project first.
 
-When a supported dependency file is detected, all dependencies, including transitive dependencies
-are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
+All direct and transitive dependencies are analyzed, without a limit to the depth of transitive dependencies.
 
 ### Analyzers
 
@@ -635,11 +631,10 @@ To support the following package managers, the GitLab analyzers proceed in two s
 
 GitLab relies on [`rules:exists`](../../../ci/yaml/index.md#rulesexists) to start the relevant analyzers for the languages detected by the presence of the
 `Supported files` in the repository as shown in the [table above](#supported-languages-and-package-managers).
-
-The current detection logic limits the maximum search depth to two levels. For example, the `gemnasium-dependency_scanning` job is enabled if
-a repository contains either a `Gemfile.lock`, `api/Gemfile.lock`, or `api/client/Gemfile.lock`, but not if the only supported dependency file is `api/v1/client/Gemfile.lock`.
-
-When a supported dependency file is detected, all dependencies, including transitive dependencies are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
+A maximum of two directory levels from the repository's root is searched. For example, the
+`gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
+`api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is
+`api/v1/client/Gemfile`.
 
 ### How multiple files are processed
 

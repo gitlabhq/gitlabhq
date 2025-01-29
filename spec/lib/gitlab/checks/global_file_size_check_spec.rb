@@ -60,16 +60,6 @@ RSpec.describe Gitlab::Checks::GlobalFileSizeCheck, feature_category: :source_co
         end.to raise_exception(Gitlab::GitAccess::ForbiddenError,
           /- #{mock_blob_id} \(#{size_msg} MiB\)/)
       end
-
-      context 'when the enforce_global_file_size_limit feature flag is disabled' do
-        before do
-          stub_feature_flags(enforce_global_file_size_limit: false)
-        end
-
-        it 'does not raise an exception' do
-          expect { subject.validate! }.not_to raise_error
-        end
-      end
     end
   end
 end

@@ -136,19 +136,6 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
               response
               expect(bot_user_membership.reload.expires_at).to be_nil
             end
-
-            context 'when retain_resource_access_token_user_after_revoke FF is disabled' do
-              before do
-                stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
-              end
-
-              it 'updates membership expires at' do
-                response
-
-                new_token = response.payload[:personal_access_token]
-                expect(bot_user_membership.reload.expires_at).to eq(new_token.expires_at)
-              end
-            end
           end
         end
 

@@ -576,7 +576,7 @@
     }
 
     .danger {
-      color: var(--red-500, $red-500);
+      @apply gl-text-danger;
     }
 
     .dropdown-menu {

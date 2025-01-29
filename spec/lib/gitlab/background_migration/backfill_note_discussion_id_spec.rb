@@ -22,7 +22,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNoteDiscussionId, feature_ca
     expect(notes_table.where(discussion_id: nil).count).to eq(1)
 
     expect(notes_table.find(1).discussion_id).to eq(existing_discussion_id)
-    notes_table.where(id: 2..5).each do |n|
+    notes_table.where(id: 2..5).find_each do |n|
       expect(n.discussion_id).to match(/\A[0-9a-f]{40}\z/)
     end
   end

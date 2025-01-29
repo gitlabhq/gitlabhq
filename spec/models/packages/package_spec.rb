@@ -390,8 +390,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   context 'sorting' do
     let_it_be(:project) { create(:project, path: 'aaa') }
     let_it_be(:project2) { create(:project, path: 'bbb') }
-    let_it_be(:package1) { create(:package, project: project) }
-    let_it_be(:package2) { create(:package, project: project2) }
+    let_it_be(:package1) { create(:generic_package, project: project) }
+    let_it_be(:package2) { create(:generic_package, project: project2) }
 
     it 'orders packages by their projects name ascending' do
       expect(described_class.order_project_name).to eq([package1, package2])
@@ -402,8 +402,8 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     context 'with additional packages' do
-      let_it_be(:package3) { create(:package, project: project2) }
-      let_it_be(:package4) { create(:package, project: project) }
+      let_it_be(:package3) { create(:generic_package, project: project2) }
+      let_it_be(:package4) { create(:generic_package, project: project) }
 
       it 'orders packages by their projects path asc, then package id desc' do
         expect(described_class.order_project_path).to eq([package4, package1, package3, package2])
@@ -637,7 +637,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   end
 
   describe '#create_build_infos!' do
-    let_it_be(:package) { create(:package) }
+    let_it_be(:package) { create(:generic_package) }
     let_it_be(:pipeline) { create(:ci_pipeline) }
 
     let(:build) { double(pipeline: pipeline) }

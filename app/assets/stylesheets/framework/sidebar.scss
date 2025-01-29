@@ -808,7 +808,7 @@
     &.over_estimate {
       .time-remaining,
       .compare-value.spent {
-        color: $red-500;
+        @apply gl-text-danger;
       }
     }
   }

@@ -479,7 +479,7 @@ table {
 
 .uploading-error-icon,
 .uploading-error-message {
-  color: $red-500;
+  @apply gl-text-danger;
 }
 
 .uploading-error-message {

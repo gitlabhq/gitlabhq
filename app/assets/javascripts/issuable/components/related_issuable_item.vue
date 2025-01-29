@@ -80,9 +80,6 @@ export default {
         },
       );
     },
-    iconClasses() {
-      return `${this.iconClass} ic-${this.iconName}`;
-    },
     workItemId() {
       return convertToGraphQLId(TYPENAME_WORK_ITEM, this.idKey);
     },
@@ -139,10 +136,11 @@ export default {
           v-if="hasState"
           :id="`iconElementXL-${itemId}`"
           ref="iconElementXL"
-          :class="iconClasses"
+          class="issue-token-state-icon"
           :name="iconName"
           :title="stateTitle"
           :aria-label="state"
+          :variant="iconVariant"
         />
         <gl-tooltip :target="`iconElementXL-${itemId}`">
           <span v-safe-html="stateTitle"></span>

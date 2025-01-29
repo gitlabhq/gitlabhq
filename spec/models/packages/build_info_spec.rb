@@ -8,7 +8,7 @@ RSpec.describe Packages::BuildInfo, type: :model, feature_category: :package_reg
   end
 
   context 'with some build infos' do
-    let_it_be(:package) { create(:package) }
+    let_it_be(:package) { create(:generic_package) }
     let_it_be(:build_infos) { create_list(:package_build_info, 3, :with_pipeline, package: package) }
     let_it_be(:build_info_with_no_pipeline) { create(:package_build_info) }
 

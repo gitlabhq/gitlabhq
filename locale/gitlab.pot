@@ -51177,7 +51177,7 @@ msgstr ""
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr ""
 
-msgid "SecurityOrchestration|%{requireStart}Generates a bot comment%{requireEnd} and selected users as the security consultant that developers can reach out for help."
+msgid "SecurityOrchestration|%{requireStart}Warn users with a bot comment%{requireEnd} and select users as security consultants that developers may contact for support in addressing violations."
 msgstr ""
 
 msgid "SecurityOrchestration|%{scanners}"

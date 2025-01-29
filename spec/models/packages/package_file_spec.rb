@@ -113,7 +113,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
   end
 
   context 'updating project statistics' do
-    let_it_be(:package, reload: true) { create(:package) }
+    let_it_be(:package, reload: true) { create(:maven_package, package_files: [], maven_metadatum: nil) }
 
     context 'when the package file has an explicit size' do
       subject { build(:package_file, :jar, package: package, size: 42) }
@@ -399,7 +399,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
   end
 
   context 'status scopes' do
-    let_it_be(:package) { create(:package) }
+    let_it_be(:package) { create(:generic_package) }
     let_it_be(:default_package_file) { create(:package_file, package: package) }
     let_it_be(:pending_destruction_package_file) { create(:package_file, :pending_destruction, package: package) }
 

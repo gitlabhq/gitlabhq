@@ -72,7 +72,8 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
     end
 
     context "with a mutation query" do
-      let_it_be_with_reload(:package) { create(:package) }
+      let_it_be_with_reload(:package) { create(:generic_package) }
+
       let(:project) { package.project }
 
       let(:query) do

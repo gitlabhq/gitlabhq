@@ -114,11 +114,7 @@ module ResourceAccessTokens
     end
 
     def create_membership(resource, user, access_level)
-      if Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
-        resource.add_member(user, access_level)
-      else
-        resource.add_member(user, access_level, expires_at: pat_expiration)
-      end
+      resource.add_member(user, access_level)
     end
 
     def pat_expiration

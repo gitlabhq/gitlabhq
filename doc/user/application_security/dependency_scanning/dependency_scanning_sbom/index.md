@@ -23,8 +23,7 @@ This feature uses an experimental scanner.
 This feature is available for testing, but not ready for production use.
 
 Dependency scanning using CycloneDX SBOM analyzes your application's dependencies for known
-vulnerabilities. All dependencies are scanned, including transitive dependencies, also known as
-nested dependencies.
+vulnerabilities. All dependencies are scanned, [including transitive dependencies](../index.md).
 
 Dependency scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
 aspects of inspecting the items your code uses. These items typically include application and system

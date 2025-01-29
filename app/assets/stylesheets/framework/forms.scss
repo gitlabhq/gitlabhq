@@ -163,7 +163,7 @@ label {
 
 .gl-field-error,
 .invalid-feedback {
-  color: $red-500;
+  @apply gl-text-danger;
   font-size: $gl-font-size;
 }
 
@@ -197,7 +197,7 @@ label {
   }
 
   .gl-field-error-message {
-    color: $red-500;
+    @apply gl-text-danger;
   }
 }
 

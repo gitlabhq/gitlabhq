@@ -63,8 +63,8 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     end
 
     context 'with private group' do
-      let!(:package1) { create(:package, project: project) }
-      let!(:package2) { create(:package, project: project) }
+      let!(:package1) { create(:generic_package, project: project) }
+      let!(:package2) { create(:generic_package, project: project) }
 
       let(:group) { create(:group, :private) }
       let(:subgroup) { create(:group, :private, parent: group) }
@@ -109,8 +109,8 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     end
 
     context 'with public group' do
-      let_it_be(:package1) { create(:package, project: project) }
-      let_it_be(:package2) { create(:package, project: project) }
+      let_it_be(:package1) { create(:generic_package, project: project) }
+      let_it_be(:package2) { create(:generic_package, project: project) }
 
       context 'with unauthenticated user' do
         it_behaves_like 'returns packages', :group, :no_type
@@ -128,8 +128,8 @@ RSpec.describe API::GroupPackages, feature_category: :package_registry do
     end
 
     context 'with pagination params' do
-      let_it_be(:package1) { create(:package, project: project) }
-      let_it_be(:package2) { create(:package, project: project) }
+      let_it_be(:package1) { create(:generic_package, project: project) }
+      let_it_be(:package2) { create(:generic_package, project: project) }
       let_it_be(:package3) { create(:npm_package, project: project) }
       let_it_be(:package4) { create(:npm_package, project: project) }
 

@@ -15,7 +15,7 @@ RSpec.describe Projects::Packages::PackagesController, feature_category: :packag
   end
 
   describe 'GET #show' do
-    let_it_be(:package) { create(:package, project: project) }
+    let_it_be(:package) { create(:generic_package, project: project) }
 
     subject do
       get namespace_project_package_path(namespace_id: project.namespace, project_id: project, id: package.id)

@@ -81,10 +81,10 @@ FactoryBot.define do
       create(:grafana_integration, project: projects[1], enabled: true)
       create(:grafana_integration, project: projects[2], enabled: false)
 
-      create(:package, project: projects[0], created_at: 3.days.ago)
-      create(:package, project: projects[0], created_at: 3.days.ago)
-      create(:package, project: projects[1], created_at: 3.days.ago)
-      create(:package, created_at: 2.months.ago, project: projects[1])
+      create(:generic_package, project: projects[0], created_at: 3.days.ago)
+      create(:generic_package, project: projects[0], created_at: 3.days.ago)
+      create(:generic_package, project: projects[1], created_at: 3.days.ago)
+      create(:generic_package, created_at: 2.months.ago, project: projects[1])
 
       # User Preferences
       create(:user_preference, gitpod_enabled: true)

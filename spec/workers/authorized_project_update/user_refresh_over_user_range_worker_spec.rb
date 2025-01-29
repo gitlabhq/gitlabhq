@@ -15,7 +15,7 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker, feature_
   describe '#perform' do
     context 'checks if project authorization update is required' do
       it 'checks if a project_authorization refresh is needed for each of the users' do
-        User.where(id: start_user_id..end_user_id).each do |user|
+        User.where(id: start_user_id..end_user_id).find_each do |user|
           expect(AuthorizedProjectUpdate::FindRecordsDueForRefreshService).to(
             receive(:new).with(user).and_call_original)
         end

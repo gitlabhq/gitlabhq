@@ -92,12 +92,13 @@ export default {
         <gl-icon
           v-if="hasState"
           v-gl-tooltip
-          :class="iconClass"
+          class="issue-token-state-icon"
           :name="iconName"
           :size="12"
           :title="stateTitle"
           :aria-label="state"
           data-testid="referenceIcon"
+          :variant="iconVariant"
         />
         {{ displayReference }}
       </component>

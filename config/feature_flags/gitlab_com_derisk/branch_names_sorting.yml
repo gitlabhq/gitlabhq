@@ -1,9 +1,0 @@
----
-name: branch_names_sorting
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422493
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147034
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452455
-milestone: '16.11'
-group: group::import and integrate
-type: gitlab_com_derisk
-default_enabled: false

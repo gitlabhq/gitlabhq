@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::CleanupPackageFileWorker, type: :worker, feature_category: :package_registry do
-  let_it_be_with_reload(:package) { create(:package) }
+  let_it_be_with_reload(:package) { create(:generic_package) }
 
   let(:worker) { described_class.new }
 

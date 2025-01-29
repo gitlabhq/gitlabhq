@@ -6,7 +6,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
   let_it_be(:helper) { Class.new.include(API::Helpers).include(described_class).new }
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:package) { create(:package) }
+  let_it_be(:package) { create(:generic_package) }
 
   describe 'authorize_packages_access!' do
     subject { helper.authorize_packages_access!(project) }
@@ -61,7 +61,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
     where(:subject, :expected_class) do
       ref(:project) | ::Packages::Policies::Project
       ref(:group)   | ::Packages::Policies::Group
-      ref(:package) | ::Packages::Package
+      ref(:package) | ::Packages::Generic::Package
     end
 
     with_them do

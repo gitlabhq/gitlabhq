@@ -127,14 +127,14 @@ describe('RelatedIssuableItem', () => {
       mountComponent({ props: { state: 'opened' } });
 
       expect(findIcon().props('name')).toBe('issue-open-m');
-      expect(findIcon().classes('issue-token-state-icon-open')).toBe(true);
+      expect(findIcon().attributes('variant')).toBe('success');
     });
 
     it('renders close icon when close state', () => {
       mountComponent({ props: { state: 'closed', closedAt: '2018-12-01T00:00:00.00Z' } });
 
       expect(findIcon().props('name')).toBe('issue-close');
-      expect(findIcon().classes('issue-token-state-icon-closed')).toBe(true);
+      expect(findIcon().attributes('variant')).toBe('info');
     });
   });
 

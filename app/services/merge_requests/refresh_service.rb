@@ -309,7 +309,7 @@ module MergeRequests
     # `MergeRequestsClosingIssues` model (as a performance optimization).
     # rubocop: disable CodeReuse/ActiveRecord
     def cache_merge_requests_closing_issues
-      @project.merge_requests.where(source_branch: @push.branch_name).each do |merge_request|
+      @project.merge_requests.where(source_branch: @push.branch_name).find_each do |merge_request|
         merge_request.cache_merge_request_closes_issues!(@current_user)
       end
     end
