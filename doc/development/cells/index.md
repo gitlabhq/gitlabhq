@@ -118,6 +118,16 @@ existing feature that needs to allow moving data you will need to reach out to
 the Tenant Scale team early on to discuss options for how to manage the
 sharding key.
 
+### Using `namespace_id` as sharding key
+
+The `namespaces` table has rows that can refer to a `Group`, a `ProjectNamespace`,
+or a `UserNamespace`. The `UserNamespace` type is also known as a personal namespace.
+
+Using a `namespace_id` as a sharding key is a good option, except when `namespace_id`
+refers to a `UserNamespace`. Because a user does not necessarily have a related
+`namespace` record, this sharding key can be `NULL`. A sharding key should not
+have `NULL` values.
+
 ### Using the same sharding key for projects and namespaces
 
 Developers may also choose to use `namespace_id` only for tables that can

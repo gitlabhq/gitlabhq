@@ -317,7 +317,7 @@ In order to not overwhelm us with failing pipelines, these files are skipped on 
 If you're reading this, it's likely you were sent here by a failing quarantine job.
 This job is confusing as it fails when a test passes and it passes if they all fail.
 The reason for this is because all newly passing tests should be [removed from the quarantine list](#removing-from-the-quarantine-list).
-Congratulate yourself on fixing a previously failing test and remove it fom the quarantine list to get this pipeline passing again.
+Congratulate yourself on fixing a previously failing test and remove it from the quarantine list to get this pipeline passing again.
 
 ### Removing from the quarantine list
 

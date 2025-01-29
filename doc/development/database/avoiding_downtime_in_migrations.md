@@ -223,10 +223,10 @@ Same as when column is dropped, after the rename is completed, we need to [remov
 ## Changing column constraints
 
 Adding or removing a `NOT NULL` clause (or another constraint) can typically be
-done without requiring downtime. Adding a `NOT NULL` contraint requires that any application
+done without requiring downtime. Adding a `NOT NULL` constraint requires that any application
 changes are deployed _first_, so it should happen in a post-deployment migration.
-In contrary removing a `NOT NULL` contraint should be done in a regular migration.
-This way any code which insers `NULL` values can safely run for the column.
+In contrary removing a `NOT NULL` constraint should be done in a regular migration.
+This way any code which inserts `NULL` values can safely run for the column.
 
 Avoid using `change_column` as it produces an inefficient query because it re-defines
 the whole column type.

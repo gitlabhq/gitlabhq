@@ -105,7 +105,7 @@ Currently, we have a lot editable widgets which you can find in the [folder](htt
 - [Work item description widget](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/work_item_description.vue)
 ...
 
-We also have a [reuseable base dropdown widget wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) which can be used for any new widget having a dropdown. It supports both multi select and single select.
+We also have a [reusable base dropdown widget wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) which can be used for any new widget having a dropdown. It supports both multi select and single select.
 
 ## Steps to implement a new work item widget on frontend in the detail view
 

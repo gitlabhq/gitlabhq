@@ -34,7 +34,7 @@ Named after the [surf reef break](https://en.wikipedia.org/wiki/Banzai_Pipeline)
 
 The [html-pipeline](https://github.com/gjtorikian/html-pipeline) gem implements the pipeline/filter mechanism.
 
-The primary pipeline is the `FullPipeline`, which is a combiantion of the `PlainMarkdownPipeline` and the `GfmPipeline`.
+The primary pipeline is the `FullPipeline`, which is a combination of the `PlainMarkdownPipeline` and the `GfmPipeline`.
 
 ### `PlainMarkdownPipeline`
 

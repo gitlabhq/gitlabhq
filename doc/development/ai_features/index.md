@@ -975,7 +975,7 @@ It's mainly used by the following scenarios:
 - Developers or UX designers have a local GDK but don't know how to set up the group and project resources to test a feature in UI.
 - Evaluators (e.g. CEF) have input dataset that refers to a group or project resource e.g. (`Summarize issue #123` requires a corresponding issue record in PosstgreSQL)
 
-Currently, the input dataset of evaluators and this development seed file are managed seaprately.
+Currently, the input dataset of evaluators and this development seed file are managed separately.
 To ensure that the integration keeps working, this seeder has to create the **same** group/project resources every time.
 For example, ID and IID of the inserted PostgreSQL records must be the same every time we run this seeding process.
 

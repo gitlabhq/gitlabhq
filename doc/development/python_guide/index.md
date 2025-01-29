@@ -194,7 +194,7 @@ installed from the `pipenv install` command.
 
 ## Learning resources
 
-If you are new to Python or looking to refresh your knowledge, this section provides variours materials for
+If you are new to Python or looking to refresh your knowledge, this section provides various materials for
 learning the language.
 
 1. **[Python Cheatsheet](https://www.pythoncheatsheet.org)**

@@ -581,7 +581,7 @@ In this example:
 
 - The name of the artifact is specific explicitly, but you can make it dynamic by using a CI/CD variable.
 - The `untracked` keyword sets the artifact to also include Git untracked files,
-  along with those specified explictly with `paths`.
+  along with those specified explicitly with `paths`.
 
 #### Caching
 

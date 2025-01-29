@@ -135,7 +135,7 @@ The only cascading setting that actually cascades values at the database level i
 
 ### Legacy cascading settings writes
 
-In the first iteration of the cascading settings framework, the "cascade" was as the application code-level, not the database level. The way this works is that the setting value in the `application_settings` table has a default value. At the `namespace_settings` level, it does not. As a result, namespaces have a `nil` value at the databse level but "inherit" the `application_settings` value.
+In the first iteration of the cascading settings framework, the "cascade" was as the application code-level, not the database level. The way this works is that the setting value in the `application_settings` table has a default value. At the `namespace_settings` level, it does not. As a result, namespaces have a `nil` value at the database level but "inherit" the `application_settings` value.
 
 If the group is updated to have a new setting value, that takes precedent over the default value at the `application_settings` level. And, any subgroups will inherit the parent group's setting value because they also have a `nil` value at the database level but inherit the parent value from the `namespace_settings` table. If one of the subgroups update the setting, however, then that overrides the parent group.
 

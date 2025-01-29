@@ -178,7 +178,7 @@ To use GitLab Duo Workflow:
    - On macOS: <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>
    - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>P</kbd>.
 1. Type `Duo Workflow` and select **GitLab: Show Duo Workflow**.
-1. To create a workflow, select **New worklow**.
+1. To create a workflow, select **New workflow**.
 1. For **Task description**, specify a junior-level code task in detail,
    and then select **Start**.
 

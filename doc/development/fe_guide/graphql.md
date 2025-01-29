@@ -355,7 +355,7 @@ query workspaceAutocompleteUsersSearch(
 }
 ```
 
-**CAUTION** We have to be careful to make sure that we do not invalidate the existing GraphQL queries when we split queries. We should ensure to check the inspector that the same quries are not called multiple times when we split queries.
+**CAUTION** We have to be careful to make sure that we do not invalidate the existing GraphQL queries when we split queries. We should ensure to check the inspector that the same queries are not called multiple times when we split queries.
 
 ## Immutability and cache updates
 
