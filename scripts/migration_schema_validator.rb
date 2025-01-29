@@ -43,14 +43,14 @@ class MigrationSchemaValidator
       return
     end
 
+    # validate_ignore_columns! should never be skipped, the ignore_column directive must always be present
+    validate_ignore_columns!
+
     if skip_validation?
       puts "\e[32m Label #{SKIP_VALIDATION_LABEL} is present, skipping schema validation\e[0m"
       return
     end
 
-    # TODO: validate_ignore_columns! should never be skipped, the ignore_column directive must always be present
-    # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/512680
-    validate_ignore_columns!
     validate_schema_on_rollback!
     validate_schema_on_migrate!
     validate_schema_version_files!

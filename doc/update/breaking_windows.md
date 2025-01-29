@@ -33,7 +33,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [CI/CD job token - **Limit access from your project** setting removal](https://gitlab.com/gitlab-org/gitlab/-/issues/395708) | High | Verify | Project |
 | [CI/CD job token - **Authorized groups and projects** allowlist enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | High | Govern | Project |
 | [Deprecate License Scanning CI/CD artifact report type](https://gitlab.com/gitlab-org/gitlab/-/issues/439301) |  | Secure |  |
-| [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Deploy | Project |
+| [OpenTofu CI/CD template](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299) | Low | Depoy | Project |
 | [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/476858) | Low | Fulfillment | Instance, group |
 | [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](https://gitlab.com/gitlab-org/gitlab/-/issues/489850) | Low | Fulfillment | Instance, group |
 | [Public use of Secure container registries is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) | Low | Secure | Instance |
@@ -80,6 +80,7 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [Deprecate license metadata format V1](https://gitlab.com/gitlab-org/gitlab/-/issues/438477) | Low | Secure | Instance |
 | [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | Low | Govern | Project |
 | [Replace `threshold` with `maxretries` for container registry notifications](https://gitlab.com/gitlab-org/container-registry/-/issues/1243) | Low | Package | Project |
+| [GraphQL `target` field for to-do items replaced with `targetEntity`](https://gitlab.com/gitlab-org/gitlab/-/issues/484987) | Low | Foundations | Project |
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
 | [Guest users can pull packages from private projects on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/336622) | High | Package | Project |
 | [Removal of `migrationState` field in `ContainerRepository` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/459869) | Low | Package | Project |

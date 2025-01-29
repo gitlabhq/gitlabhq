@@ -803,6 +803,23 @@ rate limiting will be removed in GitLab 18.0.
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### GraphQL `target` field for to-do items replaced with `targetEntity`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.4</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/484987).
+
+</div>
+
+Under certain circumstances, the `target` field on a to-do item can be null. The GraphQL schema currently declares this field as non-nullable. The new `targetEntity` field is nullable and replaces the non-nullable `target` field.
+Update any GraphQL queries that use the `currentUser.todos.target` field to use the new `currentUser.todos.targetEntity` field instead.
+
+</div>
+
 <div class="deprecation " data-milestone="18.0">
 
 ### Group vulnerability report by OWASP top 10 2017 is deprecated

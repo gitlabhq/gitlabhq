@@ -252,7 +252,7 @@ IP addresses that have been added to your IP allowlist can be viewed on the Conf
 1. Expand **Allowed Source List Config / IP allowlist**.
 1. Turn on the **Enable** toggle.
 1. Select **Add Item**.
-1. Enter the IP address and description. To add another IP address, repeat steps 5 and 6.
+1. Enter the IPv4 **Address** and **Description**. To add another IPv4 address, repeat steps 5 and 6. IPv6 addresses are not supported.
 1. Select **Save**.
 1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window. After the changes are applied, the IP addresses are added to the IP allowlist for your instance.
 
