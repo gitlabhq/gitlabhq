@@ -8518,6 +8518,7 @@ Input type: `PipelineTriggerCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinetriggercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinetriggercreatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline trigger token. |
+| <a id="mutationpipelinetriggercreateexpiresat"></a>`expiresAt` | [`Time`](#time) | Timestamp of when the pipeline trigger token expires. |
 | <a id="mutationpipelinetriggercreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project that the pipeline trigger token to mutate is in. |
 
 #### Fields
@@ -32236,6 +32237,7 @@ Check permissions for the current user on a vulnerability finding.
 | ---- | ---- | ----------- |
 | <a id="pipelinetriggercanaccessproject"></a>`canAccessProject` | [`Boolean!`](#boolean) | Indicates if the pipeline trigger token has access to the project. |
 | <a id="pipelinetriggerdescription"></a>`description` | [`String`](#string) | Description of the pipeline trigger token. |
+| <a id="pipelinetriggerexpiresat"></a>`expiresAt` | [`Time`](#time) | Timestamp of when the pipeline trigger token expires. |
 | <a id="pipelinetriggerhastokenexposed"></a>`hasTokenExposed` | [`Boolean!`](#boolean) | Indicates if the token is exposed. |
 | <a id="pipelinetriggerid"></a>`id` | [`ID!`](#id) | ID of the pipeline trigger token. |
 | <a id="pipelinetriggerlastused"></a>`lastUsed` | [`Time`](#time) | Timestamp of the last usage of the pipeline trigger token. |

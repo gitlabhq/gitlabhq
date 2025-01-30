@@ -7,6 +7,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
   before do
     stub_application_setting(import_sources: Gitlab::ImportSources.values)
+    stub_feature_flags(new_project_creation_form: false)
   end
 
   shared_examples 'shows correct navigation' do
@@ -35,6 +36,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     let_it_be(:user) { create(:user) }
 
     before do
+      stub_feature_flags(new_project_creation_form: false)
       sign_in(user)
     end
 
@@ -102,6 +104,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
     shared_examples '"New project" page' do
       before do
+        stub_feature_flags(new_project_creation_form: false)
         sign_in(user)
       end
 
@@ -557,6 +560,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   shared_examples 'has instructions to enable OAuth' do
     context 'when OAuth is not configured' do
       before do
+        stub_feature_flags(new_project_creation_form: false)
         sign_in(user)
 
         allow(Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original

@@ -25,6 +25,8 @@ describe('work items graphql cache utils', () => {
       widgets: [
         {
           type: WIDGET_TYPE_HIERARCHY,
+          hasChildren: true,
+          count: 1,
           children: {
             nodes: [
               {
@@ -121,6 +123,8 @@ describe('work items graphql cache utils', () => {
             widgets: [
               {
                 type: WIDGET_TYPE_HIERARCHY,
+                hasChildren: true,
+                count: 3,
                 children: {
                   nodes: [
                     childrenWorkItems[0],

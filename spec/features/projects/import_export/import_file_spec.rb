@@ -10,6 +10,7 @@ RSpec.describe 'Import/Export - project import integration test', :js, feature_c
   before do
     stub_application_setting(import_sources: ['gitlab_project'])
     stub_uploads_object_storage(FileUploader)
+    stub_feature_flags(new_project_creation_form: false)
     allow_next_instance_of(Gitlab::ImportExport) do |instance|
       allow(instance).to receive(:storage_path).and_return(export_path)
     end

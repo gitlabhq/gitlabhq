@@ -1359,6 +1359,7 @@ export const workItemResponseFactory = ({
   designWidgetPresent = true,
   customFieldsWidgetPresent = true,
   confidential = false,
+  hasChildren = true,
   discussionLocked = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
@@ -1629,7 +1630,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetHierarchy',
               type: 'HIERARCHY',
-              hasChildren: true,
+              hasChildren,
               rolledUpCountsByType: mockRolledUpCountsByType,
               hasParent,
               children: {

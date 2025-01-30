@@ -32,6 +32,10 @@ module Types
         null: true,
         description: 'Timestamp of the last usage of the pipeline trigger token.'
 
+      field :expires_at, Types::TimeType,
+        null: true,
+        description: 'Timestamp of when the pipeline trigger token expires.'
+
       field :owner, Types::UserType,
         null: false,
         description: 'Owner of the pipeline trigger token.'

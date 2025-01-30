@@ -11,6 +11,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
   let(:project) { create(:project, group: group) }
 
   before do
+    stub_feature_flags(new_project_creation_form: false)
     stub_feature_flags(edit_user_profile_vue: false)
   end
 

@@ -1,0 +1,9 @@
+---
+name: trigger_token_expiration
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417111
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146912
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/489299
+milestone: '17.9'
+group: group::pipeline execution
+type: beta
+default_enabled: false

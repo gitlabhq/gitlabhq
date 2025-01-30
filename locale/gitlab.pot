@@ -16868,6 +16868,9 @@ msgstr ""
 msgid "Create new label"
 msgstr ""
 
+msgid "Create new project"
+msgstr ""
+
 msgid "Create new..."
 msgstr ""
 
@@ -25162,6 +25165,9 @@ msgid "Generate project access tokens scoped to this project for your applicatio
 msgstr ""
 
 msgid "Generate site and private keys at"
+msgstr ""
+
+msgid "Generated QR Code"
 msgstr ""
 
 msgid "Generated files are collapsed by default. To change this behavior, edit the %{tagStart}.gitattributes%{tagEnd} file. %{linkStart}Learn more.%{linkEnd}"
@@ -37925,6 +37931,9 @@ msgstr ""
 msgid "No runner executable"
 msgstr ""
 
+msgid "No seats left in subscription"
+msgstr ""
+
 msgid "No service accounts"
 msgstr ""
 
@@ -41433,6 +41442,9 @@ msgstr ""
 msgid "Personal access tokens"
 msgstr ""
 
+msgid "Personal namespaces"
+msgstr ""
+
 msgid "Personal projects"
 msgstr ""
 
@@ -42097,6 +42109,9 @@ msgid "Pipelines|Edit"
 msgstr ""
 
 msgid "Pipelines|Editor"
+msgstr ""
+
+msgid "Pipelines|Expires"
 msgstr ""
 
 msgid "Pipelines|Explore CI components in the CI/CD Catalog to see if they suit your requirements."
@@ -44528,6 +44543,9 @@ msgstr ""
 msgid "ProjectMaintenance|You will receive an email notification when the process is complete. To remove old versions from the repository, run housekeeping."
 msgstr ""
 
+msgid "ProjectNew|What do you want to create?"
+msgstr ""
+
 msgid "ProjectOverview|Create new fork"
 msgstr ""
 
@@ -45535,6 +45553,12 @@ msgstr[1] ""
 msgid "ProjectsNew|(optional)"
 msgstr ""
 
+msgid "ProjectsNew|A personal project"
+msgstr ""
+
+msgid "ProjectsNew|A project within a group"
+msgstr ""
+
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr ""
 
@@ -45544,7 +45568,16 @@ msgstr ""
 msgid "ProjectsNew|Analyze your source code for known security vulnerabilities."
 msgstr ""
 
+msgid "ProjectsNew|Available only for projects within groups"
+msgstr ""
+
+msgid "ProjectsNew|Choose a group"
+msgstr ""
+
 msgid "ProjectsNew|Connect your external repository to GitLab CI/CD."
+msgstr ""
+
+msgid "ProjectsNew|Contact an administrator to enable options for importing your project"
 msgstr ""
 
 msgid "ProjectsNew|Contact an administrator to enable options for importing your project."
@@ -45569,6 +45602,9 @@ msgid "ProjectsNew|Create new project"
 msgstr ""
 
 msgid "ProjectsNew|Description format"
+msgstr ""
+
+msgid "ProjectsNew|Direct transfer projects with a top-level Group"
 msgstr ""
 
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
@@ -45599,6 +45635,9 @@ msgid "ProjectsNew|Might break existing functionality with other repositories or
 msgstr ""
 
 msgid "ProjectsNew|Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab."
+msgstr ""
+
+msgid "ProjectsNew|Migrate your data from another GitLab instance."
 msgstr ""
 
 msgid "ProjectsNew|More templates are available after sign-up."
@@ -57632,9 +57671,6 @@ msgstr ""
 msgid "There are no matching files"
 msgstr ""
 
-msgid "There are no more seats left in your subscription. New users cannot be added to this instance."
-msgstr ""
-
 msgid "There are no open epics"
 msgstr ""
 
@@ -60391,7 +60427,13 @@ msgstr ""
 msgid "Triggerer"
 msgstr ""
 
+msgid "Trigger|By default, trigger tokens never expire if no expiration date is selected."
+msgstr ""
+
 msgid "Trigger|Description"
+msgstr ""
+
+msgid "Trigger|Expiration Date"
 msgstr ""
 
 msgid "Trigger|Trigger description"
@@ -66213,6 +66255,9 @@ msgid "You have successfully purchased %{product}. You'll receive a receipt by e
 msgstr ""
 
 msgid "You have unsaved changes"
+msgstr ""
+
+msgid "You have used all seats in your subscription, so you cannot add new users."
 msgstr ""
 
 msgid "You left the \"%{membershipable_human_name}\" %{source_type}."

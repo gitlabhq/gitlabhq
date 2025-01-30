@@ -182,7 +182,6 @@ export default {
       isStickyHeaderShowing: false,
       editMode: false,
       draftData: {},
-      hasChildren: false,
       filesToBeSaved: [],
       allowedChildTypes: [],
       designUploadError: null,
@@ -503,6 +502,9 @@ export default {
     contextualViewEnabled() {
       return gon.current_user_use_work_items_view || this.workItemsAlphaEnabled;
     },
+    hasChildren() {
+      return this.workItemHierarchy?.hasChildren;
+    },
   },
   methods: {
     handleWorkItemCreated() {
@@ -788,6 +790,7 @@ export default {
       :allowed-child-types="allowedChildTypes"
       :parent-id="parentWorkItemId"
       :namespace-full-name="namespaceFullName"
+      :has-children="hasChildren"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -1047,7 +1050,6 @@ export default {
               :is-drawer="isDrawer"
               @show-modal="openContextualView"
               @addChild="$emit('addChild')"
-              @childrenLoaded="hasChildren = $event"
             />
             <work-item-relationships
               v-if="workItemLinkedItems"

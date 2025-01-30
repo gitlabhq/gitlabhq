@@ -269,6 +269,19 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
 
+    context 'when format is not supported' do
+      let(:from_project_id) { nil }
+      let(:request_params) { super().merge(format: 'json') }
+      let(:from_ref) { 'master' }
+      let(:to_ref) { 'feature' }
+
+      it 'returns a 404 error' do
+        show_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when the target ref is invalid' do
       let(:from_project_id) { nil }
       let(:from_ref) { 'improve%2Fawesome' }

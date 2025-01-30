@@ -20,7 +20,8 @@ class Projects::TriggersController < Projects::ApplicationController
     response = ::Ci::PipelineTriggers::CreateService.new(
       project: project,
       user: current_user,
-      description: trigger_params[:description]
+      description: trigger_params[:description],
+      expires_at: trigger_params[:expires_at]
     ).execute
 
     @trigger = response.payload[:trigger]
@@ -76,6 +77,6 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def trigger_params
-    params.require(:trigger).permit(:description)
+    params.require(:trigger).permit(:description, :expires_at)
   end
 end

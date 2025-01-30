@@ -10955,7 +10955,8 @@ CREATE TABLE ci_triggers (
     owner_id bigint NOT NULL,
     description character varying,
     encrypted_token bytea,
-    encrypted_token_iv bytea
+    encrypted_token_iv bytea,
+    expires_at timestamp with time zone
 );
 
 CREATE SEQUENCE ci_triggers_id_seq

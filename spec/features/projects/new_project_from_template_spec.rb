@@ -6,6 +6,7 @@ RSpec.describe 'New project from template', :js, feature_category: :groups_and_p
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(new_project_creation_form: false)
     sign_in(user)
 
     visit new_project_path

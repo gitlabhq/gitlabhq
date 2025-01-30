@@ -118,6 +118,16 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       expect(assigns[:qr_code]).to eq(code)
     end
 
+    it 'includes title element in generated SVG' do
+      get :show
+
+      doc = Nokogiri::XML(assigns(:qr_code))
+      title_element = doc.css('svg title').first
+
+      expect(title_element).to be_present
+      expect(title_element.text).to eq('Generated QR Code')
+    end
+
     it 'generates a single otp_secret with multiple page loads', :freeze_time do
       expect(User).to receive(:generate_otp_secret).with(32).and_call_original.once
 

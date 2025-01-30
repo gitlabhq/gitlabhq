@@ -232,6 +232,28 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
 
+    describe '#triggers' do
+      let(:user) { create(:user) }
+      let(:expired_trigger) { create(:ci_trigger, expires_at: 5.years.ago, owner: user) }
+      let(:valid_trigger) { create(:ci_trigger, expires_at: 1.month.from_now, owner: user) }
+
+      it { is_expected.to have_many(:triggers).class_name('Ci::Trigger').with_foreign_key('owner_id') }
+
+      it 'returns non-expired triggers by default' do
+        expect(user.triggers).to eq([valid_trigger])
+      end
+
+      context 'with FF trigger_token_expiration disabled' do
+        before do
+          stub_feature_flags(trigger_token_expiration: false)
+        end
+
+        it 'returns all triggers by default' do
+          expect(user.triggers).to match_array([expired_trigger, valid_trigger])
+        end
+      end
+    end
+
     it do
       is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport')
         .through(:admin_abuse_report_assignees)

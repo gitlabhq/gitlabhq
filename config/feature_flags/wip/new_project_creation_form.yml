@@ -1,0 +1,9 @@
+---
+name: new_project_creation_form
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514700
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178859
+rollout_issue_url:
+milestone: '17.9'
+group: group::import and integrate
+type: wip
+default_enabled: false

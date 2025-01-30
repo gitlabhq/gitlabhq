@@ -34,7 +34,11 @@ class Projects::CompareController < Projects::ApplicationController
   def show
     apply_diff_view_cookie!
 
-    render locals: { pagination_params: params.permit(:page) }
+    respond_to do |format|
+      format.html do
+        render locals: { pagination_params: params.permit(:page) }
+      end
+    end
   end
 
   def diff_for_path

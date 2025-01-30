@@ -7,4 +7,7 @@
 
 - enable_search_settings if is_application_settings
 
+- content_for :flash_message do
+  = dispensable_render_if_exists "admin/users/ee_no_seats_left_in_subscription_alert"
+
 = render template: "layouts/application"

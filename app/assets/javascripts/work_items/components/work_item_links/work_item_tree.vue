@@ -165,7 +165,6 @@ export default {
       },
       update({ workItem = {} }) {
         const { children } = findHierarchyWidgets(workItem.widgets);
-        this.$emit('childrenLoaded', Boolean(children?.count));
         this.workItem = workItem;
         return children || {};
       },

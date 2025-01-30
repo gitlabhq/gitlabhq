@@ -219,11 +219,11 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       if response.success?
-        format.html { redirect_to [:admin, @user], notice: _('User was successfully created.') }
+        format.html { redirect_to default_route, notice: _('User was successfully created.') }
         format.json { render json: @user, status: :created, location: @user }
       else
-        @user.errors.none? ? format.html { render "new" } : format.html { render "new", notice: response.message }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        @user&.errors&.any? ? format.html { render "new" } : format.html { redirect_to admin_users_path, notice: response.message }
+        format.json { render json: @user&.errors || {}, status: :unprocessable_entity }
       end
     end
   end

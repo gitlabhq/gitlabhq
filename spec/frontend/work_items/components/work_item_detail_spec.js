@@ -609,6 +609,13 @@ describe('WorkItemDetail component', () => {
         confidential: true,
       });
       const objectiveHandler = jest.fn().mockResolvedValue(objectiveWorkItem);
+      const objectiveNoChildrenHandler = jest.fn().mockResolvedValue(
+        workItemByIidResponseFactory({
+          workItemType: objectiveType,
+          confidential: true,
+          hasChildren: false,
+        }),
+      );
 
       const epicWorkItem = workItemByIidResponseFactory({
         workItemType: epicType,
@@ -626,15 +633,17 @@ describe('WorkItemDetail component', () => {
         expect(findHierarchyTree().exists()).toBe(true);
       });
 
-      it.each([true, false])(
-        'passes hasChildren %s to WorkItemActions when `WorkItemTree` emits `childrenLoaded` %s',
-        async (hasChildren) => {
-          createComponent({ handler: objectiveHandler });
+      it.each`
+        context             | handler                       | result
+        ${'no child items'} | ${objectiveNoChildrenHandler} | ${false}
+        ${'child items'}    | ${objectiveHandler}           | ${true}
+      `(
+        'sets the prop `hasChildren` to $result for WorkItemActions when there are $context',
+        async ({ handler, result }) => {
+          createComponent({ handler });
           await waitForPromises();
 
-          await findHierarchyTree().vm.$emit('childrenLoaded', hasChildren);
-
-          expect(findWorkItemActions().props('hasChildren')).toBe(hasChildren);
+          expect(findWorkItemActions().props('hasChildren')).toBe(result);
         },
       );
 

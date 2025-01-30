@@ -90,6 +90,11 @@ export default {
       required: false,
       default: '',
     },
+    hasChildren: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     canUpdate() {
@@ -207,6 +212,7 @@ export default {
             :allowed-child-types="allowedChildTypes"
             :parent-id="parentId"
             :namespace-full-name="namespaceFullName"
+            :has-children="hasChildren"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)
