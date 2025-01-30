@@ -662,8 +662,8 @@ To configure repository cgroups in Gitaly, use the following settings for `gital
   targeting a specific repository can be distributed across. This enables more conservative
   CPU and memory limits to be configured for repository cgroups while still allowing for
   bursty workloads. For instance, with a `max_cgroups_per_repo` of `2` and a `memory_bytes`
-  limit of 10GB, independent Git operations against a specific repository can consume up
-  to 20GB of memory.
+  limit of 10 GB, independent Git operations against a specific repository can consume up
+  to 20 GB of memory.
 
 For example (not necessarily recommended settings):
 
@@ -674,12 +674,12 @@ gitaly['configuration'] = {
   cgroups: {
     mountpoint: '/sys/fs/cgroup',
     hierarchy_root: 'gitaly',
-    memory_bytes: 64424509440, # 60gb
+    memory_bytes: 64424509440, # 60 GB
     cpu_shares: 1024,
     cpu_quota_us: 400000 # 4 cores
     repositories: {
       count: 1000,
-      memory_bytes: 32212254720, # 20gb
+      memory_bytes: 32212254720, # 20 GB
       cpu_shares: 512,
       cpu_quota_us: 200000, # 2 cores
       max_cgroups_per_repo: 2
@@ -991,7 +991,7 @@ The amount of space required depends on:
 - The size of the `max_age` cache eviction window.
 
 If your users pull 100 MB/s and you use a 5 minute window, then on average you have
-`5*60*100MB = 30GB` of data in your cache directory. This average is an expected average, not
+`5*60*100 MB = 30 GB` of data in your cache directory. This average is an expected average, not
 a guarantee. Peak size may exceed this average.
 
 #### Cache eviction window `max_age`

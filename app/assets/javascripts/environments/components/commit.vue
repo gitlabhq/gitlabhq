@@ -42,7 +42,12 @@ export default {
     <gl-avatar-link v-gl-tooltip :title="commitAuthor" :href="commitAuthorPath">
       <gl-avatar :size="16" :src="commitAuthorAvatar" />
     </gl-avatar-link>
-    <gl-link v-gl-tooltip :title="commitTitle" :href="commitPath" class="gl-str-truncated gl-ml-3">
+    <gl-link
+      v-gl-tooltip
+      :title="commitTitle"
+      :href="commitPath"
+      class="gl-str-truncated gl-ml-3 gl-max-w-full"
+    >
       {{ commitTitle }}
     </gl-link>
   </div>
