@@ -125,4 +125,18 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
     it_behaves_like 'an erroneous service response',
       message: 'Unauthorized to create a protection rule for container image tags'
   end
+
+  context 'when the maximum number of tag rules already exist in the project' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:current_user) { create(:user, maintainer_of: project) }
+
+    before do
+      ContainerRegistry::Protection::TagRule::MAX_TAG_RULES_PER_PROJECT.times do |i|
+        create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: "#{i}*")
+      end
+    end
+
+    it_behaves_like 'an erroneous service response',
+      message: 'Maximum number of protection rules have been reached.'
+  end
 end

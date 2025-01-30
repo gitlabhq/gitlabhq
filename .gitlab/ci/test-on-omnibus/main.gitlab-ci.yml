@@ -253,6 +253,7 @@ elasticsearch:
   extends: .qa
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"
+    ELASTIC_URL: "http://elastic68:9200"
   before_script:
     - !reference [.qa, before_script]
   rules:

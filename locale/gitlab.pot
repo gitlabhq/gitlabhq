@@ -34521,6 +34521,9 @@ msgstr ""
 msgid "Maximum number of projects."
 msgstr ""
 
+msgid "Maximum number of protection rules have been reached."
+msgstr ""
+
 msgid "Maximum number of requests per minute"
 msgstr ""
 

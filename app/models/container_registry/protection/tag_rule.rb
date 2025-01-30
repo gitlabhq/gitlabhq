@@ -6,6 +6,7 @@ module ContainerRegistry
       self.table_name = 'container_registry_protection_tag_rules'
 
       ACCESS_LEVELS = Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin).freeze
+      MAX_TAG_RULES_PER_PROJECT = 5
 
       enum :minimum_access_level_for_delete, ACCESS_LEVELS, prefix: true
       enum :minimum_access_level_for_push, ACCESS_LEVELS, prefix: true

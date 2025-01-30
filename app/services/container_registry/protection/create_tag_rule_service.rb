@@ -11,8 +11,11 @@ module ContainerRegistry
 
       def execute
         unless can?(current_user, :admin_container_image, project)
-          error_message = _('Unauthorized to create a protection rule for container image tags')
-          return service_response_error(message: error_message)
+          return service_response_error(message: _('Unauthorized to create a protection rule for container image tags'))
+        end
+
+        unless tag_rule_count_less_than_maximum?
+          return service_response_error(message: _('Maximum number of protection rules have been reached.'))
         end
 
         protection_rule =
@@ -32,6 +35,12 @@ module ContainerRegistry
           message: message,
           payload: { container_protection_tag_rule: nil }
         )
+      end
+
+      def tag_rule_count_less_than_maximum?
+        limit = ContainerRegistry::Protection::TagRule::MAX_TAG_RULES_PER_PROJECT
+
+        project.container_registry_protection_tag_rules.limit(limit).count < limit
       end
     end
   end
