@@ -15532,7 +15532,8 @@ CREATE TABLE merge_request_context_commits (
     merge_request_id bigint,
     trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
     project_id bigint,
-    CONSTRAINT check_1dc6b5f2ac CHECK ((merge_request_id IS NOT NULL))
+    CONSTRAINT check_1dc6b5f2ac CHECK ((merge_request_id IS NOT NULL)),
+    CONSTRAINT check_777e62d390 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_context_commits_id_seq
@@ -26559,6 +26560,9 @@ ALTER TABLE wiki_repository_states
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE terraform_state_versions
+    ADD CONSTRAINT check_84142902f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sbom_occurrences_vulnerabilities
     ADD CONSTRAINT check_a02e48df9c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -26582,6 +26586,9 @@ ALTER TABLE web_hook_logs
 
 ALTER TABLE vulnerability_finding_evidences
     ADD CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE project_relation_exports
+    ADD CONSTRAINT check_f461e3537f CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE approval_merge_request_rule_sources
     ADD CONSTRAINT check_f82666a937 CHECK ((project_id IS NOT NULL)) NOT VALID;

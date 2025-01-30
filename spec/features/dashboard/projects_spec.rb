@@ -52,13 +52,13 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
       end
     end
 
-    context 'when last_activity_at and update_at are present' do
+    context 'when last_activity_at and update_at are present', time_travel_to: '2025-01-27T09:44:07Z' do
       let_it_be(:project_with_last_activity) do
         create(
           :project,
           namespace: user.namespace,
           last_repository_updated_at: 1.hour.ago,
-          last_activity_at: Time.zone.now
+          last_activity_at: Time.current
         )
       end
 
@@ -67,18 +67,18 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
         wait_for_requests
 
         within_testid("projects-list-item-#{project_with_last_activity.id}") do
-          expect(page).to have_xpath("//time[@datetime='#{project_with_last_activity.last_activity_at.getutc.iso8601}']")
+          expect(page).to have_xpath("//time[@datetime='#{project_with_last_activity.last_activity_at.iso8601}']")
         end
       end
     end
 
-    context 'when last_activity_at is missing' do
+    context 'when last_activity_at is missing', time_travel_to: '2025-01-27T09:44:07Z' do
       it 'shows the updated_at attribute as the update date' do
         visit member_dashboard_projects_path
         wait_for_requests
 
         within_testid("projects-list-item-#{project.id}") do
-          expect(page).to have_xpath("//time[@datetime='#{project.updated_at.getutc.iso8601}']")
+          expect(page).to have_xpath("//time[@datetime='#{project.updated_at.iso8601}']")
         end
       end
     end

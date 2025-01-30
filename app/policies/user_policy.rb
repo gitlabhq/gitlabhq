@@ -8,7 +8,7 @@ class UserPolicy < BasePolicy
   condition(:subject_ghost, scope: :subject, score: 0) { @subject.ghost? }
 
   desc "The profile is private"
-  condition(:private_profile, scope: :subject, score: 0) { @subject.private_profile? }
+  condition(:private_profile, scope: :subject, score: 0) { private_profile? }
 
   desc "The user is blocked"
   condition(:blocked_user, scope: :subject, score: 0) { @subject.blocked? }
@@ -43,6 +43,10 @@ class UserPolicy < BasePolicy
   rule { (user_is_self | admin) & ~blocked }.enable :create_user_personal_access_token
   rule { (user_is_self | admin) & ~blocked }.enable :manage_user_personal_access_token
   rule { (user_is_self | admin) & ~blocked }.enable :get_user_associations_count
+
+  def private_profile?
+    @subject.private_profile?
+  end
 end
 
 UserPolicy.prepend_mod_with('UserPolicy')
