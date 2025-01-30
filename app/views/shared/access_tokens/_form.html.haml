@@ -32,7 +32,7 @@
 
   - if resource
     .form-group
-      = label_tag :access_level, s_("AccessTokens|Select a role"), class: "label-bold"
+      = label_tag :"#{prefix}[access_level]", s_("AccessTokens|Select a role"), class: "label-bold"
       .select-wrapper.gl-form-input-md
         = select_tag :"#{prefix}[access_level]", options_for_select(access_levels, default_access_level), class: "form-control select-control"
         = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3")

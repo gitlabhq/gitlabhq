@@ -109,9 +109,7 @@ module Sidebars
         end
 
         def service_desk_menu_item
-          unless ::Gitlab::ServiceDesk.enabled?(context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :service_desk)
-          end
+          return ::Sidebars::NilMenuItem.new(item_id: :service_desk) unless ::ServiceDesk.enabled?(context.project)
 
           ::Sidebars::MenuItem.new(
             title: _('Service Desk'),

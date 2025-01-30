@@ -168,7 +168,7 @@ export default {
         </span>
       </div>
       <gl-intersection-observer
-        class="gl-grow"
+        class="gl-flex gl-grow gl-justify-center"
         data-testid="design-image"
         :data-qa-filename="filename"
         @appear="onAppear"

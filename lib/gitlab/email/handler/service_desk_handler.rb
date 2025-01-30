@@ -26,7 +26,7 @@ module Gitlab
         end
 
         def can_handle?
-          Gitlab::ServiceDesk.supported? && (project_id || can_handle_legacy_format? || service_desk_key)
+          ::ServiceDesk.supported? && (project_id || can_handle_legacy_format? || service_desk_key)
         end
 
         def execute
@@ -65,7 +65,7 @@ module Gitlab
           strong_memoize(:project) do
             project_record = super
             project_record ||= project_from_key if service_desk_key
-            project_record && ::Gitlab::ServiceDesk.enabled?(project_record) ? project_record : nil
+            project_record && ::ServiceDesk.enabled?(project_record) ? project_record : nil
           end
         end
 

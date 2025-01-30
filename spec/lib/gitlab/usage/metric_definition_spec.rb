@@ -198,7 +198,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       :time_frame         | '29d'
       :data_source        | 'other'
       :data_source        | nil
-      :distribution       | 'test'
       :tiers              | %w[test ee]
       :repair_issue_url   | nil
       :removed_by_url     | 1
@@ -373,17 +372,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
               expect_validation_errors
             end
           end
-        end
-      end
-
-      # ToDo: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/469514 is closed
-      context 'when metric has no distribution' do
-        before do
-          attributes[:distribution] = nil
-        end
-
-        it 'has no validation errors' do
-          expect_no_validation_errors
         end
       end
     end

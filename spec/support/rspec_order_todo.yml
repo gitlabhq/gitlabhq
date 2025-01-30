@@ -5471,7 +5471,6 @@
 - './spec/lib/gitlab/seeder_spec.rb'
 - './spec/lib/gitlab/serializer/ci/variables_spec.rb'
 - './spec/lib/gitlab/serializer/pagination_spec.rb'
-- './spec/lib/gitlab/service_desk_spec.rb'
 - './spec/lib/gitlab/session_spec.rb'
 - './spec/lib/gitlab/setup_helper/praefect_spec.rb'
 - './spec/lib/gitlab/setup_helper/workhorse_spec.rb'

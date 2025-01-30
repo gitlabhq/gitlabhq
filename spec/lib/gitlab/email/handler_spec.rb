@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Email::Handler do
     end
 
     before do
-      allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+      allow(::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
     it 'picks each handler at least once' do

@@ -1125,7 +1125,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     context 'with service desk enabled' do
       before do
-        allow(::Gitlab::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
+        allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
       end
 
       it { expect_allowed(:reporter_access, :create_note, :read_issue, :read_work_item) }

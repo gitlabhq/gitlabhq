@@ -3403,7 +3403,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject { group.has_project_with_service_desk_enabled? }
 
     before do
-      allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+      allow(::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
     context 'when service desk is enabled' do
@@ -3414,7 +3414,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         context 'when service desk is not supported' do
           before do
-            allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(false)
+            allow(::ServiceDesk).to receive(:supported?).and_return(false)
           end
 
           it { is_expected.to eq(false) }

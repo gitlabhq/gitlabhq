@@ -13,7 +13,6 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
       value_description: 'ID of the issue',
       extra_properties: { confidential: false },
       product_group: 'group::product analytics',
-      distributions: %w[ee ce],
       tiers: %w[free premium ultimate],
       introduced_by_url: "https://gitlab.com/example/-/merge_requests/123",
       milestone: '1.6'
@@ -35,7 +34,6 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
       :value_description    | 1
       :extra_properties     | 'smth'
       :product_group        | nil
-      :distributions        | %(be eb)
       :tiers                | %(pro)
       :product_categories     | 'bad_category'
       :product_categories     | ['bad_category']
@@ -60,7 +58,6 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
           internal_events: true,
           product_group: 'activation',
           introduced_by_url: "https://gitlab.com/example/-/merge_requests/123",
-          distributions: %w[ce],
           milestone: "1.0",
           tiers: %w[free],
           additional_properties: {}

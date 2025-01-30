@@ -149,3 +149,22 @@ you don't have to set a personal access token each time you delete your VS Code 
 - `GITLAB_WORKFLOW_TOKEN`: Your personal access token, which you created [when authenticating with GitLab](setup.md#authenticate-with-gitlab).
 
 The token configured in an environment variable is overridden if you configure a token for the same GitLab instance in the extension.
+
+### Connection and authorization error when using GDK
+
+When using VS Code with GDK, you might get an error that states that your system
+is unable to establish a secure TLS connection to a GitLab instance running on
+localhost.
+
+For example, if you are using `127.0.0.1:3000` as your GitLab server:
+
+```plaintext
+Request to https://127.0.0.1:3000/api/v4/version failed, reason: Client network
+socket disconnected before secure TLS connection was established
+```
+
+This issue occurs if you are running GDK on `http` and your GitLab instance is
+hosted on `https`.
+
+To resolve this, manually enter an `http` URL for your instance when you run the
+`GitLab: Authenticate` command.

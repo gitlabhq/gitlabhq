@@ -10,12 +10,6 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "distributions": {
-      "type": [
-        "array",
-        "null"
-      ]
-    },
     "description": {
       "type": "string"
     },

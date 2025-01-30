@@ -203,13 +203,13 @@ RSpec.shared_examples 'note handler shared examples' do |forwardable|
     let(:email_raw) { with_quick_actions }
 
     let!(:sent_notification) do
-      allow(::Gitlab::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
+      allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
       SentNotification.record_note(note, support_bot.id, mail_key)
     end
 
     context 'is enabled' do
       before do
-        allow(::Gitlab::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
+        allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
         project.project_feature.update!(issues_access_level: issues_access_level)
       end
 
@@ -273,8 +273,8 @@ RSpec.shared_examples 'note handler shared examples' do |forwardable|
 
     context 'is disabled', unless: forwardable do
       before do
-        allow(::Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
-        allow(::Gitlab::ServiceDesk).to receive(:enabled?).with(project).and_return(false)
+        allow(::ServiceDesk).to receive(:enabled?).and_return(false)
+        allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(false)
       end
 
       it 'does not create a comment' do

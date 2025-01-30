@@ -28,7 +28,7 @@ RSpec.describe ::API::Entities::Project do
 
   describe '.service_desk_address', feature_category: :service_desk do
     before do
-      allow(::Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
+      allow(::ServiceDesk).to receive(:enabled?).and_return(true)
     end
 
     context 'when a user can admin issues' do

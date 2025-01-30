@@ -34,7 +34,7 @@ module ServiceDesk
     end
 
     def incoming_address
-      return unless Gitlab::ServiceDesk.enabled?(project)
+      return unless ServiceDesk.enabled?(project)
 
       config = Gitlab.config.incoming_email
       wildcard = Gitlab::Email::Common::WILDCARD_PLACEHOLDER

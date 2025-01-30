@@ -16,7 +16,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
     class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-grow"
+      class="gl-flex gl-grow gl-justify-center"
       data-qa-filename="test"
       data-testid="design-image"
     >
@@ -81,7 +81,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
     class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
   >
     <gl-intersection-observer-stub
-      class="gl-grow"
+      class="gl-flex gl-grow gl-justify-center"
       data-qa-filename="test"
       data-testid="design-image"
     >

@@ -1355,7 +1355,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     let_it_be(:current_user) { Users::Internal.support_bot }
 
     before do
-      allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+      allow(::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
     it { expect_disallowed(:read_label) }

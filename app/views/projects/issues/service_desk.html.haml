@@ -3,7 +3,7 @@
 - page_title _("Service Desk")
 - add_page_specific_style 'page_bundles/issuable_list'
 - add_page_specific_style 'page_bundles/issues_list'
-- service_desk_enabled = ::Gitlab::ServiceDesk.enabled?(@project)
+- service_desk_enabled = ::ServiceDesk.enabled?(@project)
 
 - support_bot_attrs = { service_desk_enabled: service_desk_enabled, **UserSerializer.new.represent(Users::Internal.support_bot) }.to_json
 
@@ -15,5 +15,5 @@
     service_desk_callout_svg_path: image_path('illustrations/service-desk-sm.svg'),
     service_desk_settings_path: edit_project_path(@project, anchor: 'js-service-desk'),
     service_desk_help_path: help_page_path('user/project/service_desk/index.md'),
-    is_service_desk_supported: Gitlab::ServiceDesk.supported?.to_s,
+    is_service_desk_supported: ::ServiceDesk.supported?.to_s,
     is_service_desk_enabled: service_desk_enabled.to_s } }

@@ -936,7 +936,7 @@ class Group < Namespace
   end
 
   def has_project_with_service_desk_enabled?
-    Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
+    ::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
   strong_memoize_attr :has_project_with_service_desk_enabled?
 

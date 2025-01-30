@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ServiceDesk, feature_category: :service_desk do
+RSpec.describe ServiceDesk, feature_category: :service_desk do
   before do
-    allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
-    allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
+    allow(Gitlab::Email::IncomingEmail).to receive_messages(
+      enabled?: true,
+      supports_wildcard?: true)
   end
 
   describe 'enabled?' do

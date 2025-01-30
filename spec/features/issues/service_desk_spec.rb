@@ -9,7 +9,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
   let_it_be(:support_bot) { Users::Internal.support_bot }
 
   before do
-    # The following two conditions equate to Gitlab::ServiceDesk.supported == true
+    # The following two conditions equate to ServiceDesk.supported == true
     allow(Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
     allow(Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
 

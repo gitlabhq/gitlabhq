@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
     let(:confidential_ticket) { true }
 
     before do
-      allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+      allow(::ServiceDesk).to receive(:supported?).and_return(true)
     end
 
     shared_examples 'a new issue request' do
@@ -811,7 +811,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
     context 'when service desk is not enabled for project' do
       before do
-        allow(Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
+        allow(::ServiceDesk).to receive(:enabled?).and_return(false)
       end
 
       it 'does not create an issue' do

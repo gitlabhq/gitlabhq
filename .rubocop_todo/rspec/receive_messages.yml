@@ -360,7 +360,6 @@ RSpec/ReceiveMessages:
     - 'spec/lib/gitlab/request_forgery_protection_spec.rb'
     - 'spec/lib/gitlab/runtime_spec.rb'
     - 'spec/lib/gitlab/search_context/builder_spec.rb'
-    - 'spec/lib/gitlab/service_desk_spec.rb'
     - 'spec/lib/gitlab/shell_spec.rb'
     - 'spec/lib/gitlab/sidekiq_config_spec.rb'
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/strategies/until_executed_spec.rb'

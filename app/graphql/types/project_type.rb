@@ -947,7 +947,7 @@ module Types
     end
 
     def service_desk_enabled
-      ::Gitlab::ServiceDesk.enabled?(project)
+      ::ServiceDesk.enabled?(project)
     end
 
     def languages

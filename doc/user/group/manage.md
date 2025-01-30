@@ -279,6 +279,11 @@ subscription, you will incur an overage fee. To avoid this fee, remove additiona
 renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
 you will be charged overages for the five additional users.
 
+Additionally, restricted access might block the standard non-overage flows:
+
+- Service bots that are updated or added to a billable role are incorrectly blocked.
+- Inviting or updating existing billable users through email is blocked unexpectedly.
+
 ## User cap for groups
 
 > - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.
