@@ -79,26 +79,25 @@ module Gitlab
         end
 
         desc { _('Mark this issue as a duplicate of another issue') }
-        explanation do |duplicate_reference|
-          _("Closes this issue. Marks as related to, and a duplicate of, %{duplicate_reference}.") % { duplicate_reference: duplicate_reference }
+        explanation do |canonical_item|
+          _, message = mark_as_duplicate(canonical_item, for_explain: true)
+
+          message
         end
-        params '#issue'
+        params '<#item | group/project#item | item URL>'
         types Issue
         condition do
           quick_action_target.persisted? &&
             current_user.can?(:"set_#{quick_action_target.to_ability_name}_metadata", quick_action_target)
         end
-        command :duplicate do |duplicate_param|
-          canonical_issue = extract_references(duplicate_param, :issue).first
-
-          if canonical_issue.present?
-            @updates[:canonical_issue_id] = canonical_issue.id
-
-            message = _("Closed this issue. Marked as related to, and a duplicate of, %{duplicate_param}.") % { duplicate_param: duplicate_param }
-          else
-            message = _('Failed to mark this issue as a duplicate because referenced issue was not found.')
-          end
-
+        parse_params do |duplicate_param|
+          extract_references(duplicate_param, :issue).first ||
+            extract_references(duplicate_param, :work_item).first ||
+            extract_references(duplicate_param, :epic).first&.sync_object
+        end
+        command :duplicate do |canonical_item|
+          can_duplicate_flag, message = mark_as_duplicate(canonical_item)
+          @updates[:canonical_issue_id] = canonical_item.id if can_duplicate_flag
           @execution_message[:duplicate] = message
         end
 
@@ -353,6 +352,68 @@ module Gitlab
       end
 
       private
+
+      def mark_as_duplicate(canonical_item, for_explain: false)
+        return [false, item_not_found_message(for_explain)] if canonical_item.blank?
+        return [false, same_item_message(for_explain)] if canonical_item.id == quick_action_target.id
+        return [false, insufficient_permission_message(for_explain)] unless can_mark_as_duplicate?(canonical_item)
+
+        [true, mark_as_duplicate_message(canonical_item, for_explain)]
+      end
+
+      def mark_as_duplicate_message(canonical_item, for_explain)
+        canonical_item_url = Gitlab::UrlBuilder.build(canonical_item)
+        if for_explain
+          _("Closes this %{work_item_type}. Marks as related to, and a duplicate of, %{duplicate_param}.") % {
+            work_item_type: quick_action_target.work_item_type.name, duplicate_param: canonical_item_url
+          }
+        else
+          _("Closed this %{work_item_type}. Marked as related to, and a duplicate of, %{duplicate_param}.") % {
+            work_item_type: quick_action_target.work_item_type.name, duplicate_param: canonical_item_url
+          }
+        end
+      end
+
+      def can_mark_as_duplicate?(canonical_item)
+        current_user.can?("update_#{quick_action_target.to_ability_name}", quick_action_target) &&
+          current_user.can?(:create_note, canonical_item)
+      end
+
+      def insufficient_permission_message(for_explain)
+        if for_explain
+          _('Cannot mark this %{work_item_type} as duplicate due to insufficient permissions.') % {
+            work_item_type: quick_action_target.work_item_type.name
+          }
+        else
+          _('Failed to mark this %{work_item_type} as duplicate due to insufficient permissions.') % {
+            work_item_type: quick_action_target.work_item_type.name
+          }
+        end
+      end
+
+      def same_item_message(for_explain)
+        if for_explain
+          _('Cannot mark the %{work_item_type} as duplicate of itself.') % {
+            work_item_type: quick_action_target.work_item_type.name
+          }
+        else
+          _('Failed to mark the %{work_item_type} as duplicate of itself.') % {
+            work_item_type: quick_action_target.work_item_type.name
+          }
+        end
+      end
+
+      def item_not_found_message(for_explain)
+        if for_explain
+          _('Cannot mark this %{work_item_type} as a duplicate because referenced item was not found.') % {
+            work_item_type: quick_action_target.work_item_type.name
+          }
+        else
+          _('Failed to mark this %{work_item_type} as a duplicate because referenced item was not found.') % {
+            work_item_type: quick_action_target.work_item_type.name
+          }
+        end
+      end
 
       def zoom_link_service
         ::Issues::ZoomLinkService.new(container: quick_action_target.project, current_user: current_user, params: { issue: quick_action_target })

@@ -197,7 +197,7 @@ module Integrations
 
       issue_link = Vulnerabilities::IssueLink.new(
         project_id: project.id,
-        vulnerability: vulnerability,
+        vulnerability_id: vulnerability.id,
         issue: issue
       )
 

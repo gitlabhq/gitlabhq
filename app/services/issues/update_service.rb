@@ -83,18 +83,16 @@ module Issues
       todo_service.update_issue(issuable, current_user)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def change_issue_duplicate(issue)
       canonical_issue_id = params.delete(:canonical_issue_id)
       return unless canonical_issue_id
 
-      canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
+      canonical_issue = Issue.find_by_id(canonical_issue_id)
 
       if canonical_issue
         Issues::DuplicateService.new(container: project, current_user: current_user).execute(issue, canonical_issue)
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def move_issue_to_new_project(issue)
       target_project = params.delete(:target_project)

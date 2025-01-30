@@ -33,7 +33,7 @@ module UpdateRepositoryStorageWorker
         exclusive_lease.cancel
       end
     else
-      # If there is an ungoing storage migration, then the current one should be marked as failed
+      # If there is an ongoing storage migration, then the current one should be marked as failed
       repository_storage_move.do_fail!
 
       # A special case

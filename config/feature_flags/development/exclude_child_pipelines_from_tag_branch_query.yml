@@ -1,9 +1,0 @@
----
-name: exclude_child_pipelines_from_tag_branch_query
-feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/20034
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145503
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463296
-milestone: '17.1'
-group: group::delivery
-type: development
-default_enabled: false

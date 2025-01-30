@@ -68,18 +68,8 @@ RSpec.describe Ci::PipelinesFinder do
             create(:ci_sources_pipeline, pipeline: child_pipeline, source_pipeline: pipeline_branch2)
           end
 
-          it 'displays parent pipelines' do
+          it 'filters out child pipelines and shows only the parent pipelines' do
             is_expected.to match_array([pipeline_branches1.last, pipeline_branch2])
-          end
-
-          context 'when exclude_child_pipelines_from_tag_branch_query FF is disabled' do
-            before do
-              stub_feature_flags(exclude_child_pipelines_from_tag_branch_query: false)
-            end
-
-            it 'displays child pipelines' do
-              expect(subject).to match_array([pipeline_branches1.last, child_pipeline])
-            end
           end
         end
 
@@ -108,16 +98,6 @@ RSpec.describe Ci::PipelinesFinder do
 
           it 'filters out child pipelines and shows only the parents by default' do
             is_expected.to match_array([pipeline_tag1, pipeline_tag2])
-          end
-
-          context 'when exclude_child_pipelines_from_tag_branch_query FF is disabled' do
-            before do
-              stub_feature_flags(exclude_child_pipelines_from_tag_branch_query: false)
-            end
-
-            it 'displays child pipelines' do
-              is_expected.to match_array([child_pipeline, pipeline_tag2])
-            end
           end
         end
 

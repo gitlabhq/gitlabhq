@@ -1,0 +1,9 @@
+---
+name: search_global_sso_redirect
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398572
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179114
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515346
+milestone: '17.9'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false

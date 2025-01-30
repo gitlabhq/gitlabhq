@@ -45,16 +45,9 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def pipeline_for_ref_subquery(items)
-      unfiltered_items =
-        if Feature.enabled?(:exclude_child_pipelines_from_tag_branch_query, project)
-          items
-        else
-          pipelines
-        end
-
       where_query = Arel.sql("#{Ci::Pipeline.table_name}.ref = refs.ref")
 
-      unfiltered_items
+      items
         .where(where_query)
         .order(id: :desc)
         .limit(1) # Limit to 1 because we only want the latest pipeline per ref

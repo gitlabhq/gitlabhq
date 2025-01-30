@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	_ "net/http/pprof"
+	_ "net/http/pprof" // nolint:gosec
 	"os"
 	"os/signal"
 	"syscall"
@@ -51,7 +51,7 @@ func main() {
 	}
 	if err != nil {
 		if _, alreadyPrinted := err.(alreadyPrintedError); !alreadyPrinted {
-			fmt.Fprintln(os.Stderr, err)
+			_, _ = fmt.Fprintln(os.Stderr, err)
 		}
 		os.Exit(2)
 	}
@@ -76,8 +76,8 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.Version = Version
 	fset := flag.NewFlagSet(arg0, flag.ContinueOnError)
 	fset.Usage = func() {
-		fmt.Fprintf(fset.Output(), "Usage of %s:\n", arg0)
-		fmt.Fprintf(fset.Output(), "\n  %s [OPTIONS]\n\nOptions:\n", arg0)
+		_, _ = fmt.Fprintf(fset.Output(), "Usage of %s:\n", arg0)
+		_, _ = fmt.Fprintf(fset.Output(), "\n  %s [OPTIONS]\n\nOptions:\n", arg0)
 		fset.PrintDefaults()
 	}
 
@@ -164,6 +164,31 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	return boot, cfg, nil
 }
 
+func initializePprof(listenerAddress string, errors chan error) (*http.Server, error) {
+	if listenerAddress != "" {
+		return nil, nil
+	}
+
+	l, err := net.Listen("tcp", listenerAddress)
+	if err != nil {
+		return nil, fmt.Errorf("pprofListenAddr: %v", err)
+	}
+
+	server := &http.Server{
+		Addr:         listenerAddress,
+		Handler:      nil,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  10 * time.Second,
+	}
+
+	go func() {
+		errors <- server.Serve(l)
+	}()
+
+	return server, nil
+}
+
 // run() lets us use normal Go error handling; there is no log.Fatal in run().
 func run(boot bootConfig, cfg config.Config) error {
 	closer, err := startLogging(boot.logFile, boot.logFormat)
@@ -189,16 +214,12 @@ func run(boot bootConfig, cfg config.Config) error {
 	// requests can only reach the profiler if we start a listener. So by
 	// having no profiler HTTP listener by default, the profiler is
 	// effectively disabled by default.
-	var l net.Listener
-
-	if boot.pprofListenAddr != "" {
-		l, err = net.Listen("tcp", boot.pprofListenAddr)
-		if err != nil {
-			return fmt.Errorf("pprofListenAddr: %v", err)
-		}
-
-		go func() { finalErrors <- http.Serve(l, nil) }()
+	_, err = initializePprof(boot.pprofListenAddr, finalErrors)
+	if err != nil {
+		return err
 	}
+
+	var l net.Listener
 
 	monitoringOpts := []monitoring.Option{monitoring.WithBuildInformation(Version, BuildTime)}
 	if cfg.MetricsListener != nil {
@@ -266,6 +287,7 @@ func run(boot bootConfig, cfg config.Config) error {
 	syscall.Umask(oldUmask)
 
 	srv := &http.Server{Handler: up}
+
 	for _, l := range listeners {
 		go func(l net.Listener) { finalErrors <- srv.Serve(l) }(l)
 	}

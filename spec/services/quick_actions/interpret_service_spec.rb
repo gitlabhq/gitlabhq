@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe QuickActions::InterpretService, feature_category: :text_editors do
   include AfterNextHelpers
 
+  let_it_be(:support_bot) { Users::Internal.support_bot }
   let_it_be(:group) { create(:group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
@@ -531,7 +532,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'failed command' do |error_msg|
-      let(:match_msg) { error_msg ? eq(error_msg) : be_empty }
+      let(:msg) { error_msg || try(:output_msg) }
+      let(:match_msg) { msg ? eq(msg) : be_empty }
 
       it 'populates {} if content contains an unsupported command' do
         _, updates, _ = service.execute(content, issuable)
@@ -541,6 +543,17 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       it "returns #{error_msg || 'an empty'} message" do
         _, _, message = service.execute(content, issuable)
+
+        expect(message).to match_msg
+      end
+    end
+
+    shared_examples 'explain message' do |error_msg|
+      let(:msg) { error_msg || try(:output_msg) }
+      let(:match_msg) { msg ? include(msg) : be_empty }
+
+      it "returns #{error_msg || 'an empty'} message" do
+        _, message = service.explain(content, issuable)
 
         expect(message).to match_msg
       end
@@ -589,31 +602,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         _, _, message = service.execute(content, issuable)
 
         expect(message).to eq(_('Toggled :100: emoji reaction.'))
-      end
-    end
-
-    shared_examples 'duplicate command' do
-      it 'fetches issue and populates canonical_issue_id if content contains /duplicate issue_reference' do
-        issue_duplicate # populate the issue
-        _, updates, _ = service.execute(content, issuable)
-
-        expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
-      end
-
-      it 'returns the duplicate message' do
-        _, _, message = service.execute(content, issuable)
-        translated_string = _("Closed this issue. Marked as related to, and a duplicate of, %{issue_duplicate_to_reference}.")
-        formatted_message = format(translated_string, issue_duplicate_to_reference: issue_duplicate.to_reference(project).to_s)
-
-        expect(message).to eq(formatted_message)
-      end
-
-      it 'includes duplicate reference' do
-        _, explanations = service.explain(content, issuable)
-        translated_string = _("Closes this issue. Marks as related to, and a duplicate of, %{issue_duplicate_to_reference}.")
-        formatted_message = format(translated_string, issue_duplicate_to_reference: issue_duplicate.to_reference(project).to_s)
-
-        expect(explanations).to eq([formatted_message])
       end
     end
 
@@ -2010,10 +1998,43 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     context '/duplicate command' do
-      it_behaves_like 'duplicate command' do
-        let(:issue_duplicate) { create(:issue, project: project) }
-        let(:content) { "/duplicate #{issue_duplicate.to_reference}" }
-        let(:issuable) { issue }
+      let_it_be(:other_public_project) { create(:project, :public) }
+      let_it_be(:other_private_project) { create(:project, :private) }
+
+      context 'when duplicating an issue' do
+        let(:duplicate_item) { create(:issue, project: project) }
+
+        context 'with reference' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{duplicate_item.to_reference}" }
+            let(:issuable) { issue }
+          end
+        end
+
+        context 'with url' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{Gitlab::UrlBuilder.build(duplicate_item)}" }
+            let(:issuable) { issue }
+          end
+        end
+      end
+
+      context 'when duplicating a work item' do
+        let(:duplicate_item) { create(:work_item, project: project) }
+
+        context 'with reference' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{duplicate_item.to_reference}" }
+            let(:issuable) { issue }
+          end
+        end
+
+        context 'with url' do
+          it_behaves_like 'duplicate command' do
+            let(:content) { "/duplicate #{Gitlab::UrlBuilder.build(duplicate_item)}" }
+            let(:issuable) { issue }
+          end
+        end
       end
 
       it_behaves_like 'failed command' do
@@ -2023,23 +2044,93 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       context 'cross project references' do
         it_behaves_like 'duplicate command' do
-          let(:other_project) { create(:project, :public) }
-          let(:issue_duplicate) { create(:issue, project: other_project) }
-          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:duplicate_item) { create(:issue, project: other_public_project) }
+          let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'failed command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
-          let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
-          let(:issuable) { issue }
+        context 'when executing command' do
+          context 'when item not found' do
+            let(:output_msg) do
+              _('Failed to mark this Issue as a duplicate because referenced item was not found.')
+            end
+
+            context 'when referencing an non-existent item' do
+              let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
+              let(:issuable) { issue }
+
+              it_behaves_like 'failed command'
+            end
+
+            context 'when referencing an inaccessible item' do
+              let(:duplicate_item) { create(:issue, project: other_private_project) }
+              let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+              let(:issuable) { issue }
+
+              it_behaves_like 'failed command'
+            end
+          end
+
+          context 'when trying to mark item duplicate of itself' do
+            let(:output_msg) { _('Failed to mark the Issue as duplicate of itself.') }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{issuable.to_reference(project)}" }
+
+            it_behaves_like 'failed command'
+          end
+
+          context 'with insufficient permissions' do
+            let(:output_msg) { _('Failed to mark this Issue as duplicate due to insufficient permissions.') }
+            let(:duplicate_item) { create(:issue, project: project) }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+
+            before do
+              allow(service).to receive(:can_mark_as_duplicate?).and_return(false)
+            end
+
+            it_behaves_like 'failed command'
+          end
         end
 
-        it_behaves_like 'failed command', _('Failed to mark this issue as a duplicate because referenced issue was not found.') do
-          let(:other_project) { create(:project, :private) }
-          let(:issue_duplicate) { create(:issue, project: other_project) }
+        context 'when explaining the command' do
+          let(:output_msg) { _('Cannot mark this Issue as a duplicate because referenced item was not found.') }
 
-          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
-          let(:issuable) { issue }
+          context 'when referencing an non-existent item' do
+            let(:content) { "/duplicate imaginary##{non_existing_record_iid}" }
+            let(:issuable) { issue }
+
+            it_behaves_like 'explain message'
+          end
+
+          context 'when referencing an inaccessible item' do
+            let(:duplicate_item) { create(:issue, project: other_private_project) }
+            let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+            let(:issuable) { issue }
+
+            it_behaves_like 'explain message'
+          end
+
+          context 'when trying to mark item duplicate of itself' do
+            let(:output_msg) { _('Cannot mark the Issue as duplicate of itself.') }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{issuable.to_reference(project)}" }
+
+            it_behaves_like 'explain message'
+          end
+
+          context 'with insufficient permissions' do
+            let(:output_msg) { _('Cannot mark this Issue as duplicate due to insufficient permissions.') }
+            let(:duplicate_item) { create(:issue, project: project) }
+            let(:issuable) { issue }
+            let(:content) { "/duplicate #{duplicate_item.to_reference(project)}" }
+
+            before do
+              allow(service).to receive(:can_mark_as_duplicate?).and_return(false)
+            end
+
+            it_behaves_like 'explain message'
+          end
         end
       end
     end
@@ -2227,6 +2318,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
+    # rubocop:disable RSpec/MultipleMemoizedHelpers -- we need a few extra helpers for these examples
     context '/board_move command' do
       let_it_be(:todo) { create(:label, project: project, title: 'To Do') }
       let_it_be(:inreview) { create(:label, project: project, title: 'In Review') }
@@ -2314,6 +2406,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it_behaves_like 'failed command', 'Could not apply board_move command.'
       end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     context '/tag command' do
       let(:issuable) { commit }
@@ -2944,7 +3037,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       context 'when issue is Service Desk issue' do
         before do
           issue.update!(
-            author_id: Users::Internal.support_bot_id,
+            author: support_bot,
             service_desk_reply_to: 'user@example.com'
           )
         end
