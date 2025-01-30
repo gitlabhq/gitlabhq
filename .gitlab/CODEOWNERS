@@ -353,6 +353,11 @@ Dangerfile
 [Merge Requests backend] @code-review-be/engineers
 /app/controllers/projects/merge_requests_controller.rb
 /app/controllers/projects/merge_requests/
+/app/models/concerns/diff_positionable_note.rb
+/app/models/concerns/note_on_diff.rb
+/app/models/diff_note.rb
+/app/models/draft_note.rb
+/app/models/legacy_diff_note.rb
 /app/models/merge_request.rb
 /app/services/merge_requests/
 /app/workers/merge_requests/

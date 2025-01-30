@@ -1,0 +1,13 @@
+---
+table_name: cluster_agent_migrations
+classes:
+- Clusters::AgentMigration
+feature_categories:
+- deployment_management
+description: Tracks progress when migrating to the GitLab agent from a certificate based cluster
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179324
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true
+notes: Exempted because parent table is scheduled for removal
+table_size: small

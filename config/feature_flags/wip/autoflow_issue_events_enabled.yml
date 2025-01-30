@@ -1,9 +1,0 @@
----
-name: autoflow_issue_events_enabled
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/443486
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161804
-rollout_issue_url:
-milestone: '17.9'
-group: group::environments
-type: wip
-default_enabled: false

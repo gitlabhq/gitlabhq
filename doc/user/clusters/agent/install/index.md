@@ -48,7 +48,7 @@ To install the agent:
 - Run `glab cluster agent bootstrap`:
 
   ```shell
-  glab cluster agent bootstrap <agent-name>
+  glab cluster agent bootstrap <agent-name> --manifest-path <same as --path used in flux bootstrap>
   ```
 
 By default, the command:

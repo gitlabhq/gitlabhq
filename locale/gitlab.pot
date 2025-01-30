@@ -38208,6 +38208,9 @@ msgstr ""
 msgid "Notification setting - %{notification_title}"
 msgstr ""
 
+msgid "Notification setting - Custom"
+msgstr ""
+
 msgid "Notification settings saved"
 msgstr ""
 
@@ -60426,7 +60429,7 @@ msgstr ""
 msgid "Trigger pipelines for mirror updates"
 msgstr ""
 
-msgid "Trigger pipelines when branches or tags are updated in the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load. %{strong_start}CI will run using the credentials assigned above.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgid "Trigger pipelines when branches or tags are updated in the upstream repository. Ensure your CI runners can handle the additional load from the remote repository activity. %{strong_start}Triggered pipelines use the credentials from pull mirroring and run unreviewed code. Only enable this feature for your own projects or those with trusted maintainers. %{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "Trigger repository check"

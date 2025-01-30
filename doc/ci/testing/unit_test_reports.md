@@ -177,9 +177,14 @@ contains a link to the screenshot, for example:
 
 ### Test report appears empty
 
-A unit test report can appear to be empty when [viewed in a merge request](#view-unit-test-reports-on-gitlab)
-if the artifact that contained the report [expires](../yaml/index.md#artifactsexpire_in).
-If the artifact frequently expires too early, set a longer `expire_in` value for
-the report artifact.
+When you view a unit test report in a merge request, it might appear empty for these reasons:
 
-Alternatively, you can run a new pipeline to generate a new report.
+1. The artifact containing the report has expired. To resolve this issue, you can either:
+   - Set a longer [`expire_in`](../yaml/index.md#artifactsexpire_in) value for the report artifact.
+   - Run a new pipeline to generate a new report.
+
+1. The JUnit files exceed size limits. To resolve this issue:
+   - Ensure individual JUnit files are less than 30 MB.
+   - Ensure the total JUnit size for the job is less than 100 MB.
+
+   Support for custom limits is proposed [epic 16374](https://gitlab.com/groups/gitlab-org/-/epics/16374).

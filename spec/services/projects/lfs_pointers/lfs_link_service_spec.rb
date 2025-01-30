@@ -16,6 +16,22 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
     allow(project).to receive(:lfs_enabled?).and_return(true)
   end
 
+  describe '.batch_size' do
+    subject { described_class.batch_size }
+
+    it { is_expected.to eq(1000) }
+
+    context 'when GITLAB_LFS_LINK_BATCH_SIZE env variable is provided' do
+      before do
+        stub_env('GITLAB_LFS_LINK_BATCH_SIZE', 1)
+      end
+
+      it 'uses provided value' do
+        is_expected.to eq(1)
+      end
+    end
+  end
+
   describe '#execute' do
     it 'raises an error when trying to link too many objects at once' do
       stub_const("#{described_class}::MAX_OIDS", 5)
@@ -61,7 +77,7 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
     end
 
     it 'links in batches' do
-      stub_const("#{described_class}::BATCH_SIZE", 3)
+      stub_env('GITLAB_LFS_LINK_BATCH_SIZE', 3)
 
       expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
         error: false, labels: {})
@@ -82,7 +98,7 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
     end
 
     it 'only queries for the batch that will be processed', :aggregate_failures do
-      stub_const("#{described_class}::BATCH_SIZE", 1)
+      stub_env('GITLAB_LFS_LINK_BATCH_SIZE', 1)
       oids = %w[one two]
 
       expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(

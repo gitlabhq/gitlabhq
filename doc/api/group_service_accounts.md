@@ -186,11 +186,12 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rota
 
 Parameters:
 
-| Attribute | Type            | Required | Description |
-| --------- | --------------- | -------- | ----------- |
+| Attribute    | Type            | Required | Description |
+| ------------ | --------------- | -------- | ----------- |
 | `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
 | `user_id`    | integer | yes      | The ID of the service account user.                            |
 | `token_id`   | integer | yes      | The ID of the token. |
+| `expires_at` | date   | no        | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If undefined, the token expires after one week. |
 
 Example request:
 

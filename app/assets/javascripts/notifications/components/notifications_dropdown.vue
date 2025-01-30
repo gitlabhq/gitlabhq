@@ -131,6 +131,7 @@ export default {
       :split="isCustomNotification"
       :text="buttonText"
       :no-flip="noFlip"
+      :aria-label="__('Notification setting - Custom')"
       @click="openNotificationsModal"
     >
       <notifications-dropdown-item

@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe KeysFinder do
+  using RSpec::Parameterized::TableSyntax
+
   subject { described_class.new(params).execute }
 
   let_it_be(:user) { create(:user) }
   let_it_be(:key_1) do
     create(:rsa_key_4096,
+      created_at: 10.days.ago,
       last_used_at: 7.days.ago,
       user: user,
       fingerprint: 'df:73:db:29:3c:a5:32:cf:09:17:7e:8e:9d:de:d7:f7',
@@ -15,7 +18,7 @@ RSpec.describe KeysFinder do
   end
 
   let_it_be(:key_2) { create(:personal_key_4096, last_used_at: nil, user: user) }
-  let_it_be(:key_3) { create(:personal_key_4096, last_used_at: 2.days.ago) }
+  let_it_be(:key_3) { create(:personal_key_4096, created_at: 3.days.ago, last_used_at: 2.days.ago) }
 
   let(:params) { {} }
 
@@ -167,6 +170,77 @@ RSpec.describe KeysFinder do
 
       it 'contains ssh_keys of only the specified users' do
         expect(subject).to contain_exactly(key_1, key_2)
+      end
+    end
+  end
+
+  describe 'by created before' do
+    where(:by_created_before, :expected_keys) do
+      1.day.ago        | [ref(:key_1), ref(:key_3)]
+      10.days.from_now | [ref(:key_1), ref(:key_2), ref(:key_3)]
+    end
+
+    with_them do
+      let(:params) { { created_before: by_created_before } }
+
+      it 'returns keys by expires before' do
+        is_expected.to match_array(expected_keys)
+      end
+    end
+  end
+
+  describe 'by created after' do
+    where(:by_created_after, :expected_keys) do
+      11.days.ago | [ref(:key_1), ref(:key_2), ref(:key_3)]
+      1.day.ago   | [ref(:key_2)]
+    end
+
+    with_them do
+      let(:params) { { created_after: by_created_after } }
+
+      it 'returns tokens by expires after' do
+        is_expected.to match_array(expected_keys)
+      end
+    end
+  end
+
+  describe 'expires at filters' do
+    let_it_be(:expired_key) { create(:personal_key_4096, :expired) }
+    let_it_be(:expires_in_future_key) { create(:personal_key_4096, expires_at: 30.days.from_now) }
+
+    # Init
+    before_all do
+      expired_key
+      expires_in_future_key
+    end
+
+    describe 'by expires before' do
+      where(:by_expires_before, :expected_keys) do
+        1.day.ago        | [ref(:expired_key)]
+        31.days.from_now | [ref(:expired_key), ref(:expires_in_future_key)]
+      end
+
+      with_them do
+        let(:params) { { expires_before: by_expires_before } }
+
+        it 'returns keys by expires before' do
+          is_expected.to match_array(expected_keys)
+        end
+      end
+    end
+
+    describe 'by expires after' do
+      where(:by_expires_after, :expected_keys) do
+        2.days.ago       | [ref(:expired_key), ref(:expires_in_future_key)]
+        30.days.from_now | [ref(:expires_in_future_key)]
+      end
+
+      with_them do
+        let(:params) { { expires_after: by_expires_after } }
+
+        it 'returns tokens by expires after' do
+          is_expected.to match_array(expected_keys)
+        end
       end
     end
   end

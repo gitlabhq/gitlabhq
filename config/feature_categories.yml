@@ -119,7 +119,10 @@
 - seat_cost_management
 - secret_detection
 - secrets_management
+- security_asset_inventories
 - security_policy_management
+- security_testing_configuration
+- security_testing_integrations
 - self-hosted_models
 - service_desk
 - service_ping

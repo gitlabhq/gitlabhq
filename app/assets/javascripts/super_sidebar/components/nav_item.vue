@@ -277,7 +277,7 @@ export default {
         </slot>
       </div>
       <div
-        class="gl-grow gl-break-all gl-text-default"
+        class="gl-grow gl-text-default gl-break-anywhere"
         :class="{ 'gl-w-max': isFlyout }"
         data-testid="nav-item-link-label"
       >

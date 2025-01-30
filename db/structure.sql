@@ -11050,6 +11050,28 @@ CREATE SEQUENCE cloud_connector_access_id_seq
 
 ALTER SEQUENCE cloud_connector_access_id_seq OWNED BY cloud_connector_access.id;
 
+CREATE TABLE cluster_agent_migrations (
+    id bigint NOT NULL,
+    cluster_id bigint NOT NULL,
+    agent_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    issue_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    agent_install_status smallint NOT NULL,
+    agent_install_message text,
+    CONSTRAINT check_110bed11f8 CHECK ((char_length(agent_install_message) <= 255))
+);
+
+CREATE SEQUENCE cluster_agent_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cluster_agent_migrations_id_seq OWNED BY cluster_agent_migrations.id;
+
 CREATE TABLE cluster_agent_tokens (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24588,6 +24610,8 @@ ALTER TABLE ONLY ci_variables ALTER COLUMN id SET DEFAULT nextval('ci_variables_
 
 ALTER TABLE ONLY cloud_connector_access ALTER COLUMN id SET DEFAULT nextval('cloud_connector_access_id_seq'::regclass);
 
+ALTER TABLE ONLY cluster_agent_migrations ALTER COLUMN id SET DEFAULT nextval('cluster_agent_migrations_id_seq'::regclass);
+
 ALTER TABLE ONLY cluster_agent_tokens ALTER COLUMN id SET DEFAULT nextval('cluster_agent_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY cluster_agent_url_configurations ALTER COLUMN id SET DEFAULT nextval('cluster_agent_url_configurations_id_seq'::regclass);
@@ -26818,6 +26842,9 @@ ALTER TABLE ONLY ci_variables
 
 ALTER TABLE ONLY cloud_connector_access
     ADD CONSTRAINT cloud_connector_access_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cluster_agent_migrations
+    ADD CONSTRAINT cluster_agent_migrations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT cluster_agent_tokens_pkey PRIMARY KEY (id);
@@ -31596,6 +31623,14 @@ CREATE UNIQUE INDEX index_ci_variables_on_project_id_and_key_and_environment_sco
 CREATE INDEX index_cicd_settings_on_namespace_id_where_stale_pruning_enabled ON namespace_ci_cd_settings USING btree (namespace_id) WHERE (allow_stale_runner_pruning = true);
 
 CREATE INDEX index_cis_vulnerability_reads_on_cluster_agent_id ON vulnerability_reads USING btree (casted_cluster_agent_id) WHERE (report_type = 7);
+
+CREATE INDEX index_cluster_agent_migrations_on_agent_id ON cluster_agent_migrations USING btree (agent_id);
+
+CREATE UNIQUE INDEX index_cluster_agent_migrations_on_cluster_id ON cluster_agent_migrations USING btree (cluster_id);
+
+CREATE INDEX index_cluster_agent_migrations_on_issue_id ON cluster_agent_migrations USING btree (issue_id);
+
+CREATE INDEX index_cluster_agent_migrations_on_project_id ON cluster_agent_migrations USING btree (project_id);
 
 CREATE INDEX index_cluster_agent_tokens_on_agent_id_status_last_used_at ON cluster_agent_tokens USING btree (agent_id, status, last_used_at DESC NULLS LAST);
 
@@ -37814,6 +37849,9 @@ ALTER TABLE ONLY group_deletion_schedules
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_11ede44198 FOREIGN KEY (protected_environment_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_agent_migrations
+    ADD CONSTRAINT fk_1211a345fb FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -37822,6 +37860,9 @@ ALTER TABLE ONLY cluster_agent_url_configurations
 
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_1383c72212 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_agent_migrations
+    ADD CONSTRAINT fk_13af035625 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_control_compliance_statuses
     ADD CONSTRAINT fk_13fb61bcfa FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -38747,6 +38788,9 @@ ALTER TABLE ONLY projects
 ALTER TABLE ONLY deploy_tokens
     ADD CONSTRAINT fk_9b0d2e92a6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_agent_migrations
+    ADD CONSTRAINT fk_9b274efd3a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT fk_9bd0a0c791 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -39376,6 +39420,9 @@ ALTER TABLE ONLY merge_requests_compliance_violations
 
 ALTER TABLE ONLY issue_emails
     ADD CONSTRAINT fk_ed0f4c4b51 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cluster_agent_migrations
+    ADD CONSTRAINT fk_ed8ffda028 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_eea90e3209 FOREIGN KEY (personal_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

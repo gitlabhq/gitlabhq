@@ -101,6 +101,39 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
         end
       end
 
+      context 'with _gitlab_session' do
+        let(:session_id) { 'session_id' }
+        let(:plaintext) { "_gitlab_session=#{session_id}" }
+
+        context 'with a valid session in ActiveSession' do
+          before do
+            rack_session = Rack::Session::SessionId.new(session_id)
+            allow(ActiveSession).to receive(:sessions_from_ids)
+              .with([rack_session.private_id]).and_return([{ 'warden.user.user.key' => [[user.id],
+                user.authenticatable_salt] }])
+          end
+
+          it 'returns info about the token' do
+            post_token
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['id']).to eq(user.id)
+          end
+        end
+
+        context 'with an unknown session' do
+          let(:session_id) { '_gitlab_session=unknown' }
+
+          it_behaves_like 'returning response status', :not_found
+        end
+
+        context 'with an empty session' do
+          let(:plaintext) { "_gitlab_session=" }
+
+          it_behaves_like 'returning response status', :not_found
+        end
+      end
+
       it_behaves_like 'rejecting invalid requests with admin'
     end
 

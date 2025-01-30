@@ -13,7 +13,8 @@ module Authn
       ::Authn::Tokens::RunnerAuthenticationToken,
       ::Authn::Tokens::CiTriggerToken,
       ::Authn::Tokens::CiJobToken,
-      ::Authn::Tokens::FeatureFlagsClientToken
+      ::Authn::Tokens::FeatureFlagsClientToken,
+      ::Authn::Tokens::GitlabSession
     ].freeze
 
     def self.token_for(plaintext, source)

@@ -82,14 +82,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
             expect(result).to be_success
             expect(issue).to be_persisted
           end
-
-          it 'publishes created event' do
-            expect { result }
-              .to publish_event(::WorkItems::WorkItemCreatedEvent).with(
-                id: an_instance_of(Integer),
-                namespace_id: project.project_namespace_id
-              )
-          end
         end
 
         context 'when the user is not authorized' do

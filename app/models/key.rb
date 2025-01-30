@@ -7,6 +7,7 @@ class Key < ApplicationRecord
   include Expirable
   include FromUnion
   include Todoable
+  include CreatedAtFilterable
 
   sha256_attribute :fingerprint_sha256
 
@@ -62,6 +63,9 @@ class Key < ApplicationRecord
   # Date is set specifically in this scope to improve query time.
   scope :expired_today_and_not_notified, -> { where(["date(expires_at AT TIME ZONE 'UTC') = CURRENT_DATE AND expiry_notification_delivered_at IS NULL"]) }
   scope :expiring_soon_and_not_notified, -> { where(["date(expires_at AT TIME ZONE 'UTC') > CURRENT_DATE AND date(expires_at AT TIME ZONE 'UTC') < ? AND before_expiry_notification_delivered_at IS NULL", DAYS_TO_EXPIRE.days.from_now.to_date]) }
+
+  scope :expires_before, ->(date) { where(arel_table[:expires_at].lteq(date)) }
+  scope :expires_after, ->(date) { where(arel_table[:expires_at].gteq(date)) }
 
   def self.regular_keys
     where(type: ['Key', nil])

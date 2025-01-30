@@ -102,11 +102,13 @@ For mirrored branches, enabling this option results in the loss of local changes
 
 > - Moved to GitLab Premium in 13.9.
 
-If this option is enabled, pipelines trigger when branches or tags are
-updated from the remote repository. Depending on the activity of the remote
-repository, this may greatly increase the load on your CI runners. Only enable
-this feature if you know they can handle the load. CI uses the credentials
-assigned when you set up pull mirroring.
+You can configure your mirror to automatically trigger pipelines when
+the remote repository updates branches or tags. Before you enable this feature:
+
+- Ensure your CI runners can handle the additional load from the remote repository activity.
+- Consider the security implications. The pipelines use the credentials from pull mirroring and run unreviewed code.
+
+  Only enable this feature for your own projects or those with trusted maintainers.
 
 ## Trigger an update by using the API
 

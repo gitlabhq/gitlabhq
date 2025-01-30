@@ -61,20 +61,8 @@ module Issues
       handle_escalation_status_change(issue)
       create_timeline_event(issue)
       try_to_associate_contacts(issue)
-      publish_event(issue)
 
       super
-    end
-
-    def publish_event(issue)
-      event = ::WorkItems::WorkItemCreatedEvent.new(data: {
-        id: issue.id,
-        namespace_id: issue.namespace_id
-      })
-
-      issue.run_after_commit_or_now do
-        ::Gitlab::EventStore.publish(event)
-      end
     end
 
     def handle_changes(issue, options)

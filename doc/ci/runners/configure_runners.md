@@ -218,6 +218,8 @@ To reset the runner configuration authentication token:
    - [Create a project runner](runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
 1. Optional. To verify that the previous runner authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
+To reset runner configuration authentication tokens, you can also use the [Runners API](../../api/runners.md).
+
 ### Automatically rotate runner authentication tokens
 
 You can specify an interval to rotate runner authentication tokens.
