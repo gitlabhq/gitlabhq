@@ -3408,7 +3408,11 @@ class Project < ApplicationRecord
   end
 
   def pages_url(options = nil)
-    Gitlab::Pages::UrlBuilder.new(self, options).pages_url
+    pages_url_builder(options).pages_url
+  end
+
+  def pages_hostname(options = nil)
+    pages_url_builder(options).hostname
   end
 
   def uploads_sharding_key
@@ -3416,6 +3420,12 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def pages_url_builder(options = nil)
+    strong_memoize_with(:pages_url_builder, options) do
+      Gitlab::Pages::UrlBuilder.new(self, options)
+    end
+  end
 
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)

@@ -33,3 +33,9 @@ Done in [0-9]+ms.
 
 # The next major version of the view_component gem will require Rails >= 7.1
 Support for Rails versions < 7.1 is deprecated and will be removed from ViewComponent 4.0.0
+
+# Migration to the new cache version is in progress
+DEPRECATION WARNING: Support for `config.active_support.cache_format_version = 6.1` has been deprecated and will be removed in Rails 7.2.
+Check the Rails upgrade guide at https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-activesupport-cache-serialization-format
+for more information on how to upgrade.
+called from

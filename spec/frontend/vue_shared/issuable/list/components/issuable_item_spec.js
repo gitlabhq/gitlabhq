@@ -814,4 +814,17 @@ describe('IssuableItem', () => {
       });
     });
   });
+
+  it('redirects to incident webUrl on row click when issuable item is not a work item', async () => {
+    wrapper = createComponent({
+      preventRedirect: true,
+      showCheckbox: false,
+      issuable: { ...mockIssuable, type: 'INCIDENT', namespace: { fullPath: 'gitlab-org/gitlab' } },
+    });
+
+    await findIssuableItemWrapper().trigger('click');
+
+    expect(wrapper.emitted('select-issuable')).not.toBeDefined();
+    expect(visitUrl).toHaveBeenCalledWith(mockIssuable.webUrl);
+  });
 });

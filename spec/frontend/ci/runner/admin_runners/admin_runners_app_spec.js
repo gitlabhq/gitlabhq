@@ -92,6 +92,11 @@ describe('AdminRunnersApp', () => {
   let wrapper;
   const showToast = jest.fn();
 
+  const defaultProps = {
+    newRunnerPath,
+    canAdminRunners: true,
+  };
+
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
@@ -101,6 +106,7 @@ describe('AdminRunnersApp', () => {
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationNext = () => findRunnerPagination().findByText('Next');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
+  const findNewInstanceRunnerButton = () => wrapper.findByText('New instance runner');
 
   const createComponent = ({
     props = {},
@@ -121,7 +127,7 @@ describe('AdminRunnersApp', () => {
     wrapper = mountFn(AdminRunnersApp, {
       apolloProvider: createMockApollo(handlers, {}, cacheConfig),
       propsData: {
-        newRunnerPath,
+        ...defaultProps,
         ...props,
       },
       provide: {
@@ -158,18 +164,44 @@ describe('AdminRunnersApp', () => {
     showToast.mockReset();
   });
 
-  it('shows the runner registration token instructions', () => {
-    createComponent({
-      props: {
+  describe('runner registration dropdown', () => {
+    it('shows the runner registration token instructions', () => {
+      createComponent({
+        props: {
+          allowRegistrationToken: true,
+          registrationToken: mockRegistrationToken,
+        },
+      });
+
+      expect(findRegistrationDropdown().props()).toEqual({
         allowRegistrationToken: true,
         registrationToken: mockRegistrationToken,
-      },
+        type: INSTANCE_TYPE,
+      });
     });
 
-    expect(findRegistrationDropdown().props()).toEqual({
-      allowRegistrationToken: true,
-      registrationToken: mockRegistrationToken,
-      type: INSTANCE_TYPE,
+    describe('when canAdminRunners prop is false', () => {
+      it('is not shown', () => {
+        createComponent({ props: { canAdminRunners: false } });
+
+        expect(findRegistrationDropdown().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('new instance runner button', () => {
+    it('is shown', () => {
+      createComponent();
+
+      expect(findNewInstanceRunnerButton().exists()).toBe(true);
+    });
+
+    describe('when canAdminRunners prop is false', () => {
+      it('is not shown', () => {
+        createComponent({ props: { canAdminRunners: false } });
+
+        expect(findNewInstanceRunnerButton().exists()).toBe(false);
+      });
     });
   });
 
@@ -465,12 +497,18 @@ describe('AdminRunnersApp', () => {
 
   describe('Bulk delete', () => {
     describe('Before runners are deleted', () => {
-      beforeEach(async () => {
+      it('runner list is checkable', async () => {
         await createComponent({ mountFn: mountExtended });
+
+        expect(findRunnerList().props('checkable')).toBe(true);
       });
 
-      it('runner list is checkable', () => {
-        expect(findRunnerList().props('checkable')).toBe(true);
+      describe('when canAdminRunners prop is false', () => {
+        it('runner list is not checkable', async () => {
+          await createComponent({ props: { canAdminRunners: false }, mountFn: mountExtended });
+
+          expect(findRunnerList().props('checkable')).toBe(false);
+        });
       });
     });
 

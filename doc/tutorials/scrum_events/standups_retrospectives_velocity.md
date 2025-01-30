@@ -295,3 +295,7 @@ If you're experiencing high volatility, you can explore the following:
    that mirrors the workflow stages that a story progresses through in a sprint.
    This report can help focus discussions in your retrospectives on the specific workflow stages
    that take the longest during your sprint cycles.
+
+## Related topics
+
+- [Tutorial: Set up an issue board for a team stand-up](../boards_for_standups/index.md#tutorial-set-up-an-issue-board-for-a-team-stand-up)

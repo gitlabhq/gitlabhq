@@ -3,6 +3,21 @@
 module Gitlab
   module Patch
     module RedisCacheStore
+      # The initialize calls retrieve_pool_options method:
+      # https://github.com/rails/rails/blob/v7.1.5.1/activesupport/lib/active_support/cache/redis_cache_store.rb#L149
+      # In Rails 7.1 the method changed and now it always returns something
+      #
+      # - https://github.com/rails/rails/blob/v7.0.8.7/activesupport/lib/active_support/cache.rb#L183
+      # - https://github.com/rails/rails/blob/v7.1.5.1/activesupport/lib/active_support/cache.rb#L206
+      #
+      # As a result, an unexpected connection pool is initialized.
+      # This path always initializes redis without a connection pool, the pool is initialized in a wrapper.
+      def initialize(*args, **kwargs)
+        super
+
+        @redis = self.class.build_redis(redis: kwargs[:redis])
+      end
+
       # We will try keep patched code explicit and matching the original signature in
       # https://github.com/rails/rails/blob/v7.1.3.4/activesupport/lib/active_support/cache/redis_cache_store.rb#L324
       def read_multi_entries(names, **options)

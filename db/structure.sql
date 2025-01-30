@@ -26540,6 +26540,9 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE approval_project_rules_users
     ADD CONSTRAINT check_26058e3982 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE status_check_responses
+    ADD CONSTRAINT check_29114cce9c CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -26563,6 +26566,9 @@ ALTER TABLE p_ci_pipeline_variables
 
 ALTER TABLE terraform_state_versions
     ADD CONSTRAINT check_84142902f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE approval_merge_request_rules
+    ADD CONSTRAINT check_90caab37e0 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sbom_occurrences_vulnerabilities
     ADD CONSTRAINT check_a02e48df9c CHECK ((project_id IS NOT NULL)) NOT VALID;
@@ -26588,8 +26594,14 @@ ALTER TABLE web_hook_logs
 ALTER TABLE vulnerability_finding_evidences
     ADD CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE work_item_parent_links
+    ADD CONSTRAINT check_e9c0111985 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE project_relation_exports
     ADD CONSTRAINT check_f461e3537f CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE vulnerability_finding_signatures
+    ADD CONSTRAINT check_f4ab9ffc5a CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE approval_merge_request_rule_sources
     ADD CONSTRAINT check_f82666a937 CHECK ((project_id IS NOT NULL)) NOT VALID;

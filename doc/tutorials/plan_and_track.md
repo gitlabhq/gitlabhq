@@ -20,5 +20,6 @@ issues, epics, and more.
 | [Set up a project for idea management](idea_management/index.md) | Use an issue board and scoped labels to manage ideas in a team. | **{star}** |
 | [Set up a project for issue triage](issue_triage/index.md) | Use labels to set up a project for issue triage. | **{star}** |
 | [Set up issue boards for team hand-off](boards_for_teams/index.md) | Use issue boards and scoped labels to set up collaboration across many teams. | **{star}** |
+| [Set up an issue board for team stand-up](boards_for_standups/index.md) | Use issue boards and workflow labels to facilitate team stand-ups. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Epics and issue boards](https://www.youtube.com/watch?v=eQUnHwbKEkY) | Find out how to use epics and issue boards for project management. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Portfolio Planning - Portfolio Management](https://www.youtube.com/watch?v=d9scVJUIF4c) | Find out how manage your portfolio with requirements, issues, epics, milestones, and time tracking. | |

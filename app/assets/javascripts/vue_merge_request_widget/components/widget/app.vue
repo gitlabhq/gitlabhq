@@ -1,5 +1,6 @@
 <script>
 import { GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
+import { n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import StateContainer from '../state_container.vue';
 
@@ -26,6 +27,8 @@ export default {
   data() {
     return {
       collapsed: this.glFeatures.mrReportsTab,
+      findingsCount: 0,
+      loadedCount: 0,
     };
   },
   computed: {
@@ -55,13 +58,21 @@ export default {
       ].filter((w) => w);
     },
     collapsedSummaryText() {
-      return null;
+      return n__('%d findings', '%d findings', this.findingsCount);
     },
     statusIcon() {
-      return 'success';
+      if (this.loadedCount < this.widgets.length) return 'loading';
+
+      return 'warning';
     },
     isLoadingSummary() {
       return false;
+    },
+  },
+  methods: {
+    onLoadedReport(findings) {
+      this.findingsCount += findings;
+      this.loadedCount += 1;
     },
   },
 };
@@ -122,6 +133,7 @@ export default {
         :mr="mr"
         class="mr-widget-section"
         :class="{ 'gl-border-t gl-border-t-section': index > 0 }"
+        @loaded="onLoadedReport"
       />
     </div>
   </section>

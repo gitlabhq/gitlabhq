@@ -119,7 +119,10 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Cache::Entries, :aggrega
 
     shared_examples 'successful response' do
       it 'returns a successful response' do
-        expect { api_request }.to change { cache_entry.reload.status }.from('default').to('pending_destruction')
+        expect { api_request }.to change {
+          VirtualRegistries::Packages::Maven::Cache::Entry.last.status
+        }.from('default').to('pending_destruction')
+
         expect(response).to have_gitlab_http_status(:no_content)
       end
     end

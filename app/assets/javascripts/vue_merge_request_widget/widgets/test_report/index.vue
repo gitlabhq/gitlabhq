@@ -151,6 +151,7 @@ export default {
           },
         };
         this.suites = this.prepareSuites(this.collapsedData);
+        this.$emit('loaded', summary.failed || 0);
 
         return response;
       });

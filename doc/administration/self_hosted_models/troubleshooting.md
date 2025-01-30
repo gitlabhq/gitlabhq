@@ -187,7 +187,6 @@ following in a console on the AI gateway container:
 
 ```shell
 docker exec -it <ai-gateway-container> sh
-echo $AIGW_AUTH__BYPASS_EXTERNAL # must be true
 echo $AIGW_CUSTOM_MODELS__ENABLED # must be true
 ```
 

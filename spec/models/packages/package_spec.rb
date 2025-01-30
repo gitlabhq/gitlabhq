@@ -248,6 +248,16 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
 
+    describe '.with_version_like' do
+      let(:version_pattern) { '%.0.1%' }
+
+      subject { described_class.with_version_like(version_pattern) }
+
+      it 'includes packages with the version pattern' do
+        is_expected.to match_array([package2, package3])
+      end
+    end
+
     describe '.without_version_like' do
       let(:version_pattern) { '%.0.0%' }
 

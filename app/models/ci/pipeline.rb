@@ -1278,6 +1278,24 @@ module Ci
       merge_request? && target_sha.present?
     end
 
+    def tag_pipeline?
+      tag?
+    end
+
+    def type
+      if merge_train_pipeline?
+        'merge_train'
+      elsif merged_result_pipeline?
+        'merged_result'
+      elsif merge_request?
+        'merge_request'
+      elsif tag_pipeline?
+        'tag'
+      else
+        'branch'
+      end
+    end
+
     def merge_request_ref?
       MergeRequest.merge_request_ref?(ref)
     end

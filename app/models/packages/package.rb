@@ -81,6 +81,7 @@ class Packages::Package < ApplicationRecord
 
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
+  scope :with_version_like, ->(version) { where(arel_table[:version].matches(version)) }
   scope :without_version_like, ->(version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }

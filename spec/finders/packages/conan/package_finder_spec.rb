@@ -13,9 +13,32 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
   let_it_be(:errored_package) { create(:conan_package, :error, project: project) }
   let_it_be(:private_package) { create(:conan_package, project: private_project) }
 
+  describe '#initialize', :aggregate_failures do
+    let(:query) { 'a*p*a/1.*.3@name*ace1+pr*ct-1/stable' }
+    let(:params) { { query: query } }
+
+    subject { described_class.new(user, params) }
+
+    it 'uses sql wildcards' do
+      expect(subject.send(:name)).to eq('a%p%a')
+      expect(subject.send(:version)).to eq('1.%.3')
+      expect(subject.send(:username)).to eq('name%ace1+pr%ct-1')
+    end
+
+    context 'with query containing special characters' do
+      let(:query) { '\   /\n\\    "     ' }
+
+      it 'escapes sql characters' do
+        expect(subject.send(:name)).to eq('\\\\   ')
+        expect(subject.send(:version)).to eq('\\\\n\\\\    "     ')
+        expect(subject.send(:username)).to be_nil
+      end
+    end
+  end
+
   describe '#execute' do
     context 'without package user name' do
-      let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
+      let(:query) { "#{conan_package.name.split('/').first[0, 3]}*" }
       let(:finder) { described_class.new(user, params) }
       let(:params) { { query: query } }
 
@@ -76,6 +99,18 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
           end
         end
 
+        context 'with partial version' do
+          let_it_be(:conan_package3) do
+            create(:conan_package, project: project, name: conan_package.name, version: '1.2.3')
+          end
+
+          let(:query) { "#{conan_package3.name}/1.*.3" }
+
+          it 'matches the correct package' do
+            expect(subject).to match_array([conan_package3])
+          end
+        end
+
         context 'with nil query' do
           let(:query) { nil }
 
@@ -114,7 +149,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
     end
 
     context 'with package user name' do
-      let(:query) { "#{conan_package.name.split('/').first[0, 3]}%" }
+      let(:query) { "#{conan_package.name.split('/').first[0, 3]}*" }
       let(:finder) { described_class.new(user, params) }
       let(:params) { { query: package.conan_recipe } }
 

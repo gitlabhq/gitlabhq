@@ -192,6 +192,8 @@ module Types
 
       field :source, GraphQL::Types::String, null: true, description: "Source of the pipeline."
 
+      field :type, GraphQL::Types::String, null: false, description: "Type of the pipeline."
+
       field :child, GraphQL::Types::Boolean, null: false, method: :child?, description: "If the pipeline is a child or not."
 
       field :latest, GraphQL::Types::Boolean, null: false, method: :latest?, calls_gitaly: true, description: "If the pipeline is the latest one or not."

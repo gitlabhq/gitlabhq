@@ -367,7 +367,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to include("entities[0][destination_slug] can only include " \
                                                   "non-accented letters, digits, '_', '-' and '.'. " \
-                                                  "It must not start with '-', end in '.', '.git', or '.atom'. " \
+                                                  "It must not start with '-', '_', or '.', nor end with '-', '_', '.', '.git', or '.atom'. " \
                                                   "For example, 'destination_namespace' not 'destination/namespace'")
       end
     end

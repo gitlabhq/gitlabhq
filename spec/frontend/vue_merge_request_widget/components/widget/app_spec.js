@@ -1,3 +1,5 @@
+import { nextTick } from 'vue';
+import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import App from '~/vue_merge_request_widget/components/widget/app.vue';
@@ -22,6 +24,7 @@ describe('MR Widget App', () => {
           ...mr,
         },
       },
+      stubs: { GlSprintf },
     });
   };
 
@@ -77,6 +80,21 @@ describe('MR Widget App', () => {
       await waitForPromises();
 
       expect(wrapper.findByTestId('reports-widgets-container').isVisible()).toBe(true);
+    });
+
+    it('shows findings count after widget emits loaded event', async () => {
+      createComponent({
+        mr: { testResultsPath: 'path/to/testResultsPath' },
+        provide: { glFeatures: { mrReportsTab: true } },
+      });
+
+      await waitForPromises();
+
+      wrapper.findComponent(MrTestReportWidget).vm.$emit('loaded', 10);
+
+      await nextTick();
+
+      expect(wrapper.findComponent(StateContainer).text()).toContain('10 findings');
     });
   });
 });

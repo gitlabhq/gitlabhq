@@ -2538,6 +2538,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     subject { build.variables }
 
     context 'returns variables' do
+      let(:pages_hostname) { "#{project.namespace.path}.example.com" }
+      let(:pages_url) { "http://#{pages_hostname}/#{project.path}" }
       let(:predefined_variables) do
         [
           { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true, masked: false },
@@ -2614,7 +2616,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true, masked: false },
           { key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s, public: true, masked: false },
           { key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp, public: true, masked: false },
-          { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false }
+          { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false },
+          { key: 'CI_PAGES_HOSTNAME', value: pages_hostname, public: true, masked: false },
+          { key: 'CI_PAGES_URL', value: pages_url, public: true, masked: false }
         ]
       end
 
@@ -2684,14 +2688,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                pipeline_pre_var,
                build_yaml_var,
                job_dependency_var,
-               { key: 'secret', value: 'value', public: false, masked: false }])
+               { key: 'secret', value: 'value', public: false, masked: false },
+               { key: "CI_PAGES_HOSTNAME", value: pages_hostname, masked: false, public: true },
+               { key: "CI_PAGES_URL", value: pages_url, masked: false, public: true }])
           end
         end
 
         context 'when build has environment and user-provided variables' do
           let(:expected_variables) do
-            predefined_variables.map { |variable| variable.fetch(:key) } +
-              %w[YAML_VARIABLE CI_ENVIRONMENT_SLUG CI_ENVIRONMENT_URL]
+            predefined_variables.map { |variable| variable.fetch(:key) }
           end
 
           before do
@@ -2708,12 +2713,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                 { key: 'CI_ENVIRONMENT_URL', value: 'https://gitlab.com', public: true, masked: false }
               ],
               after: 'CI_NODE_TOTAL')
+
+            insert_expected_predefined_variables(
+              [
+                { key: 'YAML_VARIABLE', value: 'staging', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_SLUG', value: 'start', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_URL', value: 'https://gitlab.com', public: true, masked: false }
+              ],
+              after: 'CI_COMMIT_AUTHOR')
           end
 
           it 'matches explicit variables ordering' do
             received_variables = subject.map { |variable| variable[:key] }
 
-            expect(received_variables).to eq expected_variables
+            expect(received_variables).to eq(expected_variables)
           end
 
           describe 'CI_ENVIRONMENT_ACTION' do
@@ -2882,7 +2895,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             it_behaves_like 'containing environment variables'
 
             it 'puts $CI_ENVIRONMENT_URL in the last so all other variables are available to be used when runners are trying to expand it' do
-              expect(subject.to_runner_variables.last).to eq(expected_environment_variables.last)
+              ci_env_url = subject.to_runner_variables.find { |var| var[:key] == 'CI_ENVIRONMENT_URL' }
+
+              expect(ci_env_url).to eq(expected_environment_variables.last)
             end
           end
         end

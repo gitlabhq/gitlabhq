@@ -57,6 +57,8 @@ export default {
           });
         });
 
+        this.$emit('loaded', 0);
+
         return artifacts;
       },
       error() {

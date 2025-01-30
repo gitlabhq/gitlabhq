@@ -2,17 +2,13 @@
 import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
 import { differenceBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__, sprintf } from '~/locale';
 import { findDesignWidget } from '~/work_items/utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 import {
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEMS_TYPE_MAP,
-  WORK_ITEM_ALLOWED_CHANGE_TYPE_MAP,
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  ALLOWED_CONVERSION_TYPES,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_VALUE_EPIC,
   sprintfWorkItem,
@@ -37,8 +33,6 @@ export default {
   actionCancel: {
     text: __('Cancel'),
   },
-  mixins: [glFeatureFlagMixin()],
-  inject: ['hasOkrsFeature'],
   props: {
     workItemId: {
       type: String,
@@ -96,7 +90,7 @@ export default {
     getEpicWidgetDefinitions: {
       type: Function,
       required: false,
-      default: () => () => {},
+      default: () => {},
     },
   },
   data() {
@@ -106,7 +100,6 @@ export default {
       warningMessage: '',
       changeTypeDisabled: true,
       hasDesigns: false,
-      workItemFullPath: this.fullPath,
       typeFieldNote: '',
     };
   },
@@ -115,19 +108,14 @@ export default {
       query: namespaceWorkItemTypesQuery,
       variables() {
         return {
-          fullPath: this.workItemFullPath,
+          fullPath: this.fullPath,
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes;
+        return data.workspace?.workItemTypes?.nodes || [];
       },
       error(e) {
         this.throwError(e);
-      },
-      result() {
-        if (this.selectedWorkItemType !== null) {
-          this.validateWorkItemType();
-        }
       },
     },
     hasDesigns: {
@@ -141,49 +129,38 @@ export default {
       update(data) {
         return findDesignWidget(data.workItem.widgets)?.designCollection?.designs.nodes?.length > 0;
       },
-      skip() {
-        return !this.workItemId;
-      },
       error(e) {
         this.throwError(e);
       },
     },
   },
   computed: {
-    allowedConversionWorkItemTypes() {
-      // The logic will be simplified once we implement
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/498656
-      let allowedWorkItemTypes = [
-        { text: __('Select type'), value: null },
-        ...Object.entries(WORK_ITEMS_TYPE_MAP)
-          .map(([key, value]) => ({
-            text: value.value,
-            value: key,
-          }))
-          .filter((item) => {
-            if (item.text === this.workItemType) {
-              return false;
-            }
-            // Keeping this separate for readability
-            if (
-              item.value === WORK_ITEM_TYPE_ENUM_OBJECTIVE ||
-              item.value === WORK_ITEM_TYPE_ENUM_KEY_RESULT
-            ) {
-              return this.isOkrsEnabled;
-            }
-            return WORK_ITEM_ALLOWED_CHANGE_TYPE_MAP.includes(item.value);
-          }),
-      ];
-      // Adding hardcoded EPIC till we have epic conversion support
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/478486
-      if (this.allowedWorkItemTypesEE.length > 0) {
-        allowedWorkItemTypes = [...allowedWorkItemTypes, ...this.allowedWorkItemTypesEE];
-      }
-
-      return allowedWorkItemTypes;
+    supportedConversionTypes() {
+      return (
+        this.workItemTypes
+          ?.find((type) => type.name === this.workItemType)
+          ?.supportedConversionTypes?.filter((item) => {
+            // API is returning Incident, Requirement, Test Case, and Ticket in addition to required work items
+            // As these types are not migrated, they are filtered out on the frontend
+            // They will be added to the list as they are migrated
+            // Discussion: https://gitlab.com/gitlab-org/gitlab/-/issues/498656#note_2263177119
+            return ALLOWED_CONVERSION_TYPES.includes(item.name);
+          })
+          ?.map((item) => ({
+            text: item.name,
+            value: item.id,
+          })) || []
+      );
     },
-    isOkrsEnabled() {
-      return this.hasOkrsFeature && this.glFeatures.okrsMvc;
+    allowedConversionWorkItemTypes() {
+      return [
+        {
+          text: __('Select type'),
+          value: null,
+        },
+        ...this.supportedConversionTypes,
+        ...this.allowedWorkItemTypesEE,
+      ];
     },
     selectedWorkItemTypeWidgetDefinitions() {
       return this.selectedWorkItemType?.value === WORK_ITEM_TYPE_ENUM_EPIC
@@ -313,7 +290,7 @@ export default {
       }
       return this.workItemTypes.find((widget) => widget.name === type)?.widgetDefinitions;
     },
-    updateWorkItemFullPath(value) {
+    updateWorkItemType(value) {
       this.typeFieldNote = '';
 
       if (!value) {
@@ -326,8 +303,6 @@ export default {
       );
 
       if (value === WORK_ITEM_TYPE_ENUM_EPIC) {
-        // triggers the `workItemTypes` to fetch Epic widget definitions
-        this.workItemFullPath = this.fullPath.substring(0, this.fullPath.lastIndexOf('/'));
         this.typeFieldNote = this.epicFieldNote;
       }
       this.validateWorkItemType();
@@ -378,7 +353,6 @@ export default {
     },
     show() {
       this.resetModal();
-      this.changeTypeDisabled = true;
       this.$refs.modal.show();
     },
     hide() {
@@ -387,9 +361,8 @@ export default {
     },
     resetModal() {
       this.warningMessage = '';
-      this.showDifferenceMessage = false;
       this.selectedWorkItemType = null;
-      this.changeTypeDisabled = false;
+      this.changeTypeDisabled = true;
       this.typeFieldNote = '';
     },
   },
@@ -419,7 +392,7 @@ export default {
         :value="selectedWorkItemTypeValue"
         width="md"
         :options="allowedConversionWorkItemTypes"
-        @change="updateWorkItemFullPath"
+        @change="updateWorkItemType"
       />
       <p v-if="typeFieldNote" class="gl-text-subtle">{{ typeFieldNote }}</p>
     </gl-form-group>

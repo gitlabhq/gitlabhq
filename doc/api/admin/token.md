@@ -105,6 +105,7 @@ Example response:
 ## Revoke a token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `api_admin_token_revoke`. Disabled by default.
+> - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178211) in GitLab 17.9.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -118,6 +119,7 @@ Revokes a given token. This endpoint supports the following token types:
 - [Group access tokens](../../security/tokens/index.md#group-access-tokens)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)
 - [Feed tokens](../../security/tokens/index.md#feed-token)
+- [Cluster agent tokens](../../security/tokens/index.md#gitlab-cluster-agent-tokens)
 
 ```plaintext
 DELETE /api/v4/admin/token

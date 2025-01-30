@@ -13,6 +13,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_PAGE_SIZE,
   INSTRUMENT_TAB_LABELS,
@@ -46,7 +47,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
   provide() {
     return {
       currentTab: computed(() => this.currentTab),
@@ -138,6 +139,8 @@ export default {
       return !this.isLoading && this.todos.length === 0;
     },
     showMarkAllAsDone() {
+      if (this.glFeatures.todosBulkActions) return false;
+
       return this.currentTab === TABS_INDICES.pending && !this.showEmptyState;
     },
   },

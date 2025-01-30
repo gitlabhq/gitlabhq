@@ -132,6 +132,7 @@ export default {
           }
           if (data) {
             this.collapsedData = data;
+            this.$emit('loaded', this.collapsedData.new_errors.length);
           }
           return {
             headers,

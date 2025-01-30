@@ -279,7 +279,10 @@ module Gitlab
       return unless db_config
 
       db_config_name = db_config.name.delete_suffix(LoadBalancing::LoadBalancer::REPLICA_SUFFIX)
-      primary_model = self.database_base_models.fetch(db_config_name.to_sym)
+
+      primary_model = self.database_base_models[db_config_name.to_sym]
+
+      return unless primary_model
 
       self.schemas_to_base_models.select do |_, child_models|
         child_models.any? do |child_model|

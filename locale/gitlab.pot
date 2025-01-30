@@ -299,6 +299,11 @@ msgid_plural "%d findings must be resolved"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d findings"
+msgid_plural "%d findings"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d fork"
 msgid_plural "%d forks"
 msgstr[0] ""
@@ -1019,6 +1024,9 @@ msgid "%{labelStart}Namespace:%{labelEnd} %{namespace}"
 msgstr ""
 
 msgid "%{labelStart}Project:%{labelEnd} %{project}"
+msgstr ""
+
+msgid "%{labelStart}Report Type:%{labelEnd} %{reportType}"
 msgstr ""
 
 msgid "%{labelStart}Scanner:%{labelEnd} %{scanner}"
@@ -47734,6 +47742,9 @@ msgid "Reports|Metrics reports: %{strong_start}%{numberOfChanges}%{strong_end} %
 msgstr ""
 
 msgid "Reports|New"
+msgstr ""
+
+msgid "Reports|Report Type"
 msgstr ""
 
 msgid "Reports|See test results while the pipeline is running"

@@ -843,7 +843,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
               .to eq(
                 "Import failed. Destination URL " \
                 "can only include non-accented letters, digits, '_', '-' and '.'. " \
-                "It must not start with '-', end in '.', '.git', or '.atom'."
+                "It must not start with '-', '_', or '.', nor end with '-', '_', '.', '.git', or '.atom'."
               )
           end
         end

@@ -743,6 +743,7 @@ gem 'telesignenterprise', '~> 2.2', feature_category: :insider_threat
 # BufferedIO patch
 # Updating this version will require updating scripts/allowed_warnings.txt
 gem 'net-protocol', '~> 0.1.3', feature_category: :shared
+gem "nkf", "~> 0.2.0", feature_category: :shared
 
 # This is locked to 0.6.0 because we patch Net::HTTP#connect in
 # gems/gitlab-http/lib/net_http/connect_patch.rb.

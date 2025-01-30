@@ -12,13 +12,7 @@ import WorkItemChangeTypeModal from '~/work_items/components/work_item_change_ty
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
-import {
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_TASK,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
-  WORK_ITEM_WIDGETS_NAME_MAP,
-} from '~/work_items/constants';
+import { WORK_ITEM_TYPE_VALUE_TASK, WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
 
 import {
   convertWorkItemMutationResponse,
@@ -33,10 +27,20 @@ describe('WorkItemChangeTypeModal component', () => {
   let wrapper;
 
   const typesQuerySuccessHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
-  const keyResultTypeId =
-    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
-      (type) => type.name === WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-    ).id;
+  const issueTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+    (type) => type.name === WORK_ITEM_TYPE_VALUE_ISSUE,
+  ).id;
+  const taskTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+    (type) => type.name === WORK_ITEM_TYPE_VALUE_TASK,
+  ).id;
+  namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes
+    .find((item) => item.name === WORK_ITEM_TYPE_VALUE_TASK)
+    .widgetDefinitions.splice(
+      namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes
+        .find((item) => item.name === WORK_ITEM_TYPE_VALUE_TASK)
+        .widgetDefinitions.findIndex((item) => item.type === 'CRM_CONTACTS'),
+      1,
+    );
 
   const convertWorkItemMutationSuccessHandler = jest
     .fn()
@@ -58,14 +62,11 @@ describe('WorkItemChangeTypeModal component', () => {
   const oneDesignQueryHandler = jest.fn().mockResolvedValue(designCollectionResponse([mockDesign]));
 
   const createComponent = ({
-    hasOkrsFeature = true,
-    okrsMvc = true,
     hasParent = false,
     hasChildren = false,
     widgets = [],
     workItemType = WORK_ITEM_TYPE_VALUE_TASK,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
-
     designQueryHandler = noDesignQueryHandler,
   } = {}) => {
     wrapper = mountExtended(WorkItemChangeTypeModal, {
@@ -83,12 +84,7 @@ describe('WorkItemChangeTypeModal component', () => {
         widgets,
         workItemType,
         allowedChildTypes: [{ name: WORK_ITEM_TYPE_VALUE_TASK }],
-      },
-      provide: {
-        hasOkrsFeature,
-        glFeatures: {
-          okrsMvc,
-        },
+        allowedWorkItemTypesEE: [],
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -125,25 +121,20 @@ describe('WorkItemChangeTypeModal component', () => {
   });
 
   it('renders all types as select options', () => {
-    expect(findGlFormSelect().findAll('option')).toHaveLength(4);
-  });
-
-  it('does not render objective and key result if `okrsMvc` is disabled', () => {
-    createComponent({ okrsMvc: false });
-
     expect(findGlFormSelect().findAll('option')).toHaveLength(2);
   });
 
   it('does not allow to change type and disables `Change type` button when the work item has a parent', async () => {
     createComponent({ hasParent: true, widgets: workItemQueryResponse.data.workItem.widgets });
 
-    findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
-
-    await nextTick();
     await waitForPromises();
 
+    findGlFormSelect().vm.$emit('change', issueTypeId);
+
+    await nextTick();
+
     expect(findWarningAlert().text()).toBe(
-      'Parent item type issue is not supported on key result. Remove the parent item to change type.',
+      'Parent item type issue is not supported on issue. Remove the parent item to change type.',
     );
 
     expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
@@ -152,13 +143,14 @@ describe('WorkItemChangeTypeModal component', () => {
   it('does not allow to change type and disables `Change type` button when the work item has child items', async () => {
     createComponent({ workItemType: WORK_ITEM_TYPE_VALUE_ISSUE, hasChildren: true });
 
-    findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
-
-    await nextTick();
     await waitForPromises();
 
+    findGlFormSelect().vm.$emit('change', taskTypeId);
+
+    await nextTick();
+
     expect(findWarningAlert().text()).toBe(
-      'Key result does not support the task child item types. Remove child items to change type.',
+      'Task does not support the task child item types. Remove child items to change type.',
     );
     expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
   });
@@ -172,7 +164,7 @@ describe('WorkItemChangeTypeModal component', () => {
 
       await waitForPromises();
 
-      findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
+      findGlFormSelect().vm.$emit('change', taskTypeId);
 
       await nextTick();
 
@@ -180,32 +172,21 @@ describe('WorkItemChangeTypeModal component', () => {
       expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
     });
 
-    // These are all possible use cases of conflicts among project level work items
-    // Other widgets are shared between all the work item types
-    it.each`
-      widgetType                                  | widgetData                                 | workItemType                  | typeTobeConverted                 | expectedString
-      ${WORK_ITEM_WIDGETS_NAME_MAP.MILESTONE}     | ${workItemChangeTypeWidgets.MILESTONE}     | ${WORK_ITEM_TYPE_VALUE_TASK}  | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT} | ${'Milestone'}
-      ${WORK_ITEM_WIDGETS_NAME_MAP.DEVELOPMENT}   | ${workItemChangeTypeWidgets.DEVELOPMENT}   | ${WORK_ITEM_TYPE_VALUE_ISSUE} | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT} | ${'Development'}
-      ${WORK_ITEM_WIDGETS_NAME_MAP.CRM_CONTACTS}  | ${workItemChangeTypeWidgets.CRM_CONTACTS}  | ${WORK_ITEM_TYPE_VALUE_ISSUE} | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT} | ${'Contacts'}
-      ${WORK_ITEM_WIDGETS_NAME_MAP.TIME_TRACKING} | ${workItemChangeTypeWidgets.TIME_TRACKING} | ${WORK_ITEM_TYPE_VALUE_ISSUE} | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT} | ${'Time tracking'}
-    `(
-      'shows warning message in case of $widgetType widget',
-      async ({ workItemType, widgetData, typeTobeConverted, expectedString }) => {
-        createComponent({
-          workItemType,
-          widgets: [widgetData],
-        });
+    it('shows warning message in case of Contacts widget', async () => {
+      createComponent({
+        workItemType: WORK_ITEM_TYPE_VALUE_ISSUE,
+        widgets: [workItemChangeTypeWidgets.CRM_CONTACTS],
+      });
 
-        await waitForPromises();
+      await waitForPromises();
 
-        findGlFormSelect().vm.$emit('change', typeTobeConverted);
+      findGlFormSelect().vm.$emit('change', taskTypeId);
 
-        await nextTick();
+      await nextTick();
 
-        expect(findWarningAlert().text()).toContain(expectedString);
-        expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
-      },
-    );
+      expect(findWarningAlert().text()).toContain('Contacts');
+      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
+    });
   });
 
   describe('convert work item mutation', () => {
@@ -214,7 +195,7 @@ describe('WorkItemChangeTypeModal component', () => {
 
       await waitForPromises();
 
-      findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
+      findGlFormSelect().vm.$emit('change', issueTypeId);
 
       await nextTick();
 
@@ -225,7 +206,7 @@ describe('WorkItemChangeTypeModal component', () => {
       expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
         input: {
           id: 'gid://gitlab/WorkItem/1',
-          workItemTypeId: keyResultTypeId,
+          workItemTypeId: issueTypeId,
         },
       });
     });
@@ -243,7 +224,7 @@ describe('WorkItemChangeTypeModal component', () => {
 
         await waitForPromises();
 
-        findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
+        findGlFormSelect().vm.$emit('change', issueTypeId);
 
         await nextTick();
 

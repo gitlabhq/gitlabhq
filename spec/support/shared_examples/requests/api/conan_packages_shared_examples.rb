@@ -54,6 +54,28 @@ RSpec.shared_examples 'conan search endpoint' do
 
       it { is_expected.to be_blank }
     end
+
+    context 'returns error when search term is too long' do
+      let(:params) { { q: 'q' * 201 } }
+
+      before do
+        get api(url), params: params
+      end
+
+      it { expect(response).to have_gitlab_http_status(:bad_request) }
+      it { expect(json_response['message']).to eq('400 Bad request - Search term length must be less than 200 characters.') }
+    end
+
+    context 'returns error when search term has too many wildcards' do
+      let(:params) { { q: 'al*h*/*@*nn*/*' } }
+
+      before do
+        get api(url), params: params
+      end
+
+      it { expect(response).to have_gitlab_http_status(:bad_request) }
+      it { expect(json_response['message']).to eq('400 Bad request - Too many wildcards in search term. Maximum is 5.') }
+    end
   end
 
   context 'with a private project' do

@@ -305,7 +305,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::Cache::Entry, type: :model, f
       let_it_be(:parent) { create(:virtual_registries_packages_maven_upstream) }
       let_it_be(:model) { create(:virtual_registries_packages_maven_cache_entry, upstream: parent) }
 
-      let(:find_model) { model.reload }
+      let(:find_model) { described_class.last }
     end
   end
 

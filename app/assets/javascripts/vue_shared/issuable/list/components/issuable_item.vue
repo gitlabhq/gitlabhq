@@ -25,6 +25,7 @@ import {
   LINKED_CATEGORIES_MAP,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
   WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
@@ -119,7 +120,10 @@ export default {
       );
     },
     isIncident() {
-      return this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT;
+      return (
+        this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT ||
+        this.issuable.type === WORK_ITEM_TYPE_ENUM_INCIDENT
+      );
     },
     isServiceDeskIssue() {
       return (

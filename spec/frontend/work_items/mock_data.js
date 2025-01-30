@@ -2065,12 +2065,6 @@ export const workItemChangeTypeWidgets = {
     totalTimeSpent: 10800,
     __typename: 'WorkItemWidgetTimeTracking',
   },
-  PROGRESS: {
-    type: 'PROGRESS',
-    progress: 33,
-    updatedAt: '2024-12-05T16:24:56Z',
-    __typename: 'WorkItemWidgetProgress',
-  },
 };
 
 export const confidentialWorkItemTask = {

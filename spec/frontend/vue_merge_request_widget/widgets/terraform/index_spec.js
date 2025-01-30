@@ -47,6 +47,16 @@ describe('Terraform extension', () => {
     mock.restore();
   });
 
+  it('emits loaded event', async () => {
+    mockPollingApi(HTTP_STATUS_OK, plans, {});
+
+    createComponent();
+
+    await waitForPromises();
+
+    expect(wrapper.emitted('loaded')[0]).toContain(2);
+  });
+
   describe('summary', () => {
     describe('while loading', () => {
       const loadingText = 'Loading Terraform reports...';

@@ -481,7 +481,7 @@ module Ci
 
       {}.tap do |result|
         result[:publish] = ExpandVariables.expand(options[:publish].to_s, -> {
-          pages_base_variables.sort_and_expand_all
+          base_variables.sort_and_expand_all
         })
       end
     end
@@ -566,13 +566,8 @@ module Ci
     def variables
       strong_memoize(:variables) do
         Gitlab::Ci::Variables::Collection.new
-          .concat(persisted_variables)
-          .concat(dependency_proxy_variables)
-          .concat(job_jwt_variables)
-          .concat(scoped_variables)
+          .concat(base_variables)
           .concat(pages_variables)
-          .concat(job_variables)
-          .concat(persisted_environment_variables)
       end
     end
 
@@ -654,26 +649,24 @@ module Ci
 
     def pages_variables
       ::Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        next variables unless pages_generator? && Feature.enabled?(:fix_pages_ci_variables, project)
-
-        pages_url_builder = ::Gitlab::Pages::UrlBuilder.new(project, pages)
+        next variables unless Feature.enabled?(:fix_pages_ci_variables, project)
 
         variables
-          .append(key: 'CI_PAGES_HOSTNAME', value: pages_url_builder.hostname)
-          .append(key: 'CI_PAGES_URL', value: pages_url_builder.pages_url)
+          .append(key: 'CI_PAGES_HOSTNAME', value: project.pages_hostname)
+          .append(key: 'CI_PAGES_URL', value: project.pages_url(pages))
       end
     end
 
-    # This method can be used for expanding extra variables in both CE and EE `build.pages`.
-    # It includes all variables that can be used as a value in pages_options.
-    def pages_base_variables
+    def base_variables
       ::Gitlab::Ci::Variables::Collection.new
         .concat(persisted_variables)
+        .concat(dependency_proxy_variables)
+        .concat(job_jwt_variables)
         .concat(scoped_variables)
         .concat(job_variables)
         .concat(persisted_environment_variables)
     end
-    strong_memoize_attr :pages_base_variables
+    strong_memoize_attr :base_variables
 
     def features
       {

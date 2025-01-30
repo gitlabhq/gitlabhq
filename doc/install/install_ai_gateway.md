@@ -25,7 +25,7 @@ The Docker image for the AI gateway is around 340 MB (compressed) for the `linux
 
 Find the GitLab official Docker image at:
 
-- AI Gateway Docker image on Container Registry: 
+- AI Gateway Docker image on Container Registry:
   - [Stable](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284)
   - [Nightly](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/8086262)
 - AI Gateway Docker image on DockerHub:
@@ -62,16 +62,6 @@ To fix this, set the appropriate certificate bundle path in the Docker container
 - `REQUESTS_CA_BUNDLE=/path/to/ca-bundle.pem`
 
 Replace `/path/to/ca-bundle.pem` with the actual path to your certificate bundle.
-
-### Additional Configuration
-
-If you encounter authentication issues during health checks, bypass the authentication temporarily by setting the following environment variable:
-
-```shell
--e AIGW_AUTH__BYPASS_EXTERNAL=true
-```
-
-This can be helpful for troubleshooting, but you should disable this after fixing the issues.
 
 ## Install using the AI gateway Helm chart
 
@@ -258,7 +248,7 @@ resources:
 - Dedicate nodes or instances exclusively to the AI Gateway to prevent resource competition with other services.
 
 ## Scaling Strategies
-  
+
 - Use Kubernetes HPA to scale pods based on real-time metrics like:
   - Average CPU utilization exceeding 50%.
   - Request latency consistently above 500ms.

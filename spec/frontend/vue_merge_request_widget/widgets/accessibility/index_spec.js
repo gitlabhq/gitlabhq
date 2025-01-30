@@ -41,6 +41,16 @@ describe('Accessibility widget', () => {
     mock.restore();
   });
 
+  it('emits loaded event', async () => {
+    mockApi(HTTP_STATUS_OK, accessibilityReportResponseErrors);
+
+    createComponent();
+
+    await waitForPromises();
+
+    expect(wrapper.emitted('loaded')[0]).toContain(5);
+  });
+
   describe('summary', () => {
     it('displays loading text', () => {
       mockApi(HTTP_STATUS_OK, accessibilityReportResponseErrors);

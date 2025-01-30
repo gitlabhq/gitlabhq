@@ -432,6 +432,8 @@
 {"name":"netrc","version":"0.11.0","platform":"ruby","checksum":"de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f"},
 {"name":"nio4r","version":"2.7.0","platform":"java","checksum":"3f2e515e928ceeef7668e1f64fc3bfef1417a5ec0908d8e69f2c6d486284e04d"},
 {"name":"nio4r","version":"2.7.0","platform":"ruby","checksum":"9586a685eca8246d6406e712a525e705d15bb88f709d78fc3f141e864df97276"},
+{"name":"nkf","version":"0.2.0","platform":"java","checksum":"3e6f022d1743a863bf05e936c7c2110be07ba1c593ea974df75d89e8bf7cc967"},
+{"name":"nkf","version":"0.2.0","platform":"ruby","checksum":"fbc151bda025451f627fafdfcb3f4f13d0b22ae11f58c6d3a2939c76c5f5f126"},
 {"name":"no_proxy_fix","version":"0.1.2","platform":"ruby","checksum":"4e9b4c31bb146de7fcf347dc1087bb13ac2039b56d50aa019e61036256abcd00"},
 {"name":"nokogiri","version":"1.18.2","platform":"aarch64-linux-gnu","checksum":"74e0f9a7487a30a2957f46c5113d58f836436b033c9906e0bc6fee9d8cdafabf"},
 {"name":"nokogiri","version":"1.18.2","platform":"aarch64-linux-musl","checksum":"99bcea596a80eaee99f2bae2596275641ea688262c1da32b4e90db6159e86477"},

@@ -64,6 +64,7 @@ export default {
       return axios.get(this.mr.accessibilityReportPath).then((response) => {
         this.collapsedData = response.data;
         this.content = this.getContent(response.data);
+        this.$emit('loaded', this.collapsedData?.summary?.errored || 0);
 
         return response;
       });

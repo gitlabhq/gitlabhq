@@ -78,6 +78,7 @@ module API
               detail 'This feature was introduced in GitLab 12.4'
               success code: 200
               failure [
+                { code: 400, message: 'Bad Request' },
                 { code: 404, message: 'Not Found' }
               ]
               tags %w[conan_packages]
@@ -91,9 +92,10 @@ module API
             route_setting :authorization, skip_job_token_policies: true
 
             get 'conans/search', urgency: :low do
-              service = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute
+              response = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute
+              bad_request!(response.message) if response.error?
 
-              service.payload
+              response.payload
             end
           end
         end
