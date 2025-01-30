@@ -34,8 +34,9 @@ module API
         additional_properties = params.fetch(:additional_properties, {}).symbolize_keys
         send_snowplow_event = !!params[:send_to_snowplow]
 
-        if Gitlab::Tracking::AiTracking::EVENTS_MIGRATED_TO_INSTRUMENTATION_LAYER.exclude?(event_name) &&
-            Feature.enabled?(:move_ai_tracking_to_instrumentation_layer, current_user)
+        if Feature.disabled?(:move_ai_tracking_to_instrumentation_layer, current_user) ||
+            (Gitlab::Tracking::AiTracking::EVENTS_MIGRATED_TO_INSTRUMENTATION_LAYER.exclude?(event_name) &&
+            Feature.enabled?(:move_ai_tracking_to_instrumentation_layer, current_user))
           Gitlab::Tracking::AiTracking.track_event(event_name, **additional_properties.merge(user: current_user))
         end
 
