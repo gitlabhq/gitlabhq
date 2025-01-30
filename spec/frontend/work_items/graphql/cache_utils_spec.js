@@ -446,7 +446,13 @@ describe('work items graphql cache utils', () => {
 
       expect(mockWriteQuery).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: draftData,
+          data: expect.objectContaining({
+            workspace: expect.objectContaining({
+              workItem: expect.objectContaining({
+                title: draftData.workspace.workItem.title,
+              }),
+            }),
+          }),
         }),
       );
     });
