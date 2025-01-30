@@ -27,10 +27,6 @@
   }
 
   li > .wiki-list {
-    min-height: 30px;
-    @apply gl-mx-2;
-    margin-bottom: 1px;
-
     &:hover,
     &.active {
       @apply gl-bg-neutral-50 dark:gl-bg-neutral-900;

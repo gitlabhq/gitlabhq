@@ -32538,7 +32538,6 @@ Project-level settings for product analytics provider.
 | <a id="projectsavedreplies"></a>`savedReplies` | [`ProjectSavedReplyConnection`](#projectsavedreplyconnection) | Saved replies available to the project. (see [Connections](#connections)) |
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the project, absent if assigned to a parent group. |
-| <a id="projectsecuritypolicyprojectlinkedgroups"></a>`securityPolicyProjectLinkedGroups` | [`GroupConnection`](#groupconnection) | Groups linked to the project, when used as Security Policy Project. (see [Connections](#connections)) |
 | <a id="projectsecuritypolicyprojectlinkednamespaces"></a>`securityPolicyProjectLinkedNamespaces` **{warning-solid}** | [`NamespaceConnection`](#namespaceconnection) | **Deprecated** in GitLab 17.4. This was renamed. Use: `security_policy_project_linked_groups`. |
 | <a id="projectsecuritypolicyprojectlinkedprojects"></a>`securityPolicyProjectLinkedProjects` | [`ProjectConnection`](#projectconnection) | Projects linked to the project, when used as Security Policy Project. (see [Connections](#connections)) |
 | <a id="projectsecurityscanners"></a>`securityScanners` | [`SecurityScanners`](#securityscanners) | Information about security analyzers used in the project. |
@@ -34213,6 +34212,24 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectsecurityexclusionsactive"></a>`active` | [`Boolean`](#boolean) | Filter entries by active status. |
 | <a id="projectsecurityexclusionsscanner"></a>`scanner` | [`ExclusionScannerEnum`](#exclusionscannerenum) | Filter entries by scanner. |
 | <a id="projectsecurityexclusionstype"></a>`type` | [`ExclusionTypeEnum`](#exclusiontypeenum) | Filter entries by exclusion type. |
+
+##### `Project.securityPolicyProjectLinkedGroups`
+
+Groups linked to the project, when used as Security Policy Project.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritypolicyprojectlinkedgroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
+| <a id="projectsecuritypolicyprojectlinkedgroupssearch"></a>`search` | [`String`](#string) | Search query for groups. |
+| <a id="projectsecuritypolicyprojectlinkedgroupstoplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
 
 ##### `Project.securityPolicyProjectSuggestions`
 
@@ -41034,6 +41051,7 @@ Member role admin permission.
 | <a id="memberroleadminpermissionread_admin_cicd"></a>`READ_ADMIN_CICD` | Read CI/CD details including runners and jobs. |
 | <a id="memberroleadminpermissionread_admin_dashboard"></a>`READ_ADMIN_DASHBOARD` | Read-only access to admin dashboard. |
 | <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Allows read access to system monitoring including system info, background migrations, health checks, audit logs, and gitaly in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` | Read subscription details in the Admin area. |
 
 ### `MemberRolePermission`
 
@@ -41063,6 +41081,7 @@ Member role permission.
 | <a id="memberrolepermissionread_admin_cicd"></a>`READ_ADMIN_CICD` | Read CI/CD details including runners and jobs. |
 | <a id="memberrolepermissionread_admin_dashboard"></a>`READ_ADMIN_DASHBOARD` | Read-only access to admin dashboard. |
 | <a id="memberrolepermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Allows read access to system monitoring including system info, background migrations, health checks, audit logs, and gitaly in the Admin Area. |
+| <a id="memberrolepermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` | Read subscription details in the Admin area. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |
 | <a id="memberrolepermissionread_compliance_dashboard"></a>`READ_COMPLIANCE_DASHBOARD` | Read compliance capabilities including adherence, violations, and frameworks for groups and projects. |
 | <a id="memberrolepermissionread_crm_contact"></a>`READ_CRM_CONTACT` | Read CRM contact. |

@@ -4,12 +4,12 @@ import {
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import CodeDropdownItem from '~/vue_shared/components/code_dropdown/code_dropdown_item.vue';
 
-describe('Clone Dropdown Button', () => {
+describe('Code Dropdown component', () => {
   let wrapper;
   const sshUrl = 'ssh://foo.bar';
   const httpUrl = 'http://foo.bar';
@@ -40,7 +40,7 @@ describe('Clone Dropdown Button', () => {
   const closeDropdown = jest.fn();
 
   const createComponent = (propsData = defaultPropsData) => {
-    wrapper = shallowMount(CodeDropdown, {
+    wrapper = shallowMountExtended(CodeDropdown, {
       propsData,
       stubs: {
         GlFormInputGroup,

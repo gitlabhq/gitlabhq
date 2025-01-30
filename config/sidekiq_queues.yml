@@ -889,6 +889,8 @@
   - 1
 - - security_sync_policy
   - 1
+- - security_sync_policy_event
+  - 1
 - - security_sync_policy_violation_comment
   - 1
 - - security_sync_project_policies

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::FixUsernamespaceAuditEvents, feature_category: :audit_events do
-  let(:audit_events_table) { table(:audit_events) }
-  let(:instance_audit_events_table) { table(:instance_audit_events) }
+  let(:audit_events_table) { partitioned_table(:audit_events) }
+  let(:instance_audit_events_table) { partitioned_table(:instance_audit_events) }
 
   let!(:usernamespace_audit_event) do
     audit_events_table.create!(

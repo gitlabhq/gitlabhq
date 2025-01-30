@@ -152,7 +152,7 @@ export default {
     <template v-if="activePanel">
       <div data-testid="active-panel-template" class="gl-flex gl-items-center gl-py-5">
         <div class="col-auto">
-          <img :alt="''" :src="activePanel.imageSrc" />
+          <img aria-hidden="true" :src="activePanel.imageSrc" :alt="activePanel.title" />
         </div>
         <div class="col">
           <h1 class="gl-heading-2-fixed gl-my-3">{{ activePanel.title }}</h1>

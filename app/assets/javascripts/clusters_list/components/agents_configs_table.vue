@@ -49,6 +49,7 @@ export default {
         {
           key: 'configuration',
           label: this.$options.i18n.configurationLabel,
+          isRowHeader: true,
           tdClass: `${tdClass} md:gl-w-4/5`,
           thClass,
         },
@@ -96,7 +97,7 @@ export default {
       class="!gl-mb-4"
     >
       <template #cell(configuration)="{ item }">
-        <gl-link :href="item.webPath">{{ item.path }}</gl-link>
+        <gl-link class="gl-font-normal" :href="item.webPath">{{ item.path }}</gl-link>
       </template>
 
       <template #cell(actions)="{ item }">

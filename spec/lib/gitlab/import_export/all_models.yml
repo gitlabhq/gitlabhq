@@ -912,6 +912,7 @@ project:
 - security_statistics
 - vulnerability_management_policies
 - project_control_compliance_statuses
+- approval_policies
 award_emoji:
 - awardable
 - user

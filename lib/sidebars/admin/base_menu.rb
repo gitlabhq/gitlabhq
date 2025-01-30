@@ -7,7 +7,13 @@ module Sidebars
       def render?
         return false unless context.current_user
 
-        context.current_user.can_admin_all_resources?
+        render_with_abilities.any? { |ability| context.current_user.can?(ability) }
+      end
+
+      private
+
+      def render_with_abilities
+        %i[admin_all_resources]
       end
     end
   end

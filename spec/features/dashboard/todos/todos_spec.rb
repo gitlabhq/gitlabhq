@@ -43,7 +43,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
 
       visit dashboard_todos_path
 
-      expect(page).to have_selector('ul[data-testid="todo-item-list-container"] li', count: 1)
+      expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 1)
     end
   end
 
@@ -190,7 +190,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
     end
 
     it 'shows page with two Todos' do
-      expect(page).to have_selector('ul[data-testid="todo-item-list-container"] li', count: 2)
+      expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 2)
     end
   end
 
@@ -231,7 +231,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
     end
 
     it 'has todo present' do
-      expect(page).to have_selector('ul[data-testid="todo-item-list-container"] li', count: 1)
+      expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 1)
     end
   end
 
@@ -241,7 +241,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
         sign_in(user)
         visit dashboard_todos_path
 
-        expect(page).to have_selector('ul[data-testid="todo-item-list-container"] li', count: 1)
+        expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 1)
         expect(page).to have_content "#{author.name} has requested access to #{target_type} #{target_name}"
       end
     end
@@ -499,7 +499,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
               find('a.gl-toast-action', text: 'Undo').click
             end
             expect(page).to have_content 'Restored 3 to-dos'
-            expect(page).to have_selector('ul[data-testid=todo-item-list-container] li', count: 3)
+            expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 3)
           end
         end
 
@@ -510,7 +510,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
 
             expect(page).to have_content 'Sorry, your filter produced no results'
             click_on 'Clear'
-            expect(page).to have_selector('ul[data-testid=todo-item-list-container] li', count: 1)
+            expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 1)
             expect(page).to have_content(other_assigned.author.name)
           end
         end

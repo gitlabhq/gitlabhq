@@ -384,7 +384,7 @@ ci_access:
         - dev
 ```
 
-For more details, see [Access to Kubernetes from CI](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/b601fa21cac24f0cdedc8b8eb59ebcba0b70f459/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api).
+For more details, see [Access to Kubernetes from CI/CD](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api).
 
 ## Related topics
 

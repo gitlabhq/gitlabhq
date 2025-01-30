@@ -40,7 +40,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
       wait_for_requests # ensures page is fully loaded
     end
 
-    xit 'passes axe automated accessibility testing' do # rubocop:disable RSpec/PendingWithoutReason -- TODO: Fix violations in Vue components
+    it 'passes axe automated accessibility testing' do
       expect(page).to be_axe_clean.within('#content-body')
     end
   end
@@ -53,7 +53,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :team_planning do
       wait_for_requests # ensures page is fully loaded
     end
 
-    xit 'passes axe automated accessibility testing' do # rubocop:disable RSpec/PendingWithoutReason -- TODO: Fix violations in Vue components
+    it 'passes axe automated accessibility testing' do
       expect(page).to be_axe_clean.within('#content-body')
     end
   end

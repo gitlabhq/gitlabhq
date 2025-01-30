@@ -44,6 +44,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_frontend_feature_flag(:blob_repository_vue_header_app, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
+    push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)
@@ -52,7 +53,6 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
-    push_frontend_feature_flag(:namespace_level_work_items, @project&.group)
     push_force_frontend_feature_flag(:custom_fields_feature, @project&.group)
   end
 

@@ -20,6 +20,21 @@ RSpec.describe Board do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:project) }
+
+    describe 'group and project mutually exclusive' do
+      context 'when project is present' do
+        subject { described_class.new(project: project) }
+
+        it do
+          is_expected.to validate_absence_of(:group)
+            .with_message(_("can't be specified if a project was already provided"))
+        end
+      end
+
+      context 'when project is not present' do
+        it { is_expected.not_to validate_absence_of(:group) }
+      end
+    end
   end
 
   describe 'constants' do

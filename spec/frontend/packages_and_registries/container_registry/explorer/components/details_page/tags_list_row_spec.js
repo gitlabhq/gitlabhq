@@ -4,7 +4,6 @@ import {
   GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
-  GlBadge,
   GlLink,
 } from '@gitlab/ui';
 import { nextTick } from 'vue';
@@ -28,6 +27,10 @@ import { ListItem } from '../../stubs';
 describe('tags list row', () => {
   let wrapper;
   const tag = tagsMock[0];
+  const protection = {
+    minimumAccessLevelForPush: 'MAINTAINER',
+    minimumAccessLevelForDelete: 'MAINTAINER',
+  };
   const tagWithOCIMediaType = tagsMock[2];
   const tagWithListMediaType = tagsMock[3];
 
@@ -49,12 +52,14 @@ describe('tags list row', () => {
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findAdditionalActionsMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
-  const findSignedBadge = () => wrapper.findComponent(GlBadge);
+  const findSignedBadge = () => wrapper.findByTestId('signed-badge');
   const findIndexBadge = () => wrapper.findByTestId('index-badge');
   const findSignatureDetailsModal = () => wrapper.findComponent(SignatureDetailsModal);
   const getTooltipFor = (component) => getBinding(component.element, 'gl-tooltip');
+  const findProtectedBadge = () => wrapper.findByTestId('protected-badge');
+  const findProtectedPopover = () => wrapper.findByTestId('protected-popover');
 
-  const mountComponent = (propsData = defaultProps) => {
+  const mountComponent = (propsData = defaultProps, protectedTagsFeatureFlagState = false) => {
     wrapper = shallowMountExtended(TagsListRow, {
       stubs: {
         GlSprintf,
@@ -65,6 +70,11 @@ describe('tags list row', () => {
       },
       propsData,
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
+      provide: {
+        glFeatures: {
+          containerRegistryProtectedTags: protectedTagsFeatureFlagState,
+        },
+      },
     });
   };
 
@@ -165,6 +175,53 @@ describe('tags list row', () => {
       mountComponent({ ...defaultProps, disabled: true });
 
       expect(findClipboardButton().attributes('disabled')).toBeDefined();
+    });
+  });
+
+  describe('protected tag', () => {
+    it('hidden if tag.protection does not exists', () => {
+      mountComponent(defaultProps, true);
+
+      expect(findProtectedBadge().exists()).toBe(false);
+    });
+
+    it('displays if tag.protection exists', () => {
+      mountComponent(
+        {
+          ...defaultProps,
+          tag: {
+            ...tag,
+            protection: {
+              ...protection,
+            },
+          },
+        },
+        true,
+      );
+
+      expect(findProtectedBadge().exists()).toBe(true);
+    });
+
+    it('has the correct text for the popover', () => {
+      mountComponent(
+        {
+          ...defaultProps,
+          tag: {
+            ...tag,
+            protection: {
+              ...protection,
+            },
+          },
+        },
+        true,
+      );
+
+      const popoverText = findProtectedPopover().text();
+
+      expect(popoverText).toContain('This tag is protected');
+      expect(popoverText).toContain('Minimum role to push:');
+      expect(popoverText).toContain('Minimum role to delete:');
+      expect(popoverText).toContain('MAINTAINER');
     });
   });
 

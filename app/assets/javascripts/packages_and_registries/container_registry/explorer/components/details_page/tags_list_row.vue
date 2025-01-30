@@ -7,6 +7,7 @@ import {
   GlDisclosureDropdown,
   GlBadge,
   GlLink,
+  GlPopover,
 } from '@gitlab/ui';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -15,6 +16,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   DIGEST_LABEL,
@@ -47,10 +49,12 @@ export default {
     TimeAgoTooltip,
     DetailsRow,
     SignatureDetailsModal,
+    GlPopover,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     tag: {
       type: Object,
@@ -157,6 +161,22 @@ export default {
     isDockerOrOciMediaType() {
       return this.tag.mediaType === DOCKER_MEDIA_TYPE || this.tag.mediaType === OCI_MEDIA_TYPE;
     },
+    isProtected() {
+      return (
+        (this.tag.protection?.minimumAccessLevelForDelete != null ||
+          this.tag.protection?.minimumAccessLevelForPush != null) &&
+        this.glFeatures.containerRegistryProtectedTags
+      );
+    },
+    tagRowId() {
+      return `${this.tag.name}_badge`;
+    },
+    accessLevelForDelete() {
+      return this.tag.protection?.minimumAccessLevelForDelete;
+    },
+    accessLevelForPush() {
+      return this.tag.protection?.minimumAccessLevelForPush;
+    },
   },
 };
 </script>
@@ -183,6 +203,26 @@ export default {
           {{ tag.name }}
         </div>
 
+        <template v-if="isProtected">
+          <gl-badge
+            :id="tagRowId"
+            boundary="viewport"
+            class="gl-ml-4"
+            data-testid="protected-badge"
+          >
+            {{ __('protected') }}
+          </gl-badge>
+          <gl-popover :target="tagRowId" data-testid="protected-popover">
+            <strong>{{ s__('ContainerRegistry|This tag is protected') }}</strong>
+            <br />
+            <br />
+            <strong>{{ s__('ContainerRegistry|Minimum role to push: ') }}</strong>
+            {{ accessLevelForPush }}
+            <strong>{{ s__('ContainerRegistry|Minimum role to delete: ') }}</strong>
+            {{ accessLevelForDelete }}
+          </gl-popover>
+        </template>
+
         <clipboard-button
           v-if="tag.location"
           :title="$options.i18n.COPY_IMAGE_PATH_TITLE"
@@ -204,7 +244,11 @@ export default {
     </template>
 
     <template v-if="signatures.length" #left-after-toggle>
-      <gl-badge v-gl-tooltip.d0="$options.i18n.SIGNATURE_BADGE_TOOLTIP" class="gl-ml-4">
+      <gl-badge
+        v-gl-tooltip.d0="$options.i18n.SIGNATURE_BADGE_TOOLTIP"
+        class="gl-ml-4"
+        data-testid="signed-badge"
+      >
         {{ s__('ContainerRegistry|Signed') }}
       </gl-badge>
     </template>

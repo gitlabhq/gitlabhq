@@ -94,6 +94,7 @@ export default {
         {
           key: 'name',
           label: this.$options.i18n.nameLabel,
+          isRowHeader: true,
           tdClass,
           thClass,
         },
@@ -260,7 +261,9 @@ export default {
       data-testid="cluster-agent-list-table"
     >
       <template #cell(name)="{ item }">
-        <div class="gl-flex gl-flex-wrap gl-justify-end gl-gap-3 md:gl-justify-start">
+        <div
+          class="gl-flex gl-flex-wrap gl-justify-end gl-gap-3 gl-font-normal md:gl-justify-start"
+        >
           <gl-link :href="item.webPath" data-testid="cluster-agent-name-link">{{
             item.name
           }}</gl-link

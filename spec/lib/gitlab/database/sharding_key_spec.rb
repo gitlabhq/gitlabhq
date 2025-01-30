@@ -25,7 +25,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *tables_with_alternative_not_null_constraint,
       'analytics_devops_adoption_segments.namespace_id',
       *['badges.project_id', 'badges.group_id'],
-      *['boards.project_id', 'boards.group_id'],
       'ci_pipeline_schedules.project_id',
       'ci_sources_pipelines.project_id',
       'ci_triggers.project_id',

@@ -15605,6 +15605,9 @@ msgstr ""
 msgid "ContainerRegistry|Edit cleanup rules"
 msgstr ""
 
+msgid "ContainerRegistry|Edit protection rule"
+msgstr ""
+
 msgid "ContainerRegistry|Enable cleanup policy"
 msgstr ""
 
@@ -15681,6 +15684,12 @@ msgid "ContainerRegistry|Minimum role allowed to delete"
 msgstr ""
 
 msgid "ContainerRegistry|Minimum role allowed to push"
+msgstr ""
+
+msgid "ContainerRegistry|Minimum role to delete: "
+msgstr ""
+
+msgid "ContainerRegistry|Minimum role to push: "
 msgstr ""
 
 msgid "ContainerRegistry|Missing or insufficient permission, delete button disabled"
@@ -15896,6 +15905,9 @@ msgid "ContainerRegistry|This image repository will be deleted. %{linkStart}Lear
 msgstr ""
 
 msgid "ContainerRegistry|This project's cleanup policy for tags is not enabled."
+msgstr ""
+
+msgid "ContainerRegistry|This tag is protected"
 msgstr ""
 
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
@@ -50971,7 +50983,7 @@ msgstr ""
 msgid "SecurityApprovals|Learn more about Coverage-Check"
 msgstr ""
 
-msgid "SecurityApprovals|Requires approval for decreases in test coverage. %{linkStart}Learn more%{linkEnd}."
+msgid "SecurityApprovals|Requires approval for decreases in test coverage."
 msgstr ""
 
 msgid "SecurityConfiguration|%{featureName} merge request creation mutation failed"
@@ -67153,6 +67165,9 @@ msgid "can't be nil"
 msgstr ""
 
 msgid "can't be solely blank"
+msgstr ""
+
+msgid "can't be specified if a project was already provided"
 msgstr ""
 
 msgid "can't be the same as the source project"

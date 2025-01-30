@@ -68,7 +68,7 @@ export default {
     <local-storage-sync v-model="isCollapsed" :storage-key="`wiki:${page.path}:collapsed`" />
     <span
       ref="entry"
-      class="wiki-list gl-relative gl-flex gl-cursor-pointer gl-items-center gl-rounded-base gl-px-3"
+      class="wiki-list gl-relative gl-mx-2 gl-mb-px gl-flex gl-min-h-8 gl-cursor-pointer gl-items-center gl-rounded-base gl-px-3"
       data-testid="wiki-list"
       :class="{ active: page.path === currentPath }"
       @click="toggleCollapsed"

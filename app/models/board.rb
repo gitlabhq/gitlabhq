@@ -14,6 +14,9 @@ class Board < ApplicationRecord
   validates :name, presence: true
   validates :project, presence: true, if: :project_needed?
   validates :group, presence: true, unless: :project
+  validates :group, absence: {
+    message: ->(_object, _data) { _("can't be specified if a project was already provided") }
+  }, if: :project
 
   scope :with_associations, -> { preload(:destroyable_lists) }
 

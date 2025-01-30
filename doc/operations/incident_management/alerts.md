@@ -79,7 +79,7 @@ To do so, either:
 
 When you upload an image, you can add text to the image and link it to the original graph.
 
-![Text link modal](img/incident_metrics_tab_text_link_modal_v14_9.png)
+![An incident metrics tab with an option to add a text link](img/incident_metrics_tab_text_link_modal_v14_9.png)
 
 If you add a link, it is shown above the uploaded image.
 

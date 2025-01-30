@@ -51,7 +51,7 @@ export const formatPipelinesGraphQLDataToREST = (project) => {
         stuck: pipeline.stuck,
         auto_devops: pipeline.configSource === SOURCE_AUTO_DEVOPS,
         merge_request: true,
-        yaml_errors: pipeline.yamlErrors,
+        yaml_errors: Boolean(pipeline.errorMessages?.nodes?.length),
         retryable: pipeline.retryable,
         cancelable: pipeline.cancelable,
         failure_reason: pipeline.failureReason,

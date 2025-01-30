@@ -65,7 +65,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-    push_frontend_feature_flag(:namespace_level_work_items, project&.group)
     push_frontend_feature_flag(:work_items_view_preference, current_user)
   end
 

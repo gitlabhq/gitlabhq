@@ -148,7 +148,6 @@ describe('WorkItemDetail component', () => {
     mutationHandler,
     error = undefined,
     workItemsAlphaEnabled = false,
-    namespaceLevelWorkItems = true,
     hasSubepicsFeature = true,
     router = true,
     modalIsGroup = null,
@@ -184,7 +183,6 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
-          namespaceLevelWorkItems,
         },
         hasSubepicsFeature,
         fullPath: 'group/project',
@@ -427,17 +425,6 @@ describe('WorkItemDetail component', () => {
 
       await waitForPromises();
       expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
-    });
-
-    describe('`namespace_level_work_items` is disabled', () => {
-      it('does not show ancestors widget and shows title in the header', async () => {
-        createComponent({ namespaceLevelWorkItems: false });
-
-        await waitForPromises();
-
-        expect(findAncestors().exists()).toBe(false);
-        expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
-      });
     });
 
     describe('`subepics` is unavailable', () => {

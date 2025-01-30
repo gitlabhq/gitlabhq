@@ -31,7 +31,6 @@ import {
   WIDGET_TYPE_DESIGNS,
   LINKED_ITEMS_ANCHOR,
   WORK_ITEM_REFERENCE_CHAR,
-  WORK_ITEM_TYPE_VALUE_TASK,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
@@ -350,15 +349,6 @@ export default {
       return Boolean(parentWorkItem);
     },
     shouldShowAncestors() {
-      // TODO: This is a temporary check till the issue work item migration is completed
-      // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
-      if (
-        this.workItemType === WORK_ITEM_TYPE_VALUE_TASK &&
-        !this.glFeatures.namespaceLevelWorkItems
-      ) {
-        return false;
-      }
-
       // Checks whether current work item has parent
       // or it is in hierarchy but there is no permission to view the parent
       return this.hasParent || this.workItemHierarchy?.hasParent;

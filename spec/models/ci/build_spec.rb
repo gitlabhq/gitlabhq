@@ -3179,6 +3179,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when runner is assigned to build' do
       let(:runner) { create(:ci_runner, description: 'description', tag_list: %w[docker linux]) }
+      let(:expected_tags_value) { %w[docker linux].to_s }
 
       before do
         build.update!(runner: runner)
@@ -3186,7 +3187,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true, masked: false }) }
       it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true, masked: false }) }
-      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true, masked: false }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: expected_tags_value, public: true, masked: false }) }
+
+      context 'when the tags are preloaded' do
+        subject { described_class.preload(:tags).find(build.id).variables }
+
+        it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: expected_tags_value, public: true, masked: false }) }
+      end
     end
 
     context 'when build is for a deployment' do

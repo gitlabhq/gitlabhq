@@ -251,6 +251,27 @@ RSpec.describe 'Project > Settings > Packages and registries',
           expect(settings_block).to have_content('Owner')
         end
 
+        it 'updates a rule' do
+          visit_method
+
+          within_testid settings_block_id do
+            click_button 'Edit'
+          end
+
+          expect(page).to have_selector 'h2', text: 'Edit protection rule'
+          fill_in 'Protect container tags matching', with: 'v1.*'
+          select 'Maintainer', from: 'Minimum role allowed to push'
+          select 'Maintainer', from: 'Minimum role allowed to delete'
+          click_button 'Save changes'
+
+          settings_block = find_by_testid(settings_block_id)
+          expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
+          expect(page).to have_content('Container protection rule updated.')
+          expect(settings_block).to have_content('v1.*')
+          expect(find_by_testid('minimum-access-level-push-value')).to have_content('Maintainer')
+          expect(find_by_testid('minimum-access-level-delete-value')).to have_content('Maintainer')
+        end
+
         it 'deletes rule' do
           visit_method
 

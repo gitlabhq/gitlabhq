@@ -137,64 +137,6 @@ describe('ContainerProtectionTagRules', () => {
         expect.objectContaining({ projectPath: defaultProvidedValues.projectPath, first: 5 }),
       );
     });
-
-    describe('when `Add protection rule` button is clicked', () => {
-      beforeEach(async () => {
-        await findCrudComponent().vm.$emit('showForm');
-      });
-
-      it('opens drawer', () => {
-        expect(findDrawer().props('open')).toBe(true);
-        expect(findDrawerTitle().text()).toBe('Add protection rule');
-      });
-
-      it('renders form', () => {
-        expect(findForm().exists()).toBe(true);
-      });
-
-      describe('when drawer emits `close` event', () => {
-        beforeEach(async () => {
-          await findDrawer().vm.$emit('close');
-        });
-
-        it('closes drawer', () => {
-          expect(findDrawer().props('open')).toBe(false);
-        });
-      });
-
-      describe('when form emits `cancel` event', () => {
-        beforeEach(async () => {
-          await findForm().vm.$emit('cancel');
-        });
-
-        it('closes drawer', () => {
-          expect(findDrawer().props('open')).toBe(false);
-        });
-      });
-
-      describe('when form emits `submit` event', () => {
-        it('refetches protection rules after successful graphql mutation', async () => {
-          const containerProtectionTagRuleQueryResolver = jest
-            .fn()
-            .mockResolvedValue(containerProtectionTagRuleQueryPayload);
-
-          createComponent({
-            containerProtectionTagRuleQueryResolver,
-          });
-
-          await waitForPromises();
-
-          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(1);
-
-          await findCrudComponent().vm.$emit('showForm');
-          await findForm().vm.$emit('submit');
-
-          expect(findDrawer().props('open')).toBe(false);
-          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(2);
-          expect($toast.show).toHaveBeenCalledWith('Container protection rule created.');
-        });
-      });
-    });
   });
 
   describe('when data is loaded & contains tag protection rules', () => {
@@ -203,6 +145,7 @@ describe('ContainerProtectionTagRules', () => {
     const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
     const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
     const findTableRowCell = (i, j) => extendedWrapper(findTableRow(i).findAllByRole('cell').at(j));
+    const findTableRowButtonEdit = (i) => findTableRow(i).findByRole('button', { name: /edit/i });
     const findTableRowButtonDelete = (i) =>
       findTableRow(i).findByRole('button', { name: /delete/i });
 
@@ -281,15 +224,21 @@ describe('ContainerProtectionTagRules', () => {
       });
 
       describe('column "rowActions"', () => {
-        describe('button "Delete"', () => {
+        describe.each`
+          buttonName  | buttonFinder
+          ${'Edit'}   | ${findTableRowButtonEdit}
+          ${'Delete'} | ${findTableRowButtonDelete}
+        `('button "$buttonName"', ({ buttonFinder }) => {
           it('exists in table', () => {
-            expect(findTableRowButtonDelete(0).exists()).toBe(true);
+            expect(buttonFinder(0).exists()).toBe(true);
           });
 
           describe('when button is clicked', () => {
-            it('renders the "delete container protection rule" confirmation modal', async () => {
-              await findTableRowButtonDelete(0).trigger('click');
+            beforeEach(async () => {
+              await buttonFinder(0).trigger('click');
+            });
 
+            it('renders the "delete container protection rule" confirmation modal', () => {
               const modalId = getBinding(findTableRowButtonDelete(0).element, 'gl-modal');
 
               expect(findModal().props('modal-id')).toBe(modalId);
@@ -423,6 +372,77 @@ describe('ContainerProtectionTagRules', () => {
           await waitForPromises();
 
           expect($toast.show).toHaveBeenCalledWith('Container protection rule deleted.');
+        });
+      });
+    });
+
+    describe.each`
+      description                                       | beforeFn                                            | title                     | toastMessage
+      ${'when `Add protection rule` button is clicked'} | ${() => findCrudComponent().vm.$emit('showForm')}   | ${'Add protection rule'}  | ${'Container protection rule created.'}
+      ${'when `Edit` button for a rule is clicked'}     | ${() => findTableRowButtonEdit(0).trigger('click')} | ${'Edit protection rule'} | ${'Container protection rule updated.'}
+    `('$description', ({ beforeFn, title, toastMessage }) => {
+      beforeEach(async () => {
+        createComponent({
+          mountFn: mountExtended,
+        });
+
+        await waitForPromises();
+        await beforeFn();
+      });
+
+      it('opens drawer', () => {
+        expect(findDrawer().props('open')).toBe(true);
+      });
+
+      it(`sets the appropriate drawer title: ${title}`, () => {
+        expect(findDrawerTitle().text()).toBe(title);
+      });
+
+      it('renders form', () => {
+        expect(findForm().exists()).toBe(true);
+      });
+
+      describe('when drawer emits `close` event', () => {
+        beforeEach(async () => {
+          await findDrawer().vm.$emit('close');
+        });
+
+        it('closes drawer', () => {
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
+
+      describe('when form emits `cancel` event', () => {
+        beforeEach(async () => {
+          await findForm().vm.$emit('cancel');
+        });
+
+        it('closes drawer', () => {
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
+
+      describe('when form emits `submit` event', () => {
+        it('refetches protection rules after successful graphql mutation', async () => {
+          const containerProtectionTagRuleQueryResolver = jest
+            .fn()
+            .mockResolvedValue(containerProtectionTagRuleQueryPayload);
+
+          createComponent({
+            containerProtectionTagRuleQueryResolver,
+            mountFn: mountExtended,
+          });
+
+          await waitForPromises();
+
+          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(1);
+
+          await beforeFn();
+          await findForm().vm.$emit('submit');
+
+          expect(findDrawer().props('open')).toBe(false);
+          expect(containerProtectionTagRuleQueryResolver).toHaveBeenCalledTimes(2);
+          expect($toast.show).toHaveBeenCalledWith(toastMessage);
         });
       });
     });

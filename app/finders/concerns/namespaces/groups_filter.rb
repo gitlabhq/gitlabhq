@@ -4,6 +4,16 @@ module Namespaces
   module GroupsFilter
     private
 
+    def by_ids(items)
+      ids = params[:ids]
+      items = items.id_in(ids) if ids
+      items
+    end
+
+    def top_level_only(groups)
+      params[:top_level_only].present? ? groups.by_parent(nil) : groups
+    end
+
     def by_search(groups)
       return groups unless params[:search].present?
 

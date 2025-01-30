@@ -10,11 +10,12 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import createProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_tag_rule.mutation.graphql';
+import updateProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_tag_rule.mutation.graphql';
 import {
   MinimumAccessLevelOptions,
   GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
 } from '~/packages_and_registries/settings/project/constants';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
@@ -31,13 +32,22 @@ export default {
   },
   mixins: [InternalEvents.mixin()],
   inject: ['projectPath'],
+  props: {
+    rule: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   data() {
     return {
       alertErrorMessages: [],
       protectionRuleFormData: {
-        tagNamePattern: '',
-        minimumAccessLevelForPush: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
-        minimumAccessLevelForDelete: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        tagNamePattern: this.rule?.tagNamePattern ?? '',
+        minimumAccessLevelForPush:
+          this.rule?.minimumAccessLevelForPush ?? GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        minimumAccessLevelForDelete:
+          this.rule?.minimumAccessLevelForDelete ?? GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       showValidation: false,
       updateInProgress: false,
@@ -47,9 +57,7 @@ export default {
     createProtectionRuleMutationInput() {
       return {
         projectPath: this.projectPath,
-        tagNamePattern: this.protectionRuleFormData.tagNamePattern,
-        minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush,
-        minimumAccessLevelForDelete: this.protectionRuleFormData.minimumAccessLevelForDelete,
+        ...this.protectionRuleFormData,
       };
     },
     isTagNamePatternValid() {
@@ -64,8 +72,23 @@ export default {
       }
       return s__('ContainerRegistry|This field is required.');
     },
+    mutation() {
+      return this.rule ? updateProtectionTagRuleMutation : createProtectionTagRuleMutation;
+    },
+    mutationKey() {
+      return this.rule ? 'updateContainerProtectionTagRule' : 'createContainerProtectionTagRule';
+    },
     tagNamePattern() {
       return this.protectionRuleFormData.tagNamePattern;
+    },
+    submitButtonText() {
+      return this.rule ? __('Save changes') : s__('ContainerRegistry|Add rule');
+    },
+    updateProtectionTagRuleMutationInput() {
+      return {
+        id: this.rule?.id,
+        ...this.protectionRuleFormData,
+      };
     },
   },
   methods: {
@@ -76,16 +99,19 @@ export default {
 
       this.clearAlertErrorMessages();
       this.updateInProgress = true;
+      const input = this.rule
+        ? this.updateProtectionTagRuleMutationInput
+        : this.createProtectionRuleMutationInput;
 
       this.$apollo
         .mutate({
-          mutation: createProtectionTagRuleMutation,
+          mutation: this.mutation,
           variables: {
-            input: this.createProtectionRuleMutationInput,
+            input,
           },
         })
         .then(({ data }) => {
-          const errorMessages = data?.createContainerProtectionTagRule?.errors ?? [];
+          const errorMessages = data?.[this.mutationKey]?.errors ?? [];
           if (errorMessages?.length) {
             this.alertErrorMessages = Array.isArray(errorMessages)
               ? errorMessages
@@ -93,8 +119,12 @@ export default {
             return;
           }
 
-          this.$emit('submit', data.createContainerProtectionTagRule.containerProtectionTagRule);
-          this.trackEvent('container_protection_tag_rule_created');
+          this.$emit('submit', data[this.mutationKey].containerProtectionTagRule);
+          if (this.rule) {
+            this.trackEvent('container_protection_tag_rule_created');
+          } else {
+            this.trackEvent('container_protection_tag_rule_updated');
+          }
         })
         .catch((error) => {
           this.handleError(error);
@@ -174,10 +204,10 @@ export default {
 
     <gl-form-group
       :label="s__('ContainerRegistry|Minimum role allowed to push')"
-      label-for="input-minimum-access-level-for-push"
+      label-for="select-minimum-access-level-for-push"
     >
       <gl-form-select
-        id="input-minimum-access-level-for-push"
+        id="select-minimum-access-level-for-push"
         v-model="protectionRuleFormData.minimumAccessLevelForPush"
         :options="$options.minimumAccessLevelOptions"
       />
@@ -192,12 +222,13 @@ export default {
 
     <gl-form-group
       :label="s__('ContainerRegistry|Minimum role allowed to delete')"
-      label-for="input-minimum-access-level-for-delete"
+      label-for="select-minimum-access-level-for-delete"
     >
       <gl-form-select
-        id="input-minimum-access-level-for-delete"
+        id="select-minimum-access-level-for-delete"
         v-model="protectionRuleFormData.minimumAccessLevelForDelete"
         :options="$options.minimumAccessLevelOptions"
+        data-testid="select-minimum-access-level-for-delete"
       />
       <template #description>
         {{
@@ -213,9 +244,9 @@ export default {
         class="js-no-auto-disable"
         variant="confirm"
         type="submit"
-        data-testid="add-rule-btn"
+        data-testid="submit-btn"
         :loading="updateInProgress"
-        >{{ s__('ContainerRegistry|Add rule') }}</gl-button
+        >{{ submitButtonText }}</gl-button
       >
       <gl-button type="reset">{{ __('Cancel') }}</gl-button>
     </div>

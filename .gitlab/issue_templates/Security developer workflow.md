@@ -70,6 +70,7 @@ After your merge request has been approved according to our [approval guidelines
 |-------------------------------------|------------|-----------------------------------------------------------|
 | Version affected                    | X.Y        |                                                           |
 | Date introduced on .com             | YYYY-MM-DD | #TODO for Engineering - please follow the format          |
+| MR that introduced the bug          |            | #TODO for Engineering - Link to the MR that introduced the bug|
 | Date detected                       | YYYY-MM-DD | #TODO for AppSec - please follow the format               |
 | GitLab EE only                      | Yes/No     |                                                           |
 | Upgrade notes                       |            |                                                           |

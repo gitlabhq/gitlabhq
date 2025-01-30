@@ -1,0 +1,9 @@
+---
+name: directory_code_dropdown_updates
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/450667
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178890
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514750
+milestone: '17.9'
+group: group::source code
+type: wip
+default_enabled: false

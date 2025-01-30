@@ -9,11 +9,13 @@ import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
+import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -31,6 +33,7 @@ export default {
     Breadcrumbs,
     BlobControls,
     CodeDropdown,
+    CompactCodeDropdown,
     SourceCodeDownloadDropdown,
     CloneCodeDropdown,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
@@ -40,6 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -160,6 +164,9 @@ export default {
     findFileShortcutKey() {
       return keysFor(START_SEARCH_PROJECT_FILE)[0];
     },
+    showCompactCodeDropdown() {
+      return this.glFeatures.directoryCodeDropdownUpdates;
+    },
   },
   methods: {
     onInput(selectedRef) {
@@ -273,27 +280,35 @@ export default {
         />
         <!-- code + mobile panel -->
         <div v-if="!isReadmeView" class="project-code-holder gl-w-full sm:gl-w-auto">
-          <code-dropdown
-            class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
+          <compact-code-dropdown
+            v-if="showCompactCodeDropdown"
             :ssh-url="sshUrl"
             :http-url="httpUrl"
             :kerberos-url="kerberosUrl"
-            :xcode-url="xcodeUrl"
-            :current-path="currentPath"
-            :directory-download-links="downloadLinks"
           />
-          <div class="gl-flex gl-items-stretch gl-gap-3 sm:gl-hidden">
-            <source-code-download-dropdown
-              :download-links="downloadLinks"
-              :download-artifacts="downloadArtifacts"
-            />
-            <clone-code-dropdown
-              class="mobile-git-clone js-git-clone-holder !gl-w-full"
+          <template v-else>
+            <code-dropdown
+              class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
               :ssh-url="sshUrl"
               :http-url="httpUrl"
               :kerberos-url="kerberosUrl"
+              :xcode-url="xcodeUrl"
+              :current-path="currentPath"
+              :directory-download-links="downloadLinks"
             />
-          </div>
+            <div class="gl-flex gl-items-stretch gl-gap-3 sm:gl-hidden">
+              <source-code-download-dropdown
+                :download-links="downloadLinks"
+                :download-artifacts="downloadArtifacts"
+              />
+              <clone-code-dropdown
+                class="mobile-git-clone js-git-clone-holder !gl-w-full"
+                :ssh-url="sshUrl"
+                :http-url="httpUrl"
+                :kerberos-url="kerberosUrl"
+              />
+            </div>
+          </template>
         </div>
       </div>
 

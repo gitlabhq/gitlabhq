@@ -4,7 +4,7 @@ RSpec.shared_examples 'Admin menu' do |link:, title:, icon:, separated: false|
   let_it_be(:user) { build(:user, :admin) }
 
   before do
-    allow(user).to receive(:can_admin_all_resources?).and_return(true)
+    stub_application_setting(admin_mode: false)
   end
 
   let(:context) { Sidebars::Context.new(current_user: user, container: nil) }

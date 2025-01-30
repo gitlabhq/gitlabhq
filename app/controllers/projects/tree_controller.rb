@@ -22,6 +22,7 @@ class Projects::TreeController < Projects::ApplicationController
     push_frontend_feature_flag(:blob_repository_vue_header_app, @project)
     push_frontend_feature_flag(:blob_overflow_menu, current_user)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
+    push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
   end
 
   feature_category :source_code_management

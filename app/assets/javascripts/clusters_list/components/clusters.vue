@@ -76,6 +76,7 @@ export default {
         {
           key: 'name',
           label: __('Kubernetes cluster'),
+          isRowHeader: true,
           tdClass,
         },
         {
@@ -252,7 +253,7 @@ export default {
             class="gl-flex gl-h-6 gl-w-6 gl-items-center"
           />
 
-          <gl-link :href="item.path" class="gl-px-3">
+          <gl-link :href="item.path" class="gl-px-3 gl-font-normal">
             {{ item.name }}
           </gl-link>
 

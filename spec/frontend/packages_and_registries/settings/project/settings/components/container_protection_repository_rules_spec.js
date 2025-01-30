@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlKeysetPagination, GlModal } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlModal, GlTable } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -120,7 +120,7 @@ describe('Container protection repository rules project settings', () => {
     });
     await waitForPromises();
 
-    expect(findTable().exists()).toBe(false);
+    expect(wrapper.findComponent(GlTable).exists()).toBe(false);
     expect(findEmptyText().exists()).toBe(true);
   });
 
@@ -352,7 +352,7 @@ describe('Container protection repository rules project settings', () => {
             expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueMaintainer);
             expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueMaintainer);
 
-            await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
             expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
             expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueMaintainer);
@@ -367,7 +367,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
             expect(updateContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledTimes(
               1,
@@ -385,7 +385,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
             expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
             expect(findTableRowButtonDelete(0).attributes('disabled')).toBe('disabled');
@@ -411,7 +411,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
             await waitForPromises();
 
@@ -434,7 +434,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
             await waitForPromises();
 
@@ -447,7 +447,7 @@ describe('Container protection repository rules project settings', () => {
 
             await waitForPromises();
 
-            await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+            await findComboboxInTableRow(0).findAll('option').at(1).setSelected();
 
             await waitForPromises();
 
