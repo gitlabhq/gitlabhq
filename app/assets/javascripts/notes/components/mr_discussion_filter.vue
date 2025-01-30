@@ -1,10 +1,18 @@
 <script>
-import { GlCollapsibleListbox, GlButton, GlIcon, GlSprintf, GlButtonGroup } from '@gitlab/ui';
+import {
+  GlCollapsibleListbox,
+  GlButton,
+  GlIcon,
+  GlSprintf,
+  GlButtonGroup,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { InternalEvents } from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { __ } from '~/locale';
+import { SORT_DIRECTION_UI } from '~/search/sort/constants';
 import {
   MR_FILTER_OPTIONS,
   MR_FILTER_TRACKING_OPENED,
@@ -26,6 +34,9 @@ export default {
     GlIcon,
     GlSprintf,
     LocalStorageSync,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
   data() {
@@ -60,8 +71,8 @@ export default {
     isSortAsc() {
       return this.discussionSortOrder === 'asc';
     },
-    sortIcon() {
-      return this.isSortAsc ? 'sort-lowest' : 'sort-highest';
+    sortDirectionData() {
+      return this.isSortAsc ? SORT_DIRECTION_UI.asc : SORT_DIRECTION_UI.desc;
     },
   },
   methods: {
@@ -160,7 +171,14 @@ export default {
           <span v-else>{{ item.text }}</span>
         </template>
       </gl-collapsible-listbox>
-      <gl-button :icon="sortIcon" @click="updateSortDirection" />
+      <gl-button
+        v-gl-tooltip
+        data-testid="mr-discussion-sort-direction"
+        :aria-label="sortDirectionData.tooltip"
+        :title="sortDirectionData.tooltip"
+        :icon="sortDirectionData.icon"
+        @click="updateSortDirection"
+      />
     </gl-button-group>
   </div>
 </template>

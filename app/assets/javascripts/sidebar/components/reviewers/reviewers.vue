@@ -83,6 +83,7 @@ export default {
 
       <uncollapsed-reviewer-list
         v-else
+        :can-rerequest="editable"
         :users="sortedReviewers"
         :root-path="rootPath"
         :issuable-type="issuableType"

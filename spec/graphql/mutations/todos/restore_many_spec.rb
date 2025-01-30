@@ -75,7 +75,7 @@ RSpec.describe Mutations::Todos::RestoreMany do
     end
 
     it 'fails if too many todos are requested for update' do
-      expect { restore_mutation([todo1] * 51) }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
+      expect { restore_mutation([todo1] * 101) }.to raise_error(Gitlab::Graphql::Errors::ArgumentError)
     end
   end
 

@@ -54,8 +54,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     using RSpec::Parameterized::TableSyntax
 
     before do
-      allow(search_navigation)
-        .to receive_messages(can?: true, tab_enabled_for_project?: false, feature_flag_tab_enabled?: false)
+      allow(search_navigation).to receive_messages(can?: true, tab_enabled_for_project?: false)
       allow(search_navigation).to receive(:tab_enabled_for_project?).and_call_original
     end
 
@@ -107,11 +106,12 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
       end
 
       with_them do
-        it 'data item condition is set correctly' do
-          allow(search_navigation).to receive(:feature_flag_tab_enabled?)
-            .with(:global_search_issues_tab).and_return(feature_flag_enabled)
+        before do
+          stub_feature_flags(global_search_issues_tab: feature_flag_enabled)
           allow(search_navigation).to receive(:tab_enabled_for_project?).with(:issues).and_return(tab_enabled)
+        end
 
+        it 'data item condition is set correctly' do
           expect(tabs[:issues][:condition]).to eq(condition)
         end
       end
@@ -130,11 +130,12 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
       end
 
       with_them do
-        it 'data item condition is set correctly' do
-          allow(search_navigation).to receive(:feature_flag_tab_enabled?)
-            .with(:global_search_merge_requests_tab).and_return(feature_flag_enabled)
+        before do
+          stub_feature_flags(global_search_merge_requests_tab: feature_flag_enabled)
           allow(search_navigation).to receive(:tab_enabled_for_project?).with(:merge_requests).and_return(tab_enabled)
+        end
 
+        it 'data item condition is set correctly' do
           expect(tabs[:merge_requests][:condition]).to eq(condition)
         end
       end
@@ -228,13 +229,14 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
       end
 
       with_them do
-        it 'data item condition is set correctly' do
+        before do
+          stub_feature_flags(global_search_users_tab: feature_flag_enabled)
           allow(search_navigation).to receive(:tab_enabled_for_project?).with(:users).and_return(tab_enabled)
           allow(search_navigation).to receive(:can?)
             .with(user, :read_users_list, project_double).and_return(can_read_users_list)
-          allow(search_navigation).to receive(:feature_flag_tab_enabled?)
-            .with(:global_search_users_tab).and_return(feature_flag_enabled)
+        end
 
+        it 'data item condition is set correctly' do
           expect(tabs[:users][:condition]).to eq(condition)
         end
       end
@@ -255,10 +257,11 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
       with_them do
         let(:options) { { show_snippets: show_snippets } }
 
-        it 'data item condition is set correctly' do
-          allow(search_navigation).to receive(:feature_flag_tab_enabled?)
-            .with(:global_search_snippet_titles_tab).and_return(feature_flag_enabled)
+        before do
+          stub_feature_flags(global_search_snippet_titles_tab: feature_flag_enabled)
+        end
 
+        it 'data item condition is set correctly' do
           expect(tabs[:snippet_titles][:condition]).to eq(condition)
         end
       end

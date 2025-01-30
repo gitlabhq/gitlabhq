@@ -127,7 +127,7 @@ module Search
       return true if tab_enabled_for_project?(:users)
       return false unless can?(user, :read_users_list)
 
-      project.nil? && feature_flag_tab_enabled?(:global_search_users_tab)
+      project.nil? && (group.present? || Feature.enabled?(:global_search_users_tab, user, type: :ops))
     end
 
     def show_code_search_tab?
@@ -145,13 +145,13 @@ module Search
     def show_issues_search_tab?
       return true if tab_enabled_for_project?(:issues)
 
-      project.nil? && feature_flag_tab_enabled?(:global_search_issues_tab)
+      project.nil? && (group.present? || Feature.enabled?(:global_search_issues_tab, user, type: :ops))
     end
 
     def show_merge_requests_search_tab?
       return true if tab_enabled_for_project?(:merge_requests)
 
-      project.nil? && feature_flag_tab_enabled?(:global_search_merge_requests_tab)
+      project.nil? && (group.present? || Feature.enabled?(:global_search_merge_requests_tab, user, type: :ops))
     end
 
     def show_comments_search_tab?
@@ -161,16 +161,12 @@ module Search
     end
 
     def show_snippets_search_tab?
-      !!options[:show_snippets] && project.nil? && feature_flag_tab_enabled?(:global_search_snippet_titles_tab)
+      !!options[:show_snippets] && project.nil? &&
+        (group.present? || Feature.enabled?(:global_search_snippet_titles_tab, user, type: :ops))
     end
 
     def show_milestones_search_tab?
       project.nil? || tab_enabled_for_project?(:milestones)
-    end
-
-    # deprecated - this method is being refactored and will eventually be removed
-    def feature_flag_tab_enabled?(flag)
-      group.present? || Feature.enabled?(flag, user, type: :ops)
     end
   end
 end

@@ -68,6 +68,11 @@ export default {
       required: false,
       default: false,
     },
+    canRerequest: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   data() {
     return {
@@ -153,11 +158,15 @@ export default {
       );
     },
     showRequestReviewButton(user) {
-      if (!user.mergeRequestInteraction.approved) {
-        return !['UNREVIEWED'].includes(user.mergeRequestInteraction.reviewState);
+      if (this.canRerequest) {
+        if (!user.mergeRequestInteraction.approved) {
+          return !['UNREVIEWED'].includes(user.mergeRequestInteraction.reviewState);
+        }
+
+        return true;
       }
 
-      return true;
+      return false;
     },
   },
   LOADING_STATE,
@@ -188,7 +197,7 @@ export default {
         </div>
       </reviewer-avatar-link>
       <gl-button
-        v-if="user.mergeRequestInteraction.canUpdate && showRequestReviewButton(user)"
+        v-if="showRequestReviewButton(user)"
         v-gl-tooltip.left
         :title="$options.i18n.reRequestReview"
         :aria-label="$options.i18n.reRequestReview"

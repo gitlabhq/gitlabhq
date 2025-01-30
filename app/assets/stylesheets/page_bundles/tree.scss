@@ -87,10 +87,13 @@
   }
 
   table.tree-table {
-    margin-bottom: 0;
-    @apply dark:gl-bg-neutral-900;
+    @apply dark:gl-bg-neutral-900 gl-mb-0;
 
-    tr {
+    thead tr th {
+      @apply gl-border-t-0;
+    }
+
+    tbody tr {
       @apply gl-border-b gl-border-b-section;
 
       td,
@@ -98,52 +101,52 @@
         line-height: 21px;
       }
 
-      th {
-        @apply gl-bg-subtle dark:gl-bg-neutral-800;
-        border: 0;
+      th[scope="col"] {
+        @apply gl-bg-subtle dark:gl-bg-neutral-800 gl-border-0;
       }
 
-      td {
+      td, th {
         @apply gl-border-section;
       }
 
       &:hover:not(.tree-truncated-warning) {
-        td {
-          @apply gl-bg-blue-50 dark:gl-bg-neutral-800;
-          background-clip: padding-box;
+        td, th {
+          @apply gl-bg-blue-50 dark:gl-bg-neutral-800 gl-bg-clip-padding;
           border-top: 1px solid var(--gl-action-selected-border-color-default);
           border-bottom: 1px solid var(--gl-action-selected-border-color-default);
-          cursor: pointer;
 
-          &:first-of-type {
+          &:first-child {
             box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default);
           }
 
-          &:last-of-type {
+          &:last-child {
             box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default);
           }
 
-          &:first-of-type:last-of-type {
+          &:first-child:last-child {
             box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
               inset -1px 0 0 0 var(--gl-action-selected-border-color-default);
           }
         }
 
-        &:last-of-type td {
-          box-shadow: inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-
-          &:first-of-type {
-            box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
-              inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-            border-bottom-left-radius: calc(#{$gl-border-radius-base} - 1px);
+        &:last-child {
+          td, th {
+            @apply gl-border-b-0;
+            box-shadow: inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
+  
+            &:first-child {
+              box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
+                inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
+              border-bottom-left-radius: calc(#{$gl-border-radius-base} - 1px);
+            }
+  
+            &:last-child {
+              box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default),
+                inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
+              border-bottom-right-radius: calc(#{$gl-border-radius-base} - 1px);
+            }
           }
-
-          &:last-of-type {
-            box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default),
-              inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-            border-bottom-right-radius: calc(#{$gl-border-radius-base} - 1px);
-          }
-        }
+        } 
       }
 
       &.selected {
@@ -155,7 +158,7 @@
       &:last-of-type,
       &:last-of-type td,
       &:last-of-type:hover td {
-        border-bottom: 0;
+        @apply gl-border-b-0;
       }
     }
   }

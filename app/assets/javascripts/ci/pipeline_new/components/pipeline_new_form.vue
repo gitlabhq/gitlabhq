@@ -49,6 +49,7 @@ const i18n = {
   maxWarningsSummary: __('%{total} warnings found: showing first %{warningsDisplayed}'),
   removeVariableLabel: s__('CiVariables|Remove variable'),
   learnMore: __('Learn more'),
+  pipelineAriaLabel: s__('Pipeline|Variable'),
 };
 
 export default {
@@ -397,6 +398,9 @@ export default {
         value: option,
       }));
     },
+    getPipelineAriaLabel(index) {
+      return `${this.$options.i18n.pipelineAriaLabel} ${index + 1}`;
+    },
   },
   learnMorePath: helpPagePath('ci/variables/index', {
     anchor: 'cicd-variable-precedence',
@@ -477,6 +481,7 @@ export default {
             :selected="variable.variable_type"
             block
             fluid-width
+            :aria-label="getPipelineAriaLabel(index)"
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-type"
             @select="setVariableAttribute(variable.key, 'variable_type', $event)"

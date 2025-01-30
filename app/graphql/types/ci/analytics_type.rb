@@ -9,6 +9,15 @@ module Types
       field :aggregate, Types::Ci::AnalyticsPeriodType, null: true,
         description: 'Pipeline analytics for the specified filter.', experiment: { milestone: '17.5' }
 
+      field :time_series, [Types::Ci::AnalyticsPeriodType], null: true,
+        experiment: { milestone: '17.9' },
+        description:
+          "Pipeline analytics shown over time based on the specified filter. " \
+          "Data is aggregated in UTC, with adaptive resolution: hourly for 7-day windows or less, " \
+          "daily for longer periods." do
+            argument :period, Types::Ci::AnalyticsAggregationPeriodEnum, description: "Periodicity of aggregated data."
+          end
+
       field :month_pipelines_labels, [GraphQL::Types::String], null: true,
         description: 'Labels for the monthly pipeline count.'
       field :month_pipelines_successful, [GraphQL::Types::Int], null: true,

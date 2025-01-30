@@ -1,43 +1,13 @@
 include:
   - local: .gitlab/ci/rules.gitlab-ci.yml
 
-# Specific specs passed
-.specs-specified: &specs-specified
-  if: $QA_TESTS != ""
-
-# No specific specs passed
-.all-specs: &all-specs
-  if: $QA_TESTS == ""
-
 # FF changes
 .feature-flags-set: &feature-flags-set
   if: $FEATURE_FLAGS =~ /enabled|disabled/
 
-# Specific specs specified
-.spec-file-specified: &spec-file-specified
-  if: $QA_TESTS =~ /_spec\.rb/
-
-# Specs directory specified
-.spec-directory-specified: &spec-directory-specified
-  if: $QA_TESTS != "" && $QA_TESTS !~ /_spec\.rb/
-
-# Manually trigger job on ff changes but with default ff state instead of inverted
-.feature-flags-set-manual: &feature-flags-set-manual
-  <<: *feature-flags-set
-  when: manual
-  allow_failure: true
-
 # Run the job on master pipeline
 .default-branch: &default-branch
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-
-# Run all tests when QA framework changes present, full suite execution is explicitly enabled or a feature flag file is removed
-.qa-run-all-tests: &qa-run-all-tests
-  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true" || $QA_RUN_ALL_E2E_LABEL == "true" || $FEATURE_FLAGS =~ /deleted/
-
-# Run job when MR has pipeline:run-all-e2e label
-.qa-run-all-e2e-label: &qa-run-all-e2e-label
-  if: $QA_RUN_ALL_E2E_LABEL == "true"
 
 # Process test results (notify failure to slack, create test session report, relate test failures)
 .process-test-results: &process-test-results
@@ -98,51 +68,7 @@ include:
 
 .rules:test:feature-flags-set:
   rules:
-    # unset specific specs if pipeline has feature flag changes and run full suite
-    - <<: *feature-flags-set
-      variables:
-        QA_TESTS: ""
-
-# parallel and non parallel rules are used for jobs that require parallel execution and thus need to switch
-# between parallel and non parallel when only certain specs are executed
-.rules:test:qa-selective:
-  rules:
-    # always run parallel with full suite when framework changes present or ff state changed
-    - <<: *qa-run-all-tests
-      when: never
-    - <<: *all-specs
-      when: never
-    - <<: *feature-flags-set
-      when: never
-    - <<: *spec-directory-specified
-      when: never
-
-.rules:test:qa-selective-parallel:
-  rules:
-    # always run parallel with full suite when framework changes present or ff state changed
-    - <<: *qa-run-all-tests
-      when: never
-    - <<: *all-specs
-      when: never
-    - <<: *feature-flags-set
-      when: never
-    - <<: *spec-file-specified
-      when: never
-
-.rules:test:qa-parallel:
-  rules:
-    - *qa-run-all-tests
-    - <<: *specs-specified
-      when: manual
-      allow_failure: true
-      variables:
-        QA_TESTS: ""
-
-# general qa job rule for jobs without the need to run in parallel
-.rules:test:qa:
-  rules:
-    - *qa-run-all-tests
-    - *feature-flags-set-manual
+    - *feature-flags-set
 
 .rules:test:ce-only:
   rules:
@@ -169,12 +95,6 @@ include:
   rules:
     - <<: *if-schedule-pipeline
       when: never
-
-.rules:test:qa-default-branch:
-  rules:
-    - *qa-run-all-e2e-label
-    - *default-branch
-    - *feature-flags-set-manual
 
 .rules:test:smoke-for-omnibus-mr:
   rules:

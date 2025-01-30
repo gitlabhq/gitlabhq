@@ -4,8 +4,9 @@ exports[`Repository table row component renders a symlink table row 1`] = `
 <tr
   class="tree-item"
 >
-  <td
-    class="gl-cursor-default gl-relative tree-item-file-name"
+  <th
+    class="gl-cursor-default gl-font-normal gl-relative tree-item-file-name"
+    scope="row"
   >
     <a
       class="gl-inline-flex gl-max-w-full gl-min-w-0 tree-item-link"
@@ -33,7 +34,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
       title="Locked by Root"
       variant="current"
     />
-  </td>
+  </th>
   <td
     class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
   >
@@ -61,8 +62,9 @@ exports[`Repository table row component renders table row 1`] = `
 <tr
   class="tree-item"
 >
-  <td
-    class="gl-cursor-default gl-relative tree-item-file-name"
+  <th
+    class="gl-cursor-default gl-font-normal gl-relative tree-item-file-name"
+    scope="row"
   >
     <a
       class="gl-inline-flex gl-max-w-full gl-min-w-0 tree-item-link"
@@ -90,7 +92,7 @@ exports[`Repository table row component renders table row 1`] = `
       title="Locked by Root"
       variant="current"
     />
-  </td>
+  </th>
   <td
     class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
   >
@@ -118,8 +120,9 @@ exports[`Repository table row component renders table row for path with special 
 <tr
   class="tree-item"
 >
-  <td
-    class="gl-cursor-default gl-relative tree-item-file-name"
+  <th
+    class="gl-cursor-default gl-font-normal gl-relative tree-item-file-name"
+    scope="row"
   >
     <a
       class="gl-inline-flex gl-max-w-full gl-min-w-0 tree-item-link"
@@ -147,7 +150,7 @@ exports[`Repository table row component renders table row for path with special 
       title="Locked by Root"
       variant="current"
     />
-  </td>
+  </th>
   <td
     class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
   >

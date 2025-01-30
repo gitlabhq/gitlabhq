@@ -6132,6 +6132,12 @@ msgstr ""
 msgid "AmazonQ|IAM role's ARN"
 msgstr ""
 
+msgid "AmazonQ|IAM role's ARN is not valid"
+msgstr ""
+
+msgid "AmazonQ|IAM role's ARN is valid"
+msgstr ""
+
 msgid "AmazonQ|If this is what you want, remove the IAM role's ARN. To completely remove GitLab Duo with Amazon Q, update the following in AWS:"
 msgstr ""
 
@@ -6175,6 +6181,9 @@ msgid "AmazonQ|Sorry, I'm not able to complete the request at this moment. Pleas
 msgstr ""
 
 msgid "AmazonQ|Status"
+msgstr ""
+
+msgid "AmazonQ|This field is required"
 msgstr ""
 
 msgid "AmazonQ|To completely remove GitLab Duo with Amazon Q, update the following in AWS:"

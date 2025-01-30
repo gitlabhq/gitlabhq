@@ -380,9 +380,9 @@ Returns [`QueueingDelayHistory`](#queueingdelayhistory).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryciqueueinghistoryfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time frame. Defaults to three hours ago. |
+| <a id="queryciqueueinghistoryfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time. Defaults to three hours ago. |
 | <a id="queryciqueueinghistoryrunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Filter jobs by the type of runner that executed them. |
-| <a id="queryciqueueinghistorytotime"></a>`toTime` | [`Time`](#time) | End of the requested time frame. Defaults to the current time. |
+| <a id="queryciqueueinghistorytotime"></a>`toTime` | [`Time`](#time) | End of the requested time. Defaults to the current time. |
 
 ### `Query.ciVariables`
 
@@ -461,6 +461,16 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querydevopsadoptionenablednamespacesdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Filter by display namespace. |
+
+### `Query.duoSettings`
+
+Get GitLab Duo settings.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Returns [`DuoSettings`](#duosettings).
 
 ### `Query.duoWorkflowEvents`
 
@@ -5246,6 +5256,31 @@ Input type: `DiscussionToggleResolveInput`
 | <a id="mutationdiscussiontoggleresolveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion after mutation. |
 | <a id="mutationdiscussiontoggleresolveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.duoSettingsUpdate`
+
+Updates GitLab Duo settings.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `DuoSettingsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationduosettingsupdateaigatewayurl"></a>`aiGatewayUrl` | [`String`](#string) | URL for local AI gateway server. |
+| <a id="mutationduosettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationduosettingsupdateaigatewayurl"></a>`aiGatewayUrl` | [`String`](#string) | URL for local AI gateway server. |
+| <a id="mutationduosettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationduosettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.duoUserFeedback`
 
@@ -10300,7 +10335,7 @@ Input type: `TodoRestoreManyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoremanyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | Global IDs of the to-do items to restore (a maximum of 50 is supported at once). |
+| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | Global IDs of the to-do items to restore (a maximum of 100 is supported at once). |
 
 #### Fields
 
@@ -19448,6 +19483,7 @@ Self-hosted LLM servers.
 | <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | AI model deployed. |
 | <a id="aiselfhostedmodelmodeldisplayname"></a>`modelDisplayName` | [`String!`](#string) | Display name of the AI model deployed. |
 | <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
+| <a id="aiselfhostedmodelreleasestate"></a>`releaseState` | [`AiSelfHostedModelReleaseState!`](#aiselfhostedmodelreleasestate) | GitLab release status of the model. |
 | <a id="aiselfhostedmodelupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last update. |
 
 ### `AiUsageData`
@@ -24087,6 +24123,17 @@ Aggregated DORA score counts for projects for the last complete month.
 | <a id="doraperformancescorecountmetricname"></a>`metricName` | [`String!`](#string) | Name of the DORA metric. |
 | <a id="doraperformancescorecountnodataprojectscount"></a>`noDataProjectsCount` | [`Int`](#int) | Number of projects with no data for the metric. |
 
+### `DuoSettings`
+
+GitLab Duo settings.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duosettingsaigatewayurl"></a>`aiGatewayUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.9. **Status**: Experiment. URL for local AI gateway server. |
+| <a id="duosettingsupdatedat"></a>`updatedAt` **{warning-solid}** | [`Time!`](#time) | **Introduced** in GitLab 17.9. **Status**: Experiment. Timestamp of last GitLab Duo setting update. |
+
 ### `DuoWorkflow`
 
 A Duo Workflow.
@@ -25698,8 +25745,8 @@ Returns [`QueueingDelayHistory`](#queueingdelayhistory).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupciqueueinghistoryfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time frame. Defaults to three hours ago. |
-| <a id="groupciqueueinghistorytotime"></a>`toTime` | [`Time`](#time) | End of the requested time frame. Defaults to the current time. |
+| <a id="groupciqueueinghistoryfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time. Defaults to three hours ago. |
+| <a id="groupciqueueinghistorytotime"></a>`toTime` | [`Time`](#time) | End of the requested time. Defaults to the current time. |
 
 ##### `Group.ciVariables`
 
@@ -31942,6 +31989,24 @@ Returns [`TestSuite`](#testsuite).
 | <a id="pipelineanalyticsyearpipelinessuccessful"></a>`yearPipelinesSuccessful` | [`[Int!]`](#int) | Total yearly successful pipeline count. |
 | <a id="pipelineanalyticsyearpipelinestotals"></a>`yearPipelinesTotals` | [`[Int!]`](#int) | Total yearly pipeline count. |
 
+#### Fields with arguments
+
+##### `PipelineAnalytics.timeSeries`
+
+Pipeline analytics shown over time based on the specified filter. Data is aggregated in UTC, with adaptive resolution: hourly for 7-day windows or less, daily for longer periods.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Returns [`[PipelineAnalyticsPeriod!]`](#pipelineanalyticsperiod).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineanalyticstimeseriesperiod"></a>`period` | [`AnalyticsAggregationPeriod!`](#analyticsaggregationperiod) | Periodicity of aggregated data. |
+
 ### `PipelineAnalyticsPeriod`
 
 #### Fields
@@ -31949,7 +32014,7 @@ Returns [`TestSuite`](#testsuite).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pipelineanalyticsperioddurationstatistics"></a>`durationStatistics` **{warning-solid}** | [`CiDurationStatistics`](#cidurationstatistics) | **Introduced** in GitLab 17.5. **Status**: Experiment. Pipeline duration statistics. |
-| <a id="pipelineanalyticsperiodlabel"></a>`label` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Label for the data point. |
+| <a id="pipelineanalyticsperiodlabel"></a>`label` **{warning-solid}** | [`Date`](#date) | **Introduced** in GitLab 17.5. **Status**: Experiment. Data point label (UTC time). |
 
 #### Fields with arguments
 
@@ -33826,10 +33891,10 @@ Returns [`PipelineAnalytics`](#pipelineanalytics).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectpipelineanalyticsfromtime"></a>`fromTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time frame. Defaults to the pipelines started in the past week. |
+| <a id="projectpipelineanalyticsfromtime"></a>`fromTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
 | <a id="projectpipelineanalyticsref"></a>`ref` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Branch that triggered the pipeline. |
 | <a id="projectpipelineanalyticssource"></a>`source` **{warning-solid}** | [`CiPipelineCiSources`](#cipipelinecisources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
-| <a id="projectpipelineanalyticstotime"></a>`toTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time frame. Defaults to pipelines started before the current date. |
+| <a id="projectpipelineanalyticstotime"></a>`toTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
 
 ##### `Project.pipelineCounts`
 
@@ -39172,6 +39237,16 @@ Types of messages returned from AI features.
 | ----- | ----------- |
 | <a id="aimessagetypetool"></a>`TOOL` | Tool selection message. |
 
+### `AiSelfHostedModelReleaseState`
+
+GitLab release state of the model.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiselfhostedmodelreleasestatebeta"></a>`BETA` | Beta status. |
+| <a id="aiselfhostedmodelreleasestateexperimental"></a>`EXPERIMENTAL` | Experimental status. |
+| <a id="aiselfhostedmodelreleasestatega"></a>`GA` | GA status. |
+
 ### `AiUsageCodeSuggestionEvent`
 
 Type of code suggestion event.
@@ -39280,6 +39355,14 @@ Alert status values.
 | <a id="alertmanagementstatusignored"></a>`IGNORED` | No action will be taken. |
 | <a id="alertmanagementstatusresolved"></a>`RESOLVED` | The problem has been addressed. |
 | <a id="alertmanagementstatustriggered"></a>`TRIGGERED` | Investigation has not started. |
+
+### `AnalyticsAggregationPeriod`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="analyticsaggregationperiodday"></a>`DAY` | Daily aggregation. |
+| <a id="analyticsaggregationperiodmonth"></a>`MONTH` | Monthly aggregation. |
+| <a id="analyticsaggregationperiodweek"></a>`WEEK` | Weekly aggregation. |
 
 ### `ApiFuzzingScanMode`
 

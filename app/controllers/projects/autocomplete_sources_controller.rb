@@ -69,7 +69,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def authorize_read_crm_contact!
-    render_404 unless can?(current_user, :read_crm_contact, project.root_ancestor)
+    render_404 unless can?(current_user, :read_crm_contact, project.crm_group)
   end
 end
 

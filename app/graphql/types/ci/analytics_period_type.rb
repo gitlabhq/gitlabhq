@@ -6,9 +6,9 @@ module Types
     class AnalyticsPeriodType < BaseObject
       graphql_name 'PipelineAnalyticsPeriod'
 
-      field :label, GraphQL::Types::String, null: true,
+      field :label, ::Types::DateType, null: true,
         experiment: { milestone: '17.5' },
-        description: 'Label for the data point.'
+        description: 'Data point label (UTC time).'
 
       field :count, GraphQL::Types::BigInt, null: true,
         experiment: { milestone: '17.5' },

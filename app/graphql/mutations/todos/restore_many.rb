@@ -5,12 +5,12 @@ module Mutations
     class RestoreMany < ::Mutations::BaseMutation
       graphql_name 'TodoRestoreMany'
 
-      MAX_UPDATE_AMOUNT = 50
+      MAX_UPDATE_AMOUNT = 100
 
       argument :ids,
         [::Types::GlobalIDType[::Todo]],
         required: true,
-        description: 'Global IDs of the to-do items to restore (a maximum of 50 is supported at once).'
+        description: 'Global IDs of the to-do items to restore (a maximum of 100 is supported at once).'
 
       field :todos, [::Types::TodoType],
         null: false,

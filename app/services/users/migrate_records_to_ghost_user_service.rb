@@ -37,6 +37,7 @@ module Users
 
       return if hard_delete
 
+      migrate_authored_todos
       migrate_issues
       migrate_merge_requests
       migrate_notes
@@ -66,6 +67,10 @@ module Users
     def delete_snippets
       response = Snippets::BulkDestroyService.new(initiator_user, user.snippets).execute(skip_authorization: true)
       raise DestroyError, response.message if response.error?
+    end
+
+    def migrate_authored_todos
+      batched_migrate(Todo, :author_id)
     end
 
     def migrate_issues

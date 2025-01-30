@@ -12,6 +12,10 @@ export const semverRegex =
 
 export const noSpacesRegex = /^\S+$/;
 
+// AWS Role ARN Reference: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns
+export const awsIamRoleArnRegex =
+  /^arn:(aws|aws-cn|aws-us-gov):iam::\d{12}:role\/[a-zA-Z0-9+=,.@\-_/]+$/;
+
 /**
  * Checks if a string contains potential regular expression elements.
  *

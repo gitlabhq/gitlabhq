@@ -40,15 +40,17 @@ table {
         vertical-align: top;
       }
 
+    }
+    
+    thead tr {
       th {
         @apply gl-bg-subtle;
         border-bottom: 0;
-
+  
         &.wide {
           width: 55%;
         }
       }
-
     }
 
     .thead-white {

@@ -13,6 +13,10 @@ RSpec.describe Resolvers::Ci::ProjectPipelineAnalyticsResolver, :click_house, fe
   let(:current_user) { reporter }
   let(:lookahead) { positive_lookahead }
 
+  before do
+    allow(lookahead).to receive(:arguments).and_return({ period: :day })
+  end
+
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::AnalyticsType)
   end
@@ -26,6 +30,7 @@ RSpec.describe Resolvers::Ci::ProjectPipelineAnalyticsResolver, :click_house, fe
       result = resolve_statistics(project, {})
       expect(result.keys).to contain_exactly(
         :aggregate,
+        :time_series,
         :week_pipelines_labels,
         :week_pipelines_totals,
         :week_pipelines_successful,

@@ -21,6 +21,7 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
     ]
   end
 
+  let(:simulated_current_time) { Time.current }
   let(:user) { reporter }
   let(:from_time) { nil }
   let(:to_time) { nil }
@@ -44,6 +45,10 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
         :pipeline_analytics, { from_time: from_time, to_time: to_time, ref: ref, source: source }.compact,
         fields)
     )
+  end
+
+  before do
+    travel_to simulated_current_time
   end
 
   subject(:perform_request) do
@@ -102,7 +107,9 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
         )
       end
 
-      context 'when there are pipelines in last week', time_travel_to: Time.utc(2024, 5, 11) do
+      context 'when there are pipelines in last week' do
+        let(:simulated_current_time) { Time.utc(2024, 5, 11) }
+
         it "contains expected data for the last week" do
           perform_request
 
@@ -239,7 +246,8 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
           end
         end
 
-        context 'with no pipelines in time window', time_travel_to: Time.utc(2024, 1, 1) do
+        context 'with no pipelines in time window' do
+          let(:simulated_current_time) { Time.utc(2024, 1, 1) }
           let(:expected_duration_statistics) do
             {
               'p50' => 0,
@@ -253,7 +261,8 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
           it { is_expected.to eq(expected_duration_statistics) }
         end
 
-        context 'with completed pipelines', time_travel_to: Time.utc(2024, 5, 11) do
+        context 'with completed pipelines' do
+          let(:simulated_current_time) { Time.utc(2024, 5, 11) }
           let(:expected_duration_statistics) do
             {
               'p50' => 1800.0,
@@ -265,6 +274,90 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
           end
 
           it { is_expected.to eq(expected_duration_statistics) }
+        end
+      end
+    end
+
+    describe 'timeSeries', :aggregate_failures do
+      subject(:time_series) do
+        perform_request
+
+        graphql_data_at(:project, :pipelineAnalytics, :timeSeries)
+      end
+
+      let(:time_series_args) { { period: :DAY } }
+      let(:fields) { query_graphql_field(:timeSeries, time_series_args, period_fields) }
+
+      describe 'durationStatistics' do
+        let(:period_fields) do
+          <<~QUERY
+            label
+            durationStatistics {
+              p50
+              p75
+              p90
+              p95
+              p99
+            }
+          QUERY
+        end
+
+        subject(:perform_request) do
+          post_graphql(query, current_user: user)
+
+          graphql_data_at(:project, :pipelineAnalytics, :timeSeries, :durationStatistics)
+        end
+
+        it_behaves_like 'a working graphql query' do
+          before do
+            perform_request
+          end
+        end
+
+        context 'with no pipelines in time window' do
+          let(:simulated_current_time) { Time.utc(2024, 1, 1) }
+          let(:expected_duration_statistics) do
+            [
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 }
+            ]
+          end
+
+          it { is_expected.to eq(expected_duration_statistics) }
+        end
+
+        context 'with completed pipelines' do
+          let(:simulated_current_time) { Time.utc(2024, 5, 11) }
+          let(:expected_duration_statistics) do
+            [
+              { "p50" => 2700.0, "p75" => 2700.0, "p90" => 2700.0, "p95" => 2700.0, "p99" => 2700.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 4500.0, "p75" => 5850.0, "p90" => 6660.0, "p95" => 6930.0, "p99" => 7146.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 0.0, "p75" => 0.0, "p90" => 0.0, "p95" => 0.0, "p99" => 0.0 },
+              { "p50" => 1800.0, "p75" => 1800.0, "p90" => 1800.0, "p95" => 1800.0, "p99" => 1800.0 }
+            ]
+          end
+
+          it { is_expected.to eq(expected_duration_statistics) }
+
+          context 'when period is WEEK' do
+            let(:time_series_args) { { period: :WEEK } }
+            let(:expected_duration_statistics) do
+              [
+                { "p50" => 2700.0, "p75" => 2700.0, "p90" => 2700.0, "p95" => 2700.0, "p99" => 2700.0 },
+                { "p50" => 1800.0, "p75" => 3150.0, "p90" => 5580.0, "p95" => 6390.0, "p99" => 7038.0 }
+              ]
+            end
+
+            it { is_expected.to eq(expected_duration_statistics) }
+          end
         end
       end
     end
@@ -282,7 +375,9 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
       pipelines_data.map { |data| create_pipeline(*data) }
     end
 
-    describe 'week statistics', time_travel_to: Time.utc(2024, 5, 11) do
+    let(:simulated_current_time) { Time.utc(2024, 5, 11) }
+
+    describe 'week statistics' do
       let(:fields) do
         <<~QUERY
           aggregate { #{period_fields} }
@@ -378,11 +473,7 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
       end
 
       shared_examples 'monthly statistics' do |timestamp, expected_quantity|
-        around do |example|
-          travel_to(timestamp) do
-            example.run
-          end
-        end
+        let(:simulated_current_time) { timestamp }
 
         it 'executes exactly 2 queries on ci_pipelines', :use_sql_query_cache do
           recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { perform_request }
@@ -419,7 +510,7 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
         end
       end
 
-      it "contains expected data for the month's pipelines", time_travel_to: Time.utc(2024, 5, 11) do
+      it "contains expected data for the month's pipelines" do
         perform_request
 
         expect(graphql_data_at(:project, :pipelineAnalytics, :monthPipelinesLabels)).to eq(
@@ -453,7 +544,7 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
       end
     end
 
-    describe 'year statistics', time_travel_to: Time.utc(2024, 5, 11) do
+    describe 'year statistics' do
       let(:fields) do
         <<~QUERY
           aggregate { #{period_fields} }

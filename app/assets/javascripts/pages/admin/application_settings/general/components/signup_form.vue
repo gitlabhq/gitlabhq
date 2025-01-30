@@ -32,9 +32,9 @@ export default {
     GlLink,
     SignupCheckbox,
     GlModal,
-    SeatControlsSection: () =>
+    SeatControlSection: () =>
       import(
-        'ee_component/pages/admin/application_settings/general/components/seat_controls_section.vue'
+        'ee_component/pages/admin/application_settings/general/components/seat_control_section.vue'
       ),
     PasswordComplexityCheckboxGroup: () =>
       import(
@@ -310,7 +310,7 @@ export default {
         :value="form.shouldProceedWithAutoApproval"
       />
 
-      <seat-controls-section @checkUsersAutoApproval="handleCheckUsersAutoApproval" />
+      <seat-control-section @checkUsersAutoApproval="handleCheckUsersAutoApproval" />
 
       <gl-form-group :label="$options.i18n.minimumPasswordLengthLabel">
         <gl-form-input

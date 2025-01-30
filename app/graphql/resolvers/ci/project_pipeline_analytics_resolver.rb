@@ -25,15 +25,18 @@ module Resolvers
 
       argument :from_time, Types::TimeType,
         required: false,
-        description: 'Start of the requested time frame. Defaults to the pipelines started in the past week.',
+        description:
+          'Start of the requested time (in UTC). Defaults to the pipelines started in the past week.',
         experiment: { milestone: '17.5' }
 
       argument :to_time, Types::TimeType,
         required: false,
-        description: 'End of the requested time frame. Defaults to pipelines started before the current date.',
+        description:
+          'End of the requested time (in UTC). Defaults to the pipelines started before the current date.',
         experiment: { milestone: '17.5' }
 
       def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil)
+        period = lookahead.selection(:time_series)&.arguments&.fetch(:period)
         base_service_args = {
           current_user: context[:current_user], project: project,
           source: source, ref: ref,
@@ -42,7 +45,11 @@ module Resolvers
 
         legacy_fields(lookahead).then do |result|
           result.merge(
-            call_service(base_service_args, lookahead, :aggregate, ::Ci::CollectAggregatePipelineAnalyticsService)
+            call_service(base_service_args, lookahead, :aggregate, ::Ci::CollectAggregatePipelineAnalyticsService),
+            call_service(
+              base_service_args.merge(time_series_period: period), lookahead, :time_series,
+              ::Ci::CollectTimeSeriesPipelineAnalyticsService
+            )
           )
         end
       end
@@ -66,7 +73,7 @@ module Resolvers
 
       def legacy_fields(lookahead)
         # NOTE: The fields below will eventually be deprecated once we move to using the new `aggregate`
-        # and `graph` fields (see https://gitlab.com/gitlab-org/gitlab/-/issues/444468/#proposed-api-layout)
+        # and `time_series` fields (see https://gitlab.com/gitlab-org/gitlab/-/issues/444468/#proposed-api-layout)
         weekly_stats = Gitlab::Ci::Charts::WeekChart.new(project, selected_period_statuses(lookahead, :week))
         monthly_stats = Gitlab::Ci::Charts::MonthChart.new(project, selected_period_statuses(lookahead, :month))
         yearly_stats = Gitlab::Ci::Charts::YearChart.new(project, selected_period_statuses(lookahead, :year))

@@ -40,16 +40,16 @@ Using the `:latest` tag is **not recommended** as it can cause incompatibility i
 
 ### Start a Container from the Image
 
-1. For Docker images with version `self-hosted-17.6.0-ee` and later, run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
+1. For Docker images with version `self-hosted-v17.6.0-ee` and later, run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
 
    ```shell
-   docker run -p 5052:5052 \
+   docker run -d -p 5052:5052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
-    registry.gitlab.com/gitlab-org/ai-gateway/self-hosted-17.6.0-ee:latest
+    registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:self-hosted-v17.6.0-ee \
     ```
 
-   Replace `self-hosted-17.6.0-ee` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.8.0`, use `self-hosted-17.8.0-ee`.
+   Replace `self-hosted-v17.6.0-ee` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.7.0`, use `self-hosted-v17.7.0-ee`.
    From the container host, accessing `http://localhost:5052/docs` should open the AI gateway API documentation.
 
 1. Ensure that port `5052` is forwarded to the container from the host and is included in the `AI_GATEWAY_URL` environment variable.
