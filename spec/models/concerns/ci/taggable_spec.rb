@@ -110,7 +110,6 @@ RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
     taggable_record.tag_list = 'ruby, docker'
     expect { taggable_record.save! }
       .to change { taggings_model.count }.by(-1)
-      .and change { Ci::Tagging.count }.by(-1)
 
     expect(taggable_record.reload.tag_list).to match_array(%w[ruby docker])
   end
@@ -124,7 +123,6 @@ RSpec.describe Ci::Taggable, feature_category: :continuous_integration do
     expect { taggable_record.save! }
       .to change { Ci::Tag.count }.by(2)
       .and change { taggings_model.count }.by(1)
-      .and change { Ci::Tagging.count }.by(1)
 
     expect(taggable_record.reload.tag_list).to match_array(%w[ruby docker elasticsearch golang])
   end

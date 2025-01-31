@@ -46,25 +46,16 @@ module Gitlab
         def persist_build_tags!
           all_tags = tag_list_by_taggable.values.flatten.uniq.reject(&:blank?)
           tag_records_by_name = create_tags(all_tags).index_by(&:name)
-          taggings, monomorphic_taggings = build_taggings_attributes(tag_records_by_name)
-            .values_at(:taggings, :monomorphic_taggings)
+          taggings = build_taggings(tag_records_by_name)
 
-          if taggings.any?
-            taggings.each_slice(TAGGINGS_BATCH_SIZE) do |taggings_slice|
-              ::Ci::Tagging.insert_all!(taggings_slice)
-            end
-          end
-
-          if monomorphic_taggings.any?
-            join_model.bulk_insert!(
-              monomorphic_taggings,
-              validate: false,
-              skip_duplicates: true,
-              unique_by: config.unique_by,
-              batch_size: TAGGINGS_BATCH_SIZE,
-              returns: :id
-            )
-          end
+          join_model.bulk_insert!(
+            taggings,
+            validate: false,
+            skip_duplicates: true,
+            unique_by: config.unique_by,
+            batch_size: TAGGINGS_BATCH_SIZE,
+            returns: :id
+          )
 
           true
         end
@@ -85,8 +76,8 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        def build_taggings_attributes(tag_records_by_name)
-          accumulator = { taggings: [], monomorphic_taggings: [] }
+        def build_taggings(tag_records_by_name)
+          accumulator = []
 
           taggables.each do |taggable|
             tag_list = tag_list_by_taggable[taggable]
@@ -94,25 +85,14 @@ module Gitlab
 
             tags = tag_records_by_name.values_at(*tag_list)
             tags.each do |tag|
-              accumulator[:taggings] << tagging_attributes(tag, taggable)
-              accumulator[:monomorphic_taggings] << monomorphic_taggings_record(tag, taggable)
+              accumulator << new_taggings_record(tag, taggable)
             end
           end
 
           accumulator
         end
 
-        def tagging_attributes(tag, taggable)
-          {
-            tag_id: tag.id,
-            taggable_type: taggable.class.base_class.name,
-            taggable_id: taggable.id,
-            created_at: Time.current,
-            context: 'tags'
-          }
-        end
-
-        def monomorphic_taggings_record(tag, taggable)
+        def new_taggings_record(tag, taggable)
           attributes = { tag_id: tag.id }
           attributes.merge!(config.attributes_map(taggable))
 

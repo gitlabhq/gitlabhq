@@ -65,15 +65,8 @@ module Ci
       old_tags = current_tags - tags
       new_tags = tags - current_tags
 
-      if old_tags.present?
-        taggings.where(tag_id: old_tags).delete_all
-        Ci::Tagging.where(tag_id: old_tags, taggable_id: id, taggable_type: self.class.base_class.name).delete_all
-      end
-
-      if new_tags.present?
-        Ci::Tagging.where(tag_id: current_tags, taggable_id: id, taggable_type: self.class.base_class.name).delete_all
-        Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!([self])
-      end
+      taggings.where(tag_id: old_tags).delete_all if old_tags.present?
+      Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!([self]) if new_tags.present?
 
       taggings.reset
       context_tags.reset
