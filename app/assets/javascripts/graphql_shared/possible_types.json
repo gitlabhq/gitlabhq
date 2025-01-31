@@ -262,6 +262,7 @@
     "WorkItemWidgetColor",
     "WorkItemWidgetCrmContacts",
     "WorkItemWidgetCurrentUserTodos",
+    "WorkItemWidgetCustomFields",
     "WorkItemWidgetCustomStatus",
     "WorkItemWidgetDescription",
     "WorkItemWidgetDesigns",

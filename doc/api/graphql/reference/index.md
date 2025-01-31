@@ -3884,8 +3884,8 @@ Input type: `createContainerProtectionTagRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can delete tags by default. Introduced in GitLab 17.8: **Status**: Experiment. |
-| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionTagRuleAccessLevel!`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can push tags by default. Introduced in GitLab 17.8: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can delete tags by default. Introduced in GitLab 17.8: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no minimum access level is enforced. Users with the Developer role or higher can push tags by default. Introduced in GitLab 17.8: **Status**: Experiment. |
 | <a id="mutationcreatecontainerprotectiontagruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project containing the container image tags. |
 | <a id="mutationcreatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` | [`String!`](#string) | The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. Introduced in GitLab 17.8: **Status**: Experiment. |
 
@@ -38616,6 +38616,16 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcurrentusertodoscurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
 
+### `WorkItemWidgetCustomFields`
+
+Represents a custom fields widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomfieldstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetCustomStatus`
 
 Represents Custom Status widget.
@@ -42781,6 +42791,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypecolor"></a>`COLOR` | Color widget. |
 | <a id="workitemwidgettypecrm_contacts"></a>`CRM_CONTACTS` | Crm Contacts widget. |
 | <a id="workitemwidgettypecurrent_user_todos"></a>`CURRENT_USER_TODOS` | Current User Todos widget. |
+| <a id="workitemwidgettypecustom_fields"></a>`CUSTOM_FIELDS` | Custom Fields widget. |
 | <a id="workitemwidgettypecustom_status"></a>`CUSTOM_STATUS` | Custom Status widget. |
 | <a id="workitemwidgettypedescription"></a>`DESCRIPTION` | Description widget. |
 | <a id="workitemwidgettypedesigns"></a>`DESIGNS` | Designs widget. |
@@ -45148,6 +45159,7 @@ Implementations:
 - [`WorkItemWidgetColor`](#workitemwidgetcolor)
 - [`WorkItemWidgetCrmContacts`](#workitemwidgetcrmcontacts)
 - [`WorkItemWidgetCurrentUserTodos`](#workitemwidgetcurrentusertodos)
+- [`WorkItemWidgetCustomFields`](#workitemwidgetcustomfields)
 - [`WorkItemWidgetCustomStatus`](#workitemwidgetcustomstatus)
 - [`WorkItemWidgetDescription`](#workitemwidgetdescription)
 - [`WorkItemWidgetDesigns`](#workitemwidgetdesigns)

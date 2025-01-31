@@ -328,13 +328,13 @@ At least Maintainer role is required to delete artifacts.
 
 If the artifacts were deleted successfully, a response with status `204 No Content` is returned.
 
-## Delete project artifacts
+## Delete all job artifacts in a project
 
-Delete artifacts eligible for deletion in a project. By default, artifacts from
+Delete all job artifacts eligible for deletion in a project. By default, artifacts from
 [the most recent successful pipeline of each ref](../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
 are not deleted.
 
-Requests to this endpoint set the expiry of all artifacts that
+Requests to this endpoint set the expiry of all job artifacts that
 can be deleted to the current time. The files are then deleted from the system as part
 of the regular cleanup of expired job artifacts. Job logs are never deleted.
 

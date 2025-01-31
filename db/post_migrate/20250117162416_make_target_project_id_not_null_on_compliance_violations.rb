@@ -4,6 +4,6 @@ class MakeTargetProjectIdNotNullOnComplianceViolations < Gitlab::Database::Migra
   milestone '17.9'
 
   def change
-    change_column_null :merge_requests_compliance_violations, :target_project_id, false
+    # noop
   end
 end

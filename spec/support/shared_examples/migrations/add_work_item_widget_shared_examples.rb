@@ -51,8 +51,9 @@ end
 # Shared examples for testing migration that adds widgets to a work item type
 #
 # It expects that the following constants are available in the migration
-# - `WORK_ITEM_TYPE_ENUM_VALUES`: Int, enum value for the work item type
+# - `WORK_ITEM_TYPE_ENUM_VALUES`: Array, enum values for the work item types
 # - `WIDGET`: Hash, widget definitions (name:, widget_type:)
+# - (Old) `WORK_ITEM_TYPE_ENUM_VALUE`: Int, enum value for the work item type
 # - (Old) `WIDGET_ENUM_VALUE`: Int, enum value for the widget type
 # - (Old) `WIDGET_NAME`: String, name of the widget
 #

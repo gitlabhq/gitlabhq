@@ -92,7 +92,7 @@ RSpec.describe 'Creating the container registry tag protection rule', :aggregate
     it 'returns an error' do
       post_graphql_mutation_create
 
-      expect_graphql_errors_to_include([/invalid value for minimumAccessLevelForPush/])
+      expect(mutation_response['errors']).to match_array ["Access levels should either both be present or both be nil"]
     end
   end
 
@@ -104,8 +104,14 @@ RSpec.describe 'Creating the container registry tag protection rule', :aggregate
     it 'returns an error' do
       post_graphql_mutation_create
 
-      expect_graphql_errors_to_include([/invalid value for minimumAccessLevelForDelete/])
+      expect(mutation_response['errors']).to match_array ["Access levels should either both be present or both be nil"]
     end
+  end
+
+  context 'with both access levels blank' do
+    let(:input) { super().merge(minimum_access_level_for_delete: nil, minimum_access_level_for_push: nil) }
+
+    it_behaves_like 'a successful response'
   end
 
   context 'with blank input field `tagNamePattern`' do

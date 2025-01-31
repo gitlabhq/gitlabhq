@@ -43,7 +43,8 @@ module WorkItems
       crm_contacts: 24,
       email_participants: 25,
       custom_status: 26,
-      linked_resources: 27
+      linked_resources: 27,
+      custom_fields: 28 # EE-only
     }
 
     attribute :widget_options, ::Gitlab::Database::Type::IndifferentJsonb.new
