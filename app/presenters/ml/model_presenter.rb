@@ -35,7 +35,7 @@ module Ml
     end
 
     def default_experiment_path
-      project_ml_experiment_path(model.project, model.default_experiment)
+      project_ml_experiment_path(model.project, model.default_experiment.iid)
     end
 
     private

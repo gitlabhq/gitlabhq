@@ -11979,7 +11979,8 @@ CREATE TABLE dast_scanner_profiles (
 CREATE TABLE dast_scanner_profiles_builds (
     dast_scanner_profile_id bigint NOT NULL,
     ci_build_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_2f3b8ab3e6 CHECK ((project_id IS NOT NULL))
 );
 
 COMMENT ON TABLE dast_scanner_profiles_builds IS '{"owner":"group::dynamic analysis","description":"Join table between DAST Scanner Profiles and CI Builds"}';

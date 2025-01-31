@@ -146,7 +146,15 @@ In order to limit amount of tests executed in a merge request, dynamic selection
 1. Changes in `qa` framework code would execute the full suite
 1. Changes in particular `_spec.rb` file in `qa` folder would execute only that particular test. In this case knapsack will not be used to run jobs in parallel.
 
-Experimental mapping of backed application code to e2e tests is being developed. It is currently in use for `test-on-gdk` pipeline. For more information, see
+##### Selective test execution based on code path mappings
+
+- `coverband` [gem](https://github.com/danmayer/coverband) is used in a non-standard way for E2E selective test execution in `backend` MRs.
+- `coverband` is enabled in the GitLab application only when `COVERBAND_ENABLED` [ENV variable is set](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/coverband.rb#L4). This is set only in the scheduled `e2e:test-on-gdk` pipeline on `master` and not in MR pipelines.
+- Source code paths are mapped [before each E2E example starts](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/support/formatters/coverband_formatter.rb#L44) and after [each E2E example finishes](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/support/formatters/coverband_formatter.rb#L62) by using [internal API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/internal/coverage.rb).
+- Full consolidated mapping is uploaded to GCS in [code-path-mappings bucket](https://console.cloud.google.com/storage/browser/code-path-mappings)
+- This mapping is used for selecting tests in `backend` MRs.
+
+Mapping based selective test execution is currently in use for `test-on-gdk` pipeline. For more information, see
 [epic 47](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/47).
 
 #### Overriding selective test execution

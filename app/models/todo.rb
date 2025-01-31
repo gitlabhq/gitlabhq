@@ -398,6 +398,8 @@ class Todo < ApplicationRecord
       build_group_target_url
     when Key
       build_ssh_key_target_url
+    when WikiPage::Meta
+      build_wiki_page_target_url
     end
   end
 
@@ -489,6 +491,13 @@ class Todo < ApplicationRecord
 
   def build_ssh_key_target_url
     ::Gitlab::Routing.url_helpers.user_settings_ssh_key_url(target)
+  end
+
+  def build_wiki_page_target_url
+    ::Gitlab::UrlBuilder.build(
+      target,
+      anchor: note.present? ? ActionView::RecordIdentifier.dom_id(note) : nil
+    )
   end
 end
 

@@ -26,7 +26,8 @@ class TodosFinder
   NONE = '0'
 
   TODO_TYPES = Set.new(
-    %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key]
+    %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key
+      WikiPage::Meta]
   ).freeze
 
   attr_accessor :current_user, :params

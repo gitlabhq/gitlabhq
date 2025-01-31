@@ -382,7 +382,9 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
   describe '.todo_types' do
     it 'returns the expected types' do
-      shared_types = %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace Project Key]
+      shared_types = %w[Commit Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert Namespace
+        Project Key WikiPage::Meta]
+
       expected_result =
         if Gitlab.ee?
           %w[Epic Vulnerability] + shared_types

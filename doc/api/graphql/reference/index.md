@@ -38344,8 +38344,10 @@ A wiki page.
 | <a id="wikipagecommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="wikipagediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="wikipageid"></a>`id` | [`WikiPageMetaID!`](#wikipagemetaid) | Global ID of the wiki page metadata record. |
+| <a id="wikipagename"></a>`name` | [`String`](#string) | Name or title of this object. |
 | <a id="wikipagetitle"></a>`title` | [`String!`](#string) | Wiki page title. |
 | <a id="wikipageuserpermissions"></a>`userPermissions` | [`WikiPagePermissions!`](#wikipagepermissions) | Permissions for the current user on the resource. |
+| <a id="wikipageweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 
 #### Fields with arguments
 
@@ -42295,6 +42297,7 @@ Sort options for todos.
 | <a id="todotargetenumnamespace"></a>`NAMESPACE` | Namespace. |
 | <a id="todotargetenumproject"></a>`PROJECT` | Project. |
 | <a id="todotargetenumvulnerability"></a>`VULNERABILITY` | Vulnerability. |
+| <a id="todotargetenumwikipagemeta"></a>`WIKIPAGEMETA` | Wiki page. |
 | <a id="todotargetenumworkitem"></a>`WORKITEM` | Work item. |
 
 ### `TrainingUrlRequestStatus`
@@ -44726,6 +44729,7 @@ Implementations:
 - [`Namespace`](#namespace)
 - [`Project`](#project)
 - [`Vulnerability`](#vulnerability)
+- [`WikiPage`](#wikipage)
 - [`WorkItem`](#workitem)
 
 ##### Fields

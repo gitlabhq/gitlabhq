@@ -116,7 +116,7 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
       'descriptionHtml' =>
         '<p data-sourcepos="1:1-1:13" dir="auto">A description</p>',
       'defaultExperimentPath' =>
-        "/#{project.full_path}/-/ml/experiments/#{model.default_experiment.id}",
+        "/#{project.full_path}/-/ml/experiments/#{model.default_experiment.iid}",
       'latestVersion' => {
         'id' => model_version_id
       },
@@ -148,7 +148,7 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
       'descriptionHtml' =>
         '<p data-sourcepos="1:1-1:17" dir="auto">A <strong data-sourcepos="1:3-1:17">description</strong></p>',
       'defaultExperimentPath' =>
-        "/#{project_markdown.full_path}/-/ml/experiments/#{model_markdown.default_experiment.id}",
+        "/#{project_markdown.full_path}/-/ml/experiments/#{model_markdown.default_experiment.iid}",
       'latestVersion' => {
         'id' => model_version_id_markdown
       },

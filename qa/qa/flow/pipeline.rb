@@ -28,14 +28,6 @@ module QA
         end
       end
 
-      def visit_pipeline_job_page(job_name:, pipeline: nil)
-        pipeline.visit! unless pipeline.nil?
-
-        Page::Project::Pipeline::Show.perform do |pipeline|
-          pipeline.click_job(job_name)
-        end
-      end
-
       # With pipeline creation is slow a known issue - https://gitlab.com/groups/gitlab-org/-/epics/7290,
       # it might help reduce flakiness if we wait for pipeline to be created via API first before
       # visiting it via the UI.

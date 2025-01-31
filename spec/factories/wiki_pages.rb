@@ -38,14 +38,14 @@ FactoryBot.define do
   factory :wiki_page_meta, class: 'WikiPage::Meta' do
     title { generate(:wiki_page_title) }
     container do
-      @overrides[:project] ||
+      @overrides[:wiki_page]&.container ||
+        @overrides[:project] ||
         @overrides[:namespace] ||
         association(:project)
     end
 
     trait :for_wiki_page do
       wiki_page { association(:wiki_page, container: container) }
-      container { @overrides[:wiki_page]&.container || container }
       title { wiki_page.title }
 
       initialize_with do

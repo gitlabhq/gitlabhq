@@ -1,6 +1,8 @@
 <script>
 import Tracking from '~/tracking';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { WORK_ITEM_TYPE_ENUM_INCIDENT } from '~/work_items/constants';
 import setSelectedBoardItemsMutation from '~/boards/graphql/client/set_selected_board_items.mutation.graphql';
 import unsetSelectedBoardItemsMutation from '~/boards/graphql/client/unset_selected_board_items.mutation.graphql';
 import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
@@ -116,6 +118,13 @@ export default {
       if (e.target.closest('.js-no-trigger')) return;
 
       if (e.target.closest('.js-no-trigger-title') && (e.ctrlKey || e.metaKey || e.button === 1)) {
+        return;
+      }
+
+      // we redirect to incident page instead of opening the drawer
+      // should be removed when we introduce incident WI type
+      if (this.item.type === WORK_ITEM_TYPE_ENUM_INCIDENT) {
+        visitUrl(this.item.webUrl);
         return;
       }
       e.preventDefault();

@@ -304,6 +304,27 @@ RSpec.describe Todo, feature_category: :notifications do
       end
     end
 
+    context 'when the todo is coming from a wiki page' do
+      let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, project: project) }
+
+      context 'when coming from the wiki page itself' do
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, target: wiki_page_meta) }
+
+        it 'returns the wiki page web path' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/wikis/#{wiki_page_meta.canonical_slug}")
+        end
+      end
+
+      context 'when coming from a note on the wiki page' do
+        let_it_be(:note) { create(:note, project: project, noteable: wiki_page_meta) }
+        let_it_be(:todo) { create(:todo, project: project, user: current_user, note: note, target: wiki_page_meta) }
+
+        it 'returns the wiki page web path with an anchor to the note' do
+          is_expected.to eq("http://localhost/#{project.full_path}/-/wikis/#{wiki_page_meta.canonical_slug}#note_#{note.id}")
+        end
+      end
+    end
+
     context 'when the todo is coming from an alert' do
       let_it_be(:alert) { create(:alert_management_alert, project: project) }
       let_it_be(:todo) { create(:todo, project: project, user: current_user, target: alert) }

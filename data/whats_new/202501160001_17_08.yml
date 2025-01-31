@@ -1,0 +1,47 @@
+- name: Enhance security with protected container repositories
+  description: |
+    We’re thrilled to announce the rollout of protected container repositories, a new feature in GitLab’s container registry that addresses security and control challenges in managing container images. Organizations often struggle with unauthorized access to sensitive container repositories, accidental modifications, lack of granular control, and difficulties in maintaining compliance. This solution provides enhanced security through strict access controls, granular permissions for push, pull, and management operations, and seamless integration with GitLab CI/CD pipelines.
+  stage: package
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/packages/container_registry/container_repository_protection_rules.html
+  image_url: https://about.gitlab.com/images/17_8/protected_containers.png
+  published_at: 2025-01-16
+  release: 17.8
+
+- name: List the deployments related to a release
+  description: |
+    While GitLab has long supported creating releases from Git tags and tracking deployments, this information previously lived in multiple separate places that were difficult to piece together. Now, you can see all deployments related to a release directly on the release page. Release managers can quickly verify where a release has been deployed and which environments are pending deployment. This complements the existing deployment page integration that shows release notes for tagged deployments.
+  stage: deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/releases/
+  image_url: https://about.gitlab.com/images/17_8/list_the_deployments_related_to_a_release.png
+  published_at: 2025-01-16
+  release: 17.8
+
+- name: Machine learning model experiments tracking in GA
+  description: |
+    When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature engineering to improve the performance of the model. Keeping track of all this metadata and the associated artifacts so that the data scientist can later replicate the experiment is not trivial. Machine learning experiment tracking enables them to log parameters, metrics, and artifacts directly into GitLab, giving easy access later on while also keeping all experimental data within your GitLab environment. This feature is now generally available with enhanced data displays, enhanced permissions, deeper integration with GitLab, and bug fixes.
+  stage: modelops
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/ml/experiment_tracking/
+  image_url: https://img.youtube.com/vi/jkZq3SYm7a8/hqdefault.jpg
+  published_at: 2025-01-16
+  release: 17.8
+
+- name: Large M2 Pro hosted runners on macOS (Beta)
+  description: |
+    We bring M2 Pro performance to mobile DevOps teams! With up to 2 times the performance of M1 runners and 6 times the performance of x86-64 macOS runners, you can increase your development team’s velocity when building and deploying applications. Fully integrated to GitLab CI/CD and available on-demand, teams can now seamlessly create, test, and deploy applications faster for the Apple ecosystem. Try out the new M2 Pro runners today by using `saas-macos-large-m2pro` as the tag in your `.gitlab-ci.yml` file.
+  stage: verify
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/runners/hosted_runners/macos.html
+  image_url: https://about.gitlab.com/images/17_8/rocket_m2pro.png
+  published_at: 2025-01-16
+  release: 17.8

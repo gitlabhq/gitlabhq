@@ -106,6 +106,17 @@ RSpec.describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing a wiki page meta object' do
+      # NOTE: `build_stubbed` doesn't work for wiki_page_meta properly at the moment
+      let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page) }
+
+      it 'returns the full URL' do
+        path = "#{wiki_page_meta.container.wiki.wiki_base_path}/#{wiki_page_meta.canonical_slug}"
+
+        expect(subject.build(wiki_page_meta)).to eq("#{Gitlab.config.gitlab.url}#{path}")
+      end
+    end
+
     context 'when passing a compare' do
       # NOTE: The Compare requires an actual repository, which isn't available
       # with the `build_stubbed` strategy used by the table tests above

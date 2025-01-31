@@ -5,6 +5,7 @@ class WikiPage
     include Gitlab::Utils::StrongMemoize
     include Mentionable
     include Noteable
+    include Todoable
 
     self.table_name = 'wiki_page_meta'
 
@@ -156,6 +157,11 @@ class WikiPage
 
     def to_reference
       canonical_slug
+    end
+
+    # Used by app/policies/todo_policy.rb
+    def readable_by?(user)
+      Ability.allowed?(user, :read_wiki, self)
     end
 
     private

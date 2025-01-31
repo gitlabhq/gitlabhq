@@ -1,6 +1,6 @@
 - title: "Pipeline subscriptions"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   announcement_milestone: "17.6"
   # Change breaking_change to false if needed.
   breaking_change: true
@@ -14,7 +14,7 @@
   resolution_role: Developer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
-    The [pipeline subscriptions](https://docs.gitlab.com/ee/ci/pipelines/#trigger-a-pipeline-when-an-upstream-project-is-rebuilt) feature is deprecated in GitLab 17.6 and scheduled for removal in GitLab 18.0. Pipeline subscriptions are used to run downstream pipelines based on tag pipelines in upstream projects.
+    The [pipeline subscriptions](https://docs.gitlab.com/ee/ci/pipelines/#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated) feature is deprecated and will no longer be supported as of GitLab 18.0, with complete removal scheduled for GitLab 19.0. Pipeline subscriptions are used to run downstream pipelines based on tag pipelines in upstream projects.
 
     Instead, use [CI/CD jobs with pipeline trigger tokens](https://docs.gitlab.com/ee/ci/triggers/#use-a-cicd-job) to trigger pipelines when another pipeline runs. This method is more reliable and flexible than pipeline subscriptions.
 # ==============================
@@ -26,10 +26,10 @@
 # 2) Mention `@gitlab-com/support` in this merge request.
 #
   # When support for this feature ends, in XX.YY milestone format.
-  end_of_support_milestone:
+  end_of_support_milestone: "18.0"
   # Array of tiers the feature is currently available to,
   # like [Free, Silver, Gold, Core, Premium, Ultimate]
-  tiers:
+  tiers: [Free, Premium, Ultimate]
   # Links to documentation and thumbnail image
   documentation_url:
   image_url:

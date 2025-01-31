@@ -63,4 +63,23 @@ RSpec.shared_examples 'creating wiki page meta record examples' do
       end
     end
   end
+
+  describe '#readable_by?' do
+    let(:meta) { create(:wiki_page_meta, container: container, canonical_slug: current_slug) }
+    let_it_be(:user) { create(:user) }
+
+    subject { meta.readable_by?(user) }
+
+    context 'when user is a member' do
+      before do
+        container.add_developer(user)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user is not a member' do
+      it { is_expected.to be false }
+    end
+  end
 end
