@@ -586,15 +586,15 @@ associated internal load balancer), three PostgreSQL servers, and one
 application node.
 
 In this setup, all servers share the same `10.6.0.0/16` private network range.
-The servers communicate freely over these addresses. 
+The servers communicate freely over these addresses.
 
 While you can use a different networking setup, it's recommended to ensure that it allows
 for synchronous replication to occur across the cluster.
 As a general rule, a latency of less than 2 ms ensures replication operations to be performant.
 
-GitLab [reference architectures](../reference_architectures/index.md) are sized to 
-assume that application database queries are shared by all three nodes. 
-Communication latency higher than 2 ms can lead to database locks and 
+GitLab [reference architectures](../reference_architectures/index.md) are sized to
+assume that application database queries are shared by all three nodes.
+Communication latency higher than 2 ms can lead to database locks and
 impact the replica's ability to serve read-only queries in a timely fashion.
 
 - `10.6.0.22`: PgBouncer 2

@@ -21223,6 +21223,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cijobtokenscopeallowlistentryaddedby"></a>`addedBy` | [`UserCore`](#usercore) | User that added the entry. |
+| <a id="cijobtokenscopeallowlistentryautopopulated"></a>`autopopulated` | [`Boolean`](#boolean) | Indicates whether the entry is created by the autopopulation process. |
 | <a id="cijobtokenscopeallowlistentrycreatedat"></a>`createdAt` | [`Time!`](#time) | When the entry was created. |
 | <a id="cijobtokenscopeallowlistentrydefaultpermissions"></a>`defaultPermissions` | [`Boolean`](#boolean) | Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). |
 | <a id="cijobtokenscopeallowlistentrydirection"></a>`direction` | [`String`](#string) | Direction of access. Defaults to INBOUND. |
@@ -21236,9 +21237,11 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cijobtokenscopetypegroupallowlistautopopulatedids"></a>`groupAllowlistAutopopulatedIds` | [`[GroupID!]!`](#groupid) | List of IDs of groups which have been created by the autopopulation process. |
 | <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`GroupConnection!`](#groupconnection) | Allowlist of groups that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypegroupsallowlistcount"></a>`groupsAllowlistCount` | [`Int!`](#int) | Count of groups that can access the current project by authenticating with a CI/CD job token. The count does not include subgroups. |
 | <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allowlist of projects that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypeinboundallowlistautopopulatedids"></a>`inboundAllowlistAutopopulatedIds` | [`[ProjectID!]!`](#projectid) | List of IDs of projects which have been created by the autopopulation process. |
 | <a id="cijobtokenscopetypeinboundallowlistcount"></a>`inboundAllowlistCount` | [`Int!`](#int) | Count of projects that can access the current project by authenticating with a CI/CD job token. The count does not include nested projects. |
 | <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that are accessible using the current project's CI Job tokens. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Deprecated** in GitLab 15.9. The `projects` attribute is being deprecated. Use `outbound_allowlist`. |

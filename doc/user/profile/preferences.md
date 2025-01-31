@@ -122,12 +122,12 @@ To choose your home organization:
 
 > - [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
 
-FLAG: 
+FLAG:
 When the `your_work_projects_vue` feature flag is enabled, the **Your Contributed Projects** view becomes the default option, and an additional **Member Projects** option is available in the dropdown list. For more information, see the history.
 
 Control what page you view when you select the GitLab logo (**{tanuki}**). You can set your homepage to be Your Projects (default), Your Groups, Your Activity, and other content.
 
-To choose your homepage view: 
+To choose your homepage view:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.

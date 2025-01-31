@@ -53,6 +53,20 @@ module Types
           "by authenticating with a CI/CD job token. " \
           "The count does not include subgroups.",
         method: :groups_count
+
+      field :group_allowlist_autopopulated_ids,
+        [::Types::GlobalIDType[::Group]],
+        null: false,
+        description: 'List of IDs of groups which have been created by the  ' \
+          'autopopulation process.',
+        method: :autopopulated_group_ids
+
+      field :inbound_allowlist_autopopulated_ids,
+        [::Types::GlobalIDType[::Project]],
+        null: false,
+        description: 'List of IDs of projects which have been created by the  ' \
+          'autopopulation process.',
+        method: :autopopulated_inbound_project_ids
     end
   end
   # rubocop: enable Graphql/AuthorizeTypes

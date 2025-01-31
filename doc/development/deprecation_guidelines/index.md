@@ -22,7 +22,7 @@ If a deprecation or breaking change is unavoidable, then take the following step
 1. Review the [deprecation guidelines in our documentation](#minimize-the-impact-of-breaking-changes)
 1. Review the [breaking changes best practices](https://docs.google.com/document/d/1ByVZEhGJfjb6XTwiDeaSDRVwUiF6dsEQI01TW4BJA0k/edit?tab=t.0#heading=h.vxhro51h5zxn) (internal link)
 1. Review the [release post process for announcing breaking changes](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes)
-1. **(Required)** Create a [deprecation issue ticket](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) and begin following the steps documented there 
+1. **(Required)** Create a [deprecation issue ticket](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) and begin following the steps documented there
 
 The [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) includes checklist that ensure each breaking change has sufficiently planned for:
 

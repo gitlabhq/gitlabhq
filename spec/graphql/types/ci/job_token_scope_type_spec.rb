@@ -7,7 +7,8 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
 
   it 'has the correct fields' do
     expected_fields = [:projects, :inboundAllowlist, :outboundAllowlist,
-      :groupsAllowlist, :inboundAllowlistCount, :groupsAllowlistCount]
+      :groupsAllowlist, :inboundAllowlistCount, :groupsAllowlistCount,
+      :groupAllowlistAutopopulatedIds, :inboundAllowlistAutopopulatedIds]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

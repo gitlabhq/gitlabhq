@@ -23,7 +23,7 @@ Use AI impact analytics for:
 - Snapshot of GitLab Duo usage: Track the use of seats and features in a project or group over the last 30 days.
 
 To learn how you can optimize your license utilization,
-see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md). 
+see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md).
 
 For a click-through demo, see the [AI impact analytics product tour](https://gitlab.navattic.com/ai-impact).
 

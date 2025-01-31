@@ -87,7 +87,7 @@ Logging in the `application.json`, `production_json.log`, and `production.log` f
 
 ### Feature Flag and Logging Control
 
-**Feature Flag Dependency**: You can control a subset of these logs by enabling or disabling the `expanded_ai_logging` feature flag. Disabling the feature flag disables logging for specific operations. For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/index.md#privacy-considerations).
+**Feature Flag Dependency**: You can control a subset of these logs by enabling or disabling the `expanded_ai_logging` feature flag. Disabling the feature flag disables logging for specific operations. For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/logging.md#privacy-considerations).
 
 ### The `llm.log` file
 
@@ -294,7 +294,7 @@ The `:expanded_ai_logging` feature flag controls whether additional debugging in
 
 - **GitLab Self-Managed and self-hosted AI gateway**: The feature flag enables detailed logging to `llm.log` on the self-hosted instance, capturing inputs and outputs for AI models.
 - **GitLab Self-Managed and GitLab-managed AI gateway**: The feature flag enables logging on your GitLab Self-Managed instance. However, the flag does **not** activate expanded logging for the GitLab-managed AI gateway side. Logging remains disabled for the cloud-connected AI gateway to protect sensitive data.
-For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/index.md#privacy-considerations) documentation.
+For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/logging.md#privacy-considerations) documentation.
 
 ### Logging in cloud-connected AI gateways
 

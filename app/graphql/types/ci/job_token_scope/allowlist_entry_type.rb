@@ -46,6 +46,11 @@ module Types
           null: false,
           description: 'When the entry was created.'
 
+        field :autopopulated,
+          GraphQL::Types::Boolean,
+          null: true,
+          description: 'Indicates whether the entry is created by the autopopulation process.'
+
         def source_project
           Gitlab::Graphql::Loaders::BatchModelLoader.new(Project, object.source_project_id).find
         end

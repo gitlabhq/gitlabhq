@@ -74,7 +74,7 @@ To replace the token:
      [project access tokens API](../../api/project_access_tokens.md#list-all-project-access-tokens)
      to list recently expired tokens.
    - For group access tokens, use the
-     [group access tokens API](../../api/group_access_tokens.md#list-group-access-tokens)
+     [group access tokens API](../../api/group_access_tokens.md#list-all-group-access-tokens)
      to list recently expired tokens.
 1. Create a new access token:
    - For personal access tokens, [use the UI](../../user/profile/personal_access_tokens.md#create-a-personal-access-token)

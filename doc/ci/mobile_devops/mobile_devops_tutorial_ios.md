@@ -45,36 +45,34 @@ for complete control over the build environment.
 
 ## Configure code signing with fastlane
 
-To set up code signing for iOS:
+To set up code signing for iOS, upload signed certificates to GitLab by using fastlane:
 
-1. Install fastlane locally to upload signed certificates to GitLab:
+1. Initialize fastlane:
 
-   1. Initialize fastlane:
+   ```shell
+   fastlane init
+   ```
 
-      ```shell
-      fastlane init
-      ```
+1. Generate a `Matchfile` with the configuration:
 
-   1. Generate a `Matchfile` with the configuration:
+   ```shell
+   fastlane match init
+   ```
 
-      ```shell
-      fastlane match init
-      ```
+1. Generate certificates and profiles in the Apple Developer portal and upload those files to GitLab:
 
-   1. Generate certificates and profiles in the Apple Developer portal and upload those files to GitLab:
+   ```shell
+   PRIVATE_TOKEN=YOUR-TOKEN bundle exec fastlane match development
+   ```
 
-      ```shell
-      PRIVATE_TOKEN=YOUR-TOKEN bundle exec fastlane match development
-      ```
+1. Optional. If you have already created signing certificates and provisioning profiles for your project, use `fastlane match import` to load your existing files into GitLab:
 
-   1. Optional. If you have already created signing certificates and provisioning profiles for your project, use `fastlane match import` to load your existing files into GitLab:
+   ```shell
+   PRIVATE_TOKEN=YOUR-TOKEN bundle exec fastlane match import
+   ```
 
-      ```shell
-      PRIVATE_TOKEN=YOUR-TOKEN bundle exec fastlane match import
-      ```
-
-      You are prompted to input the path to your files. After you provide those details, your files are uploaded and visible in your project’s CI/CD settings.
-      If prompted for the `git_url` during the import, it is safe to leave it blank and press <kbd>enter</kbd>.
+You are prompted to input the path to your files. After you provide those details, your files are uploaded and visible in your project's CI/CD settings.
+If prompted for the `git_url` during the import, it is safe to leave it blank and press <kbd>enter</kbd>.
 
 The following are sample `fastlane/Fastfile` and `.gitlab-ci.yml` files with this configuration:
 

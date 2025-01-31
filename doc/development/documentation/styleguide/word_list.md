@@ -439,6 +439,10 @@ Use **check out** as a verb. For the Git command, use `checkout`.
 - Use `git checkout` to check out a branch locally.
 - Check out the files you want to edit.
 
+## cherry-pick, cherry pick
+
+Use the hyphenated version of **cherry-pick**. Do not use **cherry pick**.
+
 ## CI, CD
 
 When talking about GitLab features, use **CI/CD**. Do not use **CI** or **CD** alone.

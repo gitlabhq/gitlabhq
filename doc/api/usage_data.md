@@ -50,7 +50,7 @@ The Service Ping JSON payload includes `schema_inconsistencies_metric`. Database
 
 This metric is designed only for troubleshooting ongoing issues, and shouldn't be used as a regular health check. The metric should only be interpreted with
 the guidance of GitLab Support. The metric reports the same database schema inconsistencies as the
-[database schema checker Rake task](../administration/raketasks/maintenance.md#check-the-database-for-schema-inconsistencies). 
+[database schema checker Rake task](../administration/raketasks/maintenance.md#check-the-database-for-schema-inconsistencies).
 
 For more information, see [issue 467544](https://gitlab.com/gitlab-org/gitlab/-/issues/467544).
 

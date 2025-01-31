@@ -132,6 +132,13 @@ export default {
         } else {
           projects = project?.ciJobTokenScope?.inboundAllowlist?.nodes ?? [];
           groups = project?.ciJobTokenScope?.groupsAllowlist?.nodes ?? [];
+          const groupAllowlistAutopopulatedIds =
+            project?.ciJobTokenScope?.groupAllowlistAutopopulatedIds ?? [];
+          const inboundAllowlistAutopopulatedIds =
+            project?.ciJobTokenScope?.inboundAllowlistAutopopulatedIds ?? [];
+
+          projects = this.addAutopopulatedAttribute(projects, inboundAllowlistAutopopulatedIds);
+          groups = this.addAutopopulatedAttribute(groups, groupAllowlistAutopopulatedIds);
         }
 
         return { projects, groups };
@@ -201,6 +208,7 @@ export default {
         ...node.target,
         defaultPermissions: node.defaultPermissions,
         jobTokenPolicies: node.jobTokenPolicies,
+        autopopulated: node.autopopulated,
       }));
     },
     async updateCIJobTokenScope() {
@@ -268,6 +276,12 @@ export default {
     showNamespaceForm(namespace, showFormFn) {
       this.namespaceToEdit = namespace;
       showFormFn();
+    },
+    addAutopopulatedAttribute(collection, idList) {
+      return collection.map((item) => ({
+        ...item,
+        autopopulated: idList.includes(item.id),
+      }));
     },
   },
 };

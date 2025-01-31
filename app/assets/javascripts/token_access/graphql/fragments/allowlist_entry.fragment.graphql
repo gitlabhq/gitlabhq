@@ -1,6 +1,7 @@
 fragment AllowlistEntry on CiJobTokenScopeAllowlistEntry {
   defaultPermissions
   jobTokenPolicies
+  autopopulated
   target {
     ... on Group {
       id

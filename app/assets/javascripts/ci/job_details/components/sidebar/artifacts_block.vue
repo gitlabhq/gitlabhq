@@ -1,5 +1,12 @@
 <script>
-import { GlBadge, GlButton, GlButtonGroup, GlLink, GlPopover } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlButton,
+  GlButtonGroup,
+  GlLink,
+  GlPopover,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -20,6 +27,7 @@ export default {
     keepText: s__('Job|Keep'),
     downloadText: s__('Job|Download'),
     browseText: s__('Job|Browse'),
+    sastTooltipText: s__('Job|This artifact contains SAST scan results in JSON format.'),
   },
   artifactsHelpPath: helpPagePath('ci/jobs/job_artifacts'),
   components: {
@@ -30,6 +38,9 @@ export default {
     GlPopover,
     TimeagoTooltip,
     HelpIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [timeagoMixin],
   props: {
@@ -57,8 +68,18 @@ export default {
     willExpire() {
       return this.artifact?.expired === false && !this.isLocked;
     },
-    hasReports() {
-      return this.reports.length > 0;
+    sastReport() {
+      return this.reports.find((report) => report.file_type === 'sast');
+    },
+    dastReport() {
+      return this.reports.find((report) => report.file_type === 'dast');
+    },
+    hasArtifactPaths() {
+      return (
+        Boolean(this.artifact.keepPath) ||
+        Boolean(this.artifact.downloadPath) ||
+        Boolean(this.artifact.browsePath)
+      );
     },
   },
 };
@@ -79,9 +100,14 @@ export default {
           {{ $options.i18n.artifactsHelpText }}
         </gl-popover>
       </div>
-      <span v-if="hasReports" class="gl-ml-2">
-        <gl-badge v-for="(report, index) in reports" :key="index" class="gl-mr-2">
-          {{ report.file_type }}
+      <span v-if="sastReport" class="gl-ml-3">
+        <gl-badge v-gl-tooltip :title="$options.i18n.sastTooltipText">
+          {{ sastReport.file_type }}
+        </gl-badge>
+      </span>
+      <span v-if="dastReport" class="gl-ml-3">
+        <gl-badge>
+          {{ dastReport.file_type }}
         </gl-badge>
       </span>
     </div>
@@ -110,7 +136,11 @@ export default {
         {{ $options.i18n.lockedText }}
       </span>
     </p>
-    <gl-button-group class="gl-mt-3 gl-flex">
+    <gl-button-group
+      v-if="hasArtifactPaths"
+      class="gl-mt-3 gl-flex"
+      :class="{ 'gl-mb-3': sastReport }"
+    >
       <gl-button
         v-if="artifact.keepPath"
         :href="artifact.keepPath"
@@ -133,5 +163,15 @@ export default {
         >{{ $options.i18n.browseText }}</gl-button
       >
     </gl-button-group>
+    <div class="gl-mt-2">
+      <gl-link
+        v-if="sastReport"
+        :href="sastReport.download_path"
+        class="!gl-text-link gl-underline"
+        data-testid="download-sast-report-link"
+      >
+        {{ s__('Job|Download SAST report') }}
+      </gl-link>
+    </div>
   </div>
 </template>

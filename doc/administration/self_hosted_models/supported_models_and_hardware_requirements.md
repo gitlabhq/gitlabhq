@@ -36,7 +36,7 @@ Install one of the following GitLab-approved LLM models:
 | GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟢 Green |
 | GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟡 Amber |
 
-Legend: 
+Legend:
 
 - 🟢 Green - Strongly recommended. The model can handle the feature without any loss of quality.
 - 🟡 Amber - Recommended. The model supports the feature, but there might be minor compromises or limitations.

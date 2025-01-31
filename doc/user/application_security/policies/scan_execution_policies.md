@@ -115,6 +115,22 @@ For more information, see the history.
 | `rules`        | `array` of rules                             | true     | List of rules that the policy applies. |
 | `actions`      | `array` of actions                           | true     | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
 | `policy_scope` | `object` of [`policy_scope`](index.md#scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. |
+
+### `skip_ci` type
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482952) in GitLab 17.9.
+
+Scan execution policies offer control over who can use the `[skip ci]` directive. You can specify certain users or service accounts that are allowed to use `[skip ci]` while still ensuring critical security and compliance checks are performed.
+
+Use the `skip_ci` keyword to specify whether users are allowed to apply the `skip_ci` directive to skip the pipelines.
+When the keyword is not specified, the `skip_ci` directive is ignored, preventing all users
+from bypassing the pipeline execution policies.
+
+| Field                   | Type     | Possible values          | Description |
+|-------------------------|----------|--------------------------|-------------|
+| `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `skip-ci` directive for pipelines with enforced pipeline execution policies. |
+| `allowlist`             | `object` | `users` | Specify users who are always allowed to use `skip-ci` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
 
 ## `pipeline` rule type
 

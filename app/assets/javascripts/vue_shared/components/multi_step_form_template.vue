@@ -39,7 +39,11 @@ export default {
     <div class="gl-mt-7" data-testid="multi-step-form-content">
       <slot name="form"></slot>
     </div>
-    <div class="gl-mt-6 gl-flex gl-justify-center gl-gap-3" data-testid="multi-step-form-action">
+    <div
+      v-if="$scopedSlots.back || $scopedSlots.next"
+      class="gl-mt-6 gl-flex gl-justify-center gl-gap-3"
+      data-testid="multi-step-form-action"
+    >
       <slot name="back"></slot>
       <slot name="next"></slot>
     </div>

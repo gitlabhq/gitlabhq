@@ -245,7 +245,7 @@ For more information, see the history.
 GitLab.com customers must contact their Customer Success Manager to enable this feature.
 
 Add repository files to your Duo Chat conversations in VS Code or JetBrains IDEs by
-typing `/include` and choosing the files. 
+typing `/include` and choosing the files.
 
 Prerequisites:
 

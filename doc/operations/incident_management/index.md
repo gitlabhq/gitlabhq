@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 NOTE:
-This feature is not under active development, but [community contributions](https://about.gitlab.com/community/contribute/) are welcome. 
+This feature is not under active development, but [community contributions](https://about.gitlab.com/community/contribute/) are welcome.
 For more information, see [issue 468607](https://gitlab.com/gitlab-org/gitlab/-/issues/468607#note_1967939452).
 To determine if the feature meets your needs, see the [open bug issues](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Category%3AIncident%20Management&label_name%5B%5D=type%3A%3Abug&first_page_size=20).
 

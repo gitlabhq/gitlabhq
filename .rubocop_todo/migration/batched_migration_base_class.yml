@@ -5,7 +5,6 @@ Migration/BatchedMigrationBaseClass:
     - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
     - 'lib/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
     - 'lib/gitlab/background_migration/backfill_member_namespace_for_group_members.rb'
-    - 'lib/gitlab/background_migration/backfill_namespace_id_for_project_route.rb'
     - 'lib/gitlab/background_migration/backfill_note_discussion_id.rb'
     - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
     - 'lib/gitlab/background_migration/backfill_project_settings.rb'

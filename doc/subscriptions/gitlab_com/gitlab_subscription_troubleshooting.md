@@ -55,7 +55,7 @@ To resolve this issue, try the following:
   - [FineShift Software Private Limited](https://partners.gitlab.com/English/directory/partner/1737250/fineshift-software-private-limited)
 
 - For cards issued outside of the United States: Ensure your card is enabled for international use, and verify if there are country-specific restrictions.
-- Contact your financial institution: Ask for the reason why your transaction was declined, and request that your card is enabled for this type of transaction. 
+- Contact your financial institution: Ask for the reason why your transaction was declined, and request that your card is enabled for this type of transaction.
 
 ## Error: `Attempt_Exceed_Limitation`
 

@@ -176,38 +176,6 @@ export default {
       @token="rotateInstanceId()"
     />
     <div :class="topAreaBaseClasses">
-      <div class="gl-flex gl-flex-col md:!gl-hidden">
-        <gl-button
-          v-if="userListPath"
-          :href="userListPath"
-          variant="confirm"
-          category="tertiary"
-          class="gl-mb-3"
-        >
-          {{ s__('FeatureFlags|View user lists') }}
-        </gl-button>
-        <gl-button
-          v-if="canUserConfigure"
-          v-gl-modal="'configure-feature-flags'"
-          variant="confirm"
-          category="secondary"
-          data-testid="ff-configure-button"
-          class="gl-mb-3"
-        >
-          {{ s__('FeatureFlags|Configure') }}
-        </gl-button>
-
-        <gl-button
-          v-if="hasNewPath"
-          :href="newFeatureFlagPath"
-          :disabled="featureFlagsLimitExceeded"
-          variant="confirm"
-          data-testid="ff-new-button"
-        >
-          {{ s__('FeatureFlags|New feature flag') }}
-        </gl-button>
-      </div>
-
       <page-heading>
         <template #heading>
           <span>

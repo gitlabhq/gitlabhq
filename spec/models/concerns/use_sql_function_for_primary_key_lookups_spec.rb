@@ -5,20 +5,10 @@ require 'spec_helper'
 RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and_projects do
   let_it_be(:project) { create(:project) }
   let_it_be(:another_project) { create(:project) }
-  let_it_be(:namespace) { create(:namespace) }
 
   let(:model) do
     Class.new(ApplicationRecord) do
       self.table_name = :projects
-
-      include UseSqlFunctionForPrimaryKeyLookups
-    end
-  end
-
-  let(:namespace_model) do
-    Class.new(ApplicationRecord) do
-      self.ignored_columns = %i[type] # rubocop: disable Cop/IgnoredColumns -- Throwaway one-off used for testing
-      self.table_name = :namespaces
 
       include UseSqlFunctionForPrimaryKeyLookups
     end
@@ -57,28 +47,6 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
 
       expect(recorder.data.each_value.first[:count]).to eq(1)
       expect(recorder.cached).to include(query.tr("\n", ''))
-    end
-
-    context 'when the log_sql_function_namespace_lookups FF is on' do
-      before do
-        stub_feature_flags(log_sql_function_namespace_lookups: true)
-      end
-
-      context 'when we query the namespaces table' do
-        it 'logs the info' do
-          expect(Gitlab::AppLogger).to receive(:info).with(a_hash_including({
-            message: 'Namespaces lookup using function'
-          }))
-          namespace_model.find(namespace.id)
-        end
-      end
-
-      context 'when we query the projects table' do
-        it 'does not log the info' do
-          expect(Gitlab::AppLogger).not_to receive(:info)
-          model.find(project.id)
-        end
-      end
     end
 
     context 'when the model has ignored columns' do

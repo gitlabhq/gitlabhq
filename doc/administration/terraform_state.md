@@ -251,7 +251,7 @@ The relative path is displayed.
 
 ## Restoring Terraform state files from backups
 
-To restore Terraform state files from backups, you must have access to the encrypted state files and the GitLab database. 
+To restore Terraform state files from backups, you must have access to the encrypted state files and the GitLab database.
 
 ### Database tables
 
@@ -263,7 +263,7 @@ The following database table helps trace the S3 path back to specific projects:
 
 The state files are stored in a specific directory structure, where:
 
-- The first three segments of the path are derived from the SHA-2 hash value of the project ID. 
+- The first three segments of the path are derived from the SHA-2 hash value of the project ID.
 - Each state has a UUID stored on the `terraform_states` database table that forms part of the path.  
 
 For example, for a project where the:
@@ -293,6 +293,6 @@ The state files are encrypted using Lockbox and require the following informatio
 
 The encryption key is derived from both the `db_key_base` and the project ID. If you can't access `db_key_base`, decryption is not possible.
 
-To learn how to manually decrypt files, see the documentation from [Lockbox](https://github.com/ankane/lockbox). 
+To learn how to manually decrypt files, see the documentation from [Lockbox](https://github.com/ankane/lockbox).
 
 To view the encryption key generation process, see the [state uploader code](https://gitlab.com/gitlab-org/gitlab/-/blob/e0137111fbbd28316f38da30075aba641e702b98/app/uploaders/terraform/state_uploader.rb#L43).

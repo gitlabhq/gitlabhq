@@ -33,7 +33,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
       visit(project_feature_flags_path(project))
 
       within_feature_flag_row(1) do
-        expect(page.find('.js-feature-flag-id')).to have_content('^1')
+        expect(find_by_testid('feature-flag-id')).to have_content('^1')
         expect(page.find('.feature-flag-name')).to have_content('ci_live_trace')
         expect_status_toggle_button_not_to_be_checked
 
@@ -47,7 +47,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
       visit(project_feature_flags_path(project))
 
       within_feature_flag_row(2) do
-        expect(page.find('.js-feature-flag-id')).to have_content('^2')
+        expect(find_by_testid('feature-flag-id')).to have_content('^2')
         expect(page.find('.feature-flag-name')).to have_content('drop_legacy_artifacts')
         expect_status_toggle_button_not_to_be_checked
       end
@@ -57,7 +57,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
       visit(project_feature_flags_path(project))
 
       within_feature_flag_row(3) do
-        expect(page.find('.js-feature-flag-id')).to have_content('^3')
+        expect(find_by_testid('feature-flag-id')).to have_content('^3')
         expect(page.find('.feature-flag-name')).to have_content('mr_train')
         expect_status_toggle_button_to_be_checked
 

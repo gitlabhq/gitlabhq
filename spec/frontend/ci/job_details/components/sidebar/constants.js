@@ -36,11 +36,20 @@ export const lockedNonExpiredArtifact = {
   locked: true,
 };
 
-export const reports = [
+export const sastReport = [
   {
     file_type: 'sast',
     file_format: 'raw',
     size: 2036,
     download_path: '/root/security-reports/-/jobs/12281/artifacts/download?file_type=sast',
+  },
+];
+
+export const dastReport = [
+  {
+    file_type: 'dast',
+    file_format: 'raw',
+    size: 10830,
+    download_path: '/root/security-reports/-/jobs/12273/artifacts/download?file_type=dast',
   },
 ];

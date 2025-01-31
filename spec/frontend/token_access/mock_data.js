@@ -78,6 +78,7 @@ export const mockGroups = [
     webUrl: 'http://localhost/some-group',
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS', 'ADMIN_CONTAINERS'],
+    autopopulated: true,
     __typename: 'Group',
   },
   {
@@ -87,6 +88,7 @@ export const mockGroups = [
     webUrl: 'http://localhost/another-group',
     defaultPermissions: true,
     jobTokenPolicies: [],
+    autopopulated: true,
     __typename: 'Group',
   },
   {
@@ -96,6 +98,7 @@ export const mockGroups = [
     webUrl: 'http://localhost/a-sub-group',
     defaultPermissions: false,
     jobTokenPolicies: [],
+    autopopulated: false,
     __typename: 'Group',
   },
 ];
@@ -113,6 +116,7 @@ export const mockProjects = [
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS'],
     isLocked: false,
+    autopopulated: true,
     __typename: 'Project',
   },
   {
@@ -127,6 +131,7 @@ export const mockProjects = [
     defaultPermissions: true,
     jobTokenPolicies: [],
     isLocked: true,
+    autopopulated: false,
     __typename: 'Project',
   },
 ];
@@ -192,6 +197,8 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
             },
           ],
         },
+        groupAllowlistAutopopulatedIds: ['gid://gitlab/Group/45'],
+        inboundAllowlistAutopopulatedIds: ['gid://gitlab/Project/23'],
       },
     },
   },

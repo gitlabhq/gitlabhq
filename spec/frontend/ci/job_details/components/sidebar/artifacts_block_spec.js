@@ -9,7 +9,8 @@ import {
   nonExpiredArtifact,
   lockedExpiredArtifact,
   lockedNonExpiredArtifact,
-  reports,
+  sastReport,
+  dastReport,
 } from './constants';
 
 describe('Artifacts block', () => {
@@ -32,6 +33,7 @@ describe('Artifacts block', () => {
   const findArtifactsHelpLink = () => wrapper.findByTestId('artifacts-help-link');
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findReportsBadge = () => wrapper.findComponent(GlBadge);
+  const findDownloadReportLink = () => wrapper.findByTestId('download-sast-report-link');
 
   describe('with expired artifacts that are not locked', () => {
     beforeEach(() => {
@@ -166,7 +168,7 @@ describe('Artifacts block', () => {
     });
   });
 
-  describe('without reports', () => {
+  describe('without sast report', () => {
     beforeEach(() => {
       wrapper = createWrapper({
         artifact: nonExpiredArtifact,
@@ -176,18 +178,48 @@ describe('Artifacts block', () => {
     it('does not display report badge', () => {
       expect(findReportsBadge().exists()).toBe(false);
     });
+
+    it('does not display download sast report link', () => {
+      expect(findDownloadReportLink().exists()).toBe(false);
+    });
   });
 
   describe('with reports', () => {
-    beforeEach(() => {
-      wrapper = createWrapper({
-        artifact: nonExpiredArtifact,
-        reports,
+    describe('sast', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          artifact: nonExpiredArtifact,
+          reports: sastReport,
+        });
+      });
+
+      it('displays report badge with tooltip', () => {
+        expect(findReportsBadge().text()).toBe('sast');
+        expect(findReportsBadge().attributes('title')).toBe(
+          'This artifact contains SAST scan results in JSON format.',
+        );
+      });
+
+      it('displays download sast report link', () => {
+        expect(findDownloadReportLink().attributes('href')).toBe(sastReport[0].download_path);
       });
     });
 
-    it('does display report badge', () => {
-      expect(findReportsBadge().text()).toBe('sast');
+    describe('dast', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          artifact: nonExpiredArtifact,
+          reports: dastReport,
+        });
+      });
+
+      it('displays dast report badge', () => {
+        expect(findReportsBadge().text()).toBe('dast');
+      });
+
+      it('does not display download sast report link', () => {
+        expect(findDownloadReportLink().exists()).toBe(false);
+      });
     });
   });
 });

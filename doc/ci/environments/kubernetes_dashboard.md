@@ -20,7 +20,7 @@ Use the dashboard for Kubernetes to understand the status of your clusters with 
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
 
-![Kubernetes summary UI](img/kubernetes_summary_ui_v17_2.png)
+![Dashboard showing the status of Kubernetes pods and services.](img/kubernetes_summary_ui_v17_2.png)
 
 ## Configure a dashboard
 
@@ -200,7 +200,7 @@ Each dashboard displays a list of resources with their statuses, namespaces, and
 You can select a resource to open a drawer with more information, including labels
 and YAML-formatted status, annotations, and spec.
 
-![Kubernetes dashboard UI](img/kubernetes_dashboard_deployments_v16_9.png)
+![Dashboard with detailed information about the connected cluster.](img/kubernetes_dashboard_deployments_v16_9.png)
 
 Because of the focus shift described in [this issue](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/general/-/issues/53#note_1720060812), work on the detailed dashboard is paused.
 

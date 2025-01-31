@@ -40,7 +40,7 @@ deploy:
 
 ### Runway deployment for .com
 
-Services for GitLab.com, GitLab Dedicated and self-hosted customers using CloudConnect are deployed using [Runway](https://docs.runway.gitlab.com/welcome/onboarding/). 
+Services for GitLab.com, GitLab Dedicated and self-hosted customers using CloudConnect are deployed using [Runway](https://docs.runway.gitlab.com/welcome/onboarding/).
 Please refer to the project documentation on how to add or manage Runway services.
 
 ### Deploying in self-hosted environments

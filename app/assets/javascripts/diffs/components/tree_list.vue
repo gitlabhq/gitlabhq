@@ -232,7 +232,8 @@ export default {
                 :current-diff-file-id="currentDiffFileId"
                 :style="{ '--level': item.level }"
                 :class="{ 'tree-list-parent': item.level > 0 }"
-                class="gl-relative"
+                :tabindex="0"
+                class="gl-relative !gl-m-1"
                 @toggleTreeOpen="toggleTreeOpen"
                 @clickFile="(path) => goToFile({ path })"
               />

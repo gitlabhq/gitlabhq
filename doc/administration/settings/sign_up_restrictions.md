@@ -104,7 +104,7 @@ To turn on restricted access:
 
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Sign-up restrictions**.
-1. Under **Seat controls**, select **Restricted access**.
+1. Under **Seat control**, select **Restricted access**.
 
 ### Known issues
 
@@ -283,7 +283,7 @@ To turn on approvals for role promotions:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
-1. In the **Seat controls** section, select **Approve role promotions**.
+1. In the **Seat control** section, select **Approve role promotions**.
 
 ### Known issues
 

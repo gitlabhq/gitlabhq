@@ -62,6 +62,14 @@ module Ci
         groups.count
       end
 
+      def autopopulated_group_ids
+        inbound_allowlist.autopopulated_group_global_ids
+      end
+
+      def autopopulated_inbound_project_ids
+        inbound_allowlist.autopopulated_project_global_ids
+      end
+
       def self_referential?(accessed_project)
         current_project.id == accessed_project.id
       end

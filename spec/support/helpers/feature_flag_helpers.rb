@@ -31,19 +31,19 @@ module FeatureFlagHelpers
   end
 
   def within_feature_flag_row(index)
-    within ".gl-responsive-table-row:nth-child(#{index + 1})" do
+    within "tbody tr:nth-child(#{index})" do
       yield
     end
   end
 
   def within_feature_flag_scopes
-    within '.js-feature-flag-environments' do
+    within "div[data-testid='feature-flag-environments']" do
       yield
     end
   end
 
   def within_scope_row(index)
-    within ".gl-responsive-table-row:nth-child(#{index + 1})" do
+    within "tbody tr:nth-child(#{index + 1})" do
       yield
     end
   end
@@ -73,7 +73,7 @@ module FeatureFlagHelpers
   end
 
   def edit_feature_flag_button
-    find('.js-feature-flag-edit-button')
+    find_link 'Edit'
   end
 
   def delete_strategy_button

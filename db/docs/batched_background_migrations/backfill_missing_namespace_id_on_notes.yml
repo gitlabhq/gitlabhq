@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillMissingNamespaceIdOnNotes
+description: Backfills missing namespace_id values to support sharding
+feature_category: code_review_workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163687
+milestone: '17.9'
+queued_migration_version: 20240822220027
+finalize_after: "2025-03-31"
+finalized_by: # version of the migration that finalized this BBM

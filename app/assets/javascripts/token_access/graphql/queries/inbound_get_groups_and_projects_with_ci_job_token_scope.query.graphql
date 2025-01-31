@@ -20,6 +20,8 @@ query inboundGetGroupsAndProjectsWithCIJobTokenScope($fullPath: ID!) {
           webUrl
         }
       }
+      groupAllowlistAutopopulatedIds
+      inboundAllowlistAutopopulatedIds
     }
   }
 }

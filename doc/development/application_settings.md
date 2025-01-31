@@ -88,5 +88,5 @@ This a required multi-milestone process that involves:
 1. Ignoring the column.
 1. Dropping the column.
 1. Removing the ignore rule.
- 
+
 Dropping the original column before ignoring it in the model can cause problems with zero-downtime migrations.

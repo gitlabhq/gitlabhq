@@ -67,6 +67,12 @@ describe('MultiStepFormTemplate', () => {
       expect(findActions().find('button.next').exists()).toBe(true);
     });
 
+    it('does not render action buttons when no back or next slot is provided', () => {
+      createComponent();
+
+      expect(findActions().exists()).toBe(false);
+    });
+
     it('renders footer slot content when provided', () => {
       createComponent(
         {},

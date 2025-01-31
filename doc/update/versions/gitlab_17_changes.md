@@ -89,9 +89,9 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Now you should be able to complete the migrations in GitLab 17.1 and finish
   the upgrade.
 
-- A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476542) in the Git versions shipped with 
-  GitLab 17.0.x and GitLab 17.1.x causes a noticeable increase in CPU usage when under load. The primary cause of 
-  this regression was resolved in the Git versions shipped with GitLab 17.2 so, for systems that see heavy peak loads, 
+- A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476542) in the Git versions shipped with
+  GitLab 17.0.x and GitLab 17.1.x causes a noticeable increase in CPU usage when under load. The primary cause of
+  this regression was resolved in the Git versions shipped with GitLab 17.2 so, for systems that see heavy peak loads,
   you should upgrade to GitLab 17.2.
 
 ### Linux package installations

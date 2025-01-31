@@ -960,7 +960,7 @@ should be:
   fetches, and probably the entire server, slows down.
 
 WARNING:
-All existing data in the specified directory will be removed. 
+All existing data in the specified directory will be removed.
 Take care not to use a directory with existing data.
 
 By default, the cache storage directory is set to a subdirectory of the first Gitaly storage

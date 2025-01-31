@@ -69,6 +69,14 @@ module Ci
         group_links.includes(:target_group).map { |g| g.target_group.traversal_ids }
       end
 
+      def autopopulated_project_global_ids
+        project_links.autopopulated.map { |link| link.target_project.to_global_id }.uniq
+      end
+
+      def autopopulated_group_global_ids
+        group_links.autopopulated.map { |link| link.target_group.to_global_id }.uniq
+      end
+
       def project_links
         Ci::JobToken::ProjectScopeLink
           .with_source(@source_project)

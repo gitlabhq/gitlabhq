@@ -1,10 +1,11 @@
 <script>
-import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import getCommitIconMap from '~/ide/commit_icon';
 import { __ } from '~/locale';
 
 export default {
   components: {
+    GlButton,
     GlIcon,
   },
   directives: {
@@ -77,14 +78,18 @@ export default {
 </script>
 
 <template>
-  <span
+  <gl-button
+    v-if="showIcon"
     v-gl-tooltip.right
+    category="tertiary"
+    size="small"
     :title="tooltipTitle"
     :class="{ 'ml-auto': isCentered }"
-    class="file-changed-icon gl-inline-block"
+    :aria-label="tooltipTitle"
+    class="file-changed-icon !gl-min-h-0 !gl-min-w-0 !gl-bg-transparent !gl-p-0"
   >
-    <gl-icon v-if="showIcon" :name="changedIcon" :size="size" :class="changedIconClass" />
-  </span>
+    <gl-icon :name="changedIcon" :size="size" :class="changedIconClass" />
+  </gl-button>
 </template>
 
 <style>

@@ -369,6 +369,16 @@ msgid_plural "%d layers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d line added"
+msgid_plural "%d lines added"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d line removed"
+msgid_plural "%d lines removed"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d matching branch"
 msgid_plural "%d matching branches"
 msgstr[0] ""
@@ -7355,7 +7365,7 @@ msgstr ""
 msgid "ApplicationSettings|Save changes"
 msgstr ""
 
-msgid "ApplicationSettings|Seat controls"
+msgid "ApplicationSettings|Seat control"
 msgstr ""
 
 msgid "ApplicationSettings|See %{linkStart}password policy guidelines%{linkEnd}."
@@ -11051,6 +11061,9 @@ msgid "CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration
 msgstr ""
 
 msgid "CICD|Add an existing project to the scope"
+msgstr ""
+
+msgid "CICD|Added from log."
 msgstr ""
 
 msgid "CICD|Additional permissions"
@@ -32469,6 +32482,9 @@ msgstr ""
 msgid "Job|Download"
 msgstr ""
 
+msgid "Job|Download SAST report"
+msgstr ""
+
 msgid "Job|Duration"
 msgstr ""
 
@@ -32587,6 +32603,9 @@ msgid "Job|There was a problem retrying the failed job."
 msgstr ""
 
 msgid "Job|These artifacts are the latest. They will not be deleted (even if expired) until newer artifacts are available."
+msgstr ""
+
+msgid "Job|This artifact contains SAST scan results in JSON format."
 msgstr ""
 
 msgid "Job|This job failed because the necessary resources were not successfully created."
@@ -50715,7 +50734,7 @@ msgstr ""
 msgid "Searching by both author and message is currently not supported."
 msgstr ""
 
-msgid "Seat controls"
+msgid "Seat control"
 msgstr ""
 
 msgid "Seats"

@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlIcon, GlLink, GlTable, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+import {
+  GlButton,
+  GlIcon,
+  GlLink,
+  GlTable,
+  GlLoadingIcon,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { s__, __ } from '~/locale';
@@ -14,6 +22,12 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     ProjectAvatar,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  i18n: {
+    autopopulated: s__('CICD|Added from log.'),
   },
   inject: ['fullPath'],
   props: {
@@ -101,6 +115,15 @@ export default {
         <gl-link :href="item.webUrl" data-testid="token-access-name">
           {{ item.fullPath }}
         </gl-link>
+        <gl-icon
+          v-if="item.autopopulated"
+          v-gl-tooltip
+          :title="$options.i18n.autopopulated"
+          :aria-label="$options.i18n.autopopulated"
+          name="log"
+          class="gl-ml-3 gl-shrink-0"
+          data-testid="autopopulated-icon"
+        />
       </div>
     </template>
 

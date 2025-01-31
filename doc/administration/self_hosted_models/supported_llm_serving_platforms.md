@@ -77,14 +77,14 @@ You should at least a `a2-highgpu-4g` machine on GCP or equivalent (4x Nvidia A1
    ```
 
 1. Rename the token config:
-   
+
    ```shell
    cd <path-to-model>/Mixtral-8x7B-Instruct-v0.1
    cp tokenizer.model tokenizer.model.v3
    ```
 
 1. Run the model:
-   
+
    ```shell
    vllm serve <path-to-model>/Mixtral-8x7B-Instruct-v0.1 \
      --tensor_parallel_size 4 \

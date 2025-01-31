@@ -12,11 +12,11 @@ DETAILS:
 
 Use this API to interact with group access tokens. For more information, see [Group access tokens](../user/group/settings/group_access_tokens.md).
 
-## List group access tokens
+## List all group access tokens
 
 > - `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2.
 
-Get a list of [group access tokens](../user/group/settings/group_access_tokens.md).
+Lists all group access tokens for a group.
 
 In GitLab 17.2 and later, you can use the `state` attribute to limit the response to group access tokens with a specified state.
 
@@ -25,13 +25,15 @@ GET /groups/:id/access_tokens
 GET /groups/:id/access_tokens?state=inactive
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
-| `state` | string | No | Limit results to tokens with specified state. Valid values are `active` and `inactive`. By default both states are returned. |
+| Attribute | Type              | required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a group. |
+| `state`   | string            | No       | If defined, only returns tokens with the specified state. Possible values: `active` and `inactive`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens"
 ```
 
 ```json
@@ -67,21 +69,23 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## Get a group access token
+## Get details on a group access token
 
-Get a [group access token](../user/group/settings/group_access_tokens.md) by ID.
+Gets details on a group access token. You can reference a specific group access token, or use the keyword `self` to return details on the authenticating group access token.
 
 ```plaintext
 GET /groups/:id/access_tokens/:token_id
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
-| `token_id` | integer | yes | ID of the group access token |
+| Attribute  | Type              | required | Description |
+| ---------- | ----------------- | -------- | ----------- |
+| `id`       | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a group. |
+| `token_id` | integer or string | yes      | ID of a group access token or the keyword `self`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
 ```
 
 ```json
@@ -104,26 +108,30 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 > - The `expires_at` attribute default was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120213) in GitLab 16.0.
 
-Create a [group access token](../user/group/settings/group_access_tokens.md). You must have the Owner role for the
-group to create group access tokens.
+Creates a group access token for a specified group.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
 
 ```plaintext
 POST /groups/:id/access_tokens
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
-| `name` | String | yes | Name of the group access token  |
-| `scopes` | `Array[String]` | yes | [List of scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) |
-| `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). |
-| `expires_at` | Date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| Attribute      | Type              | required | Description |
+| -------------- | ----------------- | -------- | ----------- |
+| `id`           | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a group. |
+| `name`         | String            | yes      | Name of the token. |
+| `scopes`       | `Array[String]`   | yes      | List of [scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) available to the token. |
+| `access_level` | Integer           | no       | [Access level](../development/permissions/predefined_roles.md#members) for the token. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Default value: `40`. |
+| `expires_at`   | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
---header "Content-Type:application/json" \
---data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level": 30 }' \
-"https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type:application/json" \
+  --data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level": 30 }' \
+  --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens"
 ```
 
 ```json
@@ -146,36 +154,31 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Rotate a group access token
 
-Rotate a group access token. Revokes the previous token and creates a new token that expires in one week.
-
-You can either:
-
-- Use the group access token ID.
-- In GitLab 17.9 and later, pass the group access token to the API in a request header.
-
-### Use a group access token ID
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+> - `expires_at` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6.
+
+Rotates a group access token. This immediately revokes the previous token and creates a new token. Generally, this endpoint rotates a specific group access token by authenticating with a personal access token. You can also use a group access token to rotate itself. For more information, see [Self-rotation](#self-rotation).
+
+If you attempt to use the revoked token later, GitLab immediately revokes the new token. For more information, see [Automatic reuse detection](personal_access_tokens.md#automatic-reuse-detection).
 
 Prerequisites:
 
-- You must have a [personal access token with the `api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
-
-In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
+- A personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes) or a group access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes). See [Self-rotation](#self-rotation).
 
 ```plaintext
 POST /groups/:id/access_tokens/:token_id/rotate
 ```
 
-| Attribute | Type       | required | Description         |
-|-----------|------------|----------|---------------------|
-| `id` | integer or string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
-| `token_id` | integer | yes | ID of the access token |
-| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. If undefined, the token expires after one week. |
+| Attribute    | Type              | required | Description |
+| ------------ | ----------------- | -------- | ----------- |
+| `id`         | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a group. |
+| `token_id`   | integer or string | yes      | ID of a group access token or the keyword `self`. |
+| `expires_at` | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the token expires after one week. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-"https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"
 ```
 
 Example response:
@@ -197,92 +200,58 @@ Example response:
 }
 ```
 
-#### Responses
+If successful, returns `200: OK`.
 
-- `200: OK` if existing token is successfully revoked and the new token is created.
-- `400: Bad Request` if not rotated successfully.
-- `401: Unauthorized` if either the:
-  - User does not have access to the token with the specified ID.
-  - Token with the specified ID does not exist.
-- `401: Unauthorized` if any of the following conditions are true:
-  - You do not have access to the specified token.
-  - The specified token does not exist.
-  - You're authenticating with a group access token. Use [`/groups/:id/access_tokens/self/rotate`](#use-a-request-header). instead.
-- `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
+Other possible responses:
 
-### Use a request header
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178111) in GitLab 17.9
-
-Requires:
-
-- `api` or `self_rotate` scope.
-
-In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date is subject to the [maximum allowable lifetime limits](../user/profile/personal_access_tokens.md#access-token-expiration).
-
-```plaintext
-POST /groups/:id/access_tokens/self/rotate
-```
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_group_access_token>" \
-"https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/self/rotate"
-```
-
-Example response:
-
-```json
-{
-    "id": 42,
-    "name": "Rotated Token",
-    "revoked": false,
-    "created_at": "2025-01-19T15:00:00.000Z",
-    "description": "Test group access token",
-    "scopes": ["read_api","self_rotate"],
-    "user_id": 1337,
-    "last_used_at": null,
-    "active": true,
-    "expires_at": "2025-01-26",
-    "access_level": 30,
-    "token": "s3cr3t"
-}
-```
-
-#### Responses
-
-- `200: OK` if the existing group access token is successfully revoked and the new token successfully created.
 - `400: Bad Request` if not rotated successfully.
 - `401: Unauthorized` if any of the following conditions are true:
   - The token does not exist.
   - The token has expired.
   - The token was revoked.
-  - The token is not a group access token associated with the specified group.
+  - You do not have access to the specified token.
+  - You're using a group access token to rotate another group access token. See [Self-rotate a project access token](#self-rotation) instead.
 - `403: Forbidden` if the token is not allowed to rotate itself.
+- `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
 - `405: Method Not Allowed` if the token is not an access token.
 
-### Automatic reuse detection
+### Self-rotation
 
-Refer to [automatic reuse detection for personal access tokens](personal_access_tokens.md#automatic-reuse-detection)
-for more information.
+Instead of rotating a specific group access token, you can instead rotate the same group access token you used to authenticate the request. To self-rotate a group access token, you must:
+
+- Rotate a group access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+- Use the `self` keyword in the request URL.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_group_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/self/rotate"
+```
 
 ## Revoke a group access token
 
-Revoke a [group access token](../user/group/settings/group_access_tokens.md).
+Revokes a specified group access token.
 
 ```plaintext
 DELETE /groups/:id/access_tokens/:token_id
 ```
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
-| `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
-| `token_id` | integer | yes | ID of the group access token |
+| Attribute  | Type              | required | Description |
+| ---------- | ----------------- | -------- | ----------- |
+| `id`       | integer or string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a group. |
+| `token_id` | integer           | yes      | ID of a group access token. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
+curl --request DELETE
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
 ```
 
-### Responses
+If successful, returns `204 No content`.
 
-- `204: No Content` if successfully revoked.
-- `400 Bad Request` or `404 Not Found` if not revoked successfully.
+Other possible responses:
+
+- `400 Bad Request`: Token was not revoked.
+- `404 Not Found`: Token can not be found.

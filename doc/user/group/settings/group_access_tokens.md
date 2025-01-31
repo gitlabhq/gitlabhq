@@ -132,7 +132,7 @@ access tokens on the access tokens page.
 
 The inactive group access tokens table displays revoked and expired tokens for 30 days after they became inactive.
 
-Tokens that belong to [an active token family](../../../api/group_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
+Tokens that belong to [an active token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
 
 ### Use the UI
 

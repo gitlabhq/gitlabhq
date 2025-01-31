@@ -22,6 +22,7 @@ swap:
   (?<!right-)click(?!-through): "select"
   cancelled: "canceled"
   cancelling: "canceling"
+  cherry pick: "cherry-pick"
   code base: "codebase"
   config: "configuration"
   confirmation box: "confirmation dialog"
