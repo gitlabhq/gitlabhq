@@ -1505,6 +1505,22 @@ Returns [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="queryworkitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 
+### `Query.workItemDescriptionTemplateContent`
+
+Find a work item description template.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Returns [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryworkitemdescriptiontemplatecontenttemplatecontentinput"></a>`templateContentInput` | [`WorkItemDescriptionTemplateContentInput!`](#workitemdescriptiontemplatecontentinput) | Input for fetching a specific Descriptiontemplate. |
+
 ### `Query.workItemsByReference`
 
 Find work items by their reference.
@@ -27094,7 +27110,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupworkitemdescriptiontemplatesname"></a>`name` | [`String`](#string) | Fetches the specific DescriptionTemplate. |
+| <a id="groupworkitemdescriptiontemplatesname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.9. name and project ID are both required for fetching, use DescriptionTemplateContentInputType instead. |
 | <a id="groupworkitemdescriptiontemplatessearch"></a>`search` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.8. search on template names is performed on the FE only. |
 
 ##### `Group.workItemStateCounts`
@@ -31054,7 +31070,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="namespaceworkitemdescriptiontemplatesname"></a>`name` | [`String`](#string) | Fetches the specific DescriptionTemplate. |
+| <a id="namespaceworkitemdescriptiontemplatesname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.9. name and project ID are both required for fetching, use DescriptionTemplateContentInputType instead. |
 | <a id="namespaceworkitemdescriptiontemplatessearch"></a>`search` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 17.8. search on template names is performed on the FE only. |
 
 ##### `Namespace.workItemTypes`
@@ -38495,8 +38511,9 @@ Returns [`String!`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemdescriptiontemplatecategory"></a>`category` | [`String`](#string) | Category of description template. |
-| <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String!`](#string) | Content of Description Template. |
-| <a id="workitemdescriptiontemplatename"></a>`name` | [`String!`](#string) | Name of Description Template. |
+| <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String`](#string) | Content of Description Template. |
+| <a id="workitemdescriptiontemplatename"></a>`name` | [`String`](#string) | Name of Description Template. |
+| <a id="workitemdescriptiontemplateprojectid"></a>`projectId` | [`Int`](#int) | ID of the description template project. |
 
 ### `WorkItemLinkedResource`
 
@@ -46191,6 +46208,15 @@ Attributes for value stream stage.
 | <a id="workitemconverttaskinputlockversion"></a>`lockVersion` | [`Int!`](#int) | Current lock version of the work item containing the task in the description. |
 | <a id="workitemconverttaskinputtitle"></a>`title` | [`String!`](#string) | Full string of the task to be replaced. New title for the created work item. |
 | <a id="workitemconverttaskinputworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type used to create the new work item. |
+
+### `WorkItemDescriptionTemplateContentInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdescriptiontemplatecontentinputname"></a>`name` | [`String!`](#string) | Name of the description template. |
+| <a id="workitemdescriptiontemplatecontentinputprojectid"></a>`projectId` | [`Int!`](#int) | ID of the project the template belongs to. |
 
 ### `WorkItemResolveDiscussionsInput`
 

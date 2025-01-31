@@ -22,7 +22,7 @@ Backend engineers who wish to learn GraphQL at GitLab should read this guide in 
 [guides for the GraphQL Ruby gem](https://graphql-ruby.org/guides).
 Those guides teach you the features of the gem, and the information in it is generally not reproduced here.
 
-To learn about the design and features of GraphQL itself read [the guide on `graphql.org`](https://graphql.org/learn)
+To learn about the design and features of GraphQL itself read [the guide on `graphql.org`](https://graphql.org/learn/)
 which is an accessible but shortened version of information in the [GraphQL spec](https://spec.graphql.org).
 
 ### Deep Dive

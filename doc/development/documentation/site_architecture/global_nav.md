@@ -238,15 +238,6 @@ Example with multiple docs:
       doc_url: 'doc-2-link'
 ```
 
-If you need to add a document in an external URL, add the attribute `external_url`
-below the doc link:
-
-```yaml
-- doc_title: Document 2 title
-  doc_url: 'doc-2-link'
-  external_url: true
-```
-
 All nav links are selectable. If the higher-level link does not have a link
 of its own, it must link to its first sub-item link, mimicking the navigation in GitLab.
 This must be avoided so that we don't have duplicated links nor two `.active` links
@@ -278,7 +269,7 @@ and the following syntax rules.
 
 ##### URLs
 
-URLs can be either relative or external, and the following apply:
+URLs must be relative. In addition:
 
 - All links in the data file must end with `.html` (with the exception
   of `index.html` files), and not `.md`.
@@ -287,14 +278,8 @@ URLs can be either relative or external, and the following apply:
 - As convention, always wrap URLs in single quotes `'url'`.
 - Always use the project prefix depending on which project the link you add
   lives in. To find the global nav link, from the full URL remove `https://docs.gitlab.com/`.
-- If a URL links to an external URL, like the [GitLab Design System](https://design.gitlab.com),
-  add the attribute `external_url: true`, for example:
-
-  ```yaml
-  - category_title: GitLab Design System
-    category_url: 'https://design.gitlab.com'
-    external_url: true
-  ```
+- Do not link to external URLs. We don't have link checking for external URLs, and
+  leaving the docs site by clicking the left navigation is a confusing user experience.
 
 Examples of relative URLs:
 

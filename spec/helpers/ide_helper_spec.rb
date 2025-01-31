@@ -11,7 +11,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
   let_it_be(:disabled_vscode_settings) { { enabled: false } }
   let_it_be(:enabled_vscode_settings) do
     { enabled: true,
-      vscode_settings: { service_url: 'https://example.com', item_url: 'https://example.com', resource_template_url: 'https://example.com' } }
+      vscode_settings: { service_url: 'https://example.com', item_url: 'https://example.com', resource_url_template: 'https://example.com' } }
   end
 
   before do

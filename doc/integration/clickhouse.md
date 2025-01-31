@@ -23,7 +23,7 @@ To set up ClickHouse as the GitLab data storage:
 
 ### Run and configure ClickHouse
 
-The most straightforward way to run ClickHouse is with [ClickHouse Cloud](https://clickhouse.cloud/).
+The most straightforward way to run ClickHouse is with [ClickHouse Cloud](https://console.clickhouse.cloud/).
 You can also [run ClickHouse on your own server](https://clickhouse.com/docs/en/install). Refer to the ClickHouse
 documentation regarding [recommendations for self-managed instances](https://clickhouse.com/docs/en/install#recommendations-for-self-managed-clickhouse).
 

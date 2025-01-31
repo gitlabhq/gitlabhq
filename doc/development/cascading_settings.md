@@ -218,7 +218,7 @@ Renders the label for a `fieldset` setting.
 | `settings_path_helper` | Lambda function that generates a path to the ancestor setting. For example, `-> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }`                                           | `Lambda`             | `true`                   |
 | `help_text`            | Text shown below the checkbox.                                                                                                                                                                                       | `String`             | `false` (`nil`)          |
 
-[`_lock_tooltips.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/b73353e47e283a7d9c9eda5bdedb345dcfb685b6/app/views/shared/namespaces/cascading_settings/_lock_tooltips.html.haml)
+[`_lock_tooltips.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/shared/namespaces/cascading_settings/_lock_tooltips.html.haml)
 
 Renders the mount element needed to initialize the JavaScript used to display the tooltip when hovering over the lock icon. This partial is only needed once per page.
 

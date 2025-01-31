@@ -340,7 +340,7 @@ export default {
         : this.$options.i18n.confidentialityEnabled;
     },
     showChangeType() {
-      return !this.isEpic && this.glFeatures.workItemsBeta && this.$options.isLoggedIn;
+      return !this.isEpic && this.glFeatures.workItemsBeta && this.canUpdate;
     },
     allowedWorkItemTypes() {
       if (this.isGroup) {

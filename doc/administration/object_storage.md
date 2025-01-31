@@ -257,7 +257,7 @@ To set up an instance profile:
 
 When configured either with an instance profile or with the consolidated
 form, GitLab Workhorse properly uploads files to S3
-buckets that have [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
+buckets that have [SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html).
 AWS KMS keys and SSE-C encryption are
 [not supported since this requires sending the encryption keys in every request](https://gitlab.com/gitlab-org/gitlab/-/issues/226006).
 
@@ -272,7 +272,7 @@ in the `storage_options` configuration section:
 | Setting                             | Description                              |
 |-------------------------------------|------------------------------------------|
 | `server_side_encryption`            | Encryption mode (`AES256` or `aws:kms`). |
-| `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingKMSEncryption.html). |
+| `server_side_encryption_kms_key_id` | Amazon Resource Name. Only needed when `aws:kms` is used in `server_side_encryption`. See the [Amazon documentation on using KMS encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html). |
 
 As with the case for default encryption, these options only work when
 the Workhorse S3 client is enabled. One of the following two conditions

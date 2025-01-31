@@ -203,6 +203,13 @@ module Types
       experiment: { milestone: '15.1' },
       description: 'Find a work item.'
 
+    field :work_item_description_template_content, WorkItems::DescriptionTemplateType,
+      null: true,
+      resolver: Resolvers::WorkItems::DescriptionTemplateContentResolver,
+      experiment: { milestone: '17.9' },
+      description: 'Find a work item description template.',
+      calls_gitaly: true
+
     field :audit_event_definitions,
       Types::AuditEvents::DefinitionType.connection_type,
       null: false,

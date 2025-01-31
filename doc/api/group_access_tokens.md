@@ -244,7 +244,7 @@ DELETE /groups/:id/access_tokens/:token_id
 | `token_id` | integer           | yes      | ID of a group access token. |
 
 ```shell
-curl --request DELETE
+curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
 ```

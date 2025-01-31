@@ -121,7 +121,7 @@ and use [an application password](https://support.google.com/mail/answer/185833)
 
 If you want to use Office 365, and two-factor authentication is enabled, make sure
 you're using an
-[app password](https://support.microsoft.com/en-us/account-billing/manage-app-passwords-for-two-step-verification-d6dc8c6d-4bf7-4851-ad95-6d07799387e9)
+[app password](https://support.microsoft.com/en-us/account-billing/app-passwords-for-a-work-or-school-account-d6dc8c6d-4bf7-4851-ad95-6d07799387e9)
 instead of the regular password for the mailbox.
 
 To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
@@ -808,7 +808,7 @@ incoming_email:
 #### Microsoft Graph
 
 GitLab can read incoming email using the Microsoft Graph API instead of
-IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API is be required for new Microsoft Exchange Online mailboxes.
+IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/blog/exchange/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in-exchange-online/1330432), the Microsoft Graph API is be required for new Microsoft Exchange Online mailboxes.
 
 To configure GitLab for Microsoft Graph, you need to register an
 OAuth 2.0 application in your Azure Active Directory that has the

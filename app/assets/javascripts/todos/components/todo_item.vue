@@ -1,10 +1,11 @@
 <script>
-import { GlLink, GlIcon } from '@gitlab/ui';
+import { GlLink, GlIcon, GlFormCheckbox } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import dateFormat from '~/lib/dateformat';
 import { formatDate, getDayDifference, fallsBefore } from '~/lib/utils/datetime_utility';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE } from '../constants';
 import TodoItemTitle from './todo_item_title.vue';
 import TodoItemBody from './todo_item_body.vue';
@@ -21,13 +22,14 @@ export default {
   components: {
     GlLink,
     GlIcon,
+    GlFormCheckbox,
     TodoItemTitle,
     TodoItemBody,
     TodoItemTimestamp,
     TodoItemActions,
     TodoItemTitleHiddenBySaml,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, glFeatureFlagMixin()],
   inject: ['currentTab'],
   props: {
     currentUserId: {
@@ -37,6 +39,11 @@ export default {
     todo: {
       type: Object,
       required: true,
+    },
+    selected: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -106,10 +113,17 @@ export default {
 
 <template>
   <li
-    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-z-1 hover:gl-cursor-pointer hover:gl-border-blue-200 hover:gl-bg-blue-50"
+    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-z-1 hover:gl-border-blue-200 hover:gl-bg-blue-50"
     :data-testid="`todo-item-${todo.id}`"
     :class="{ 'gl-bg-subtle': isDone }"
   >
+    <gl-form-checkbox
+      v-if="glFeatures.todosBulkActions"
+      class="gl-inline-block gl-pt-2"
+      :aria-label="__('Select')"
+      :checked="selected"
+      @change="(checked) => $emit('select-change', todo.id, checked)"
+    />
     <gl-link
       :href="targetUrl"
       :data-track-label="trackingLabel"

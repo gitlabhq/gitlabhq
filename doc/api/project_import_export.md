@@ -370,7 +370,7 @@ POST /projects/remote-import-s3
 | `file_key`          | string         | yes      | [AWS S3 file key](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) to identify the file. |
 | `path`              | string         | yes      | The full path of the new project. |
 | `region`            | string         | yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored. |
-| `secret_access_key` | string         | yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys). |
+| `secret_access_key` | string         | yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html#access-keys-and-secret-access-keys). |
 | `name`              | string         | no       | The name of the project to import. If not provided, defaults to the path of the project. |
 | `namespace`         | integer or string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
 

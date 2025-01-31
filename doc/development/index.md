@@ -15,5 +15,5 @@ This content is intended for both GitLab team members and members of the wider c
 - [Contribute to GitLab Runner development](https://docs.gitlab.com/runner/development/)
 - [Contribute to GitLab Pages development](pages/index.md)
 - [Contribute to GitLab distribution development](distribution/index.md)
-- [Contribute to the GitLab Design System](https://design.gitlab.com/get-started/contributing)
+- [Contribute to the GitLab Design System](https://design.gitlab.com/get-started/contributing/)
 - [Contribute to the GitLab documentation](documentation/index.md)

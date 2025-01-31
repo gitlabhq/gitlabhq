@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlFormCheckbox } from '@gitlab/ui';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
@@ -24,7 +24,7 @@ describe('TodoItem', () => {
 
   const findTodoItemTimestamp = () => wrapper.findComponent(TodoItemTimestamp);
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, todosBulkActions = true) => {
     wrapper = shallowMount(TodoItem, {
       propsData: {
         currentUserId: '1',
@@ -35,6 +35,7 @@ describe('TodoItem', () => {
       },
       provide: {
         currentTab: 0,
+        glFeatures: { todosBulkActions },
       },
     });
   };
@@ -93,6 +94,26 @@ describe('TodoItem', () => {
     const todoItemActions = wrapper.findComponent(TodoItemActions);
     await todoItemActions.vm.$emit('change');
     expect(wrapper.emitted('change')).toHaveLength(1);
+  });
+
+  describe('multi-select checkbox', () => {
+    it('renders a checkbox', () => {
+      createComponent();
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
+    });
+
+    it('emits select-change event when checkbox changes', async () => {
+      createComponent();
+      const checkbox = wrapper.findComponent(GlFormCheckbox);
+      await checkbox.vm.$emit('change', true);
+
+      expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
+    });
+
+    it('does not render a checkbox with feature flag disabled', () => {
+      createComponent({}, false);
+      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
+    });
   });
 
   describe('snoozed to-do items', () => {

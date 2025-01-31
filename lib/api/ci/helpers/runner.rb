@@ -12,9 +12,6 @@ module API
         JOB_TOKEN_PARAM = :token
         LEGACY_SYSTEM_XID = '<legacy>'
 
-        # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
-        UnknownRunnerOwnerError = Class.new(StandardError)
-
         def authenticate_runner!(ensure_runner_manager: true, update_contacted_at: true)
           track_runner_authentication
           forbidden! unless current_runner
@@ -56,9 +53,6 @@ module API
         end
 
         def current_runner_manager
-          # NOTE: Avoid orphaned runners, since we're not allowed to created records with a nil sharding_key_id
-          raise UnknownRunnerOwnerError if !current_runner.instance_type? && current_runner.sharding_key_id.nil?
-
           strong_memoize(:current_runner_manager) do
             system_xid = params.fetch(:system_id, LEGACY_SYSTEM_XID)
             current_runner&.ensure_manager(system_xid)

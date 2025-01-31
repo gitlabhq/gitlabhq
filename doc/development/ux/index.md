@@ -16,7 +16,7 @@ You may leverage the [Pajamas UI Kit](https://www.figma.com/community/file/78115
 
 ## Contributing to Pajamas
 
-To contribute to [Pajamas design system](https://design.gitlab.com/) and the [UI kit](https://www.figma.com/community/file/781156790581391771/component-library), follow the [contribution guidelines](https://design.gitlab.com/get-started/contributing) documented in the handbook. While the instructions are code-focused, they will help you understand the overall process of contributing.
+To contribute to [Pajamas design system](https://design.gitlab.com/) and the [UI kit](https://www.figma.com/community/file/781156790581391771/component-library), follow the [contribution guidelines](https://design.gitlab.com/get-started/contributing/) documented in the handbook. While the instructions are code-focused, they will help you understand the overall process of contributing.
 
 ## Contributing to other issues
 

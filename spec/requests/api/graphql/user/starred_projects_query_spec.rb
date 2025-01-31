@@ -77,12 +77,12 @@ RSpec.describe 'Getting starredProjects of the user', feature_category: :groups_
         project_d.add_reporter(user)
         user.toggle_star(project_d)
 
-        # There is an N+1 query for max_member_access_for_user_ids
-        # There is an N+1 query for duo_features_enabled cascading setting
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/442164
+        # There is an N+1 query related to custom roles - https://gitlab.com/gitlab-org/gitlab/-/issues/515675
+        # There is an N+1 query for duo_features_enabled cascading setting - https://gitlab.com/gitlab-org/gitlab/-/issues/442164
+        # There is an N+1 query related to pipelines - https://gitlab.com/gitlab-org/gitlab/-/issues/515677
         expect do
           post_graphql(query, current_user: current_user)
-        end.not_to exceed_all_query_limit(control).with_threshold(7)
+        end.not_to exceed_all_query_limit(control).with_threshold(5)
       end
     end
   end

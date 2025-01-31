@@ -128,7 +128,7 @@ Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 
 
 If you are using the [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)
 in GitLab 15.0 or later, you must to enable the `AES256-GCM-SHA384` cipher in NGINX.
-See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#aes256-gcm-sha384-ssl-cipher-no-longer-allowed-by-default-by-nginx)
+See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](../update/versions/gitlab_15_changes.md#1500)
 for more information.
 
 The default ciphers for a GitLab version can be

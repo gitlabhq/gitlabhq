@@ -136,6 +136,13 @@ To enable GitLab Advanced SAST by using the pipeline editor:
 
 Pipelines now include a GitLab Advanced SAST job.
 
+### Disable GitLab Advanced SAST scanning
+
+Advanced SAST scanning is not enabled by default, but it may be enabled at the group level or in another way that affects multiple projects.
+
+To explicitly disable Advanced SAST scanning in a project, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
+You can set this variable anywhere you can configure CI/CD variables, including the same ways you can [enable Advanced SAST scanning](#enable-gitlab-advanced-sast-scanning).
+
 ## Vulnerability code flow
 
 > - Introduced in GitLab 17.3 [with several flags](../../../administration/feature_flags.md). Enabled by default.

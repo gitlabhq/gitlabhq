@@ -32,8 +32,8 @@ GET projects/:id/access_tokens?state=inactive
 
 ```shell
 curl --request GET \
- --header "PRIVATE-TOKEN: <your_access_token>" \
- --url "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
 ```
 
 ```json

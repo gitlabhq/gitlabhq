@@ -702,6 +702,12 @@ describe('WorkItemActions component', () => {
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });
+
+    it('hides the action when there is no permission', () => {
+      createComponent({ canUpdate: false });
+
+      expect(findChangeTypeButton().exists()).toBe(false);
+    });
   });
 
   it('passes the `parentId` prop down to the `WorkItemStateToggle` component', () => {
