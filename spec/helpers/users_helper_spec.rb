@@ -111,7 +111,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
 
       it 'is empty' do
-        expect(profile_actions).to match_array []
+        expect(profile_actions).to be_empty
       end
     end
 

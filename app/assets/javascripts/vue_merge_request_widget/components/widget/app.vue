@@ -18,33 +18,51 @@ export default {
       import('~/vue_merge_request_widget/widgets/accessibility/index.vue'),
   },
   mixins: [glFeatureFlagsMixin()],
+  provide() {
+    return {
+      reportsTabContent: this.reportsTabContent,
+    };
+  },
   props: {
     mr: {
       type: Object,
       required: true,
     },
+    reportsTabContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      collapsed: this.glFeatures.mrReportsTab,
+      collapsed: this.reportsTabContent ? false : this.glFeatures.mrReportsTab,
       findingsCount: 0,
       loadedCount: 0,
     };
   },
   computed: {
     testReportWidget() {
+      if (!this.isViewingReport('test-summary')) return undefined;
+
       return this.mr.testResultsPath && 'MrTestReportWidget';
     },
 
     terraformPlansWidget() {
+      if (!this.isViewingReport('terraform')) return undefined;
+
       return this.mr.terraformReportsPath && 'MrTerraformWidget';
     },
 
     codeQualityWidget() {
+      if (!this.isViewingReport('code-quality')) return undefined;
+
       return this.mr.codequalityReportsPath ? 'MrCodeQualityWidget' : undefined;
     },
 
     accessibilityWidget() {
+      if (!this.isViewingReport('accessibility')) return undefined;
+
       return this.mr.accessibilityReportPath ? 'MrAccessibilityWidget' : undefined;
     },
 
@@ -69,7 +87,17 @@ export default {
       return false;
     },
   },
+  mounted() {
+    if (this.reportsTabContent && !this.widgets.length) {
+      this.$router.push({ path: '/' });
+    }
+  },
   methods: {
+    isViewingReport(reportName) {
+      if (!this.reportsTabContent) return true;
+
+      return this.$router.currentRoute.params.report === reportName;
+    },
     onLoadedReport(findings) {
       this.findingsCount += findings;
       this.loadedCount += 1;
@@ -82,12 +110,14 @@ export default {
   <section
     v-if="widgets.length"
     role="region"
-    :aria-label="__('Merge request reports')"
+    :aria-label="reportsTabContent ? null : __('Merge request reports')"
     data-testid="mr-widget-app"
-    class="mr-section-container"
+    :class="{
+      'mr-section-container': !reportsTabContent,
+    }"
   >
     <state-container
-      v-if="glFeatures.mrReportsTab"
+      v-if="glFeatures.mrReportsTab && !reportsTabContent"
       :status="statusIcon"
       is-collapsible
       collapse-on-desktop
@@ -123,7 +153,8 @@ export default {
       data-testid="reports-widgets-container"
       class="reports-widgets-container"
       :class="{
-        'gl-border-t gl-relative gl-border-t-section gl-bg-subtle': glFeatures.mrReportsTab,
+        'gl-border-t gl-relative gl-border-t-section gl-bg-subtle':
+          glFeatures.mrReportsTab && !reportsTabContent,
       }"
     >
       <component
@@ -132,7 +163,9 @@ export default {
         :key="widget.name || index"
         :mr="mr"
         class="mr-widget-section"
-        :class="{ 'gl-border-t gl-border-t-section': index > 0 }"
+        :class="{
+          'gl-border-t gl-border-t-section': index > 0 && !reportsTabContent,
+        }"
         @loaded="onLoadedReport"
       />
     </div>

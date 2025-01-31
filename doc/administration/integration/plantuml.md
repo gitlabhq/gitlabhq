@@ -83,6 +83,29 @@ You can add parameters to block definitions:
 
 Markdown does not support any parameters, and always uses PNG format.
 
+## Include diagram files
+
+You can include or embed a PlantUML diagram from separate files in the repository using
+the `include` directive. Use this to maintain complex diagrams in dedicated files, or to
+reuse diagrams. For example:
+
+- **Markdown**:
+
+  ````markdown
+  ```plantuml
+  ::include{file=diagram.puml}
+  ```
+  ````
+
+- **AsciiDoc**:
+
+  ```plaintext
+  [plantuml, format="png", id="myDiagram", width="200px"]
+  ----
+  include::diagram.puml[]
+  ----
+  ```
+
 ## Configure your PlantUML server
 
 Before you can enable PlantUML in GitLab, set up your own PlantUML

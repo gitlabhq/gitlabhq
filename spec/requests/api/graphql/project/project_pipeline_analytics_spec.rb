@@ -70,6 +70,7 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
       let(:fields) do
         <<~QUERY
           aggregate { #{period_fields} }
+          timeSeries(period: DAY) { #{period_fields} }
 
           weekPipelinesTotals
           weekPipelinesLabels

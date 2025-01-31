@@ -7,7 +7,7 @@ RSpec.describe ::Search::EmptySearchResults, feature_category: :global_search do
 
   describe '#objects' do
     it 'returns an empty array' do
-      expect(results.objects).to match_array([])
+      expect(results.objects).to be_empty
     end
   end
 
@@ -37,7 +37,7 @@ RSpec.describe ::Search::EmptySearchResults, feature_category: :global_search do
 
   describe '#aggregations' do
     it 'returns an empty array' do
-      expect(results.aggregations).to match_array([])
+      expect(results.aggregations).to be_empty
     end
   end
 

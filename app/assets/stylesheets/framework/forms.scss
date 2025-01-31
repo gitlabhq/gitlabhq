@@ -33,11 +33,7 @@ input[type='search'] {
 /* stylelint-enable property-no-vendor-prefix */
 
 .form-actions {
-  margin-top: 0;
-  margin-bottom: -$gl-padding;
-  padding: $gl-padding;
-  background-color: $gray-10;
-  border-top: 1px solid $border-color;
+  @apply gl-mt-0 -gl-mb-5 gl-p-5 gl-bg-subtle gl-border-t;
 }
 
 label {

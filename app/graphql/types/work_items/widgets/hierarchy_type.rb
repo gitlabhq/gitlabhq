@@ -32,11 +32,11 @@ module Types
         field :has_parent, GraphQL::Types::Boolean,
           null: false, method: :has_parent?, description: 'Indicates if the work item has a parent.'
 
-        field :rolled_up_counts_by_type, [Types::WorkItems::WorkItemTypeCountsByStateType],
+        field :rolled_up_counts_by_type, [::Types::WorkItems::WorkItemTypeCountsByStateType],
           null: false, description: 'Counts of descendant work items by work item type and state.',
           experiment: { milestone: '17.3' }
 
-        field :depth_limit_reached_by_type, [Types::WorkItems::WorkItemTypeDepthLimitReachedByType],
+        field :depth_limit_reached_by_type, [::Types::WorkItems::WorkItemTypeDepthLimitReachedByType],
           null: false, description: 'Depth limit reached by allowed work item type.',
           experiment: { milestone: '17.4' }
 

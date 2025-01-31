@@ -1,3 +1,4 @@
+import { GlFormGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import GfmAutoComplete from '~/gfm_auto_complete';
@@ -14,7 +15,7 @@ describe('RelatedIssuableInput', () => {
     issues: `${TEST_HOST}/h5bp/html5-boilerplate/-/autocomplete_sources/issues`,
   };
 
-  const mountComponent = (props = {}) => {
+  const mountComponent = (props = {}, stubs) => {
     wrapper = shallowMount(RelatedIssuableInput, {
       propsData: {
         inputValue: '',
@@ -25,6 +26,7 @@ describe('RelatedIssuableInput', () => {
         ...props,
       },
       attachTo: document.body,
+      stubs,
     });
   };
 
@@ -94,6 +96,30 @@ describe('RelatedIssuableInput', () => {
           },
         ],
       ]);
+    });
+  });
+
+  describe('description', () => {
+    const findDescription = () => wrapper.find('span');
+
+    it('shows description text', () => {
+      mountComponent(undefined, { GlFormGroup });
+
+      expect(findDescription().text()).toBe(
+        'Only issues can be linked from this form. You can also link this issue from an epic or task.',
+      );
+    });
+
+    it('hides description when inline prop is true', () => {
+      mountComponent({ inline: true }, { GlFormGroup });
+
+      expect(findDescription().exists()).toBe(false);
+    });
+
+    it('hides description when issuableType is not TYPE_ISSUE', () => {
+      mountComponent({ issuableType: 'MergeRequest' }, { GlFormGroup });
+
+      expect(findDescription().exists()).toBe(false);
     });
   });
 });

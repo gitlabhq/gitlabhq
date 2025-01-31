@@ -52461,6 +52461,9 @@ msgstr ""
 msgid "SecurityReports|All tools"
 msgstr ""
 
+msgid "SecurityReports|Attach to existing issue"
+msgstr ""
+
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr ""
 

@@ -16,13 +16,13 @@ module Types
       field :name, GraphQL::Types::String,
         null: false,
         description: 'Name of the work item type.'
-      field :widget_definitions, [Types::WorkItems::WidgetDefinitionInterface],
+      field :widget_definitions, [::Types::WorkItems::WidgetDefinitionInterface],
         null: true,
         description: 'Available widgets for the work item type.',
         method: :widgets,
         experiment: { milestone: '16.7' }
 
-      field :supported_conversion_types, [Types::WorkItems::TypeType],
+      field :supported_conversion_types, [::Types::WorkItems::TypeType],
         null: true,
         description: 'Supported conversion types for the work item type.',
         experiment: { milestone: '17.8' }

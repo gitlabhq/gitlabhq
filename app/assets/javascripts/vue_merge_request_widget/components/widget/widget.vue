@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLink, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import { kebabCase } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
@@ -8,7 +9,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
+import { joinPaths } from '~/lib/utils/url_utility';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
@@ -50,6 +51,7 @@ export default {
     SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: { reportsTabContent: { default: false } },
   props: {
     loadingText: {
       type: String,
@@ -175,7 +177,7 @@ export default {
   data() {
     return {
       isExpandedForTheFirstTime: true,
-      isCollapsed: true,
+      isCollapsed: !this.reportsTabContent,
       isLoadingCollapsedContent: true,
       isLoadingExpandedContent: false,
       summaryError: null,
@@ -212,9 +214,9 @@ export default {
       return [
         {
           text: __('View report'),
-          href: mergeUrlParams(
-            { type: this.widgetName.replace(WIDGET_PREFIX, '') },
+          href: joinPaths(
             window.gl?.mrWidgetData?.reportsTabPath || '',
+            kebabCase(this.widgetName.replace(WIDGET_PREFIX, '')),
           ),
           onClick(action, e) {
             e.preventDefault();
@@ -252,6 +254,10 @@ export default {
       }
     } catch {
       this.summaryError = this.errorText;
+    }
+
+    if (this.reportsTabContent) {
+      this.fetchExpandedContent();
     }
 
     this.isLoadingCollapsedContent = false;
@@ -341,7 +347,13 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4" :class="{ 'gl-pl-9': glFeatures.mrReportsTab }">
+    <div
+      v-if="!reportsTabContent"
+      :class="{
+        'gl-pl-9': glFeatures.mrReportsTab,
+        'gl-flex gl-px-5 gl-py-4 gl-pr-4': !reportsTabContent,
+      }"
+    >
       <status-icon
         :level="glFeatures.mrReportsTab ? 2 : 1"
         :name="widgetName"
@@ -415,11 +427,15 @@ export default {
       </div>
     </div>
     <div
-      v-if="!glFeatures.mrReportsTab && (!isCollapsed || contentError)"
-      class="gl-border-t gl-relative gl-border-t-section gl-bg-subtle"
+      v-if="!isCollapsed || contentError"
+      :class="{ 'gl-border-t gl-relative gl-border-t-section gl-bg-subtle': !reportsTabContent }"
       data-testid="widget-extension-collapsed-section"
     >
-      <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
+      <div
+        v-if="isLoadingExpandedContent"
+        class="gl-text-center"
+        :class="{ 'report-block-container': !reportsTabContent, 'gl-py-5': reportsTabContent }"
+      >
         <gl-loading-icon size="sm" inline /> {{ loadingText }}
       </div>
       <div v-else class="gl-flex gl-pl-5" :class="{ 'gl-pr-5': $scopedSlots.content }">
@@ -439,7 +455,8 @@ export default {
               v-if="contentWithKeyField"
               :items="contentWithKeyField"
               :min-item-size="32"
-              :style="{ maxHeight: '170px' }"
+              :style="{ maxHeight: reportsTabContent ? null : '170px' }"
+              :page-mode="glFeatures.mrReportsTab && reportsTabContent"
               data-testid="dynamic-content-scroller"
               class="gl-pr-5"
             >

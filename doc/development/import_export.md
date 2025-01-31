@@ -6,6 +6,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Import/Export development documentation
 
+NOTE:
+To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
+
 General development guidelines and tips for the [Import/Export feature](../user/project/settings/import_export.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> This document is originally based on the [Import/Export 201 presentation available on YouTube](https://www.youtube.com/watch?v=V3i1OfExotE).

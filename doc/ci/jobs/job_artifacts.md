@@ -73,54 +73,14 @@ The option is not available when an artifact has no expiry set.
 
 By default, the [latest artifacts are always kept](#keep-artifacts-from-most-recent-successful-jobs).
 
-### With a dynamically defined name
+### With an explicitly defined artifact name
 
-You can use [CI/CD variables](../variables/index.md) to dynamically define the
-artifacts file's name.
-
-For example, to create an archive with a name of the current job:
+You can explicitly customize artifact names using the [`artifacts:name`](../yaml/index.md#artifactsname) configuration:
 
 ```yaml
 job:
   artifacts:
-    name: "$CI_JOB_NAME"
-    paths:
-      - binaries/
-```
-
-To create an archive with a name of the current branch or tag including only
-the binaries directory:
-
-```yaml
-job:
-  artifacts:
-    name: "$CI_COMMIT_REF_NAME"
-    paths:
-      - binaries/
-```
-
-If your branch-name contains forward slashes
-(for example `feature/my-feature`) use `$CI_COMMIT_REF_SLUG`
-instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
-
-### With a Windows runner or shell executor
-
-If you use Windows Batch to run your shell scripts you must replace `$` with `%`:
-
-```yaml
-job:
-  artifacts:
-    name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
-    paths:
-      - binaries/
-```
-
-If you use Windows PowerShell to run your shell scripts you must replace `$` with `$env:`:
-
-```yaml
-job:
-  artifacts:
-    name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
+    name: "job1-artifacts-file"
     paths:
       - binaries/
 ```
@@ -178,6 +138,34 @@ artifacts:
   exclude:
     - "*.txt"
 ```
+
+### With variable expansion
+
+Variable expansion is supported for:
+
+- [`artifacts:name`](../yaml/index.md#artifactsname)
+- [`artifacts:paths`](../yaml/index.md#artifactspaths)
+- [`artifacts:exclude`](../yaml/index.md#artifactsexclude)
+
+Instead of using shell, GitLab Runner uses its
+[internal variable expansion mechanism](../variables/where_variables_can_be_used.md#gitlab-runner-internal-variable-expansion-mechanism).
+Only [CI/CD variables](../variables/index.md) are supported in this context.
+
+For example, to create an archive using the current branch or tag name
+including only files from a directory named after the current project:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    paths:
+      - binaries/${CI_PROJECT_NAME}/"
+```
+
+When your branch name contains forward slashes (for example, `feature/my-feature`),
+use `$CI_COMMIT_REF_SLUG` instead of `$CI_COMMIT_REF_NAME` to ensure proper artifact naming.
+
+Variables are expanded before [globs](https://en.wikipedia.org/wiki/Glob_(programming)).
 
 ## Fetching artifacts
 

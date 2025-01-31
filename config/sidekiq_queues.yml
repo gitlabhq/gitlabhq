@@ -761,6 +761,8 @@
   - 1
 - - requirements_management_process_requirements_reports
   - 1
+- - sbom_create_occurrences_vulnerabilities
+  - 1
 - - sbom_process_transfer_events
   - 1
 - - sbom_process_vulnerabilities

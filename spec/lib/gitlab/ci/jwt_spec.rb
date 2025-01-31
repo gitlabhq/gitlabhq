@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
 
     it 'has correct values for the custom attributes' do
       aggregate_failures do
-        expect(payload[:groups_direct]).to match_array([])
+        expect(payload[:groups_direct]).to be_empty
         expect(payload[:namespace_id]).to eq(namespace.id.to_s)
         expect(payload[:namespace_path]).to eq(namespace.full_path)
         expect(payload[:project_id]).to eq(project.id.to_s)

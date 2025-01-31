@@ -17,6 +17,7 @@ RSpec.shared_context 'with pipelines executed on different projects' do
       create_pipeline(project1, :success, 1.5.days.before(ending_time), 3.days),       # 2023-01-06
       create_pipeline(project1, :failed, 5.days.before(ending_time), 2.hours),         # 2023-01-03
       create_pipeline(project1, :skipped, 5.days.before(ending_time), 1.second),       # 2023-01-03
+      create_pipeline(project1, :canceled, 5.days.before(ending_time), 1.minute),      # 2023-01-03
       create_pipeline(project1, :failed, 1.week.before(ending_time), 45.minutes),      # 2023-01-01
       create_pipeline(project1, :skipped, 1.second.before(starting_time), 45.minutes)  # 2022-12-31
     ]

@@ -61,6 +61,10 @@ module Ci
       duration_percentiles.map { |p| :"p#{p}" }
     end
 
+    def selected_statuses
+      status_groups.flat_map(&STATUS_GROUP_TO_STATUSES).compact
+    end
+
     def validate_arguments
       if (duration_percentiles & ALLOWED_PERCENTILES) != duration_percentiles
         return ServiceResponse.error(message: 'Invalid duration percentiles specified')

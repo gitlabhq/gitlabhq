@@ -13,7 +13,6 @@ import IssueToken from './issue_token.vue';
 const SPACE_FACTOR = 1;
 
 export default {
-  TYPE_ISSUE,
   name: 'RelatedIssuableInput',
   components: {
     GlFormGroup,
@@ -64,6 +63,11 @@ export default {
       required: false,
       default: false,
     },
+    inline: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -83,6 +87,9 @@ export default {
     },
     allowAutoComplete() {
       return Object.keys(this.autoCompleteSources).length > 0;
+    },
+    showDescription() {
+      return !this.inline && this.issuableType === TYPE_ISSUE;
     },
   },
   mounted() {
@@ -182,7 +189,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group>
+  <gl-form-group :label-class="inline ? 'gl-hidden' : ''">
     <div
       ref="issuableFormWrapper"
       :class="{ focus: isInputFocused }"
@@ -229,7 +236,7 @@ export default {
         </li>
       </ul>
     </div>
-    <template v-if="issuableType === $options.TYPE_ISSUE" #description>
+    <template v-if="showDescription" #description>
       <span :id="`${inputId}-description`">
         {{
           __(

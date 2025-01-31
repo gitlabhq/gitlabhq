@@ -25,29 +25,34 @@ Install one of the following GitLab-approved LLM models:
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-| Model family | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
-|--------------|------------------------------------------------------------------------------------|-----------------|-----------------|---------|
-| Mistral Codestral   | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1)                                        | **{check-circle}** Yes               | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| Mistral      | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3)                     | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| Mistral      | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| Mistral      | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1)       |  **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| Claude 3     | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| GPT  | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| GPT  | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
-| GPT  | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Model family | Model | Supported platforms | Status | Code completion | Code generation | GitLab Duo Chat |
+|--------------|-------|---------------------|--------|-----------------|-----------------|-----------------|
+|Mistral Codestral   | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Generally available | 🟢 Green | 🟢 Green | N/A |
+| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Generally available | 🟢 Green | 🟢 Green | 🔴 Red |
+| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | Generally available | 🟢 Green | 🟢 Green | 🟡 Amber |
+| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Generally available | 🟢 Green | 🟢 Green | 🟢 Green |
+| Claude 3 | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | Generally available | 🟢 Green | 🟢 Green | 🟢 Green |
+| GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟡 Amber |
+| GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟢 Green |
+| GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟡 Amber |
+
+Legend: 
+
+- 🟢 Green - Strongly recommended. The model can handle the feature without any loss of quality.
+- 🟡 Amber - Recommended. The model supports the feature, but there might be minor compromises or limitations.
+- 🔴 Red - Not recommended. The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
 
 The following models are under evaluation, and support is limited:
 
-| Model family   | Model                                                                              | Code completion | Code generation | GitLab Duo Chat |
-|--------------- |---------------------------------------------------------------------|-----------------|-----------------|---------|
-| CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                         | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it)                   | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b)                    | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| Code Llama     | [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)          | **{check-circle}** Yes               | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)      | **{dotted-circle}** No                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct)        | **{check-circle}** Yes                | **{check-circle}** Yes               | **{dotted-circle}** No        |
-| DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base)        | **{check-circle}** Yes                | **{dotted-circle}** No               | **{dotted-circle}** No        |
-| Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)                     | **{check-circle}** Yes                | **{check-circle}** Yes               | **{check-circle}** Yes        |
+| Model family   | Model | Supported platforms | Status | Code completion | Code generation | GitLab Duo Chat |
+|--------------- |-------|---------------------|--------|-----------------|-----------------|-----------------|
+| CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
+| CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
+| DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | Beta | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 
 <!-- vale gitlab_base.Spelling = YES -->
 

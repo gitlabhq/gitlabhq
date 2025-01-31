@@ -1019,6 +1019,20 @@ graph TB
 PlantUML integration is enabled on GitLab.com. To make PlantUML available in self-managed
 installation of GitLab, a GitLab administrator [must enable it](../administration/integration/plantuml.md).
 
+After you enable PlantUML, diagram delimiters `@startuml`/`@enduml` aren't required, as these
+are replaced by the `plantuml` block. For example:
+
+````markdown
+```plantuml
+Bob -> Alice : hello
+Alice -> Bob : hi
+```
+````
+
+You can include or embed a PlantUML diagram from separate files in the repository using
+the `::include` directive.
+For more information, see [Include diagtram files](../administration/integration/plantuml.md#include-diagram-files).
+
 ### Kroki
 
 To make Kroki available in GitLab, a GitLab administrator must enable it.
@@ -1447,28 +1461,28 @@ display a color chip next to the color code. For example:
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#emoji).
 
-Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:">
-around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:">
-to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">.
+Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:">
+around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:">
+to your <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">.
 Well we have a gift for you:
 
-<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/zap.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":zap:" alt=":zap:">
+<img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/zap.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":zap:" alt=":zap:">
 You can use emoji anywhere GitLab Flavored Markdown is supported.
-<img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/v.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":v:" alt=":v:">
+<img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/v.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":v:" alt=":v:">
 
-You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/bug.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":bug:" alt=":bug:">
-or warn about <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speak_no_evil:" alt=":speak_no_evil:">
-patches. If someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/snail.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":snail:" alt=":snail:">
-code, send them some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/birthday.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":birthday:" alt=":birthday:">.
-People <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/heart.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":heart:" alt=":heart:">
+You can use it to point out a <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/bug.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":bug:" alt=":bug:">
+or warn about <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/speak_no_evil.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speak_no_evil:" alt=":speak_no_evil:">
+patches. If someone improves your really <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/snail.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":snail:" alt=":snail:">
+code, send them some <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/birthday.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":birthday:" alt=":birthday:">.
+People <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/heart.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":heart:" alt=":heart:">
 you for that.
 
-If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/fearful.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":fearful:" alt=":fearful:">.
-You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/family.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":family:" alt=":family:">.
+If you're new to this, don't be <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/fearful.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":fearful:" alt=":fearful:">.
+You can join the emoji <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/family.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":family:" alt=":family:">.
 Just look up one of the supported codes.
 
 Consult the [TanukiEmoji reference](https://gitlab-org.gitlab.io/ruby/gems/tanuki_emoji/) for a list
-of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/4/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":thumbsup:" alt=":thumbsup:">
+of all supported emoji codes. <img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/thumbsup.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":thumbsup:" alt=":thumbsup:">
 
 The above paragraphs in raw Markdown:
 
@@ -1626,6 +1640,35 @@ To use includes from separate wiki pages or external URLs, administrators can en
 ```markdown
 <!-- define application setting wiki_asciidoc_allow_uri_includes to true to allow content to be read from URI -->
 ::include{file=https://example.org/installation.md}
+```
+
+### Use includes in code blocks
+
+You can use the `::include` directive inside code blocks to add content from files in your repository.
+For example, if your repository contains a file `javascript_code.js`:
+
+```javascript
+var s = "JavaScript syntax highlighting";
+alert(s);
+```
+
+You can include it in your Markdown file:
+
+````markdown
+Our script contains:
+
+```javascript
+::include{file=javascript_code.js}
+```
+````
+
+The content renders as:
+
+Our script contains:
+
+```javascript
+var s = "JavaScript syntax highlighting";
+alert(s);
 ```
 
 ## Escape characters

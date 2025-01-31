@@ -966,7 +966,7 @@ job1:
 
 The metadata renders in a plain text `.json` file stored with the artifact. The
 filename is `{ARTIFACT_NAME}-metadata.json`. `ARTIFACT_NAME` is the
-[name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name)
+[name for the artifact](../jobs/job_artifacts.md#with-an-explicitly-defined-artifact-name)
 defined in the `.gitlab-ci.yml` file. If the name is not defined, the default filename is
 `artifacts-metadata.json`.
 

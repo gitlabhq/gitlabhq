@@ -20,6 +20,8 @@ module Ci
       calculate_aggregate_duration_percentiles(query, result)
 
       ServiceResponse.success(payload: { aggregate: result })
+    rescue ::ClickHouse::Client::DatabaseError => e
+      ServiceResponse.error(message: e.message)
     end
 
     def calculate_aggregate_count(query, result)
@@ -34,7 +36,7 @@ module Ci
 
       query = query
         .select(:status, query.count_pipelines_function.as('count'))
-        .by_status(status_groups.flat_map(&STATUS_GROUP_TO_STATUSES).compact)
+        .by_status(selected_statuses)
         .group_by_status
 
       result_by_status = ::ClickHouse::Client.select(query.to_sql, :main).map(&:values).to_h

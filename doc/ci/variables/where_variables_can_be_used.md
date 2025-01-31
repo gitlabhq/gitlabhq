@@ -32,6 +32,7 @@ There are two places defined variables can be used. On the:
 | [`after_script`](../yaml/index.md#after_script)                       | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment). |
 | [`artifacts:name`](../yaml/index.md#artifactsname)                    | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`artifacts:paths`](../yaml/index.md#artifactspaths)                  | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
+| [`artifacts:exclude`](../yaml/index.md#artifactsexclude)              | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`before_script`](../yaml/index.md#before_script)                     | yes              | Script execution shell | The variable expansion is made by the [execution shell environment](#execution-shell-environment) |
 | [`cache:key`](../yaml/index.md#cachekey)                              | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
 | [`cache:paths`](../yaml/index.md#cachepaths)                          | yes              | Runner                 | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism). |
@@ -106,6 +107,11 @@ only variables defined as `$variable` and `${variable}`. What's also important, 
 the expansion is done only once, so nested variables may or may not work, depending on the
 ordering of variables definitions, and whether [nested variable expansion](#nested-variable-expansion)
 is enabled in GitLab.
+
+For artifacts and cache uploads, the runner uses
+[mvdan.cc/sh/v3/expand](https://pkg.go.dev/mvdan.cc/sh/v3/expand) for variable
+expansion instead of Go's `os.Expand()` because `mvdan.cc/sh/v3/expand` supports
+[parameter expansion](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html).
 
 ### Execution shell environment
 

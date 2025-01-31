@@ -93,6 +93,7 @@ work_item_type:
 - parent_restrictions
 - allowed_child_types_by_name
 - allowed_parent_types_by_name
+- user_preferences
 events:
 - author
 - project

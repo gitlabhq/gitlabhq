@@ -4,7 +4,6 @@ import { GlAlert, GlButton, GlBadge } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 
 import { s__, n__, sprintf } from '~/locale';
-import { fetchPolicies } from '~/lib/graphql';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
@@ -72,8 +71,6 @@ export default {
   apollo: {
     linkedWorkItems: {
       query: workItemLinkedItemsQuery,
-      fetchPolicy: fetchPolicies.NETWORK_ONLY,
-      nextFetchPolicy: fetchPolicies.CACHE_FIRST,
       variables() {
         return {
           fullPath: this.workItemFullPath,

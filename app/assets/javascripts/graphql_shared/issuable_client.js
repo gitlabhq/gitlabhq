@@ -12,6 +12,7 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  WIDGET_TYPE_LINKED_ITEMS,
   CUSTOM_FIELDS_TYPE_NUMBER,
   CUSTOM_FIELDS_TYPE_TEXT,
   CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
@@ -135,9 +136,6 @@ export const config = {
             keyArgs: false,
           },
         },
-      },
-      LinkedWorkItemType: {
-        keyFields: ['linkId'],
       },
       WorkItem: {
         fields: {
@@ -470,6 +468,30 @@ export const config = {
                     children: {
                       ...incomingWidget.children,
                       nodes: [...existingWidget.children.nodes, ...incomingWidget.children.nodes],
+                    },
+                  };
+                }
+
+                // this ensures that we don’t override linkedItems.workItem when updating parent
+                if (incomingWidget?.type === WIDGET_TYPE_LINKED_ITEMS) {
+                  if (!incomingWidget.linkedItems) {
+                    return existingWidget;
+                  }
+
+                  const incomindNodes = incomingWidget.linkedItems?.nodes || [];
+                  const existingNodes = existingWidget.linkedItems?.nodes || [];
+
+                  const resultNodes = incomindNodes.map((incomingNode) => {
+                    const existingNode =
+                      existingNodes.find((n) => n.linkId === incomingNode.linkId) ?? {};
+                    return { ...existingNode, ...incomingNode };
+                  });
+
+                  return {
+                    ...incomingWidget,
+                    linkedItems: {
+                      ...incomingWidget.linkedItems,
+                      nodes: resultNodes,
                     },
                   };
                 }

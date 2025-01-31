@@ -34,12 +34,12 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
     using RSpec::Parameterized::TableSyntax
 
     where(:status_groups, :duration_percentiles, :expected_aggregate) do
-      %i[any]           | []       | { count: { any: 7 } }
-      %i[any]           | [50, 75] | { count: { any: 7 }, duration_statistics: { p50: 30.minutes, p75: 82.5.minutes } }
-      %i[any success]   | []       | { count: { any: 7, success: 2 } }
-      %i[success other] | []       | { count: { success: 2, other: 2 } }
+      %i[any]           | []       | { count: { any: 8 } }
+      %i[any]           | [50, 75] | { count: { any: 8 }, duration_statistics: { p50: 30.minutes, p75: 63.75.minutes } }
+      %i[any success]   | []       | { count: { any: 8, success: 2 } }
+      %i[success other] | []       | { count: { success: 2, other: 3 } }
       %i[failed]        | [50, 75] |
-        { count: { failed: 2 }, duration_statistics: { p50: 30.minutes, p75: 82.5.minutes } }
+        { count: { failed: 2 }, duration_statistics: { p50: 30.minutes, p75: 63.75.minutes } }
     end
 
     with_them do
@@ -60,7 +60,7 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
           expect(result).to be_success
           expect(result.errors).to eq([])
           expect(result.payload[:aggregate]).to eq(
-            count: { any: 7 }, duration_statistics: { p50: 30.minutes, p99: 67.8.hours }
+            count: { any: 8 }, duration_statistics: { p50: 30.minutes, p99: 4026.minutes }
           )
         end
       end
@@ -81,7 +81,7 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
       it 'does not include job starting 1 second before start of week' do
         expect(result).to be_success
         expect(result.errors).to eq([])
-        expect(result.payload[:aggregate]).to eq(count: { any: 7 })
+        expect(result.payload[:aggregate]).to eq(count: { any: 8 })
       end
     end
 
@@ -92,7 +92,7 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
       it 'includes job starting 1 second before start of week' do
         expect(result).to be_success
         expect(result.errors).to eq([])
-        expect(result.payload[:aggregate]).to eq(count: { any: 8 })
+        expect(result.payload[:aggregate]).to eq(count: { any: 9 })
       end
     end
 

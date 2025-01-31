@@ -210,6 +210,10 @@ include:
     - !reference [.rspec-base, after_script]
 
 .rspec-base-pg14:
+  needs:
+    - !reference [.rspec-base, needs]
+    - job: "db:setup pg14"
+      optional: true
   extends:
     - .rspec-base
     - .use-pg14

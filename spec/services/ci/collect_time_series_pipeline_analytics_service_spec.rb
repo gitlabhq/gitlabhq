@@ -17,7 +17,7 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
   let(:expected_1st_day) { (from_time || 1.week.ago.utc).beginning_of_day }
   let(:time_series_period) { :day }
   let(:time_series_filters) do
-    { duration_statistics: duration_percentile_symbols }
+    { count: status_groups, duration_statistics: duration_percentile_symbols }
   end
 
   let(:service) do
@@ -53,6 +53,7 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
 
     let(:no_pipeline_statistics) do
       {
+        count: { success: 0, failed: 0, other: 0, any: 0 },
         duration_statistics: duration_percentile_symbols.index_with(0.seconds)
       }
     end
@@ -61,21 +62,25 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
       [
         {
           label: Time.utc(2023, 1, 1),
+          count: { success: 0, failed: 1, other: 0, any: 1 },
           duration_statistics: { p50: 45.minutes, p95: 45.minutes, p99: 45.minutes }
         },
         { label: Time.utc(2023, 1, 2), **no_pipeline_statistics },
         {
           label: Time.utc(2023, 1, 3),
-          duration_statistics: { p50: 3600.5.seconds, p95: 6840.05.seconds, p99: 7128.01.seconds }
+          count: { success: 0, failed: 1, other: 2, any: 3 },
+          duration_statistics: { p50: 60.seconds, p95: 6486.seconds, p99: 7057.2.seconds }
         },
         { label: Time.utc(2023, 1, 4), **no_pipeline_statistics },
         { label: Time.utc(2023, 1, 5), **no_pipeline_statistics },
         {
           label: Time.utc(2023, 1, 6),
+          count: { success: 1, failed: 0, other: 0, any: 1 },
           duration_statistics: { p50: 3.days, p95: 3.days, p99: 3.days }
         },
         {
           label: Time.utc(2023, 1, 7),
+          count: { success: 1, failed: 0, other: 1, any: 3 },
           duration_statistics: { p50: 30.minutes, p95: 30.minutes, p99: 30.minutes }
         }
       ]
@@ -87,6 +92,7 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
       %i[any]           | []
       %i[any]           | [50, 95]
       %i[success other] | []
+      %i[failed other]  | [50, 99]
       %i[failed]        | [50, 95]
     end
 
@@ -128,8 +134,13 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
           expect(result).to be_success
           expect(result.errors).to eq([])
           expect(result.payload[:time_series]).to eq([
-            { label: Time.utc(2022, 12, 26), duration_statistics: { p50: 45.minutes, p95: 45.minutes } },
-            { label: Time.utc(2023, 1, 2), duration_statistics: { p50: 30.minutes, p95: 54.5.hours } }
+            {
+              label: Time.utc(2022, 12, 26), count: { any: 1 },
+              duration_statistics: { p50: 45.minutes, p95: 45.minutes }
+            },
+            {
+              label: Time.utc(2023, 1, 2), count: { any: 7 }, duration_statistics: { p50: 30.minutes, p95: 51.hours }
+            }
           ])
         end
       end
@@ -143,7 +154,9 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
           expect(result).to be_success
           expect(result.errors).to eq([])
           expect(result.payload[:time_series]).to eq([
-            { label: Time.utc(2023, 1, 1), duration_statistics: { p50: 30.minutes, p95: 51.hours } }
+            {
+              label: Time.utc(2023, 1, 1), count: { any: 8 }, duration_statistics: { p50: 30.minutes, p95: 47.5.hours }
+            }
           ])
         end
       end
@@ -194,7 +207,10 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
       it 'includes job starting 1 second before start of week' do
         expect(result).to be_success
         expect(result.errors).to eq([])
-        expect(result.payload[:time_series]).to eq([{ label: Time.utc(2022, 12, 31) }, *expected_time_series])
+        expect(result.payload[:time_series]).to eq([
+          { label: Time.utc(2022, 12, 31), count: { any: 1 } },
+          *expected_time_series
+        ])
       end
     end
 
@@ -223,7 +239,7 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
         expect(result).to be_success
         expect(result.errors).to eq([])
         expect(result.payload[:time_series]).to eq([
-          { label: Time.utc(2023, 1, 1) },
+          { label: Time.utc(2023, 1, 1), count: { any: 3, failed: 1, success: 2 } },
           *no_pipeline_statistics_for_day_range(2..7)
         ])
       end

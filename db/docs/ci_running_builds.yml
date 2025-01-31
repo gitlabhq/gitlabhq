@@ -4,12 +4,7 @@ classes:
 - Ci::RunningBuild
 feature_categories:
 - continuous_integration
-description: Running builds metadata. Despite the generic `RunningBuild` name, in
-  this first iteration it applies only to shared runners. The decision to insert all
-  of the running builds here was deferred to avoid the pressure on the database as
-  at this time that was not necessary. We can reconsider the decision to limit this
-  only to shared runners when there is more evidence that inserting all of the running
-  builds there is worth the additional pressure.
+description: Running builds metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62912
 milestone: '14.0'
 gitlab_schema: gitlab_ci

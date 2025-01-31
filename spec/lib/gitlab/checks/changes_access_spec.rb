@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
     it 'calls #new_commits' do
       expect(project.repository).to receive(:new_commits).and_call_original
 
-      expect(subject.commits).to match_array([])
+      expect(subject.commits).to be_empty
     end
 
     context 'when change is for notes ref' do
@@ -72,7 +72,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
       end
 
       it 'does not return any commits' do
-        expect(subject.commits).to match_array([])
+        expect(subject.commits).to be_empty
       end
     end
 

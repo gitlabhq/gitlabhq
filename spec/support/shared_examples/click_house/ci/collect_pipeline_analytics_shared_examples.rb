@@ -37,10 +37,23 @@ RSpec.shared_examples_for 'a pipeline analytics service' do
     include_examples 'returns Not allowed error'
   end
 
+  context 'when ClickHouse query raises error' do
+    before do
+      allow(::ClickHouse::Client).to receive(:select).with(anything, :main)
+        .and_raise(::ClickHouse::Client::DatabaseError, 'some error')
+    end
+
+    it 'returns error response', :aggregate_failures do
+      expect { result }.not_to raise_error
+      expect(result.error?).to be true
+      expect(result.errors).to contain_exactly('some error')
+    end
+  end
+
   context 'when project is not specified' do
     let(:project) { nil }
 
-    it 'returns error' do
+    it 'returns error response', :aggregate_failures do
       expect(result.error?).to be true
       expect(result.errors).to contain_exactly('Project must be specified')
     end
@@ -49,7 +62,7 @@ RSpec.shared_examples_for 'a pipeline analytics service' do
   context 'when invalid duration percentiles are specified' do
     let(:duration_percentiles) { [50, 70, 90] }
 
-    it 'returns error', :aggregate_failures do
+    it 'returns error response', :aggregate_failures do
       expect(result.error?).to be true
       expect(result.message).to eq 'Invalid duration percentiles specified'
     end

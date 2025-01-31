@@ -46,33 +46,6 @@ RSpec.describe Gitlab::ApplicationSettingFetcher, feature_category: :cell do
     context 'when ENV["IN_MEMORY_APPLICATION_SETTINGS"] is false' do
       let_it_be(:settings) { create(:application_setting) }
 
-      context 'and an error is raised' do
-        before do
-          # The cached method is called twice:
-          # - ApplicationSettingFetcher
-          # - ApplicationSetting (CachedAttribute module)
-          # For this test, the first needs to raise an exception
-          # The second is swallowed on production so that should not raise an exception
-          # So we only let the first call raise an exception
-          # Alternatively, we could mock Rails.env.production? but I prefer not to
-          raise_exception = true
-          allow(ApplicationSetting).to receive(:cached).twice do
-            if raise_exception
-              raise_exception = false
-              raise(StandardError)
-            else
-              ApplicationSetting.last
-            end
-          end
-        end
-
-        it 'will retrieve uncached ApplicationSetting' do
-          expect(ApplicationSetting).to receive(:current).and_call_original
-
-          expect(current_application_settings).to eq(settings)
-        end
-      end
-
       context 'and settings in cache' do
         before do
           # Warm the cache

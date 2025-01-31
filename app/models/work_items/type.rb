@@ -75,6 +75,10 @@ module WorkItems
     has_many :allowed_parent_types_by_name, -> { order_by_name_asc },
       through: :parent_restrictions, class_name: 'WorkItems::Type',
       foreign_key: :parent_type_id, source: :parent_type
+    has_many :user_preferences,
+      class_name: 'WorkItems::Types::UserPreference',
+      primary_key: :correct_id,
+      inverse_of: :work_item_type
 
     before_validation :strip_whitespace
     after_save :clear_reactive_cache!

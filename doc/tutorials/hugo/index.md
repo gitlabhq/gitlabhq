@@ -130,7 +130,7 @@ deploy-pages:  # a user-defined job that builds your pages and saves them to the
   `rules`, you're checking that this commit was made on the default branch. Typically, you wouldn't want to build and
   deploy the live site from another branch.
 
-You don't need to add anything else to this file. When you're ready, select **Commit changes** at the bottom of the page.
+You don't need to add anything else to this file. When you're ready, select **Commit changes** at the top of the page.
 
 You've just triggered a pipeline to build your Hugo site!
 
@@ -142,7 +142,7 @@ From the left-hand navigation, select **Build > Pipelines**.
 
 You'll see that GitLab has run your `test` and `deploy-pages` jobs.
 
-To view your site, on the left-hand navigation, select **Settings > Pages**
+To view your site, on the left-hand navigation, select **Deploy > Pages**
 
 The `pages` job in your pipeline has deployed the contents of your `public` directory to GitLab Pages. Under **Access pages**, you should see the link in the format: `https://<your-namespace>.gitlab.io/<project-path>`.
 
@@ -152,7 +152,7 @@ Select the displayed link to view your site.
 
 When you first view your Hugo site, the stylesheet won't work. Don't worry, you need to make a small change in your Hugo configuration file. Hugo needs to know the URL of your GitLab Pages site so it can build relative links to stylesheets and other assets:
 
-1. In your local Hugo site, open your `config.yaml` or `config.toml` file.
+1. In your local Hugo site, pull the latest changes, and open your `config.yaml` or `config.toml` file.
 1. Change the value of the `BaseURL` parameter to match the URL that appears in your GitLab Pages settings.
 1. Push your changed file to GitLab, and your pipeline is triggered again.
 

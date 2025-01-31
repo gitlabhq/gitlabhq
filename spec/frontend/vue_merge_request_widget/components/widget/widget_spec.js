@@ -513,7 +513,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       });
 
       expect(findActionButtons().props('tertiaryButtons')).toEqual([
-        expect.objectContaining({ href: 'reportsTabPath?type=Test', text: 'View report' }),
+        expect.objectContaining({ href: 'reportsTabPath/test', text: 'View report' }),
       ]);
     });
 
@@ -531,11 +531,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       await nextTick();
 
       expect(window.mrTabs.tabShown).toHaveBeenCalledWith('reports');
-      expect(window.history.replaceState).toHaveBeenCalledWith(
-        null,
-        null,
-        'reportsTabPath?type=Test',
-      );
+      expect(window.history.replaceState).toHaveBeenCalledWith(null, null, 'reportsTabPath/test');
     });
   });
 });

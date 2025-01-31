@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Release do
         it 'returns without error' do
           builder = subject
 
-          expect(builder).to match_array([])
+          expect(builder.to_a).to be_empty
           expect(builder.errors).to be_nil
         end
       end

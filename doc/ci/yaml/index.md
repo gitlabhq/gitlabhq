@@ -1459,7 +1459,7 @@ job:
 
 **Related topics**:
 
-- [Use CI/CD variables to define the artifacts name](../jobs/job_artifacts.md#with-a-dynamically-defined-name).
+- [Use CI/CD variables to define the artifacts configuration](../jobs/job_artifacts.md#with-variable-expansion)
 
 #### `artifacts:public`
 

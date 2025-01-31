@@ -221,16 +221,16 @@ export default {
           />
           <div
             v-if="showPlaceholder"
-            class="gl-filter-blur-1 gl-absolute gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
+            class="gl-absolute gl-bottom-0 gl-left-0 gl-right-0 gl-top-0 gl-backdrop-blur-sm"
             data-testid="placeholder-overlay"
           >
             <div
-              class="gl-absolute gl-bottom-0 gl-left-0 gl-right-0 gl-top-0 gl-z-2 gl-bg-white gl-opacity-5"
+              class="gl-absolute gl-bottom-0 gl-left-0 gl-right-0 gl-top-0 gl-z-2 gl-bg-overlay"
             ></div>
             <div class="gl-relative gl-z-3 gl-flex gl-h-full gl-items-center gl-justify-center">
-              <div class="gl-max-w-34">
-                <h4 data-testid="filename">{{ filename }}</h4>
-                <p data-testid="description">
+              <div class="gl-max-w-34 gl-rounded-base gl-bg-overlap gl-p-6">
+                <h4 data-testid="filename" class="gl-heading-4">{{ filename }}</h4>
+                <p data-testid="description" class="gl-mb-0 gl-text-subtle">
                   {{ $options.i18n.overlayMessage }}
                 </p>
               </div>

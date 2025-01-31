@@ -11,7 +11,7 @@ module Types
         description: 'Timestamp the link was created.', null: false,
         method: :issue_link_created_at
 
-      field :work_item_state, Types::WorkItemStateEnum,
+      field :work_item_state, ::Types::WorkItemStateEnum,
         description: 'State of the linked work item.', null: false, method: :state
 
       field :link_id, ::Types::GlobalIDType[::WorkItems::RelatedWorkItemLink],

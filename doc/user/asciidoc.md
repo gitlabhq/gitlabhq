@@ -247,6 +247,14 @@ pages, change the filename from `.adoc` to `.asciidoc`.
 include::basics.adoc[]
 ```
 
+```plaintext
+// you can also include other files from you repository
+[,language]
+----
+include::my_code_file.language[]
+----
+```
+
 To guarantee good system performance and prevent malicious documents from causing
 problems, GitLab enforces a maximum limit on the number of include directives
 processed in any one document. By default, a document can have up to 32 include directives, which is
@@ -501,6 +509,15 @@ After PlantUML is enabled, enter your text in a `plantuml` block:
 [plantuml]
 ----
 Bob -> Alice : hello
+----
+```
+
+To include PlantUML diagrams stored in separate files:
+
+```plaintext
+[plantuml, format="png", id="myDiagram", width="200px"]
+----
+include::diagram.puml[]
 ----
 ```
 

@@ -48,7 +48,7 @@ module WorkItems
           raise Gitlab::Graphql::Errors::ArgumentError, ::Types::IssuableStateEnum::INVALID_LOCKED_MESSAGE
         }
       argument :types,
-        [Types::IssueTypeEnum],
+        [::Types::IssueTypeEnum],
         as: :issue_types,
         description: 'Filter work items by the given work item types.',
         required: false

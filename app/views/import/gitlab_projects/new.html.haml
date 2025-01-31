@@ -2,11 +2,11 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-%h1.page-title.gl-text-size-h-display.gl-flex.gl-items-center
-  .gl-flex.gl-items-center.gl-justify-center
-    = sprite_icon('tanuki', css_class: 'gl-mr-3', size: 48)
-  = _('Import an exported GitLab project')
-%hr
+= render ::Layouts::PageHeadingComponent.new('') do |c|
+  - c.with_heading do
+    %span.gl-inline-flex.gl-items-center.gl-gap-3
+      = sprite_icon('tanuki', size: 32)
+      = _('Import an exported GitLab project')
 
 = form_tag import_gitlab_project_path, class: 'new_project', multipart: true do
   = render 'import/shared/new_project_form'
@@ -20,7 +20,7 @@
       .form-group
         = file_field_tag :file, class: ''
   .row
-    .form-actions.col-sm-12
+    .col-sm-12.gl-mt-5
       = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mr-2', data: { testid: 'import-project-button' }}) do
         = _('Import project')
       = render Pajamas::ButtonComponent.new(href: new_project_path) do

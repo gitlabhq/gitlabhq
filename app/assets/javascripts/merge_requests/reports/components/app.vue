@@ -1,4 +1,6 @@
 <script>
+import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
+import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 import {
   BLOCKERS_ROUTE,
   CODE_QUALITY_ROUTE,
@@ -23,8 +25,20 @@ export default {
   inject: ['hasPolicies'],
   data() {
     return {
-      blockersCounter: 2,
+      mr: null,
     };
+  },
+  created() {
+    if (
+      window.gl?.mrWidgetData?.merge_request_cached_widget_path &&
+      window.gl?.mrWidgetData?.merge_request_widget_path
+    ) {
+      MRWidgetService.fetchInitialData()
+        .then(({ data }) => {
+          this.mr = new MRWidgetStore({ ...window.gl.mrWidgetData, ...data });
+        })
+        .catch(() => {});
+    }
   },
 };
 </script>
@@ -50,7 +64,7 @@ export default {
       </nav>
     </aside>
     <section class="md:gl-pt-5">
-      <router-view />
+      <router-view :mr="mr" />
     </section>
   </div>
 </template>

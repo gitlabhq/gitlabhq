@@ -14,6 +14,9 @@ At a high level, to add a new relation to the direct transfer importer, you must
 1. Add a label for the newly created relation to display in the UI.
 1. Ensure sufficient test coverage.
 
+NOTE:
+To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
+
 ## Export from source
 
 There are a few types of relations we export:

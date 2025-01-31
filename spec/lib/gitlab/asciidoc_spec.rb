@@ -5,6 +5,7 @@ require 'nokogiri'
 
 module Gitlab
   RSpec.describe Asciidoc, feature_category: :wiki do
+    include RepoHelpers
     include FakeBlobHelpers
 
     before do
@@ -1001,6 +1002,63 @@ module Gitlab
         ).and_call_original
 
         expect(render('<b>ascii</b>', context)).to eq '<b>ascii</b>'
+      end
+    end
+
+    context 'when using include in code segements' do
+      let_it_be(:project)        { create(:project, :repository) }
+      let_it_be(:ref)            { 'markdown' }
+      let_it_be(:requested_path) { '/' }
+      let_it_be(:commit)         { project.commit(ref) }
+      let_it_be(:context) do
+        {
+          commit: commit,
+          project: project,
+          ref: ref,
+          text_source: :blob,
+          requested_path: requested_path,
+          no_sourcepos: true
+        }
+      end
+
+      let_it_be(:project_files) do
+        {
+          'diagram.puml' => "@startuml\nBob -> Sara : Hello\n@enduml",
+          'code.yaml' => "---\ntest: true"
+        }
+      end
+
+      let(:input) do
+        <<~ADOC
+          [plantuml]
+          ----
+          include::diagram.puml[]
+          ----
+          [,yaml]
+          ----
+          include::code.yaml[]
+          ----
+        ADOC
+      end
+
+      subject(:output) { render(input, context) }
+
+      around do |example|
+        create_and_delete_files(project, project_files, branch_name: ref) do
+          example.run
+        end
+      end
+
+      it 'renders PlanUML' do
+        stub_application_setting(plantuml_enabled: true, plantuml_url: "http://localhost:8080")
+
+        is_expected.to include 'http://localhost:8080/png/U9npA2v9B2efpStXSifFKj2rKmXEB4fKi5BmICt9oUToICrB0Se10EdD34a0'
+      end
+
+      it 'renders code' do
+        is_expected.to include 'language-yaml'
+        is_expected.to include '<span class="na">test</span>'
+        is_expected.to include '<span class="kc">true</span>'
       end
     end
 

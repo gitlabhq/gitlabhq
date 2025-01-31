@@ -443,7 +443,11 @@ export default class MergeRequestTabs {
     let newStatePathname = pathname.replace(this.actionRegex, '');
 
     // Append the new action if we're on a tab other than 'notes'
-    if (this.currentAction !== 'show' && this.currentAction !== 'new') {
+    if (
+      this.currentAction !== 'show' &&
+      this.currentAction !== 'new' &&
+      this.currentAction !== 'reports'
+    ) {
       newStatePathname += `/${this.currentAction}`;
     }
 
