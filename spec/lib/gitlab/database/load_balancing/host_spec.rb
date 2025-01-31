@@ -30,16 +30,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
     error
   end
 
-  def expect_next_replica_connection
-    # Ordered because we check out many times and need to put different expectations on each one
-    # since the connection objects are different each time.
-    expect(host.pool).to receive(:checkout).ordered.and_wrap_original do |m|
-      conn = m.call
-      yield conn
-      conn
-    end
-  end
-
   describe '#connection' do
     it 'returns a connection from the pool' do
       expect(host.pool).to receive(:connection)
@@ -452,12 +442,10 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
       end
 
       it 'returns quickly if the underlying query takes a long time' do
-        expect_next_replica_connection do |conn|
-          # Otherwise we fail to pg_sleep(5)
-          allow(conn).to receive(:select_all).and_call_original
-          expect(conn).to receive(:select_all).with(described_class::REPLICATION_LAG_QUERY) do
-            conn.select_all('select pg_sleep(5)')
-          end
+        allow(host.connection).to receive(:transaction_open?).and_return(false)
+        allow(host.connection).to receive(:select_all).and_call_original
+        expect(host.connection).to receive(:select_all).with(described_class::REPLICATION_LAG_QUERY) do
+          host.connection.select_all('select pg_sleep(5)')
         end
 
         duration = Benchmark.realtime do
@@ -468,6 +456,28 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         # Set it to a really large number, but still less than the 5 seconds from pg_sleep(5) to prove that the
         # statement was cancelled.
         expect(duration).to be < (4)
+      end
+
+      it 'does not use a low statement timeout if a transaction is already open' do
+        allow(host.connection).to receive(:select_all).and_call_original
+        expect(host.connection).to receive(:select_all).with(described_class::REPLICATION_LAG_QUERY) do
+          host.connection.select_all(<<~SQL)
+              select
+                EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::float as lag,
+                pg_sleep(1)
+          SQL
+        end
+
+        expect(Gitlab::Database::LoadBalancing::Logger)
+          .to receive(:warn).with(hash_including(event: :health_check_in_transaction))
+
+        duration = Benchmark.realtime do
+          # without a low statement timeout the query succeeds and gives the real lag time
+          # 0 lag because this isn't a replica during testing
+          expect(host.replication_lag_time).to eq(0.0)
+        end
+        # We waited at least 1 second for the pg_sleep(1)
+        expect(duration).to be > (1)
       end
     end
 
@@ -480,9 +490,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
         allow(host.connection).to receive(:select_all).and_call_original
         expect(host.connection).to receive(:select_all).with(described_class::REPLICATION_LAG_QUERY).once do
           host.connection.select_all(<<~SQL)
-              SELECT
-                EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::float as lag,
-                pg_sleep(1) as sleep
+            SELECT
+              EXTRACT(EPOCH FROM (now() - pg_last_xact_replay_timestamp()))::float as lag,
+              pg_sleep(1) as sleep
           SQL
         end
 
@@ -584,15 +594,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
       let(:diff_result) { raise 'specify a diff result' }
 
       before do
-        expect_next_replica_connection do |conn|
-          expect(conn).to receive(:select_all)
+        expect(host.connection).to receive(:select_all)
                             .with(described_class::CAN_TRACK_LOGICAL_LSN_QUERY)
                             .and_return([{ 'has_table_privilege' => 't' }])
-        end
-        expect_next_replica_connection do |conn|
-          expect(conn).to receive(:select_all).with(/pg_wal_lsn_diff/)
+        expect(host.connection).to receive(:select_all).with(/pg_wal_lsn_diff/)
                                               .and_return(diff_result)
-        end
       end
 
       context 'when a host has caught up' do
@@ -623,9 +629,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
     context 'when the connection fails to checkout' do
       it 'returns false' do
         wrapped_error = wrapped_exception(ActionView::Template::Error, StandardError)
-        # Two connections are checked out, first to check the logical lsn query and the second for the actual caught up
-        # comparison
-        expect(host.pool).to receive(:checkout).twice.and_raise(wrapped_error)
+        allow(host)
+          .to receive(:connection)
+                .and_raise(wrapped_error)
 
         expect(host.caught_up?('foo')).to eq(false)
       end
@@ -678,11 +684,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
     end
 
     it 'returns an empty Hash in the event of an error' do
-      expect_next_replica_connection do |conn|
-        expect(conn)
-          .to receive(:select_all)
-                .and_raise(RuntimeError, 'kittens')
-      end
+      expect(host.connection)
+        .to receive(:select_all)
+              .and_raise(RuntimeError, 'kittens')
 
       expect(host.query_and_release('SELECT 10 AS number')).to eq({})
     end

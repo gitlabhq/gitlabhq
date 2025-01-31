@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArrayAlignment:
   Exclude:
-    - 'ee/app/controllers/ee/admin/application_settings_controller.rb'
     - 'ee/app/controllers/ee/projects/merge_requests_controller.rb'
     - 'ee/app/controllers/groups/protected_branches_controller.rb'
     - 'ee/app/controllers/groups/push_rules_controller.rb'

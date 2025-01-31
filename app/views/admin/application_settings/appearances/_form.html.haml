@@ -1,4 +1,4 @@
-- parsed_with_gfm = (_("Content parsed with %{link}.") % { link: link_to('GitLab Flavored Markdown', help_page_path('user/markdown.md'), target: '_blank') }).html_safe
+- parsed_with_gfm = (_("Content parsed with %{link}.") % { link: link_to(_('GitLab Flavored Markdown'), help_page_path('user/markdown.md'), target: '_blank') }).html_safe
 
 = gitlab_ui_form_for @appearance, url: admin_application_settings_appearances_path, html: { class: 'gl-mt-3' } do |f|
   = form_errors(@appearance)
@@ -53,7 +53,7 @@
   = render ::Layouts::SettingsSectionComponent.new(_('New project pages')) do |c|
     - c.with_body do
       .form-group
-        = f.label :new_project_guidelines, class: 'col-form-label'
+        = f.label :new_project_guidelines, _('New project guidelines'), class: 'col-form-label'
         %p
           = f.text_area :new_project_guidelines, class: "form-control gl-form-input", rows: 10
           .form-text.gl-text-subtle
@@ -84,7 +84,7 @@
         .form-text.gl-text-subtle
           = parsed_with_gfm
       .form-group
-        = f.label :pwa_icon, class: 'col-form-label  gl-pt-0'
+        = f.label :pwa_icon, _('Icon'), class: 'col-form-label  gl-pt-0'
         %p
           - if @appearance.pwa_icon?
             = image_tag @appearance.pwa_icon_path, class: 'appearance-pwa-icon-preview'
@@ -109,7 +109,7 @@
         .form-text.gl-text-subtle
           = parsed_with_gfm
       .form-group
-        = f.label :logo, class: 'col-form-label  gl-pt-0'
+        = f.label :logo, _('Logo'), class: 'col-form-label  gl-pt-0'
         %p
           - if @appearance.logo?
             = image_tag @appearance.logo_path, class: 'appearance-logo-preview'

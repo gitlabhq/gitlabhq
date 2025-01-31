@@ -966,8 +966,8 @@ To authenticate with a private Maven repository:
        <servers>
            <server>
                <id>private_server</id>
-               <username>${private.username}</username>
-               <password>${private.password}</password>
+               <username>${repository.user}</username>
+               <password>${repository.password}</password>
            </server>
        </servers>
    </settings>

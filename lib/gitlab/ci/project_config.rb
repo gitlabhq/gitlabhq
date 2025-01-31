@@ -14,39 +14,45 @@ module Gitlab
       # - AutoDevops is used as default option if nothing else is found and if AutoDevops is enabled.
       # - EE uses SecurityPolicyDefault and it should come last. It is only necessary if no other source is available.
       #   Based on the policy configuration different source can be used.
-      SOURCES = [
+      STANDARD_SOURCES = [
         ProjectConfig::Compliance,
         ProjectConfig::Parameter,
         ProjectConfig::Bridge,
         ProjectConfig::ProjectSetting,
-        ProjectConfig::AutoDevops,
-        ProjectConfig::SecurityPolicyDefault
+        ProjectConfig::AutoDevops
       ].freeze
+
+      FALLBACK_POLICY_SOURCE = ProjectConfig::SecurityPolicyDefault
 
       def initialize(
         project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
         triggered_for_branch: nil, ref: nil, pipeline_policy_context: nil)
-        @config = nil
 
-        sources.each do |source|
-          source_config = source.new(project: project,
+        unless pipeline_policy_context&.applying_config_override?
+          @config = find_source(project: project,
             sha: sha,
             custom_content: custom_content,
             pipeline_source: pipeline_source,
             pipeline_source_bridge: pipeline_source_bridge,
             triggered_for_branch: triggered_for_branch,
-            ref: ref,
-            pipeline_policy_context: pipeline_policy_context
+            ref: ref
           )
 
-          if source_config.exists?
-            @config = source_config
-            break
-          end
+          return if @config
         end
+
+        fallback_config = FALLBACK_POLICY_SOURCE.new(
+          project: project,
+          pipeline_source: pipeline_source,
+          triggered_for_branch: triggered_for_branch,
+          ref: ref,
+          pipeline_policy_context: pipeline_policy_context
+        )
+
+        @config = fallback_config if fallback_config.exists?
       end
 
-      delegate :content, :source, :url, :pipeline_policy_context, to: :@config, allow_nil: true
+      delegate :content, :source, :url, to: :@config, allow_nil: true
       delegate :internal_include_prepended?, to: :@config
 
       def exists?
@@ -55,8 +61,22 @@ module Gitlab
 
       private
 
-      def sources
-        SOURCES
+      def find_source(
+        project:, sha:, custom_content:, pipeline_source:, pipeline_source_bridge:, triggered_for_branch:, ref:)
+        STANDARD_SOURCES.each do |source|
+          source_config = source.new(project: project,
+            sha: sha,
+            custom_content: custom_content,
+            pipeline_source: pipeline_source,
+            pipeline_source_bridge: pipeline_source_bridge,
+            triggered_for_branch: triggered_for_branch,
+            ref: ref
+          )
+
+          return source_config if source_config.exists?
+        end
+
+        nil
       end
     end
   end

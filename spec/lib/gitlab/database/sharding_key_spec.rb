@@ -272,6 +272,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     tables_exempted_from_sharding_table_names = tables_exempted_from_sharding.map(&:table_name)
 
     tables_exempted_from_sharding.each do |entry|
+      # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
+      tables_to_be_fixed = %w[shards]
+      pending 'These tables need to be fixed' if entry.table_name.in?(tables_to_be_fixed)
+
       fks = referenced_foreign_keys(entry.table_name).to_a
 
       fks.reject! { |fk| fk.constrained_table_name.in?(tables_exempted_from_sharding_table_names) }

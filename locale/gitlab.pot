@@ -25887,6 +25887,9 @@ msgstr ""
 msgid "GitLab Error Tracking"
 msgstr ""
 
+msgid "GitLab Flavored Markdown"
+msgstr ""
+
 msgid "GitLab Import"
 msgstr ""
 
@@ -28966,6 +28969,9 @@ msgid "IP addresses per user"
 msgstr ""
 
 msgid "IP subnet restriction only allowed for top-level groups"
+msgstr ""
+
+msgid "Icon"
 msgstr ""
 
 msgid "Icon will be removed. Are you sure?"
@@ -33977,6 +33983,9 @@ msgstr ""
 msgid "Login with smartcard"
 msgstr ""
 
+msgid "Logo"
+msgstr ""
+
 msgid "Logo was successfully removed."
 msgstr ""
 
@@ -37484,6 +37493,9 @@ msgid "New password"
 msgstr ""
 
 msgid "New project"
+msgstr ""
+
+msgid "New project guidelines"
 msgstr ""
 
 msgid "New project page"

@@ -210,7 +210,6 @@ Style/IfUnlessModifier:
     - 'ee/app/controllers/admin/push_rules_controller.rb'
     - 'ee/app/controllers/concerns/ee/membership_actions.rb'
     - 'ee/app/controllers/concerns/group_invite_members.rb'
-    - 'ee/app/controllers/ee/admin/application_settings_controller.rb'
     - 'ee/app/controllers/ee/projects/issues_controller.rb'
     - 'ee/app/controllers/ee/projects/settings/operations_controller.rb'
     - 'ee/app/controllers/ee/projects_controller.rb'
