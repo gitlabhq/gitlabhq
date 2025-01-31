@@ -13,6 +13,20 @@ module ActiveContext
         def queue
           raise NotImplementedError
         end
+
+        def routing(_)
+          raise NotImplementedError
+        end
+
+        def reference_klasses
+          Array.wrap(reference_klass).tap do |klasses|
+            raise NotImplementedError, "#{self} should define reference_klasses or reference_klass" if klasses.empty?
+          end
+        end
+
+        def reference_klass
+          nil
+        end
       end
 
       attr_reader :object
@@ -22,7 +36,12 @@ module ActiveContext
       end
 
       def references
-        raise NotImplementedError
+        reference_klasses = Array.wrap(self.class.reference_klasses)
+        routing = self.class.routing(object)
+
+        reference_klasses.map do |reference_klass|
+          reference_klass.serialize(object, routing)
+        end
       end
     end
   end

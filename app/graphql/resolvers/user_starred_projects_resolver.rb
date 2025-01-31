@@ -28,16 +28,24 @@ module Resolvers
     def resolve_with_lookahead(**args)
       projects = StarredProjectsFinder.new(
         user,
-        params: {
-          search: args[:search],
-          sort: args[:sort],
-          min_access_level: args[:min_access_level],
-          language_name: args[:programming_language_name]
-        },
+        params: finder_params(args),
         current_user: current_user
       ).execute
 
       apply_lookahead(projects)
     end
+
+    private
+
+    def finder_params(args)
+      {
+        search: args[:search],
+        sort: args[:sort],
+        min_access_level: args[:min_access_level],
+        language_name: args[:programming_language_name]
+      }
+    end
   end
 end
+
+Resolvers::UserStarredProjectsResolver.prepend_mod

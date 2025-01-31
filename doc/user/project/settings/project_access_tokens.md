@@ -24,12 +24,12 @@ Use a project access token to authenticate:
 Project access tokens are similar to [group access tokens](../../group/settings/group_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), but project access tokens are scoped to a project, so you cannot use them to access resources from other projects.
 
-In self-managed instances, project access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
+On GitLab Self-Managed instances, project access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
 
 You can use project access tokens:
 
 - On GitLab SaaS: If you have the Premium or Ultimate license tier, only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
-- On self-managed instances of GitLab: With any license tier. If you have the Free tier,
+- On GitLab Self-Managed instances: With any license tier. If you have the Free tier,
   consider [restricting the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to lower potential abuse.
 
 You cannot use project access tokens to create other group, project, or personal access tokens.
@@ -63,7 +63,7 @@ To create a project access token:
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 30 days later than the current date.
    - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
-   - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
+   - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in GitLab Self-Managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-project-access-token).
 1. Select **Create project access token**.
@@ -85,7 +85,7 @@ access tokens on the access tokens page.
 
 The inactive project access tokens table displays revoked and expired tokens for 30 days after they became inactive.
 
-Tokens that belong to [an active token family](../../../api/project_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
+Tokens that belong to [an active token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
 
 ### Use the UI
 

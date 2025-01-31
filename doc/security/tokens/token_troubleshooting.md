@@ -71,7 +71,7 @@ To replace the token:
      to list tokens that have expired recently. For example, go to `https://gitlab.com/api/v4/personal_access_tokens`,
      and locate tokens with a specific `expires_at` date.
    - For project access tokens, use the
-     [project access tokens API](../../api/project_access_tokens.md#list-project-access-tokens)
+     [project access tokens API](../../api/project_access_tokens.md#list-all-project-access-tokens)
      to list recently expired tokens.
    - For group access tokens, use the
      [group access tokens API](../../api/group_access_tokens.md#list-group-access-tokens)

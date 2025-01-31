@@ -29,7 +29,7 @@ module ActiveContext
     ActiveContext::Queues.raw_queues
   end
 
-  def self.track!(*objects, collection:, queue: nil)
+  def self.track!(*objects, collection: nil, queue: nil)
     ActiveContext::Tracker.track!(*objects, collection: collection, queue: queue)
   end
 end

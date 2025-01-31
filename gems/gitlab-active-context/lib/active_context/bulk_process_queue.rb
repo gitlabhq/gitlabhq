@@ -46,8 +46,24 @@ module ActiveContext
 
       return [0, 0] if specs_buffer.blank?
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/507973
-      # deserialize refs, preload records, submit docs, flush, etc.
+      refs = deserialize_all(specs_buffer)
+
+      Reference.preload(refs).each do |ref| # rubocop: disable Rails/FindEach -- not ActiveRecord
+        bulk_processor.process(ref)
+      end
+
+      flushing_duration_s = Benchmark.realtime do
+        @failures = bulk_processor.flush
+      end
+
+      logger.info(
+        'class' => self.class.name,
+        'message' => 'bulk_indexer_flushed',
+        'meta.indexing.search_flushing_duration_s' => flushing_duration_s
+      )
+
+      # Re-enqueue any failures so they are retried
+      ActiveContext.track!(@failures, queue: queue)
 
       # Remove all the successes
       scores.each do |set_key, (first_score, last_score, count)|
@@ -69,6 +85,14 @@ module ActiveContext
     end
 
     private
+
+    def deserialize_all(specs)
+      specs.filter_map { |spec, _| Reference.deserialize(spec) }
+    end
+
+    def bulk_processor
+      @bulk_processor ||= ActiveContext::BulkProcessor.new
+    end
 
     def logger
       @logger ||= ActiveContext::Config.logger

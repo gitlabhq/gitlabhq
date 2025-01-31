@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :container_registry do
+  include ContainerRegistryHelpers
   include GraphqlHelpers
   include JavaScriptFixturesHelpers
 
@@ -26,6 +27,10 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
         "#{base_path}/mutations/delete_container_protection_tag_rule.mutation.graphql"
       update_container_protection_tag_rule_mutation_path =
         "#{base_path}/mutations/update_container_protection_tag_rule.mutation.graphql"
+
+      before do
+        stub_gitlab_api_client_to_support_gitlab_api(supported: true)
+      end
 
       context 'when user does not have access to the project' do
         it "graphql/#{project_container_protection_tag_rules_query_path}.null_project.json" do

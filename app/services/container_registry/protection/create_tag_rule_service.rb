@@ -18,6 +18,10 @@ module ContainerRegistry
           return service_response_error(message: _('Maximum number of protection rules have been reached.'))
         end
 
+        unless ::ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+          return service_response_error(message: _('GitLab container registry API not supported'))
+        end
+
         protection_rule =
           project.container_registry_protection_tag_rules.create(params.slice(*ALLOWED_ATTRIBUTES))
 

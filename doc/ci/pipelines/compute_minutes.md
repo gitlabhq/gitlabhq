@@ -79,7 +79,7 @@ with compute usage or instance runners usage in the current month only.
 On GitLab.com an in-app banner is displayed and an email notification sent to the
 namespace owners when the remaining compute minutes is:
 
-- Less than 30% of the quota.
+- Less than 25% of the quota.
 - Less than 5% of the quota.
 - Completely used (zero minutes remaining).
 

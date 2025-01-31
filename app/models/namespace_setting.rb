@@ -61,6 +61,10 @@ class NamespaceSetting < ApplicationRecord
 
   self.primary_key = :namespace_id
 
+  def self.declarative_policy_class
+    "Ci::NamespaceSettingPolicy"
+  end
+
   def self.allowed_namespace_settings_params
     NAMESPACE_SETTINGS_PARAMS
   end

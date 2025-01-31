@@ -55,6 +55,13 @@ module Types
       null: true,
       description: 'Package settings for the namespace.'
 
+    field :ci_cd_settings,
+      Types::Ci::NamespaceSettingsType,
+      null: true,
+      experiment: { milestone: '17.9' },
+      description: 'Namespace CI/CD settings for the namespace.',
+      method: :namespace_settings
+
     field :shared_runners_setting,
       Types::Namespace::SharedRunnersSettingEnum,
       null: true,

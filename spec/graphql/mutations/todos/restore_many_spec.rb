@@ -16,7 +16,7 @@ RSpec.describe Mutations::Todos::RestoreMany do
 
   let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
-  describe '#resolve' do
+  describe '#process_todos' do
     it 'restores a single todo' do
       result = restore_mutation([todo1])
 

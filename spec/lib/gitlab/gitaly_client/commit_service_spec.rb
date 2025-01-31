@@ -1146,6 +1146,70 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
     end
 
+    context 'with ignore_revisions_blob' do
+      let(:ignore_revisions_blob) { "refs/heads/#{branch_name}:#{file_name}" }
+      let(:branch_name) { generate :branch }
+
+      subject(:blame) do
+        client.raw_blame(revision, path, range: range, ignore_revisions_blob: ignore_revisions_blob).split("\n")
+      end
+
+      shared_examples 'raises error with message' do |error_class, message|
+        it "raises #{error_class} with correct message" do
+          expect { blame }.to raise_error(error_class) do |error|
+            expect(error.details).to eq(message)
+          end
+        end
+      end
+
+      context 'when ignore file exists' do
+        before do
+          project.repository.create_file(
+            project.owner,
+            file_name,
+            file_content,
+            message: "add file",
+            branch_name: branch_name
+          )
+        end
+
+        context "with valid ignore file content" do
+          let(:file_name) { '.git-ignore-revs-file' }
+          let(:file_content) { '3685515c40444faf92774e72835e1f9c0e809672' }
+
+          it 'excludes the specified revision from blame' do
+            expect(blame).to include(*blame_headers[0..2], blame_headers[4])
+            expect(blame).not_to include(file_content)
+          end
+        end
+
+        context 'with invalid ignore file content' do
+          let(:file_name) { '.git-ignore-revs-invalid' }
+          let(:file_content) { 'invalid_content' }
+
+          include_examples 'raises error with message',
+            GRPC::NotFound,
+            'invalid object name'
+        end
+      end
+
+      context 'with invalid ignore revision' do
+        let(:ignore_revisions_blob) { "refs/heads/invalid" }
+
+        include_examples 'raises error with message',
+          GRPC::NotFound,
+          'cannot resolve ignore-revs blob'
+      end
+
+      context 'when ignore_revision_blob is a directory' do
+        let(:ignore_revisions_blob) { "refs/heads/#{revision}:files" }
+
+        include_examples 'raises error with message',
+          GRPC::InvalidArgument,
+          'ignore revision is not a blob'
+      end
+    end
+
     context 'with a range' do
       let(:range) { '3,4' }
 

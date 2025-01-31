@@ -1251,3 +1251,7 @@ Tailwind/StringInterpolation:
   - '{,ee/,jh/}app/helpers/**/*.rb'
   - '{,ee/,jh/}app/components/**/*.{haml,rb}'
   - '{,ee/,jh/}app/views/**/*.haml'
+
+Cop/ActiveRecordDependent:
+  Include:
+    - ee/app/models/**/*.rb

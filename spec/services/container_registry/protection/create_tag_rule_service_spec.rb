@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', feature_category: :container_registry do
+  include ContainerRegistryHelpers
+
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
@@ -10,6 +12,10 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
   let(:params) { attributes_for(:container_registry_protection_tag_rule, project: project) }
 
   subject(:service_execute) { service.execute }
+
+  before do
+    stub_gitlab_api_client_to_support_gitlab_api(supported: true)
+  end
 
   shared_examples 'a successful service response' do
     it_behaves_like 'returning a success service response' do
@@ -138,5 +144,14 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
 
     it_behaves_like 'an erroneous service response',
       message: 'Maximum number of protection rules have been reached.'
+  end
+
+  context 'when the GitLab API is not supported' do
+    before do
+      stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+    end
+
+    it_behaves_like 'an erroneous service response',
+      message: 'GitLab container registry API not supported'
   end
 end

@@ -9,3 +9,13 @@ Search/NamespacedClass:
 
 RSpec/MultipleMemoizedHelpers:
   Max: 25
+
+RSpec/VerifiedDoubles:
+  Exclude:
+  - 'spec/lib/active_context/tracker_spec.rb'
+
+RSpec/VerifiedDoubleReference:
+  Exclude:
+  - 'spec/lib/active_context/bulk_process_queue_spec.rb'
+  - 'spec/lib/active_context/reference_spec.rb'
+  - 'spec/lib/active_context/tracker_spec.rb'

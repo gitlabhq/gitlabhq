@@ -1431,7 +1431,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="queryvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="queryvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
-| <a id="queryvulnerabilitiesidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on project level when feature flag `vulnerability_filtering_by_identifier` is enabled. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance securitydashboard queries. |
+| <a id="queryvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
 | <a id="queryvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="queryvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="queryvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -8065,6 +8065,30 @@ Input type: `NamespaceDeleteRemoteDevelopmentClusterAgentMappingInput`
 | <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.namespaceSettingsUpdate`
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `NamespaceSettingsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacesettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacesettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace the settings belong to. |
+| <a id="mutationnamespacesettingsupdatepipelinevariablesdefaultrole"></a>`pipelineVariablesDefaultRole` | [`PipelineVariablesDefaultRoleType`](#pipelinevariablesdefaultroletype) | Indicates the default minimum role required to override pipeline variables in the namespace. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacesettingsupdatecicdsettings"></a>`ciCdSettings` | [`CiCdSettings!`](#cicdsettings) | Namespace CI/CD settings after mutation. |
+| <a id="mutationnamespacesettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacesettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.noteConvertToThread`
 
 Convert a standard comment to a resolvable thread.
@@ -10308,6 +10332,29 @@ Input type: `TodoMarkDoneInput`
 | <a id="mutationtodomarkdoneerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationtodomarkdonetodo"></a>`todo` | [`Todo!`](#todo) | Requested to-do item. |
 
+### `Mutation.todoResolveMany`
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `TodoResolveManyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtodoresolvemanyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtodoresolvemanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | Global IDs of the to-do items to process (a maximum of 100 is supported at once). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationtodoresolvemanyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtodoresolvemanyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationtodoresolvemanytodos"></a>`todos` | [`[Todo!]!`](#todo) | Updated to-do items. |
+
 ### `Mutation.todoRestore`
 
 Input type: `TodoRestoreInput`
@@ -10336,7 +10383,7 @@ Input type: `TodoRestoreManyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtodorestoremanyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | Global IDs of the to-do items to restore (a maximum of 100 is supported at once). |
+| <a id="mutationtodorestoremanyids"></a>`ids` | [`[TodoID!]!`](#todoid) | Global IDs of the to-do items to process (a maximum of 100 is supported at once). |
 
 #### Fields
 
@@ -20887,6 +20934,14 @@ Represents a component usage in a project.
 | <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
 | <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was released. |
 
+### `CiCdSettings`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicdsettingspipelinevariablesdefaultrole"></a>`pipelineVariablesDefaultRole` | [`String`](#string) | Indicates the default minimum role required to override pipeline variables in the namespace. |
+
 ### `CiConfig`
 
 #### Fields
@@ -25487,6 +25542,7 @@ GPG signature for a signed commit.
 | <a id="groupamazons3configurations"></a>`amazonS3Configurations` | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | Amazon S3 configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within this group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
+| <a id="groupcicdsettings"></a>`ciCdSettings` **{warning-solid}** | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="groupcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the group creation. |
@@ -26895,7 +26951,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="groupvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="groupvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
-| <a id="groupvulnerabilitiesidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on project level when feature flag `vulnerability_filtering_by_identifier` is enabled. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance securitydashboard queries. |
+| <a id="groupvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
 | <a id="groupvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="groupvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="groupvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -30671,6 +30727,7 @@ Product analytics events for a specific month and year.
 | <a id="namespaceactualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespaceadditionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
 | <a id="namespaceallowedcustomstatuses"></a>`allowedCustomStatuses` **{warning-solid}** | [`WorkItemWidgetCustomStatusConnection`](#workitemwidgetcustomstatusconnection) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed custom statuses for the namespace. |
+| <a id="namespacecicdsettings"></a>`ciCdSettings` **{warning-solid}** | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
 | <a id="namespacecontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacecrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
 | <a id="namespacedescription"></a>`description` | [`String`](#string) | Description of the namespace. |
@@ -34433,7 +34490,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="projectvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
 | <a id="projectvulnerabilitieshasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have been resolved on default branch. |
-| <a id="projectvulnerabilitiesidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on project level when feature flag `vulnerability_filtering_by_identifier` is enabled. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance securitydashboard queries. |
+| <a id="projectvulnerabilitiesidentifiername"></a>`identifierName` | [`String`](#string) | Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
 | <a id="projectvulnerabilitiesimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="projectvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="projectvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -34463,11 +34520,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.vulnerabilityIdentifierSearch`
 
-Search for vulnerabilities by identifier. Feature flag `vulnerability_filtering_by_identifier` has to be enabled for the project.
-
-DETAILS:
-**Introduced** in GitLab 17.7.
-**Status**: Experiment.
+Search for vulnerabilities by identifier.
 
 Returns [`[String!]`](#string).
 
@@ -39086,14 +39139,14 @@ Represents a workspaces agent config.
 | <a id="workspacesagentconfigannotations"></a>`annotations` | [`[KubernetesAnnotation!]!`](#kubernetesannotation) | Annotations to apply to Kubernetes objects. |
 | <a id="workspacesagentconfigclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Cluster agent that the workspaces agent config belongs to. |
 | <a id="workspacesagentconfigcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workspaces agent config was created. |
-| <a id="workspacesagentconfigdefaultmaxhoursbeforetermination"></a>`defaultMaxHoursBeforeTermination` | [`Int!`](#int) | Default max hours before worksapce termination of the workspaces agent config. |
+| <a id="workspacesagentconfigdefaultmaxhoursbeforetermination"></a>`defaultMaxHoursBeforeTermination` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in GitLab 17.9. Field is not used. |
 | <a id="workspacesagentconfigdefaultruntimeclass"></a>`defaultRuntimeClass` | [`String!`](#string) | Default Kubernetes RuntimeClass. |
 | <a id="workspacesagentconfigdnszone"></a>`dnsZone` | [`String!`](#string) | DNS zone where workspaces are available. |
 | <a id="workspacesagentconfigenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether remote development is enabled for the GitLab agent. |
 | <a id="workspacesagentconfiggitlabworkspacesproxynamespace"></a>`gitlabWorkspacesProxyNamespace` | [`String!`](#string) | Namespace where gitlab-workspaces-proxy is installed. |
 | <a id="workspacesagentconfigid"></a>`id` | [`RemoteDevelopmentWorkspacesAgentConfigID!`](#remotedevelopmentworkspacesagentconfigid) | Global ID of the workspaces agent config. |
 | <a id="workspacesagentconfiglabels"></a>`labels` | [`[KubernetesLabel!]!`](#kuberneteslabel) | Labels to apply to Kubernetes objects. |
-| <a id="workspacesagentconfigmaxhoursbeforeterminationlimit"></a>`maxHoursBeforeTerminationLimit` | [`Int!`](#int) | Max hours before worksapce termination limit of the workspaces agent config. |
+| <a id="workspacesagentconfigmaxhoursbeforeterminationlimit"></a>`maxHoursBeforeTerminationLimit` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in GitLab 17.9. Field is not used. |
 | <a id="workspacesagentconfignetworkpolicyenabled"></a>`networkPolicyEnabled` | [`Boolean!`](#boolean) | Whether the network policy of the workspaces agent config is enabled. |
 | <a id="workspacesagentconfigprojectid"></a>`projectId` | [`ID`](#id) | ID of the project that the workspaces agent config belongs to. |
 | <a id="workspacesagentconfigupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable workspaces agent config property. |
@@ -41736,6 +41789,17 @@ Pipeline security report finding sort values.
 | <a id="pipelinestatusenumsuccess"></a>`SUCCESS` | Pipeline completed successfully. |
 | <a id="pipelinestatusenumwaiting_for_callback"></a>`WAITING_FOR_CALLBACK` | Pipeline is waiting for an external action. |
 | <a id="pipelinestatusenumwaiting_for_resource"></a>`WAITING_FOR_RESOURCE` | A resource (for example, a runner) that the pipeline requires to run is unavailable. |
+
+### `PipelineVariablesDefaultRoleType`
+
+Pipeline variables minimum override roles.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="pipelinevariablesdefaultroletypedeveloper"></a>`DEVELOPER` | Developer. |
+| <a id="pipelinevariablesdefaultroletypemaintainer"></a>`MAINTAINER` | Maintainer. |
+| <a id="pipelinevariablesdefaultroletypeno_one_allowed"></a>`NO_ONE_ALLOWED` | No one allowed. |
+| <a id="pipelinevariablesdefaultroletypeowner"></a>`OWNER` | Owner. |
 
 ### `PolicyProjectCreatedStatus`
 

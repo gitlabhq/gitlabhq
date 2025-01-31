@@ -3,7 +3,7 @@
 module ActiveContext
   class Tracker
     class << self
-      def track!(*objects, collection:, queue: nil)
+      def track!(*objects, collection: nil, queue: nil)
         references = collect_references(objects.flatten, collection)
 
         return 0 if references.empty?
@@ -19,8 +19,21 @@ module ActiveContext
 
       def collect_references(objects, collection)
         objects.flat_map do |obj|
-          collection.new(obj).references
+          if obj.is_a?(ActiveContext::Reference)
+            obj.serialize
+          elsif obj.is_a?(String)
+            obj
+          else
+            next collection.new(obj).references if collection
+
+            logger.warn("ActiveContext unable to track `#{obj}`: Collection must be specified")
+            []
+          end
         end
+      end
+
+      def logger
+        ActiveContext::Config.logger
       end
     end
   end
