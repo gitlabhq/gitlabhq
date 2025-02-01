@@ -44,7 +44,7 @@ RSpec.describe Packages::Pypi::Metadatum, type: :model, feature_category: :packa
       end
 
       context 'with a different package type' do
-        let(:package) { build(:package) }
+        let(:package) { build(:generic_package) }
 
         it 'raises the error' do
           expect { build(:pypi_metadatum, package: package) }.to raise_error(ActiveRecord::AssociationTypeMismatch)

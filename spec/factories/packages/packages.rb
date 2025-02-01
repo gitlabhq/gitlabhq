@@ -4,9 +4,6 @@ FactoryBot.define do
   factory :package, class: 'Packages::Package' do
     project
     creator { project&.creator }
-    name { 'my/company/app/my-app' }
-    sequence(:version) { |n| "1.#{n}-SNAPSHOT" }
-    package_type { :maven }
     status { :default }
 
     trait :hidden do
@@ -30,6 +27,10 @@ FactoryBot.define do
     end
 
     factory :maven_package do
+      name { 'my/company/app/my-app' }
+      sequence(:version) { |n| "1.#{n}-SNAPSHOT" }
+      package_type { :maven }
+
       maven_metadatum do
         association(
           :maven_metadatum,

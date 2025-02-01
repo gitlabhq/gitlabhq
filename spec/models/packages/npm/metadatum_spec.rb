@@ -20,7 +20,7 @@ RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :packag
         end
 
         context 'with a different package type' do
-          let(:package) { build(:package) }
+          let(:package) { build(:generic_package) }
 
           it 'raises the error' do
             expect { build(:npm_metadatum, package: package) }.to raise_error(ActiveRecord::AssociationTypeMismatch)

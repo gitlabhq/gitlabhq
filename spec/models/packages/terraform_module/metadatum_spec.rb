@@ -55,7 +55,7 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
       end
 
       context 'with a different package type' do
-        let(:package) { build(:package) }
+        let(:package) { build(:generic_package) }
 
         it 'raises the error' do
           expect do

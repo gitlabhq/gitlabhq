@@ -96,7 +96,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
   end
 
   describe 'validations' do
-    subject { build(:package) }
+    subject { build(:maven_package) }
 
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id, :version, :package_type) }

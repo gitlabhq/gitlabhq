@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountPackagesMetric, feature_category: :service_ping do
   before_all do
-    create :package, created_at: 2.months.ago
-    create :package, created_at: 21.days.ago
-    create :package, created_at: 7.days.ago
+    create(:generic_package, created_at: 2.months.ago)
+    create(:generic_package, created_at: 21.days.ago)
+    create(:generic_package, created_at: 7.days.ago)
   end
 
   context "with all time frame" do
