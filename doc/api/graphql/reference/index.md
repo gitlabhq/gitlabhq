@@ -11471,6 +11471,30 @@ Input type: `VerifiedNamespaceCreateInput`
 | <a id="mutationverifiednamespacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationverifiednamespacecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.vulnerabilitiesCreateIssue`
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `VulnerabilitiesCreateIssueInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiescreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiescreateissueproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the issue to. |
+| <a id="mutationvulnerabilitiescreateissuevulnerabilityids"></a>`vulnerabilityIds` | [`[VulnerabilityID!]!`](#vulnerabilityid) | IDs of vulnerabilities to link to the given issue. Up to 100 can be provided. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiescreateissueclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiescreateissueerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilitiescreateissueissue"></a>`issue` | [`Issue`](#issue) | Issue created after mutation. |
+
 ### `Mutation.vulnerabilitiesDismiss`
 
 Input type: `VulnerabilitiesDismissInput`

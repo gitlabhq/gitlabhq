@@ -4,10 +4,8 @@ trigger-ai-gateway-tagging:
   script:
     - |
       curl -X POST --fail \
-        -F "token=${AIGW_PIPELINE_TRIGGER_TOKEN}" \
-        -F "ref=main" \
-        -F "variables[GITLAB_VERSION]=${CI_COMMIT_TAG}" \
-        "https://gitlab.com/api/v4/projects/39903947/trigger/pipeline"
+        --header "PRIVATE-TOKEN: $AIGW_TAGGING_ACCESS_TOKEN" \
+        "https://gitlab.com/api/v4/projects/39903947/repository/tags?tag_name=self-hosted-${CI_COMMIT_TAG}&ref=main"
   extends:
     - .ai-gateway:rules:tagging
   allow_failure: true
