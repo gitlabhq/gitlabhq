@@ -30374,8 +30374,6 @@ CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_
 
 CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON keys USING btree (date(timezone('UTC'::text, expires_at)), before_expiry_notification_delivered_at) WHERE (before_expiry_notification_delivered_at IS NULL);
 
-CREATE INDEX idx_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt_indices USING btree (last_indexed_at, used_storage_bytes_updated_at) WHERE (last_indexed_at >= used_storage_bytes_updated_at);
-
 CREATE INDEX idx_member_roles_on_base_access_level ON member_roles USING btree (base_access_level);
 
 CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree (created_at) WHERE ((invite_token IS NOT NULL) AND (user_id IS NULL));
@@ -30635,6 +30633,8 @@ CREATE UNIQUE INDEX idx_wi_select_values_on_wi_custom_field_id_select_option_id 
 CREATE UNIQUE INDEX idx_wi_text_values_on_work_item_id_custom_field_id ON work_item_text_field_values USING btree (work_item_id, custom_field_id);
 
 CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_id ON work_item_type_custom_fields USING btree (namespace_id, work_item_type_id, custom_field_id);
+
+CREATE INDEX idx_zoekt_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt_indices USING btree (used_storage_bytes_updated_at) WHERE (last_indexed_at >= used_storage_bytes_updated_at);
 
 CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_state ON zoekt_repositories USING btree (zoekt_index_id, state);
 

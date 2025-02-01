@@ -1,5 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/projects/new_v2/components/app.vue';
+import CommandLine from '~/projects/new_v2/components/command_line.vue';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 
 describe('New project creation app', () => {
@@ -17,6 +18,7 @@ describe('New project creation app', () => {
   };
 
   const findMultyStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findCommandLine = () => wrapper.findComponent(CommandLine);
 
   it('renders a form', () => {
     createComponent();
@@ -36,6 +38,20 @@ describe('New project creation app', () => {
 
     it('does not renders a group select', () => {
       expect(wrapper.findByTestId('group-selector').exists()).toBe(false);
+    });
+  });
+
+  describe('with command line', () => {
+    it('renders for a personal namespace', () => {
+      createComponent();
+
+      expect(findCommandLine().exists()).toBe(true);
+    });
+
+    it('does not renders for a group namespace', () => {
+      createComponent({ namespaceId: '13' });
+
+      expect(findCommandLine().exists()).toBe(false);
     });
   });
 });

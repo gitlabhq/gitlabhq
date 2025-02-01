@@ -44597,7 +44597,16 @@ msgstr ""
 msgid "ProjectMaintenance|You will receive an email notification when the process is complete. To remove old versions from the repository, run housekeeping."
 msgstr ""
 
+msgid "ProjectNew|Push project from command line"
+msgstr ""
+
 msgid "ProjectNew|What do you want to create?"
+msgstr ""
+
+msgid "ProjectNew|What does this command do?"
+msgstr ""
+
+msgid "ProjectNew|You can also create a project from the command line"
 msgstr ""
 
 msgid "ProjectOverview|Create new fork"

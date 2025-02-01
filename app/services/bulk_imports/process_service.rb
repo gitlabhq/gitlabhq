@@ -161,3 +161,5 @@ module BulkImports
     end
   end
 end
+
+BulkImports::ProcessService.prepend_mod

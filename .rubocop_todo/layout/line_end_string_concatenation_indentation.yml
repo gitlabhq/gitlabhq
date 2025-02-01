@@ -126,7 +126,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/helpers/push_rules_helper.rb'
     - 'ee/app/helpers/users/identity_verification_helper.rb'
     - 'ee/app/mailers/ci_minutes_usage_mailer.rb'
-    - 'ee/app/models/ci/minutes/notification.rb'
     - 'ee/app/models/concerns/audit_events/gcp_externally_destinationable.rb'
     - 'ee/app/models/ee/member.rb'
     - 'ee/app/models/ee/merge_request.rb'

@@ -87,7 +87,7 @@ Any dependencies are noted in the `Description` column for each permission.
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Approve merge request | Allows approval of merge requests. | [`admin_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) | Project | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/412708) |
-|  | Create, read, update, and delete protected branches for a project. | [`admin_protected_branch`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162208) | Project | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/448823) |
+| Manage Protected Branches | Create, read, update, and delete protected branches for a project. | [`admin_protected_branch`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162208) | Project | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/448823) |
 | Manage push rules | Configure push rules for repositories at the group or project level. | [`admin_push_rules`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147872) | Group,<br> Project | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/421786) |
 | View repository code | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. | [`read_code`](https://gitlab.com/gitlab-org/gitlab/-/issues/376180) | Group,<br> Project | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/20277) |
 

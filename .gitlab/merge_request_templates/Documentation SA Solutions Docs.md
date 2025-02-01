@@ -16,6 +16,8 @@ This MR Template ensures that Solutions Docs published here: https://docs.gitlab
 - [ ] Assign yourself as the **Assignee** of this MR.
 - [ ] Assign the latest release for the **Milestone**. If you're not sure, [view the list of releases](https://about.gitlab.com/releases/).
 - [ ] Mention the reviewers in a comment, so they're aware that the MR is ready.
+- [ ] If navigation changes are needed, create an MR in the gitlab-docs project according to this documentation process. [Here is an example](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/4863).
+  - [ ] If making a navigation change, list the Navigation MR here: `link to your navigation update MR`
 
 ## Merging
 

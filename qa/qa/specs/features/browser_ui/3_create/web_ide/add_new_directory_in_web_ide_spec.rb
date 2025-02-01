@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :remote_development do
+  RSpec.describe 'Create', product_group: :remote_development, feature_category: :web_ide do
     describe 'Add a directory in Web IDE' do
       include_context 'Web IDE test prep'
       let(:project) { create(:project, :with_readme, name: 'webide-add-directory-project') }

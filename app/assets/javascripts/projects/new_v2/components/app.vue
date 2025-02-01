@@ -1,11 +1,13 @@
 <script>
 import { GlButton, GlButtonGroup, GlFormGroup, GlIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
 import SingleChoiceSelectorItem from '~/vue_shared/components/single_choice_selector_item.vue';
 
 import NewProjectDestinationSelect from './project_destination_select.vue';
+import CommandLine from './command_line.vue';
 
 const OPTIONS = {
   blank: {
@@ -65,6 +67,10 @@ export default {
     SingleChoiceSelector,
     SingleChoiceSelectorItem,
     NewProjectDestinationSelect,
+    CommandLine,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     rootPath: {
@@ -123,6 +129,11 @@ export default {
       default: null,
     },
     trackLabel: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    newProjectGuidelines: {
       type: String,
       required: false,
       default: null,
@@ -210,6 +221,11 @@ export default {
         </single-choice-selector-item>
         <single-choice-selector-item v-bind="$options.OPTIONS.transfer" :disabled="true" />
       </single-choice-selector>
+    </template>
+    <template #footer>
+      <div v-if="newProjectGuidelines" v-safe-html="newProjectGuidelines" class="gl-mb-6"></div>
+
+      <command-line v-if="isPersonalProject" />
     </template>
   </multi-step-form-template>
 </template>

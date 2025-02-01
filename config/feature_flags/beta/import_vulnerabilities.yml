@@ -1,0 +1,9 @@
+---
+name: import_vulnerabilities
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501466
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171684
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516220
+milestone: '17.7'
+group: group::import and integrate
+type: beta
+default_enabled: false

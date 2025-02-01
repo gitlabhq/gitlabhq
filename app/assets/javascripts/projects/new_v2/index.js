@@ -26,6 +26,7 @@ export function initNewProjectForm() {
     namespaceId,
     userNamespaceId,
     trackLabel,
+    newProjectGuidelines,
   } = el.dataset;
 
   const props = {
@@ -41,6 +42,7 @@ export function initNewProjectForm() {
     namespaceId,
     userNamespaceId,
     trackLabel,
+    newProjectGuidelines,
   };
 
   const provide = {
