@@ -3968,9 +3968,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|API token"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Accept GitLab Testing Agreement"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Add a new AI model that can be used for GitLab Duo features."
 msgstr ""
 
@@ -3992,9 +3989,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|An error occurred while updating the self-hosted model, please try again."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Configure GitLab Duo by adding and managing your own %{self_hosted_models_link_start}self-hosted models%{self_hosted_models_link_end}. To get started, you must first accept the %{gitlab_testing_agreement_link_start}GitLab Testing Agreement%{gitlab_testing_agreement_link_end}."
-msgstr ""
-
 msgid "AdminSelfHostedModels|Create self-hosted model"
 msgstr ""
 
@@ -4011,9 +4005,6 @@ msgid "AdminSelfHostedModels|Edit the AI model that can be used for GitLab Duo f
 msgstr ""
 
 msgid "AdminSelfHostedModels|Endpoint"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Get started with self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
@@ -5297,7 +5288,7 @@ msgstr ""
 msgid "AiPowered|Assign seats"
 msgstr ""
 
-msgid "AiPowered|By turning on self-hosted AI models, you agree to the %{linkStart}GitLab Testing Agreement%{linkEnd}. This action cannot be reversed."
+msgid "AiPowered|Beta self-hosted models"
 msgstr ""
 
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
@@ -5319,6 +5310,9 @@ msgid "AiPowered|Direct connections"
 msgstr ""
 
 msgid "AiPowered|Early Access Program banner dismissed. You will not see it again for 7 days."
+msgstr ""
+
+msgid "AiPowered|Enabling this feature is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
 msgid "AiPowered|End date: %{endDate}"
@@ -5378,9 +5372,6 @@ msgstr ""
 msgid "AiPowered|Self-hosted AI models"
 msgstr ""
 
-msgid "AiPowered|Self-hosted models"
-msgstr ""
-
 msgid "AiPowered|Setting unavailable"
 msgstr ""
 
@@ -5396,7 +5387,7 @@ msgstr ""
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
-msgid "AiPowered|Turn on self-hosted models"
+msgid "AiPowered|Use beta self-hosted models features"
 msgstr ""
 
 msgid "AiPowered|View GitLab Duo settings"
@@ -5409,9 +5400,6 @@ msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgro
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
-msgstr ""
-
-msgid "AiPowered|You have turned on self-hosted AI models and agreed to the %{linkStart}GitLab Testing Agreement%{linkEnd}. This action cannot be reversed."
 msgstr ""
 
 msgid "Akismet"
@@ -19424,6 +19412,9 @@ msgid "Dependencies|Project list unavailable"
 msgstr ""
 
 msgid "Dependencies|Projects"
+msgstr ""
+
+msgid "Dependencies|Report export in progress. After the report is generated, an email will be sent with the download link."
 msgstr ""
 
 msgid "Dependencies|Search or filter dependencies..."
@@ -51847,6 +51838,9 @@ msgid_plural "SecurityOrchestration|On runners with the tags:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SecurityOrchestration|Only custom roles with the permission to approve merge requests are shown"
+msgstr ""
+
 msgid "SecurityOrchestration|Only overriding settings and bot message will take effect"
 msgstr ""
 
@@ -55915,9 +55909,6 @@ msgid "Succeeded"
 msgstr ""
 
 msgid "Success"
-msgstr ""
-
-msgid "Successfully accepted GitLab Testing Terms"
 msgstr ""
 
 msgid "Successfully activated"

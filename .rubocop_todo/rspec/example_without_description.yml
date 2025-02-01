@@ -208,7 +208,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/support/shared_examples/services/audit_events/streaming/headers_operations_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/onboarding_progress_shared_examples.rb'
     - 'ee/spec/validators/audit_events/http_destination_validator_spec.rb'
-    - 'ee/spec/views/admin/ai/terms_and_conditions/index.html.haml_spec.rb'
     - 'ee/spec/views/admin/application_settings/security_and_compliance.html.haml_spec.rb'
     - 'ee/spec/views/registrations/groups/new.html.haml_spec.rb'
     - 'ee/spec/views/registrations/welcome/show.html.haml_spec.rb'
