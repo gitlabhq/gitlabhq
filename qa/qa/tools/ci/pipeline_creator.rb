@@ -37,8 +37,8 @@ module QA
         # @param pipeline_path [String]
         # @param logger [Logger]
         # @return [void]
-        def self.create_noop(pipeline_path: "tmp", logger: Runtime::Logger.logger)
-          new([], pipeline_path: pipeline_path, logger: logger).create_noop
+        def self.create_noop(pipeline_path: "tmp", logger: Runtime::Logger.logger, reason: nil)
+          new([], pipeline_path: pipeline_path, logger: logger).create_noop(reason: reason)
         end
 
         # @param tests [Array] specific tests to run
@@ -72,8 +72,15 @@ module QA
         # Create noop pipeline definitions for each supported pipeline type
         #
         # @return [void]
-        def create_noop
-          SUPPORTED_PIPELINES.each { |type| FileUtils.cp(noop_pipeline, generated_yml_file_name(type)) }
+        def create_noop(reason: nil)
+          noop_yml = <<~YML
+            variables:
+              SKIP_MESSAGE: "#{reason || 'no-op run, nothing will be executed!'}"
+
+            #{File.read(noop_pipeline)}
+          YML
+
+          SUPPORTED_PIPELINES.each { |type| File.write(generated_yml_file_name(type), noop_yml) }
           logger.info("Created noop pipeline definitions for all E2E test pipelines")
         end
 

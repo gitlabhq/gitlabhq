@@ -22,17 +22,31 @@ module QA
     let(:generated_cng_yaml) { YAML.load_file(cng_pipeline_file) }
 
     describe "#create_noop" do
-      let(:noop_pipeline) { "noop pipeline template" }
       let(:scenario_examples) { {} }
+      let(:noop_reason) { "no-op run, pipeline:skip-e2e label detected" }
+      let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/_skip.yml")) }
 
-      before do
-        allow(FileUtils).to receive(:cp)
+      let(:noop_pipeline) do
+        <<~YML
+          variables:
+            SKIP_MESSAGE: "#{noop_reason}"
+
+          #{skip_pipeline}
+        YML
       end
 
-      it "creates a noop pipeline" do
-        described_class.create_noop(logger: instance_double(Logger, info: nil, debug: nil), pipeline_path: tmp_dir)
+      before do
+        allow(File).to receive(:write).with(/test-on-(gdk|cng|omnibus|omnibus-nightly)-pipeline.yml/, noop_pipeline)
+      end
 
-        expect(FileUtils).to have_received(:cp).with(File.join(project_root, ".gitlab/ci/_skip.yml"), cng_pipeline_file)
+      it "creates a noop pipeline with skip message" do
+        described_class.create_noop(
+          logger: instance_double(Logger, info: nil, debug: nil),
+          pipeline_path: tmp_dir,
+          reason: noop_reason
+        )
+
+        expect(File).to have_received(:write).with(cng_pipeline_file, noop_pipeline)
       end
     end
 

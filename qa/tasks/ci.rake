@@ -26,7 +26,7 @@ namespace :ci do
 
     if run_no_tests_label_present
       logger.info("Merge request has pipeline:skip-e2e label, e2e test execution will be skipped.")
-      next pipeline_creator.create_noop
+      next pipeline_creator.create_noop(reason: "no-op run, pipeline:skip-e2e label detected")
     end
 
     diff = mr_diff
@@ -37,12 +37,12 @@ namespace :ci do
     else
       if qa_changes.quarantine_changes?
         logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
-        next pipeline_creator.create_noop
+        next pipeline_creator.create_noop(reason: "no-op run, only quarantine changes detected in merge request")
       end
 
       if qa_changes.only_spec_removal?
         logger.info("Merge request contains only e2e spec removal, e2e test execution will be skipped!")
-        next pipeline_creator.create_noop
+        next pipeline_creator.create_noop(reason: "no-op run, only spec removal detected in merge request")
       end
 
       feature_flags_changes = QA::Tools::Ci::FfChanges.new(diff).fetch
