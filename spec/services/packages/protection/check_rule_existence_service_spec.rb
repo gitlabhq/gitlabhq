@@ -41,7 +41,7 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
   end
 
   describe '#execute' do
-    let_it_be(:container_protection_rule_npm) do
+    let_it_be(:package_protection_rule_npm) do
       create(:package_protection_rule,
         project: project,
         package_type: :npm,
@@ -49,7 +49,7 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
         minimum_access_level_for_push: :maintainer)
     end
 
-    let_it_be(:container_protection_rule_pypi) do
+    let_it_be(:package_protection_rule_pypi) do
       create(:package_protection_rule,
         project: project,
         package_type: :pypi,
