@@ -239,7 +239,7 @@
 {"name":"gitlab-license","version":"2.6.0","platform":"ruby","checksum":"2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016"},
 {"name":"gitlab-mail_room","version":"0.0.25","platform":"ruby","checksum":"223ce7c3c0797b6015eaa37147884e6ddc7be9a7ee90a424358c96bc18613b1a"},
 {"name":"gitlab-markup","version":"1.9.0","platform":"ruby","checksum":"7eda045a08ec2d110084252fa13a8c9eac8bdac0e302035ca7db4b82bcbd7ed4"},
-{"name":"gitlab-net-dns","version":"0.9.2","platform":"ruby","checksum":"f726d978479d43810819f12a45c0906d775a07e34df111bbe693fffbbef3059d"},
+{"name":"gitlab-net-dns","version":"0.10.0","platform":"ruby","checksum":"73b4613d8c851480b7b4e631f117bce4bbb4b6b8073ecf4eb167407e46097c6e"},
 {"name":"gitlab-sdk","version":"0.3.1","platform":"ruby","checksum":"48ba49084f4ab92df7c7ef9f347020d9dfdf6ed9c1e782b67264e98ffe6ea710"},
 {"name":"gitlab-secret_detection","version":"0.18.0","platform":"ruby","checksum":"c143c22c8a70898b11141dd530fc740725835c54a5cd01117c1ecfefab798ae6"},
 {"name":"gitlab-security_report_schemas","version":"0.1.2.min15.0.0.max15.2.1","platform":"ruby","checksum":"300037487ec9d51a814f648514ff521cb82b94fc51d9fe53389175b36ac680ae"},

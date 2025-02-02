@@ -776,7 +776,7 @@ GEM
       redis (>= 5, < 6)
       redis-namespace (>= 1.8.2)
     gitlab-markup (1.9.0)
-    gitlab-net-dns (0.9.2)
+    gitlab-net-dns (0.10.0)
     gitlab-sdk (0.3.1)
       activesupport (>= 5.2.0)
       rake (~> 13.0)
@@ -2133,7 +2133,7 @@ DEPENDENCIES
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)
   gitlab-markup (~> 1.9.0)
-  gitlab-net-dns (~> 0.9.2)
+  gitlab-net-dns (~> 0.10.0)
   gitlab-rspec!
   gitlab-rspec_flaky!
   gitlab-safe_request_store!
