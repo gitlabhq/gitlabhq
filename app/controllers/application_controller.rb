@@ -286,7 +286,10 @@ class ApplicationController < BaseActionController
 
   def render_409(message = nil)
     respond_to do |format|
-      format.html { render template: "errors/request_conflict", formats: :html, layout: "errors", status: :conflict, locals: { message: message } }
+      format.html do
+        render template: "errors/request_conflict", formats: :html, layout: "errors", status: :conflict,
+          locals: { message: message }
+      end
       format.any { head :conflict }
     end
   end
@@ -335,7 +338,8 @@ class ApplicationController < BaseActionController
     return unless current_user && current_user.deactivated?
 
     sign_out current_user
-    flash[:alert] = _("Your account has been deactivated by your administrator. Please log back in to reactivate your account.")
+    flash[:alert] =
+      _("Your account has been deactivated by your administrator. Please log back in to reactivate your account.")
     redirect_to new_user_session_path
   end
 
@@ -376,7 +380,10 @@ class ApplicationController < BaseActionController
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_in, keys: [:username, :email, :password, :login, :remember_me, :otp_attempt])
+    devise_parameter_sanitizer.permit(
+      :sign_in,
+      keys: [:username, :email, :password, :login, :remember_me, :otp_attempt]
+    )
   end
 
   def hexdigest(string)

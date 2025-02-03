@@ -3,8 +3,10 @@ query workItemDescriptionTemplatesList($fullPath: ID!) {
     id
     workItemDescriptionTemplates {
       __typename
-      nodes @client {
+      nodes {
         name
+        projectId
+        category
       }
     }
   }

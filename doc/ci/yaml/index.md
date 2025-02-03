@@ -1139,6 +1139,7 @@ If a job times out, the `after_script` commands do not execute.
   to make job logs easier to review.
 - [Create custom collapsible sections](../jobs/job_logs.md#custom-collapsible-sections)
   to simplify job log output.
+- You can [ignore errors in `after_script`](../runners/configure_runners.md#ignore-errors-in-after_script).
 
 ### `allow_failure`
 

@@ -89,6 +89,51 @@ RSpec.describe ApplicationSettingsAnalysis, feature_category: :tooling do
       end
     end
 
+    describe 'encrypts columns' do
+      let(:attribute) { 'default_branch_protection_defaults' } # use this field since it's an actual JSONB field
+      let(:ee_attribute) { 'future_subscriptions' } # use this field since it's an actual JSONB field
+      let(:fake_application_setting_file) do
+        <<~CLASS
+        class ApplicationSetting < ApplicationRecord
+          encrypts :#{attribute}
+        end
+        CLASS
+      end
+
+      let(:fake_ee_application_setting_file) do
+        <<~MODULE
+        module EE
+          module ApplicationSetting
+            extend ActiveSupport::Concern
+            extend ::Gitlab::Utils::Override
+
+            prepended do
+              encrypts :#{ee_attribute}
+            end
+          end
+        end
+        MODULE
+      end
+
+      before do
+        stub_const(
+          "#{described_class}::ApplicationSetting::AS_MODEL",
+          fake_application_setting_file + fake_ee_application_setting_file
+        )
+      end
+
+      it 'returns encrypted attribute columns from the model' do
+        setting = attributes.find { |attr| attr.column == attribute }
+        ee_setting = attributes.find { |attr| attr.column == ee_attribute }
+
+        expect(setting.attr).to eq(attribute)
+        expect(setting.encrypted).to be(true)
+
+        expect(ee_setting.attr).to eq(ee_attribute)
+        expect(ee_setting.encrypted).to be(true)
+      end
+    end
+
     describe 'attr_encrypted columns' do
       it 'returns encrypted attribute columns from db/structure.sql' do
         setting = attributes.find { |attr| attr.column == 'encrypted_external_auth_client_key' }
@@ -96,7 +141,7 @@ RSpec.describe ApplicationSettingsAnalysis, feature_category: :tooling do
           .find { |attr| attr.column == 'encrypted_external_auth_client_key_iv' }
 
         expect(setting.attr).to eq('external_auth_client_key') # `encrypted_` prefix is removed
-        expect(setting.encrypted).to eq(true)
+        expect(setting.encrypted).to be(true)
         expect(encryption_iv_column).to be_nil # `*_iv` column aren't listed as it's an implementation detail
       end
     end
@@ -106,7 +151,7 @@ RSpec.describe ApplicationSettingsAnalysis, feature_category: :tooling do
         setting = attributes.find { |attr| attr.column == 'runners_registration_token_encrypted' }
 
         expect(setting.attr).to eq('runners_registration_token') # `_encrypted` suffix is removed
-        expect(setting.encrypted).to eq(true)
+        expect(setting.encrypted).to be(true)
       end
     end
 
@@ -114,7 +159,7 @@ RSpec.describe ApplicationSettingsAnalysis, feature_category: :tooling do
       it 'stores the column `not null` from db/structure.sql' do
         setting = attributes.find { |attr| attr.column == 'snippet_size_limit' }
 
-        expect(setting.not_null).to eq(true)
+        expect(setting.not_null).to be(true)
       end
     end
 
@@ -130,7 +175,7 @@ RSpec.describe ApplicationSettingsAnalysis, feature_category: :tooling do
       it 'marks settings that have a different value than default set on GitLab.com' do
         setting = attributes.find { |attr| attr.column == 'zoekt_settings' }
 
-        expect(setting.gitlab_com_different_than_default).to eq(true)
+        expect(setting.gitlab_com_different_than_default).to be(true)
       end
     end
 
@@ -146,7 +191,7 @@ RSpec.describe ApplicationSettingsAnalysis, feature_category: :tooling do
       it 'fetches JiHu-specific columns from db/structure.sql' do
         setting = attributes.find { |attr| attr.column == 'content_validation_endpoint_url' }
 
-        expect(setting.jihu).to eq(true)
+        expect(setting.jihu).to be(true)
       end
     end
 
@@ -162,7 +207,7 @@ RSpec.describe ApplicationSettingsAnalysis, feature_category: :tooling do
       it 'returns true when an attribute has an existing definition file' do
         setting = attributes.find { |attr| attr.column == 'commit_email_hostname' }
 
-        expect(setting.definition_file_exist?).to eq(true)
+        expect(setting.definition_file_exist?).to be(true)
       end
     end
   end

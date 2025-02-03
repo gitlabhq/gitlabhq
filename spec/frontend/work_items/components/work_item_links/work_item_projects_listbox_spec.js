@@ -144,6 +144,14 @@ describe('WorkItemProjectsListbox', () => {
       expect(content).toHaveLength(1);
       expect(content.at(0).text()).toContain(namespaceProjectsData[0].name);
     });
+
+    it('filters out archived projects', () => {
+      expect(namespaceProjectsFormLinksWidgetResolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          includeArchived: false,
+        }),
+      );
+    });
   });
 
   describe('project level work items', () => {
@@ -235,6 +243,14 @@ describe('WorkItemProjectsListbox', () => {
 
       expect(content).toHaveLength(1);
       expect(content.at(0).text()).toContain(namespaceProjectsData[0].name);
+    });
+
+    it('filters out archived projects', () => {
+      expect(namespaceProjectsFormLinksWidgetResolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          includeArchived: false,
+        }),
+      );
     });
   });
 

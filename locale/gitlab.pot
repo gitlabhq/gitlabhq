@@ -11744,6 +11744,9 @@ msgstr ""
 msgid "Changes:"
 msgstr ""
 
+msgid "Channel identifier"
+msgstr ""
+
 msgid "Characters left"
 msgstr ""
 
@@ -17502,6 +17505,9 @@ msgid "Custom emoji will be available to use in every project in the group."
 msgstr ""
 
 msgid "Custom hostname (for private commit emails)"
+msgstr ""
+
+msgid "Custom hostname of the Telegram API. The default value is `https://api.telegram.org`."
 msgstr ""
 
 msgid "Custom notification events"
@@ -29271,6 +29277,9 @@ msgstr ""
 msgid "If enabled, only protected branches will be mirrored."
 msgstr ""
 
+msgid "If selected, successful pipelines do not trigger a notification event."
+msgstr ""
+
 msgid "If the email address is incorrect, you can %{registration_link_start}register again with a different email%{registration_link_end}."
 msgstr ""
 
@@ -35715,6 +35724,9 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
+msgid "Message thread ID"
+msgstr ""
+
 msgid "Messages"
 msgstr ""
 
@@ -38425,6 +38437,9 @@ msgid "Notifications turned off."
 msgstr ""
 
 msgid "Notifications turned on."
+msgstr ""
+
+msgid "Notify only broken pipelines"
 msgstr ""
 
 msgid "Notify users by email when sign-in location is not recognized."
@@ -56936,6 +56951,9 @@ msgstr ""
 msgid "TestHooks|Ensure the project has releases."
 msgstr ""
 
+msgid "TestHooks|Ensure the project has vulnerabilities."
+msgstr ""
+
 msgid "TestHooks|Ensure the wiki is enabled and has pages."
 msgstr ""
 
@@ -60926,6 +60944,9 @@ msgid "Unhelpful or irrelevant"
 msgstr ""
 
 msgid "Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`)."
+msgstr ""
+
+msgid "Unique identifier for the target message thread (topic in a forum supergroup)."
 msgstr ""
 
 msgid "Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`)."

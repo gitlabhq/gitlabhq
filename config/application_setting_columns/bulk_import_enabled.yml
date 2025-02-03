@@ -9,6 +9,6 @@ description: Enable migrating GitLab groups by direct transfer. [Introduced](htt
   in GitLab 15.8. Setting also [available](../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   in the **Admin** area.
 encrypted: false
-gitlab_com_different_than_default: false
+gitlab_com_different_than_default: true
 jihu: false
 not_null: true

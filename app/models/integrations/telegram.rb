@@ -8,13 +8,15 @@ module Integrations
     TELEGRAM_HOSTNAME = "%{hostname}/bot%{token}/sendMessage"
 
     field :hostname,
+      title: -> { _('Hostname') },
       section: SECTION_TYPE_CONNECTION,
-      help: 'Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.',
+      help: -> { _('Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.') },
       placeholder: 'https://api.telegram.org',
       exposes_secrets: true,
       required: false
 
     field :token,
+      title: -> { _('Token') },
       section: SECTION_TYPE_CONNECTION,
       help: -> { s_('TelegramIntegration|Unique authentication token.') },
       non_empty_password_title: -> { s_('TelegramIntegration|New token') },
@@ -26,7 +28,7 @@ module Integrations
       required: true
 
     field :room,
-      title: 'Channel identifier',
+      title: -> { _('Channel identifier') },
       section: SECTION_TYPE_CONFIGURATION,
       help: -> {
         _("Unique identifier for the target chat or the username of the target channel " \
@@ -36,17 +38,18 @@ module Integrations
       required: true
 
     field :thread,
-      title: 'Message thread ID',
+      title: -> { _('Message thread ID') },
       section: SECTION_TYPE_CONFIGURATION,
-      help: 'Unique identifier for the target message thread (topic in a forum supergroup).',
+      help: -> { _('Unique identifier for the target message thread (topic in a forum supergroup).') },
       placeholder: '123',
       required: false
 
     field :notify_only_broken_pipelines,
+      title: -> { _('Notify only broken pipelines') },
       type: :checkbox,
       section: SECTION_TYPE_CONFIGURATION,
       description: -> { _('Send notifications for broken pipelines.') },
-      help: 'If selected, successful pipelines do not trigger a notification event.'
+      help: -> { _('If selected, successful pipelines do not trigger a notification event.') }
 
     field :branches_to_be_notified,
       type: :select,

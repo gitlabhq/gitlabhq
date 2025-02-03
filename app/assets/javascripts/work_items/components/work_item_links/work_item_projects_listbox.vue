@@ -57,6 +57,7 @@ export default {
         return {
           fullPath: this.fullPath,
           projectSearch: this.searchKey,
+          includeArchived: false,
         };
       },
       update(data) {

@@ -65,7 +65,10 @@ RSpec.shared_context 'with work item types request context' do
   def widgets_for(work_item_type, resource_parent)
     work_item_type.widget_classes(resource_parent).map do |widget|
       base_attributes = { 'type' => widget.type.to_s.upcase }
-      next hierarchy_widget_attributes(work_item_type, base_attributes) if widget == WorkItems::Widgets::Hierarchy
+
+      if widget == WorkItems::Widgets::Hierarchy
+        next hierarchy_widget_attributes(work_item_type, base_attributes, resource_parent)
+      end
 
       if widget == WorkItems::Widgets::CustomStatus
         next custom_status_widget_attributes(work_item_type,
@@ -78,16 +81,19 @@ RSpec.shared_context 'with work item types request context' do
     end
   end
 
-  def hierarchy_widget_attributes(work_item_type, base_attributes)
-    child_types = work_item_type.allowed_child_types_by_name.map do |child_type|
-      { "id" => child_type.to_global_id.to_s, "name" => child_type.name }
-    end
-    parent_types = work_item_type.allowed_parent_types_by_name.map do |parent_type|
-      { "id" => parent_type.to_global_id.to_s, "name" => parent_type.name }
-    end
+  def hierarchy_widget_attributes(work_item_type, base_attributes, resource_parent)
+    child_types =
+      work_item_type.allowed_child_types(authorize: true, resource_parent: resource_parent).map do |child_type|
+        { "id" => child_type.to_global_id.to_s, "name" => child_type.name }
+      end
 
-    base_attributes.merge({ 'allowedChildTypes' => { 'nodes' => child_types },
-'allowedParentTypes' => { 'nodes' => parent_types } })
+    parent_types =
+      work_item_type.allowed_parent_types(authorize: true, resource_parent: resource_parent).map do |parent_type|
+        { "id" => parent_type.to_global_id.to_s, "name" => parent_type.name }
+      end
+
+    base_attributes
+      .merge({ 'allowedChildTypes' => { 'nodes' => child_types }, 'allowedParentTypes' => { 'nodes' => parent_types } })
   end
 
   def custom_status_widget_attributes(_work_item_type, base_attributes)

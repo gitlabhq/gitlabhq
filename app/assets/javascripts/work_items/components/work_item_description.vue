@@ -112,7 +112,7 @@ export default {
         id: 'work-item-description',
         name: 'work-item-description',
       },
-      selectedTemplate: '',
+      selectedTemplate: null,
       descriptionTemplate: null,
       appliedTemplate: '',
       showTemplateApplyWarning: false,
@@ -202,10 +202,10 @@ export default {
       return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
     },
     canShowDescriptionTemplateSelector() {
-      return this.glFeatures.workItemsAlpha;
+      return this.glFeatures.workItemDescriptionTemplates;
     },
     descriptionTemplateContent() {
-      return this.descriptionTemplate?.content || '';
+      return this.descriptionTemplate || '';
     },
     canResetTemplate() {
       const hasAppliedTemplate = this.appliedTemplate !== '';
@@ -222,7 +222,7 @@ export default {
     },
     editMode(newValue) {
       this.isEditing = newValue;
-      this.selectedTemplate = '';
+      this.selectedTemplate = null;
       this.appliedTemplate = '';
       this.showTemplateApplyWarning = false;
       if (newValue) {
@@ -232,8 +232,11 @@ export default {
   },
   mounted() {
     if (this.isNewWorkItemRoute) {
-      this.selectedTemplate =
-        this.$route.query[paramName] || this.$route.query[oldParamNameFromPreWorkItems];
+      this.selectedTemplate = {
+        name: this.$route.query[paramName] || this.$route.query[oldParamNameFromPreWorkItems],
+        projectId: null,
+        category: null,
+      };
     }
   },
   apollo: {
@@ -266,16 +269,16 @@ export default {
     descriptionTemplate: {
       query: workItemDescriptionTemplateQuery,
       skip() {
-        return !this.selectedTemplate;
+        return !this.selectedTemplate?.projectId;
       },
       variables() {
         return {
-          fullPath: this.fullPath,
-          name: this.selectedTemplate,
+          name: this.selectedTemplate.name,
+          projectId: this.selectedTemplate.projectId,
         };
       },
       update(data) {
-        return data.namespace.workItemDescriptionTemplates.nodes[0] || {};
+        return data.workItemDescriptionTemplateContent.content;
       },
       result() {
         const isDirty = this.descriptionText !== this.workItemDescription?.description;
@@ -364,8 +367,8 @@ export default {
       this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();
     },
-    handleSelectTemplate(templateName) {
-      this.selectedTemplate = templateName;
+    handleSelectTemplate(templateData) {
+      this.selectedTemplate = templateData;
     },
     resetQueryParams() {
       if (!this.isNewWorkItemRoute) {
@@ -376,7 +379,7 @@ export default {
       params.delete(paramName);
       params.delete(oldParamNameFromPreWorkItems);
       if (this.selectedTemplate) {
-        params.set(paramName, this.selectedTemplate);
+        params.set(paramName, this.selectedTemplate.name);
       }
 
       this.$router.replace({
@@ -391,7 +394,7 @@ export default {
       this.resetQueryParams();
     },
     cancelApplyTemplate() {
-      this.selectedTemplate = '';
+      this.selectedTemplate = null;
       this.descriptionTemplate = null;
       this.showTemplateApplyWarning = false;
       this.resetQueryParams();
@@ -399,7 +402,7 @@ export default {
     handleClearTemplate() {
       if (this.appliedTemplate) {
         this.setDescriptionText('');
-        this.selectedTemplate = '';
+        this.selectedTemplate = null;
         this.descriptionTemplate = null;
         this.appliedTemplate = '';
       }
@@ -420,8 +423,8 @@ export default {
       <gl-form-group
         :class="formGroupClass"
         :label="__('Description')"
-        :label-sr-only="!canShowDescriptionTemplateSelector"
         label-for="work-item-description"
+        :label-sr-only="!canShowDescriptionTemplateSelector"
       >
         <work-item-description-template-listbox
           v-if="canShowDescriptionTemplateSelector"

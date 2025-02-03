@@ -222,7 +222,12 @@ class Admin::UsersController < Admin::ApplicationController
         format.html { redirect_to default_route, notice: _('User was successfully created.') }
         format.json { render json: @user, status: :created, location: @user }
       else
-        @user&.errors&.any? ? format.html { render "new" } : format.html { redirect_to admin_users_path, notice: response.message }
+        if @user&.errors&.any?
+          format.html { render "new" }
+        else
+          format.html { redirect_to admin_users_path, notice: response.message }
+        end
+
         format.json { render json: @user&.errors || {}, status: :unprocessable_entity }
       end
     end
@@ -242,7 +247,9 @@ class Admin::UsersController < Admin::ApplicationController
       user_params_with_pass.merge!(password_params)
     end
 
-    cc_validation_params = process_credit_card_validation_params(user_params_with_pass.delete(:credit_card_validation_attributes))
+    cc_validation_params = process_credit_card_validation_params(
+      user_params_with_pass.delete(:credit_card_validation_attributes)
+    )
     user_params_with_pass.merge!(cc_validation_params)
 
     respond_to do |format|
@@ -331,7 +338,8 @@ class Admin::UsersController < Admin::ApplicationController
     return if hard_delete?
 
     if user.solo_owned_groups.present?
-      message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
+      message = s_('AdminUsers|You must transfer ownership or delete the ' \
+        'groups owned by this user before you can delete their account')
 
       redirect_to admin_user_path(user), status: :see_other, alert: message
     end
@@ -410,7 +418,8 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def log_impersonation_event
-    Gitlab::AppLogger.info(format(_("User %{current_user_username} has started impersonating %{username}"), current_user_username: current_user.username, username: user.username))
+    Gitlab::AppLogger.info(format(_("User %{current_user_username} has started impersonating %{username}"),
+      current_user_username: current_user.username, username: user.username))
   end
 
   # method overridden in EE
@@ -422,7 +431,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   def set_shared_view_parameters
     @can_impersonate = helpers.can_impersonate_user(user, impersonation_in_progress?)
-    @impersonation_error_text = @can_impersonate ? nil : helpers.impersonation_error_text(user, impersonation_in_progress?)
+    unless @can_impersonate
+      @impersonation_error_text =
+        helpers.impersonation_error_text(user, impersonation_in_progress?)
+    end
   end
 
   # method overridden in EE

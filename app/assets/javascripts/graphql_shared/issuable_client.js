@@ -55,29 +55,6 @@ export const config = {
           return { ...existing, ...incoming };
         },
       },
-      WorkItemDescriptionTemplateConnection: {
-        fields: {
-          nodes: {
-            read(_, { variables }) {
-              const templates = [
-                /* eslint-disable @gitlab/require-i18n-strings */
-                { name: 'template 1', content: 'A template' },
-                { name: 'template 2', content: 'Another template' },
-                { name: 'template 3', content: 'Secret template omg wow' },
-                { name: 'template 4', content: 'Another another template' },
-                /* eslint-enable @gitlab/require-i18n-strings */
-              ];
-              if (variables.search) {
-                return templates.filter(({ name }) => name.includes(variables.search));
-              }
-              if (variables.name) {
-                return templates.filter(({ name }) => name === variables.name);
-              }
-              return templates;
-            },
-          },
-        },
-      },
       Project: {
         fields: {
           projectMembers: {

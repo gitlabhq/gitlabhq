@@ -1,11 +1,11 @@
 ---
-api_type: boolean
+api_type:
 attr: show_migrate_from_jenkins_banner
 clusterwide: false
 column: show_migrate_from_jenkins_banner
 db_type: boolean
 default: 'true'
-description: Show the migrate from jenkins banner
+description:
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

@@ -12,6 +12,7 @@ class Projects::IncidentsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_force_frontend_feature_flag(:custom_fields_feature, @project)
+    push_frontend_feature_flag(:work_item_description_templates, @project&.group)
   end
 
   feature_category :incident_management

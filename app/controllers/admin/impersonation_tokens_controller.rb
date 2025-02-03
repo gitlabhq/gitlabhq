@@ -9,7 +9,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   def index
     set_index_vars
     @can_impersonate = helpers.can_impersonate_user(user, impersonation_in_progress?)
-    @impersonation_error_text = @can_impersonate ? nil : helpers.impersonation_error_text(user, impersonation_in_progress?)
+    @impersonation_error_text = helpers.impersonation_error_text(user, impersonation_in_progress?) if @can_impersonate
   end
 
   def create
@@ -31,7 +31,8 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     if @impersonation_token.revoke!
       flash[:notice] = format(_("Revoked impersonation token %{token_name}!"), token_name: @impersonation_token.name)
     else
-      flash[:alert] = format(_("Could not revoke impersonation token %{token_name}."), token_name: @impersonation_token.name)
+      flash[:alert] =
+        format(_("Could not revoke impersonation token %{token_name}."), token_name: @impersonation_token.name)
     end
 
     redirect_to admin_user_impersonation_tokens_path
@@ -64,7 +65,11 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def finder(options = {})
-    PersonalAccessTokensFinder.new({ user: user, impersonation: true, organization: Current.organization }.merge(options))
+    PersonalAccessTokensFinder.new({
+      user: user,
+      impersonation: true,
+      organization: Current.organization
+    }.merge(options))
   end
 
   def active_impersonation_tokens

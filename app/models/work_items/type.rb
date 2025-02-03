@@ -179,16 +179,24 @@ module WorkItems
       WorkItems::Type.by_type(type_names).order_by_name_asc
     end
 
-    def allowed_child_types(cache: false)
+    def allowed_child_types(cache: false, authorize: false, resource_parent: nil)
       cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_child_types_by_name] } : nil
 
-      cached_data || allowed_child_types_by_name
+      types = cached_data || allowed_child_types_by_name
+
+      return types unless authorize
+
+      authorized_types(types, resource_parent, :child)
     end
 
-    def allowed_parent_types(cache: false)
+    def allowed_parent_types(cache: false, authorize: false, resource_parent: nil)
       cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_parent_types_by_name] } : nil
 
-      cached_data || allowed_parent_types_by_name
+      types = cached_data || allowed_parent_types_by_name
+
+      return types unless authorize
+
+      authorized_types(types, resource_parent, :parent)
     end
 
     def descendant_types
@@ -219,6 +227,11 @@ module WorkItems
     # resource_parent is used in EE
     def supported_conversion_base_types(_resource_parent)
       WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
+    end
+
+    # overriden in EE to check for EE-specific restrictions
+    def authorized_types(types, _resource_parent, _relation)
+      types
     end
   end
 end

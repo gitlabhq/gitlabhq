@@ -20,7 +20,7 @@ export default {
       required: true,
     },
     template: {
-      type: String,
+      type: Object,
       required: false,
       default: null,
     },
@@ -40,7 +40,7 @@ export default {
         };
       },
       update(data) {
-        return data.namespace?.workItemDescriptionTemplates.nodes || [];
+        return data.namespace?.workItemDescriptionTemplates?.nodes || [];
       },
       error(e) {
         Sentry.captureException(e);
@@ -52,25 +52,57 @@ export default {
       return this.$apollo.queries.descriptionTemplates.loading;
     },
     toggleText() {
-      return this.template || s__('WorkItem|Choose a template');
+      return this.template?.name || s__('WorkItem|Choose a template');
     },
     hasTemplates() {
       return this.descriptionTemplates.length > 0;
     },
-    items() {
-      const listboxItems = this.descriptionTemplates.map(({ name }) => ({
-        value: name,
-        text: name,
-      }));
-      if (this.searchTerm) {
-        return listboxItems.filter(({ text }) => text.includes(this.searchTerm));
+    selectedTemplateValue() {
+      if (!this.template) {
+        return undefined;
       }
-      return listboxItems;
+      if (this.template?.projectId && this.template?.category) {
+        return this.makeTemplateValue(this.template);
+      }
+      if (this.template.name && this.template.projectId === null) {
+        const closestMatch = this.items
+          .flatMap((group) => group.options)
+          .find((option) => option.text === this.template.name);
+        return closestMatch?.value;
+      }
+      return undefined;
+    },
+    items() {
+      return this.descriptionTemplates
+        .filter(({ name }) => (this.searchTerm ? name.includes(this.searchTerm) : true))
+        .reduce((groups, current) => {
+          const idx = groups.findIndex((group) => group.text === current.category);
+          if (idx > -1) {
+            groups[idx].options.push({
+              value: this.makeTemplateValue(current),
+              text: current.name,
+            });
+          } else {
+            groups.push({
+              text: current.category,
+              options: [{ value: this.makeTemplateValue(current), text: current.name }],
+            });
+          }
+          return groups;
+        }, []);
+    },
+  },
+  watch: {
+    selectedTemplateValue(value) {
+      if (value) {
+        this.handleSelect(value);
+      }
     },
   },
   methods: {
     handleSelect(item) {
-      this.$emit('selectTemplate', item);
+      const { name, projectId, category } = JSON.parse(item);
+      this.$emit('selectTemplate', { name, projectId, category });
     },
     handleSearch(searchTerm) {
       this.searchTerm = searchTerm;
@@ -82,6 +114,9 @@ export default {
     handleReset() {
       this.$refs.listbox?.closeAndFocus();
       this.$emit('reset');
+    },
+    makeTemplateValue({ name, category, projectId }) {
+      return JSON.stringify({ name, category, projectId });
     },
   },
   templateDocsPath: helpPagePath('user/project/description_templates'),
@@ -98,7 +133,7 @@ export default {
     :toggle-text="toggleText"
     :header-text="s__('WorkItem|Select template')"
     size="small"
-    :selected="template"
+    :selected="selectedTemplateValue"
     :loading="loading"
     searchable
     @select="handleSelect"

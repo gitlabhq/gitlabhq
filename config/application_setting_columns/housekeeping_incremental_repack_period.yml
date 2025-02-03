@@ -7,7 +7,7 @@ db_type: integer
 default: '10'
 description: Deprecated. Number of Git pushes after which an incremental `git repack`
   is run. Use `housekeeping_optimize_repository_period` instead. For more information,
-  see [Housekeeping fields](#housekeeping-fields).
+  see [Housekeeping settings](#housekeeping-settings).
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

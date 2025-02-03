@@ -28,7 +28,11 @@ module MembershipActions
     # !! is used in case unassign_issuables contains empty string which would result in nil
     unassign_issuables = !!ActiveRecord::Type::Boolean.new.cast(params.delete(:unassign_issuables))
 
-    Members::DestroyService.new(current_user).execute(member, skip_subresources: skip_subresources, unassign_issuables: unassign_issuables)
+    Members::DestroyService.new(current_user).execute(
+      member,
+      skip_subresources: skip_subresources,
+      unassign_issuables: unassign_issuables
+    )
 
     respond_to do |format|
       format.html do
@@ -59,7 +63,10 @@ module MembershipActions
         notice: _('Your request for access has been queued for review.')
     else
       redirect_to polymorphic_path(membershipable),
-        alert: format(_("Your request for access could not be processed: %{error_message}"), error_message: access_requester.errors.full_messages.to_sentence)
+        alert: format(
+          _("Your request for access could not be processed: %{error_message}"),
+          error_message: access_requester.errors.full_messages.to_sentence
+        )
     end
   end
 
@@ -81,7 +88,11 @@ module MembershipActions
       if member.request?
         format(_("Your access request to the %{source_type} has been withdrawn."), source_type: source_type)
       else
-        format(_("You left the \"%{membershipable_human_name}\" %{source_type}."), membershipable_human_name: membershipable.human_name, source_type: source_type)
+        format(
+          _("You left the \"%{membershipable_human_name}\" %{source_type}."),
+          membershipable_human_name: membershipable.human_name,
+          source_type: source_type
+        )
       end
 
     respond_to do |format|

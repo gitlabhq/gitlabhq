@@ -509,11 +509,14 @@ Use an [external database service](../postgresql/external.md) that runs a standa
 If you choose to use a third-party external service:
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer, and Consul. All of these components are no longer required when using a third party external service.
-1. The number of nodes required for HA may vary depending on the service. The requirements for one deployment may vary from those for Linux package installations.
 1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard
    Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
-1. Ensure that if a pooler is included in a service, it can handle the total load without bottlenecks.
+1. Database Connection Poolers are not required for this setup as the options vary per service. As a result, connection count configuration may need to be adjusted depending on the environment size. If Pooling is desired, a third party option needs to be explored. [Database Load Balancing](../postgresql/database_load_balancing.md)  can also be used to spread the load accordingly.
+   
+   Ensure that if a pooler is included in a Cloud Provider service, it can handle the total load without bottlenecks.
    For example, Azure Database for PostgreSQL flexible server can optionally deploy a PgBouncer pooler in front of the database. However, PgBouncer is single threaded, which may cause bottlenecks under heavy load. To mitigate this issue, you can use database load balancing to distribute the pooler across multiple nodes.
+1. The number of nodes required for HA may vary depending on the service. The requirements for one deployment may vary from those for Linux package installations.
+
 1. To use [GitLab Geo](../geo/index.md), the service should support cross-region replication.
 
 #### Unsupported database services
@@ -649,21 +652,18 @@ The following table details the testing done against the architectures along wit
   <colgroup span="2"></colgroup>
   <tr>
     <th rowspan="2"><br/>Reference Architecture</th>
-    <th style="text-align: center" colspan="2" scope="colgroup">GCP (* also proxy for Bare-Metal)</th>
+    <th style="text-align: center" colspan="2" scope="colgroup">GCP</th>
     <th style="text-align: center" colspan="2" scope="colgroup">AWS</th>
-    <th style="text-align: center" colspan="2" scope="colgroup">Azure</th>
   </tr>
   <tr>
     <th scope="col">Linux package</th>
     <th scope="col">Cloud Native Hybrid</th>
     <th scope="col">Linux package</th>
     <th scope="col">Cloud Native Hybrid</th>
-    <th scope="col">Linux package</th>
   </tr>
     <tr>
     <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/1k_users.html">Up to 20 RPS or 1,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/1k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -674,7 +674,6 @@ The following table details the testing done against the architectures along wit
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
-    <td><i>Planned</i></td>
   </tr>
   <tr>
     <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/3k_users.html">Up to 60 RPS or 3,000 users</a></th>
@@ -682,7 +681,6 @@ The following table details the testing done against the architectures along wit
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/3k_hybrid_aws_services">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html">Up to 100 RPS or 5,000 users</a></th>
@@ -690,20 +688,17 @@ The following table details the testing done against the architectures along wit
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/10k_users.html">Up to 200 RPS or 10,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k">Daily</a></td>
-    <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid">Weekly</a></td>
+    <td>Weekly<sup>1</sup></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_aws">Weekly</a></td>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/10k_hybrid_aws_services">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
   </tr>
   <tr>
     <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/25k_users.html">Up to 500 RPS or 25,000 users</a></th>
     <td><a href="https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest/25k">Weekly</a></td>
-    <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
@@ -714,9 +709,13 @@ The following table details the testing done against the architectures along wit
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
     <td style="background-color:lightgrey"></td>
-    <td style="background-color:lightgrey"></td>
   </tr>
 </table>
+
+<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- markdownlint-disable MD029 -->
+1. Testing for GCP Cloud Native environments happen weekly but include unreleased features for testing purposes.
+<!-- markdownlint-enable MD029 -->
 
 ## Cost calculator templates
 

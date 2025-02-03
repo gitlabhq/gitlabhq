@@ -45,9 +45,11 @@ module AccessTokensActions
     revoked_response = ResourceAccessTokens::RevokeService.new(current_user, resource, @resource_access_token).execute
 
     if revoked_response.success?
-      flash[:notice] = format(_("Revoked access token %{access_token_name}!"), access_token_name: @resource_access_token.name)
+      flash[:notice] =
+        format(_("Revoked access token %{access_token_name}!"), access_token_name: @resource_access_token.name)
     else
-      flash[:alert] = format(_("Could not revoke access token %{access_token_name}."), access_token_name: @resource_access_token.name)
+      flash[:alert] =
+        format(_("Could not revoke access token %{access_token_name}."), access_token_name: @resource_access_token.name)
     end
 
     redirect_to resource_access_tokens_path

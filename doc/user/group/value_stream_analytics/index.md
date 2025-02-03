@@ -739,12 +739,11 @@ group(fullPath: "your-group-path") {
 ## Forecast deployment frequency with Value Stream Forecasting
 
 DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+**Tier:** Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment).
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
 Improve your planning and decision-making by predicting productivity metrics and
 identifying anomalies across your software development lifecycle.

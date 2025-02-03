@@ -30,6 +30,7 @@ AllCops:
   # The oldest supported Ruby version.
   TargetRubyVersion: 3.2
   TargetRailsVersion: 7.0
+  DefaultFormatter: <%= ENV['CI'] == '1' ? 'clang' : 'progress' %>
   Exclude:
     - 'gems/**/*'
     - 'qa/gems/**/*'

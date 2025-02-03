@@ -72,7 +72,8 @@ class Admin::ProjectsController < Admin::ApplicationController
         Ci::Runners::ResetRegistrationTokenService.new(@project, current_user).execute
       end
 
-      redirect_to [:admin, @project], notice: format(_("Project '%{project_name}' was successfully updated."), project_name: @project.name)
+      redirect_to [:admin, @project],
+        notice: format(_("Project '%{project_name}' was successfully updated."), project_name: @project.name)
     else
       render "edit"
     end

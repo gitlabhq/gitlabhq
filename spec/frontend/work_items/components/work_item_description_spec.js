@@ -53,13 +53,9 @@ describe('WorkItemDescription', () => {
 
   const successfulTemplateHandler = jest.fn().mockResolvedValue({
     data: {
-      namespace: {
-        id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
-        workItemDescriptionTemplates: {
-          __typename: 'WorkItemDescriptionTemplateConnection',
-          nodes: [{ name: 'example', content: 'A template' }],
-        },
-        __typename: 'Namespace',
+      workItemDescriptionTemplateContent: {
+        content: 'A template',
+        __typename: 'WorkItemDescriptionTemplate',
       },
     },
   });
@@ -103,7 +99,7 @@ describe('WorkItemDescription', () => {
       provide: {
         isGroup,
         glFeatures: {
-          workItemsAlpha: true,
+          workItemDescriptionTemplates: true,
         },
       },
       mocks: {
@@ -322,7 +318,11 @@ describe('WorkItemDescription', () => {
             isEditing: true,
             workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
           });
-          findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example');
+          findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+            name: 'example',
+            projectId: 1,
+            catagory: 'catagory',
+          });
           await nextTick();
           await waitForPromises();
         });
@@ -330,7 +330,7 @@ describe('WorkItemDescription', () => {
         it('queries for the template content when a template is selected', () => {
           expect(successfulTemplateHandler).toHaveBeenCalledWith({
             name: 'example',
-            fullPath: 'test-project-path',
+            projectId: 1,
           });
         });
 
@@ -395,7 +395,11 @@ describe('WorkItemDescription', () => {
             isEditing: true,
             descriptionTemplateHandler: jest.fn().mockRejectedValue(new Error()),
           });
-          findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example');
+          findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+            name: 'example',
+            projectId: 1,
+            category: 'category',
+          });
           await nextTick();
           await waitForPromises();
         });
@@ -417,11 +421,19 @@ describe('WorkItemDescription', () => {
             });
 
             it('sets selected template from URL on mount', () => {
-              expect(findDescriptionTemplateListbox().props().template).toBe('bug');
+              expect(findDescriptionTemplateListbox().props().template).toMatchObject({
+                name: 'bug',
+                category: null,
+                projectId: null,
+              });
             });
 
             it('updates URL when applying template', async () => {
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+                name: 'example-template',
+                projectId: 1,
+                category: 'category',
+              });
               await nextTick();
               await waitForPromises();
 
@@ -436,7 +448,11 @@ describe('WorkItemDescription', () => {
             });
 
             it('removes template param (and not other params) from URL when canceling template', async () => {
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+                name: 'example-template',
+                projectId: 1,
+                category: 'category',
+              });
               await nextTick();
               await waitForPromises();
 
@@ -460,11 +476,19 @@ describe('WorkItemDescription', () => {
             });
 
             it('sets selected template from old template param', () => {
-              expect(findDescriptionTemplateListbox().props().template).toBe('my issue template');
+              expect(findDescriptionTemplateListbox().props().template).toMatchObject({
+                name: 'my issue template',
+                category: null,
+                projectId: null,
+              });
             });
 
             it('removes old template param on apply', async () => {
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+                name: 'example-template',
+                projectId: 1,
+                category: 'category',
+              });
               await nextTick();
               await waitForPromises();
 
@@ -485,7 +509,11 @@ describe('WorkItemDescription', () => {
                 isEditing: true,
               });
 
-              findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+              findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+                name: 'example-template',
+                projectId: 1,
+                category: 'category',
+              });
               await nextTick();
               await waitForPromises();
 
@@ -510,11 +538,15 @@ describe('WorkItemDescription', () => {
           });
 
           it('does not set selected template from URL on mount', () => {
-            expect(findDescriptionTemplateListbox().props().template).toBe('');
+            expect(findDescriptionTemplateListbox().props().template).toBe(null);
           });
 
           it('does not update URL when applying template', async () => {
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+              name: 'example-template',
+              projectId: 1,
+              category: 'category',
+            });
             await nextTick();
             await waitForPromises();
 
@@ -524,7 +556,11 @@ describe('WorkItemDescription', () => {
           });
 
           it('does not update URL when canceling template', async () => {
-            findDescriptionTemplateListbox().vm.$emit('selectTemplate', 'example-template');
+            findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+              name: 'example-template',
+              projectId: 1,
+              category: 'category',
+            });
             await nextTick();
             await waitForPromises();
 

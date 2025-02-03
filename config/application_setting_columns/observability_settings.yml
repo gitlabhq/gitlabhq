@@ -5,8 +5,8 @@ clusterwide: false
 column: observability_settings
 db_type: jsonb
 default: "'{}'::jsonb"
-description: Contains application settings for Observability features
+description:
 encrypted: false
-gitlab_com_different_than_default: false
+gitlab_com_different_than_default: true
 jihu: false
 not_null: true
