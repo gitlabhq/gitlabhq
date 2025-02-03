@@ -26589,6 +26589,9 @@ ALTER TABLE ONLY chat_names
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT chat_teams_pkey PRIMARY KEY (id);
 
+ALTER TABLE merge_request_assignees
+    ADD CONSTRAINT check_1442f79624 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE approval_project_rules_users
     ADD CONSTRAINT check_26058e3982 CHECK ((project_id IS NOT NULL)) NOT VALID;
 

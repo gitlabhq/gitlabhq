@@ -471,7 +471,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
    ```ruby
    # Consolidated object storage configuration
    gitlab_rails['object_store']['enabled'] = true
-   gitlab_rails['object_store']['proxy_download'] = true
+   gitlab_rails['object_store']['proxy_download'] = false
    gitlab_rails['object_store']['connection'] = {
      'provider' => 'AWS',
      'region' => 'eu-central-1',
@@ -551,7 +551,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
      appConfig:
        object_store:
          enabled: false
-         proxy_download: true
+         proxy_download: false
          storage_options: {}
            # server_side_encryption:
            # server_side_encryption_kms_key_id
@@ -559,34 +559,34 @@ The following example uses AWS S3 to enable object storage for all supported ser
            secret: gitlab-object-storage
        lfs:
          enabled: true
-         proxy_download: true
+         proxy_download: false
          bucket: gitlab-lfs
          connection: {}
            # secret:
            # key:
        artifacts:
          enabled: true
-         proxy_download: true
+         proxy_download: false
          bucket: gitlab-artifacts
          connection: {}
            # secret:
            # key:
        uploads:
          enabled: true
-         proxy_download: true
+         proxy_download: false
          bucket: gitlab-uploads
          connection: {}
            # secret:
            # key:
        packages:
          enabled: true
-         proxy_download: true
+         proxy_download: false
          bucket: gitlab-packages
          connection: {}
        externalDiffs:
          enabled: true
          when:
-         proxy_download: true
+         proxy_download: false
          bucket: gitlab-mr-diffs
          connection: {}
        terraformState:
@@ -599,7 +599,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
          connection: {}
        dependencyProxy:
          enabled: true
-         proxy_download: true
+         proxy_download: false
          bucket: gitlab-dependency-proxy
          connection: {}
    ```
@@ -622,7 +622,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
          GITLAB_OMNIBUS_CONFIG: |
            # Consolidated object storage configuration
            gitlab_rails['object_store']['enabled'] = true
-           gitlab_rails['object_store']['proxy_download'] = true
+           gitlab_rails['object_store']['proxy_download'] = false
            gitlab_rails['object_store']['connection'] = {
              'provider' => 'AWS',
              'region' => 'eu-central-1',
@@ -670,7 +670,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
    production: &base
      object_store:
        enabled: true
-       proxy_download: true
+       proxy_download: false
        connection:
          provider: AWS
          aws_access_key_id: <AWS_ACCESS_KEY_ID>
@@ -769,12 +769,12 @@ For example, a Linux package installation might have the following configuration
 # Original object storage configuration
 gitlab_rails['artifacts_object_store_enabled'] = true
 gitlab_rails['artifacts_object_store_direct_upload'] = true
-gitlab_rails['artifacts_object_store_proxy_download'] = true
+gitlab_rails['artifacts_object_store_proxy_download'] = false
 gitlab_rails['artifacts_object_store_remote_directory'] = 'artifacts'
 gitlab_rails['artifacts_object_store_connection'] = { 'provider' => 'AWS', 'aws_access_key_id' => 'access_key', 'aws_secret_access_key' => 'secret' }
 gitlab_rails['uploads_object_store_enabled'] = true
 gitlab_rails['uploads_object_store_direct_upload'] = true
-gitlab_rails['uploads_object_store_proxy_download'] = true
+gitlab_rails['uploads_object_store_proxy_download'] = false
 gitlab_rails['uploads_object_store_remote_directory'] = 'uploads'
 gitlab_rails['uploads_object_store_connection'] = { 'provider' => 'AWS', 'aws_access_key_id' => 'access_key', 'aws_secret_access_key' => 'secret' }
 ```
@@ -897,11 +897,13 @@ needs to process.
 When the files are stored on local block storage or NFS, GitLab has to act as a proxy.
 This is not the default behavior with object storage.
 
-The `proxy_download` setting controls this behavior: the default is generally `false`.
-Verify this in the documentation for each use case. Set it to `true` if you want
-GitLab to proxy the files.
+The `proxy_download` setting controls this behavior: the default is `false`.
+Verify this in the documentation for each use case.
 
-When not proxying files, GitLab returns an
+Set `proxy_download` to `true` if you want GitLab to proxy the files. 
+There can be a large performance hit to the GitLab server if `proxy_download` is set to `true`. The server deployments of GitLab have `proxy_download` set to `false`.
+
+When `proxy_download` to `false`, GitLab returns an
 [HTTP 302 redirect with a pre-signed, time-limited object storage URL](https://gitlab.com/gitlab-org/gitlab/-/issues/32117#note_218532298).
 This can result in some of the following problems:
 

@@ -1,0 +1,24 @@
+- title: "Container Scanning default severity threshold set to `medium`"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 1  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
+  reporter: gonzoyumo  # The GitLab username of the person reporting the change
+  stage: application security testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515358
+  impact: low # Can be one of: [critical, high, medium, low]
+  scope: project # Can be one or a combination of: [instance, group, project]
+  resolution_role: Maintainer # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Don't change this line.
+    The Container Scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
+    By changing the severity threshold to `medium`, we provide a more reasonable default to our users, where any findings with a severity below `medium` are not reported.
+    Starting with GitLab 18.0, the default value for the `CS_SEVERITY_THRESHOLD` environment variable is set to `medium` instead of `unknown`. As a result, the security findings with the `low` and `unknown`
+    severity levels will no longer be reported by default. Consequently, any vulnerablity with these severities that were previously reported on the default branch will be marked as no longer detected
+    upon the next execution of Container Scanning.
+    To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOLD` variable to the desired level.
+  end_of_support_milestone:
+  tiers: [Free, Premium, Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/container_scanning/
+  image_url:
+  video_url:

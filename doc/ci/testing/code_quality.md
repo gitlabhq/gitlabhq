@@ -89,6 +89,7 @@ The following integrations are available to replace the built-in plugins:
 | govet        | **{dotted-circle}** No                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default).                                    |
 | markdownlint | **{dotted-circle}** No (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2).                                                                                                                                   |
 | pep8         | **{dotted-circle}** No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
+| RuboCop      | **{dotted-circle}** Yes                      | [Integrate RuboCop](#rubocop).                                                                               |
 | SonarPython  | **{dotted-circle}** No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
 | Stylelint    | **{dotted-circle}** No (community-supported) | [Integrate Stylelint](#stylelint).                                                                                                                                                   |
 | SwiftLint    | **{dotted-circle}** No                       | [Integrate SwiftLint](#swiftlint).                                                                                                                                                   |
@@ -302,7 +303,19 @@ You can use or adapt the [PMD CI/CD component](https://gitlab.com/explore/catalo
 
 Using [SwiftLint](https://realm.github.io/SwiftLint/) requires additional configuration because its default output doesn't conform to the required format.
 
-You can use or adapt the [PMD CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can use or adapt the [Swiftlint CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+
+#### RuboCop
+
+Using [RuboCop](https://rubocop.org/) requires additional configuration because its default output doesn't conform to the required format.
+
+You can use or adapt the [RuboCop CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+
+#### Roslynator
+
+Using [Roslynator](https://josefpihrt.github.io/docs/roslynator/) requires additional configuration because its default output doesn't conform to the required format.
+
+You can use or adapt the [Roslynator CI/CD component](https://gitlab.com/explore/catalog/eakca1/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 ### Documentation scanning tools
 

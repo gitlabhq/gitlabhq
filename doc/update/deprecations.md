@@ -529,6 +529,27 @@ For more details, see [Scan code for quality violations](https://docs.gitlab.com
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Container Scanning default severity threshold set to `medium`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/515358).
+
+</div>
+
+The Container Scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
+By changing the severity threshold to `medium`, we provide a more reasonable default to our users, where any findings with a severity below `medium` are not reported.
+Starting with GitLab 18.0, the default value for the `CS_SEVERITY_THRESHOLD` environment variable is set to `medium` instead of `unknown`. As a result, the security findings with the `low` and `unknown`
+severity levels will no longer be reported by default. Consequently, any vulnerablity with these severities that were previously reported on the default branch will be marked as no longer detected
+upon the next execution of Container Scanning.
+To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOLD` variable to the desired level.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Deprecate CI job implementation of Repository X-Ray
 
 <div class="deprecation-notes">
