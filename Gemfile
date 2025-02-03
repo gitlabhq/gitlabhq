@@ -314,7 +314,7 @@ gem 'rainbow', '~> 3.0', feature_category: :shared
 gem 'ruby-progressbar', '~> 1.10', feature_category: :shared
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '2.7.0', feature_category: :shared
+gem 're2', '~> 2.15', feature_category: :shared
 
 # Misc
 
@@ -435,7 +435,7 @@ gem 'snowplow-tracker', '~> 0.8.0', feature_category: :product_analytics
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false, feature_category: :shared
-gem 'prometheus-client-mmap', '~> 1.1', '>= 1.1.1', require: 'prometheus/client', feature_category: :shared
+gem 'prometheus-client-mmap', '~> 1.2.8', require: 'prometheus/client', feature_category: :shared
 
 # Event-driven reactor for Ruby
 # Required manually in config/initializers/require_async_gem

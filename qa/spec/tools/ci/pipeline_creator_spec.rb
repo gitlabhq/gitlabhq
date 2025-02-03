@@ -21,19 +21,20 @@ module QA
     let(:cng_pipeline_file) { File.join(tmp_dir, "test-on-cng-pipeline.yml") }
     let(:generated_cng_yaml) { YAML.load_file(cng_pipeline_file) }
 
+    let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/_skip.yml")) }
+    let(:noop_reason) { "no-op run, nothing will be executed!" }
+    let(:noop_pipeline) do
+      <<~YML
+        variables:
+          SKIP_MESSAGE: "#{noop_reason}"
+
+        #{skip_pipeline}
+      YML
+    end
+
     describe "#create_noop" do
       let(:scenario_examples) { {} }
       let(:noop_reason) { "no-op run, pipeline:skip-e2e label detected" }
-      let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/_skip.yml")) }
-
-      let(:noop_pipeline) do
-        <<~YML
-          variables:
-            SKIP_MESSAGE: "#{noop_reason}"
-
-          #{skip_pipeline}
-        YML
-      end
 
       before do
         allow(File).to receive(:write).with(/test-on-(gdk|cng|omnibus|omnibus-nightly)-pipeline.yml/, noop_pipeline)
@@ -167,27 +168,86 @@ module QA
           end
         end
 
-        context "with skipped job and existing rule" do
-          let(:scenario_examples) { { scenario_class => [{ id: example, status: "pending" }] } }
+        context "with skipped job" do
+          let(:second_scenario_class) do
+            Class.new(Scenario::Template) do
+              pipeline_mappings test_on_cng: ['cng-second-job']
+            end
+          end
 
-          let(:cng_pipeline_definition) do
+          let(:scenario_examples) do
             {
-              "cng-instance" => {
-                "stage" => "test",
-                "rules" => [{ "if" => "condition" }, { "when" => "always" }],
-                "script" => "echo 'test'"
-              }
+              scenario_class => [{ id: example, status: "pending" }],
+              second_scenario_class => [{ id: example, status: "passed" }]
             }
           end
 
-          it "replaces existing rule with rule: never" do
+          context "with existing rule" do
+            let(:cng_pipeline_definition) do
+              {
+                "cng-instance" => {
+                  "stage" => "test",
+                  "rules" => [{ "if" => "condition" }, { "when" => "always" }],
+                  "script" => "echo 'test'"
+                },
+                "cng-second-job" => {
+                  "stage" => "test",
+                  "script" => "echo 'test'"
+                }
+              }
+            end
+
+            it "replaces existing rule with rule: never" do
+              pipeline_creator.create
+
+              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
+                "cng-instance" => {
+                  "rules" => [{ "when" => "never" }]
+                },
+                "cng-second-job" => {
+                  "parallel" => 1
+                }
+              }))
+            end
+          end
+
+          context "without existing rule" do
+            let(:cng_pipeline_definition) do
+              {
+                "cng-instance" => {
+                  "stage" => "test",
+                  "script" => "echo 'test'"
+                },
+                "cng-second-job" => {
+                  "stage" => "test",
+                  "script" => "echo 'test'"
+                }
+              }
+            end
+
+            it "adds rule: never" do
+              pipeline_creator.create
+
+              expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
+                "cng-instance" => {
+                  "rules" => [{ "when" => "never" }]
+                },
+                "cng-second-job" => {
+                  "parallel" => 1
+                }
+              }))
+            end
+          end
+        end
+
+        context "with all jobs having 0 runtime" do
+          let(:noop_reason) { "no-op run, pipeline has no executable tests" }
+          let(:scenario_examples) { { scenario_class => [{ id: example, status: "pending" }] } }
+
+          it "create noop pipeline" do
             pipeline_creator.create
 
-            expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
-              "cng-instance" => {
-                "rules" => [{ "when" => "never" }]
-              }
-            }))
+            expect(generated_cng_yaml).to eq(YAML.safe_load(noop_pipeline))
           end
         end
 
@@ -304,20 +364,6 @@ module QA
             expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
               "cng-instance" => {
                 "parallel" => 1
-              }
-            }))
-          end
-        end
-
-        context "with no executable examples" do
-          let(:status) { "pending" }
-
-          it "skips the job" do
-            pipeline_creator.create
-
-            expect(generated_cng_yaml).to include(cng_pipeline_definition.deep_merge({
-              "cng-instance" => {
-                "rules" => [{ "when" => "never" }]
               }
             }))
           end

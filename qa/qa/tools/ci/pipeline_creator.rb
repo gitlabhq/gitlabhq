@@ -64,7 +64,7 @@ module QA
 
           updated_pipeline_definitions(pipeline_types).each do |type, yaml|
             file_name = generated_yml_file_name(type)
-            File.write(file_name, "#{yaml}\n#{variables_section}\n")
+            File.write(file_name, yaml)
             logger.info("Pipeline definition file created: '#{file_name}'")
           end
         end
@@ -73,12 +73,7 @@ module QA
         #
         # @return [void]
         def create_noop(reason: nil)
-          noop_yml = <<~YML
-            variables:
-              SKIP_MESSAGE: "#{reason || 'no-op run, nothing will be executed!'}"
-
-            #{File.read(noop_pipeline)}
-          YML
+          noop_yml = noop_pipeline_yml(reason || "no-op run, nothing will be executed!")
 
           SUPPORTED_PIPELINES.each { |type| File.write(generated_yml_file_name(type), noop_yml) }
           logger.info("Created noop pipeline definitions for all E2E test pipelines")
@@ -105,11 +100,11 @@ module QA
           @project_root ||= File.expand_path("../", Runtime::Path.qa_root)
         end
 
-        # Path to noop pipeline definition file
+        # Content of noop pipeline definition file
         #
         # @return [String]
         def noop_pipeline
-          @noop_pipeline ||= File.join(File.join(project_root, ".gitlab", "ci"), "_skip.yml")
+          @noop_pipeline ||= File.read(File.join(project_root, ".gitlab", "ci", "_skip.yml"))
         end
 
         # Path for ci configuration files
@@ -230,11 +225,18 @@ module QA
             next unless pipeline_types.include?(pipeline_type)
 
             logger.info("Processing pipeline '#{pipeline_type}'")
-            definitions[pipeline_type] = jobs.reduce(pipeline_definitions[pipeline_type]) do |pipeline_yml, job|
+            zero_runtime = jobs.all? { |job| job[:runtime] == 0 }
+            if zero_runtime
+              logger.info("  All jobs have zero runtime, creating 'no-op' pipeline")
+              next definitions[pipeline_type] = noop_pipeline_yml("no-op run, pipeline has no executable tests")
+            end
+
+            pipeline = jobs.reduce(pipeline_definitions[pipeline_type]) do |pipeline_yml, job|
               runtime_min = (job[:runtime] / 60).ceil
               logger.info("  Updating '#{job[:name]}' job based on total runtime of '#{runtime_min}' minutes")
               updated_job(job[:name], job[:runtime], pipeline_yml, pipeline_type)
             end
+            definitions[pipeline_type] = "#{pipeline}\n#{variables_section}"
           end
         end
 
@@ -301,6 +303,19 @@ module QA
         # @return [Integer]
         def calculate_parallel_jobs_count(job_runtime, pipeline_type)
           (job_runtime / TEST_RUNTIME_TARGET * RUNTIME_COEFFICIENT.fetch(pipeline_type, 1.0)).ceil
+        end
+
+        # No-op pipeline yml with skip reason message
+        #
+        # @param reason [String]
+        # @return [String]
+        def noop_pipeline_yml(reason)
+          <<~YML
+            variables:
+              SKIP_MESSAGE: "#{reason}"
+
+            #{noop_pipeline}
+          YML
         end
       end
     end

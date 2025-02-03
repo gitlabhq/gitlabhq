@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { GlBroadcastMessage, GlLink, GlSprintf } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -38,11 +39,15 @@ describe('WebIDE', () => {
 
     wrapper = shallowMount(Ide, {
       store,
+      stubs: {
+        GlSprintf,
+      },
     });
   };
 
   const findAlert = () => wrapper.findComponent(CannotPushCodeAlert);
 
+  const findBroadcastMessage = () => wrapper.findComponent(GlBroadcastMessage);
   const callOnBeforeUnload = (e = {}) => window.onbeforeunload(e);
 
   beforeAll(() => {
@@ -60,6 +65,36 @@ describe('WebIDE', () => {
 
   afterEach(() => {
     window.onbeforeunload = null;
+  });
+
+  describe('removal announcement', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('displays removal announcement', () => {
+      expect(findBroadcastMessage().text()).toMatch(
+        /The legacy Vue-based GitLab Web IDE will be removed in GitLab 18.0/,
+      );
+      expect(findBroadcastMessage().text()).toMatch(
+        /To prepare for this removal, see deprecations and removals./,
+      );
+    });
+
+    it('displays a banner with a link to the deprecation announcement', () => {
+      const glLink = findBroadcastMessage().findComponent(GlLink);
+      expect(glLink.attributes('href')).toBe(
+        '/help/update/deprecations.md#legacy-web-ide-is-deprecated',
+      );
+    });
+
+    it('does not allow dismissing the announcement', () => {
+      expect(findBroadcastMessage().props()).toMatchObject({
+        dismissible: false,
+        iconName: 'warning',
+        theme: 'red',
+      });
+    });
   });
 
   describe('ide component, empty repo', () => {

@@ -33,6 +33,24 @@ With self-hosted models, you can:
 
 This setup ensures enterprise-level privacy and flexibility, allowing seamless integration of your LLMs with GitLab Duo features.
 
+### Supported GitLab Duo Chat features
+
+You can use the following GitLab Duo Chat features with a self-hosted model:
+
+- [Ask about GitLab](../../user/gitlab_duo_chat/examples.md#ask-about-gitlab)
+- [Ask about a specific issue](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-issue)
+- [Ask about a specific epic](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-epic)
+- [Explain selected code](../../user/gitlab_duo_chat/examples.md#explain-selected-code)
+- [Ask about or generate code](../../user/gitlab_duo_chat/examples.md#ask-about-or-generate-code)
+- [Ask follow up questions](../../user/gitlab_duo_chat/examples.md#ask-follow-up-questions)
+- [Ask about errors](../../user/gitlab_duo_chat/examples.md#ask-about-errors)
+- [Ask about specific files](../../user/gitlab_duo_chat/examples.md#ask-about-specific-files)
+- [Refactor code in the IDE](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)
+- [Fix code in the IDE](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)
+- [Write tests in the IDE](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)
+- [Ask about CI/CD](../../user/gitlab_duo_chat/examples.md#ask-about-cicd)
+- [Use universal and IDE slash commands](../../user/gitlab_duo_chat/examples.md#gitlab-duo-chat-slash-commands) 
+
 ### Prerequisites
 
 Before setting up a self-hosted model infrastructure, you must have:

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlButton, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlBroadcastMessage, GlLink, GlSprintf } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
@@ -13,6 +13,7 @@ import {
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { modalTypes } from '../constants';
 import eventHub from '../eventhub';
 import { measurePerformance } from '../utils';
@@ -26,6 +27,10 @@ eventHub.$on(WEBIDE_MEASURE_FILE_AFTER_INTERACTION, () =>
     WEBIDE_MEASURE_FILE_AFTER_INTERACTION,
     WEBIDE_MARK_FILE_CLICKED,
   ),
+);
+
+const removalAnnouncementHelpPagePath = helpPagePath(
+  'update/deprecations.md#legacy-web-ide-is-deprecated',
 );
 
 export default {
@@ -44,6 +49,9 @@ export default {
     RightPane: () => import(/* webpackChunkName: 'ide_runtime' */ './panes/right.vue'),
     NewModal: () => import(/* webpackChunkName: 'ide_runtime' */ './new_dropdown/modal.vue'),
     CannotPushCodeAlert,
+    GlBroadcastMessage,
+    GlLink,
+    GlSprintf,
   },
   mixins: [glFeatureFlagsMixin()],
   data() {
@@ -129,6 +137,7 @@ export default {
       this.loadDeferred = true;
     },
   },
+  removalAnnouncementHelpPagePath,
 };
 </script>
 
@@ -137,6 +146,20 @@ export default {
     class="ide position-relative flex-column align-items-stretch gl-flex"
     :class="{ [`theme-${themeName}`]: themeName }"
   >
+    <gl-broadcast-message icon-name="warning" theme="red" :dismissible="false">
+      {{ __('The legacy Vue-based GitLab Web IDE will be removed in GitLab 18.0.') }}
+      <gl-sprintf
+        :message="
+          __('To prepare for this removal, see %{linkStart}deprecations and removals%{linkEnd}.')
+        "
+      >
+        <template #link="{ content }">
+          <gl-link class="!gl-text-inherit" :href="$options.removalAnnouncementHelpPagePath">{{
+            content
+          }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </gl-broadcast-message>
     <cannot-push-code-alert
       v-if="!canPushCodeStatus.isAllowed"
       :message="canPushCodeStatus.message"

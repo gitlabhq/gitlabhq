@@ -629,10 +629,12 @@ Prerequisites:
   - Have a `README.md` file in the root directory for the commit SHA of the tag being released.
   - Have at least one [CI/CD component in the `templates/` directory](#directory-structure)
     for the commit SHA of the tag being released.
+- You must use the [`release` keyword](../yaml/index.md#release) in a CI/CD job to create the release,
+  not the [Releases API](../../api/releases/index.md#create-a-release).
 
 To publish a new version of the component to the catalog:
 
-1. Add a job to the project's `.gitlab-ci.yml` file that uses the [`release`](../yaml/index.md#release)
+1. Add a job to the project's `.gitlab-ci.yml` file that uses the `release`
    keyword to create the new release when a tag is created.
    You should configure the tag pipeline to [test the components](#test-the-component) before
    running the release job. For example:

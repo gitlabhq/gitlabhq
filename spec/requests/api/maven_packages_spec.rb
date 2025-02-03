@@ -33,11 +33,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let(:sha1_checksum_header) { ::API::Helpers::Packages::Maven::SHA1_CHECKSUM_HEADER }
   let(:md5_checksum_header) { ::API::Helpers::Packages::Maven::MD5_CHECKSUM_HEADER }
 
-  let(:headers_with_deploy_token) do
-    headers.merge(
-      Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token
-    )
-  end
+  let(:headers_with_deploy_token) { headers.merge(Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => deploy_token.token) }
 
   let(:version) { '1.0-SNAPSHOT' }
   let(:param_path) { "#{package_name}/#{version}" }
@@ -979,15 +975,17 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     context 'with basic auth' do
-      where(:token_type) do
-        %i[personal_access_token deploy_token job]
+      let(:user_username) { user.username }
+
+      where(:username, :password) do
+        ref(:user_username)         | lazy { personal_access_token.token }
+        ref(:user_username)         | lazy { deploy_token.token }
+        ::Gitlab::Auth::CI_JOB_USER | lazy { job.token }
       end
 
       with_them do
-        let(:token) { send(token_type).token }
-
-        it "authorizes upload with #{params[:token_type]} token" do
-          authorize_upload({}, headers.merge(basic_auth_header(token_type == :job ? ::Gitlab::Auth::CI_JOB_USER : user.username, token)))
+        it 'authorizes upload' do
+          authorize_upload({}, headers.merge(headers.merge(basic_auth_header(username, password))))
 
           expect(response).to have_gitlab_http_status(:ok)
         end

@@ -189,19 +189,33 @@ information required to create your GitLab Dedicated instance.
 NOTE:
 Some configuration settings (like the option to bring your own keys and your tenant name) are permanent and cannot be changed once your instance has been created.
 
-It can take up to 3 hours to create the GitLab Dedicated instance. When the setup is complete, you will receive a confirmation email with further instructions on how to access your instance.
+It can take up to 3 hours to create the GitLab Dedicated instance. When the setup is complete, you will receive a confirmation email.
 
-## Step 3: Configure your GitLab Dedicated instance
+## Step 3: Access and configure your GitLab Dedicated instance
 
-Once your GitLab Dedicated instance is created, follow our recommendations on:
+To access and configure your GitLab Dedicated instance:
 
-- [Steps after installing GitLab](../../install/next_steps.md).
-- [Securing your GitLab installation](../../security/index.md).
-- [GitLab hardening](../../security/hardening.md).
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. In the **Access your GitLab Dedicated instance** banner, select **View credentials**.
+1. Copy the tenant URL and temporary root credentials for your instance.
 
-Also plan ahead if you need the following features:
+   NOTE:
+   For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
+
+1. Go to the tenant URL for your GitLab Dedicated instance and sign in with your temporary root credentials.
+1. [Change your temporary root password](../../user/profile/user_passwords.md#change-your-password) to a new secure password.
+1. Go to the Admin area and [add the license key](../../administration/license_file.md#add-license-in-the-admin-area) for your GitLab Dedicated subscription.
+1. Return to Switchboard and [add users](../../administration/dedicated/configure_instance/users_notifications.md#add-switchboard-users), if needed.
+1. Review the [release rollout schedule](../../administration/dedicated/maintenance.md#release-rollout-schedule) for upgrades and maintenance.
+
+Also plan ahead if you need the following GitLab Dedicated features:
 
 - [Inbound Private Link](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link)
 - [Outbound Private Link](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link)
 - [SAML SSO](../../administration/dedicated/configure_instance/saml.md)
 - [Bring your own domain](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod)
+
+To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../../administration/dedicated/configure_instance.md).
+
+NOTE:
+New GitLab Dedicated instances use default settings for a self-managed instance. A GitLab administrator can change these settings from the [Admin Area](../../administration/admin_area.md).

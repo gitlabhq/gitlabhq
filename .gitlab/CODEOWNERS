@@ -1257,8 +1257,30 @@ lib/gitlab/checks/**
 /app/assets/javascripts/packages_and_registries/container_registry/
 /app/assets/javascripts/packages_and_registries/dependency_proxy/
 /app/assets/javascripts/packages_and_registries/harbor_registry/
+/app/concerns/dependency_proxy/
+/app/concerns/harbor/
+/app/concerns/registry/
+/app/controllers/groups/dependency_proxy/
+/app/controllers/groups/harbor/
+/app/controllers/groups/registry/
+/app/controllers/projects/harbor/
+/app/controllers/projects/registry/repositories_controller.rb
+/app/graphql/mutations/container_registry/
+/app/graphql/types/container_registry/
+/app/helpers/container_registry/
+/app/models/container_registry/
+/app/policies/container_expiration_policy_policy.rb
+/app/policies/container_repository_policy.rb
+/app/services/auth/container_registry_authentication_service.rb
+/app/services/container_registry/
+/app/views/groups/dependency_proxy/
+/app/views/groups/harbor/
+/app/views/groups/registry/repositories/
+/app/views/projects/harbor/
+/app/views/projects/registry/repositories/
+/ee/app/helpers/ee/container_registry/
 /ee/app/services/ee/auth/container_registry_authentication_service.rb
-app/services/auth/container_registry_authentication_service.rb
+/lib/container_registry/
 
 [Authentication] @gitlab-org/software-supply-chain-security/authentication/approvers
 /app/assets/javascripts/access_tokens/
