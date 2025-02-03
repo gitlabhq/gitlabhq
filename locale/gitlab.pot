@@ -39697,6 +39697,9 @@ msgstr ""
 msgid "Only required if not using role instance credentials."
 msgstr ""
 
+msgid "Only track method calls that take longer to complete than the given duration."
+msgstr ""
+
 msgid "Only use lowercase letters, numbers, and underscores."
 msgstr ""
 

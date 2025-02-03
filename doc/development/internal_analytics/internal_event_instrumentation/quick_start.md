@@ -197,6 +197,7 @@ you can use the `internal_event_tracking` shared example.
 ```ruby
 it_behaves_like 'internal event tracking' do
   let(:event) { 'update_issue_severity' }
+  let(:category) { described_class.name }
   let(:project) { issue.project }
   let(:user) { issue.author }
   let(:additional_properties) { { label: issue.issueable_severity } }

@@ -37,7 +37,7 @@ gem 'nokogiri', '~> 1.18', '>= 1.18.1'
 
 gem 'deprecation_toolkit', '~> 2.2.2', require: false
 
-gem 'factory_bot', '~> 6.5.0'
+gem 'factory_bot', '~> 6.5.1'
 
 group :development do
   gem 'pry-byebug', '~> 3.10.1', platform: :mri

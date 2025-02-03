@@ -223,7 +223,9 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (3.0.5)
+    CFPropertyList (3.0.7)
+      base64
+      nkf
       rexml
     RedCloth (4.3.4)
     acme-client (2.0.19)
@@ -718,7 +720,7 @@ GEM
     git (1.18.0)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (17.7.0)
+    gitaly (17.8.1)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1716,7 +1718,7 @@ GEM
       addressable (>= 2.3.5)
       faraday (>= 0.17.3, < 3)
     sd_notify (0.1.1)
-    seed-fu (2.3.7)
+    seed-fu (2.3.9)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
     selenium-webdriver (4.27.0)
@@ -1746,7 +1748,7 @@ GEM
       fugit (~> 1.8)
       globalid (>= 1.0.1)
       sidekiq (>= 6)
-    sigdump (0.2.4)
+    sigdump (0.2.5)
     signet (0.18.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -2081,7 +2083,7 @@ DEPENDENCIES
   gettext (~> 3.4, >= 3.4.9)
   gettext_i18n_rails (~> 1.13.0)
   git (~> 1.8)
-  gitaly (~> 17.7.0)
+  gitaly (~> 17.8.0)
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)

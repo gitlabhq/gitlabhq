@@ -440,6 +440,18 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  INSERT INTO loose_foreign_keys_deleted_records
+  (fully_qualified_table_name, primary_key_value)
+  SELECT current_schema() || '.' || TG_ARGV[0], old_table.id FROM old_table;
+
+  RETURN NULL;
+END
+$$;
+
 CREATE FUNCTION insert_namespaces_sync_event() RETURNS trigger
     LANGUAGE plpgsql
     AS $$

@@ -157,6 +157,7 @@ module InternalEventsCli
 
           it_behaves_like 'internal event tracking' do
             let(:event) { '#{action}' }
+            let(:category) { described_class.name }
           #{args}end
 
           #{divider}

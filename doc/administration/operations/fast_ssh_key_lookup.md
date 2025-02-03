@@ -5,30 +5,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Configure a faster SSH authorization method for GitLab instances with many users."
 ---
 
-# Fast lookup of authorized SSH keys in the database
+# Fast lookup of SSH keys
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
 NOTE:
-This document describes a drop-in replacement for the
-`authorized_keys` file. For standard (non-deploy key) users, consider using
-[SSH certificates](ssh_certificates.md). They are even faster, but are not a
-drop-in replacement.
+For standard (non-deploy key) users, you can also use [SSH certificates](ssh_certificates.md).
+They are faster than database lookups but are not a drop-in replacement for the `authorized_keys` file.
 
-Regular SSH operations become slow as the number of users grows because OpenSSH
-searches for a key to authorize a user with a linear search. In the worst case,
-such as when the user is not authorized to access GitLab, OpenSSH scans the
-entire file to search for a key. This can take significant time and disk I/O,
-which delays users attempting to push or pull to a repository. Making
-matters worse, if users add or remove keys frequently, the operating system may
-not be able to cache the `authorized_keys` file, which causes the disk to be
-accessed repeatedly.
+When the number of users grows, SSH operations become slow because OpenSSH performs a
+linear search through the `authorized_keys` file to authenticate users.
+This process requires significant time and disk I/O, which delays users attempting to
+push or pull to a repository.
+If users add or remove keys frequently, the operating system may not cache the
+`authorized_keys` file, which causes repeated disk reads.
 
-GitLab Shell solves this by providing a way to authorize SSH users with a fast,
-indexed lookup in the GitLab database. This page describes how to enable the fast
-lookup of authorized SSH keys.
+Instead of using the `authorized_keys` file, you can configure GitLab Shell to look up
+SSH keys. It is faster because the lookup is indexed in the GitLab database.
 
 ## Fast lookup is required for Geo
 
@@ -50,11 +45,9 @@ The `authorized_keys` file contains all the public SSH keys for users allowed to
 single source of truth, [Geo](../geo/index.md) must be configured to perform SSH fingerprint
 lookups with database lookup.
 
-As part of [setting up Geo](../geo/setup/index.md),
-you are required to follow the steps outlined below for both the primary and
-secondary nodes, but **Write to "authorized keys" file**
-must be unchecked only on the primary node, because it is reflected
-automatically on the secondary if database replication is working.
+When you [set up Geo](../geo/setup/index.md), you must follow the steps below
+for both the primary and secondary nodes. Do not select **Write to `authorized keys` file** on the
+primary node, because it is reflected automatically on the secondary if database replication is working.
 
 ## Set up fast lookup
 
@@ -77,69 +70,77 @@ to use fast lookup automatically.
 
 ### With OpenSSH
 
-WARNING:
-OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
-able to accept a fingerprint. Check the version of OpenSSH on your server with `sshd -V`.
+Prerequisites:
 
-Add the following to your `sshd_config` file. This file is usually located at
-`/etc/ssh/sshd_config`, but it is at `/assets/sshd_config` if you're using
-Docker from a Linux package installation:
+- OpenSSH 6.9 or later is required because `AuthorizedKeysCommand` must
+  accept a fingerprint. To check your version, run `sshd -V`.
 
-```plaintext
-Match User git    # Apply the AuthorizedKeysCommands to the git user only
-  AuthorizedKeysCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
-  AuthorizedKeysCommandUser git
-Match all    # End match, settings apply to all users again
-```
+To set up fast lookup with OpenSSH:
 
-Reload OpenSSH:
+1. Add the following to your `sshd_config` file:
 
-```shell
-# Debian or Ubuntu installations
-sudo service ssh reload
+   ```plaintext
+   Match User git    # Apply the AuthorizedKeysCommands to the git user only
+     AuthorizedKeysCommand /opt/gitlab/embedded/service/gitlab-shell/bin/gitlab-shell-authorized-keys-check git %u %k
+     AuthorizedKeysCommandUser git
+   Match all    # End match, settings apply to all users again
+   ```
 
-# CentOS installations
-sudo service sshd reload
-```
+   This file is usually located in:
 
-Confirm that SSH is working by commenting out your user's key in the `authorized_keys`
-file (start the line with a `#` to comment it), and from your local machine, attempt to pull a repository or run:
+   - Linux package installations: `/etc/ssh/sshd_config`
+   - Docker installations: `/assets/sshd_config`
+   - Self-compiled installations: If you followed the instructions for
+   [installing GitLab Shell from source](../../install/installation.md#install-gitlab-shell), the command should be
+   located at `/home/git/gitlab-shell/bin/gitlab-shell-authorized-keys-check`.
+   Consider creating a wrapper script somewhere else, as this command must be owned by `root`,
+   and not be writable by a group or others.
+   Also consider changing the ownership of this command as needed, but this might require temporary
+   ownership changes during `gitlab-shell` upgrades.
 
-```shell
-ssh -T git@gitlab.example.com
-```
+1. Reload OpenSSH:
 
-A successful pull or [welcome message](../../user/ssh.md#verify-that-you-can-connect)
-means that GitLab was able to find the key in the database,
-as it is not present in the file.
+   ```shell
+   # Debian or Ubuntu installations
+   sudo service ssh reload
 
-NOTE:
-For self-compiled installations, the command would be located at
-`/home/git/gitlab-shell/bin/gitlab-shell-authorized-keys-check` if [the install from source](../../install/installation.md#install-gitlab-shell) instructions were followed.
-You might want to consider creating a wrapper script somewhere else, as this command must be
-owned by `root` and not be writable by group or others. You could also consider changing the ownership of this command
-as required, but that might require temporary ownership changes during `gitlab-shell` upgrades.
+   # CentOS installations
+   sudo service sshd reload
+   ```
 
-WARNING:
-Do not disable writes until SSH is confirmed to be working
-perfectly; otherwise, the file quickly becomes out-of-date.
+1. Confirm that SSH is working:
 
-In the case of lookup failures (which are common), the `authorized_keys`
-file is still scanned. So Git SSH performance would still be slow for many
-users as long as a large file exists.
+   1. Comment out your user's key in the `authorized_keys` file. To do this, start the line with `#`.
+   1. From your local machine, attempt to pull a repository or run:
 
-To disable writes to the `authorized_keys` file:
+      ```shell
+      ssh -T git@gitlab.example.com
+      ```
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
-1. Expand **Performance optimization**.
-1. Clear the **Use authorized_keys file to authenticate SSH keys** checkbox.
-1. Select **Save changes**.
+      A successful pull or [welcome message](../../user/ssh.md#verify-that-you-can-connect)
+      means that GitLab found the key in the database, as the key is not present in the file.
 
-Confirm that SSH is working by removing your user's SSH key in the UI,
-adding a new one, and attempting to pull a repository.
+If there are lookup failures, the `authorized_keys` file is still scanned.
+Git SSH performance might still be slow for many users, as long as the large file exists.
 
-Then you can back up and delete your `authorized_keys` file for best performance.
+To resolve this, you can disable writes to the `authorized_keys` file:
+
+1. Confirm SSH works. This step is important because otherwise the file quickly becomes out-of-date.
+1. Disable writes to the `authorized_keys` file:
+
+   1. On the left sidebar, at the bottom, select **Admin**.
+   1. Select **Settings > Network**.
+   1. Expand **Performance optimization**.
+   1. Clear the **Use `authorized_keys` file to authenticate SSH keys** checkbox.
+   1. Select **Save changes**.
+
+1. Verify the change:
+
+   1. Remove your SSH key in the UI.
+   1. Add a new key.
+   1. Try to pull a repository.
+
+1. Back up and delete your `authorized_keys` file.
 The current users' keys are already present in the database, so there is no need for migration
 or for users to re-add their keys.
 
@@ -152,7 +153,7 @@ This overview is brief. Refer to the above instructions for more context.
    1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Settings > Network**.
    1. Expand **Performance optimization**.
-   1. Select the **Use authorized_keys file to authenticate SSH keys** checkbox.
+   1. Select the **Use `authorized_keys` file to authenticate SSH keys** checkbox.
 1. Remove the `AuthorizedKeysCommand` lines from `/etc/ssh/sshd_config` or from `/assets/sshd_config` if you are using Docker
    from a Linux package installation.
 1. Reload `sshd`: `sudo service sshd reload`.
@@ -161,8 +162,8 @@ This overview is brief. Refer to the above instructions for more context.
 
 GitLab supports `authorized_keys` database lookups with [SELinux](https://en.wikipedia.org/wiki/Security-Enhanced_Linux).
 
-Because the SELinux policy is static, GitLab doesn't support the ability to change
-internal web server ports at the moment. Administrators would have to create a special `.te`
+Because the SELinux policy is static, GitLab doesn't support changing
+internal web server ports. Administrators would have to create a special `.te`
 file for the environment, as it isn't generated dynamically.
 
 ### Additional documentation
@@ -175,9 +176,14 @@ Additional technical documentation for `gitlab-sshd` may be found in the
 ### SSH traffic slow or high CPU load
 
 If your SSH traffic is [slow](https://github.com/linux-pam/linux-pam/issues/270)
-or causing high CPU load, be sure to check the size of `/var/log/btmp`, and ensure it is rotated on a regular basis or after reaching a certain size.
-If this file is very large, GitLab SSH fast lookup can cause the bottleneck to be hit more frequently, thus decreasing performance even further.
-If you are able to, you may consider disabling [`UsePAM` in your `sshd_config`](https://linux.die.net/man/5/sshd_config) to avoid reading `/var/log/btmp` altogether.
+or causing high CPU load:
+
+- Check the size of `/var/log/btmp`.
+- Ensure it is rotated on a regular basis, or after reaching a certain size.
+
+If this file is very large, GitLab SSH fast lookup can cause the bottleneck to be hit more frequently,
+thus decreasing performance even further. Consider disabling
+[`UsePAM` in your `sshd_config`](https://linux.die.net/man/5/sshd_config) to avoid reading `/var/log/btmp` altogether.
 
 Running `strace` and `lsof` on a running `sshd: git` process returns debugging information.
 To get an `strace` on an in-progress Git over SSH connection for IP `x.x.x.x`, run:

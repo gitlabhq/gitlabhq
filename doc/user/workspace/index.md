@@ -252,9 +252,9 @@ To delete the provisioned volume, you must terminate the workspace.
 By default, a workspace automatically:
 
 - Stops 36 hours after the workspace was last started or restarted.
-  For more information, see [`max_active_hours_before_stop`](gitlab_agent_configuration.md#max_active_hours_before_stop).
+  For more information, see [`max_active_hours_before_stop`](settings.md#max_active_hours_before_stop).
 - Terminates 722 hours after the workspace was last stopped.
-  For more information, see [`max_stopped_hours_before_termination`](gitlab_agent_configuration.md#max_stopped_hours_before_termination).
+  For more information, see [`max_stopped_hours_before_termination`](settings.md#max_stopped_hours_before_termination).
 
 ## Arbitrary user IDs
 

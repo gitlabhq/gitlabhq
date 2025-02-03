@@ -123,7 +123,12 @@ export default {
       >
         {{ createMergeRequestButtonText }}
       </gl-button>
-      <gl-disclosure-dropdown placement="bottom-end" data-testid="create-options-dropdown">
+      <gl-disclosure-dropdown
+        :toggle-text="__('More options')"
+        text-sr-only
+        placement="bottom-end"
+        data-testid="create-options-dropdown"
+      >
         <gl-disclosure-dropdown-group :group="mergeRequestGroup" />
 
         <gl-disclosure-dropdown-group bordered :group="branchGroup" />

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Configure your GitLab workspaces to manage your GitLab development environments."
 ---
 
-# Workspace configuration
+# Configure workspaces
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -32,7 +32,7 @@ To set up infrastructure for workspaces:
       is defined so that volumes can be dynamically provisioned for each workspace.
    1. Install an Ingress controller of your choice (for example, `ingress-nginx`).
    1. [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
-   1. Point [`dns_zone`](gitlab_agent_configuration.md#dns_zone) and `*.<dns_zone>`
+   1. Point [`dns_zone`](settings.md#dns_zone) and `*.<dns_zone>`
       to the load balancer exposed by the Ingress controller.
       This load balancer must support WebSockets.
    1. [Set up the GitLab workspaces proxy](set_up_gitlab_agent_and_proxies.md).
@@ -84,7 +84,7 @@ To use images from private container registries:
 1. Create an [image pull secret in Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
 1. Add the `name` and `namespace` of this secret to the [GitLab agent configuration](gitlab_agent_configuration.md).
 
-For more information, see [`image_pull_secrets`](gitlab_agent_configuration.md#image_pull_secrets).
+For more information, see [`image_pull_secrets`](settings.md#image_pull_secrets).
 
 ## Configure sudo access for a workspace
 
@@ -113,9 +113,9 @@ To configure sudo access for a workspace with Sysbox:
 
 1. In the Kubernetes cluster, [install Sysbox](https://github.com/nestybox/sysbox#installation).
 1. In the GitLab agent for workspaces:
-   - Set [`default_runtime_class`](gitlab_agent_configuration.md#default_runtime_class) to the runtime class
+   - Set [`default_runtime_class`](settings.md#default_runtime_class) to the runtime class
      of Sysbox (for example, `sysbox-runc`).
-   - Set [`allow_privilege_escalation`](gitlab_agent_configuration.md#allow_privilege_escalation) to `true`.
+   - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
 
 ### With Kata Containers
 
@@ -126,9 +126,9 @@ To configure sudo access for a workspace with Kata Containers:
 
 1. In the Kubernetes cluster, [install Kata Containers](https://github.com/kata-containers/kata-containers/tree/main/docs/install).
 1. In the GitLab agent for workspaces:
-   - Set [`default_runtime_class`](gitlab_agent_configuration.md#default_runtime_class) to one of the runtime classes
+   - Set [`default_runtime_class`](settings.md#default_runtime_class) to one of the runtime classes
      of Kata Containers (for example, `kata-qemu`).
-   - Set [`allow_privilege_escalation`](gitlab_agent_configuration.md#allow_privilege_escalation) to `true`.
+   - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
 
 ### With user namespaces
 
@@ -138,8 +138,8 @@ running inside the container from the user on the host.
 To configure sudo access for a workspace with user namespaces:
 
 1. In the Kubernetes cluster, [configure user namespaces](https://kubernetes.io/blog/2024/04/22/userns-beta/).
-1. In the GitLab agent for workspaces, set [`use_kubernetes_user_namespaces`](gitlab_agent_configuration.md#use_kubernetes_user_namespaces)
-   and [`allow_privilege_escalation`](gitlab_agent_configuration.md#allow_privilege_escalation) to `true`.
+1. In the GitLab agent for workspaces, set [`use_kubernetes_user_namespaces`](settings.md#use_kubernetes_user_namespaces)
+   and [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
 
 ## Build and run containers in a workspace
 
@@ -264,4 +264,4 @@ To resolve this issue:
 - If the ancestor groups of the project do not have an allowed agent,
   [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group) for any of these groups.
 - If the `remote_development` module is disabled for the GitLab agent,
-  set [`enabled`](gitlab_agent_configuration.md#enabled) to `true`.
+  set [`enabled`](settings.md#enabled) to `true`.

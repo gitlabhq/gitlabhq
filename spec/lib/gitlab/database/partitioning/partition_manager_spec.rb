@@ -6,6 +6,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
   include ActiveSupport::Testing::TimeHelpers
   include Database::PartitioningHelpers
   include ExclusiveLeaseHelpers
+  include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
   using RSpec::Parameterized::TableSyntax
 
   let(:partitioned_table_name) { :_test_gitlab_main_my_model_example_table }
@@ -85,7 +86,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         expect(connection).not_to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
         expect(Gitlab::AppLogger).to receive(:warn).with(
           {
-            message: 'Skipping synching partitions',
+            message: 'Skipping syncing partitions',
             table_name: table,
             connection_name: 'main'
           }
@@ -119,6 +120,29 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
       it 'creates partitions' do
         expect { sync_partitions }.to change { find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size }.from(0)
+      end
+    end
+
+    context 'when partitioned table has a loose foreign key trigger' do
+      before do
+        my_model.table_name = partitioned_table_name
+        create_partitioned_table(connection, partitioned_table_name)
+
+        track_record_deletions(my_model.table_name)
+      end
+
+      it 'attaches LFK trigger on the newly created partitions' do
+        expect(trigger_exists?(my_model.table_name, record_deletion_trigger_name(my_model.table_name))).to eq(true)
+
+        expect { sync_partitions }.to change {
+          find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA).size
+        }.from(0)
+
+        partitions = find_partitions(my_model.table_name, schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)
+        partitions.each do |partition|
+          partition_name = partition.first
+          expect(trigger_exists?(partition_name, record_deletion_trigger_name(partition_name), Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to eq(true)
+        end
       end
     end
 
@@ -352,6 +376,13 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
 
     shared_examples_for 'run only once analyze within interval' do
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          # Checking of LFK trigger affects the analyze tests
+          allow(instance).to receive(:parent_table_has_loose_foreign_key?).and_return(false)
+        end
+      end
+
       specify do
         control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
         expect(control.occurrences).to include(analyze_regex)
@@ -488,5 +519,10 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       (id serial not null, created_at timestamptz not null, primary key (id, created_at))
       PARTITION BY RANGE (created_at);
     SQL
+  end
+
+  # Needed by track_record_deletions
+  def execute(sql)
+    connection.execute(sql)
   end
 end

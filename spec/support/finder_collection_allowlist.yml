@@ -65,6 +65,7 @@
 - Security::PipelineExecutionPoliciesFinder
 - Security::VulnerabilityManagementPoliciesFinder
 - Security::SecurityPoliciesFinder
+- Security::SecurityProjectGroupFinder
 - SentryIssueFinder
 - ServerlessDomainFinder
 - TagsFinder
