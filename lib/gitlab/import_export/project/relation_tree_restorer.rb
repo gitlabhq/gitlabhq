@@ -19,6 +19,12 @@ module Gitlab
 
         private
 
+        def relations
+          relations = super
+          relations.delete("vulnerabilities") if Feature.disabled?(:import_vulnerabilities, user)
+          relations
+        end
+
         def group_models
           GROUP_MODELS
         end
