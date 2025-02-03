@@ -9,6 +9,8 @@ module ActiveContext
       class Client
         include ActiveContext::Databases::Concerns::Client
 
+        delegate :bulk, to: :client
+
         OPEN_TIMEOUT = 5
         NO_RETRY = 0
 

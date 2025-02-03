@@ -19,3 +19,7 @@ RSpec/VerifiedDoubleReference:
   - 'spec/lib/active_context/bulk_process_queue_spec.rb'
   - 'spec/lib/active_context/reference_spec.rb'
   - 'spec/lib/active_context/tracker_spec.rb'
+
+Gitlab/ModuleWithInstanceVariables:
+  Exclude:
+  - 'lib/active_context/databases/concerns/elastic_indexer.rb'

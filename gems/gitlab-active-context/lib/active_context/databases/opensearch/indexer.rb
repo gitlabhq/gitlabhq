@@ -4,7 +4,7 @@ module ActiveContext
   module Databases
     module Opensearch
       class Indexer
-        include ActiveContext::Databases::Concerns::Indexer
+        include ActiveContext::Databases::Concerns::ElasticIndexer
       end
     end
   end
