@@ -38,9 +38,13 @@ const createComponent = async (
   mockResolver = jest.fn().mockResolvedValue({
     data: {
       project: {
+        __typename: 'Project',
         id: '1234',
         repository: {
+          __typename: 'Repository',
+          empty: blobControlsDataMock.repository.empty,
           blobs: {
+            __typename: 'RepositoryBlobConnection',
             nodes: [{ ...blobControlsDataMock.repository.blobs.nodes[0], ...blobInfoOverrides }],
           },
         },
@@ -55,6 +59,8 @@ const createComponent = async (
     apolloProvider: createMockApollo([[blobControlsQuery, mockResolver]]),
     provide: {
       glFeatures,
+      canModifyBlob: true,
+      canModifyBlobWithWebIde: true,
     },
     propsData: {
       projectPath,
@@ -112,7 +118,7 @@ describe('Blob controls component', () => {
     });
 
     it('does not render blame button when blobInfo.externalStorage is "lfs"', async () => {
-      await createComponent({}, { externalStorage: 'lfs' });
+      await createComponent({}, { storedExternally: true, externalStorage: 'lfs' });
 
       expect(findBlameButton().exists()).toBe(false);
     });
@@ -169,18 +175,26 @@ describe('Blob controls component', () => {
         environmentPath: '',
         isEmpty: false,
         overrideCopy: true,
+        archived: false,
+        replacePath: 'some/replace/file.js',
+        webPath: 'some/file.js',
+        canCurrentUserPushToBranch: true,
         simpleViewer: {
+          __typename: 'BlobViewer',
           renderError: null,
           tooLarge: false,
           type: 'simple',
           fileType: 'rich',
         },
         richViewer: {
+          __typename: 'BlobViewer',
           renderError: 'too big file',
           tooLarge: false,
           type: 'rich',
           fileType: 'rich',
         },
+        isEmptyRepository: false,
+        isUsingLfs: false,
       });
     });
 

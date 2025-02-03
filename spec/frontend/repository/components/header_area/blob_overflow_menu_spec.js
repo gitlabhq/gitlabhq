@@ -1,9 +1,15 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import BlobOverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import BlobDefaultActionsGroup from '~/repository/components/header_area/blob_default_actions_group.vue';
+import BlobButtonGroup from '~/repository/components/header_area/blob_button_group.vue';
 import createRouter from '~/repository/router';
 import { blobControlsDataMock, refMock } from '../../mock_data';
+
+jest.mock('~/lib/utils/common_utils', () => ({
+  isLoggedIn: jest.fn().mockReturnValue(true),
+}));
 
 describe('Blob Overflow Menu', () => {
   let wrapper;
@@ -17,6 +23,8 @@ describe('Blob Overflow Menu', () => {
     wrapper = shallowMountExtended(BlobOverflowMenu, {
       router,
       provide: {
+        canModifyBlob: true,
+        canModifyBlobWithWebIde: true,
         ...provided,
       },
       propsData: {
@@ -27,6 +35,11 @@ describe('Blob Overflow Menu', () => {
         simpleViewer: blobControlsDataMock.repository.blobs.nodes[0].simpleViewer,
         name: blobControlsDataMock.repository.blobs.nodes[0].name,
         isBinary: blobControlsDataMock.repository.blobs.nodes[0].binary,
+        archived: blobControlsDataMock.repository.blobs.nodes[0].archived,
+        replacePath: blobControlsDataMock.repository.blobs.nodes[0].replacePath,
+        webPath: blobControlsDataMock.repository.blobs.nodes[0].webPath,
+        canCurrentUserPushToBranch:
+          blobControlsDataMock.repository.blobs.nodes[0].canCurrentUserPushToBranch,
         ...propsData,
       },
       stub: {
@@ -35,18 +48,14 @@ describe('Blob Overflow Menu', () => {
     });
   }
 
-  const findDefaultBlobActions = () => wrapper.findByTestId('default-actions-container');
   const findBlobDefaultActionsGroup = () => wrapper.findComponent(BlobDefaultActionsGroup);
+  const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
 
   beforeEach(() => {
     createComponent();
   });
 
   describe('Default blob actions', () => {
-    it('renders component', () => {
-      expect(findDefaultBlobActions().exists()).toBe(true);
-    });
-
     it('renders BlobDefaultActionsGroup component', () => {
       expect(findBlobDefaultActionsGroup().exists()).toBe(true);
     });
@@ -69,6 +78,27 @@ describe('Blob Overflow Menu', () => {
         findBlobDefaultActionsGroup().vm.$emit('copy');
         expect(wrapper.emitted('copy')).toBeUndefined();
       });
+    });
+  });
+
+  describe('Blob Button Group', () => {
+    it('renders component', () => {
+      expect(findBlobButtonGroup().exists()).toBe(true);
+    });
+
+    it('does not render when blob is archived', () => {
+      createComponent({
+        archived: true,
+      });
+
+      expect(findBlobButtonGroup().exists()).toBe(false);
+    });
+
+    it('does not render when user is not logged in', () => {
+      isLoggedIn.mockImplementationOnce(() => false);
+      createComponent();
+
+      expect(findBlobButtonGroup().exists()).toBe(false);
     });
   });
 });

@@ -309,7 +309,7 @@ RSpec.describe MergeRequestPresenter do
         project.add_maintainer(user)
 
         is_expected
-          .to eq("/#{resource.project.full_path}/-/issues/new?merge_request_to_resolve_discussions_of=#{resource.iid}")
+          .to eq("/#{resource.project.full_path}/-/issues/new?merge_request_id=#{resource.id}&merge_request_to_resolve_discussions_of=#{resource.iid}")
       end
     end
 

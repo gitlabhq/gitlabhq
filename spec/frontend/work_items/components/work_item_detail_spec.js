@@ -132,6 +132,7 @@ describe('WorkItemDetail component', () => {
   const findCreateMergeRequestSplitButton = () =>
     wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
+  const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
 
   const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
     return { dataTransfer: { types, files, items } };
@@ -1164,6 +1165,26 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
 
       expect(findNotesWidget().props('parentId')).toBe(parentId);
+    });
+  });
+
+  describe('displays flash message when resolves a discussion', () => {
+    it('when it resolves one discussion', async () => {
+      setWindowLocation('?resolves_discussion=1');
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDetailInfo().text()).toBe('Resolved 1 discussion.');
+    });
+
+    it('when it resolves all discussions', async () => {
+      setWindowLocation('?resolves_discussion=all');
+
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemDetailInfo().text()).toBe('Resolved all discussions.');
     });
   });
 });

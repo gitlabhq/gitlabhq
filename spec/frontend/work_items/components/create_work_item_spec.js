@@ -31,6 +31,7 @@ import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_ite
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import {
   createWorkItemMutationErrorResponse,
   createWorkItemMutationResponse,
@@ -40,6 +41,17 @@ import {
 jest.mock('~/alert');
 jest.mock('~/work_items/graphql/cache_utils', () => ({
   setNewWorkItemCache: jest.fn(),
+}));
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  getParameterByName: jest.fn().mockReturnValue('13'),
+  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=%5Emain%24'),
+  joinPaths: jest.fn(),
+  setUrlParams: jest
+    .fn()
+    .mockReturnValue('/project/Project/-/settings/repository/branch_rules?branch=main'),
+  setUrlFragment: jest.fn(),
+  visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
 
 Vue.use(VueApollo);
@@ -322,7 +334,12 @@ describe('Create work item component', () => {
       await submitCreateForm();
 
       expect(wrapper.emitted('workItemCreated')).toEqual([
-        [createWorkItemMutationResponse.data.workItemCreate.workItem],
+        [
+          {
+            workItem: createWorkItemMutationResponse.data.workItemCreate.workItem,
+            numberOfDiscussionsResolved: '1',
+          },
+        ],
       ]);
     });
 
@@ -635,6 +652,62 @@ describe('Create work item component', () => {
       search: 'Test title',
       helpText: 'These existing items have a similar title and may represent potential duplicates.',
       title: 'Similar items',
+    });
+  });
+
+  describe('New work item to resolve threads', () => {
+    it('when not resolving any thread, does not pass resolve params to mutation', async () => {
+      createComponent({ singleWorkItemType: true, workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE });
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).not.toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          discussionsToResolve: null,
+        }),
+      });
+    });
+
+    it('when resolving all threads in a merge request', async () => {
+      setWindowLocation('?merge_request_id=13');
+
+      createComponent({ singleWorkItemType: true, workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE });
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          discussionsToResolve: {
+            discussionId: '13',
+            noteableId: 'gid://gitlab/MergeRequest/13',
+          },
+        }),
+      });
+    });
+
+    it('when resolving one thread in a merge request', async () => {
+      setWindowLocation(
+        '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
+      );
+
+      createComponent({ singleWorkItemType: true, workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE });
+      await waitForPromises();
+
+      await updateWorkItemTitle();
+      await submitCreateForm();
+
+      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+        input: expect.objectContaining({
+          discussionsToResolve: {
+            discussionId: '13',
+            noteableId: 'gid://gitlab/MergeRequest/13',
+          },
+        }),
+      });
     });
   });
 });

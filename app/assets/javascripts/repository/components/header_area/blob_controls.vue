@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { computed } from 'vue';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
@@ -61,6 +62,12 @@ export default {
       },
     },
   },
+  provide() {
+    return {
+      canModifyBlob: computed(() => this.blobInfo?.canModifyBlob ?? false),
+      canModifyBlobWithWebIde: computed(() => this.blobInfo?.canModifyBlobWithWebIde ?? false),
+    };
+  },
   props: {
     projectPath: {
       type: String,
@@ -80,6 +87,7 @@ export default {
   data() {
     return {
       project: {},
+      isEmptyRepository: false,
     };
   },
   computed: {
@@ -95,8 +103,20 @@ export default {
     blobInfo() {
       return this.project?.repository?.blobs?.nodes[0] || {};
     },
+    storageInfo() {
+      const { storedExternally, externalStorage } = this.blobInfo;
+      return {
+        isExternallyStored: storedExternally,
+        storageType: externalStorage,
+        isLfs: storedExternally && externalStorage === 'lfs',
+      };
+    },
     showBlameButton() {
-      return !this.blobInfo.storedExternally && this.blobInfo.externalStorage !== 'lfs';
+      const { isExternallyStored, isLfs } = this.storageInfo;
+      return !isExternallyStored && !isLfs;
+    },
+    isUsingLfs() {
+      return this.storageInfo.isLfs;
     },
     isBinaryFileType() {
       return this.isBinary || this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE;
@@ -104,25 +124,32 @@ export default {
     rawPath() {
       return this.blobInfo.externalStorageUrl || this.blobInfo.rawPath;
     },
+    shortcuts() {
+      const findFileKey = keysFor(START_SEARCH_PROJECT_FILE)[0];
+      const permalinkKey = keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0];
+
+      return {
+        findFile: findFileKey,
+        permalink: permalinkKey,
+      };
+    },
     findFileShortcutKey() {
-      return keysFor(START_SEARCH_PROJECT_FILE)[0];
+      return this.shortcuts.findFile;
     },
     findFileTooltip() {
+      if (shouldDisableShortcuts()) return null;
+
       const { description } = START_SEARCH_PROJECT_FILE;
-      const key = this.findFileShortcutKey;
-      return shouldDisableShortcuts()
-        ? null
-        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+      return this.formatTooltipWithShortcut(description, this.shortcuts.findFile);
     },
     permalinkShortcutKey() {
-      return keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0];
+      return this.shortcuts.permalink;
     },
     permalinkTooltip() {
+      if (shouldDisableShortcuts()) return null;
+
       const description = this.$options.i18n.permalinkTooltip;
-      const key = this.permalinkShortcutKey;
-      return shouldDisableShortcuts()
-        ? null
-        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+      return this.formatTooltipWithShortcut(description, this.shortcuts.permalink);
     },
     isEmpty() {
       return this.blobInfo.rawSize === '0';
@@ -141,6 +168,9 @@ export default {
     },
   },
   methods: {
+    formatTooltipWithShortcut(description, key) {
+      return sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
     initShortcuts() {
       shortcircuitPermalinkButton();
       addShortcutsExtension(ShortcutsBlob);
@@ -208,6 +238,12 @@ export default {
       :environment-path="blobInfo.environmentExternalUrlForRouteMap"
       :is-empty="isEmpty"
       :override-copy="true"
+      :archived="blobInfo.archived"
+      :replace-path="blobInfo.replacePath"
+      :web-path="blobInfo.webPath"
+      :is-empty-repository="project.repository.empty"
+      :can-current-user-push-to-branch="blobInfo.canCurrentUserPushToBranch"
+      :is-using-lfs="isUsingLfs"
       @copy="onCopy"
     />
   </div>

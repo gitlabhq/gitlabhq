@@ -664,7 +664,6 @@ export function addMarkdownListeners(form) {
     .off('click', '.js-md')
     .on('click', '.js-md', function () {
       const $toolbarBtn = $(this);
-
       return updateTextForToolbarBtn($toolbarBtn);
     });
 

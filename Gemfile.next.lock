@@ -453,7 +453,7 @@ GEM
     colored2 (3.1.2)
     commonmarker (0.23.11)
     concurrent-ruby (1.2.3)
-    connection_pool (2.4.1)
+    connection_pool (2.5.0)
     console (1.25.2)
       fiber-annotation
       fiber-local (~> 1.1)
@@ -760,7 +760,7 @@ GEM
       nokogiri (~> 1, >= 1.10.8)
     gitlab-glfm-markdown (0.0.24)
       rb_sys (= 0.9.107)
-    gitlab-kas-grpc (17.7.0)
+    gitlab-kas-grpc (17.8.1)
       grpc (~> 1.0)
     gitlab-labkit (0.37.0)
       actionpack (>= 5.0.0, < 8.1.0)
@@ -934,7 +934,7 @@ GEM
       grape (~> 2.0)
       rake (> 12)
       ruby2_keywords (~> 0.0.2)
-    grape-swagger (2.1.1)
+    grape-swagger (2.1.2)
       grape (>= 1.7, < 3.0)
       rack-test (~> 2)
     grape-swagger-entity (0.5.5)
@@ -990,7 +990,7 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.59.0)
+    haml_lint (0.60.0)
       haml (>= 5.0)
       parallel (~> 1.10)
       rainbow
@@ -2130,7 +2130,7 @@ DEPENDENCIES
   gitlab-glfm-markdown (~> 0.0.21)
   gitlab-housekeeper!
   gitlab-http!
-  gitlab-kas-grpc (~> 17.7.0)
+  gitlab-kas-grpc (~> 17.8.0)
   gitlab-labkit (~> 0.37.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)

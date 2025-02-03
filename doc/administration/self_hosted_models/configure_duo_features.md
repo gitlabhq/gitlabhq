@@ -107,7 +107,7 @@ To configure a self-hosted model:
    - **Endpoint**: Enter the URL where the model is hosted.
      - For models hosted through vLLM, you must suffix the URL with `/v1`. The default port is `8000`, so the default endpoint URL is `https://<hostname>:8000/v1`.
    - **API key**: Optional. Add an API key if you need one to access the model.
-   - **Model identifier (optional)**: Optional. The model identifier is based on your deployment method:
+   - **Model identifier**: This is a required field if your deployment method is vLLM, Bedrock or Azure. The value of this field is based on your deployment method, and should match the following structure:
 
      | Deployment method | Format | Example |
      |-------------|---------|---------|

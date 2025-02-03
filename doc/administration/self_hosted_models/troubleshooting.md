@@ -49,13 +49,24 @@ model configuration.
    Optional: Include a `<username>` that has an assigned seat.
    If you do not include a username parameter, the Rake task uses the root user.
 
-1. Debug the AI gateway setup. For your AI gateway container, run:
+1. Debug the AI gateway setup. For your AI gateway container:
 
-   ```shell
-   docker exec -it <ai-gateway-container> sh
-   poetry run troubleshoot --model-name "mistral" --model-endpoint
-   "http://localhost:4000"
-   ```
+   - Restart the AI gateway container with authentication disabled by setting:
+
+     ```shell
+     -e AIGW_AUTH__BYPASS_EXTERNAL=true
+     ```
+
+     This setting is required for the troubleshooting command to run the **System Exchange test**. You must remove this setting after troubleshooting is complete.
+
+   - From your AI gateway container, run:
+
+     ```shell
+     docker exec -it <ai-gateway-container> sh
+     poetry run troubleshoot --model-name "mistral" --model-endpoint "http://localhost:4000"
+     ```
+
+     After troubleshooting is complete, stop and restart the AI gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`. Authentication **must not be bypassed in production**.
 
 Verify the output of the commands, and fix accordingly.
 

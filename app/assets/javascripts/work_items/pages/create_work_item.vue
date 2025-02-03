@@ -57,9 +57,16 @@ export default {
     updateWorkItemType(type) {
       this.workItemType = type;
     },
-    workItemCreated(workItem) {
+    workItemCreated({ workItem, numberOfDiscussionsResolved }) {
       if (this.$router) {
-        this.$router.push({ name: ROUTES.workItem, params: { iid: workItem.iid } });
+        const routerPushObject = {
+          name: ROUTES.workItem,
+          params: { iid: workItem.iid },
+        };
+        if (numberOfDiscussionsResolved) {
+          routerPushObject.query = { resolves_discussion: numberOfDiscussionsResolved };
+        }
+        this.$router.push(routerPushObject);
       } else {
         visitUrl(workItem.webUrl);
       }

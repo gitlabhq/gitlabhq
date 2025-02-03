@@ -19,6 +19,7 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { updateText, repeatCodeBackticks } from '~/lib/utils/text_markdown';
+import ToolbarTableButton from '~/content_editor/components/toolbar_table_button.vue';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
 import CommentTemplatesModal from './comment_templates_modal.vue';
@@ -27,6 +28,7 @@ import HeaderDivider from './header_divider.vue';
 export default {
   components: {
     ToolbarButton,
+    ToolbarTableButton,
     GlPopover,
     GlButton,
     GlFormInput,
@@ -241,6 +243,22 @@ export default {
           wrap: false,
         });
       }
+    },
+    insertTable({ rows, cols }) {
+      const headerContent = s__('MarkdownEditor|header');
+      const dividerContent = '-'.repeat(headerContent.length);
+      const cellContent = ' '.repeat(headerContent.length);
+
+      const table = [
+        `|${` ${headerContent} |`.repeat(cols)}`,
+        `|${` ${dividerContent} |`.repeat(cols)}`,
+      ];
+      const createRow = (content, colCount) => `|${` ${content} |`.repeat(colCount)}`;
+      for (let i = 0; i < rows; i += 1) {
+        table.push(createRow(cellContent, cols));
+      }
+
+      this.insertIntoTextarea(table.join('\n'));
     },
     replaceTextarea(text) {
       const { description, descriptionForSha } = this.$options.i18n;
@@ -532,14 +550,10 @@ export default {
             />
             <header-divider v-if="!hideDividerBeforeTable" />
           </div>
-          <toolbar-button
-            v-if="!restrictedToolBarItems.includes('table')"
+          <toolbar-table-button
             v-show="!previewMarkdown"
-            :tag="mdTable"
-            :prepend="true"
-            :button-title="__('Add a table')"
-            icon="table"
-            tracking-property="table"
+            v-if="!restrictedToolBarItems.includes('table')"
+            @insert-table="insertTable"
           />
           <!--
             The attach file button's click behavior is added by

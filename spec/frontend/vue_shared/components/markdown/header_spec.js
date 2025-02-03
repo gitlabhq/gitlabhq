@@ -5,8 +5,9 @@ import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import HeaderDividerComponent from '~/vue_shared/components/markdown/header_divider.vue';
 import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
+import ToolbarTableButton from '~/content_editor/components/toolbar_table_button.vue';
 import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { updateText } from '~/lib/utils/text_markdown';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
@@ -46,6 +47,7 @@ describe('Markdown field header component', () => {
       .at(0);
   const findDrawioToolbarButton = () => wrapper.findComponent(DrawioToolbarButton);
   const findCommentTemplatesModal = () => wrapper.findComponent(CommentTemplatesModal);
+  const findToolbarTableButton = () => wrapper.findComponent(ToolbarTableButton);
 
   beforeEach(() => {
     window.gl = {
@@ -72,10 +74,9 @@ describe('Markdown field header component', () => {
     ${10} | ${'Indent line (⌘])'}             | ${'Indent line (Ctrl+])'}                  | ${'indent'}
     ${11} | ${'Outdent line (⌘[)'}            | ${'Outdent line (Ctrl+[)'}                 | ${'outdent'}
     ${12} | ${'Add a collapsible section'}    | ${'Add a collapsible section'}             | ${'details'}
-    ${13} | ${'Add a table'}                  | ${'Add a table'}                           | ${'table'}
-    ${14} | ${'Attach a file or image'}       | ${'Attach a file or image'}                | ${'upload'}
-    ${15} | ${'Go full screen'}               | ${'Go full screen'}                        | ${'fullScreen'}
-    ${16} | ${'Find and replace'}             | ${'Find and replace'}                      | ${null}
+    ${13} | ${'Attach a file or image'}       | ${'Attach a file or image'}                | ${'upload'}
+    ${14} | ${'Go full screen'}               | ${'Go full screen'}                        | ${'fullScreen'}
+    ${15} | ${'Find and replace'}             | ${'Find and replace'}                      | ${null}
   `('markdown header buttons', ({ i, buttonTitle, nonMacTitle, buttonType }) => {
     it('renders the buttons with the correct title', () => {
       expect(findToolbarButtons().wrappers[i].props('buttonTitle')).toBe(buttonTitle);
@@ -91,6 +92,20 @@ describe('Markdown field header component', () => {
 
     it('passes button type to `trackingProperty` prop', () => {
       expect(findToolbarButtons().wrappers[i].props('trackingProperty')).toBe(buttonType);
+    });
+  });
+
+  describe('markdown header insert table button renders', () => {
+    it('on MacOS', () => {
+      expect(findToolbarTableButton()).toBeDefined();
+    });
+
+    it('on non MacOS system', () => {
+      window.gl = { client: { isMac: false } };
+
+      createWrapper();
+
+      expect(findToolbarTableButton()).toBeDefined();
     });
   });
 
@@ -153,12 +168,42 @@ describe('Markdown field header component', () => {
     expect(wrapper.emitted('hidePreview')).toBeUndefined();
   });
 
-  it('renders markdown table template', () => {
-    const tableButton = findToolbarButtonByProp('icon', 'table');
+  describe('markdown table button', () => {
+    beforeEach(() => {
+      setHTMLFixture('<div class="md-area"><textarea></textarea><div id="root"></div></div>');
 
-    expect(tableButton.props('tag')).toEqual(
-      '| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |',
-    );
+      wrapper = mountExtended(HeaderComponent, {
+        attachTo: '#root',
+        propsData: {
+          previewMarkdown: false,
+        },
+        stubs: { GlToggle },
+        provide: {
+          glFeatures: {
+            findAndReplace: true,
+          },
+        },
+      });
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('renders markdown table template', async () => {
+      const tableButton = findToolbarTableButton();
+
+      const button = tableButton.findComponent({ ref: 'table-1-1' });
+      await button.trigger('mouseover');
+      await button.trigger('click');
+
+      expect(updateText).toHaveBeenCalledWith({
+        textArea: document.querySelector('textarea'),
+        tag: '| header |\n| ------ |\n|        |',
+        cursorOffset: 0,
+        wrap: false,
+      });
+    });
   });
 
   it('renders suggestion template', () => {

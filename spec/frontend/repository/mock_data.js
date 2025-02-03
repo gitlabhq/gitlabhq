@@ -89,11 +89,16 @@ export const refWithSpecialCharMock = 'feat/selected-#-ref-#';
 export const encodedRefWithSpecialCharMock = 'feat/selected-%23-ref-%23';
 
 export const blobControlsDataMock = {
+  __typename: 'Project',
   id: '1234',
   repository: {
+    __typename: 'Repository',
+    empty: false,
     blobs: {
+      __typename: 'RepositoryBlobConnection',
       nodes: [
         {
+          __typename: 'RepositoryBlob',
           id: '5678',
           name: 'file.js',
           blamePath: 'blame/file.js',
@@ -105,7 +110,14 @@ export const blobControlsDataMock = {
           environmentExternalUrlForRouteMap: '',
           rawPath: 'https://testing.com/flightjs/flight/snippets/51/raw',
           rawTextBlob: 'Example raw text content',
+          archived: false,
+          replacePath: 'some/replace/file.js',
+          webPath: 'some/file.js',
+          canCurrentUserPushToBranch: true,
+          canModifyBlob: true,
+          canModifyBlobWithWebIde: true,
           simpleViewer: {
+            __typename: 'BlobViewer',
             collapsed: false,
             loadingPartialName: 'loading',
             renderError: null,
@@ -114,6 +126,7 @@ export const blobControlsDataMock = {
             fileType: 'rich',
           },
           richViewer: {
+            __typename: 'BlobViewer',
             collapsed: false,
             loadingPartialName: 'loading',
             renderError: 'too big file',

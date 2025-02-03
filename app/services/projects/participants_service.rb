@@ -35,3 +35,5 @@ module Projects
     end
   end
 end
+
+Projects::ParticipantsService.prepend_mod_with('Projects::ParticipantsService')

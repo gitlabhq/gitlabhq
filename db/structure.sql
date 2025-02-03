@@ -19330,6 +19330,26 @@ CREATE SEQUENCE project_repository_storage_moves_id_seq
 
 ALTER SEQUENCE project_repository_storage_moves_id_seq OWNED BY project_repository_storage_moves.id;
 
+CREATE TABLE routes (
+    id bigint NOT NULL,
+    source_id bigint NOT NULL,
+    source_type character varying NOT NULL,
+    path character varying NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    name character varying,
+    namespace_id bigint,
+    CONSTRAINT check_af84c6c93f CHECK ((namespace_id IS NOT NULL))
+);
+
+CREATE VIEW project_routes_view AS
+ SELECT p.id,
+    p.repository_storage,
+    r.path AS path_with_namespace,
+    r.name AS name_with_namespace
+   FROM (projects p
+     JOIN routes r ON (((p.id = r.source_id) AND ((r.source_type)::text = 'Project'::text))));
+
 CREATE TABLE project_saved_replies (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -20013,7 +20033,8 @@ CREATE TABLE release_links (
     updated_at timestamp with time zone NOT NULL,
     filepath character varying(128),
     link_type smallint DEFAULT 0,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_959e7fdd89 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE release_links_id_seq
@@ -20305,18 +20326,6 @@ CREATE SEQUENCE reviews_id_seq
     CACHE 1;
 
 ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
-
-CREATE TABLE routes (
-    id bigint NOT NULL,
-    source_id bigint NOT NULL,
-    source_type character varying NOT NULL,
-    path character varying NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    name character varying,
-    namespace_id bigint,
-    CONSTRAINT check_af84c6c93f CHECK ((namespace_id IS NOT NULL))
-);
 
 CREATE SEQUENCE routes_id_seq
     START WITH 1

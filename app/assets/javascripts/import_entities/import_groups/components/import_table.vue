@@ -15,6 +15,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { debounce, isNumber, isUndefined } from 'lodash';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, n__, sprintf } from '~/locale';
@@ -72,6 +73,7 @@ export default {
     ImportHistoryLink,
     PaginationBar,
     HelpPopover,
+    PageHeading,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -648,7 +650,6 @@ export default {
     },
   },
 
-  gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
   betaFeatureHelpPath: helpPagePath('policy/development_stages_support', {
@@ -663,24 +664,37 @@ export default {
 
 <template>
   <div>
-    <div
-      class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-solid gl-border-default"
-    >
-      <h1 class="gl-my-0 gl-flex gl-items-center gl-gap-3 gl-py-4 gl-text-size-h1">
-        <img :src="$options.gitlabLogo" class="gl-h-6 gl-w-6" />
-        <span>{{ s__('BulkImport|Import groups by direct transfer') }}</span>
-      </h1>
-      <gl-button
-        size="small"
-        variant="confirm"
-        category="secondary"
-        :href="historyPath"
-        class="gl-ml-auto"
-        data-testid="history-link"
+    <page-heading :heading="s__('BulkImport|Import groups by direct transfer')">
+      <template #actions>
+        <gl-button
+          variant="default"
+          category="secondary"
+          :href="historyPath"
+          data-testid="history-link"
+        >
+          {{ s__('BulkImport|View import history') }}
+        </gl-button>
+      </template>
+      <template #description
+        ><span>{{ s__('BulkImport|Select the groups and projects you want to import.') }}</span>
+        <span>
+          <gl-sprintf
+            :message="
+              s__(
+                'BulkImport|Please note: importing projects is a %{docsLinkStart}beta%{docsLinkEnd} feature.',
+              )
+            "
+          >
+            <template #docsLink="{ content }"
+              ><gl-link :href="$options.betaFeatureHelpPath" target="_blank">{{
+                content
+              }}</gl-link></template
+            >
+          </gl-sprintf>
+        </span></template
       >
-        {{ s__('BulkImport|View import history') }}
-      </gl-button>
-    </div>
+    </page-heading>
+
     <gl-alert
       v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
       data-testid="unavailable-features-alert"
@@ -727,7 +741,14 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-    <div class="gl-flex gl-border-0 gl-border-b-1 gl-border-solid gl-border-strong gl-py-5">
+    <div class="gl-border-0 gl-border-b-1 gl-border-solid gl-border-b-default gl-py-5">
+      <gl-search-box-by-click
+        class="gl-mb-5"
+        data-testid="filter-groups"
+        :placeholder="s__('BulkImport|Filter by source group')"
+        @submit="filter = $event"
+        @clear="filter = ''"
+      />
       <span v-if="!$apollo.loading && hasGroups">
         <gl-sprintf :message="statusMessage">
           <template #start>
@@ -762,14 +783,6 @@ export default {
           </gl-sprintf>
         </help-popover>
       </span>
-
-      <gl-search-box-by-click
-        class="gl-ml-auto"
-        data-testid="filter-groups"
-        :placeholder="s__('BulkImport|Filter by source group')"
-        @submit="filter = $event"
-        @clear="filter = ''"
-      />
     </div>
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
@@ -793,9 +806,9 @@ export default {
       </gl-empty-state>
       <template v-else>
         <div
-          class="import-table-bar gl-sticky gl-z-3 gl-flex gl-flex-col gl-border-0 gl-border-b-1 gl-border-solid gl-border-strong gl-bg-subtle gl-px-4 md:gl-flex-row md:gl-items-center md:gl-justify-between"
+          class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-gray-10 gl-px-4 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
         >
-          <div class="gl-mb-3 gl-flex gl-items-center gl-pr-6 md:gl-mb-0 md:gl-grow">
+          <div class="gl-items-center gl-gap-4 gl-py-3 md:gl-flex">
             <span data-test-id="selection-count">
               <gl-sprintf :message="__('%{count} selected')">
                 <template #count>
@@ -809,7 +822,6 @@ export default {
               variant="confirm"
               category="primary"
               data-testid="import-selected-groups-dropdown"
-              class="gl-ml-4 gl-shrink"
               split
               @click="importSelectedGroups({ migrateProjects: true })"
             >
@@ -817,20 +829,20 @@ export default {
                 {{ s__('BulkImport|Import without projects') }}
               </gl-dropdown-item>
             </gl-dropdown>
-            <span v-if="showImportProjectsWarning" class="gl-ml-3 gl-shrink-0">
+            <span v-if="showImportProjectsWarning" class="gl-shrink-0">
               <gl-icon
                 v-gl-tooltip
                 :title="s__('BulkImport|Some groups will be imported without projects.')"
                 name="warning"
+                class="gl-text-orange-500"
                 data-testid="import-projects-warning"
-                variant="warning"
               />
             </span>
-            <div class="gl-ml-4 gl-flex">
+            <div class="gl-flex gl-items-center">
               <gl-form-checkbox
                 v-model="shouldMigrateMemberships"
                 data-testid="toggle-import-user-memberships"
-                class="gl-ml-4 gl-mr-2 gl-pt-1"
+                class="gl-mr-2 gl-pt-3"
               >
                 {{ s__('BulkImport|Import user memberships') }}
               </gl-form-checkbox>
@@ -845,30 +857,13 @@ export default {
               </help-popover>
             </div>
           </div>
-
-          <span class="gl-leading-20">
-            <gl-icon name="information-o" :size="12" variant="info" />
-            <gl-sprintf
-              :message="
-                s__(
-                  'BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} feature.',
-                )
-              "
-            >
-              <template #docsLink="{ content }"
-                ><gl-link :href="$options.betaFeatureHelpPath" target="_blank">{{
-                  content
-                }}</gl-link></template
-              >
-            </gl-sprintf>
-          </span>
         </div>
         <gl-table
           ref="table"
           class="import-table gl-w-full"
           :tbody-tr-class="rowClasses"
           :tbody-tr-attr="qaRowAttributes"
-          thead-class="gl-sticky gl-z-2 gl-bg-subtle"
+          thead-class="gl-sticky gl-z-2 gl-bg-default"
           :items="groupsTableData"
           :fields="$options.fields"
           selectable
@@ -879,7 +874,7 @@ export default {
           <template #head(selected)="{ selectAllRows, clearSelected }">
             <gl-form-checkbox
               :key="`checkbox-${selectedGroupsIds.length}`"
-              class="gl-h-7 gl-pt-3"
+              class="gl-min-h-0"
               :checked="hasSelectedGroups"
               :indeterminate="hasSelectedGroups && !hasAllAvailableGroupsSelected"
               @change="hasAllAvailableGroupsSelected ? clearSelected() : selectAllRows()"

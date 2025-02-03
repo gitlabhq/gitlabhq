@@ -261,7 +261,7 @@ RSpec.shared_examples 'work items description' do
       expect(page).to have_button 'Add a numbered list'
       expect(page).to have_button 'Add a checklist'
       expect(page).to have_button 'Add a collapsible section'
-      expect(page).to have_button 'Add a table'
+      expect(page).to have_button 'Insert table'
       expect(page).to have_button 'Attach a file or image'
       expect(page).to have_button 'Add a quick action'
       expect(page).not_to have_button 'Insert comment template'

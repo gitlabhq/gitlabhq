@@ -17,7 +17,13 @@ import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
-import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
+import {
+  DEFAULT_BLOB_INFO,
+  TEXT_FILE_TYPE,
+  LFS_STORAGE,
+  LEGACY_FILE_TYPES,
+  EMPTY_FILE,
+} from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
@@ -135,7 +141,11 @@ export default {
       return this.$apollo.queries.project.loading;
     },
     isBinaryFileType() {
-      return this.isBinary || this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE;
+      return (
+        this.isBinary ||
+        (this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE &&
+          this.blobInfo.simpleViewer?.fileType !== EMPTY_FILE)
+      );
     },
     currentRef() {
       return this.originalBranch || this.ref;
@@ -214,6 +224,13 @@ export default {
     },
     shouldRenderAiGenie() {
       return this.explainCodeAvailable && this.activeViewerType === 'simple' && !this.isTooLarge;
+    },
+    shouldHideViewerSwitcher() {
+      return (
+        this.isBinaryFileType ||
+        this.isUsingLfs ||
+        this.blobInfo.simpleViewer?.fileType === EMPTY_FILE
+      );
     },
   },
   watch: {
@@ -337,7 +354,7 @@ export default {
       <blob-header
         is-blob-page
         :blob="blobInfo"
-        :hide-viewer-switcher="isBinaryFileType || isUsingLfs"
+        :hide-viewer-switcher="shouldHideViewerSwitcher"
         :is-binary="isBinaryFileType"
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"

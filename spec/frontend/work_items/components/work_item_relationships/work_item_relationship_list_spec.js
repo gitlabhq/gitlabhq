@@ -24,6 +24,7 @@ describe('WorkItemRelationshipList', () => {
     heading = 'Blocking',
     canUpdate = true,
     isLoggedIn = true,
+    activeChildItemId = null,
   } = {}) => {
     if (isLoggedIn) {
       window.gon.current_user_id = 1;
@@ -38,6 +39,7 @@ describe('WorkItemRelationshipList', () => {
         heading,
         canUpdate,
         workItemFullPath,
+        activeChildItemId,
       },
       mocks: {
         $apollo: {
@@ -65,20 +67,19 @@ describe('WorkItemRelationshipList', () => {
     removeEventListener: jest.fn(),
   };
 
-  beforeEach(() => {
-    createComponent({ linkedItems: mockLinkedItems });
-  });
-
   it('renders linked item list', () => {
+    createComponent({ linkedItems: mockLinkedItems });
     expect(findHeading().text()).toBe('Blocking');
     expect(wrapper.html()).toMatchSnapshot();
   });
 
   it('renders work item list with drag and drop ability when canUpdate is true', () => {
+    createComponent({ linkedItems: mockLinkedItems });
     expect(findDraggableWorkItemsList().exists()).toBe(true);
   });
 
   it('renders work item link child contents with correct props', () => {
+    createComponent({ linkedItems: mockLinkedItems });
     expect(findWorkItemLinkChildContents().props()).toMatchObject({
       childItem: mockLinkedItems[0].workItem,
       canUpdate: true,
@@ -87,8 +88,18 @@ describe('WorkItemRelationshipList', () => {
     });
   });
 
+  it('highlights the item when the drawer is opened', () => {
+    const ACTIVE_DRAWER_CLASS = 'gl-border-default gl-bg-blue-50 hover:gl-bg-blue-50';
+    createComponent({
+      linkedItems: mockLinkedItems,
+      activeChildItemId: mockLinkedItems[0].workItem.id,
+    });
+    expect(findWorkItemLinkChildContents().attributes('class')).toContain(ACTIVE_DRAWER_CLASS);
+  });
+
   describe('drag start', () => {
     beforeEach(() => {
+      createComponent({ linkedItems: mockLinkedItems });
       jest.spyOn(document, 'addEventListener');
       findDraggableWorkItemsList().vm.$emit('start', {
         to: mockTo,
@@ -119,6 +130,7 @@ describe('WorkItemRelationshipList', () => {
 
   describe('drag move', () => {
     beforeEach(() => {
+      createComponent({ linkedItems: mockLinkedItems });
       // We're manually calling `move` function here as VueDraggable doesn't expose it as an event
       // even when Sortable.js has already defined it https://github.com/SortableJS/Sortable?tab=readme-ov-file#options
       findDraggableWorkItemsList().vm.move({

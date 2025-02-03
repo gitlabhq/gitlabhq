@@ -21,7 +21,7 @@
 <% end %>
 <% def scope(ability) %>
 <%   scopes = [] %>
-<%   scopes << 'Instance' if ability[:admin_ability]%>
+<%   scopes << 'Instance' unless ability[:group_ability] || ability[:project_ability]%>
 <%   scopes << 'Group' if ability[:group_ability]%>
 <%   scopes << 'Project' if ability[:project_ability]%>
 <%   return scopes.join(',<br> ') %>

@@ -10,8 +10,8 @@ import {
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__ } from '~/locale';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { s__, __ } from '~/locale';
+import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
@@ -29,7 +29,6 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_DESIGNS,
-  LINKED_ITEMS_ANCHOR,
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_WEIGHT,
@@ -37,6 +36,7 @@ import {
   STATE_OPEN,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
+  WORK_ITEM_TYPE_VALUE_INCIDENT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -192,6 +192,7 @@ export default {
       isDesignUploadButtonInViewport: false,
       isDragDataValid: false,
       isAddingNotes: false,
+      info: getParameterByName('resolves_discussion'),
     };
   },
   apollo: {
@@ -415,6 +416,12 @@ export default {
         'gl-pt-5': !this.updateError && !this.isModal,
       };
     },
+    flashNoticeMessage() {
+      const numberOfDiscussionsResolved = getParameterByName('resolves_discussion');
+      return numberOfDiscussionsResolved === 'all'
+        ? __('Resolved all discussions.')
+        : __('Resolved 1 discussion.');
+    },
     showIntersectionObserver() {
       return !this.isModal && !this.editMode && !this.isDrawer;
     },
@@ -545,8 +552,12 @@ export default {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
     },
-    openContextualView({ event, modalWorkItem, context }) {
-      if (!this.contextualViewEnabled || context === LINKED_ITEMS_ANCHOR || this.isDrawer) {
+    openContextualView({ event, modalWorkItem }) {
+      if (
+        !this.contextualViewEnabled ||
+        modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT ||
+        this.isDrawer
+      ) {
         return;
       }
       if (event) {
@@ -747,6 +758,10 @@ export default {
       this.dragCounter = 0; // Reset drag state
       this.isEmptyStateVisible = false; // Hide dropzone after drop
     },
+    dismissInfo() {
+      this.info = undefined;
+      updateHistory({ url: removeParams(['resolves_discussion']) });
+    },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
@@ -794,6 +809,15 @@ export default {
       @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
     />
     <section class="work-item-view">
+      <gl-alert
+        v-if="info"
+        class="gl-mb-3"
+        variant="info"
+        data-testid="info-alert"
+        @dismiss="dismissInfo"
+      >
+        {{ flashNoticeMessage }}
+      </gl-alert>
       <section v-if="updateError" class="flash-container flash-container-page sticky">
         <gl-alert class="gl-mb-3" variant="danger" @dismiss="updateError = undefined">
           {{ updateError }}
@@ -1049,6 +1073,7 @@ export default {
               :work-item-full-path="workItemFullPath"
               :work-item-type="workItem.workItemType.name"
               :can-admin-work-item-link="canAdminWorkItemLink"
+              :active-child-item-id="activeChildItemId"
               @showModal="openContextualView"
             />
 

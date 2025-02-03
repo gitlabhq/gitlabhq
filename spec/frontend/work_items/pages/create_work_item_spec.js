@@ -82,7 +82,10 @@ describe('Create work item page component', () => {
   it('visits work item detail page after create if router is not present', () => {
     createComponent();
 
-    findCreateWorkItem().vm.$emit('workItemCreated', { webUrl: '/work_items/1234' });
+    findCreateWorkItem().vm.$emit('workItemCreated', {
+      workItem: { webUrl: '/work_items/1234' },
+      numberOfDiscussionsResolved: '',
+    });
 
     expect(visitUrl).toHaveBeenCalledWith('/work_items/1234');
   });
@@ -91,11 +94,18 @@ describe('Create work item page component', () => {
     const pushMock = jest.fn();
     createComponent({ push: pushMock });
 
-    wrapper
-      .findComponent(CreateWorkItem)
-      .vm.$emit('workItemCreated', { webUrl: '/work_items/1234', iid: '1234' });
+    wrapper.findComponent(CreateWorkItem).vm.$emit('workItemCreated', {
+      workItem: { webUrl: '/work_items/1234', iid: '1234' },
+      numberOfDiscussionsResolved: 1,
+    });
 
-    expect(pushMock).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1234' } });
+    expect(pushMock).toHaveBeenCalledWith({
+      name: 'workItem',
+      params: { iid: '1234' },
+      query: {
+        resolves_discussion: 1,
+      },
+    });
   });
 
   describe('when the related_item_id url query param is present', () => {

@@ -1615,7 +1615,7 @@ class WebHookLog < ApplicationRecord
 end
 ```
 
-Using the `TokenAuthenticatable` class helper to create a prefixed token.
+Using [the `TokenAuthenticatable` concern](token_authenticatable.md) to create a prefixed token:
 
 ```ruby
 class User

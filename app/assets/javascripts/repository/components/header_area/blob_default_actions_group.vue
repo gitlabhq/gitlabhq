@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import { setUrlParams, relativePathToAbsolute, getBaseURL } from '~/lib/utils/url_utility';
 
@@ -13,6 +13,7 @@ export default {
   i18n,
   components: {
     GlDisclosureDropdownItem,
+    GlDisclosureDropdownGroup,
   },
   inject: {
     blobHash: {
@@ -141,7 +142,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <gl-disclosure-dropdown-group bordered>
     <gl-disclosure-dropdown-item
       v-if="showCopyButton"
       data-testid="copy-item"
@@ -160,5 +161,5 @@ export default {
       data-testid="environment-item"
       :item="environmentItem"
     />
-  </div>
+  </gl-disclosure-dropdown-group>
 </template>

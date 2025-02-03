@@ -71,6 +71,50 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           it 'does not update contacted_at' do
             expect { verify }.not_to change { runner.reload.contacted_at }.from(nil)
           end
+
+          # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+          context 'when runner is not yet synced to partitioned table' do
+            let(:connection) { Ci::ApplicationRecord.connection }
+            let(:params) { { token: non_partitioned_runner.token } }
+            let(:registration_token) { 'glrt-abcdefg123457' }
+            let(:non_partitioned_runner) do
+              create(:ci_runner, registration_type: registration_type,
+                token: registration_token, token_expires_at: 3.days.from_now)
+            end
+
+            before do
+              # Allow creating legacy runners that are not present in the partitioned table (created when FK was not
+              # present)
+              connection.transaction do
+                connection.execute(<<~SQL)
+                  ALTER TABLE ci_runners DISABLE TRIGGER ALL;
+                SQL
+
+                non_partitioned_runner
+
+                connection.execute(<<~SQL)
+                  ALTER TABLE ci_runners ENABLE TRIGGER ALL;
+                SQL
+              end
+            end
+
+            it 'does not update contacted_at but syncs runner to partitioned table', :aggregate_failures do
+              expect { verify }.to change { partitioned_runner_exists?(non_partitioned_runner) }.from(false).to(true)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(non_partitioned_runner.contacted_at).to be_nil
+            end
+
+            private
+
+            def partitioned_runner_exists?(runner)
+              result = connection.execute(<<~SQL)
+                SELECT COUNT(*) FROM ci_runners_e59bb2812d WHERE id = #{runner.id};
+              SQL
+
+              result.first['count'].positive?
+            end
+          end
         end
 
         it 'verifies Runner credentials' do
@@ -114,6 +158,29 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           it 'creates a runner_manager' do
             expect { verify }.to change { Ci::RunnerManager.count }.by(1)
+          end
+
+          # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+          context 'when project runner is missing sharding_key_id' do
+            let(:runner) { Ci::Runner.project_type.last }
+            let(:params) { { token: 'foo' } }
+            let(:connection) { Ci::Runner.connection }
+
+            before do
+              connection.execute(<<~SQL)
+                ALTER TABLE ci_runners DISABLE TRIGGER ALL;
+
+                INSERT INTO ci_runners(created_at, runner_type, token, sharding_key_id) VALUES(NOW(), 3, 'foo', NULL);
+
+                ALTER TABLE ci_runners ENABLE TRIGGER ALL;
+              SQL
+            end
+
+            it 'returns unprocessable entity status code', :aggregate_failures do
+              expect { verify }.not_to change { Ci::RunnerManager.count }.from(0)
+              expect(response).to have_gitlab_http_status(:unprocessable_entity)
+              expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+            end
           end
         end
       end

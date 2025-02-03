@@ -8,14 +8,6 @@ description: https://docs.gitlab.com/ee/user/project/releases/#links
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/66755c9ed506af9f51022a678ed26e5d31ee87ac
 milestone: '11.7'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: release_id
-        table: releases
-        sharding_key: project_id
-        belongs_to: release
-desired_sharding_key_migration_job_name: BackfillReleaseLinksProjectId
+sharding_key:
+  project_id: projects
 table_size: small

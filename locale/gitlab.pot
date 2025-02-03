@@ -10749,9 +10749,6 @@ msgstr ""
 msgid "BulkImport|Import without projects"
 msgstr ""
 
-msgid "BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} feature."
-msgstr ""
-
 msgid "BulkImport|Importing the group failed."
 msgstr ""
 
@@ -10812,6 +10809,9 @@ msgstr ""
 msgid "BulkImport|Placeholder reassignments completed with errors"
 msgstr ""
 
+msgid "BulkImport|Please note: importing projects is a %{docsLinkStart}beta%{docsLinkEnd} feature."
+msgstr ""
+
 msgid "BulkImport|Please select a parent group."
 msgstr ""
 
@@ -10825,6 +10825,9 @@ msgid "BulkImport|Review results"
 msgstr ""
 
 msgid "BulkImport|Select parent group"
+msgstr ""
+
+msgid "BulkImport|Select the groups and projects you want to import."
 msgstr ""
 
 msgid "BulkImport|Select whether user memberships in groups and projects are imported."
@@ -52501,6 +52504,9 @@ msgstr ""
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr ""
 
+msgid "SecurityReports|Change severity"
+msgstr ""
+
 msgid "SecurityReports|Change status"
 msgstr ""
 
@@ -52586,6 +52592,9 @@ msgid "SecurityReports|EPSS:"
 msgstr ""
 
 msgid "SecurityReports|Edit dismissal"
+msgstr ""
+
+msgid "SecurityReports|Edit vulnerability"
 msgstr ""
 
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
@@ -64873,6 +64882,12 @@ msgid "WorkItem|Create field"
 msgstr ""
 
 msgid "WorkItem|Created %{timeago}"
+msgstr ""
+
+msgid "WorkItem|Creating this %{workItemType} will resolve all threads in"
+msgstr ""
+
+msgid "WorkItem|Creating this %{workItemType} will resolve the thread in"
 msgstr ""
 
 msgid "WorkItem|Custom fields"

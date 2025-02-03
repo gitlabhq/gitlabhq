@@ -20,6 +20,7 @@ import {
   WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY,
   sprintfWorkItem,
+  INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '../../constants';
 
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
@@ -38,6 +39,11 @@ export default {
     WorkItemAddRelationshipForm,
     WorkItemMoreActions,
     WorkItemToggleClosedItems,
+  },
+  provide() {
+    return {
+      [INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION]: true,
+    };
   },
   props: {
     isGroup: {
@@ -63,6 +69,11 @@ export default {
       required: true,
     },
     workItemType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    activeChildItemId: {
       type: String,
       required: false,
       default: null,
@@ -384,6 +395,7 @@ export default {
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
+        :active-child-item-id="activeChildItemId"
         @showModal="
           $emit('showModal', {
             event: $event.event,
@@ -404,6 +416,7 @@ export default {
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
+        :active-child-item-id="activeChildItemId"
         @showModal="
           $emit('showModal', {
             event: $event.event,
@@ -424,6 +437,7 @@ export default {
         :can-update="canAdminWorkItemLink"
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
+        :active-child-item-id="activeChildItemId"
         @showModal="
           $emit('showModal', {
             event: $event.event,

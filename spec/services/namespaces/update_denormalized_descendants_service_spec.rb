@@ -38,6 +38,17 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
     )
   end
 
+  context 'when root namespace id is locked' do
+    it 'skips processing the record' do
+      # Record exists
+      allow(Namespace).to receive_message_chain(:primary_key_in, :exists?).and_return(true)
+      # Simulating a locked record which is filtered out via SKIP LOCKED
+      allow(Namespace).to receive_message_chain(:primary_key_in, :lock, :first).and_return(nil)
+
+      expect { run_service(subgroup.id) }.not_to change { cache.reload }
+    end
+  end
+
   context 'when the namespace was removed in the meantime' do
     it 'removes the cache record' do
       namespace_id = non_existing_record_id

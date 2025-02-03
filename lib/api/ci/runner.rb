@@ -128,6 +128,8 @@ module API
           status 200
 
           present current_runner, with: Entities::Ci::RunnerRegistrationDetails
+        rescue ::API::Ci::Helpers::Runner::UnknownRunnerOwnerError
+          unprocessable_entity!('Runner is orphaned')
         end
 
         desc 'Reset runner authentication token with current token' do
@@ -226,6 +228,8 @@ module API
             Gitlab::Metrics.add_event(:build_invalid)
             conflict!
           end
+        rescue ::API::Ci::Helpers::Runner::UnknownRunnerOwnerError
+          unprocessable_entity!('Runner is orphaned')
         end
 
         desc 'Update a job' do

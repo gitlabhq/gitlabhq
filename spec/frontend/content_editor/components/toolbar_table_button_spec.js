@@ -2,17 +2,12 @@ import { GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarTableButton from '~/content_editor/components/toolbar_table_button.vue';
 import { stubComponent } from 'helpers/stub_component';
-import { createTestEditor, mockChainedCommands } from '../test_utils';
 
 describe('content_editor/components/toolbar_table_button', () => {
   let wrapper;
-  let editor;
 
   const buildWrapper = () => {
     wrapper = mountExtended(ToolbarTableButton, {
-      provide: {
-        tiptapEditor: editor,
-      },
       stubs: {
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown),
       },
@@ -25,13 +20,7 @@ describe('content_editor/components/toolbar_table_button', () => {
   const triggerMouseover = (row, rol) => findButton(row, rol).trigger('mouseover');
 
   beforeEach(() => {
-    editor = createTestEditor();
-
     buildWrapper();
-  });
-
-  afterEach(() => {
-    editor.destroy();
   });
 
   describe.each`
@@ -78,25 +67,21 @@ describe('content_editor/components/toolbar_table_button', () => {
     });
 
     describe('on click', () => {
-      let commands;
-
       beforeEach(async () => {
-        commands = mockChainedCommands(editor, ['focus', 'insertTable', 'run']);
-
         const button = findButton(row, col);
         await button.trigger('mouseover');
         await button.trigger('click');
       });
 
       it('inserts a table with $tableSize rows and cols', () => {
-        expect(commands.focus).toHaveBeenCalled();
-        expect(commands.insertTable).toHaveBeenCalledWith({
-          rows: row,
-          cols: col,
-          withHeaderRow: true,
-        });
-        expect(commands.run).toHaveBeenCalled();
-
+        expect(wrapper.emitted()['insert-table']).toEqual([
+          [
+            {
+              rows: row,
+              cols: col,
+            },
+          ],
+        ]);
         expect(wrapper.emitted().execute).toHaveLength(1);
       });
     });

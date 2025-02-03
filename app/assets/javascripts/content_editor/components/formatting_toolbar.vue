@@ -83,6 +83,17 @@ export default {
     insertSavedReply(savedReply) {
       this.tiptapEditor.chain().focus().pasteContent(savedReply).run();
     },
+    insertTable({ rows, cols }) {
+      this.tiptapEditor
+        .chain()
+        .focus()
+        .insertTable({
+          rows,
+          cols,
+          withHeaderRow: true,
+        })
+        .run();
+    },
   },
 };
 </script>
@@ -194,7 +205,11 @@ export default {
         <header-divider />
       </div>
     </div>
-    <toolbar-table-button data-testid="table" @execute="trackToolbarControlExecution" />
+    <toolbar-table-button
+      data-testid="table"
+      @execute="trackToolbarControlExecution"
+      @insert-table="insertTable"
+    />
     <div class="gl-flex">
       <toolbar-attachment-button
         v-if="!hideAttachmentButton"

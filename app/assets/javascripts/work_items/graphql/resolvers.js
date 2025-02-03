@@ -3,6 +3,7 @@ import { produce } from 'immer';
 import { findWidget } from '~/issues/list/utils';
 import { newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { updateDraft } from '~/lib/utils/autosave';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { getNewWorkItemAutoSaveKey, newWorkItemFullPath } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -148,7 +149,11 @@ export const updateNewWorkItemCache = (input, cache) => {
 
   const isQueryDataValid = !isEmpty(newData) && newData?.workspace?.workItem;
 
-  if (isQueryDataValid && autosaveKey) {
+  const isWorkItemToResolveDiscussion = getParameterByName(
+    'merge_request_to_resolve_discussions_of',
+  );
+
+  if (isQueryDataValid && autosaveKey && !isWorkItemToResolveDiscussion) {
     updateDraft(autosaveKey, JSON.stringify(newData));
   }
 };

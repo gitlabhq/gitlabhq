@@ -8,12 +8,15 @@ import {
   GlFormGroup,
   GlFormSelect,
   GlSprintf,
+  GlIcon,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { fetchPolicies } from '~/lib/graphql';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
@@ -23,6 +26,7 @@ import {
   getNewWorkItemAutoSaveKey,
   newWorkItemFullPath,
 } from '~/work_items/utils';
+import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
   I18N_WORK_ITEM_ERROR_CREATING,
@@ -73,6 +77,7 @@ export default {
     GlFormCheckbox,
     GlFormSelect,
     GlSprintf,
+    GlIcon,
     WorkItemDescription,
     WorkItemTitle,
     WorkItemAssignees,
@@ -96,6 +101,10 @@ export default {
     suggestionTitle: s__('WorkItem|Similar items'),
     similarWorkItemHelpText: s__(
       'WorkItem|These existing items have a similar title and may represent potential duplicates.',
+    ),
+    resolveOneThreadText: s__('WorkItem|Creating this %{workItemType} will resolve the thread in'),
+    resolveAllThreadsText: s__(
+      'WorkItem|Creating this %{workItemType} will resolve all threads in',
     ),
   },
   props: {
@@ -175,6 +184,9 @@ export default {
       initialLoadingWorkItem: true,
       initialLoadingWorkItemTypes: true,
       showWorkItemTypeSelect: false,
+      discussionToResolve: getParameterByName('discussion_to_resolve'),
+      mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
+      numberOfDiscussionsResolved: '',
     };
   },
   apollo: {
@@ -226,6 +238,17 @@ export default {
           return;
         }
 
+        let workItemDescription = '';
+        let workItemTitle = '';
+        if (this.mergeRequestToResolveDiscussionsOf) {
+          workItemTitle = document.querySelector(
+            '.follow_up_work_item .follow-up-title',
+          )?.textContent;
+          workItemDescription = document.querySelector(
+            '.follow_up_work_item .follow-up-description',
+          )?.textContent;
+        }
+
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache(
             this.fullPath,
@@ -233,6 +256,8 @@ export default {
             workItemType.name,
             workItemType.id,
             workItemType.iconName,
+            workItemTitle,
+            workItemDescription,
           );
         }
 
@@ -416,6 +441,21 @@ export default {
         this.relatedItem?.id
       );
     },
+    resolvingMRDiscussionLink() {
+      return document.querySelector('.follow_up_work_item_details span.note-link a')?.href || '';
+    },
+    resolvingMRDiscussionLinkText() {
+      return document.querySelector('.follow_up_work_item_details span.note-link a')?.text || '';
+    },
+    createWorkItemWarning() {
+      const warning =
+        this.numberOfDiscussionsResolved === '1'
+          ? this.$options.i18n.resolveOneThreadText
+          : this.$options.i18n.resolveAllThreadsText;
+      return sprintf(warning, {
+        workItemType: this.selectedWorkItemTypeName,
+      });
+    },
     isFormFilled() {
       const isTitleFilled = Boolean(this.workItemTitle.trim());
       const isDescriptionFilled = Boolean(this.workItemDescription.trim());
@@ -462,6 +502,8 @@ export default {
     // updating widgets, the form may no be in focus and triggering
     // a keyboard event in the form won't get caught
     document.addEventListener('keydown', this.handleKeydown);
+
+    this.setNumberOfDiscussionsResolved();
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
@@ -486,6 +528,12 @@ export default {
     },
     validate(newValue) {
       this.isTitleValid = this.isTitleFilled(newValue);
+    },
+    setNumberOfDiscussionsResolved() {
+      if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
+        this.numberOfDiscussionsResolved =
+          this.discussionToResolve && this.mergeRequestToResolveDiscussionsOf ? '1' : 'all';
+      }
     },
     async updateDraftData(type, value) {
       if (type === 'title') {
@@ -526,6 +574,16 @@ export default {
           description: this.workItemDescription || '',
         },
       };
+
+      if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
+        workItemCreateInput.discussionsToResolve = {
+          discussionId: this.discussionToResolve,
+          noteableId: convertToGraphQLId(
+            TYPENAME_MERGE_REQUEST,
+            this.mergeRequestToResolveDiscussionsOf,
+          ),
+        };
+      }
 
       // TODO , we can move this to util, currently objectives with other widgets not being supported is causing issues
 
@@ -634,7 +692,11 @@ export default {
           });
         }
 
-        this.$emit('workItemCreated', data.workItemCreate.workItem);
+        this.$emit('workItemCreated', {
+          workItem: data.workItemCreate.workItem,
+          numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
+        });
+
         const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
         const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
         clearDraft(autosaveKey);
@@ -742,6 +804,13 @@ export default {
               @error="updateError = $event"
               @updateDraft="updateDraftData('description', $event)"
             />
+            <div v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink" class="gl-mb-4">
+              <gl-icon class="gl-mr-2" name="information-o" />
+              {{ createWorkItemWarning }}
+              <gl-link :href="resolvingMRDiscussionLink">{{
+                resolvingMRDiscussionLinkText
+              }}</gl-link>
+            </div>
             <gl-form-checkbox
               id="work-item-confidential"
               v-model="isConfidential"
