@@ -167,7 +167,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-An administrator can export user permissions for all users in the GitLab instance from the **Admin** area's Users page.
+An administrator can export user permissions for all active users in the GitLab instance from the **Admin** area's Users page.
 The export lists direct membership the users have in groups and projects.
 
 The export process exports the first 100,000 users, and includes this data:

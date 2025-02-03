@@ -881,6 +881,8 @@
   - 2
 - - security_scans_purge_by_job_id
   - 1
+- - security_sync_pipeline_execution_policy_metadata
+  - 1
 - - security_sync_policy
   - 1
 - - security_sync_policy_event

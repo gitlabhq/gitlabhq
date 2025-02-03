@@ -2,6 +2,7 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GraphQL API resources
 ---
 
 <!--
@@ -13,8 +14,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   Run `bundle exec rake gitlab:graphql:compile_docs`
   or check the `compile_docs` task in `lib/tasks/gitlab/graphql.rake`.
 -->
-
-# GraphQL API resources
 
 This documentation is self-generated based on GitLab current GraphQL schema.
 
@@ -13175,6 +13174,29 @@ The edge type for [`CiJob`](#cijob).
 | <a id="cijobedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cijobedgenode"></a>`node` | [`CiJob`](#cijob) | The item at the end of the edge. |
 
+#### `CiJobTokenAccessibleProjectConnection`
+
+The connection type for [`CiJobTokenAccessibleProject`](#cijobtokenaccessibleproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenaccessibleprojectconnectionedges"></a>`edges` | [`[CiJobTokenAccessibleProjectEdge]`](#cijobtokenaccessibleprojectedge) | A list of edges. |
+| <a id="cijobtokenaccessibleprojectconnectionnodes"></a>`nodes` | [`[CiJobTokenAccessibleProject]`](#cijobtokenaccessibleproject) | A list of nodes. |
+| <a id="cijobtokenaccessibleprojectconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiJobTokenAccessibleProjectEdge`
+
+The edge type for [`CiJobTokenAccessibleProject`](#cijobtokenaccessibleproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenaccessibleprojectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cijobtokenaccessibleprojectedgenode"></a>`node` | [`CiJobTokenAccessibleProject`](#cijobtokenaccessibleproject) | The item at the end of the edge. |
+
 #### `CiJobTokenAuthLogConnection`
 
 The connection type for [`CiJobTokenAuthLog`](#cijobtokenauthlog).
@@ -21236,6 +21258,21 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobartifactname"></a>`name` | [`String`](#string) | File name of the artifact. |
 | <a id="cijobartifactsize"></a>`size` | [`BigInt!`](#bigint) | Size of the artifact in bytes. |
 
+### `CiJobTokenAccessibleProject`
+
+Project that can access the current project by authenticating with a CI/CD job token.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenaccessibleprojectavatarurl"></a>`avatarUrl` | [`String`](#string) | URL to avatar image file of the project. |
+| <a id="cijobtokenaccessibleprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
+| <a id="cijobtokenaccessibleprojectid"></a>`id` | [`ID!`](#id) | ID of the project. |
+| <a id="cijobtokenaccessibleprojectname"></a>`name` | [`String!`](#string) | Name of the project (without namespace). |
+| <a id="cijobtokenaccessibleprojectpath"></a>`path` | [`String!`](#string) | Path of the project. |
+| <a id="cijobtokenaccessibleprojectweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
+
 ### `CiJobTokenAuthLog`
 
 #### Fields
@@ -21243,7 +21280,7 @@ CI/CD variables for a GitLab instance.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cijobtokenauthloglastauthorizedat"></a>`lastAuthorizedAt` **{warning-solid}** | [`Time!`](#time) | **Introduced** in GitLab 17.6. **Status**: Experiment. Last authorization date time. |
-| <a id="cijobtokenauthlogoriginproject"></a>`originProject` **{warning-solid}** | [`Project!`](#project) | **Introduced** in GitLab 17.6. **Status**: Experiment. Origin project. |
+| <a id="cijobtokenauthlogoriginproject"></a>`originProject` **{warning-solid}** | [`CiJobTokenAccessibleProject!`](#cijobtokenaccessibleproject) | **Introduced** in GitLab 17.6. **Status**: Experiment. Origin project. |
 
 ### `CiJobTokenScopeAllowlist`
 
@@ -21280,7 +21317,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | <a id="cijobtokenscopetypegroupallowlistautopopulatedids"></a>`groupAllowlistAutopopulatedIds` | [`[GroupID!]!`](#groupid) | List of IDs of groups which have been created by the autopopulation process. |
 | <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`GroupConnection!`](#groupconnection) | Allowlist of groups that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypegroupsallowlistcount"></a>`groupsAllowlistCount` | [`Int!`](#int) | Count of groups that can access the current project by authenticating with a CI/CD job token. The count does not include subgroups. |
-| <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allowlist of projects that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`CiJobTokenAccessibleProjectConnection!`](#cijobtokenaccessibleprojectconnection) | Allowlist of projects that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeinboundallowlistautopopulatedids"></a>`inboundAllowlistAutopopulatedIds` | [`[ProjectID!]!`](#projectid) | List of IDs of projects which have been created by the autopopulation process. |
 | <a id="cijobtokenscopetypeinboundallowlistcount"></a>`inboundAllowlistCount` | [`Int!`](#int) | Count of projects that can access the current project by authenticating with a CI/CD job token. The count does not include nested projects. |
 | <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that are accessible using the current project's CI Job tokens. (see [Connections](#connections)) |
@@ -44112,8 +44149,8 @@ Represents an object that is the target of a CI_JOB_TOKEN allowlist entry.
 
 One of:
 
+- [`CiJobTokenAccessibleProject`](#cijobtokenaccessibleproject)
 - [`Group`](#group)
-- [`Project`](#project)
 
 #### `CiRunnerCloudProvisioning`
 

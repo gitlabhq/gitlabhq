@@ -95,12 +95,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-relative gl-mt-6 gl-flex gl-justify-between md:!gl-justify-center">
+  <div class="gl-relative gl-mt-6 gl-flex gl-justify-between md:gl-justify-center">
     <gl-keyset-pagination v-bind="$props" @prev="prevPage" @next="nextPage" />
 
     <page-size-selector
       :value="pageSize"
-      class="gl-relative gl-right-0 md:gl-absolute"
+      class="gl-right-0 md:gl-absolute"
       @input="handlePageSizeChange"
     />
   </div>

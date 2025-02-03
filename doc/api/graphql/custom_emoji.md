@@ -72,5 +72,5 @@ You can use GraphiQL to query the emoji for a group.
 
 ## Related topics
 
-- [GraphQL API reference](reference/index.md)
+- [GraphQL API reference](reference/_index.md)
 - [GraphQL-specific entities, like fragments and interfaces](https://graphql.org/learn/)

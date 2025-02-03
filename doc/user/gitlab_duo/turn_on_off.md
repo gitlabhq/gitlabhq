@@ -136,7 +136,7 @@ To turn off GitLab Duo for a project:
 In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for a project.
 
 1. Use the GitLab GraphQL API
-   [`projectSettingsUpdate`](../../api/graphql/reference/index.md#mutationprojectsettingsupdate)
+   [`projectSettingsUpdate`](../../api/graphql/reference/_index.md#mutationprojectsettingsupdate)
    mutation.
 1. Set the
    [`duo_features_enabled`](../../api/graphql/getting_started.md#update-project-settings)

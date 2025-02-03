@@ -89,5 +89,5 @@ You can use [GraphiQL](https://gitlab.com/-/graphql-explorer) to assign seats to
 
 ## Related topics
 
-- [GraphQL API Resources](reference/index.md)
+- [GraphQL API Resources](reference/_index.md)
 - [GraphQL specific entities, like fragments and interfaces](https://graphql.org/learn/)

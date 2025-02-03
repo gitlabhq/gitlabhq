@@ -436,7 +436,7 @@ the existing package is overwritten.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/419078) in GitLab 16.6. Feature flag `nuget_duplicates_option` removed.
 > - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
-To prevent users from publishing duplicate NuGet packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
+To prevent users from publishing duplicate NuGet packages, you can use the [GraphQl API](../../../api/graphql/reference/_index.md#packagesettings) or the UI.
 
 In the UI:
 
@@ -593,7 +593,7 @@ so you can use the package registry as a symbol server.
 
 To use the symbol server:
 
-1. Enable the `nuget_symbol_server_enabled` namespace setting with the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+1. Enable the `nuget_symbol_server_enabled` namespace setting with the [GraphQl API](../../../api/graphql/reference/_index.md#packagesettings).
 1. Configure your debugger to use the symbol server.
    For example, to configure Visual Studio:
 

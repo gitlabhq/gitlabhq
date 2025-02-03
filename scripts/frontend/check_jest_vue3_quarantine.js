@@ -17,7 +17,6 @@ const FIXTURES_HELP_URL =
 const DIR = join(ROOT, 'tmp/tests/frontend');
 
 const JEST_JSON_OUTPUT = join(DIR, 'jest_results.json');
-const JEST_STDOUT = join(DIR, 'jest_stdout');
 const JEST_STDERR = join(DIR, 'jest_stderr');
 
 // Force basic color output in CI
@@ -67,7 +66,7 @@ Locally:
     )
     .option(
       '--stdio',
-      `Let Jest write to stdout/stderr as normal. By default, it writes to ${JEST_STDOUT} and ${JEST_STDERR}. Should not be used in CI, as it can exceed maximum job log size.`,
+      `Let Jest write to stderr as normal. By default, it writes to ${JEST_STDERR}. Should not be used in CI, as it can exceed maximum job log size.`,
     )
     .parse(process.argv);
 
@@ -249,11 +248,10 @@ async function getStdio() {
     return 'inherit';
   }
 
-  await mkdir(dirname(JEST_STDOUT), { recursive: true });
-  const jestStdout = (await open(JEST_STDOUT, 'w')).createWriteStream();
+  await mkdir(dirname(JEST_STDERR), { recursive: true });
   const jestStderr = (await open(JEST_STDERR, 'w')).createWriteStream();
 
-  return ['inherit', jestStdout, jestStderr];
+  return ['inherit', 'inherit', jestStderr];
 }
 
 async function main() {

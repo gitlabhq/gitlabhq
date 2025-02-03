@@ -84,10 +84,6 @@ class JsonSchemaValidator < ActiveModel::EachValidator
     "#{options[:filename]}.json"
   end
 
-  def draft_version
-    options[:draft] || JSON_VALIDATOR_MAX_DRAFT_VERSION
-  end
-
   def error_message
     options[:message] || _('must be a valid json schema')
   end

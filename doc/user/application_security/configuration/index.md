@@ -30,7 +30,7 @@ If GitLab does not find a CI/CD pipeline, then it considers all security scanner
 
 Failed pipelines and jobs are included in this process. If a scanner is configured but the job fails,
 that scanner is still considered enabled. This process also determines the scanners and statuses
-returned through the [API](../../../api/graphql/reference/index.md#securityscanners).
+returned through the [API](../../../api/graphql/reference/_index.md#securityscanners).
 
 If the latest pipeline uses [Auto DevOps](../../../topics/autodevops/index.md),
 all security features are configured by default.

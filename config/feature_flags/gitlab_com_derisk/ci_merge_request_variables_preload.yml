@@ -1,0 +1,9 @@
+---
+name: ci_merge_request_variables_preload
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515980
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179811
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515982
+milestone: '17.9'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

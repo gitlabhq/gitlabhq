@@ -10,7 +10,7 @@ fragment AllowlistEntry on CiJobTokenScopeAllowlistEntry {
       avatarUrl
       webUrl
     }
-    ... on Project {
+    ... on CiJobTokenAccessibleProject {
       id
       name
       fullPath

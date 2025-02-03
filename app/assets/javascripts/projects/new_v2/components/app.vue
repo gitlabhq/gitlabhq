@@ -1,6 +1,6 @@
 <script>
-import { GlButton, GlButtonGroup, GlFormGroup, GlIcon } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { GlButton, GlButtonGroup, GlFormGroup, GlIcon, GlAlert } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
@@ -63,6 +63,7 @@ export default {
     GlButtonGroup,
     GlFormGroup,
     GlIcon,
+    GlAlert,
     MultiStepFormTemplate,
     SingleChoiceSelector,
     SingleChoiceSelectorItem,
@@ -72,6 +73,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  inject: ['userNamespaceId', 'canCreateProject'],
   props: {
     rootPath: {
       type: String,
@@ -106,12 +108,17 @@ export default {
     canImportProjects: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
     importSourcesEnabled: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
+    },
+    canSelectNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     namespaceFullPath: {
       type: String,
@@ -123,15 +130,14 @@ export default {
       required: false,
       default: null,
     },
-    userNamespaceId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     trackLabel: {
       type: String,
       required: false,
       default: null,
+    },
+    userProjectLimit: {
+      type: Number,
+      required: true,
     },
     newProjectGuidelines: {
       type: String,
@@ -141,13 +147,33 @@ export default {
   },
   data() {
     return {
-      selectedNamespace: this.namespaceId ? this.namespaceId : this.userNamespaceId,
+      selectedNamespace:
+        this.namespaceId && this.canSelectNamespace ? this.namespaceId : this.userNamespaceId,
       rootUrl: this.rootPath,
     };
   },
   computed: {
     isPersonalProject() {
       return this.selectedNamespace === this.userNamespaceId;
+    },
+    canChooseOption() {
+      if (!this.isPersonalProject) return true;
+      return this.canCreateProject && this.userProjectLimit > 0;
+    },
+    errorMessage() {
+      if (this.userProjectLimit === 0) {
+        return s__(
+          'ProjectsNew|You cannot create projects in your personal namespace. Contact your GitLab administrator.',
+        );
+      }
+      return sprintf(
+        s__(
+          "ProjectsNew|You've reached your limit of %{limit} projects created. Contact your GitLab administrator.",
+        ),
+        {
+          limit: this.userProjectLimit,
+        },
+      );
     },
   },
   methods: {
@@ -165,7 +191,10 @@ export default {
 <template>
   <multi-step-form-template :title="__('Create new project')" :current-step="1">
     <template #form>
-      <gl-form-group :label="s__('ProjectNew|What do you want to create?')">
+      <gl-form-group
+        v-if="canSelectNamespace"
+        :label="s__('ProjectNew|What do you want to create?')"
+      >
         <gl-button-group class="gl-w-full">
           <gl-button
             category="primary"
@@ -196,14 +225,14 @@ export default {
         <new-project-destination-select
           :namespace-full-path="namespaceFullPath"
           :namespace-id="namespaceId"
-          :user-namespace-id="userNamespaceId"
           :track-label="trackLabel"
           :root-url="rootUrl"
+          :groups-only="true"
           data-testid="group-selector"
         />
       </gl-form-group>
 
-      <single-choice-selector checked="blank_project">
+      <single-choice-selector v-if="canChooseOption" checked="blank_project">
         <single-choice-selector-item v-bind="$options.OPTIONS.blank" />
         <single-choice-selector-item v-bind="$options.OPTIONS.template" />
         <single-choice-selector-item
@@ -221,6 +250,9 @@ export default {
         </single-choice-selector-item>
         <single-choice-selector-item v-bind="$options.OPTIONS.transfer" :disabled="true" />
       </single-choice-selector>
+      <gl-alert v-else variant="danger" :dismissible="false">
+        {{ errorMessage }}
+      </gl-alert>
     </template>
     <template #footer>
       <div v-if="newProjectGuidelines" v-safe-html="newProjectGuidelines" class="gl-mb-6"></div>

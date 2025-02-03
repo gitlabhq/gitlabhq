@@ -68,7 +68,7 @@ Then use the API to automate tasks, like creating projects and adding members to
 For more information, see:
 
 - [The REST API](../api_resources.md)
-- [The GraphQL API](../graphql/reference/index.md)
+- [The GraphQL API](../graphql/reference/_index.md)
 
 ## Step 4: Use the GitLab CLI
 

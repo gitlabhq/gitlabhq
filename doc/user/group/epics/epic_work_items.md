@@ -12,7 +12,7 @@ DETAILS:
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
-> - Listing epics using the [GraphQL API](../../../api/graphql/reference/index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
+> - Listing epics using the [GraphQL API](../../../api/graphql/reference/_index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
 > - [Enabled by default on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.
 

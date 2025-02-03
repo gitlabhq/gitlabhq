@@ -9037,7 +9037,10 @@ ALTER SEQUENCE batched_background_migrations_id_seq OWNED BY batched_background_
 CREATE TABLE board_assignees (
     id bigint NOT NULL,
     board_id bigint NOT NULL,
-    assignee_id bigint NOT NULL
+    assignee_id bigint NOT NULL,
+    group_id bigint,
+    project_id bigint,
+    CONSTRAINT check_b56ef26337 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE board_assignees_id_seq
@@ -31018,6 +31021,10 @@ CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree
 
 CREATE UNIQUE INDEX index_board_assignees_on_board_id_and_assignee_id ON board_assignees USING btree (board_id, assignee_id);
 
+CREATE INDEX index_board_assignees_on_group_id ON board_assignees USING btree (group_id);
+
+CREATE INDEX index_board_assignees_on_project_id ON board_assignees USING btree (project_id);
+
 CREATE INDEX index_board_group_recent_visits_on_board_id ON board_group_recent_visits USING btree (board_id);
 
 CREATE INDEX index_board_group_recent_visits_on_group_id ON board_group_recent_visits USING btree (group_id);
@@ -37901,6 +37908,9 @@ ALTER TABLE ONLY deployment_approvals
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY board_assignees
+    ADD CONSTRAINT fk_105c1d6d08 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_streaming_event_type_filters
     ADD CONSTRAINT fk_107946dffb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -38353,6 +38363,9 @@ ALTER TABLE ONLY approval_group_rules_protected_branches
 
 ALTER TABLE ONLY project_compliance_standards_adherence
     ADD CONSTRAINT fk_4fd1d9d9b0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY board_assignees
+    ADD CONSTRAINT fk_50159bc755 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_group_rules_groups
     ADD CONSTRAINT fk_50edc8134e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

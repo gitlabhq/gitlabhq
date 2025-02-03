@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 The Alert Management alerts API is limited to metric images. For more API endpoints, see the
-[GraphQL API](graphql/reference/index.md#alertmanagementalert).
+[GraphQL API](graphql/reference/_index.md#alertmanagementalert).
 
 ## Upload metric image
 

@@ -37,7 +37,7 @@ Three bar charts and a table illustrate the number of contributions made by each
 
 ![Contribution analytics bar graphs](img/contribution_analytics_push_v17_7.png)
 
-To retrieve metrics for user contributions, you can also use the [GraphQL API](../../../api/graphql/reference/index.md#groupcontributions).
+To retrieve metrics for user contributions, you can also use the [GraphQL API](../../../api/graphql/reference/_index.md#groupcontributions).
 
 ### View a member's contributions
 

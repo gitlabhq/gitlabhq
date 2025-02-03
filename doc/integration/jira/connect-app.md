@@ -274,7 +274,7 @@ GitLab receives a [lifecycle event](https://developer.atlassian.com/cloud/jira/p
 The event includes a [token](#gitlab-access-to-jira) to verify subsequent lifecycle events and to authenticate when [sending data to Jira](#data-sent-from-gitlab-to-jira).
 Lifecycle event requests from Jira are [verified](https://developer.atlassian.com/cloud/jira/platform/security-for-connect-apps/#validating-installation-lifecycle-requests).
 
-For self-managed instances that use the GitLab for Jira Cloud app from the Atlassian Marketplace, GitLab.com handles lifecycle events and forwards them to the self-managed instance. For more information, see [GitLab.com handling of app lifecycle events](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events).
+For GitLab Self-Managed instances that use the GitLab for Jira Cloud app from the Atlassian Marketplace, GitLab.com handles lifecycle events and forwards them to the GitLab Self-Managed instance. For more information, see [GitLab.com handling of app lifecycle events](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events).
 
 ### Data stored by Jira
 

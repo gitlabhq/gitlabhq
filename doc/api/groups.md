@@ -1276,8 +1276,8 @@ Parameters:
 | `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                         | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `membership_lock`                    | boolean | no       | Users cannot be added to projects in this group. Premium and Ultimate only. |
-| `extra_shared_runners_minutes_limit` | integer | no       | Can be set by administrators only. Additional compute minutes for this group. Self-managed, Premium and Ultimate only. |
-| `shared_runners_minutes_limit`       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Self-managed, Premium and Ultimate only. |
+| `extra_shared_runners_minutes_limit` | integer | no       | Can be set by administrators only. Additional compute minutes for this group. GitLab Self-Managed, Premium and Ultimate only. |
+| `shared_runners_minutes_limit`       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. GitLab Self-Managed, Premium and Ultimate only. |
 | `wiki_access_level`                  | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only. |
 | `duo_availability` | string | no | Duo availability setting. Valid values are: `default_on`, `default_off`, `never_on`. Note: In the UI, `never_on` is displayed as "Always Off". |
 | `experiment_features_enabled` | boolean | no | Enable experiment features for this group. |
@@ -1378,11 +1378,11 @@ PUT /groups/:id
 | `subgroup_creation_level`                            | string            | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                            | integer           | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                         | string            | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `extra_shared_runners_minutes_limit`                 | integer           | no       | Can be set by administrators only. Additional compute minutes for this group. Self-managed, Premium and Ultimate only. |
+| `extra_shared_runners_minutes_limit`                 | integer           | no       | Can be set by administrators only. Additional compute minutes for this group. GitLab Self-Managed, Premium and Ultimate only. |
 | `file_template_project_id`                           | integer           | no       | The ID of a project to load custom file templates from. Premium and Ultimate only. |
 | `membership_lock`                                    | boolean           | no       | Users cannot be added to projects in this group. Premium and Ultimate only. |
 | `prevent_forking_outside_group`                      | boolean           | no       | When enabled, users can **not** fork projects from this group to external namespaces. Premium and Ultimate only. |
-| `shared_runners_minutes_limit`                       | integer           | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Self-managed, Premium and Ultimate only. |
+| `shared_runners_minutes_limit`                       | integer           | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. GitLab Self-Managed, Premium and Ultimate only. |
 | `unique_project_download_limit`                      | integer           | no       | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. Ultimate only. |
 | `unique_project_download_limit_interval_in_seconds`  | integer           | no       | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). Ultimate only. |
 | `unique_project_download_limit_allowlist`            | array of strings  | no       | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. Ultimate only. |
@@ -1395,8 +1395,8 @@ PUT /groups/:id
 | `experiment_features_enabled`                        | boolean | no | Enable experiment features for this group. |
 | `math_rendering_limits_enabled`                      | boolean           | no       | Indicates if math rendering limits are used for this group. |
 | `lock_math_rendering_limits_enabled`                 | boolean           | no       | Indicates if math rendering limits are locked for all descendent groups. |
-| `duo_features_enabled`                               | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
-| `lock_duo_features_enabled`                          | boolean           | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. Self-managed, Premium and Ultimate only. |
+| `duo_features_enabled`                               | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
+| `lock_duo_features_enabled`                          | boolean           | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
 | `max_artifacts_size`                                 | integer           | No       | The maximum file size in megabytes for individual job artifacts. |
 
 NOTE:

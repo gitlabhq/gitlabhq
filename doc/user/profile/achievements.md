@@ -70,7 +70,7 @@ To view a user's achievements:
    - Date when the achievement was awarded to the user
    - Namespace that awarded the achievement if the user is a member of the namespace or the namespace is public
 
-To retrieve a list of a user's achievements, query the [`user` GraphQL type](../../api/graphql/reference/index.md#user).
+To retrieve a list of a user's achievements, query the [`user` GraphQL type](../../api/graphql/reference/_index.md#user).
 
 ```graphql
 query {
@@ -108,7 +108,7 @@ To create an achievement:
   1. Optional. Enter a description and upload an avatar for the achievement.
   1. Select **Save changes**.
 
-- With the GraphQL API, call the [`achievementsCreate` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementscreate):
+- With the GraphQL API, call the [`achievementsCreate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementscreate):
 
   ```graphql
   mutation achievementsCreate($file: Upload!) {
@@ -155,7 +155,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To update an achievement, call the [`achievementsUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsupdate).
+To update an achievement, call the [`achievementsUpdate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsupdate).
 
 ```graphql
 mutation achievementsUpdate($file: Upload!) {
@@ -186,7 +186,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To award an achievement to a user, call the [`achievementsAward` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsaward).
+To award an achievement to a user, call the [`achievementsAward` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsaward).
 
 ```graphql
 mutation {
@@ -217,7 +217,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To revoke an achievement, call the [`achievementsRevoke` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsrevoke).
+To revoke an achievement, call the [`achievementsRevoke` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsrevoke).
 
 ```graphql
 mutation {
@@ -248,7 +248,7 @@ Prerequisites:
 
 - You must have the Owner role for the namespace.
 
-To delete an awarded achievement, call the [`userAchievementsDelete` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementsdelete).
+To delete an awarded achievement, call the [`userAchievementsDelete` GraphQL mutation](../../api/graphql/reference/_index.md#mutationuserachievementsdelete).
 
 ```graphql
 mutation {
@@ -279,7 +279,7 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To delete an achievement, call the [`achievementsDelete` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementsdelete).
+To delete an achievement, call the [`achievementsDelete` GraphQL mutation](../../api/graphql/reference/_index.md#mutationachievementsdelete).
 
 ```graphql
 mutation {
@@ -309,7 +309,7 @@ If you don't want to display achievements on your profile, you can opt out. To d
 
 If you don't want to display all achievements on your profile, you can change the visibility of specific achievements.
 
-To hide one of your achievements, call the [`userAchievementsUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementsupdate).
+To hide one of your achievements, call the [`userAchievementsUpdate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationuserachievementsupdate).
 
 ```graphql
 mutation {
@@ -332,7 +332,7 @@ To show one of your achievements again, call the same mutation with the value `t
 
 By default, achievements on your profile are displayed in ascending order by awarded date.
 
-To change the order of your achievements, call the [`userAchievementPrioritiesUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementprioritiesupdate)
+To change the order of your achievements, call the [`userAchievementPrioritiesUpdate` GraphQL mutation](../../api/graphql/reference/_index.md#mutationuserachievementprioritiesupdate)
 with an ordered list of all prioritized achievements.
 
 ```graphql

@@ -24,7 +24,7 @@ The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versi
 
 If you're new to the GitLab GraphQL API, see [Get started with GitLab GraphQL API](getting_started.md).
 
-You can view the available resources in the [GraphQL API reference](reference/index.md).
+You can view the available resources in the [GraphQL API reference](reference/_index.md).
 
 The GitLab GraphQL API endpoint is located at `/api/graphql`.
 
@@ -65,9 +65,6 @@ If the authentication information is not valid, GitLab returns an error message 
 ```
 
 #### Token authentication
-
-> - Authentication method restrictions [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150407) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `graphql_minimal_auth_methods` and backported to GitLab 17.0.3 and GitLab 16.11.5. Disabled by default in 17.0.
-> - Flag enabled by default in 17.0.3 and 16.11.5, therefore restrictions are enforced in these versions and later.
 
 Use any of the following tokens to authenticate with the GraphQL API:
 
@@ -190,7 +187,7 @@ You should not expect that a cached Global ID will be valid beyond the time of a
 
 ## Available top-level queries
 
-The top-level entry points for all queries are defined in the [`Query` type](reference/index.md#query-type) in the
+The top-level entry points for all queries are defined in the [`Query` type](reference/_index.md#query-type) in the
 GraphQL reference.
 
 ### Multiplex queries
@@ -218,7 +215,7 @@ For GitLab Self-Managed, [downgrading](../../downgrade_ee_to_ce/index.md) from a
 
 ### Breaking change exemptions
 
-Schema items labeled as experiments in the [GraphQL API reference](reference/index.md)
+Schema items labeled as experiments in the [GraphQL API reference](reference/_index.md)
 are exempt from the deprecation process. These items can be removed or changed at any
 time without notice.
 
@@ -252,7 +249,7 @@ removed entirely during the next `XX.0` major release.
 Items are marked as deprecated in:
 
 - The [schema](https://spec.graphql.org/October2021/#sec--deprecated).
-- The [GraphQL API reference](reference/index.md).
+- The [GraphQL API reference](reference/_index.md).
 - The [deprecation feature removal schedule](../../update/deprecations.md), which is linked from release posts.
 - Introspection queries of the GraphQL API.
 

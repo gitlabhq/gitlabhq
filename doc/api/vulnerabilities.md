@@ -26,7 +26,7 @@ WARNING:
 This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases. Use the
-[GraphQL API](graphql/reference/index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
+[GraphQL API](graphql/reference/_index.md#queryvulnerabilities) instead. For more information, see [GraphQL examples](#replace-vulnerability-rest-api-with-graphql).
 
 Every API call to vulnerabilities must be [authenticated](rest/authentication.md).
 
@@ -263,7 +263,7 @@ with the GraphQL API.
 
 ### GraphQL - Single vulnerability
 
-Use [`Query.vulnerability`](graphql/reference/index.md#queryvulnerability).
+Use [`Query.vulnerability`](graphql/reference/_index.md#queryvulnerability).
 
 ```graphql
 {
@@ -319,7 +319,7 @@ Example response:
 
 ### GraphQL - Confirm vulnerability
 
-Use [`Mutation.vulnerabilityConfirm`](graphql/reference/index.md#mutationvulnerabilityconfirm).
+Use [`Mutation.vulnerabilityConfirm`](graphql/reference/_index.md#mutationvulnerabilityconfirm).
 
 ```graphql
 mutation {
@@ -349,7 +349,7 @@ Example response:
 
 ### GraphQL - Resolve vulnerability
 
-Use [`Mutation.vulnerabilityResolve`](graphql/reference/index.md#mutationvulnerabilityresolve).
+Use [`Mutation.vulnerabilityResolve`](graphql/reference/_index.md#mutationvulnerabilityresolve).
 
 ```graphql
 mutation {
@@ -379,7 +379,7 @@ Example response:
 
 ### GraphQL - Dismiss vulnerability
 
-Use [`Mutation.vulnerabilityDismiss`](graphql/reference/index.md#mutationvulnerabilitydismiss).
+Use [`Mutation.vulnerabilityDismiss`](graphql/reference/_index.md#mutationvulnerabilitydismiss).
 
 ```graphql
 mutation {
@@ -409,7 +409,7 @@ Example response:
 
 ### GraphQL - Revert vulnerability to detected state
 
-Use [`Mutation.vulnerabilityRevertToDetected`](graphql/reference/index.md#mutationvulnerabilityreverttodetected).
+Use [`Mutation.vulnerabilityRevertToDetected`](graphql/reference/_index.md#mutationvulnerabilityreverttodetected).
 
 ```graphql
 mutation {

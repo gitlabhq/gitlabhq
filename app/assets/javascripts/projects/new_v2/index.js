@@ -26,6 +26,9 @@ export function initNewProjectForm() {
     namespaceId,
     userNamespaceId,
     trackLabel,
+    canSelectNamespace,
+    canCreateProject,
+    userProjectLimit,
     newProjectGuidelines,
   } = el.dataset;
 
@@ -40,12 +43,15 @@ export function initNewProjectForm() {
     importSourcesEnabled: parseBoolean(importSourcesEnabled),
     namespaceFullPath,
     namespaceId,
-    userNamespaceId,
     trackLabel,
+    canSelectNamespace: parseBoolean(canSelectNamespace),
+    userProjectLimit: parseInt(userProjectLimit, 10),
     newProjectGuidelines,
   };
 
   const provide = {
+    userNamespaceId,
+    canCreateProject: parseBoolean(canCreateProject),
     projectHelpPath,
     pushToCreateProjectCommand,
   };

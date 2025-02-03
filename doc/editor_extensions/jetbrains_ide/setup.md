@@ -52,7 +52,7 @@ After you configure the plugin in your IDE, connect it to your GitLab account:
 1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Select an authentication method:
    - For GitLab.com, use `OAuth`.
-   - For self-managed and GitLab Dedicated, use `Personal access token`.
+   - For GitLab Self-Managed and GitLab Dedicated, use `Personal access token`.
 1. Provide the **URL to GitLab instance**. For GitLab.com, use `https://gitlab.com`.
 1. For **GitLab Personal Access Token**, paste in the personal access token you created.
    The token is not displayed, nor is it accessible to others.

@@ -188,27 +188,6 @@ class ApplicationController < BaseActionController
   end
   strong_memoize_attr :auth_user
 
-  # Devise defines current_user to be:
-  #
-  # def current_user
-  #   @current_user ||= warden.authenticate(scope: mapping)
-  # end
-  #
-  # That means whenever current_user is called and `@current_user` is
-  # nil, Warden will attempt to authenticate a user. To avoid
-  # reauthenticating anonymous users, we may need to invalidate
-  # the user.
-  def reset_auth_user!
-    return if strong_memoized?(:auth_user) && auth_user
-
-    # Controllers usually call auth_user first, but for some controllers
-    # authenticate_sessionless_user! is called after that. If we relied
-    # on the memoized auth_user, the value would always be nil for
-    # sessionless users.
-    clear_memoization(:auth_user)
-    auth_user
-  end
-
   def log_exception(exception)
     # At this point, the controller already exits set_current_context around
     # block. To maintain the context while handling error exception, we need to

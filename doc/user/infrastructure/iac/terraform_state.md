@@ -326,7 +326,7 @@ You can also use [CI/CD job token](../../../ci/jobs/ci_job_token.md) and basic a
 curl --user "gitlab-ci-token:$CI_JOB_TOKEN" --request DELETE "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 ```
 
-You can also use [the GraphQL API](../../../api/graphql/reference/index.md#mutationterraformstatedelete).
+You can also use [the GraphQL API](../../../api/graphql/reference/_index.md#mutationterraformstatedelete).
 
 ## Related topics
 

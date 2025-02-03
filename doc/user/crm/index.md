@@ -102,7 +102,7 @@ To create a contact:
 1. Complete all required fields.
 1. Select **Create new contact**.
 
-You can also [create](../../api/graphql/reference/index.md#mutationcustomerrelationscontactcreate)
+You can also [create](../../api/graphql/reference/_index.md#mutationcustomerrelationscontactcreate)
 contacts using the GraphQL API.
 
 ### Edit a contact
@@ -119,7 +119,7 @@ To edit an existing contact:
 1. Edit the required fields.
 1. Select **Save changes**.
 
-You can also [edit](../../api/graphql/reference/index.md#mutationcustomerrelationscontactupdate)
+You can also [edit](../../api/graphql/reference/_index.md#mutationcustomerrelationscontactupdate)
 contacts using the GraphQL API.
 
 #### Change the state of a contact
@@ -168,7 +168,7 @@ To create an organization:
 1. Complete all required fields.
 1. Select **Create new organization**.
 
-You can also [create](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationcreate)
+You can also [create](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationcreate)
 organizations using the GraphQL API.
 
 ### Edit an organization
@@ -186,7 +186,7 @@ To edit an existing organization:
 1. Edit the required fields.
 1. Select **Save changes**.
 
-You can also [edit](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationupdate)
+You can also [edit](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationupdate)
 organizations using the GraphQL API.
 
 ## Issues
@@ -232,7 +232,7 @@ To view a contact's details, hover over the contact's name.
 ![Issue contacts](issue_crm_contacts_v14_6.png)
 
 You can also view issue contacts using the
-[GraphQL](../../api/graphql/reference/index.md#mutationcustomerrelationsorganizationcreate)
+[GraphQL](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationcreate)
 API.
 
 ### Add contacts to an issue
@@ -245,7 +245,7 @@ To add [active](#change-the-state-of-a-contact) contacts to an issue use the `/a
 [quick action](../project/quick_actions.md).
 
 You can also add, remove, or replace issue contacts using the
-[GraphQL](../../api/graphql/reference/index.md#mutationissuesetcrmcontacts)
+[GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)
 API.
 
 ### Remove contacts from an issue
@@ -258,7 +258,7 @@ To remove contacts from an issue use the `/remove_contacts [contact:address@exam
 [quick action](../project/quick_actions.md).
 
 You can also add, remove, or replace issue contacts using the
-[GraphQL](../../api/graphql/reference/index.md#mutationissuesetcrmcontacts)
+[GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)
 API.
 
 ## Autocomplete contacts

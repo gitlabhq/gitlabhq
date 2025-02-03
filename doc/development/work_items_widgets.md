@@ -173,7 +173,7 @@ Since create view is almost identical to detail view, and we wanted to store in 
 
 For example , when we initialise the create view , we have a function `setNewWorkItemCache` [in work items cache utils](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/cache_utils) which is called in both [create view work item modal](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item_modal.vue) and also [create work item component](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item.vue)
 
-You can include the create work item view in any vue file depending on usage. If you pass the `workItemType` of the create view , it will only include the applicable work item widgets which are fetched from [work item types query](../api/graphql/reference/index.md#workitemtype) and only showing the ones in [widget definitions](../api/graphql/reference/index.md#workitemwidgetdefinition)
+You can include the create work item view in any vue file depending on usage. If you pass the `workItemType` of the create view , it will only include the applicable work item widgets which are fetched from [work item types query](../api/graphql/reference/_index.md#workitemtype) and only showing the ones in [widget definitions](../api/graphql/reference/_index.md#workitemwidgetdefinition)
 
 We have a [local mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/update_new_work_item.mutation.graphql) to update the work item draft data in create view
 

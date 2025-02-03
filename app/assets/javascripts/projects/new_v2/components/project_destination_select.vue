@@ -32,6 +32,7 @@ export default {
       debounce: DEBOUNCE_DELAY,
     },
   },
+  inject: ['userNamespaceId', 'canCreateProject'],
   props: {
     namespaceFullPath: {
       type: String,
@@ -43,15 +44,15 @@ export default {
       required: false,
       default: '',
     },
-    userNamespaceId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     trackLabel: {
       type: String,
       required: false,
       default: '',
+    },
+    groupsOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -91,7 +92,9 @@ export default {
       );
     },
     items() {
-      return this.namespaceItems.concat(this.groupsItems);
+      if (this.groupsOnly) return this.groupsItems;
+      if (this.canCreateProject) return this.namespaceItems.concat(this.groupsItems);
+      return this.groupsItems;
     },
     groupsItems() {
       if (this.hasGroupMatches) {

@@ -56,7 +56,7 @@ Filter logs by queries that used a particular field:
    1. Filter: `json.query_analysis.used_fields`
    1. Operator: `is`
    1. Value: `Type.myField`, where `Type.myField` is the type name and field name as it
-      appears in [our GraphQL API resources documentation](../../api/graphql/reference/index.md).
+      appears in [our GraphQL API resources documentation](../../api/graphql/reference/_index.md).
 1. Select **Refresh**.
 
 #### Queries that used a deprecated field

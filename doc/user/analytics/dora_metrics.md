@@ -200,7 +200,7 @@ record.save!
 
 ## Retrieve DORA metrics data
 
-To retrieve DORA data, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
+To retrieve DORA data, use the [GraphQL](../../api/graphql/reference/_index.md) or the [REST](../../api/dora/metrics.md) APIs.
 
 The following example uses the GraphQL API to retrieve the monthly deployment frequency for a given time period:
 

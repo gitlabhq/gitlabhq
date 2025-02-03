@@ -332,7 +332,7 @@ export default {
             name="todos"
             tag="ol"
             data-testid="todo-item-list"
-            class="gl-m-0 gl-border-collapse gl-list-none gl-p-0"
+            class="gl-m-0 gl-list-none gl-p-0"
           >
             <todo-item
               v-for="todo in todos"

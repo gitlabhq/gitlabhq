@@ -7,7 +7,7 @@ module Types
       graphql_name 'CiJobTokenAuthLog'
       connection_type_class Types::CountableConnectionType
 
-      field :origin_project, Types::ProjectType,
+      field :origin_project, Types::Ci::JobTokenAccessibleProjectType,
         null: false,
         experiment: { milestone: '17.6' },
         description: 'Origin project.'

@@ -9,7 +9,7 @@ description: "Connect and use GitLab Duo in Neovim."
 
 Prerequisites:
 
-- For both GitLab.com and self-managed, you have GitLab version 16.1 or later.
+- For both GitLab.com and GitLab Self-Managed, you have GitLab version 16.1 or later.
   While many extension features might work with earlier versions, they are unsupported.
   - The GitLab Duo Code Suggestions feature requires GitLab version 16.8 or later.
 - You have [Neovim](https://neovim.io/) version 0.9 or later.

@@ -90,7 +90,7 @@ The `ip_address` attribute in the response was deprecated
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -173,7 +173,7 @@ The `ip_address` attribute in the response was deprecated
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -269,7 +269,7 @@ The `ip_address` attribute in the response was deprecated
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 NOTE:
 The `version`, `revision`, `platform`, and `architecture` attributes in the response were deprecated
@@ -277,7 +277,7 @@ The `version`, `revision`, `platform`, and `architecture` attributes in the resp
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 These attributes will start returning an empty string in GitLab 18.0.
 The same attributes can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -364,7 +364,7 @@ The `ip_address` attribute in the response was deprecated
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -630,7 +630,7 @@ The `ip_address` attribute in the response was deprecated
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -693,7 +693,7 @@ The `ip_address` attribute in the response was deprecated
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 
@@ -779,7 +779,7 @@ The `ip_address` attribute in the response was deprecated
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
-[`CiRunnerManager` type](graphql/reference/index.md#cirunnermanager).
+[`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 
 Example response:
 

@@ -15,6 +15,7 @@ import { TEXT_FILE_TYPE } from '../constants';
  * This mixin is intended to be used as an interface between our highlight worker and Vue components
  */
 export default {
+  HLJS_MAX_SIZE: 2000000, // 2MB
   mixins: [Tracking.mixin()],
   inject: {
     highlightWorker: { default: null },

@@ -14,7 +14,7 @@ Use this API to interact with service accounts for your groups. For more informa
 
 Prerequisites:
 
-- You must have administrator access to the self-managed instance, or have the Owner role for the GitLab.com group.
+- You must have administrator access to the instance, or have the Owner role for the GitLab.com group.
 
 ## List all service account users
 

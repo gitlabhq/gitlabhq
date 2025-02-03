@@ -76,7 +76,7 @@ Prerequisites:
 
 ## Enable Sourcegraph in user preferences
 
-Users on self-managed instances must also configure their user settings to use the
+Users on GitLab Self-Managed must also configure their user settings to use the
 Sourcegraph integration.
 
 On GitLab.com, the integration is available for all public projects.
@@ -84,7 +84,7 @@ Private projects are not supported.
 
 Prerequisites:
 
-- If on a self-managed instance, Sourcegraph must be enabled.
+- For GitLab Self-Managed, Sourcegraph must be enabled.
 
 To enable this feature in your GitLab user preferences:
 

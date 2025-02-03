@@ -21,7 +21,10 @@
     is_ci_cd_available: remote_mirror_setting_enabled?.to_s,
     can_import_projects: params[:namespace_id].presence ? current_user.can?(:import_projects, @namespace).to_s : 'true',
     import_sources_enabled: import_sources_enabled?.to_s,
-    track_label: local_assigns.fetch(:track_label, 'blank_project') } }
+    track_label: local_assigns.fetch(:track_label, 'blank_project'),
+    can_select_namespace: current_user.can_select_namespace?.to_s,
+    can_create_project: current_user.can_create_project?.to_s,
+    user_project_limit: current_user.projects_limit } }
 - else
   .project-edit-container
     .project-edit-errors

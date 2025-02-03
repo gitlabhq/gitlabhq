@@ -27,7 +27,7 @@ DETAILS:
 > - Allow to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
 > - [Admin security testing introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176628) in GitLab 17.9 [with a flag](../administration/feature_flags.md) named `custom_ability_admin_security_testing`. Disabled by default.
 
-Use this API to interact with member roles for your GitLab.com groups or entire self-managed instance.
+Use this API to interact with member roles for your GitLab.com groups or entire GitLab Self-Managed instance.
 
 ## Manage instance member roles
 

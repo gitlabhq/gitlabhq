@@ -29,7 +29,7 @@ Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs
 A few files are generated from scripts. A CI/CD job fails when either the source code files
 or the documentation files are updated without following the correct process:
 
-- `graphql-verify`: Fails when `doc/api/graphql/reference/index.md` is not updated
+- `graphql-verify`: Fails when `doc/api/graphql/reference/_index.md` is not updated
   with the [update process](../../rake_tasks.md#update-graphql-documentation-and-schema-definitions).
 - `docs-lint deprecations-and-removals`: Fails when `doc/update/deprecations.md` is
   not updated with the [update process](../../deprecation_guidelines/index.md#update-the-deprecations-and-removals-documentation).

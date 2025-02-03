@@ -28,8 +28,8 @@
     "Note"
   ],
   "CiJobTokenScopeTarget": [
-    "Group",
-    "Project"
+    "CiJobTokenAccessibleProject",
+    "Group"
   ],
   "CiRunnerCloudProvisioning": [
     "CiRunnerGkeProvisioning",

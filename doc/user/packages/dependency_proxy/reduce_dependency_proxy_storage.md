@@ -43,7 +43,7 @@ freeing up additional storage space. The policies use time-to-live (TTL) logic:
 - The number of days is configured.
 - All cached dependency proxy files that have not been pulled in that many days are deleted.
 
-Use the [GraphQL API](../../../api/graphql/reference/index.md#mutationupdatedependencyproxyimagettlgrouppolicy)
+Use the [GraphQL API](../../../api/graphql/reference/_index.md#mutationupdatedependencyproxyimagettlgrouppolicy)
 to enable and configure cleanup policies:
 
 ```graphql

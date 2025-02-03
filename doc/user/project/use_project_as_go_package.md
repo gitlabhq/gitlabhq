@@ -86,7 +86,7 @@ To disable fetching:
 
 - If the module name or its prefix is in `GOPRIVATE` or `GONOPROXY`, Go does not query module
   proxies.
-- If the module name or its prefix is in `GONOPRIVATE` or `GONOSUMDB`, Go does not query
+- If the module name or its prefix is in `GOPRIVATE` or `GONOSUMDB`, Go does not query
   Checksum databases.
 
 ## Authenticate Git requests to private subgroups

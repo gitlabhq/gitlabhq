@@ -292,7 +292,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 ```
 
 NOTE:
-There is a [max offset allowed limit](../../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination) for offset pagination. You can change the limit in self-managed instances.
+There is a [max offset allowed limit](../../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination) for offset pagination. You can change the limit in GitLab Self-Managed instances.
 
 #### Pagination `Link` header
 

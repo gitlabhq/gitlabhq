@@ -58,9 +58,9 @@ next to any feature flag in the list.
 ## Maximum number of feature flags
 
 The maximum number of feature flags per project on GitLab Self-Managed
-is 200. For GitLab SaaS, the maximum number is determined by [tier](https://about.gitlab.com/pricing/):
+is 200. For GitLab.com, the maximum number is determined by [tier](https://about.gitlab.com/pricing/):
 
-| Tier     | Feature flags per project (SaaS) | Feature flags per project (self-managed) |
+| Tier     | Feature flags per project (GitLab.com) | Feature flags per project (GitLab Self-Managed) |
 |----------|----------------------------------|------------------------------------------|
 | Free     | 50                               | 200                                      |
 | Premium  | 150                              | 200                                      |
@@ -426,9 +426,9 @@ Read the documentation in a SDK project for more information.
 
 ### GitLab Self-Managed
 
-Functionality-wise, there are no differences. Both SaaS and self-managed behave the same.
+Functionality-wise, there are no differences. Both GitLab.com and GitLab Self-Managed behave the same.
 
 In terms of scalability, it's up to the spec of the GitLab instance.
-For example, GitLab.com uses HA architecture so it can handle many concurrent requests. However, self-managed instances on underpowered machines won't deliver comparable performance.
+For example, GitLab.com uses HA architecture so it can handle many concurrent requests. However, GitLab Self-Managed instances on underpowered machines won't deliver comparable performance.
 See [Reference architectures](../administration/reference_architectures/index.md)
 for more information.

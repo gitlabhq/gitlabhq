@@ -31,17 +31,11 @@ For more information on:
 
 - vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
 - Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/usage/engine_args.html).
+- The hardware needed for the models, see the [Supported models and Hardware requirements documentation](supported_llm_serving_platforms.md).
 
 Examples:
 
 #### Mistral-7B-Instruct-v0.2
-
-Mistral-7B-Instruct-v0.3 requires at least:
-
-- 55GB of disk memory for storage
-- 35 GB of GPU vRAM for serving.
-
-With a `a2-highgpu-2g` machine on GCP or equivalent (2x Nvidia A100 40GB - 150 GB vRAM), the model is expected to infer requests at the rate of 250 tokens per second.
 
 1. Download the model from HuggingFace:
 
@@ -62,13 +56,6 @@ With a `a2-highgpu-2g` machine on GCP or equivalent (2x Nvidia A100 40GB - 150 G
    ```
 
 #### Mixtral-8x7B-Instruct-v0.1
-
-Mistral-7B-Instruct-v0.3 requires at least:
-
-- 355 GB of disk memory for storage
-- 210 GB of GPU vRAM for serving.
-
-You should at least a `a2-highgpu-4g` machine on GCP or equivalent (4x Nvidia A100 40GB - 340 GB vRAM). With this configuration, the model is expected to infer requests at the rate of 25 tokens per second.
 
 1. Download the model from HuggingFace:
 

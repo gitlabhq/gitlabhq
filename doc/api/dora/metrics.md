@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can also retrieve [DORA metrics](../../user/analytics/dora_metrics.md) with the [GraphQL API](../../api/graphql/reference/index.md).
+You can also retrieve [DORA metrics](../../user/analytics/dora_metrics.md) with the [GraphQL API](../../api/graphql/reference/_index.md).
 
 All methods require at least the Reporter role.
 

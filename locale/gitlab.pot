@@ -1630,6 +1630,9 @@ msgstr ""
 msgid "'%{value}' days of inactivity must be greater than or equal to 90"
 msgstr ""
 
+msgid "'ConfluenceService|Your GitLab wiki is still available at %{link_start}%{wiki_url}%{link_end}. To re-enable the link to the GitLab wiki, disable this integration."
+msgstr ""
+
 msgid "'allow: %{allow}' must be a string"
 msgstr ""
 
@@ -19496,6 +19499,18 @@ msgid "Dependency Scanning"
 msgstr ""
 
 msgid "Dependency list"
+msgstr ""
+
+msgid "DependencyListExport|Location"
+msgstr ""
+
+msgid "DependencyListExport|Name"
+msgstr ""
+
+msgid "DependencyListExport|Packager"
+msgstr ""
+
+msgid "DependencyListExport|Version"
 msgstr ""
 
 msgid "DependencyProxy|%{docLinkStart}See the documentation%{docLinkEnd} for other ways to store Docker images in Dependency Proxy cache."
@@ -45779,6 +45794,12 @@ msgid "ProjectsNew|Visibility Level"
 msgstr ""
 
 msgid "ProjectsNew|You can always change your URL later"
+msgstr ""
+
+msgid "ProjectsNew|You cannot create projects in your personal namespace. Contact your GitLab administrator."
+msgstr ""
+
+msgid "ProjectsNew|You've reached your limit of %{limit} projects created. Contact your GitLab administrator."
 msgstr ""
 
 msgid "ProjectsNew|Your project will be created at:"

@@ -55,4 +55,4 @@ https://gitlab.com/gitlab-org/gitlab-docs/-/boards/105011
 
 ## Related topics
 
-- [GraphQL API reference](reference/index.md)
+- [GraphQL API reference](reference/_index.md)

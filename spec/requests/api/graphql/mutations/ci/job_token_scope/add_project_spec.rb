@@ -31,7 +31,7 @@ RSpec.describe 'CiJobTokenScopeAddProject', feature_category: :continuous_integr
             fullPath
           }
           target {
-            ... on Project {
+            ... on CiJobTokenAccessibleProject {
               fullPath
             }
           }

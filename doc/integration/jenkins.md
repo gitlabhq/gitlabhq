@@ -179,7 +179,7 @@ This issue has multiple possible causes and solutions:
 
 | Cause                                                            | Workaround  |
 |------------------------------------------------------------------|-------------|
-| GitLab is unable to reach your Jenkins instance at the address.  | If your GitLab instance is self-managed, ping the Jenkins instance at the domain provided on the GitLab instance.  |
+| GitLab is unable to reach your Jenkins instance at the address.  | For GitLab Self-Managed, ping the Jenkins instance at the domain provided on the GitLab instance.  |
 | The Jenkins instance is at a local address and is not included in the [GitLab installation's allowlist](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).| Add the instance to the GitLab installation's allowlist.  |
 | The credentials for the Jenkins instance do not have sufficient access or are invalid.| Grant the credentials sufficient access or create valid credentials.  |
 |The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server)| Select the checkbox.  |

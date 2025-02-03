@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['CiJobTokenScopeTarget'], feature_category: :secrets_management do
   it 'returns possible types' do
-    expect(described_class.possible_types).to include(Types::ProjectType)
+    expect(described_class.possible_types).to include(Types::Ci::JobTokenAccessibleProjectType)
     expect(described_class.possible_types).to include(Types::GroupType)
   end
 
@@ -12,7 +12,7 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeTarget'], feature_category: :s
     it 'resolves projects' do
       object = build(:project)
 
-      expect(described_class.resolve_type(object, {})).to eq(Types::ProjectType)
+      expect(described_class.resolve_type(object, {})).to eq(Types::Ci::JobTokenAccessibleProjectType)
     end
 
     it 'resolves groups' do

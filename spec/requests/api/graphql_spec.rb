@@ -298,43 +298,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
           expect(json_response[1].dig('data', 'echoCreate', 'echoes')).to eq %w[hello world]
         end
       end
-
-      context 'when fix_graphql_csrf is disabled' do
-        before do
-          stub_feature_flags(fix_graphql_csrf: false)
-        end
-
-        it 'does not authenticate a user with an invalid CSRF' do
-          login_as(user)
-
-          stub_authentication_activity_metrics do |metrics|
-            expect(metrics)
-              .to increment(:user_authenticated_counter)
-              .and increment(:user_session_destroyed_counter)
-
-            expect(metrics.user_csrf_token_invalid_counter)
-              .to receive(:increment).with(controller: 'GraphqlController', auth: 'session')
-          end
-
-          post_graphql(query, headers: { 'X-CSRF-Token' => 'invalid' })
-
-          expect(graphql_data['echo']).to eq('nil says: Hello world')
-        end
-
-        it 'authenticates a user with a valid session token' do
-          # Create a session to get a CSRF token from
-          login_as(user)
-          get('/')
-
-          stub_authentication_activity_metrics do |metrics|
-            expect(metrics.user_csrf_token_invalid_counter).not_to receive(:increment)
-          end
-
-          post '/api/graphql', params: { query: query }, headers: { 'X-CSRF-Token' => session['_csrf_token'] }
-
-          expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
-        end
-      end
     end
 
     context 'with token authentication' do
@@ -365,18 +328,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
           expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
         end
-
-        context 'when fix_graphql_csrf is disabled' do
-          before do
-            stub_feature_flags(fix_graphql_csrf: false)
-          end
-
-          it 'does not enforce 2FA' do
-            post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
-
-            expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
-          end
-        end
       end
 
       context 'when user also has a valid session' do
@@ -397,49 +348,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
           post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token, 'X-CSRF-Token' => 'invalid' })
 
           expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
-        end
-      end
-
-      context 'when fix_graphql_csrf is disabled' do
-        before do
-          stub_feature_flags(fix_graphql_csrf: false)
-        end
-
-        it 'authenticates users with a PAT' do
-          stub_authentication_activity_metrics(debug: false) do |metrics|
-            expect(metrics)
-              .to increment(:user_authenticated_counter)
-              .and increment(:user_session_override_counter)
-              .and increment(:user_sessionless_authentication_counter)
-
-            expect(metrics.user_csrf_token_invalid_counter)
-              .to receive(:increment).with(controller: 'GraphqlController', auth: 'other')
-          end
-
-          post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
-
-          expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
-        end
-
-        context 'when user also has a valid session' do
-          let_it_be(:other_user) { create(:user) }
-
-          before do
-            login_as(other_user)
-            get('/')
-          end
-
-          it 'authenticates as session user' do
-            post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token, 'X-CSRF-Token' => session['_csrf_token'] })
-
-            expect(graphql_data['echo']).to eq("\"#{other_user.username}\" says: Hello world")
-          end
-
-          it 'authenticates as PAT user when CSRF token is invalid' do
-            post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token, 'X-CSRF-Token' => 'invalid' })
-
-            expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
-          end
         end
       end
 
@@ -531,18 +439,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
             expect(graphql_data['currentUser']).to be_nil
           end
-
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'authenticates users with an LFS token' do
-              post '/api/graphql.git', params: { query: query }, headers: headers
-
-              expect(graphql_data['currentUser']['username']).to eq(user.username)
-            end
-          end
         end
 
         describe 'with job token' do
@@ -559,18 +455,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
             post '/api/graphql', params: { query: query, job_token: job_token }
 
             expect_graphql_errors_to_include(/Invalid token/)
-          end
-
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'authenticates as the user' do
-              post '/api/graphql', params: { query: query, job_token: job_token }
-
-              expect(graphql_data['currentUser']['username']).to eq(user.username)
-            end
           end
         end
 
@@ -589,25 +473,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
             post "/api/graphql?token=#{user.static_object_token}", params: { query: query }
 
             expect_graphql_errors_to_include(/Invalid token/)
-          end
-
-          # context is included to demonstrate that the FF code is not changing this behavior
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'does not authenticate user from header' do
-              post '/api/graphql', params: { query: query }, headers: headers
-
-              expect(graphql_data['currentUser']).to be_nil
-            end
-
-            it 'does not authenticate user from parameter' do
-              post "/api/graphql?token=#{user.static_object_token}", params: { query: query }
-
-              expect_graphql_errors_to_include(/Invalid token/)
-            end
           end
         end
 
@@ -628,25 +493,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
             post "/api/graphql?access_token=#{token}", params: { query: query }
 
             expect_graphql_errors_to_include(/Invalid token/)
-          end
-
-          # context is included to demonstrate that the FF code is not changing this behavior
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'does not authenticate user from dependency proxy token in headers' do
-              post '/api/graphql', params: { query: query }, headers: headers
-
-              expect_graphql_errors_to_include(/Invalid token/)
-            end
-
-            it 'does not authenticate user from dependency proxy token in parameter' do
-              post "/api/graphql?access_token=#{token}", params: { query: query }
-
-              expect_graphql_errors_to_include(/Invalid token/)
-            end
           end
         end
       end

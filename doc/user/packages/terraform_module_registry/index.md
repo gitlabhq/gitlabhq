@@ -175,7 +175,7 @@ To allow publishing duplicate module names:
 
 Your changes are automatically saved.
 
-You can also allow publishing duplicate names by enabling `terraform_module_duplicates_allowed` in the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings).
+You can also allow publishing duplicate names by enabling `terraform_module_duplicates_allowed` in the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
 
 To allow duplicates with specific names:
 

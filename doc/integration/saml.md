@@ -3100,14 +3100,14 @@ For more information, see [Configure SAML support in GitLab](#configure-saml-sup
 A user can manually link their SAML identity to an existing GitLab account. For more information,
 see [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
 
-## Configure group SAML SSO on a self-managed instance
+## Configure group SAML SSO on GitLab Self-Managed
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Use group SAML SSO if you have to allow access through multiple SAML IdPs on your
-self-managed instance.
+GitLab Self-Managed instance.
 
 To configure group SAML SSO:
 
@@ -3214,7 +3214,7 @@ To configure group SAML SSO:
 
 ::EndTabs
 
-As a multi-tenant solution, group SAML on a self-managed instance is limited compared
+As a multi-tenant solution, group SAML on GitLab Self-Managed is limited compared
 to the recommended [instance-wide SAML](../integration/saml.md). Use
 instance-wide SAML to take advantage of:
 

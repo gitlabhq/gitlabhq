@@ -1,43 +1,44 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tmpdir'
 require_relative '../../../../tooling/graphql/docs/renderer'
 
 RSpec.describe Tooling::Graphql::Docs::Renderer do
+  let(:template) { Rails.root.join('tooling/graphql/docs/templates/default.md.haml') }
+  let(:field_description) { 'List of objects.' }
+  let(:type) { ::GraphQL::Types::Int }
+
+  let(:query_type) do
+    Class.new(Types::BaseObject) { graphql_name 'Query' }.tap do |t|
+      # this keeps type and field_description in scope.
+      t.field :foo, type, null: true, description: field_description do
+        argument :id, GraphQL::Types::ID, required: false, description: 'ID of the object.'
+      end
+    end
+  end
+
+  let(:mutation_root) do
+    Class.new(::Types::BaseObject) do
+      include ::Gitlab::Graphql::MountMutation
+      graphql_name 'Mutation'
+    end
+  end
+
+  let(:mock_schema) do
+    Class.new(GraphQL::Schema) do
+      def resolve_type(obj, ctx)
+        raise 'Not a real schema'
+      end
+    end
+  end
+
   describe '#contents' do
     shared_examples 'renders correctly as GraphQL documentation' do
       it 'contains the expected section' do
         # duplicative - but much better error messages!
         section.lines.each { |line| expect(contents).to include(line) }
         expect(contents).to include(section)
-      end
-    end
-
-    let(:template) { Rails.root.join('tooling/graphql/docs/templates/default.md.haml') }
-    let(:field_description) { 'List of objects.' }
-    let(:type) { ::GraphQL::Types::Int }
-
-    let(:query_type) do
-      Class.new(Types::BaseObject) { graphql_name 'Query' }.tap do |t|
-        # this keeps type and field_description in scope.
-        t.field :foo, type, null: true, description: field_description do
-          argument :id, GraphQL::Types::ID, required: false, description: 'ID of the object.'
-        end
-      end
-    end
-
-    let(:mutation_root) do
-      Class.new(::Types::BaseObject) do
-        include ::Gitlab::Graphql::MountMutation
-        graphql_name 'Mutation'
-      end
-    end
-
-    let(:mock_schema) do
-      Class.new(GraphQL::Schema) do
-        def resolve_type(obj, ctx)
-          raise 'Not a real schema'
-        end
       end
     end
 
@@ -761,6 +762,36 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           implementation_section
         )
       end
+    end
+  end
+
+  describe '#write' do
+    let(:output_dir) { Dir.mktmpdir }
+    let(:expected_file) { File.join(output_dir, '_index.md') }
+
+    before do
+      mock_schema.query(query_type)
+      mock_schema.mutation(mutation_root) if mutation_root.fields.any?
+    end
+
+    after do
+      FileUtils.remove_entry(output_dir)
+    end
+
+    it 'creates the output directory and writes contents to file' do
+      renderer = described_class.new(
+        mock_schema,
+        output_dir: output_dir,
+        template: template
+      )
+
+      expect(FileUtils).to receive(:mkdir_p).with(output_dir).and_call_original
+      expect(File).to receive(:write).with(expected_file, renderer.contents).and_call_original
+
+      renderer.write
+
+      expect(File.exist?(expected_file)).to be true
+      expect(File.read(expected_file)).to eq(renderer.contents)
     end
   end
 end

@@ -90,7 +90,7 @@ In **Settings > Roles and permissions**, the list of all custom roles displays t
 - Base role that the custom role uses as a template.
 - Permissions.
 
-To create a custom role, you can also [use the API](../api/graphql/reference/index.md#mutationmemberrolecreate).
+To create a custom role, you can also [use the API](../api/graphql/reference/_index.md#mutationmemberrolecreate).
 
 ## Edit a custom role
 
@@ -126,7 +126,7 @@ Prerequisites:
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
 
-To edit a custom role, you can also [use the API](../api/graphql/reference/index.md#mutationmemberroleupdate).
+To edit a custom role, you can also [use the API](../api/graphql/reference/_index.md#mutationmemberroleupdate).
 
 ## Delete a custom role
 
@@ -143,7 +143,7 @@ You can't remove a custom role from a group if there are members assigned that r
 1. Select **Custom Roles**.
 1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
 
-You can also [use the API](../api/graphql/reference/index.md#mutationmemberroledelete) to delete a custom role. To use the API, you must provide the `id` of the custom role. If you do not know this `id`, you can find it by making an [API request on the group](../api/graphql/reference/index.md#groupmemberroles) or an [API request on the instance](../api/graphql/reference/index.md#querymemberroles).
+You can also [use the API](../api/graphql/reference/_index.md#mutationmemberroledelete) to delete a custom role. To use the API, you must provide the `id` of the custom role. If you do not know this `id`, you can find it by making an [API request on the group](../api/graphql/reference/_index.md#groupmemberroles) or an [API request on the instance](../api/graphql/reference/_index.md#querymemberroles).
 
 ## Add a user with a custom role to your group or project
 
@@ -329,7 +329,7 @@ Prerequisites:
 
 - You must be an administrator for the self-managed instance.
 
-You can use the API to [create](../api/graphql/reference/index.md#mutationmemberroleadmincreate) and [assign](../api/graphql/reference/index.md#mutationmemberroletouserassign) custom admin roles. These roles allow you to grant limited access to administrator resources.
+You can use the API to [create](../api/graphql/reference/_index.md#mutationmemberroleadmincreate) and [assign](../api/graphql/reference/_index.md#mutationmemberroletouserassign) custom admin roles. These roles allow you to grant limited access to administrator resources.
 
 For information on available permissions, see [custom permissions](custom_roles/abilities.md).
 

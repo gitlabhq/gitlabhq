@@ -125,7 +125,6 @@ Layout/LineLength:
     - 'app/models/integrations/chat_message/note_message.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
     - 'app/models/integrations/chat_message/wiki_page_message.rb'
-    - 'app/models/integrations/confluence.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/discord.rb'
     - 'app/models/integrations/drone_ci.rb'

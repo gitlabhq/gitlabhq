@@ -94,7 +94,7 @@ returns either:
 
 ## Import a file
 
-The maximum import file size can be set by the Administrator on self-managed instances (default is `0` (unlimited)).
+The maximum import file size can be set by the Administrator on GitLab Self-Managed (default is `0` (unlimited)).
 As an administrator, you can modify the maximum import file size either:
 
 - In the [**Admin** area](../administration/settings/import_and_export_settings.md).

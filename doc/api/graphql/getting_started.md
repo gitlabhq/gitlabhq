@@ -106,7 +106,7 @@ In the GitLab GraphQL API, `id` refers to a
 which is an object identifier in the format of `"gid://gitlab/Issue/123"`.
 For more information, see [Global IDs](index.md#global-ids).
 
-[GitLab GraphQL Schema](reference/index.md) outlines which objects and fields are
+[GitLab GraphQL Schema](reference/_index.md) outlines which objects and fields are
 available for clients to query and their corresponding data types.
 
 Example: Get only the names of all the projects the currently authenticated user can

@@ -1391,7 +1391,7 @@ Supported attributes:
 | Attribute           | Type              | Required | Description |
 |---------------------|-------------------|----------|-------------|
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-paths). |
-| `approval_password` | string            | No       | Current user's password. Required if [**Require user re-authentication to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. Always fails if the group or self-managed instance is configured to force SAML authentication. |
+| `approval_password` | string            | No       | Current user's password. Required if [**Require user re-authentication to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. Always fails if the group or GitLab Self-Managed instance is configured to force SAML authentication. |
 | `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
 | `sha`               | string            | No       | The `HEAD` of the merge request. |
 

@@ -134,4 +134,4 @@ Instead of requesting access, it may be easier for you to run the query in the
 
 ## Related topics
 
-- [GraphQL API reference](reference/index.md)
+- [GraphQL API reference](reference/_index.md)

@@ -20,7 +20,7 @@ WARNING:
 This API is in the process of being deprecated and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases. Use the
-[GraphQL API](graphql/reference/index.md#queryvulnerabilities)
+[GraphQL API](graphql/reference/_index.md#queryvulnerabilities)
 instead.
 
 Every API call to vulnerabilities must be [authenticated](rest/authentication.md).

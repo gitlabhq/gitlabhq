@@ -88,8 +88,8 @@ In deployments that contain multiple agents, you might want to identify an agent
 To identify an agent associated with a running workspace, use one of the following GraphQL endpoints:
 
 - `agent-id` to return the project the agent belongs to.
-- [`Query.workspaces`](../../api/graphql/reference/index.md#queryworkspaces) to return:
-  - The [cluster agent](../../api/graphql/reference/index.md#clusteragent) associated with the workspace.
+- [`Query.workspaces`](../../api/graphql/reference/_index.md#queryworkspaces) to return:
+  - The [cluster agent](../../api/graphql/reference/_index.md#clusteragent) associated with the workspace.
   - The project the agent belongs to.
 
 ## Devfile

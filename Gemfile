@@ -182,7 +182,7 @@ gem 'gitlab-duo-workflow-service-client', '~> 0.1',
   feature_category: :duo_workflow
 
 # Generate Fake data
-gem 'ffaker', '~> 2.23', feature_category: :shared
+gem 'ffaker', '~> 2.24', feature_category: :shared
 
 gem 'hashie', '~> 5.0.0', feature_category: :shared
 

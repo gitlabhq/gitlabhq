@@ -33,7 +33,7 @@ module Tooling
         end
 
         def write
-          filename = File.join(@output_dir, 'index.md')
+          filename = File.join(@output_dir, '_index.md')
 
           FileUtils.mkdir_p(@output_dir)
           File.write(filename, contents)

@@ -486,7 +486,7 @@ bundle exec rake gitlab:graphql:compile_docs
 In its current state, the Rake task:
 
 - Generates output for GraphQL objects.
-- Places the output at `doc/api/graphql/reference/index.md`.
+- Places the output at `doc/api/graphql/reference/_index.md`.
 
 This uses some features from `graphql-docs` gem like its schema parser and helper methods.
 The docs generator code comes from our side giving us more flexibility, like using Haml templates and generating Markdown files.

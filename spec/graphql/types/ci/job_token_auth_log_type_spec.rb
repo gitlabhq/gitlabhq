@@ -72,11 +72,21 @@ RSpec.describe GitlabSchema.types['CiJobTokenAuthLog'], feature_category: :conti
       context 'when multiple authorizations in the logs' do
         let_it_be(:origin_project_one) { create(:project, avatar: avatar_file) }
         let_it_be(:origin_project_two) { create(:project, avatar: avatar_file) }
+        let_it_be(:inaccessible_origin_project_three) { create(:project, avatar: avatar_file) }
 
-        let(:expected_authorizations_paths) { [origin_project_one.path, origin_project_two.path] }
-        let(:expected_authorizations_full_paths) { [origin_project_one.full_path, origin_project_two.full_path] }
+        let(:expected_authorizations_paths) do
+          [origin_project_one.path, origin_project_two.path,
+            inaccessible_origin_project_three.path]
+        end
+
+        let(:expected_authorizations_full_paths) do
+          [origin_project_one.full_path, origin_project_two.full_path,
+            inaccessible_origin_project_three.full_path]
+        end
+
         let(:expected_authorizations_avatar_urls) do
-          [origin_project_one.avatar_url(only_path: false), origin_project_two.avatar_url(only_path: false)]
+          [origin_project_one.avatar_url(only_path: false), origin_project_two.avatar_url(only_path: false),
+            inaccessible_origin_project_three.avatar_url(only_path: false)]
         end
 
         before do
@@ -90,9 +100,13 @@ RSpec.describe GitlabSchema.types['CiJobTokenAuthLog'], feature_category: :conti
           create(:ci_job_token_authorization,
             origin_project: origin_project_two,
             accessed_project: current_project)
+
+          create(:ci_job_token_authorization,
+            origin_project: inaccessible_origin_project_three,
+            accessed_project: current_project)
         end
 
-        it 'returns authorizations logs on current_project' do
+        it 'returns authorizations logs on current_project even from inaccessible origin projects' do
           expect(expected_authorizations_paths).to match_array(returned_origin_project_paths)
           expect(expected_authorizations_full_paths).to match_array(returned_origin_project_full_paths)
           expect(expected_authorizations_avatar_urls).to match_array(returned_origin_project_avatar_urls)

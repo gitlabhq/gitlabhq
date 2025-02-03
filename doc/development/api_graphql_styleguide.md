@@ -1073,7 +1073,7 @@ field :closed_at, Types::TimeType, description: 'Timestamp of when the issue was
 You can view descriptions of fields and arguments in:
 
 - The [GraphiQL explorer](#graphiql).
-- The [static GraphQL API reference](../api/graphql/reference/index.md).
+- The [static GraphQL API reference](../api/graphql/reference/_index.md).
 
 ### Description style guide
 
@@ -2554,7 +2554,7 @@ More about complexity:
 ## Documentation and schema
 
 Our schema is located at `app/graphql/gitlab_schema.rb`.
-See the [schema reference](../api/graphql/reference/index.md) for details.
+See the [schema reference](../api/graphql/reference/_index.md) for details.
 
 This generated GraphQL documentation needs to be updated when the schema changes.
 For information on generating GraphQL documentation and schema files, see

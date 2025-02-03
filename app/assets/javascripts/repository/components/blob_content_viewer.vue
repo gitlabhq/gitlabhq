@@ -86,7 +86,7 @@ export default {
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
         const useSimpleViewer = usePlain || urlHash?.startsWith('L') || !this.hasRichViewer;
 
-        if (this.isTooLarge) return;
+        if (this.isUnsupportedLanguage(this.blobInfo.language) && this.isTooLarge) return;
         this.initHighlightWorker(this.blobInfo, this.isUsingLfs);
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
@@ -161,8 +161,13 @@ export default {
       return Boolean(this.viewer.renderError);
     },
     isTooLarge() {
-      const { tooLarge, renderError } = this.viewer || {};
-      return tooLarge || renderError === 'collapsed';
+      if (this.isUnsupportedLanguage(this.blobInfo.language)) {
+        // If the languages is not supported by HLJS then check if the backend indicated the file is too large
+        const { tooLarge, renderError } = this.viewer || {};
+        return tooLarge || renderError === 'collapsed';
+      }
+
+      return this.blobInfo.size >= this.$options.HLJS_MAX_SIZE;
     },
     blobViewer() {
       const { fileType } = this.viewer;

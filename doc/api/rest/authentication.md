@@ -23,7 +23,7 @@ You can authenticate with the GitLab REST API in several ways:
 
 Project access tokens are supported by:
 
-- Self-managed: Free, Premium, and Ultimate.
+- GitLab Self-Managed: Free, Premium, and Ultimate.
 - GitLab.com: Premium and Ultimate.
 
 If you are an administrator, you or your application can authenticate as a specific user, using

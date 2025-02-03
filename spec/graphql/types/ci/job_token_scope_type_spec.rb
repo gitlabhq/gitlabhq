@@ -118,7 +118,11 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
           it 'returns readable projects in scope' do
             expect(returned_project_paths).to contain_exactly(project.path)
             expect(returned_outbound_paths).to contain_exactly(project.path)
-            expect(returned_inbound_paths).to contain_exactly(project.path)
+          end
+
+          it 'returns even non readable projects in inbound allowlist' do
+            expect(returned_inbound_paths).to match_array([project.path, inbound_allowlist_project.path,
+              both_allowlists_project.path])
           end
         end
 
@@ -134,7 +138,11 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
           it 'returns readable projects in scope' do
             expect(returned_project_paths).to contain_exactly(project.path)
             expect(returned_outbound_paths).to contain_exactly(project.path)
-            expect(returned_inbound_paths).to contain_exactly(project.path)
+          end
+
+          it 'returns even non readable projects in inbound allowlist' do
+            expect(returned_inbound_paths).to match_array([project.path, inbound_allowlist_project.path,
+              both_allowlists_project.path])
           end
         end
       end

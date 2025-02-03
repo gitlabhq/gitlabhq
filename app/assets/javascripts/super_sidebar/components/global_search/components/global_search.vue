@@ -4,6 +4,7 @@ import { GlSearchBoxByType, GlModal } from '@gitlab/ui';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce, clamp } from 'lodash';
 import { InternalEvents } from '~/tracking';
+import { Mousetrap, addStopCallback } from '~/lib/mousetrap';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, sprintf } from '~/locale';
@@ -44,7 +45,6 @@ import {
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
   SEARCH_MODAL_ID,
-  KEY_K,
   KEY_N,
   KEY_P,
   SEARCH_INPUT_SELECTOR,
@@ -62,6 +62,7 @@ import {
   MODAL_CLOSE_ESC,
   MODAL_CLOSE_BACKGROUND,
   MODAL_CLOSE_HEADERCLOSE,
+  COMMANDS_TOGGLE_KEYBINDING,
 } from '../command_palette/constants';
 import CommandPaletteLottery from '../command_palette/command_palette_lottery.vue';
 import CommandsOverviewDropdown from '../command_palette/command_overview_dropdown.vue';
@@ -170,6 +171,9 @@ export default {
       this.highlightFirstCommand();
     },
   },
+  created() {
+    addStopCallback(this.allowMousetrapBindingOnSearchInput);
+  },
   methods: {
     ...mapActions(['setSearch', 'setCommand', 'fetchAutocompleteOptions', 'clearAutocomplete']),
     getAutocompleteOptions: debounce(function debouncedSearch(searchTerm) {
@@ -205,11 +209,12 @@ export default {
       }
     },
     onKeydown(event) {
-      const { code, target } = event;
+      const { code, ctrlKey, target } = event;
 
       let stop = true;
       const isSearchInput = target && target?.matches(SEARCH_INPUT_SELECTOR);
       const elements = this.getFocusableOptions();
+      this.getListItemsAndFocusIndex();
 
       switch (code) {
         case ENTER_KEY:
@@ -250,6 +255,26 @@ export default {
           this.focusNextItem(event, elements, 1);
           break;
 
+        case KEY_P:
+          if (!ctrlKey) {
+            return;
+          }
+
+          this.focusIndex =
+            this.focusIndex > 0 ? this.focusIndex - 1 : this.childListItems.length - 1;
+          this.childListItems[this.focusIndex]?.focus();
+          break;
+
+        case KEY_N:
+          if (!ctrlKey) {
+            return;
+          }
+
+          this.focusIndex =
+            this.focusIndex < this.childListItems.length - 1 ? this.focusIndex + 1 : 0;
+          this.childListItems[this.focusIndex]?.focus();
+          break;
+
         case ESC_KEY:
           this.$refs.modal.close();
           break;
@@ -263,38 +288,36 @@ export default {
         event.preventDefault();
       }
     },
-    onKeyComboDown(event) {
-      const { code, metaKey, ctrlKey } = event;
-
-      this.getListItemsAndFocusIndex();
-
-      if (code === KEY_P && ctrlKey) {
-        this.focusIndex =
-          this.focusIndex > 0 ? this.focusIndex - 1 : this.childListItems.length - 1;
-        this.childListItems[this.focusIndex]?.focus();
+    onKeyComboToggleDropdown(event) {
+      if (event.preventDefault) {
+        event.preventDefault();
       }
 
-      if (code === KEY_N && ctrlKey) {
-        this.focusIndex =
-          this.focusIndex < this.childListItems.length - 1 ? this.focusIndex + 1 : 0;
-        this.childListItems[this.focusIndex]?.focus();
+      if (!this.commandPaletteDropdownOpen) {
+        this.$refs.commandDropdown.open();
+        this.commandPaletteDropdownOpen = true;
+      } else {
+        this.$refs.commandDropdown.close();
+        this.commandPaletteDropdownOpen = false;
+      }
+    },
+    allowMousetrapBindingOnSearchInput(event, element, combo) {
+      if (combo !== COMMANDS_TOGGLE_KEYBINDING) {
+        return undefined;
       }
 
-      if (code === KEY_K && metaKey) {
-        if (!this.commandPaletteDropdownOpen) {
-          this.$refs.commandDropdown.open();
-          this.commandPaletteDropdownOpen = true;
-        } else {
-          this.$refs.commandDropdown.close();
-          this.commandPaletteDropdownOpen = false;
-        }
+      const search = this.$refs.searchInput.$el;
+      if (search?.contains(element)) {
+        return false;
       }
+
+      return undefined;
     },
     handleClosing() {
       this.commandPaletteDropdownOpen = false;
     },
     focusSearchInput() {
-      this.$refs.searchInput.$el.querySelector('input')?.focus();
+      this.$refs?.searchInput?.$el?.querySelector('input')?.focus();
     },
     focusNextItem(event, elements, offset) {
       const { target } = event;
@@ -324,13 +347,13 @@ export default {
     onSearchModalShown() {
       this.$emit('shown');
 
-      window.addEventListener('keydown', this.onKeyComboDown);
+      Mousetrap.bind(COMMANDS_TOGGLE_KEYBINDING, this.onKeyComboToggleDropdown);
     },
     onSearchModalHidden({ trigger } = {}) {
       this.searchText = '';
       this.$emit('hidden');
 
-      window.removeEventListener('keydown', this.onKeyComboDown);
+      Mousetrap.unbind(COMMANDS_TOGGLE_KEYBINDING);
 
       switch (trigger) {
         case this.$options.MODAL_CLOSE_ESC:

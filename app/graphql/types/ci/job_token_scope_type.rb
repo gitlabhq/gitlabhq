@@ -25,7 +25,7 @@ module Types
         method: :outbound_projects
 
       field :inbound_allowlist,
-        Types::ProjectType.connection_type,
+        Types::Ci::JobTokenAccessibleProjectType.connection_type,
         null: false,
         description: "Allowlist of projects that can access the current project " \
           "by authenticating with a CI/CD job token.",

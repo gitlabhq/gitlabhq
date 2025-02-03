@@ -27,7 +27,7 @@ Use the GitLab for Slack app to:
 
 Incident management for Slack is only available for GitLab.com. Some of the functionality
 described might be available for
-[the self-managed Slack app](../../user/project/integrations/slack_slash_commands.md).
+[the GitLab Self-Managed Slack app](../../user/project/integrations/slack_slash_commands.md).
 
 To stay up to date, follow [epic 1211](https://gitlab.com/groups/gitlab-org/-/epics/1211).
 
