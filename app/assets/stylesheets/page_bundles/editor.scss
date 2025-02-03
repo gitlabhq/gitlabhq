@@ -21,7 +21,7 @@
   }
 
   .editor-ref {
-    background: var(--gray-10, $gray-10);
+    @apply gl-bg-subtle;
     padding-right: $gl-padding;
     border-right: 1px solid var(--gl-border-color-default);
     display: block;

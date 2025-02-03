@@ -20,7 +20,6 @@ module QA
               relative-url
               decomposition-single-db
               decomposition-multiple-db
-              git-sha256-repositories
             ],
             test_on_omnibus: %w[
               instance

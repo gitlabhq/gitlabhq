@@ -192,7 +192,7 @@
 */
 @mixin build-log($background: $black) {
   background: $background;
-  color: $gray-200;
+  @apply gl-text-disabled;
   white-space: pre;
   overflow-x: auto;
   font-size: 12px;

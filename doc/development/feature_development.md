@@ -29,7 +29,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Permissions](permissions.md)
 - [Code comments](code_comments.md)
 - [Windows Development on GCP](windows.md)
-- [FIPS compliance](fips_compliance.md)
+- [FIPS 140-2 and 140-3](fips_gitlab.md)
 - [`Gemfile` guidelines](gemfile.md)
 - [Ruby upgrade guidelines](ruby_upgrade.md)
 

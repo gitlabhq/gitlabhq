@@ -1038,7 +1038,7 @@ $ide-commit-header-height: 48px;
 
   .terminal-wrapper {
     background: $black;
-    color: $gray-200;
+    @apply gl-text-disabled;
     overflow: hidden;
   }
 

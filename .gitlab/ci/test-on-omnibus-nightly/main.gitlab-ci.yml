@@ -179,17 +179,6 @@ gitlab-pages:
   variables:
     QA_SCENARIO: Test::Integration::GitlabPages
 
-# ========== git sha256 enabled ===========
-git-sha256-repositories:
-  extends:
-    - .parallel
-    - .qa
-    - .with-ignored-runtime-data
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
-    GITLAB_QA_OPTS: "--enable-feature support_sha256_repositories"
-
 # ========== Update From Previous with AI components ===========
 update-minor-ee-ai-components:
   extends:

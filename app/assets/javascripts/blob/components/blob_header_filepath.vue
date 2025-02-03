@@ -64,7 +64,7 @@ export default {
       <component
         :is="showAsLink ? 'gl-link' : 'strong'"
         v-bind="linkHref"
-        class="file-title-name mr-1 js-blob-header-filepath gl-break-all gl-font-bold"
+        class="file-title-name js-blob-header-filepath gl-mr-1 gl-break-all gl-font-bold gl-text-strong"
         :class="{ '!gl-text-blue-700 hover:gl-cursor-pointer': showAsLink }"
         data-testid="file-title-content"
         >{{ fileName }}</component
@@ -79,7 +79,7 @@ export default {
       css-class="gl-mr-2"
     />
 
-    <small v-if="showBlobSize" class="gl-mr-3">{{ blobSize }}</small>
+    <small v-if="showBlobSize" class="gl-mr-3 gl-text-subtle">{{ blobSize }}</small>
 
     <gl-badge v-if="showLfsBadge">{{ __('LFS') }}</gl-badge>
   </div>

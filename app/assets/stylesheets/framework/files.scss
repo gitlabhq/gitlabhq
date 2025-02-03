@@ -202,7 +202,7 @@ span.idiff {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    @apply gl-bg-subtle gl-border-b gl-border-b-section;
+    @apply gl-bg-subtle gl-border-b;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
     min-height: px-to-rem($file-header-height);

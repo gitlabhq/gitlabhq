@@ -95,7 +95,7 @@
 
 .hint {
   font-style: italic;
-  color: $gray-200;
+  @apply gl-text-disabled;
 }
 
 .light { @apply gl-text-default; }
@@ -182,7 +182,7 @@ table {
 }
 
 p.time {
-  color: $gray-200;
+  @apply gl-text-disabled;
   font-size: 90%;
   margin: 30px 3px 3px 2px;
 }

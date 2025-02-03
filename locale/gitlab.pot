@@ -6875,6 +6875,9 @@ msgstr ""
 msgid "Analytics|Dates and times are displayed in the UTC timezone"
 msgstr ""
 
+msgid "Analytics|Default date range '%{defaultOption}' is not included in the list of dateRange options"
+msgstr ""
+
 msgid "Analytics|Edit"
 msgstr ""
 
@@ -18847,6 +18850,9 @@ msgid "Date merged"
 msgstr ""
 
 msgid "Date range"
+msgstr ""
+
+msgid "Date range filter validation"
 msgstr ""
 
 msgid "Date range limited to %d day"

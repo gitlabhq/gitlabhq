@@ -24,7 +24,7 @@ GitLab offers the following machine type for hosted runners on macOS. To build f
 
 | Runner Tag               | vCPUS | Memory | Storage |
 | ------------------------ | ----- | ------ | ------- |
-| `saas-macos-medium-m1`   | 4     | 8 GB   | 25 GB   |
+| `saas-macos-medium-m1`   | 4     | 8 GB   | 50 GB   |
 | `saas-macos-large-m2pro` | 6     | 16 GB  | 50 GB   |
 
 ## Supported macOS images

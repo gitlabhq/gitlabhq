@@ -26,7 +26,7 @@ for details on which headers and token types are supported. Undocumented authent
 
 NOTE:
 [Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28) or greater
-is recommended when [FIPS mode](../../development/fips_compliance.md) is enabled.
+is recommended when [FIPS mode](../../development/fips_gitlab.md) is enabled.
 
 ## Download a package file from a group
 

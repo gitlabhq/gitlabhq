@@ -17,7 +17,7 @@ limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/
 work and timelines to make it production ready.
 
 NOTE:
-The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../../development/fips_compliance.md) is enabled.
+The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../../development/fips_gitlab.md) is enabled.
 
 Publish Conan packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.

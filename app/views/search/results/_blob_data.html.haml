@@ -3,7 +3,7 @@
     .js-file-title.file-title{ data: { testid: 'file-title-content' } }
       = link_to blob_link, data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position } do
         = sprite_icon('document')
-        %strong
+        %strong.gl-text-strong
           = search_blob_title(project, path)
       = copy_file_path_button(path)
     - if blob.data

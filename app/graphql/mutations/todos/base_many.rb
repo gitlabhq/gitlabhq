@@ -17,7 +17,7 @@ module Mutations
         description: 'Updated to-do items.'
 
       def resolve(ids:)
-        check_update_amount_limit!(ids)
+        check_update_limit!(amount: ids.size)
 
         todos = authorized_find_all_pending_by_current_user(model_ids_of(ids))
         updated_ids = process_todos(todos)
@@ -47,8 +47,8 @@ module Mutations
         raise Gitlab::Graphql::Errors::ArgumentError, 'Too many to-do items requested.'
       end
 
-      def check_update_amount_limit!(ids)
-        raise_too_many_todos_requested_error if ids.size > MAX_UPDATE_AMOUNT
+      def check_update_limit!(amount:)
+        raise_too_many_todos_requested_error if amount > MAX_UPDATE_AMOUNT
       end
 
       def errors_on_objects(todos)

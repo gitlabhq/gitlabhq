@@ -39323,6 +39323,7 @@ Conversation type of the thread.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aiconversationsthreadsconversationtypeduo_chat"></a>`DUO_CHAT` | duo_chat thread. |
+| <a id="aiconversationsthreadsconversationtypeduo_code_review"></a>`DUO_CODE_REVIEW` | duo_code_review thread. |
 
 ### `AiFeatureProviders`
 

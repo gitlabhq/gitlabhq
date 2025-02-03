@@ -7,7 +7,7 @@
   %span
     = sprite_icon('folder-git', file_icon: true)
 
-    %strong.file-title-name
+    %strong.file-title-name.gl-text-strong
       = submodule_link(diff_file.blob, diff_file.content_sha, diff_file.repository)
 
     = copy_file_path_button(diff_file.blob.path)
@@ -17,13 +17,13 @@
 
     - if diff_file.renamed_file?
       - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
-      %strong.file-title-name.has-tooltip.gl-break-all{ data: { title: diff_file.old_path, container: 'body' } }
+      %strong.file-title-name.gl-text-strong.has-tooltip.gl-break-all{ data: { title: diff_file.old_path, container: 'body' } }
         = old_path
       &rarr;
-      %strong.file-title-name.has-tooltip.gl-break-all{ data: { title: diff_file.new_path, container: 'body' } }
+      %strong.file-title-name.gl-text-strong.has-tooltip.gl-break-all{ data: { title: diff_file.new_path, container: 'body' } }
         = new_path
     - else
-      %strong.file-title-name.has-tooltip.gl-break-all{ data: { title: diff_file.file_path, container: 'body', testid: 'file-name-content' } }
+      %strong.file-title-name.gl-text-strong.has-tooltip.gl-break-all{ data: { title: diff_file.file_path, container: 'body', testid: 'file-name-content' } }
         = diff_file.file_path
 
       - if diff_file.deleted_file?
@@ -32,7 +32,7 @@
   = copy_file_path_button(diff_file.file_path)
 
   - if diff_file.mode_changed?
-    %small.gl-mr-2
+    %small.gl-mr-2.gl-text-subtle
       #{diff_file.a_mode} → #{diff_file.b_mode}
 
   - if diff_file.stored_externally? && diff_file.external_storage == :lfs
