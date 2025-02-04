@@ -3441,7 +3441,7 @@ You must:
 
 - Define [`artifacts`](#artifacts) with a path to the content directory, which is
   `public` by default.
-- Use [`publish`](#pagespublish) if want to use a different content directory.
+- Use [`pages.publish`](#pagespagespublish) if want to use a different content directory.
 
 **Keyword type**: Job name.
 
@@ -3463,18 +3463,20 @@ pages:
 This example renames the `my-html-content/` directory to `public/`.
 This directory is exported as an artifact and published with GitLab Pages.
 
-#### `pages:publish`
+#### `pages:pages.publish`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
 
-Use `publish` to configure the content directory of a [`pages` job](#pages).
+Use `pages.publish` to configure the content directory of a [`pages` job](#pages).
+The top-level `publish` keyword is deprecated as of GitLab 17.9 and must now be nested under the `pages` keyword.
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
 **Supported values**: A path to a directory containing the Pages content.
 
-**Example of `publish`**:
+**Example of `pages.publish`**:
 
 ```yaml
 pages:
@@ -3484,7 +3486,8 @@ pages:
   artifacts:
     paths:
       - dist
-  publish: dist
+  pages:
+    publish: dist
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   environment: production
@@ -3494,7 +3497,7 @@ This example uses [Eleventy](https://www.11ty.dev) to generate a static website 
 output the generated HTML files into a the `dist/` directory. This directory is exported
 as an artifact and published with GitLab Pages.
 
-It is also possible to use variables in the `publish` field. For example:
+It is also possible to use variables in the `pages.publish` field. For example:
 
 ```yaml
 pages:
@@ -3505,7 +3508,8 @@ pages:
   artifacts:
     paths:
       - $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
-  publish: $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
+  pages:
+    publish: $CUSTOM_FOLDER/$CUSTOM_SUBFOLDER
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:

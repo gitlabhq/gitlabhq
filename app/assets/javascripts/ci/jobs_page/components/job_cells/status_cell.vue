@@ -41,11 +41,21 @@ export default {
     <ci-icon :status="job.detailedStatus" show-status-text />
     <div class="gl-ml-1 gl-mt-2 gl-text-sm gl-text-subtle">
       <div v-if="duration" data-testid="job-duration">
-        <gl-icon name="timer" :size="$options.iconSize" data-testid="duration-icon" />
+        <gl-icon
+          name="timer"
+          :size="$options.iconSize"
+          variant="subtle"
+          data-testid="duration-icon"
+        />
         {{ durationFormatted }}
       </div>
       <div v-if="finishedTime" data-testid="job-finished-time">
-        <gl-icon name="calendar" :size="$options.iconSize" data-testid="finished-time-icon" />
+        <gl-icon
+          name="calendar"
+          :size="$options.iconSize"
+          variant="subtle"
+          data-testid="finished-time-icon"
+        />
         <time-ago-tooltip :time="finishedTime" />
       </div>
     </div>

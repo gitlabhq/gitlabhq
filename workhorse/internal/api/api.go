@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -32,6 +33,8 @@ const (
 
 	geoProxyEndpointPath = "/api/v4/geo/proxy"
 )
+
+var errResponseLimit = fmt.Errorf("response body exceeded maximum buffer size (%d bytes)", failureResponseLimit)
 
 // API represents a client for interacting with an external API.
 type API struct {
@@ -462,9 +465,19 @@ func passResponseBack(httpResponse *http.Response, w http.ResponseWriter, r *htt
 	// the entire response body in memory before sending it on.
 	responseBody, err := bufferResponse(httpResponse.Body)
 	if err != nil {
-		fail.Request(w, r, err)
+		// A user can issue a git clone command against a URL that doesn't
+		// get handled by the info refs endpoint, resulting in a full-fledged 404
+		// response (i.e. like the one returned in a browser) that's gonna exceed
+		// the response error limit, eventually making Workhorse returning a 500.
+		// Here we intercept such 404s and just return the response code without a body.
+		if errors.Is(err, errResponseLimit) && httpResponse.StatusCode == 404 {
+			fail.Request(w, r, err, fail.WithStatus(httpResponse.StatusCode))
+		} else {
+			fail.Request(w, r, err)
+		}
 		return
 	}
+
 	if err = httpResponse.Body.Close(); err != nil {
 		fmt.Printf("Error closing response body: %s", err)
 	}
@@ -492,7 +505,7 @@ func bufferResponse(r io.Reader) (*bytes.Buffer, error) {
 	}
 
 	if n == failureResponseLimit {
-		return nil, fmt.Errorf("response body exceeded maximum buffer size (%d bytes)", failureResponseLimit)
+		return nil, errResponseLimit
 	}
 
 	return responseBody, nil

@@ -137,11 +137,6 @@ Doorkeeper.configure do
 
   enable_dynamic_scopes
   # Following doorkeeper monkey patches are to identify the organization on best effort basis
-  Doorkeeper::Server.class_eval do
-    def parameters
-      { organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID }.with_indifferent_access.merge(context.request.parameters)
-    end
-  end
 
   Doorkeeper::OAuth::PasswordAccessTokenRequest.class_eval do
     private

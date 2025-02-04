@@ -1162,9 +1162,9 @@ Do not use **Self-Hosted** by itself.
 
 ## GitLab Duo Workflow
 
-Use **GitLab Duo Workflow**. After first use, use **Duo Workflow**.
+Use **GitLab Duo Workflow**. After first use, use **Workflow**.
 
-Do not use **Workflow** by itself.
+Do not use **Duo Workflow** by itself.
 
 ## GitLab Flavored Markdown
 

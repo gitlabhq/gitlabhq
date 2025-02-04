@@ -160,7 +160,7 @@ In most cases the anchors `\A` for beginning of text and `\z` for end of text sh
 
 ### Escape sequences in Go
 
-When a character in a string literal or regular expression literal is preceded by a backslash, it is interpreted as part of an escape sequence. For example, the escape sequence `\n` in a string literal corresponds to a single `newline` character, and not the `\` and `n` characters.
+When a character in a string literal or regular expression literal is preceded by a backslash, it is interpreted as part of an escape sequence. For example, the escape sequence `\n` in a string literal corresponds to a single `newline` character, and not the <code>&#92;</code> and `n` characters.
 
 There are two Go escape sequences that could produce surprising results. First, `regexp.Compile("\a")` matches the bell character, whereas `regexp.Compile("\\A")` matches the start of text and `regexp.Compile("\\a")` is a Vim (but not Go) regular expression matching any alphabetic character. Second, `regexp.Compile("\b")` matches a backspace, whereas `regexp.Compile("\\b")` matches the start of a word. Confusing one for the other could lead to a regular expression passing or failing much more often than expected, with potential security consequences.
 

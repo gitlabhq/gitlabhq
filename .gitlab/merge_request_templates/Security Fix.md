@@ -35,7 +35,7 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 - [ ] Assigned (_not_ as reviewer) to `@gitlab-release-tools-bot` with passing CI pipelines.
 - [ ] Correct `~severity::x` label is applied to this merge request and the related security issue.
 
-/label ~security
+/label ~security ~"AppSecWorkType::VulnFixVerification"
 
 [CHANGELOG entry]: https://docs.gitlab.com/ee/development/changelog.html#overview
 [Code Review process]: https://docs.gitlab.com/ee/development/code_review.html

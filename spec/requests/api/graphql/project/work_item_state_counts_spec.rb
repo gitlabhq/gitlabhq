@@ -8,9 +8,19 @@ RSpec.describe 'getting Work Item counts by state', feature_category: :portfolio
   let_it_be(:current_user) { create(:user) }
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:project) { create(:project, :repository, :private, group: group) }
-  let_it_be(:work_item_opened1) { create(:work_item, project: project, title: 'Foo') }
-  let_it_be(:work_item_opened2) { create(:work_item, project: project, author: current_user) }
-  let_it_be(:work_item_closed) { create(:work_item, :closed, project: project, description: 'Bar') }
+  let_it_be(:milestone) { create(:milestone, project: project) }
+  let_it_be(:label) { create(:label, project: project) }
+  let_it_be(:work_item_opened1) do
+    create(:work_item, project: project, milestone_id: milestone.id, title: 'Foo', labels: [label])
+  end
+
+  let_it_be(:work_item_opened2) do
+    create(:work_item, project: project, author: current_user, assignees: [current_user], milestone_id: milestone.id)
+  end
+
+  let_it_be(:work_item_closed) do
+    create(:work_item, :closed, :confidential, project: project, description: 'Bar', labels: [label])
+  end
 
   let(:params) { {} }
 
@@ -65,6 +75,81 @@ RSpec.describe 'getting Work Item counts by state', feature_category: :portfolio
               'all' => 1,
               'opened' => 1,
               'closed' => 0
+            )
+          end
+        end
+
+        context 'when filtering by assignee usernames' do
+          let(:params) { { 'assigneeUsernames' => [current_user.username] } }
+
+          it 'returns the correct counts for each state' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 1,
+              'opened' => 1,
+              'closed' => 0
+            )
+          end
+        end
+
+        context 'when filtering by confidential' do
+          let(:params) { { 'confidential' => true } }
+
+          it 'returns the correct counts for each state' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 1,
+              'opened' => 0,
+              'closed' => 1
+            )
+          end
+        end
+
+        context 'when filtering by label name' do
+          let(:params) { { 'labelName' => [label.name] } }
+
+          it 'returns the correct counts for each state' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 2,
+              'opened' => 1,
+              'closed' => 1
+            )
+          end
+        end
+
+        context 'when filtering by milestone title' do
+          let(:params) { { 'milestoneTitle' => [milestone.title] } }
+
+          it 'returns the correct counts for each state' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 2,
+              'opened' => 2,
+              'closed' => 0
+            )
+          end
+        end
+
+        context 'when filtering by reaction emoji' do
+          before_all do
+            create(:award_emoji, :upvote, user: current_user, awardable: work_item_opened1)
+            create(:award_emoji, :upvote, user: current_user, awardable: work_item_closed)
+          end
+
+          let(:params) { { 'myReactionEmoji' => AwardEmoji::THUMBS_UP } }
+
+          it 'returns the correct counts for each state' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 2,
+              'opened' => 1,
+              'closed' => 1
             )
           end
         end

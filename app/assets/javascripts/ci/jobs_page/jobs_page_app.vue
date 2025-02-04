@@ -23,7 +23,7 @@ export default {
     loadingAriaLabel: __('Loading'),
   },
   filterSearchBoxStyles:
-    'gl-my-0 gl-p-5 gl-bg-gray-10 gl-text-default gl-border-b gl-border-default',
+    'gl-my-0 gl-p-5 gl-bg-subtle gl-text-default gl-border-b gl-border-default',
   components: {
     GlAlert,
     GlKeysetPagination,

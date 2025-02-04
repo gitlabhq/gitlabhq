@@ -4034,6 +4034,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr ""
 
+msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Name"
 msgstr ""
 
@@ -35526,6 +35529,9 @@ msgstr ""
 msgid "MergeConflict|Committing..."
 msgstr ""
 
+msgid "MergeConflict|Edit inline"
+msgstr ""
+
 msgid "MergeConflict|Use ours"
 msgstr ""
 
@@ -43217,6 +43223,9 @@ msgstr ""
 msgid "Preferences|Choose the navigation theme."
 msgstr ""
 
+msgid "Preferences|Choose the syntax highlighting theme used when viewing or editing code in GitLab."
+msgstr ""
+
 msgid "Preferences|Choose what content you want to see by default on your homepage."
 msgstr ""
 
@@ -43242,9 +43251,6 @@ msgid "Preferences|Content will span %{percentage} of the page width."
 msgstr ""
 
 msgid "Preferences|Customize integrations with third party services."
-msgstr ""
-
-msgid "Preferences|Customize the appearance of the syntax."
 msgstr ""
 
 msgid "Preferences|Customize the behavior of the system layout and default views."
@@ -48301,10 +48307,10 @@ msgstr ""
 msgid "Resolve conflicts"
 msgstr ""
 
-msgid "Resolve conflicts on source branch"
+msgid "Resolve locally"
 msgstr ""
 
-msgid "Resolve locally"
+msgid "Resolve source branch %{source_branch_name} conflicts using interactive mode to select %{use_ours} or %{use_theirs}, or manually using %{edit_inline}."
 msgstr ""
 
 msgid "Resolve thread"
@@ -57142,9 +57148,6 @@ msgstr ""
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment."
 msgstr ""
 
-msgid "The Gemnasium analyzer has been replaced with a new Dependency Scanning analyzer. %{learn_more_link_start}Learn more%{link_end}."
-msgstr ""
-
 msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."
 msgstr ""
 
@@ -59497,9 +59500,6 @@ msgstr ""
 msgid "To remove the read-only state, reduce git repository and git LFS storage."
 msgstr ""
 
-msgid "To resolve the conflicts, either use interactive mode to select %{use_ours} or %{use_theirs}, or edit the files inline. Commit these changes into %{branch_name}."
-msgstr ""
-
 msgid "To resolve the problem, refine your search criteria. Select a group or project or use double quotes for multiple keywords (for example, %{code_open}\"your search\"%{code_close})."
 msgstr ""
 
@@ -59591,6 +59591,9 @@ msgid "Todos|Approval required"
 msgstr ""
 
 msgid "Todos|Assigned"
+msgstr ""
+
+msgid "Todos|At"
 msgstr ""
 
 msgid "Todos|Build failed"
@@ -59753,6 +59756,12 @@ msgstr ""
 msgid "Todos|Snooze"
 msgstr ""
 
+msgid "Todos|Snooze date can't be in the past."
+msgstr ""
+
+msgid "Todos|Snooze until"
+msgstr ""
+
 msgid "Todos|Snooze..."
 msgstr ""
 
@@ -59780,7 +59789,16 @@ msgstr ""
 msgid "Todos|Sorry, your filter produced no results"
 msgstr ""
 
+msgid "Todos|The date is required."
+msgstr ""
+
 msgid "Todos|The pipeline failed"
+msgstr ""
+
+msgid "Todos|The selected date and time cannot be in the past."
+msgstr ""
+
+msgid "Todos|The time is required."
 msgstr ""
 
 msgid "Todos|There are no done to-do items yet."
@@ -59796,6 +59814,9 @@ msgid "Todos|Undo"
 msgstr ""
 
 msgid "Todos|Unmergeable"
+msgstr ""
+
+msgid "Todos|Until a specific time and date"
 msgstr ""
 
 msgid "Todos|Until later today"
@@ -65985,9 +66006,6 @@ msgid "You are receiving this message because you are a GitLab administrator for
 msgstr ""
 
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
-msgstr ""
-
-msgid "You are using a deprecated Dependency Scanning analyzer"
 msgstr ""
 
 msgid "You are using a trial license. When you use a paid subscription, you'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd}."

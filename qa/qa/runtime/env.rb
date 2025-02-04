@@ -680,6 +680,13 @@ module QA
         enabled?(ENV["QA_IGNORE_RUNTIME_DATA"], default: false)
       end
 
+      # Create uniq test users for each test
+      #
+      # @return [Boolean]
+      def create_unique_test_users?
+        enabled?(ENV["QA_CREATE_UNIQUE_TEST_USERS"], default: true)
+      end
+
       private
 
       # Gitlab host tests are running against

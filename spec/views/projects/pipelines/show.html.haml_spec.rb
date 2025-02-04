@@ -63,57 +63,5 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
 
       expect(rendered).to have_selector('#js-pipeline-tabs')
     end
-
-    context 'when pipeline uses dependency scanning' do
-      let(:build_name) { nil }
-      let(:build) { create(:ci_build, name: build_name) }
-      let(:pipeline) { create(:ci_pipeline, project: project, builds: [build]) }
-
-      shared_examples 'pipeline with deprecated dependency scanning job' do
-        it 'shows deprecation warning' do
-          render
-
-          expect(rendered).to have_content('You are using a deprecated Dependency Scanning analyzer')
-          expect(rendered).to have_content(
-            'The Gemnasium analyzer has been replaced with a new Dependency Scanning analyzer')
-        end
-      end
-
-      context 'when gemnasium job is defined' do
-        let(:build_name) { 'gemnasium' }
-
-        it_behaves_like 'pipeline with deprecated dependency scanning job'
-      end
-
-      context 'when gemnasium-maven job is defined' do
-        let(:build_name) { 'gemnasium-maven' }
-
-        it_behaves_like 'pipeline with deprecated dependency scanning job'
-      end
-
-      context 'when gemnasium-python job is defined' do
-        let(:build_name) { 'gemnasium-python' }
-
-        it_behaves_like 'pipeline with deprecated dependency scanning job'
-      end
-
-      context 'when a gemnasium job is defined using parallel:matrix' do
-        let(:build_name) { 'gemnasium: [variable]' }
-
-        it_behaves_like 'pipeline with deprecated dependency scanning job'
-      end
-
-      context 'when a custom dependency scanning job is defined' do
-        let(:build_name) { 'custom-govulncheck-dependency-scanning-job' }
-
-        it 'shows deprecation warning' do
-          render
-
-          expect(rendered).not_to have_content('You are using a deprecated Dependency Scanning analyzer')
-          expect(rendered).not_to have_content(
-            'The Gemnasium analyzer has been replaced with a new Dependency Scanning analyzer')
-        end
-      end
-    end
   end
 end

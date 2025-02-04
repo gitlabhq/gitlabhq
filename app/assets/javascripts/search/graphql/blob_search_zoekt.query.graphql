@@ -24,7 +24,7 @@ query getBlobSearchQuery(
       chunks {
         lines {
           lineNumber
-          richText
+          highlights
           text
         }
         matchCountInChunk
@@ -34,6 +34,7 @@ query getBlobSearchQuery(
       matchCountTotal
       path
       projectPath
+      language
     }
     matchCount
     perPage

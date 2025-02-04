@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -106,6 +107,27 @@ func TestPreAuthorizeFixedPath_Unauthorized(t *testing.T) {
 	require.Nil(t, resp)
 	preAuthError := &PreAuthorizeFixedPathError{StatusCode: 401, Status: "Unauthorized 401"}
 	require.ErrorAs(t, err, &preAuthError)
+}
+
+func TestPreAuthorizeHandler_NotFound(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		io.WriteString(w, strings.Repeat("a", failureResponseLimit+100))
+	}))
+	defer ts.Close()
+
+	req, err := http.NewRequest("GET", "/original/request/path", nil)
+	require.NoError(t, err)
+
+	api := NewAPI(helper.URLMustParse(ts.URL), "123", http.DefaultTransport)
+
+	handler := api.PreAuthorizeHandler(func(_ http.ResponseWriter, _ *http.Request, _ *Response) {}, "/api/v4/internal/authorized_request")
+
+	rr := httptest.NewRecorder()
+	handler.ServeHTTP(rr, req)
+
+	require.Equal(t, http.StatusNotFound, rr.Code)
 }
 
 func getGeoProxyDataGivenResponse(t *testing.T, givenInternalAPIResponse string) (*GeoProxyData, error) {

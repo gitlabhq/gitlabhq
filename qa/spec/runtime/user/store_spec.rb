@@ -126,6 +126,8 @@ module QA
 
       context "with invalid default admin user credentials" do
         before do
+          mock_user_get(token: default_admin_token, code: 404, body: "error")
+
           allow(Resource::PersonalAccessToken).to receive(:fabricate_via_browser_ui!).and_raise(
             Runtime::User::InvalidCredentialsError
           )
@@ -391,13 +393,41 @@ module QA
     describe "#test_user" do
       subject(:test_user) { described_class.test_user }
 
-      context "when running on live environment" do
-        let(:username) { "username" }
-        let(:password) { "password" }
+      let(:username) { "username" }
+      let(:password) { "password" }
 
+      before do
+        stub_env("GITLAB_USERNAME", username)
+        stub_env("GITLAB_PASSWORD", password)
+      end
+
+      context "when unique test user creation is disabled" do
         before do
-          stub_env("GITLAB_USERNAME", username)
-          stub_env("GITLAB_PASSWORD", password)
+          stub_env("QA_CREATE_UNIQUE_TEST_USERS", false)
+        end
+
+        context "with user variables set" do
+          it "returns user with configured credentials" do
+            expect(test_user.username).to eq(username)
+            expect(test_user.password).to eq(password)
+          end
+        end
+
+        context "without user variables set" do
+          let(:username) { nil }
+          let(:password) { nil }
+
+          it "raises error" do
+            expect { test_user }.to raise_error <<~ERR
+              Missing global test user credentials,
+              please set 'GITLAB_USERNAME' and 'GITLAB_PASSWORD' environment variables
+            ERR
+          end
+        end
+      end
+
+      context "when running on live environment" do
+        before do
           stub_env("GITLAB_QA_ACCESS_TOKEN", nil)
 
           allow(Runtime::Env).to receive(:running_on_dot_com?).and_return(true)

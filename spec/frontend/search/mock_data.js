@@ -982,35 +982,43 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 1,
-                  richText:
-                    'var tests = Object.keys(window.__karma__.files).filter(function (file) {',
+                  highlights: [4, 9],
                   text: 'var tests = Object.keys(window.__karma__.files).filter(function (file) {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 2,
-                  richText: '  return (/_spec\\.js$/.\u003cb\u003etest\u003c/b\u003e(file));',
+                  highlights: [4, 9],
                   text: '  return (/_spec\\.js$/.test(file));',
                   __typename: 'SearchBlobLine',
                 },
-                { lineNumber: 3, richText: '});', text: '});', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 3,
+                  highlights: [4, 9],
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
               ],
               matchCountInChunk: 1,
               __typename: 'SearchBlobChunk',
             },
             {
               lines: [
-                { lineNumber: 11, richText: '', text: '', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 11,
+                  highlights: [4, 9],
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
                 {
                   lineNumber: 12,
-                  richText:
-                    '    // start \u003cb\u003etest\u003c/b\u003e run, once Require.js is done',
+                  highlights: [4, 9],
                   text: '    // start test run, once Require.js is done',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 13,
-                  richText: '    callback: window.__karma__.start',
+                  highlights: [4, 9],
                   text: '    callback: window.__karma__.start',
                   __typename: 'SearchBlobLine',
                 },
@@ -1022,6 +1030,7 @@ export const mockGetBlobSearchQuery = {
           fileUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/test-main.js',
           matchCount: 3,
           matchCountTotal: 3,
+          language: 'Javascript',
           path: 'test/test-main.js',
           projectPath: 'flightjs/Flight',
           __typename: 'SearchBlobFileType',
@@ -1033,20 +1042,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 5,
-                  richText: '  var Component = (function () {',
+                  highlights: [4, 9],
                   text: '  var Component = (function () {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 6,
-                  richText:
-                    '    return defineComponent(function fn\u003cb\u003eTest\u003c/b\u003e() {',
+                  highlights: [4, 9],
                   text: '    return defineComponent(function fnTest() {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 7,
-                  richText: '    });',
+                  highlights: null,
                   text: '    });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1058,18 +1066,22 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 16,
-                  richText:
-                    '    it(\'should call the "before" function before the base function and return the base function\', function () {',
+                  highlights: [4, 9],
                   text: '    it(\'should call the "before" function before the base function and return the base function\', function () {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 17,
-                  richText: '      var \u003cb\u003etest\u003c/b\u003e1 = \u0026quot;\u0026quot;;',
+                  highlights: [4, 9],
                   text: '      var test1 = "";',
                   __typename: 'SearchBlobLine',
                 },
-                { lineNumber: 18, richText: '', text: '', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 18,
+                  highlights: [4, 9],
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
               ],
               matchCountInChunk: 1,
               __typename: 'SearchBlobChunk',
@@ -1078,20 +1090,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 19,
-                  richText: '      function base(arg) {',
+                  highlights: [4, 9],
                   text: '      function base(arg) {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 20,
-                  richText:
-                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;Base: \u0026#39; + arg;',
+                  highlights: [4, 9],
                   text: "        test1 += 'Base: ' + arg;",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 21,
-                  richText: "        return 'base';",
+                  highlights: null,
                   text: "        return 'base';",
                   __typename: 'SearchBlobLine',
                 },
@@ -1103,20 +1114,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 24,
-                  richText: '      var advised = advice.before(base, function (arg) {',
+                  highlights: [4, 9],
                   text: '      var advised = advice.before(base, function (arg) {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 25,
-                  richText:
-                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026quot;Before: \u0026quot; + arg + \u0026#39;, \u0026#39;;',
+                  highlights: [4, 9],
                   text: '        test1 += "Before: " + arg + \', \';',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 26,
-                  richText: "        return 'before';",
+                  highlights: null,
                   text: "        return 'before';",
                   __typename: 'SearchBlobLine',
                 },
@@ -1128,20 +1138,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 29,
-                  richText: "      expect(advised('Dan')).toBe('base');",
+                  highlights: null,
                   text: "      expect(advised('Dan')).toBe('base');",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 30,
-                  richText:
-                    '      expect(\u003cb\u003etest\u003c/b\u003e1).toBe(\u0026#39;Before: Dan, Base: Dan\u0026#39;);',
+                  highlights: [4, 9],
                   text: "      expect(test1).toBe('Before: Dan, Base: Dan');",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 31,
-                  richText: '    });',
+                  highlights: null,
                   text: '    });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1153,18 +1162,22 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 33,
-                  richText:
-                    '    it(\'should call the "after" function after the base function, but return the base function\', function () {',
+                  highlights: [4, 9],
                   text: '    it(\'should call the "after" function after the base function, but return the base function\', function () {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 34,
-                  richText: '      var \u003cb\u003etest\u003c/b\u003e1 = \u0026quot;\u0026quot;;',
+                  highlights: [4, 9],
                   text: '      var test1 = "";',
                   __typename: 'SearchBlobLine',
                 },
-                { lineNumber: 35, richText: '', text: '', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 35,
+                  highlights: [4, 9],
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
               ],
               matchCountInChunk: 1,
               __typename: 'SearchBlobChunk',
@@ -1173,20 +1186,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 36,
-                  richText: '      function base(arg) {',
+                  highlights: null,
                   text: '      function base(arg) {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 37,
-                  richText:
-                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;Base: \u0026#39; + arg;',
+                  highlights: [4, 9],
                   text: "        test1 += 'Base: ' + arg;",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 38,
-                  richText: "        return 'base';",
+                  highlights: null,
                   text: "        return 'base';",
                   __typename: 'SearchBlobLine',
                 },
@@ -1198,20 +1210,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 41,
-                  richText: '      var advised = advice.after(base, function (arg) {',
+                  highlights: [4, 9],
                   text: '      var advised = advice.after(base, function (arg) {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 42,
-                  richText:
-                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026quot;, After: \u0026quot; + arg;',
+                  highlights: [4, 9],
                   text: '        test1 += ", After: " + arg;',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 43,
-                  richText: "        return 'after';",
+                  highlights: null,
                   text: "        return 'after';",
                   __typename: 'SearchBlobLine',
                 },
@@ -1223,20 +1234,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 46,
-                  richText: "      expect(advised('Dan')).toBe('base');",
+                  highlights: [4, 9],
                   text: "      expect(advised('Dan')).toBe('base');",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 47,
-                  richText:
-                    '      expect(\u003cb\u003etest\u003c/b\u003e1).toBe(\u0026#39;Base: Dan, After: Dan\u0026#39;);',
+                  highlights: [4, 9],
                   text: "      expect(test1).toBe('Base: Dan, After: Dan');",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 48,
-                  richText: '    });',
+                  highlights: null,
                   text: '    });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1248,18 +1258,22 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 50,
-                  richText:
-                    '    it(\'should wrap the the first "around" argument with the second argument\', function () {',
+                  highlights: [4, 9],
                   text: '    it(\'should wrap the the first "around" argument with the second argument\', function () {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 51,
-                  richText: '      var \u003cb\u003etest\u003c/b\u003e1 = \u0026quot;\u0026quot;;',
+                  highlights: null,
                   text: '      var test1 = "";',
                   __typename: 'SearchBlobLine',
                 },
-                { lineNumber: 52, richText: '', text: '', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 52,
+                  highlights: [4, 9],
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
               ],
               matchCountInChunk: 1,
               __typename: 'SearchBlobChunk',
@@ -1268,20 +1282,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 53,
-                  richText: '      function base(arg) {',
+                  highlights: [4, 9],
                   text: '      function base(arg) {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 54,
-                  richText:
-                    '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;Base: \u0026#39; + arg;',
+                  highlights: [4, 9],
                   text: "        test1 += 'Base: ' + arg;",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 55,
-                  richText: "        return 'base';",
+                  highlights: null,
                   text: "        return 'base';",
                   __typename: 'SearchBlobLine',
                 },
@@ -1293,31 +1306,31 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 58,
-                  richText: '      var advised = advice.around(base, function (orig, arg) {',
+                  highlights: [4, 9],
                   text: '      var advised = advice.around(base, function (orig, arg) {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 59,
-                  richText: '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;|\u0026#39;;',
+                  highlights: [4, 9],
                   text: "        test1 += '|';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 60,
-                  richText: '        orig(arg);',
+                  highlights: null,
                   text: '        orig(arg);',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 61,
-                  richText: '        \u003cb\u003etest\u003c/b\u003e1 += \u0026#39;|\u0026#39;;',
+                  highlights: [4, 9],
                   text: "        test1 += '|';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 62,
-                  richText: "        return 'around';",
+                  highlights: null,
                   text: "        return 'around';",
                   __typename: 'SearchBlobLine',
                 },
@@ -1329,20 +1342,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 65,
-                  richText: "      expect(advised('Dan')).toBe('around');",
+                  highlights: [4, 9],
                   text: "      expect(advised('Dan')).toBe('around');",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 66,
-                  richText:
-                    '      expect(\u003cb\u003etest\u003c/b\u003e1).toBe(\u0026#39;|Base: Dan|\u0026#39;);',
+                  highlights: [4, 9],
                   text: "      expect(test1).toBe('|Base: Dan|');",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 67,
-                  richText: '    });',
+                  highlights: null,
                   text: '    });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1354,44 +1366,43 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 71,
-                  richText: '        var subject = {',
+                  highlights: [4, 9],
                   text: '        var subject = {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 72,
-                  richText: '          \u003cb\u003etest\u003c/b\u003ea: \u0026#39;\u0026#39;,',
+                  highlights: [4, 9],
                   text: "          testa: '',",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 73,
-                  richText: '          \u003cb\u003etest\u003c/b\u003eb: \u0026#39;\u0026#39;,',
+                  highlights: [4, 9],
                   text: "          testb: '',",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 74,
-                  richText: '          \u003cb\u003etest\u003c/b\u003ec: \u0026#39;\u0026#39;,',
+                  highlights: [4, 9],
                   text: "          testc: '',",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 75,
-                  richText: '          a: function () {',
+                  highlights: null,
                   text: '          a: function () {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 76,
-                  richText:
-                    '            this.\u003cb\u003etest\u003c/b\u003ea += \u0026#39;A!\u0026#39;;',
+                  highlights: [4, 9],
                   text: "            this.testa += 'A!';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 77,
-                  richText: '          },',
+                  highlights: null,
                   text: '          },',
                   __typename: 'SearchBlobLine',
                 },
@@ -1403,20 +1414,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 78,
-                  richText: '          b: function () {',
+                  highlights: [4, 9],
                   text: '          b: function () {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 79,
-                  richText:
-                    '            this.\u003cb\u003etest\u003c/b\u003eb += \u0026#39;B!\u0026#39;;',
+                  highlights: [4, 9],
                   text: "            this.testb += 'B!';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 80,
-                  richText: '          },',
+                  highlights: null,
                   text: '          },',
                   __typename: 'SearchBlobLine',
                 },
@@ -1428,20 +1438,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 81,
-                  richText: '          c: function () {',
+                  highlights: null,
                   text: '          c: function () {',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 82,
-                  richText:
-                    '            this.\u003cb\u003etest\u003c/b\u003ec += \u0026#39;C!\u0026#39;;',
+                  highlights: [4, 9],
                   text: "            this.testc += 'C!';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 83,
-                  richText: '          }',
+                  highlights: null,
                   text: '          }',
                   __typename: 'SearchBlobLine',
                 },
@@ -1453,20 +1462,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 88,
-                  richText: "        subject.before('a', function () {",
+                  highlights: null,
                   text: "        subject.before('a', function () {",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 89,
-                  richText:
-                    '          this.\u003cb\u003etest\u003c/b\u003ea += \u0026#39;BEFORE!\u0026#39;;',
+                  highlights: [4, 9],
                   text: "          this.testa += 'BEFORE!';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 90,
-                  richText: '        });',
+                  highlights: null,
                   text: '        });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1478,20 +1486,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 92,
-                  richText: "        subject.after('b', function () {",
+                  highlights: null,
                   text: "        subject.after('b', function () {",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 93,
-                  richText:
-                    '          this.\u003cb\u003etest\u003c/b\u003eb += \u0026#39;AFTER!\u0026#39;;',
+                  highlights: [4, 9],
                   text: "          this.testb += 'AFTER!';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 94,
-                  richText: '        });',
+                  highlights: null,
                   text: '        });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1503,33 +1510,31 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 96,
-                  richText: "        subject.around('c', function (orig) {",
+                  highlights: [4, 9],
                   text: "        subject.around('c', function (orig) {",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 97,
-                  richText:
-                    '          this.\u003cb\u003etest\u003c/b\u003ec += \u0026#39;|\u0026#39;;',
+                  highlights: [4, 9],
                   text: "          this.testc += '|';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 98,
-                  richText: '          orig.call(subject);',
+                  highlights: null,
                   text: '          orig.call(subject);',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 99,
-                  richText:
-                    '          this.\u003cb\u003etest\u003c/b\u003ec += \u0026#39;|\u0026#39;;',
+                  highlights: [4, 9],
                   text: "          this.testc += '|';",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 100,
-                  richText: '        });',
+                  highlights: [4, 9],
                   text: '        });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1541,18 +1546,22 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 102,
-                  richText: '        subject.a();',
+                  highlights: [4, 9],
                   text: '        subject.a();',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 103,
-                  richText:
-                    '        expect(subject.\u003cb\u003etest\u003c/b\u003ea).toBe(\u0026#39;BEFORE!A!\u0026#39;);',
+                  highlights: [4, 9],
                   text: "        expect(subject.testa).toBe('BEFORE!A!');",
                   __typename: 'SearchBlobLine',
                 },
-                { lineNumber: 104, richText: '', text: '', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 104,
+                  highlights: [4, 9],
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
               ],
               matchCountInChunk: 1,
               __typename: 'SearchBlobChunk',
@@ -1561,18 +1570,22 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 105,
-                  richText: '        subject.b();',
+                  highlights: [4, 9],
                   text: '        subject.b();',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 106,
-                  richText:
-                    '        expect(subject.\u003cb\u003etest\u003c/b\u003eb).toBe(\u0026#39;B!AFTER!\u0026#39;);',
+                  highlights: [4, 9],
                   text: "        expect(subject.testb).toBe('B!AFTER!');",
                   __typename: 'SearchBlobLine',
                 },
-                { lineNumber: 107, richText: '', text: '', __typename: 'SearchBlobLine' },
+                {
+                  lineNumber: 107,
+                  highlights: [4, 9],
+                  text: '  return (/_spec\\.js$/.test(file));',
+                  __typename: 'SearchBlobLine',
+                },
               ],
               matchCountInChunk: 1,
               __typename: 'SearchBlobChunk',
@@ -1581,20 +1594,19 @@ export const mockGetBlobSearchQuery = {
               lines: [
                 {
                   lineNumber: 108,
-                  richText: '        subject.c();',
+                  highlights: [4, 9],
                   text: '        subject.c();',
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 109,
-                  richText:
-                    '        expect(subject.\u003cb\u003etest\u003c/b\u003ec).toBe(\u0026#39;|C!|\u0026#39;);',
+                  highlights: [4, 9],
                   text: "        expect(subject.testc).toBe('|C!|');",
                   __typename: 'SearchBlobLine',
                 },
                 {
                   lineNumber: 110,
-                  richText: '      });',
+                  highlights: [4, 9],
                   text: '      });',
                   __typename: 'SearchBlobLine',
                 },
@@ -1606,6 +1618,7 @@ export const mockGetBlobSearchQuery = {
           fileUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/spec/fn_spec.js',
           matchCount: 27,
           matchCountTotal: 27,
+          language: 'Javascript',
           path: 'test/spec/fn_spec.js',
           projectPath: 'flightjs/Flight',
           __typename: 'SearchBlobFileType',
@@ -1616,6 +1629,7 @@ export const mockGetBlobSearchQuery = {
           fileUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/spec/utils_spec.js',
           matchCount: 1,
           matchCountTotal: 1,
+          language: 'Javascript',
           path: 'test/spec/test_utils_spec.js',
           projectPath: 'flightjs/Flight',
           __typename: 'SearchBlobFileType',
@@ -1636,17 +1650,22 @@ export const mockDataForBlobBody = {
       lines: [
         {
           lineNumber: 1,
-          richText: '',
+          highlights: [4, 9],
           text: '',
           __typename: 'SearchBlobLine',
         },
         {
           lineNumber: 2,
-          richText: 'test1',
+          highlights: [4, 9],
           text: 'test1',
           __typename: 'SearchBlobLine',
         },
-        { lineNumber: 3, richText: '', text: '', __typename: 'SearchBlobLine' },
+        {
+          lineNumber: 3,
+          highlights: [4, 9],
+          text: '  return (/_spec\\.js$/.test(file));',
+          __typename: 'SearchBlobLine',
+        },
       ],
       matchCountInChunk: 1,
       __typename: 'SearchBlobChunk',
@@ -1655,19 +1674,19 @@ export const mockDataForBlobBody = {
       lines: [
         {
           lineNumber: 11,
-          richText: '',
+          highlights: [4, 9],
           text: '',
           __typename: 'SearchBlobLine',
         },
         {
           lineNumber: 12,
-          richText: 'test2',
+          highlights: [4, 9],
           text: 'test2',
           __typename: 'SearchBlobLine',
         },
         {
           lineNumber: 13,
-          richText: '',
+          highlights: [4, 9],
           text: '',
           __typename: 'SearchBlobLine',
         },
@@ -1679,19 +1698,19 @@ export const mockDataForBlobBody = {
       lines: [
         {
           lineNumber: 11,
-          richText: '',
+          highlights: [4, 9],
           text: '',
           __typename: 'SearchBlobLine',
         },
         {
           lineNumber: 12,
-          richText: 'test3',
+          highlights: [4, 9],
           text: 'test3',
           __typename: 'SearchBlobLine',
         },
         {
           lineNumber: 13,
-          richText: '',
+          highlights: [4, 9],
           text: '',
           __typename: 'SearchBlobLine',
         },
@@ -1703,19 +1722,19 @@ export const mockDataForBlobBody = {
       lines: [
         {
           lineNumber: 11,
-          richText: '',
+          highlights: [4, 9],
           text: '',
           __typename: 'SearchBlobLine',
         },
         {
           lineNumber: 12,
-          richText: 'test4',
+          highlights: [4, 9],
           text: 'test4',
           __typename: 'SearchBlobLine',
         },
         {
           lineNumber: 13,
-          richText: '',
+          highlights: [4, 9],
           text: '',
           __typename: 'SearchBlobLine',
         },
@@ -1729,7 +1748,45 @@ export const mockDataForBlobBody = {
   matchCountTotal: 2,
   path: 'file/test.js',
   projectPath: 'Testjs/Test',
+  language: 'Javascript',
   __typename: 'SearchBlobFileType',
+};
+
+export const mockDataForBlobChunk = {
+  chunk: {
+    lines: [
+      {
+        lineNumber: '1',
+        highlights: [[6, 10]],
+        text: 'const test = 1;',
+        __typename: 'SearchBlobLine',
+      },
+      {
+        lineNumber: '2',
+        highlights: [[9, 13]],
+        text: 'function test() {',
+        __typename: 'SearchBlobLine',
+      },
+      {
+        lineNumber: '3',
+        highlights: [[13, 17]],
+        text: 'console.log("test")',
+        __typename: 'SearchBlobLine',
+      },
+      {
+        lineNumber: '4',
+        highlights: [[]],
+        text: '}',
+        __typename: 'SearchBlobLine',
+      },
+    ],
+    matchCountInChunk: 1,
+    __typename: 'SearchBlobChunk',
+  },
+  blameLink: 'https://gitlab.com/blame/test.js',
+  fileUrl: 'https://gitlab.com/file/test.js',
+  position: 1,
+  language: 'Javascript',
 };
 
 export const mockSourceBranches = [

@@ -19,8 +19,10 @@ module Resolvers
       def resolve(**args)
         return if resource_parent.nil?
 
+        work_item_finder = finder(prepare_finder_params(args))
+
         Gitlab::IssuablesCountForState.new(
-          finder(args),
+          work_item_finder,
           resource_parent,
           fast_fail: true,
           store_in_redis_cache: true

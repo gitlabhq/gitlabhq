@@ -15,7 +15,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 
 ## Discover certificate-based clusters
 
-Gets certificate-based clusters that are registered to a group, subgroup, or project.
+Gets certificate-based clusters that are registered to a group, subgroup, or project. Disabled and enabled clusters are also returned.
 
 ```plaintext
 GET /discover-cert-based-clusters

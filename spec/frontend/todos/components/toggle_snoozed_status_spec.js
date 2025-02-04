@@ -11,6 +11,8 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useFakeDate } from 'helpers/fake_date';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
+import { stubComponent } from 'helpers/stub_component';
+import SnoozeTodoModal from '~/todos/components/snooze_todo_modal.vue';
 
 Vue.use(VueApollo);
 
@@ -22,6 +24,11 @@ describe('ToggleSnoozedStatus', () => {
   };
   const mockCurrentTime = new Date('2024-12-18T13:24:00');
   const mockToastShow = jest.fn();
+  const SnoozeTodoModalStub = stubComponent(SnoozeTodoModal, {
+    methods: {
+      show: jest.fn(),
+    },
+  });
 
   useFakeDate(mockCurrentTime);
 
@@ -78,6 +85,9 @@ describe('ToggleSnoozedStatus', () => {
           show: mockToastShow,
         },
       },
+      stubs: {
+        SnoozeTodoModal: SnoozeTodoModalStub,
+      },
     });
   };
 
@@ -124,6 +134,13 @@ describe('ToggleSnoozedStatus', () => {
         ],
         name: 'Snooze',
       },
+      {
+        items: [
+          expect.objectContaining({
+            text: 'Until a specific time and date',
+          }),
+        ],
+      },
     ]);
   });
 
@@ -163,6 +180,16 @@ describe('ToggleSnoozedStatus', () => {
       unmockTracking();
     },
   );
+
+  it('opens the custom snooze todo modal when clicking on the `Until a specific time and date` option', () => {
+    createComponent({ props: { isSnoozed: false, isPending: true } });
+
+    expect(SnoozeTodoModalStub.methods.show).not.toHaveBeenCalled();
+
+    findSnoozeDropdown().props('items')[1].items[0].action();
+
+    expect(SnoozeTodoModalStub.methods.show).toHaveBeenCalled();
+  });
 
   it('shows an error when the to snooze mutation returns some errors', async () => {
     createComponent({

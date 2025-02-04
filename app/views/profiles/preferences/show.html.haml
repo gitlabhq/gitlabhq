@@ -46,7 +46,7 @@
     id: 'syntax-highlighting-theme',
     options: { class: 'js-preferences-form' }) do |c|
     - c.with_description do
-      = s_('Preferences|Customize the appearance of the syntax.')
+      = s_('Preferences|Choose the syntax highlighting theme used when viewing or editing code in GitLab.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do

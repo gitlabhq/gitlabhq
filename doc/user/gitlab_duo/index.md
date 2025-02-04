@@ -58,6 +58,8 @@ To improve your workflow while authoring code, try these features:
   - [The IDE](../gitlab_duo_chat/examples.md#explain-selected-code).
   - [A file](../../user/project/repository/code_explain.md).
   - [A merge request](../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
+  - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/1izKaLmmaCA?si=O2HDokLLujRro_3O)
+    <!-- Video published on 2023-11-18 -->
 - [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide): Test your code by generating tests.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide): Improve or refactor the selected code.

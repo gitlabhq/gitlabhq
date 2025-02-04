@@ -297,8 +297,8 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
   ```
 
-NOTE:
-If your username includes special characters like `@`, you must escape them with a backslash (`\`) to prevent authentication problems.
+  NOTE:
+  If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
 
   Create the Docker JSON configuration content as follows:
 

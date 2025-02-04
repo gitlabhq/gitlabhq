@@ -58,7 +58,7 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_T
 ```
 
 To nest strings in the query string,
-wrap the data in single quotes or escape the strings with `\\`:
+wrap the data in single quotes or escape the strings with <code>&#92;&#92;</code>:
 
 ```shell
 curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_TOKEN" \

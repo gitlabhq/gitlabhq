@@ -167,7 +167,8 @@ You can snooze to-do items to temporarily hide them from your main To-Do List. T
 To snooze a to-do item:
 
 1. In your To-Do List, next to the to-do item you want to snooze, select Snooze (**{clock}**).
-1. Choose one of the preset snooze durations:
+1. If you wish to snooze the to-do item until a specific time and date, select the
+   `Until a specific time and date` option. Otherwise, choose one of the preset snooze durations:
    - For one hour
    - Until later today (4 hours later)
    - Until tomorrow (tomorrow at 8 AM local time)

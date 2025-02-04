@@ -3,7 +3,6 @@
 - breadcrumb_title "##{@pipeline.id}"
 - page_title _('Pipeline')
 - pipeline_has_errors = @pipeline.builds.empty? && @pipeline.error_messages.any?
-- pipeline_has_deprecated_dependency_scanning_enabled = @pipeline.builds.any? { |build| build.name.starts_with?('gemnasium') }
 - add_page_specific_style 'page_bundles/pipeline'
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
@@ -27,13 +26,4 @@
             = s_("Pipelines|Go to the pipeline editor")
 
   - else
-    - if pipeline_has_deprecated_dependency_scanning_enabled
-      = render Pajamas::AlertComponent.new(title: _('You are using a deprecated Dependency Scanning analyzer'),
-        variant: :warning,
-        dismissible: true) do |c|
-        - c.with_body do
-          - help_page_link = help_page_url('user/application_security/dependency_scanning/dependency_scanning_sbom/index.md')
-          - learn_more_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_link }
-          = html_escape(s_('The Gemnasium analyzer has been replaced with a new Dependency Scanning analyzer. %{learn_more_link_start}Learn more%{link_end}.')) % { learn_more_link_start: learn_more_link, link_end: '</a>'.html_safe }
-
     #js-pipeline-tabs{ data: js_pipeline_tabs_data(@project, @pipeline, @current_user) }

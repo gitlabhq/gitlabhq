@@ -11,7 +11,7 @@ E2E test framework utilizes administrator user for certain resource creation, li
 
 - `GITLAB_ADMIN_USERNAME`
 - `GITLAB_ADMIN_PASSWORD`
-- `GITLAB_QA_ADMIN_ACCESS_TOKEN`
+- `GITLAB_QA_ADMIN_ACCESS_TOKEN`: this variable is optional and would be created via UI using administrator credentials when not set.
 
 Administrator user can be accessed via global accessor method `QA::Runtime::User::Store.admin_user`.
 
@@ -21,7 +21,11 @@ All tests running against one of the [test-pipelines](../test_pipelines.md) auto
 
 ### Using single user
 
-It is advised to not run all tests using single user but certain environments impose limitations for generating new user for each test. In such case, `test user` is initialized using credentials from environments variables - `GITLAB_USERNAME` and `GITLAB_PASSWORD`. Additionally, to provide a pre-configured personal access token for test user, `GITLAB_QA_ACCESS_TOKEN` variable can be set.
+It is advised to not run all tests using single user but certain environments impose limitations for generating new user for each test. In order to forcefully disable unique test user creation, environment variable `QA_CREATE_UNIQUE_TEST_USERS` should be set to false. Example reason why unique user creation might be disabled:
+
+- environment does have administrator user available and can create new users but it has only one top level group with ultimate license. In such case, a single user which is a member of this group has to be used due to new unique users not having access to the common group with ultimate license.
+
+In such case, `test user` is initialized using credentials from environments variables - `GITLAB_USERNAME` and `GITLAB_PASSWORD`. Additionally, to provide a pre-configured personal access token for test user, `GITLAB_QA_ACCESS_TOKEN` variable can be set.
 
 ### No admin environments
 
