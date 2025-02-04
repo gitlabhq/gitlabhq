@@ -35,18 +35,26 @@ module Resolvers
         contributed_projects = ContributedProjectsFinder.new(
           user: user,
           current_user: current_user,
-          params: {
-            search: args[:search],
-            sort: args[:sort],
-            min_access_level: args[:min_access_level],
-            programming_language_name: args[:programming_language_name]
-          }
+          params: finder_params(args)
         ).execute
 
         return apply_lookahead(contributed_projects) if args[:include_personal]
 
         apply_lookahead(contributed_projects.joined(user))
       end
+
+      private
+
+      def finder_params(args)
+        {
+          search: args[:search],
+          sort: args[:sort],
+          min_access_level: args[:min_access_level],
+          programming_language_name: args[:programming_language_name]
+        }
+      end
     end
   end
 end
+
+Resolvers::Projects::UserContributedProjectsResolver.prepend_mod

@@ -7,6 +7,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Dedicated architecture
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab Dedicated
+
 This page provides a set of architectural documents and diagrams for GitLab Dedicated.
 
 ## High-level overview

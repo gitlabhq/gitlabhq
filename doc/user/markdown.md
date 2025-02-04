@@ -13,29 +13,6 @@ DETAILS:
 When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
 The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
 
-For example, in Markdown, an unordered list looks like this:
-
-```markdown
-- Cat
-- Dog
-- Turtle
-```
-
-When this list is rendered, it looks like this:
-
-- Cat
-- Dog
-- Turtle
-
-NOTE:
-As this Markdown specification is **valid for GitLab only**, you should
-[view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
-
-We do our best to render the Markdown faithfully here, however the [GitLab documentation website](https://docs.gitlab.com)
-and the [GitLab handbook](https://handbook.gitlab.com) use a different Markdown processor.
-
-## Where you can use GitLab Flavored Markdown
-
 You can use GitLab Flavored Markdown in the following areas:
 
 - Comments
@@ -50,10 +27,15 @@ You can use GitLab Flavored Markdown in the following areas:
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
-Support for GitLab Flavored Markdown preview in the Web IDE is proposed in
-[issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
+NOTE:
+As this Markdown specification is **valid for GitLab only**, you should
+[view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
 
-### Differences between GitLab Flavored Markdown and standard Markdown
+We do our best to render the Markdown faithfully here, however the
+[GitLab documentation website](https://docs.gitlab.com) and the [GitLab handbook](https://handbook.gitlab.com)
+use a different Markdown processor.
+
+## Differences with standard Markdown
 
 <!--
 Use this topic to list features that are not present in standard Markdown.
@@ -81,7 +63,7 @@ The following features are not found in standard Markdown:
 - [GitLab-specific references](#gitlab-specific-references)
 - [Includes](#includes)
 - [Inline diffs](#inline-diff)
-- [Math equations and symbols written in LaTeX](#math)
+- [Math equations and symbols written in LaTeX](#math-equations)
 - [Strikethrough](#emphasis)
 - [Table of Contents](#table-of-contents)
 - [Tables](#tables)
@@ -120,6 +102,72 @@ If there is no otherwise meaningful value for a cell, consider entering **N/A** 
 
 Describe the image or video in the `[alt text]`. Make the description accurate, succinct, and unique.
 Don't use `image of` or `video of` in the description. For more information, see [WebAim Alternative Text](https://webaim.org/techniques/alttext/).
+
+## Headings
+
+Create headings from 1 to 6 by using `#`.
+
+```markdown
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+```
+
+Alternatively, for H1 and H2, use an underline style:
+
+```markdown
+Alt-H1
+======
+
+Alt-H2
+------
+```
+
+### Heading IDs and links
+
+> - Heading link generation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/440733) in GitLab 17.0.
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#heading-ids-and-links).
+
+All Markdown-rendered headings automatically
+get IDs that can be linked to, except in comments.
+
+On hover, a link to those IDs becomes visible to make it easier to copy the link to
+the heading to use it somewhere else.
+
+The IDs are generated from the content of the heading according to the following rules:
+
+1. All text is converted to lowercase.
+1. All non-word text (such as punctuation or HTML) is removed.
+1. All spaces are converted to hyphens.
+1. Two or more hyphens in a row are converted to one.
+1. If a heading with the same ID has already been generated, a unique
+   incrementing number is appended, starting at 1.
+
+Example:
+
+```markdown
+# This heading has spaces in it
+## This heading has a :thumbsup: in it
+# This heading has Unicode in it: 한글
+## This heading has spaces in it
+### This heading has spaces in it
+## This heading has 3.5 in it (and parentheses)
+## This heading has  multiple spaces and --- hyphens
+```
+
+Would generate the following link IDs:
+
+1. `this-heading-has-spaces-in-it`
+1. `this-heading-has-a-thumbsup-in-it`
+1. `this-heading-has-unicode-in-it-한글`
+1. `this-heading-has-spaces-in-it-1`
+1. `this-heading-has-spaces-in-it-2`
+1. `this-heading-has-35-in-it-and-parentheses`
+1. `this-heading-has--multiple-spaces-and-----hyphens`
 
 ## Line breaks
 
@@ -205,7 +253,7 @@ Strikethrough with double tildes. ~~Scratch this.~~
 
 <!-- markdownlint-enable MD050 -->
 
-### Multiple underscores in words and mid-word emphasis
+### Mid-word emphasis
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#multiple-underscores-in-words).
 
@@ -286,262 +334,25 @@ each backtick with a backslash <code>&#92;</code>:
 
 ![Inline diff with mixed formatting, as rendered by the GitLab interface](img/inline_diff_02_v13_3.png)
 
-## Headings
+### Horizontal rule
 
-Create headings from 1 to 6 by using `#`.
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#horizontal-rule).
 
-```markdown
-# H1
-## H2
-### H3
-#### H4
-##### H5
-###### H6
-```
-
-Alternatively, for H1 and H2, use an underline style:
+Create a horizontal rule by using three or more hyphens, asterisks, or underscores:
 
 ```markdown
-Alt-H1
-======
+---
 
-Alt-H2
-------
+***
+
+___
 ```
 
-### Heading IDs and links
+---
 
-> - Heading link generation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/440733) in GitLab 17.0.
+---
 
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#heading-ids-and-links).
-
-All Markdown-rendered headings automatically
-get IDs that can be linked to, except in comments.
-
-On hover, a link to those IDs becomes visible to make it easier to copy the link to
-the heading to use it somewhere else.
-
-The IDs are generated from the content of the heading according to the following rules:
-
-1. All text is converted to lowercase.
-1. All non-word text (such as punctuation or HTML) is removed.
-1. All spaces are converted to hyphens.
-1. Two or more hyphens in a row are converted to one.
-1. If a heading with the same ID has already been generated, a unique
-   incrementing number is appended, starting at 1.
-
-Example:
-
-```markdown
-# This heading has spaces in it
-## This heading has a :thumbsup: in it
-# This heading has Unicode in it: 한글
-## This heading has spaces in it
-### This heading has spaces in it
-## This heading has 3.5 in it (and parentheses)
-## This heading has  multiple spaces and --- hyphens
-```
-
-Would generate the following link IDs:
-
-1. `this-heading-has-spaces-in-it`
-1. `this-heading-has-a-thumbsup-in-it`
-1. `this-heading-has-unicode-in-it-한글`
-1. `this-heading-has-spaces-in-it-1`
-1. `this-heading-has-spaces-in-it-2`
-1. `this-heading-has-35-in-it-and-parentheses`
-1. `this-heading-has--multiple-spaces-and-----hyphens`
-
-## Links
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#links).
-
-You can create links two ways: inline-style and reference-style. For example:
-
-<!--
-The following codeblock uses HTML to skip the Vale ReferenceLinks test.
-Do not change it back to a markdown codeblock.
--->
-
-<pre class="highlight"><code>- This line shows an [inline-style link](https://www.google.com)
-- This line shows a [link to a repository file in the same directory](permissions.md)
-- This line shows a [relative link to a file one directory higher](../index.md)
-- This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
-
-Using heading ID anchors:
-
-- This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-features-permissions)
-- This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
-
-Using references:
-
-- This line shows a [reference-style link, see below][Arbitrary case-insensitive reference text]
-- You can [use numbers for reference-style link definitions, see below][1]
-- Or leave it empty and use the [link text itself][], see below.
-
-Some text to show that the reference links can follow later.
-
-&#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
-&#91;1]: https://slashdot.org
-&#91;link text itself]: https://about.gitlab.com/
-</code></pre>
-
-- This line shows an [inline-style link](https://www.google.com)
-- This line shows a [link to a repository file in the same directory](permissions.md)
-- This line shows a [relative link to a file one directory higher](../index.md)
-- This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
-
-Using heading ID anchors:
-
-- This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-members-permissions)
-- This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
-
-Using references:
-
-<!--
-The example below uses in-line links to pass the Vale ReferenceLinks test.
-Do not change to reference style links.
--->
-
-- This line is a [reference-style link, see below](https://www.mozilla.org/en-US/)
-- You can [use numbers for reference-style link definitions, see below](https://slashdot.org)
-- Or leave it empty and use the [link text itself](https://about.gitlab.com/), see below.
-
-Some text to show that the reference links can follow later.
-
-NOTE:
-Relative links do not allow the referencing of project files in a wiki
-page, or a wiki page in a project file. The reason: a wiki is always
-in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`
-points the link to `wikis/style` only when the link is inside of a wiki Markdown file.
-
-### URL auto-linking
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#url-auto-linking).
-
-Almost any URL you put into your text is auto-linked:
-
-```markdown
-- https://www.google.com
-- https://www.google.com
-- ftp://ftp.us.debian.org/debian/
-- smb://foo/bar/baz
-- irc://irc.freenode.net/
-- http://localhost:3000
-```
-
-- <https://www.google.com>
-- <https://www.google.com>
-- <ftp://ftp.us.debian.org/debian/>
-- <a href="smb://foo/bar/baz/">smb://foo/bar/baz</a>
-- <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
-- <http://localhost:3000>
-
-## Multimedia
-
-Embed images, videos, and audio.
-You can add multimedia using Markdown syntax to link files, set dimensions, and display them inline.
-Formatting options let you customize titles, specify width and height, and control how media appears
-in the rendered output.
-
-### Images
-
-Embed images using inline or reference links.
-To see title text, hover over the image.
-
-<!--
-The following examples use HTML to skip the Vale ReferenceLinks test.
-Do not change it back to a markdown codeblocks.
--->
-
-<!--
-DO NOT change the name of markdown_logo.png. This file is used for a test in
-spec/controllers/help_controller_spec.rb.
--->
-
-<!--
-The examples below use an in-line link to pass the Vale ReferenceLinks test.
-Do not change to a reference style link.
--->
-
-Inline-style:
-
-<!-- markdownlint-disable proper-names -->
-
-<pre class="highlight"><code>![alt text](img/markdown_logo.png "Title Text")
-</code></pre>
-
-![alt text](img/markdown_logo.png "Title Text")
-
-Reference-style:
-
-<pre class="highlight"><code>![alt text1][logo]
-&#91;logo]: img/markdown_logo.png "Title Text"
-</code></pre>
-
-![alt text](img/markdown_logo.png "Title Text")
-
-<!-- markdownlint-enable proper-names -->
-
-### Videos
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#videos).
-
-Image tags that link to files with a video extension are automatically converted to
-a video player. The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`:
-
-Here's an example video:
-
-```markdown
-![Sample Video](img/markdown_video.mp4)
-```
-
-![Sample Video](img/markdown_video.mp4)
-
-### Change the image or video dimensions
-
-> - Support for images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
-> - Support for videos [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17139) in GitLab 15.9.
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#change-the-image-or-video-dimensions).
-
-You can control the width and height of an image or video by following the image with
-an attribute list.
-The value must an integer with a unit of either `px` (default) or `%`.
-
-For example
-
-```markdown
-![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
-
-![alt text](img/markdown_logo.png "Title Text"){width=75%}
-```
-
-![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
-
-You can also use the `img` HTML tag instead of Markdown and set its `height` and
-`width` parameters.
-
-When you paste a higher resolution PNG image into a Markdown text box [in GitLab 17.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/419913),
-dimensions are always appended. The dimensions are automatically adjusted to
-accommodate for retina (and other higher-resolution) displays. For instance,
-a 144ppi image is resized to 50% of its dimensions, whereas a 96ppi image is
-resized to 75% of its dimensions.
-
-### Audio
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#audio).
-
-Similar to videos, link tags for files with an audio extension are automatically converted to
-an audio player. The valid audio extensions are `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`:
-
-Here's an example audio clip:
-
-```markdown
-![Sample Audio](img/markdown_audio.mp3)
-```
-
-![Sample Audio](img/markdown_audio.mp3)
+---
 
 ## Lists
 
@@ -768,6 +579,625 @@ To create a task list, follow the format of an ordered or unordered list:
 ![Task list as rendered by GitLab](img/completed_tasks_v15_3.png)
 
 To include task lists in tables, [use HTML list tags or HTML tables](#task-lists-in-tables).
+
+## Links
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#links).
+
+You can create links two ways: inline-style and reference-style. For example:
+
+<!--
+The following codeblock uses HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblock.
+-->
+
+<pre class="highlight"><code>- This line shows an [inline-style link](https://www.google.com)
+- This line shows a [link to a repository file in the same directory](permissions.md)
+- This line shows a [relative link to a file one directory higher](../index.md)
+- This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
+
+Using heading ID anchors:
+
+- This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-features-permissions)
+- This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
+
+Using references:
+
+- This line shows a [reference-style link, see below][Arbitrary case-insensitive reference text]
+- You can [use numbers for reference-style link definitions, see below][1]
+- Or leave it empty and use the [link text itself][], see below.
+
+Some text to show that the reference links can follow later.
+
+&#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+&#91;1]: https://slashdot.org
+&#91;link text itself]: https://about.gitlab.com/
+</code></pre>
+
+- This line shows an [inline-style link](https://www.google.com)
+- This line shows a [link to a repository file in the same directory](permissions.md)
+- This line shows a [relative link to a file one directory higher](../index.md)
+- This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
+
+Using heading ID anchors:
+
+- This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-members-permissions)
+- This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
+
+Using references:
+
+<!--
+The example below uses in-line links to pass the Vale ReferenceLinks test.
+Do not change to reference style links.
+-->
+
+- This line is a [reference-style link, see below](https://www.mozilla.org/en-US/)
+- You can [use numbers for reference-style link definitions, see below](https://slashdot.org)
+- Or leave it empty and use the [link text itself](https://about.gitlab.com/), see below.
+
+Some text to show that the reference links can follow later.
+
+NOTE:
+Relative links do not allow the referencing of project files in a wiki
+page, or a wiki page in a project file. The reason: a wiki is always
+in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`
+points the link to `wikis/style` only when the link is inside of a wiki Markdown file.
+
+### URL auto-linking
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#url-auto-linking).
+
+Almost any URL you put into your text is auto-linked:
+
+```markdown
+- https://www.google.com
+- https://www.google.com
+- ftp://ftp.us.debian.org/debian/
+- smb://foo/bar/baz
+- irc://irc.freenode.net/
+- http://localhost:3000
+```
+
+- <https://www.google.com>
+- <https://www.google.com>
+- <ftp://ftp.us.debian.org/debian/>
+- <a href="smb://foo/bar/baz/">smb://foo/bar/baz</a>
+- <a href="irc://irc.freenode.net">irc://irc.freenode.net</a>
+- <http://localhost:3000>
+
+## GitLab-specific references
+
+> - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
+> - Ability to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
+
+GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
+an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
+that reference into a link so you can navigate between them. All references to projects should use the
+**project slug** rather than the project name.
+
+Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
+version to reference other projects from the same namespace.
+
+GitLab Flavored Markdown recognizes the following:
+
+<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
+update the Epic entry to use only the `#` symbol. -->
+
+| References                                                                           | Input                                                 | Cross-project reference                        | Shortcut inside the same namespace |
+|--------------------------------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------|------------------------------------|
+| Specific user                                                                        | `@user_name`                                          |                                                |                                    |
+| Specific group                                                                       | `@group_name`                                         |                                                |                                    |
+| Entire team                                                                          | [`@all`](discussions/index.md#mentioning-all-members) |                                                |                                    |
+| Project                                                                              | `namespace/project>`                                  |                                                |                                    |
+| Issue                                                                                | ``#123``                                              | `namespace/project#123`                        | `project#123`                      |
+| Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
+| Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
+| [Epic](group/epics/index.md)                                                         | `&123` or ``#123`` (when [the new look for epics](group/epics/epic_work_items.md) is enabled) | `group1/subgroup&123` or `group1/subgroup#123` | |
+| [Iteration](group/iterations/index.md)                                               | `*iteration:"iteration title"`                        |                                                |                                    |
+| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`                                       |                                                |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`                                      |                                                |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                  |                                                |                                    |
+| [Vulnerability](application_security/vulnerabilities/index.md)                       | `[vulnerability:123]`                                 | `[vulnerability:namespace/project/123]`        | `[vulnerability:project/123]`      |
+| Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`         | `[feature_flag:project/123]`       |
+| Label by ID <sup>2</sup>                                                             | `~123`                                                | `namespace/project~123`                        | `project~123`                      |
+| Label by name (one word) <sup>2</sup>                                                | `~bug`                                                | `namespace/project~bug`                        | `project~bug`                      |
+| Label by name (multiple words) <sup>2</sup>                                          | `~"feature request"`                                  | `namespace/project~"feature request"`          | `project~"feature request"`        |
+| Label by name (scoped) <sup>2</sup>                                                  | `~"priority::high"`                                   | `namespace/project~"priority::high"`           | `project~"priority::high"`         |
+| Project milestone by ID <sup>2</sup>                                                 | `%123`                                                | `namespace/project%123`                        | `project%123`                      |
+| Milestone by name (one word) <sup>2</sup>                                            | `%v1.23`                                              | `namespace/project%v1.23`                      | `project%v1.23`                    |
+| Milestone by name (multiple words) <sup>2</sup>                                      | `%"release candidate"`                                | `namespace/project%"release candidate"`        | `project%"release candidate"`      |
+| Commit (specific)                                                                    | `9ba12248`                                            | `namespace/project@9ba12248`                   | `project@9ba12248`                 |
+| Commit range comparison                                                              | `9ba12248...b19a04f5`                                 | `namespace/project@9ba12248...b19a04f5`        | `project@9ba12248...b19a04f5`      |
+| Repository file reference                                                            | `[README](doc/README.md)`                             |                                                |                                    |
+| Repository file reference (specific line)                                            | `[README](doc/README.md#L13)`                         |                                                |                                    |
+| [Alert](../operations/incident_management/alerts.md)                                 | `^alert#123`                                          | `namespace/project^alert#123`                  | `project^alert#123`                |
+| [Contact](crm/index.md#contacts)                                                     | `[contact:test@example.com]`                          |                                                |                                    |
+| [Wiki page](project/wiki/index.md) (if the page slug is the same as the title)       | `[[Home]]`                                            |                                                |                                    |
+| [Wiki page](project/wiki/index.md) (if the page slug is different from the title)    | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
+
+**Footnotes:**
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
+   Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
+   For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
+   iterations cadence's ID is `1`.
+1. For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
+   or milestone, removing any possible ambiguity.
+
+For example, referencing an issue by using `#123` formats the output as a link
+to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
+recognized and formatted with text `#123`. If you don't want `#123` to link to an issue,
+add a leading backslash `\#123`.
+
+In addition to this, links to some objects are also recognized and formatted.
+For example:
+
+- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, rendered as `#1234 (comment 101075757)`
+- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, rendered as `#1234 (designs)`.
+- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, rendered as `#1234[layout.png]`.
+
+### Show item title
+
+> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+
+To include the title in the rendered link of an issue, task, objective, key result, merge request, or epic:
+
+- Add a plus (`+`) at the end of the reference.
+
+For example, a reference like `#123+` is rendered as `The issue title (#123)`.
+
+URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
+
+### Show item summary
+
+> - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
+> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+
+To include an extended summary in the rendered link of an issue, task, objective, key result, or merge request:
+
+- Add a `+s` at the end of the reference.
+
+Summary includes information about **assignees**, **milestone** and **health status** of referenced item.
+
+For example, a reference like `#123+s` is rendered as
+`The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.
+
+URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are also expanded.
+
+To update the rendered references if the assignee, milestone, or health status changed:
+
+- Edit the comment or description and save it.
+
+Issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807) tracks improving how these
+references refresh.
+
+### Comment preview on hover
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags.md) named `comment_tooltips`. Disabled by default.
+> - Feature flag removed in GitLab 17.6
+
+Hovering over a link to a comment shows the author and first line of the comment.
+
+### Embed Observability dashboards
+
+You can embed GitLab Observability UI dashboards descriptions and comments, for example in epics, issues, and MRs.
+
+To embed an Observability dashboard URL:
+
+1. In GitLab Observability UI, copy the URL in the address bar.
+1. Paste your link in a comment or description. GitLab Flavored Markdown recognizes the URL and displays the source.
+
+## Tables
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#tables-1).
+
+When creating tables:
+
+- The first line contains the headers, separated by pipe characters (`|`).
+- The second line separates the headers from the cells.
+  - The cells can contain only empty spaces, hyphens, and (optionally) colons for horizontal alignment.
+  - Each cell must contain at least one hyphen, but adding more hyphens to a cell does not change the cell's rendering.
+  - Any content other than hyphens, whitespace, or colons is not allowed
+- The third, and any following lines, contain the cell values.
+  - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines, but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
+  - The cell sizes **don't** have to match each other. They are flexible, but must be separated by pipes (`|`).
+  - You **can** have blank cells.
+- Column widths are calculated dynamically based on the content of the cells.
+- To use the pipe character (`|`) in the text and not as table delimiter, you must [escape](#escape-characters) it with a backslash (`\|`).
+
+Example:
+
+```markdown
+| header 1 | header 2 | header 3 |
+| ---      | ---      | ---      |
+| cell 1   | cell 2   | cell 3   |
+| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
+| cell 7   |          | cell 9   |
+```
+
+| header 1 | header 2 | header 3 |
+| ---      | ---      | ---      |
+| cell 1   | cell 2   | cell 3   |
+| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
+| cell 7   |          | cell 9   |
+
+### Alignment
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#alignment).
+
+Additionally, you can choose the alignment of text in columns by adding colons (`:`)
+to the sides of the "dash" lines in the second row. This affects every cell in the column:
+
+```markdown
+| Left Aligned | Centered | Right Aligned |
+| :---         | :---:    | ---:          |
+| Cell 1       | Cell 2   | Cell 3        |
+| Cell 4       | Cell 5   | Cell 6        |
+```
+
+| Left Aligned | Centered | Right Aligned |
+| :---         | :---:    | ---:          |
+| Cell 1       | Cell 2   | Cell 3        |
+| Cell 4       | Cell 5   | Cell 6        |
+
+[In GitLab itself](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#tables),
+the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
+
+### Cells with multiple lines
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#cells-with-multiple-lines).
+
+You can use HTML formatting to adjust the rendering of tables. For example, you can
+use `<br>` tags to force a cell to have multiple lines:
+
+```markdown
+| Name | Details |
+| ---  | ---     |
+| Item1 | This text is on one line |
+| Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
+```
+
+| Name | Details |
+| ---  | ---     |
+| Item1 | This text is on one line |
+| Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
+
+### Task lists in tables
+
+To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using either:
+
+- **An HTML table with Markdown in the cells.** Tables formatted this way result in fully functioning
+  task lists.
+
+  ```html
+  <table>
+  <thead>
+  <tr><th>header 1</th><th>header 2</th></tr>
+  </thead>
+  <tbody>
+  <tr>
+  <td>cell 1</td>
+  <td>cell 2</td>
+  </tr>
+  <tr>
+  <td>cell 3</td>
+  <td>
+
+  - [ ] Task one
+  - [ ] Task two
+
+  </td>
+  </tr>
+  </tbody>
+  </table>
+  ```
+
+- **A Markdown table with HTML list tags.** These tasks don't save their state when selected.
+  Tables formatted this way do not render properly on `docs.gitlab.com`.
+
+  ```markdown
+  | header 1 | header 2 |
+  | ---      | ---      |
+  | cell 1   | cell 2   |
+  | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
+  ```
+
+You can also [create a table in the rich text editor](rich_text_editor.md#tables) and insert a task list then.
+
+### Copy and paste from a spreadsheet
+
+If you're working in spreadsheet software (for example, Microsoft Excel, Google
+Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy and paste
+from a spreadsheet. For example, suppose you have the
+following spreadsheet:
+
+![Copy from spreadsheet](img/markdown_copy_from_spreadsheet_v12_7.png)
+
+Select the cells and copy them to your clipboard. Open a GitLab Markdown
+entry and paste the spreadsheet:
+
+![Paste to Markdown table](img/markdown_paste_table_v12_7.png)
+
+### JSON tables
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
+> - Ability to use Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375177) in GitLab 17.9.
+
+To render tables with JSON code blocks, use the following syntax:
+
+````markdown
+```json:table
+{}
+```
+````
+
+Watch the following video walkthrough of this feature:
+
+<div class="video-fallback">
+  See the video: <a href="https://www.youtube.com/watch?v=12yWKw1AdKY">Demo: JSON Tables in Markdown</a>.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
+</figure>
+
+The `items` attribute is a list of objects representing the data points.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+````
+
+To specify the table labels, use the `fields` attribute.
+
+````markdown
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ]
+}
+```
+````
+
+Not all elements of `items` must have corresponding values in `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : ["a", "b", "c"],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+````
+
+When `fields` is not explicitly specified, the labels are picked from the first element of `items`.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "c": "233"}
+    ]
+}
+```
+````
+
+You can specify custom labels for `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+````
+
+You can enable sorting for individual elements of `fields`.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA", "sortable": true},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ]
+}
+```
+````
+
+You can use the `filter` attribute to render a table with content filtered dynamically by user input.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"},
+      {"a": "211", "b": "222", "c": "233"}
+    ],
+    "filter" : true
+}
+```
+````
+
+You can use the `markdown` attribute to allow for GitLab Flavored Markdown in the items and caption,
+including GitLab references. Fields do not support Markdown.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "**22**", "c": "33"},
+      {"a": "#1", "b": "222", "c": "233"}
+    ],
+    "markdown" : true
+}
+```
+````
+
+By default, every JSON table has the caption `Generated with JSON data`.
+You can override this caption by specifying the `caption` attribute.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+    "caption" : "Custom caption"
+}
+```
+````
+
+If JSON is invalid, an error occurs.
+
+````markdown
+```json:table
+{
+    "items" : [
+      {"a": "11", "b": "22", "c": "33"}
+    ],
+}
+```
+````
+
+## Multimedia
+
+Embed images, videos, and audio.
+You can add multimedia using Markdown syntax to link files, set dimensions, and display them inline.
+Formatting options let you customize titles, specify width and height, and control how media appears
+in the rendered output.
+
+### Images
+
+Embed images using inline or reference links.
+To see title text, hover over the image.
+
+<!--
+The following examples use HTML to skip the Vale ReferenceLinks test.
+Do not change it back to a markdown codeblocks.
+-->
+
+<!--
+DO NOT change the name of markdown_logo.png. This file is used for a test in
+spec/controllers/help_controller_spec.rb.
+-->
+
+<!--
+The examples below use an in-line link to pass the Vale ReferenceLinks test.
+Do not change to a reference style link.
+-->
+
+Inline-style:
+
+<!-- markdownlint-disable proper-names -->
+
+<pre class="highlight"><code>![alt text](img/markdown_logo.png "Title Text")
+</code></pre>
+
+![alt text](img/markdown_logo.png "Title Text")
+
+Reference-style:
+
+<pre class="highlight"><code>![alt text1][logo]
+&#91;logo]: img/markdown_logo.png "Title Text"
+</code></pre>
+
+![alt text](img/markdown_logo.png "Title Text")
+
+<!-- markdownlint-enable proper-names -->
+
+### Videos
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#videos).
+
+Image tags that link to files with a video extension are automatically converted to
+a video player. The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`:
+
+Here's an example video:
+
+```markdown
+![Sample Video](img/markdown_video.mp4)
+```
+
+![Sample Video](img/markdown_video.mp4)
+
+### Change image or video dimensions
+
+> - Support for images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
+> - Support for videos [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17139) in GitLab 15.9.
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#change-the-image-or-video-dimensions).
+
+You can control the width and height of an image or video by following the image with
+an attribute list.
+The value must an integer with a unit of either `px` (default) or `%`.
+
+For example
+
+```markdown
+![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
+
+![alt text](img/markdown_logo.png "Title Text"){width=75%}
+```
+
+![alt text](img/markdown_logo.png "Title Text"){width=100 height=100px}
+
+You can also use the `img` HTML tag instead of Markdown and set its `height` and
+`width` parameters.
+
+When you paste a higher resolution PNG image into a Markdown text box [in GitLab 17.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/419913),
+dimensions are always appended. The dimensions are automatically adjusted to
+accommodate for retina (and other higher-resolution) displays. For instance,
+a 144ppi image is resized to 50% of its dimensions, whereas a 96ppi image is
+resized to 75% of its dimensions.
+
+### Audio
+
+[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#audio).
+
+Similar to videos, link tags for files with an audio extension are automatically converted to
+an audio player. The valid audio extensions are `.mp3`, `.oga`, `.ogg`, `.spx`, and `.wav`:
+
+Here's an example audio clip:
+
+```markdown
+![Sample Audio](img/markdown_audio.mp3)
+```
+
+![Sample Audio](img/markdown_audio.mp3)
 
 ## Blockquotes
 
@@ -1016,7 +1446,7 @@ graph TB
 
 ### PlantUML
 
-PlantUML integration is enabled on GitLab.com. To make PlantUML available in self-managed
+PlantUML integration is enabled on GitLab.com. To make PlantUML available in GitLab Self-Managed
 installation of GitLab, a GitLab administrator [must enable it](../administration/integration/plantuml.md).
 
 After you enable PlantUML, diagram delimiters `@startuml`/`@enduml` aren't required, as these
@@ -1031,14 +1461,14 @@ Alice -> Bob : hi
 
 You can include or embed a PlantUML diagram from separate files in the repository using
 the `::include` directive.
-For more information, see [Include diagtram files](../administration/integration/plantuml.md#include-diagram-files).
+For more information, see [Include diagram files](../administration/integration/plantuml.md#include-diagram-files).
 
 ### Kroki
 
 To make Kroki available in GitLab, a GitLab administrator must enable it.
 For more information, see the [Kroki integration](../administration/integration/kroki.md) page.
 
-## Math
+## Math equations
 
 > - LaTeX-compatible fencing [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21757) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
 > - LaTeX-compatible fencing [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371180) in GitLab 15.8. Feature flag `markdown_dollar_math` removed.
@@ -1052,7 +1482,7 @@ the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activati
 
 To prevent malicious activity, GitLab renders only the first 50 inline math instances.
 You can disable this limit [for a group](../api/graphql/reference/_index.md#mutationgroupupdate)
-or for the entire [self-managed instance](../administration/instance_limits.md#math-rendering-limits).
+or for the entire [GitLab Self-Managed instance](../administration/instance_limits.md#math-rendering-limits).
 
 The number of math blocks is also limited based on render time. If the limit is exceeded,
 GitLab renders the excess math instances as text. Wiki and repository files do not have
@@ -1083,312 +1513,6 @@ $$
 `````
 
 ![Example of math in GitLab](img/markdown_math_v17_2.png)
-
-## Tables
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#tables-1).
-
-When creating tables:
-
-- The first line contains the headers, separated by pipe characters (`|`).
-- The second line separates the headers from the cells.
-  - The cells can contain only empty spaces, hyphens, and (optionally) colons for horizontal alignment.
-  - Each cell must contain at least one hyphen, but adding more hyphens to a cell does not change the cell's rendering.
-  - Any content other than hyphens, whitespace, or colons is not allowed
-- The third, and any following lines, contain the cell values.
-  - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines, but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
-  - The cell sizes **don't** have to match each other. They are flexible, but must be separated by pipes (`|`).
-  - You **can** have blank cells.
-- Column widths are calculated dynamically based on the content of the cells.
-- To use the pipe character (`|`) in the text and not as table delimiter, you must [escape](#escape-characters) it with a backslash (`\|`).
-
-Example:
-
-```markdown
-| header 1 | header 2 | header 3 |
-| ---      | ---      | ---      |
-| cell 1   | cell 2   | cell 3   |
-| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
-| cell 7   |          | cell 9   |
-```
-
-| header 1 | header 2 | header 3 |
-| ---      | ---      | ---      |
-| cell 1   | cell 2   | cell 3   |
-| cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
-| cell 7   |          | cell 9   |
-
-### Alignment
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#alignment).
-
-Additionally, you can choose the alignment of text in columns by adding colons (`:`)
-to the sides of the "dash" lines in the second row. This affects every cell in the column:
-
-```markdown
-| Left Aligned | Centered | Right Aligned |
-| :---         | :---:    | ---:          |
-| Cell 1       | Cell 2   | Cell 3        |
-| Cell 4       | Cell 5   | Cell 6        |
-```
-
-| Left Aligned | Centered | Right Aligned |
-| :---         | :---:    | ---:          |
-| Cell 1       | Cell 2   | Cell 3        |
-| Cell 4       | Cell 5   | Cell 6        |
-
-[In GitLab itself](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#tables),
-the headers are always left-aligned in Chrome and Firefox, and centered in Safari.
-
-### Cells with multiple lines
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#cells-with-multiple-lines).
-
-You can use HTML formatting to adjust the rendering of tables. For example, you can
-use `<br>` tags to force a cell to have multiple lines:
-
-```markdown
-| Name | Details |
-| ---  | ---     |
-| Item1 | This text is on one line |
-| Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
-```
-
-| Name | Details |
-| ---  | ---     |
-| Item1 | This text is on one line |
-| Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
-
-### Task lists in tables
-
-To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using either:
-
-- **An HTML table with Markdown in the cells.** Tables formatted this way result in fully functioning
-  task lists.
-
-  ```html
-  <table>
-  <thead>
-  <tr><th>header 1</th><th>header 2</th></tr>
-  </thead>
-  <tbody>
-  <tr>
-  <td>cell 1</td>
-  <td>cell 2</td>
-  </tr>
-  <tr>
-  <td>cell 3</td>
-  <td>
-
-  - [ ] Task one
-  - [ ] Task two
-
-  </td>
-  </tr>
-  </tbody>
-  </table>
-  ```
-
-- **A Markdown table with HTML list tags.** These tasks don't save their state when selected.
-  Tables formatted this way do not render properly on `docs.gitlab.com`.
-
-  ```markdown
-  | header 1 | header 2 |
-  | ---      | ---      |
-  | cell 1   | cell 2   |
-  | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
-  ```
-
-You can also [create a table in the rich text editor](rich_text_editor.md#tables) and insert a task list then.
-
-### Copy and paste from a spreadsheet
-
-If you're working in spreadsheet software (for example, Microsoft Excel, Google
-Sheets, or Apple Numbers), GitLab creates a Markdown table when you copy and paste
-from a spreadsheet. For example, suppose you have the
-following spreadsheet:
-
-![Copy from spreadsheet](img/markdown_copy_from_spreadsheet_v12_7.png)
-
-Select the cells and copy them to your clipboard. Open a GitLab Markdown
-entry and paste the spreadsheet:
-
-![Paste to Markdown table](img/markdown_paste_table_v12_7.png)
-
-### JSON
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
-> - Ability to use Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375177) in GitLab 17.9.
-
-To render tables with JSON code blocks, use the following syntax:
-
-````markdown
-```json:table
-{}
-```
-````
-
-Watch the following video walkthrough of this feature:
-
-<div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=12yWKw1AdKY">Demo: JSON Tables in Markdown</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
-</figure>
-
-The `items` attribute is a list of objects representing the data points.
-
-````markdown
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ]
-}
-```
-````
-
-To specify the table labels, use the `fields` attribute.
-
-````markdown
-```json:table
-{
-    "fields" : ["a", "b", "c"],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ]
-}
-```
-````
-
-Not all elements of `items` must have corresponding values in `fields`.
-
-````markdown
-```json:table
-{
-    "fields" : ["a", "b", "c"],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "c": "233"}
-    ]
-}
-```
-````
-
-When `fields` is not explicitly specified, the labels are picked from the first element of `items`.
-
-````markdown
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "c": "233"}
-    ]
-}
-```
-````
-
-You can specify custom labels for `fields`.
-
-````markdown
-```json:table
-{
-    "fields" : [
-        {"key": "a", "label": "AA"},
-        {"key": "b", "label": "BB"},
-        {"key": "c", "label": "CC"}
-    ],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "b": "222", "c": "233"}
-    ]
-}
-```
-````
-
-You can enable sorting for individual elements of `fields`.
-
-````markdown
-```json:table
-{
-    "fields" : [
-        {"key": "a", "label": "AA", "sortable": true},
-        {"key": "b", "label": "BB"},
-        {"key": "c", "label": "CC"}
-    ],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "b": "222", "c": "233"}
-    ]
-}
-```
-````
-
-You can use the `filter` attribute to render a table with content filtered dynamically by user input.
-
-````markdown
-```json:table
-{
-    "fields" : [
-        {"key": "a", "label": "AA"},
-        {"key": "b", "label": "BB"},
-        {"key": "c", "label": "CC"}
-    ],
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"},
-      {"a": "211", "b": "222", "c": "233"}
-    ],
-    "filter" : true
-}
-```
-````
-
-You can use the `markdown` attribute to allow for GLFM Markdown in the items and caption,
-including GitLab references. Fields do not support Markdown.
-
-````markdown
-```json:table
-{
-    "fields" : [
-        {"key": "a", "label": "AA"},
-        {"key": "b", "label": "BB"},
-        {"key": "c", "label": "CC"}
-    ],
-    "items" : [
-      {"a": "11", "b": "**22**", "c": "33"},
-      {"a": "#1", "b": "222", "c": "233"}
-    ],
-    "markdown" : true
-}
-```
-````
-
-By default, every JSON table has the caption `Generated with JSON data`.
-You can override this caption by specifying the `caption` attribute.
-
-````markdown
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ],
-    "caption" : "Custom caption"
-}
-```
-````
-
-If JSON is invalid, an error occurs.
-
-````markdown
-```json:table
-{
-    "items" : [
-      {"a": "11", "b": "22", "c": "33"}
-    ],
-}
-```
-````
 
 ## Table of contents
 
@@ -1642,7 +1766,7 @@ Include directives inside the included file are ignored.
 For example, if `file1` includes `file2`, and `file2` includes `file3`, when `file1` is processed,
 it doesn't have the contents of `file3`.
 
-### Limits
+### Include limits
 
 To guarantee good system performance and prevent malicious documents from causing problems, GitLab
 enforces a maximum limit on the number of include directives processed in a document.
@@ -1787,26 +1911,6 @@ These are used to force the Vale ReferenceLinks check to skip these examples.
 
  [^footnote-42]: This text is another footnote.
 
-## Horizontal rule
-
-[View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#horizontal-rule).
-
-Create a horizontal rule by using three or more hyphens, asterisks, or underscores:
-
-```markdown
----
-
-***
-
-___
-```
-
----
-
----
-
----
-
 ## Inline HTML
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
@@ -1949,7 +2053,7 @@ Press <kbd>Enter</kbd> to go to the next page.
 
 Press <kbd>Enter</kbd> to go to the next page.
 
-### Superscripts / Subscripts
+### Superscripts and subscripts
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#superscripts-subscripts).
 
@@ -1975,7 +2079,7 @@ The following topics show how links inside wikis behave.
 
 When linking to wiki pages, you should use the **page slug** rather than the page name.
 
-### Wiki - direct page link
+### Direct page link
 
 A direct page link includes the slug for a page that points to that page,
 at the base level of the wiki.
@@ -1986,7 +2090,7 @@ This example links to a `documentation` page at the root of your wiki:
 [Link to Documentation](documentation)
 ```
 
-### Wiki - direct file link
+### Direct file link
 
 A direct file link points to a file extension for a file, relative to the current page.
 
@@ -1997,7 +2101,7 @@ it links to `<your_wiki>/documentation/file.md`:
 [Link to File](file.md)
 ```
 
-### Wiki - hierarchical link
+### Hierarchical link
 
 A hierarchical link can be constructed relative to the current wiki page by using relative paths like `./<page>` or
 `../<page>`.
@@ -2030,7 +2134,7 @@ it links to `<your_wiki>/documentation/main.md`:
 [Link to Related Page](../main.md)
 ```
 
-### Wiki - root link
+### Root link
 
 A root link starts with a `/` and is relative to the wiki root.
 
@@ -2108,131 +2212,9 @@ To edit a diagram in the rich text editor:
 
 The selected diagram is replaced with an updated version.
 
-## GitLab-specific references
-
-> - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
-> - Ability to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
-
-GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
-an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
-that reference into a link so you can navigate between them. All references to projects should use the
-**project slug** rather than the project name.
-
-Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
-version to reference other projects from the same namespace.
-
-GitLab Flavored Markdown recognizes the following:
-
-<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
-update the Epic entry to use only the `#` symbol. -->
-
-| References                                                                           | Input                                                 | Cross-project reference                        | Shortcut inside the same namespace |
-|--------------------------------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------|------------------------------------|
-| Specific user                                                                        | `@user_name`                                          |                                                |                                    |
-| Specific group                                                                       | `@group_name`                                         |                                                |                                    |
-| Entire team                                                                          | [`@all`](discussions/index.md#mentioning-all-members) |                                                |                                    |
-| Project                                                                              | `namespace/project>`                                  |                                                |                                    |
-| Issue                                                                                | ``#123``                                              | `namespace/project#123`                        | `project#123`                      |
-| Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
-| Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| [Epic](group/epics/index.md)                                                         | `&123` or ``#123`` (when [the new look for epics](group/epics/epic_work_items.md) is enabled) | `group1/subgroup&123` or `group1/subgroup#123` | |
-| [Iteration](group/iterations/index.md)                                               | `*iteration:"iteration title"`                        |                                                |                                    |
-| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`                                       |                                                |                                    |
-| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`                                      |                                                |                                    |
-| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                  |                                                |                                    |
-| [Vulnerability](application_security/vulnerabilities/index.md)                       | `[vulnerability:123]`                                 | `[vulnerability:namespace/project/123]`        | `[vulnerability:project/123]`      |
-| Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`         | `[feature_flag:project/123]`       |
-| Label by ID <sup>2</sup>                                                             | `~123`                                                | `namespace/project~123`                        | `project~123`                      |
-| Label by name (one word) <sup>2</sup>                                                | `~bug`                                                | `namespace/project~bug`                        | `project~bug`                      |
-| Label by name (multiple words) <sup>2</sup>                                          | `~"feature request"`                                  | `namespace/project~"feature request"`          | `project~"feature request"`        |
-| Label by name (scoped) <sup>2</sup>                                                  | `~"priority::high"`                                   | `namespace/project~"priority::high"`           | `project~"priority::high"`         |
-| Project milestone by ID <sup>2</sup>                                                 | `%123`                                                | `namespace/project%123`                        | `project%123`                      |
-| Milestone by name (one word) <sup>2</sup>                                            | `%v1.23`                                              | `namespace/project%v1.23`                      | `project%v1.23`                    |
-| Milestone by name (multiple words) <sup>2</sup>                                      | `%"release candidate"`                                | `namespace/project%"release candidate"`        | `project%"release candidate"`      |
-| Commit (specific)                                                                    | `9ba12248`                                            | `namespace/project@9ba12248`                   | `project@9ba12248`                 |
-| Commit range comparison                                                              | `9ba12248...b19a04f5`                                 | `namespace/project@9ba12248...b19a04f5`        | `project@9ba12248...b19a04f5`      |
-| Repository file reference                                                            | `[README](doc/README.md)`                             |                                                |                                    |
-| Repository file reference (specific line)                                            | `[README](doc/README.md#L13)`                         |                                                |                                    |
-| [Alert](../operations/incident_management/alerts.md)                                 | `^alert#123`                                          | `namespace/project^alert#123`                  | `project^alert#123`                |
-| [Contact](crm/index.md#contacts)                                                     | `[contact:test@example.com]`                          |                                                |                                    |
-| [Wiki page](project/wiki/index.md) (if the page slug is the same as the title)       | `[[Home]]`                                            |                                                |                                    |
-| [Wiki page](project/wiki/index.md) (if the page slug is different from the title)    | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
-
-**Footnotes:**
-
-1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
-   Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
-   For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
-   iterations cadence's ID is `1`.
-1. For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
-   or milestone, removing any possible ambiguity.
-
-For example, referencing an issue by using `#123` formats the output as a link
-to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
-recognized and formatted with text `#123`. If you don't want `#123` to link to an issue,
-add a leading backslash `\#123`.
-
-In addition to this, links to some objects are also recognized and formatted.
-For example:
-
-- Comments on issues: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234#note_101075757"`, rendered as `#1234 (comment 101075757)`
-- The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, rendered as `#1234 (designs)`.
-- Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, rendered as `#1234[layout.png]`.
-
-### Show item title
-
-> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
-
-To include the title in the rendered link of an issue, task, objective, key result, merge request, or epic:
-
-- Add a plus (`+`) at the end of the reference.
-
-For example, a reference like `#123+` is rendered as `The issue title (#123)`.
-
-URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
-
-### Show item summary
-
-> - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
-> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
-
-To include an extended summary in the rendered link of an issue, task, objective, key result, or merge request:
-
-- Add a `+s` at the end of the reference.
-
-Summary includes information about **assignees**, **milestone** and **health status** of referenced item.
-
-For example, a reference like `#123+s` is rendered as
-`The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.
-
-URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are also expanded.
-
-To update the rendered references if the assignee, milestone, or health status changed:
-
-- Edit the comment or description and save it.
-
-Issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807) tracks improving how these
-references refresh.
-
-### Show comment preview when hovering on a link
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags.md) named `comment_tooltips`. Disabled by default.
-> - Feature flag removed in GitLab 17.6
-
-Hovering over a link to a comment shows the author and first line of the comment.
-
-### Embedding Observability dashboards
-
-You can embed GitLab Observability UI dashboards descriptions and comments, for example in epics, issues, and MRs.
-
-To embed an Observability dashboard URL:
-
-1. In GitLab Observability UI, copy the URL in the address bar.
-1. Paste your link in a comment or description. GitLab Flavored Markdown recognizes the URL and displays the source.
-
 ## References
 
-- The [GitLab Flavored Markdown (GLFM) development guidelines](../development/gitlab_flavored_markdown/_index.md) is a developer-facing document that describes in detail the various goals, tools, implementations, and terms related to the GLFM specification.
+- The [GitLab Flavored Markdown development guidelines](../development/gitlab_flavored_markdown/_index.md) is a developer-facing document that describes in detail the various goals, tools, implementations, and terms related to the GLFM specification.
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 - The original [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax)
   at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.

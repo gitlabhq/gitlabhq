@@ -19,12 +19,7 @@ You can use AsciiDoc in the following areas:
 - Wiki pages
 - AsciiDoc documents (`.adoc` or `.asciidoc`) inside repositories
 
-## Syntax
-
-Here's a brief reference of the most commonly used AsciiDoc syntax.
-You can find the full documentation for the AsciiDoc syntax at <https://asciidoctor.org/docs/>.
-
-### Paragraphs
+## Paragraphs
 
 ```plaintext
 A normal paragraph.
@@ -62,73 +57,47 @@ Admonition paragraphs grab the reader's attention:
 - `NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs/.`
 - `TIP: Lists can be indented. Leading whitespace is not significant.`
 
-### Text Formatting
+## Text formatting
 
-**Constrained (applied at word boundaries)**
+- **Constrained (applied at word boundaries)**:
 
-```plaintext
-*strong importance* (aka bold)
-_stress emphasis_ (aka italic)
-`monospaced` (aka typewriter text)
-"`double`" and '`single`' typographic quotes
-+passthrough text+ (substitutions disabled)
-`+literal text+` (monospaced with substitutions disabled)
-```
+  ```plaintext
+  *strong importance* (aka bold)
+  _stress emphasis_ (aka italic)
+  `monospaced` (aka typewriter text)
+  "`double`" and '`single`' typographic quotes
+  +passthrough text+ (substitutions disabled)
+  `+literal text+` (monospaced with substitutions disabled)
+  ```
 
-**Unconstrained (applied anywhere)**
+- **Unconstrained (applied anywhere)**:
 
-```plaintext
-**C**reate+**R**ead+**U**pdate+**D**elete
-fan__freakin__tastic
-``mono``culture
-```
+  ```plaintext
+  **C**reate+**R**ead+**U**pdate+**D**elete
+  fan__freakin__tastic
+  ``mono``culture
+  ```
 
-**Replacements**
+- **Replacements**:
 
-```plaintext
-A long time ago in a galaxy far, far away...
-(C) 1976 Arty Artisan
-I believe I shall--no, actually I won't.
-```
+  ```plaintext
+  A long time ago in a galaxy far, far away...
+  (C) 1976 Arty Artisan
+  I believe I shall--no, actually I won't.
+  ```
 
-**Macros**
+- **Macros**:
 
-```plaintext
-// where c=specialchars, q=quotes, a=attributes, r=replacements, m=macros, p=post_replacements
-The European icon:flag[role=blue] is blue & contains pass:[************] arranged in a icon:circle-o[role=yellow].
-The pass:c[->] operator is often referred to as the stabby lambda.
-Since `pass:[++]` has strong priority in AsciiDoc, you can rewrite pass:c,a,r[C++ => C{pp}].
-// activate stem support by adding `:stem:` to the document header
-stem:[sqrt(4) = 2]
-```
+  ```plaintext
+  // where c=specialchars, q=quotes, a=attributes, r=replacements, m=macros, p=post_replacements
+  The European icon:flag[role=blue] is blue & contains pass:[************] arranged in a icon:circle-o[role=yellow].
+  The pass:c[->] operator is often referred to as the stabby lambda.
+  Since `pass:[++]` has strong priority in AsciiDoc, you can rewrite pass:c,a,r[C++ => C{pp}].
+  // activate stem support by adding `:stem:` to the document header
+  stem:[sqrt(4) = 2]
+  ```
 
-### Attributes
-
-**User-defined attributes**
-
-```plaintext
-// define attributes in the document header
-:name: value
-```
-
-```plaintext
-:url-gem: https://rubygems.org/gems/asciidoctor
-
-You can download and install Asciidoctor {asciidoctor-version} from {url-gem}.
-C{pp} is not required, only Ruby.
-Use a leading backslash to output a word enclosed in curly braces, like \{name}.
-```
-
-**Environment attributes**
-
-GitLab sets the following environment attributes:
-
-| Attribute       | Description                                                                                                            |
-| :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| `docname`       | Root name of the source document (no leading path or file extension).                                                  |
-| `outfilesuffix` | File extension corresponding to the backend output (defaults to `.adoc` to make inter-document cross references work). |
-
-### Links
+## Links
 
 ```plaintext
 https://example.org/page[A webpage]
@@ -137,7 +106,7 @@ xref:document.adoc[A sibling document]
 mailto:hello@example.org[Email to say hello!]
 ```
 
-### Anchors
+## Anchors
 
 ```plaintext
 [[idname,reference text]]
@@ -151,9 +120,9 @@ xref:document.adoc#idname[Jumps to anchor in another document].
 This paragraph has a footnote.footnote:[This is the text of the footnote.]
 ```
 
-### Lists
+## Lists
 
-#### Unordered
+### Unordered
 
 ```plaintext
 * level 1
@@ -172,7 +141,7 @@ Attach a block or paragraph to a list item using a list continuation (which you 
 - Bill Bryson
 ```
 
-#### Ordered
+### Ordered
 
 ```plaintext
 . Step 1
@@ -188,14 +157,14 @@ Attach a block or paragraph to a list item using a list continuation (which you 
 . is three
 ```
 
-#### Checklist
+### Checklist
 
 ```plaintext
 * [x] checked
 * [ ] not checked
 ```
 
-#### Callout
+### Callout
 
 ```plaintext
 // enable callout bubbles by adding `:icons: font` to the document header
@@ -206,7 +175,7 @@ puts 'Hello, World!' # <1>
 <1> Prints `Hello, World!` to the console.
 ```
 
-#### Description
+### Description
 
 ```plaintext
 first term:: description of first term
@@ -214,9 +183,7 @@ second term::
 description of second term
 ```
 
-### Document Structure
-
-#### Header
+## Headers
 
 ```plaintext
 = Document Title
@@ -224,7 +191,7 @@ Author Name <author@example.org>
 v1.0, 2019-01-01
 ```
 
-#### Sections
+## Sections
 
 ```plaintext
 = Document Title (Level 0)
@@ -236,7 +203,7 @@ v1.0, 2019-01-01
 == Back at Level 1
 ```
 
-#### Includes
+## Includes
 
 NOTE:
 [Wiki pages](project/wiki/index.md#create-a-new-wiki-page) created with the AsciiDoc
@@ -274,7 +241,33 @@ in [application settings](../administration/wikis/index.md#allow-uri-includes-fo
 include::https://example.org/installation.adoc[]
 ```
 
-### Blocks
+## Attributes
+
+### User-defined
+
+```plaintext
+// define attributes in the document header
+:name: value
+```
+
+```plaintext
+:url-gem: https://rubygems.org/gems/asciidoctor
+
+You can download and install Asciidoctor {asciidoctor-version} from {url-gem}.
+C{pp} is not required, only Ruby.
+Use a leading backslash to output a word enclosed in curly braces, like \{name}.
+```
+
+### Environment
+
+GitLab sets the following environment attributes:
+
+| Attribute       | Description                                                                                                            |
+| :-------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `docname`       | Root name of the source document (no leading path or file extension).                                                  |
+| `outfilesuffix` | File extension corresponding to the backend output (defaults to `.adoc` to make inter-document cross references work). |
+
+## Blocks
 
 ```plaintext
 --
@@ -370,7 +363,7 @@ comment - content which is not included in the output document
 ////
 ```
 
-### Tables
+## Tables
 
 ```plaintext
 .Table Attributes
@@ -401,7 +394,7 @@ comment - content which is not included in the output document
 |===
 ```
 
-### Colors
+## Colors
 
 It's possible to have color written in `HEX`, `RGB`, or `HSL` format rendered with a color indicator.
 Supported formats (named colors are not supported):
@@ -424,7 +417,7 @@ Color written inside backticks is followed by a color "chip":
 - `HSLA(540,70%,50%,0.3)`
 ```
 
-### Equations and Formulas (STEM)
+## Equations and formulas
 
 If you need to include Science, Technology, Engineering, and Math (STEM)
 expressions, set the `stem` attribute in the document's header to `latexmath`.
@@ -443,12 +436,12 @@ sqrt(4) = 2
 A matrix can be written as stem:[[[a,b\],[c,d\]\]((n),(k))].
 ```
 
-### Diagrams and flowcharts
+## Diagrams and flowcharts
 
 It's possible to generate diagrams and flowcharts from text in GitLab using
 [Mermaid](https://mermaidjs.github.io/) or [PlantUML](https://plantuml.com).
 
-#### Mermaid
+### Mermaid
 
 Visit the [official page](https://mermaidjs.github.io/) for more details.
 If you're new to using Mermaid or need help identifying issues in your Mermaid code,
@@ -468,7 +461,7 @@ graph LR
 ----
 ```
 
-#### Kroki
+### Kroki
 
 Kroki supports more than a dozen diagram libraries.
 To make Kroki available in GitLab, a GitLab administrator needs to enable it first.
@@ -477,30 +470,30 @@ Read more in the [Kroki integration](../administration/integration/kroki.md) pag
 After Kroki is enabled, you can create diagrams in AsciiDoc and Markdown documents.
 Here's an example using a GraphViz diagram:
 
-**AsciiDoc**
+- **AsciiDoc**:
 
-```plaintext
-[graphviz]
-....
-digraph G {
-  Hello->World
-}
-....
-```
+  ```plaintext
+  [graphviz]
+  ....
+  digraph G {
+    Hello->World
+  }
+  ....
+  ```
 
-**Markdown**
+- **Markdown**:
 
-````markdown
-```graphviz
-digraph G {
-  Hello->World
-}
-```
-````
+  ````markdown
+  ```graphviz
+  digraph G {
+    Hello->World
+  }
+  ```
+  ````
 
-#### PlantUML
+### PlantUML
 
-PlantUML integration is enabled on GitLab.com. To make PlantUML available in self-managed
+PlantUML integration is enabled on GitLab.com. To make PlantUML available in GitLab Self-Managed
 installation of GitLab, a GitLab administrator [must enable it](../administration/integration/plantuml.md).
 
 After PlantUML is enabled, enter your text in a `plantuml` block:
@@ -521,7 +514,7 @@ include::diagram.puml[]
 ----
 ```
 
-### Multimedia
+## Multimedia
 
 ```plaintext
 image::screenshot.png[block image,800,450]
@@ -538,7 +531,7 @@ Use a standard AsciiDoc link:
 https://www.youtube.com/watch?v=BlaZ65-b7y0[Link text for the video]
 ```
 
-### Breaks
+## Breaks
 
 ```plaintext
 // thematic break (aka horizontal rule)

@@ -478,7 +478,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/graphql/resolvers/timelog_resolver_spec.rb'
     - 'spec/graphql/types/ci/job_trace_type_spec.rb'
     - 'spec/helpers/appearances_helper_spec.rb'
-    - 'spec/helpers/application_settings_helper_spec.rb'
     - 'spec/helpers/emails_helper_spec.rb'
     - 'spec/helpers/form_helper_spec.rb'
     - 'spec/lib/banzai/filter/issuable_reference_expansion_filter_spec.rb'

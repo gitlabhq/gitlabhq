@@ -150,6 +150,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Manage CI/CD settings                                                                                                          |            |       |         |          |           |     ✓      |       |
 | Manage job triggers                                                                                                            |            |       |         |          |           |     ✓      |       |
 | Manage project CI/CD variables                                                                                                 |            |       |         |          |           |     ✓      |       |
+| Manage project protected environments                                                                                          |            |       |         |          |           |     ✓      |       |
 | Manage project [Secure Files](../api/secure_files.md)                                                                          |            |       |         |          |           |     ✓      |       |
 | Manage [Terraform](infrastructure/index.md) state                                                                              |            |       |         |          |           |     ✓      |       |
 | Add project runners to project                                                                                                 |            |       |         |          |           |     ✓      |       |

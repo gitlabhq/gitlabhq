@@ -31,7 +31,7 @@ module Ci
         runner = ::Ci::Runner.new(params)
 
         if runner.save
-          track_runner_event(runner)
+          track_runner_events(runner)
 
           return ServiceResponse.success(payload: { runner: runner })
         end
@@ -51,10 +51,9 @@ module Ci
 
       attr_reader :user, :scope, :params, :strategy
 
-      def track_runner_event(runner)
-        return if params[:maintenance_note].blank?
-
+      def track_runner_events(runner)
         kwargs = { user: user }
+
         case runner.runner_type
         when 'group_type'
           kwargs[:namespace] = @scope
@@ -63,10 +62,21 @@ module Ci
         end
 
         track_internal_event(
+          'create_ci_runner',
+          **kwargs,
+          additional_properties: {
+            label: runner.runner_type,
+            property: 'authenticated_user'
+          }
+        )
+
+        return if params[:maintenance_note].blank?
+
+        track_internal_event(
           'set_runner_maintenance_note',
           **kwargs,
           additional_properties: {
-            label: params[:runner_type]
+            label: runner.runner_type
           }
         )
       end

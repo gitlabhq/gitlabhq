@@ -32,7 +32,7 @@ module Ci
           end
         end
 
-        track_runner_event(runner)
+        track_runner_events(runner)
 
         ServiceResponse.success(payload: { runner: runner })
       end
@@ -89,10 +89,9 @@ module Ci
         end
       end
 
-      def track_runner_event(runner)
-        return if attributes[:maintenance_note].blank?
-
+      def track_runner_events(runner)
         kwargs = {}
+
         case runner.runner_type
         when 'group_type'
           kwargs[:namespace] = token_scope
@@ -101,12 +100,23 @@ module Ci
         end
 
         track_internal_event(
-          'set_runner_maintenance_note',
+          'create_ci_runner',
           **kwargs,
           additional_properties: {
-            label: runner.runner_type
+            label: runner.runner_type,
+            property: 'registration_token'
           }
         )
+
+        if attributes[:maintenance_note].present?
+          track_internal_event(
+            'set_runner_maintenance_note',
+            **kwargs,
+            additional_properties: {
+              label: runner.runner_type
+            }
+          )
+        end
       end
     end
   end

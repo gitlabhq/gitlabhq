@@ -7235,7 +7235,10 @@ msgstr ""
 msgid "ApplicationSettings|Add a link to Grafana"
 msgstr ""
 
-msgid "ApplicationSettings|Adding billable users above licensed user count is blocked"
+msgid "ApplicationSettings|Administrator approval not required for new users."
+msgstr ""
+
+msgid "ApplicationSettings|Administrator approval required for new users. Set a user cap for the maximum number of users who can be added without administrator approval."
 msgstr ""
 
 msgid "ApplicationSettings|After sign-up text"
@@ -7270,10 +7273,10 @@ msgstr[1] ""
 msgid "ApplicationSettings|By making this change, you will automatically approve all users who are pending approval."
 msgstr ""
 
-msgid "ApplicationSettings|By setting a user cap, any user who is added or requests access in excess of the user cap must be approved by an admin"
+msgid "ApplicationSettings|Change setting and approve pending users?"
 msgstr ""
 
-msgid "ApplicationSettings|Change setting and approve pending users?"
+msgid "ApplicationSettings|Controlled access"
 msgstr ""
 
 msgid "ApplicationSettings|Denied domains for sign-ups"
@@ -7309,13 +7312,13 @@ msgstr ""
 msgid "ApplicationSettings|Hard"
 msgstr ""
 
-msgid "ApplicationSettings|Invitations do not require administrator approval"
-msgstr ""
-
 msgid "ApplicationSettings|Minimum password length (number of characters)"
 msgstr ""
 
 msgid "ApplicationSettings|New users can sign up without confirming their email address."
+msgstr ""
+
+msgid "ApplicationSettings|New users cannot be added or request access. Restricts the occurrence of seat overages."
 msgstr ""
 
 msgid "ApplicationSettings|Off"
@@ -7375,9 +7378,6 @@ msgid "ApplicationSettings|Send a confirmation email during sign up. New users c
 msgstr ""
 
 msgid "ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in."
-msgstr ""
-
-msgid "ApplicationSettings|Set user cap"
 msgstr ""
 
 msgid "ApplicationSettings|Setting locked. Resolve all %{linkStart}pending approvals%{linkEnd} to unlock."
@@ -25291,9 +25291,6 @@ msgid "GenericReport|Diff"
 msgstr ""
 
 msgid "Geo"
-msgstr ""
-
-msgid "Geo Replication"
 msgstr ""
 
 msgid "Geo Replication - %{node_name}"

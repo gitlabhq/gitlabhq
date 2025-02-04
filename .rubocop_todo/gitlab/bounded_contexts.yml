@@ -700,6 +700,7 @@ Gitlab/BoundedContexts:
     - 'app/models/blob_viewer/gemspec.rb'
     - 'app/models/blob_viewer/geo_json.rb'
     - 'app/models/blob_viewer/gitlab_ci_yml.rb'
+    - 'app/models/blob_viewer/graph.rb'
     - 'app/models/blob_viewer/go_mod.rb'
     - 'app/models/blob_viewer/godeps_json.rb'
     - 'app/models/blob_viewer/image.rb'

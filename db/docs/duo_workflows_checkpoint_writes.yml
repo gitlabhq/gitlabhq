@@ -1,0 +1,13 @@
+---
+table_name: duo_workflows_checkpoint_writes
+classes:
+- Ai::DuoWorkflows::CheckpointWrite
+feature_categories:
+- duo_workflow
+description: Checkpoint writes for Duo Workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178271
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

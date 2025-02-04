@@ -3779,7 +3779,6 @@
 - './spec/helpers/admin/user_actions_helper_spec.rb'
 - './spec/helpers/appearances_helper_spec.rb'
 - './spec/helpers/application_helper_spec.rb'
-- './spec/helpers/application_settings_helper_spec.rb'
 - './spec/helpers/auth_helper_spec.rb'
 - './spec/helpers/auto_devops_helper_spec.rb'
 - './spec/helpers/avatars_helper_spec.rb'

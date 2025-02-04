@@ -21,7 +21,7 @@ GitLab Flavored Markdown (GLFM).
 > ...a standard, unambiguous syntax specification for Markdown, along with a suite of comprehensive tests to validate Markdown implementations against this specification.
 
 Extensions from [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/), such as tables and task lists, are supported.
-Various [extensions](../../user/markdown.md#differences-between-gitlab-flavored-markdown-and-standard-markdown), such as math and multiline
+Various [extensions](../../user/markdown.md#differences-with-standard-markdown), such as math and multiline
 blockquotes are then added, creating GLFM.
 
 NOTE:

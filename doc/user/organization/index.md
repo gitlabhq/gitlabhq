@@ -135,7 +135,7 @@ The Organization description field supports a limited subset of [GitLab Flavored
 
 - [Emphasis](../markdown.md#emphasis)
 - [Links](../markdown.md#links)
-- [Superscripts / Subscripts](../markdown.md#superscripts--subscripts)
+- [Superscripts / Subscripts](../markdown.md#superscripts-and-subscripts)
 
 ## Related topics
 

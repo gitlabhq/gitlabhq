@@ -300,6 +300,7 @@
   - "scripts/lint/check_mermaid.mjs"
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
+  - "doc/update/breaking_windows.md"
   - "doc/update/deprecations.md"
   - "data/deprecations/**/*"
   - "tooling/docs/**/*"

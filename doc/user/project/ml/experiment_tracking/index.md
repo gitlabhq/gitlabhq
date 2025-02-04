@@ -71,3 +71,16 @@ Trial artifacts are saved as packages. After an artifact is logged for a run, al
 You can associate runs to the CI job that created them, allowing quick links to the merge request, pipeline, and user that triggered the pipeline:
 
 ![CI information in run detail](img/run_detail_ci.png)
+
+## View logged metrics
+
+When you run an experiment, GitLab logs certain related data, including its metrics, parameters, and metadata. You can view the metrics in a chart for analysis.
+
+To view logged metrics:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Model experiments**.
+1. Select the experiment you want to view.
+1. Select the **Performance** tab.
+
+![A graph of an experiment's performance](img/metrics.png)

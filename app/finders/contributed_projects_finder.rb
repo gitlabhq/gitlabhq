@@ -72,3 +72,5 @@ class ContributedProjectsFinder
     collection
   end
 end
+
+ContributedProjectsFinder.prepend_mod

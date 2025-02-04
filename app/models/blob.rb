@@ -34,6 +34,7 @@ class Blob < SimpleDelegator
     BlobViewer::SVG,
     BlobViewer::OpenApi,
     BlobViewer::GeoJson,
+    BlobViewer::Graph,
 
     BlobViewer::Image,
     BlobViewer::Sketch,
