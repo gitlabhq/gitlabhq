@@ -903,7 +903,7 @@ dependency_scanning:
 As we have not tested all variables you may find some do work and others do not.
 If one does not work and you need it we suggest
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
-or [contributing to the code](../../../development/index.md) to enable it to be used.
+or [contributing to the code](../../../development/_index.md) to enable it to be used.
 
 ### Custom TLS certificate authority
 

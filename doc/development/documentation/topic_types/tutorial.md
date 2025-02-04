@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Tutorial page type
 ---
-
-# Tutorial page type
 
 A tutorial is page that contains an end-to-end walkthrough of a complex workflow or scenario.
 In general, you might consider using a tutorial when:
@@ -94,7 +93,7 @@ do not use `Tutorial` in the title.
 ## Screenshots
 
 You can include screenshots in a tutorial to illustrate important steps in the process.
-In the core product documentation, you should [use illustrations sparingly](../styleguide/index.md#illustrations).
+In the core product documentation, you should [use illustrations sparingly](../styleguide/_index.md#illustrations).
 However, in tutorials, screenshots can help users understand where they are in a complex process.
 
 Try to balance the number of screenshots in the tutorial so they don't disrupt

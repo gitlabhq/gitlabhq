@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Page objects in GitLab QA
 ---
-
-# Page objects in GitLab QA
 
 In GitLab QA we are using a known pattern, called _Page Objects_.
 

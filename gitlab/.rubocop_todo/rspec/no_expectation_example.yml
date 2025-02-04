@@ -1,0 +1,12 @@
+---
+RSpec/NoExpectationExample:
+  Exclude:
+    - 'ee/spec/support/shared_examples/models/concerns/verifiable_replicator_shared_examples.rb'
+    - 'ee/spec/support/shared_examples/models/elasticsearch_indexed_container_shared_examples.rb'
+    - 'ee/spec/support/shared_examples/services/base_sync_service_shared_examples.rb'
+    - 'spec/support/shared_examples/features/discussion_comments_shared_example.rb'
+    - 'spec/support/shared_examples/namespaces/hierarchy_examples.rb'
+    - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'
+    - 'spec/support/shared_examples/services/check_ingress_ip_address_service_shared_examples.rb'
+    - 'spec/support/shared_examples/services/notification_service_shared_examples.rb'
+    - 'spec/support/shared_examples/services/updating_mentions_shared_examples.rb'

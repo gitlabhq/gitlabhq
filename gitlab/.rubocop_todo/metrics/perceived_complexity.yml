@@ -1,0 +1,12 @@
+---
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/finders/deployments_finder.rb'
+    - 'app/helpers/button_helper.rb'
+    - 'app/services/projects/create_service.rb'
+    - 'lib/banzai/filter/references/abstract_reference_filter.rb'
+    - 'lib/banzai/renderer.rb'
+    - 'lib/gitlab/conflict/file.rb'
+    - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
+    - 'lib/gitlab/utils/merge_hash.rb'
+    - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'

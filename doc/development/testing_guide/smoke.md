@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Smoke Tests
 ---
-
-# Smoke Tests
 
 It is imperative in any testing suite that we have Smoke Tests. In short, smoke
 tests run quick end-to-end functional tests from GitLab QA and are
@@ -29,9 +28,9 @@ Smoke tests have the `:smoke` RSpec metadata.
 This is a very small subset smoke tests with the `:health_check` RSpec metadata.
 Its function is to monitor the status and health of the application.
 
-See [End-to-end Testing](end_to_end/index.md) for more details about
+See [End-to-end Testing](end_to_end/_index.md) for more details about
 end-to-end tests.
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

@@ -2,9 +2,8 @@
 stage: Growth
 group: Acquisition
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Experiment code reviews
 ---
-
-# Experiment code reviews
 
 Experiments' code quality can fail our standards for several reasons. These
 reasons can include not being added to the codebase for a long time, or because
@@ -13,7 +12,7 @@ run) shouldn't impact GitLab availability. To avoid or identify issues,
 experiments are initially deployed to a small number of users. Regardless,
 experiments still need tests.
 
-Experiments must have corresponding [frontend or feature tests](../testing_guide/index.md) to ensure they
+Experiments must have corresponding [frontend or feature tests](../testing_guide/_index.md) to ensure they
 exist in the application. These tests should help prevent the experiment code from
 being removed before the [experiment cleanup process](https://handbook.gitlab.com/handbook/marketing/growth/engineering/experimentation/#experiment-cleanup-issue) starts.
 

@@ -1,7 +1,13 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 
-import { getGlobalAlerts, setGlobalAlerts, removeGlobalAlertById } from '~/lib/utils/global_alerts';
+import {
+  GLOBAL_ALERTS_DISMISS_EVENT,
+  eventHub,
+  getGlobalAlerts,
+  setGlobalAlerts,
+  removeGlobalAlertById,
+} from '~/lib/utils/global_alerts';
 
 export default {
   name: 'GlobalAlerts',
@@ -10,6 +16,12 @@ export default {
     return {
       alerts: [],
     };
+  },
+  created() {
+    eventHub.$on(GLOBAL_ALERTS_DISMISS_EVENT, this.onDismissById);
+  },
+  beforeDestroy() {
+    eventHub.$off(GLOBAL_ALERTS_DISMISS_EVENT, this.onDismissById);
   },
   mounted() {
     const { page } = document.body.dataset;
@@ -30,6 +42,10 @@ export default {
       const alert = this.alerts[index];
       this.alerts.splice(index, 1);
       removeGlobalAlertById(alert.id);
+    },
+    onDismissById(id) {
+      this.alerts = this.alerts.filter((alert) => alert.id !== id);
+      removeGlobalAlertById(id);
     },
   },
 };

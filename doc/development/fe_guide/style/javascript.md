@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: JavaScript style guide
 ---
-
-# JavaScript style guide
 
 We use [the Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) and its accompanying
 linter to manage most of our JavaScript style guidelines.

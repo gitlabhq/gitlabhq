@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Code Review Guidelines
 ---
-
-# Code Review Guidelines
 
 This guide contains advice and best practices for performing code review, and
 having your code reviewed.
@@ -238,7 +237,7 @@ See the [test engineering process](https://handbook.gitlab.com/handbook/engineer
 
 1. You have self-reviewed this MR per [code review guidelines](code_review.md).
 1. The code follows the [software design guidelines](software_design.md).
-1. Ensure [automated tests](testing_guide/index.md) exist following the [testing pyramid](testing_guide/testing_levels.md). Add missing tests or create an issue documenting testing gaps.
+1. Ensure [automated tests](testing_guide/_index.md) exist following the [testing pyramid](testing_guide/testing_levels.md). Add missing tests or create an issue documenting testing gaps.
 1. You have considered the technical impacts on GitLab.com, Dedicated and self-managed.
 1. You have considered the impact of this change on the frontend, backend, and database portions of the system where appropriate and applied the `~ux`, `~frontend`, `~backend`, and `~database` labels accordingly.
 1. You have tested this MR in [all supported browsers](../install/requirements.md#supported-web-browsers), or determined that this testing is not needed.
@@ -286,7 +285,7 @@ See the [test engineering process](https://handbook.gitlab.com/handbook/engineer
 
 ##### Compliance
 
-1. You have confirmed that the correct [MR type label](labels/index.md) has been applied.
+1. You have confirmed that the correct [MR type label](labels/_index.md) has been applied.
 
 ### The responsibility of the merge request author
 
@@ -522,7 +521,7 @@ Here is a summary, which is also reflected in other sections.
    - Discussions on one particular part of the code will not block other parts of the code from being merged.
    - Smaller MRs are often simpler, and you can consider skipping the first review and [sending directly to the maintainer](#getting-your-merge-request-reviewed-approved-and-merged), or skipping one of the suggested competency areas (frontend or backend, for example).
    - Mocks can be a good approach, even though they add another MR later; replacing a mock with a server request is usually a quick MR to review.
-     - Be sure that any UI with mocked data is behind a [feature flag](../development/feature_flags/index.md).
+     - Be sure that any UI with mocked data is behind a [feature flag](../development/feature_flags/_index.md).
    - Pull common dependencies into the first MRs to avoid excessive rebases.
      - For sequential MRs use [stacked diffs](../user/project/merge_requests/stacked_diffs.md).
      - For dependent MRs (for example, `A` -> `B` -> `C`), have their branches target each other instead of `master`. For example, have `C` target `B`, `B` target `A`, and `A` target `master`. This way each MR will have only their corresponding `diff`.
@@ -637,7 +636,7 @@ WARNING:
 Before taking the decision to merge:
 
 - Set the milestone.
-- Confirm that the correct [MR type label](labels/index.md#type-labels) is applied.
+- Confirm that the correct [MR type label](labels/_index.md#type-labels) is applied.
 - Consider warnings and errors from danger bot, code quality, and other reports.
   Unless a strong case can be made for the violation, these should be resolved
   before merging. A comment must be posted if the MR is merged with any failed job.
@@ -822,7 +821,7 @@ Enterprise Edition instance. This has some implications:
    [last resort](https://handbook.gitlab.com/handbook/product/product-principles/#convention-over-configuration). See [Adding a new setting to GitLab Rails](architecture.md#adding-a-new-setting-in-gitlab-rails).
 1. **File system access** is not possible in a [cloud-native architecture](architecture.md#adapting-existing-and-introducing-new-components).
    Ensure that we support object storage for any file storage we need to perform. For more
-   information, see the [uploads documentation](uploads/index.md).
+   information, see the [uploads documentation](uploads/_index.md).
 
 ### Customer critical merge requests
 

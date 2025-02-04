@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+title: Batched background migrations
 ---
-
-# Batched background migrations
 
 Batched background migrations should be used to perform data migrations whenever a
 migration exceeds [the time limits](../migration_style_guide.md#how-long-a-migration-should-take)

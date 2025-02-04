@@ -2,9 +2,8 @@
 stage: Plan
 group: Knowledge
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Rich text editor development guidelines
 ---
-
-# Rich text editor development guidelines
 
 The rich text editor is a UI component that provides a WYSIWYG editing
 experience for [GitLab Flavored Markdown](../../user/markdown.md) in the GitLab application.
@@ -47,7 +46,7 @@ The rich text editor requires two properties:
 
 - `renderMarkdown` is an asynchronous function that returns the response (String) of invoking the
   [Markdown API](../../api/markdown.md).
-- `uploadsPath` is a URL that points to a [GitLab upload service](../uploads/index.md)
+- `uploadsPath` is a URL that points to a [GitLab upload service](../uploads/_index.md)
   with `multipart/form-data` support.
 
 See the [`WikiForm.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue#L207)

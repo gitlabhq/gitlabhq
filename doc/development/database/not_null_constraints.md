@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: '`NOT NULL` constraints'
 ---
-
-# `NOT NULL` constraints
 
 All attributes that should not have `NULL` as a value, should be defined as `NOT NULL`
 columns in the database.

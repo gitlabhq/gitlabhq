@@ -2,8 +2,8 @@
 stage: Plan
 group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Issuable-like Rails models utilities
 ---
-# Issuable-like Rails models utilities
 
 GitLab Rails codebase contains several models that hold common functionality and behave similarly to
 [Issues](../user/project/issues/index.md). Other examples of "issuables"

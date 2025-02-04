@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "Developer documentation explaining the design and workflow of merge request approval rules."
+title: Approval rules development guidelines
 ---
-
-# Approval rules development guidelines
 
 This document explains the backend design and flow of all related functionality
 about [merge request approval rules](../../user/project/merge_requests/approvals/index.md).

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: VS Code debugging
 ---
-
-# VS Code debugging
 
 This document describes how to set up Rails debugging in [Visual Studio Code (VS Code)](https://code.visualstudio.com/) using the [GitLab Development Kit (GDK)](contributing/first_contribution/configure-dev-env-gdk.md).
 

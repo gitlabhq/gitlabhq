@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-The Service Ping API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
+The Service Ping API is associated with [Service Ping](../development/internal_analytics/service_ping/_index.md).
 
 ## Export Service Ping data
 

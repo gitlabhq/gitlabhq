@@ -173,7 +173,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 This endpoint can be accessed without authentication if the repository is
 publicly accessible. Diffs can have an empty diff string if
-[diff limits](../development/merge_request_concepts/diffs/index.md#diff-limits) are reached.
+[diff limits](../development/merge_request_concepts/diffs/_index.md#diff-limits) are reached.
 
 ```plaintext
 GET /projects/:id/repository/compare

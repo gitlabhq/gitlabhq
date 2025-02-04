@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Developing against interacting components or features
 ---
-
-# Developing against interacting components or features
 
 It's not uncommon that a single code change can reflect and interact with multiple parts of GitLab
 codebase. Furthermore, an existing feature might have an underlying integration or behavior that

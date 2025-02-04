@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-GitLab adopted [feature flags strategies](../development/feature_flags/index.md)
+GitLab adopted [feature flags strategies](../development/feature_flags/_index.md)
 to deploy features in an early stage of development so that they can be
 incrementally rolled out.
 

@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Creating enums
 ---
-
-# Creating enums
 
 When creating a new enum, it should use the database type `SMALLINT`.
 The `SMALLINT` type size is 2 bytes, which is sufficient for an enum.
@@ -99,7 +98,7 @@ This looks working as a workaround, however, this approach has some downsides th
 
 - Features could move from EE to FOSS or vice versa. Therefore, the offset might be mixed between FOSS and EE in the future.
   For example, when you move `job_activity_limit_exceeded` to FOSS, you see `{ unknown_failure: 0, config_error: 1, job_activity_limit_exceeded: 1_000 }`.
-- The integer column for the `enum` is likely created [as `SMALLINT`](#creating-enums).
+- The integer column for the `enum` is likely created as `SMALLINT`.
   Therefore, you need to be careful of that the offset doesn't exceed the maximum value of 2 bytes integer.
 
 As a conclusion, you should define all of the key/value pairs in FOSS.

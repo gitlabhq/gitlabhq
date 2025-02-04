@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Syntax highlighting development guidelines (repository blob viewer)
 ---
-
-# Syntax highlighting development guidelines (repository blob viewer)
 
 This guide outlines best practices and implementation details for syntax highlighting in the repository source code viewer. GitLab uses two syntax highlighting libraries:
 

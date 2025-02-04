@@ -6,9 +6,8 @@ description: "Sometimes it is necessary to store large amounts of records at onc
 when iterating collections and performing individual `save`s. With the arrival of `insert_all`
 in Rails 6, which operates at the row level (that is, using `Hash`es), GitLab has added a set
 of APIs that make it safe and simple to insert ActiveRecord objects in bulk."
+title: Insert into tables in batches
 ---
-
-# Insert into tables in batches
 
 Sometimes it is necessary to store large amounts of records at once, which can be inefficient
 when iterating collections and saving each record individually. With the arrival of

@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Development guide for GitLab official CI/CD components
 ---
-
-# Development guide for GitLab official CI/CD components
 
 This document explains how to develop [CI/CD components](../../ci/components/index.md) that are maintained by GitLab, either the official public ones or those for internal use.
 

@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content.
+title: Large tables limitations
 ---
-
-# Large tables limitations
 
 GitLab enforces some limitations on large database tables schema changes to improve manageability for both GitLab and its customers. The list of tables subject to these limitations is defined in [`rubocop/rubocop-migrations.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml).
 

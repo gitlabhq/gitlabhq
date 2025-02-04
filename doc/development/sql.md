@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: SQL Query Guidelines
 ---
-
-# SQL Query Guidelines
 
 This document describes various guidelines to follow when writing SQL queries,
 either using ActiveRecord/Arel or raw SQL queries.

@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Work items and work item types
 ---
-
-# Work items and work item types
 
 Work items introduce a flexible model that standardizes and extends issue tracking capabilities in GitLab.
 With work items, you can define different types that can be customized with various widgets to meet

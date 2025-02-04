@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Distributed tracing development guidelines
 ---
-
-# Distributed tracing development guidelines
 
 GitLab is instrumented for distributed tracing. Distributed tracing in GitLab is currently considered **experimental**, as it has not yet been tested at scale on GitLab.com.
 

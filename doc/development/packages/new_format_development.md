@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Developing support for a new package format
 ---
-
-# Developing support for a new package format
 
 This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/index.md).
 
@@ -123,7 +122,7 @@ The MVC usually has two phases:
 When implementing a new package manager, it is tempting to create one large merge request containing all of the
 necessary endpoints and services necessary to support basic usage. Instead:
 
-1. Put the API endpoints behind a [feature flag](../feature_flags/index.md).
+1. Put the API endpoints behind a [feature flag](../feature_flags/_index.md).
 1. Submit each endpoint or behavior (download, upload, etc) in a different merge request to shorten the review process.
 
 ### Analysis
@@ -151,7 +150,7 @@ During this phase, the idea is to collect as much information as possible about 
   1. Empty file structure (API file, base service for this package)
   1. Authentication system for "logging in" to the package manager
   1. Identify metadata and create applicable tables
-  1. Workhorse route for [object storage direct upload](../uploads/index.md#direct-upload)
+  1. Workhorse route for [object storage direct upload](../uploads/_index.md#direct-upload)
   1. Endpoints required for upload/publish
   1. Endpoints required for install/download
   1. Endpoints required for required actions
@@ -210,7 +209,7 @@ File uploads should be handled by GitLab Workhorse using object accelerated uplo
 the workhorse proxy that checks all incoming requests to GitLab intercept the upload request,
 upload the file, and forward a request to the main GitLab codebase only containing the metadata
 and file location rather than the file itself. An overview of this process can be found in the
-[development documentation](../uploads/index.md#direct-upload).
+[development documentation](../uploads/_index.md#direct-upload).
 
 In terms of code, this means a route must be added to the
 [GitLab Workhorse project](https://gitlab.com/gitlab-org/gitlab-workhorse) for each upload endpoint being added

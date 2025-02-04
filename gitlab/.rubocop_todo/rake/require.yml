@@ -1,0 +1,14 @@
+---
+Rake/Require:
+  Exclude:
+    - 'ee/lib/tasks/contracts/merge_requests.rake'
+    - 'lib/tasks/contracts/merge_requests.rake'
+    - 'lib/tasks/contracts/pipeline_schedules.rake'
+    - 'lib/tasks/contracts/pipelines.rake'
+    - 'lib/tasks/gitlab/artifacts/migrate.rake'
+    - 'lib/tasks/gitlab/backup.rake'
+    - 'lib/tasks/gitlab/docs/redirect.rake'
+    - 'lib/tasks/gitlab/graphql.rake'
+    - 'lib/tasks/gitlab/lfs/migrate.rake'
+    - 'lib/tasks/gitlab/openapi.rake'
+    - 'lib/tasks/tokens.rake'

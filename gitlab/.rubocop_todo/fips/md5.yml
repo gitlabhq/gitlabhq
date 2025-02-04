@@ -1,0 +1,10 @@
+---
+Fips/MD5:
+  Exclude:
+    - 'app/experiments/application_experiment.rb'
+    - 'app/models/concerns/checksummable.rb'
+    - 'app/services/packages/go/create_package_service.rb'
+    - 'app/services/packages/maven/metadata/append_package_file_service.rb'
+    - 'app/services/packages/rubygems/create_gemspec_service.rb'
+    - 'ee/app/models/license.rb'
+    - 'lib/tasks/migrate/setup_postgresql.rake'

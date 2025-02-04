@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Websocket channel support for Workhorse
 ---
-
-# Websocket channel support for Workhorse
 
 In some cases, GitLab can provide the following through a WebSocket:
 

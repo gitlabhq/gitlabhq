@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Introducing a new database migration version
 ---
-
-# Introducing a new database migration version
 
 At GitLab we've added many helpers for the database migrations to help developers manipulate
 the schema and data of tables on a large scale like on GitLab.com. To avoid the repetitive task

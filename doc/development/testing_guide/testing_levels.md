@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Testing levels
 ---
-
-# Testing levels
 
 ![Testing priority triangle](img/testing_triangle_v15_7.png)
 
@@ -478,7 +477,7 @@ Every new feature should come with a [test plan](https://gitlab.com/gitlab-org/g
 | ---------- | -------------- | ----- |
 | `qa/qa/specs/features/` | [Capybara](https://github.com/teamcapybara/capybara) + [RSpec](https://github.com/rspec/rspec-rails#feature-specs) + Custom QA framework | Tests should be placed under their corresponding [Product category](https://handbook.gitlab.com/handbook/product/categories/) |
 
-> See [end-to-end tests](end_to_end/index.md) for more information.
+> See [end-to-end tests](end_to_end/_index.md) for more information.
 
 Note that `qa/spec` contains unit tests of the QA framework itself, not to be
 confused with the application's [unit tests](#unit-tests) or
@@ -539,4 +538,4 @@ you should write an integration test using [Frontend integration tests](https://
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

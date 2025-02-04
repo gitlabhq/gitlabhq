@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Internal allowed API
 ---
-
-# Internal allowed API
 
 The `internal/allowed` endpoint assesses whether a user has permission to perform
 certain operations on the Git repository. It performs multiple checks, such as:

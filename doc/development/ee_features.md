@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Guidelines for implementing Enterprise Edition features
 ---
-
-# Guidelines for implementing Enterprise Edition features
 
 - **Place code in `ee/`**: Put all Enterprise Edition (EE) inside the `ee/` top-level directory. The
   rest of the code must be as close to the Community Edition (CE) files as possible.
@@ -302,7 +301,7 @@ FOSS context as well.
 
 To run pipelines in both contexts, add the `~"pipeline:run-as-if-foss"` label to the merge request.
 
-See the [As-if-FOSS jobs and cross project downstream pipeline](pipelines/index.md#as-if-foss-jobs-and-cross-project-downstream-pipeline) pipelines documentation for more information.
+See the [As-if-FOSS jobs and cross project downstream pipeline](pipelines/_index.md#as-if-foss-jobs-and-cross-project-downstream-pipeline) pipelines documentation for more information.
 
 ## Separation of EE code in the backend
 

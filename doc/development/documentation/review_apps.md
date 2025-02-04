@@ -3,9 +3,8 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how documentation review apps work.
+title: Documentation review apps
 ---
-
-# Documentation review apps
 
 GitLab team members can deploy a [review app](../../ci/review_apps/index.md) for merge requests with documentation
 changes. The review app helps you preview what the changes would look like if they were deployed to either:

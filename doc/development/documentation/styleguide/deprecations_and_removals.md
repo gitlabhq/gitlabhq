@@ -3,9 +3,8 @@ info: For assistance with this Style Guide page, see https://handbook.gitlab.com
 stage: none
 group: unassigned
 description: 'Guidelines for deprecations and page removals'
+title: Deprecations and removals
 ---
-
-# Deprecations and removals
 
 When GitLab deprecates or removes a feature, use the following process to update the documentation.
 This process requires temporarily changing content to be "deprecated" or "removed" before it's deleted.

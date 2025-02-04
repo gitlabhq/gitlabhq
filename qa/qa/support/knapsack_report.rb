@@ -102,14 +102,14 @@ module QA
       def create_merged_runtime_report
         logger.info("Fetching all example runtime data from GCS '#{BUCKET}' bucket")
         items = client.list_objects(BUCKET, prefix: EXAMPLE_RUNTIMES_PATH).items
-        logger.info("Fetched example runtime files #{items.map(&:name)}, creating merged knapsack report")
-        client.list_objects(BUCKET, prefix: EXAMPLE_RUNTIMES_PATH).items
-          .each_with_object({}) do |report, runtimes|
-            json = JSON.parse(client.get_object(BUCKET, report.name)[:body])
 
-            # merge report and keep only the longest runtime
-            json.each { |id, runtime| runtimes[id] = runtime unless (runtimes[id] || 0) > runtime }
-          end
+        logger.info("Fetched example runtime files #{items.map(&:name)}, creating merged knapsack report")
+        items.each_with_object({}) do |report, runtimes|
+          json = JSON.parse(client.get_object(BUCKET, report.name)[:body])
+
+          # merge report and keep only the longest runtime
+          json.each { |id, runtime| runtimes[id] = runtime unless (runtimes[id] || 0) > runtime }
+        end
       end
 
       # Create knapsack report from example runtime data

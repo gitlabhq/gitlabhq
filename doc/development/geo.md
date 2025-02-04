@@ -2,9 +2,8 @@
 stage: Systems
 group: Geo
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Geo (development)
 ---
-
-# Geo (development)
 
 Geo connects GitLab instances together. One GitLab instance is
 designated as a **primary** site and can be run with multiple
@@ -119,7 +118,7 @@ it's successful, we replace the main repository with the newly cloned one.
 
 ### Blob replication
 
-Blobs such as [uploads](uploads/index.md), LFS objects, and CI job artifacts, are replicated to the **secondary** site with the [Self-Service Framework](geo/framework.md). To track the state of syncing, each model has a corresponding registry table, for example `Upload` has `Geo::UploadRegistry` in the [PostgreSQL Geo Tracking Database](#tracking-database).
+Blobs such as [uploads](uploads/_index.md), LFS objects, and CI job artifacts, are replicated to the **secondary** site with the [Self-Service Framework](geo/framework.md). To track the state of syncing, each model has a corresponding registry table, for example `Upload` has `Geo::UploadRegistry` in the [PostgreSQL Geo Tracking Database](#tracking-database).
 
 #### Blob replication happy path workflows between services
 
@@ -655,7 +654,7 @@ on, check out our [self-service framework](geo/framework.md).
 
 ### GET:Geo pipeline
 
-After triggering a successful [e2e:test-on-omnibus-ee](testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job) pipeline, you can manually trigger a job named `GET:Geo`:
+After triggering a successful [e2e:test-on-omnibus-ee](testing_guide/end_to_end/_index.md#using-the-test-on-omnibus-job) pipeline, you can manually trigger a job named `GET:Geo`:
 
 1. In the [GitLab project](https://gitlab.com/gitlab-org/gitlab), select the **Pipelines** tab of a merge request.
 1. Select the `Stage: qa` stage on the latest pipeline to expand and list all the related jobs.
@@ -678,7 +677,7 @@ see the [QA documentation](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa
 
 The pipeline involves the interaction of multiple different projects:
 
-- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [`e2e:test-on-omnibus-ee` job](testing_guide/end_to_end/index.md#using-the-test-on-omnibus-job) is launched from merge requests in this project.
+- [GitLab](https://gitlab.com/gitlab-org/gitlab) - The [`e2e:test-on-omnibus-ee` job](testing_guide/end_to_end/_index.md#using-the-test-on-omnibus-job) is launched from merge requests in this project.
 - [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) - Builds relevant artifacts containing the changes from the triggering merge request pipeline.
 - [GET-Configs/Geo](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit-configs/Geo) - Coordinates the lifecycle of a short-lived Geo installation that can be evaluated.
 - [GET](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - Contains the necessary logic for creating and destroying Geo installations. Used by `GET-Configs/Geo`.

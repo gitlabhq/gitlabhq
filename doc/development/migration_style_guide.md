@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Migration Style Guide
 ---
-
-# Migration Style Guide
 
 When writing migrations for GitLab, you have to take into account that
 these are run by hundreds of thousands of organizations of all sizes, some with
@@ -43,7 +42,7 @@ work it needs to perform and how long it takes to complete:
    This means that they should be relatively fast, no more than a few minutes, so as not to unnecessarily delay a deployment.
 
    One exception is a migration that takes longer but is absolutely critical for the application to operate correctly.
-   For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/index.md)
+   For example, you might have indices that enforce unique tuples, or that are needed for query performance in critical parts of the application. In cases where the migration would be unacceptably slow, however, a better option might be to guard the feature with a [feature flag](feature_flags/_index.md)
    and perform a post-deployment migration instead. The feature can then be turned on after the migration finishes.
 
    Migrations used to add new models are also part of these regular schema migrations. The only differences are the Rails command used to generate the migrations and the additional generated files, one for the model and one for the model's spec.

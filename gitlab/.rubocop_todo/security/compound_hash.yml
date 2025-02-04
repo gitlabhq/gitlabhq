@@ -1,0 +1,6 @@
+---
+Security/CompoundHash:
+  Exclude:
+    - 'ee/app/models/vulnerabilities/finding.rb'
+    - 'lib/gitlab/ci/reports/security/finding.rb'
+    - 'lib/gitlab/ci/reports/security/finding_key.rb'

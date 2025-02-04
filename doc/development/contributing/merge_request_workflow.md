@@ -2,14 +2,13 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Merge requests workflow
 ---
-
-# Merge requests workflow
 
 We welcome merge requests from everyone, with fixes and improvements
 to GitLab code, tests, and documentation. The issues that are specifically suitable
 for community contributions have the
-[`Seeking community contributions`](../labels/index.md#label-for-community-contributors)
+[`Seeking community contributions`](../labels/_index.md#label-for-community-contributors)
 label, but you are free to contribute to any issue you want.
 
 ## Working from issues
@@ -28,7 +27,7 @@ regression test are merged quickly. New features without proper tests
 might be slower to receive feedback.
 
 If you are new to GitLab development (or web development in general), see the
-[how to contribute](index.md#how-to-contribute) section to get started with
+[how to contribute](_index.md#how-to-contribute) section to get started with
 some potentially easy issues.
 
 ## Merge request ownership
@@ -54,7 +53,7 @@ within the MR.
 
 ## Merge request guidelines for contributors
 
-For a walkthrough of the contribution process, see [Tutorial: Make a GitLab contribution](first_contribution/index.md).
+For a walkthrough of the contribution process, see [Tutorial: Make a GitLab contribution](first_contribution/_index.md).
 
 ### Best practices
 
@@ -118,7 +117,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 #### Why these standards matter
 
 1. Consistent commit messages that follow these guidelines make the history more readable.
-1. Concise standard commit messages helps to identify [breaking changes](../deprecation_guidelines/index.md) for a deployment or ~"master:broken" quicker when
+1. Concise standard commit messages helps to identify [breaking changes](../deprecation_guidelines/_index.md) for a deployment or ~"master:broken" quicker when
    reviewing commits between two points in time.
 
 #### Commit message template
@@ -163,7 +162,7 @@ the contribution acceptance criteria below:
 1. If the merge request contains more than 500 changes:
    - Explain the reason
    - Mention a maintainer
-1. Mention any major [breaking changes](../deprecation_guidelines/index.md).
+1. Mention any major [breaking changes](../deprecation_guidelines/_index.md).
 1. Include proper tests and make all tests pass (unless it contains a test
    exposing a bug in existing code). Every new class should have corresponding
    unit tests, even if the class is exercised at a higher level, such as a feature test.
@@ -214,12 +213,12 @@ requirements.
 1. [Performance guidelines](../merge_request_concepts/performance.md) have been followed.
 1. [Secure coding guidelines](../secure_coding_guidelines.md) have been followed.
 1. [Application and rate limit guidelines](../merge_request_concepts/rate_limits.md) have been followed.
-1. [Documented](../documentation/index.md) in the `/doc` directory.
+1. [Documented](../documentation/_index.md) in the `/doc` directory.
 1. If your MR touches code that executes shell commands, reads or opens files, or
    handles paths to files on disk, make sure it adheres to the
    [shell command guidelines](../shell_commands.md)
 1. [Code changes should include observability instrumentation](../code_review.md#observability-instrumentation).
-1. If your code needs to handle file storage, see the [uploads documentation](../uploads/index.md).
+1. If your code needs to handle file storage, see the [uploads documentation](../uploads/_index.md).
 1. If your merge request adds one or more migrations, make sure to execute all migrations on a fresh database
    before the MR is reviewed.
    If the review leads to large changes in the MR, execute the migrations again
@@ -253,7 +252,7 @@ requirements.
 
 ### Testing
 
-1. [Unit, integration, and system tests](../testing_guide/index.md) that all pass
+1. [Unit, integration, and system tests](../testing_guide/_index.md) that all pass
    on the CI server.
 1. Peer member testing is optional but recommended when the risk of a change is high.
    This includes when the changes are [far-reaching](https://handbook.gitlab.com/handbook/engineering/core-development/#reducing-the-impact-of-far-reaching-work)
@@ -266,7 +265,7 @@ requirements.
    added if required. Contact [the quality team](https://handbook.gitlab.com/handbook/engineering/quality/)
    with any questions.
 1. The change is tested in a review app where possible and if appropriate.
-1. Code affected by a feature flag is covered by [automated tests with the feature flag enabled and disabled](../feature_flags/index.md#feature-flags-in-tests), or both
+1. Code affected by a feature flag is covered by [automated tests with the feature flag enabled and disabled](../feature_flags/_index.md#feature-flags-in-tests), or both
    states are tested as part of peer member testing or as part of the rollout plan.
 1. If your merge request adds one or more migrations, write tests for more complex migrations.
 

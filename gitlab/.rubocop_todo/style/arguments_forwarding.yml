@@ -1,0 +1,8 @@
+---
+# Cop supports --autocorrect.
+Style/ArgumentsForwarding:
+  Exclude:
+    - 'lib/gitlab/current_settings.rb'
+    - 'lib/gitlab/database/load_balancing/connection_proxy.rb'
+    - 'lib/gitlab/memory/watchdog/configuration.rb'
+    - 'lib/gitlab/redis/multi_store.rb'

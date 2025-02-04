@@ -1,0 +1,10 @@
+---
+Capybara/VisibilityMatcher:
+  Exclude:
+    - 'ee/spec/support/helpers/features/billing_plans_helpers.rb'
+    - 'ee/spec/support/shared_examples/views/issuable_bulk_dropdown_shared_examples.rb'
+    - 'spec/support/helpers/features/canonical_link_helpers.rb'
+    - 'spec/support/shared_examples/features/discussion_comments_shared_example.rb'
+    - 'spec/support/shared_examples/features/page_description_shared_examples.rb'
+    - 'spec/support/shared_examples/features/rss_shared_examples.rb'
+    - 'spec/support/shared_examples/features/wiki/file_attachments_shared_examples.rb'

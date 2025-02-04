@@ -38320,6 +38320,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_47fe2a0596 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_requests_compliance_violations
+    ADD CONSTRAINT fk_492a40969e FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY workspace_variables
     ADD CONSTRAINT fk_494e093520 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 

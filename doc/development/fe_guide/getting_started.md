@@ -2,13 +2,12 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Getting started
 ---
-
-# Getting started
 
 This page will guide you through the Frontend development process and show you what a normal merge request cycle looks like. You can find more about the organization of the frontend team in the [handbook](https://handbook.gitlab.com/handbook/engineering/frontend/).
 
-There are a lot of things to consider for a first merge request and it can feel overwhelming. The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.
+There are a lot of things to consider for a first merge request and it can feel overwhelming. The [Frontend onboarding course](onboarding_course/_index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.
 
 ## Development lifecycle
 

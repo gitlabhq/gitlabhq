@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Caching guidelines
 ---
-
-# Caching guidelines
 
 This document describes the various caching strategies in use at GitLab, how to implement
 them effectively, and various gotchas. This material was extracted from the excellent
@@ -210,7 +209,7 @@ Use conditional GET caching when the entire response is cacheable:
 
 - No privacy risk when you aren't using public caches. You're only caching what
   the user sees, for that user, in their browser.
-- Particularly useful on [endpoints that get polled](polling.md#polling-with-etag-caching).
+- Particularly useful on [endpoints that get polled](polling.md).
 - Good examples:
   - A list of discussions that we poll for updates. Use the last created entry's `updated_at` value for the `etag`.
   - API endpoints.

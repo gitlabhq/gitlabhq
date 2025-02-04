@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: GitLab /help
 ---
-
-# GitLab /help
 
 Every GitLab instance includes documentation at `/help` (`https://gitlab.example.com/help`)
 that matches the version of the instance. For example, <https://gitlab.com/help>.

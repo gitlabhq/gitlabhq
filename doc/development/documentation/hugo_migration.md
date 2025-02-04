@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Hugo migration reference for writers
 ---
-
-# Hugo migration reference for writers
 
 We are moving GitLab Docs from Nanoc to Hugo. This guide outlines the formatting
 requirements for documentation after the migration.

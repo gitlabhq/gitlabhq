@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Development processes
 ---
-
-# Development processes
 
 Consult these topics for information on development processes for contributing to GitLab.
 
@@ -18,12 +17,12 @@ Must-reads:
 - [Database review guidelines](database_review.md) for reviewing
   database-related changes and complex SQL queries, and having them reviewed
 - [Secure coding guidelines](secure_coding_guidelines.md)
-- [Pipelines for the GitLab project](pipelines/index.md)
+- [Pipelines for the GitLab project](pipelines/_index.md)
 - [Avoiding required stops](avoiding_required_stops.md)
 
 Complementary reads:
 
-- [Contribute to GitLab](contributing/index.md)
+- [Contribute to GitLab](contributing/_index.md)
 - [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md)
 - [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/-/tree/master/general/patch)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
@@ -48,7 +47,7 @@ Some changes affect more than one group. For example:
 
 - Changes to [code review guidelines](code_review.md).
 - Changes to [commit message guidelines](contributing/merge_request_workflow.md#commit-messages-guidelines).
-- Changes to guidelines in [feature flags in development of GitLab](feature_flags/index.md).
+- Changes to guidelines in [feature flags in development of GitLab](feature_flags/_index.md).
 - Changes to [feature flags documentation guidelines](documentation/feature_flags.md).
 
 In these cases, use the following workflow:
@@ -91,17 +90,17 @@ other than the MR author can merge.
 As a reviewer or as a reviewee, make sure to familiarize yourself with
 the [reviewer values](https://handbook.gitlab.com/handbook/engineering/workflow/reviewer-values/) we strive for at GitLab.
 
-Also, any doc content should follow the [Documentation Style Guide](documentation/index.md).
+Also, any doc content should follow the [Documentation Style Guide](documentation/_index.md).
 
 ## Language-specific guides
 
 ### Go guides
 
-- [Go Guidelines](go_guide/index.md)
+- [Go Guidelines](go_guide/_index.md)
 
 ### Shell Scripting guides
 
-- [Shell scripting standards and style guidelines](shell_scripting_guide/index.md)
+- [Shell scripting standards and style guidelines](shell_scripting_guide/_index.md)
 
 ## Clear written communication
 

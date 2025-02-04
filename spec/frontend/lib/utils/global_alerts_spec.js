@@ -3,6 +3,9 @@ import {
   setGlobalAlerts,
   removeGlobalAlertById,
   GLOBAL_ALERTS_SESSION_STORAGE_KEY,
+  GLOBAL_ALERTS_DISMISS_EVENT,
+  dismissGlobalAlertById,
+  eventHub,
 } from '~/lib/utils/global_alerts';
 
 describe('global alerts utils', () => {
@@ -76,5 +79,18 @@ describe('removeGlobalAlertById', () => {
       GLOBAL_ALERTS_SESSION_STORAGE_KEY,
       '[{"id":"foo","variant":"success","message":"Foo"}]',
     );
+  });
+});
+
+describe('dismissGlobalAlertById', () => {
+  beforeEach(() => {
+    jest.spyOn(eventHub, '$emit').mockImplementation();
+  });
+
+  it(`fires the "${GLOBAL_ALERTS_DISMISS_EVENT}" event`, () => {
+    dismissGlobalAlertById('bar');
+
+    expect(eventHub.$emit).toHaveBeenCalledTimes(1);
+    expect(eventHub.$emit).toHaveBeenCalledWith(GLOBAL_ALERTS_DISMISS_EVENT, 'bar');
   });
 });

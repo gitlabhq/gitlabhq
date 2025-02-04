@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Product analytics
 ---
-
-# Product analytics
 
 DETAILS:
 **Tier:** Ultimate
@@ -212,7 +211,7 @@ Your instance is being created, and the project onboarded.
 
 ## Instrument your application
 
-You can instrument code to collect data by using [tracking SDKs](index.md).
+You can instrument code to collect data by using [tracking SDKs](../_index.md).
 
 ## Product analytics dashboards
 

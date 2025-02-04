@@ -362,4 +362,4 @@ GitLab shows an icon and a comment field on the image.
 ## Resources
 
 - For technical details on how GitLab calculates the diff between the two revisions,
-  see [Working with diffs](../../../development/merge_request_concepts/diffs/index.md).
+  see [Working with diffs](../../../development/merge_request_concepts/diffs/_index.md).

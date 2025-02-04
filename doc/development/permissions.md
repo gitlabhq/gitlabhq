@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Permission development guidelines
 ---
-
-# Permission development guidelines
 
 There are multiple types of permissions across GitLab, and when implementing
 anything that deals with permissions, all of them should be considered. For more information, see:

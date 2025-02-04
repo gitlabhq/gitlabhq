@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Kubernetes integration development guidelines
 ---
-
-# Kubernetes integration development guidelines
 
 This document provides various guidelines when developing for the GitLab
 [Kubernetes integration](../user/infrastructure/clusters/index.md).
@@ -54,7 +53,7 @@ webserver, and can lead to a denial-of-service (DoS) attack in GitLab as
 the Kubernetes cluster response times are outside of our control.
 
 The easiest way to ensure your calls happen a background process is to
-delegate any such work to happen in a [Sidekiq worker](sidekiq/index.md).
+delegate any such work to happen in a [Sidekiq worker](sidekiq/_index.md).
 
 You may want to make calls to Kubernetes and return the response, but a background
 worker isn't a good fit. Consider using

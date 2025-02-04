@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Contribute to the CI/CD Schema
 ---
-
-# Contribute to the CI/CD Schema
 
 The [pipeline editor](../../ci/pipeline_editor/index.md) uses a CI/CD schema to enhance
 the authoring experience of our CI/CD configuration files. With the CI/CD schema, the editor can:

@@ -77,6 +77,7 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 |-------------|--------|-------|-------|
 | [Runner `active` GraphQL fields replaced by `paused`](https://gitlab.com/gitlab-org/gitlab/-/issues/351109) | Low | Verify |  |
 | [ZenTao integration](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) | Low | Foundations | Instance |
+| [GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field](https://gitlab.com/gitlab-org/gitlab/-/issues/414236) | Low | Package | Group |
 | [The `ci_job_token_scope_enabled` projects API attribute is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/423091) | Low | Govern | Project |
 | [Deprecate license metadata format V1](https://gitlab.com/gitlab-org/gitlab/-/issues/438477) | Low | Secure | Instance |
 | [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383084) | Low | Govern | Project |

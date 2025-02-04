@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Ordering Table Columns in PostgreSQL
 ---
-
-# Ordering Table Columns in PostgreSQL
 
 For GitLab we require that columns of new tables are ordered to use the
 least amount of space. An easy way of doing this is to order them based on the

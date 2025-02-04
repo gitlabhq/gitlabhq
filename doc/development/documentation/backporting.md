@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Backport documentation changes
 ---
-
-# Backport documentation changes
 
 There are two types of backports:
 
@@ -18,7 +17,7 @@ There are two types of backports:
 ## Backport documentation changes to current stable release
 
 To backport documentation changes to the current stable release,
-follow the [standard process to contribute to documentation](index.md).
+follow the [standard process to contribute to documentation](_index.md).
 
 ## Backport documentation changes to older releases
 

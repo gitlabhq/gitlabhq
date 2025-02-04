@@ -1,0 +1,6 @@
+---
+Lint/MixedRegexpCaptureTypes:
+  Exclude:
+    - 'lib/gitlab/ci/pipeline/expression/lexeme/string.rb'
+    - 'lib/gitlab/diff/suggestions_parser.rb'
+    - 'lib/gitlab/github_import/representation/note.rb'

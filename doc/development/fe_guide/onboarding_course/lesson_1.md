@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Lesson 1
 ---
-
-# Lesson 1
 
 <div class="video-fallback">
   See the video: <a href="https://www.youtube.com/watch?v=k4C3-FKvZyI">Lesson 1 intro</a>.

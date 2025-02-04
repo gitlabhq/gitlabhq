@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: ChatOps on GitLab.com
 ---
-
-# ChatOps on GitLab.com
 
 ChatOps on GitLab.com allows GitLab team members to run various automation tasks on GitLab.com using Slack.
 
@@ -61,4 +60,4 @@ To request access to ChatOps on GitLab.com:
 - [ChatOps Usage](../ci/chatops/index.md)
 - [Feature Flag Controls](feature_flags/controls.md)
 - [Understanding EXPLAIN plans](database/understanding_explain_plans.md)
-- [Feature Groups](feature_flags/index.md#feature-groups)
+- [Feature Groups](feature_flags/_index.md#feature-groups)

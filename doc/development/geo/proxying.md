@@ -2,9 +2,8 @@
 stage: Systems
 group: Geo
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Geo proxying
 ---
-
-# Geo proxying
 
 Secondaries proxy nearly all HTTP requests through Workhorse to the primary, so users navigating to the
 secondary see a read-write UI, and are able to do all operations that they can do on the primary.

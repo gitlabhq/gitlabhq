@@ -1,0 +1,7 @@
+---
+Graphql/AuthorizeTypes:
+  Exclude:
+    - 'app/graphql/types/data_transfer/base_type.rb'
+    - 'app/graphql/types/data_transfer/egress_node_type.rb'
+    - 'app/graphql/types/data_transfer/group_data_transfer_type.rb'
+    - 'app/graphql/types/data_transfer/project_data_transfer_type.rb'

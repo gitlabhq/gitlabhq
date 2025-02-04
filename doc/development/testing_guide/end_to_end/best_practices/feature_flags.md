@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Testing with feature flags
 ---
-
-# Testing with feature flags
 
 To run a specific test with a feature flag enabled you can use the `QA::Runtime::Feature` class to
 enable and disable feature flags ([via the API](../../../../api/features.md)).
@@ -35,8 +34,8 @@ Be sure to include the `feature_flag` tag so that the test can be skipped on the
 - When `scope` is set to any other value (such as `:project`, `:group` or `:user`), or if no `scope` is specified, the test will only be **skipped on canary, production, and pre-production**.
   This is due to the fact that administrator access is not available there.
 
-**WARNING:** You are strongly advised to first try and [enable feature flags only for a group, project, user](../../../feature_flags/index.md#feature-actors),
-or [feature group](../../../feature_flags/index.md#feature-groups).
+**WARNING:** You are strongly advised to first try and [enable feature flags only for a group, project, user](../../../feature_flags/_index.md#feature-actors),
+or [feature group](../../../feature_flags/_index.md#feature-groups).
 
 - If a global feature flag must be used, it is strongly recommended to apply `scope: :global` to the `feature_flag` metadata. This is, however, left up to the SET's discretion to determine the level of risk.
   - For example, a test uses a global feature flag that only affects a small area of the application and is also needed to check for critical issues on live environments.
@@ -194,7 +193,7 @@ End-to-end tests should pass with a feature flag enabled before it is enabled on
 
 There are two ways to confirm that end-to-end tests pass:
 
-- If a merge request adds or edits a [feature flag definition file](../../../feature_flags/index.md#feature-flag-definition-and-validation),
+- If a merge request adds or edits a [feature flag definition file](../../../feature_flags/_index.md#feature-flag-definition-and-validation),
   two `e2e:test-on-omnibus` jobs (`ee:instance-parallel` and `ee:instance-parallel-ff-inverse`) are included automatically in the merge request pipeline.
   One job runs the application with default feature flag state and another sets it to inverse value. The jobs execute the same suite of tests to confirm that they pass with the feature flag either enabled or disabled.
 - In some cases, if end-to-end test jobs didn't trigger automatically, or if it has run the tests with the default feature flag values (which might not be desired),
@@ -219,6 +218,6 @@ pass on the default branch. The end-to-end tests run on the default branch every
 [Test Session Report, which is available in the testcase-sessions project](https://gitlab.com/gitlab-org/quality/testcase-sessions/-/issues?label_name%5B%5D=found%3Amain).
 
 If the relevant tests do not enable the feature flag themselves, you can check if the tests will need to be updated by opening
-a draft merge request that enables the flag by default via a [feature flag definition file](../../../feature_flags/index.md#feature-flag-definition-and-validation).
+a draft merge request that enables the flag by default via a [feature flag definition file](../../../feature_flags/_index.md#feature-flag-definition-and-validation).
 That will [automatically execute the end-to-end test suite](#automatic-test-execution-when-a-feature-flag-definition-changes).
 The merge request can be closed once the tests pass. If you need assistance to update the tests, contact the relevant [stable counterpart in the Quality department](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors), or any Software Engineer in Test if there is no stable counterpart for your group.

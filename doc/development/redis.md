@@ -2,16 +2,15 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Redis development guidelines
 ---
-
-# Redis development guidelines
 
 ## Redis instances
 
 GitLab uses [Redis](https://redis.io) for the following distinct purposes:
 
 - Caching (mostly via `Rails.cache`).
-- As a job processing queue with [Sidekiq](sidekiq/index.md).
+- As a job processing queue with [Sidekiq](sidekiq/_index.md).
 - To manage the shared application state.
 - To store CI trace chunks.
 - As a Pub/Sub queue backend for ActionCable.

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Rails upgrade guidelines
 ---
-
-# Rails upgrade guidelines
 
 We strive to run GitLab using the latest Rails releases to benefit from performance, security updates, and new features.
 

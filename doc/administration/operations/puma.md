@@ -399,7 +399,7 @@ separate Rails process to debug the issue:
 ### GitLab: API is not accessible
 
 This often occurs when GitLab Shell attempts to request authorization via the
-[internal API](../../development/internal_api/index.md) (for example, `http://localhost:8080/api/v4/internal/allowed`), and
+[internal API](../../development/internal_api/_index.md) (for example, `http://localhost:8080/api/v4/internal/allowed`), and
 something in the check fails. There are many reasons why this may happen:
 
 1. Timeout connecting to a database (for example, PostgreSQL or Redis)
@@ -416,7 +416,7 @@ strace -ttTfyyy -s 1024 -p <PID of puma worker> -o /tmp/puma.txt
 
 If you cannot isolate which Puma worker is the issue, try to run `strace`
 on all the Puma workers to see where the
-[`/internal/allowed`](../../development/internal_api/index.md) endpoint gets stuck:
+[`/internal/allowed`](../../development/internal_api/_index.md) endpoint gets stuck:
 
 ```shell
 ps auwx | grep puma | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/puma.txt

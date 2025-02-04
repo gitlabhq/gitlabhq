@@ -452,7 +452,7 @@ If a subset of users are receiving a `404` after signing in to the IdP, first ve
   - Trigger a sync for the user in the SCIM identity provider. For example, Azure has a "Provision on demand" option.
   - Remove and re-add the user in the SCIM identity provider.
   - Have the user [unlink their account](index.md#unlink-accounts) if possible, then [link their account](index.md#link-saml-to-your-existing-gitlabcom-account).
-  - Use the [internal SCIM API](../../../development/internal_api/index.md#update-a-single-scim-provisioned-user) to update the user's SCIM identity using your group's SCIM token.
+  - Use the [internal SCIM API](../../../development/internal_api/_index.md#update-a-single-scim-provisioned-user) to update the user's SCIM identity using your group's SCIM token.
     If you do not know your group's SCIM token, reset the token and update the SCIM identity provider app with the new token.
     Example request:
 

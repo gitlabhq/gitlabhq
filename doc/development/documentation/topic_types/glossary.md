@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Glossary topic type
 ---
-
-# Glossary topic type
 
 A glossary provides a list of unfamiliar terms and their definitions to help users understand a specific
 GitLab feature.

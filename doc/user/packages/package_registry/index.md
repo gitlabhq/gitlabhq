@@ -189,7 +189,7 @@ Several known issues exist when you allow anyone to pull from the package regist
 ## Accepting contributions
 
 This table lists unsupported package manager formats that we are accepting contributions for.
-Consider contributing to GitLab. This [development documentation](../../../development/packages/index.md)
+Consider contributing to GitLab. This [development documentation](../../../development/packages/_index.md)
 guides you through the process.
 
 <!-- vale gitlab_base.Spelling = NO -->

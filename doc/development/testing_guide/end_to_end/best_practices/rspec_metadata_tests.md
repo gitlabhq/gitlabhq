@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: RSpec metadata for end-to-end tests
 ---
-
-# RSpec metadata for end-to-end tests
 
 This is a partial list of the [RSpec metadata](https://rspec.info/features/3-12/rspec-core/metadata/user-defined/)
 (a.k.a. tags) that are used in our end-to-end tests.

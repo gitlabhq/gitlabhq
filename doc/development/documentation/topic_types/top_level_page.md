@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Top-level page type
 ---
-
-# Top-level page type
 
 The top-level page is at the highest level of each section in **Use GitLab** in the global navigation.
 This page type:

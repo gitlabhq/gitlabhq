@@ -5,9 +5,8 @@ type: reference, howto
 discretionary: yes
 description: Database access for engineers and related parties.
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Database Lab and Postgres.ai
 ---
-
-# Database Lab and Postgres.ai
 
 Internal users at GitLab have access to the Database Lab Engine (DLE) and
 [postgres.ai](https://console.postgres.ai/) for testing performance of database queries

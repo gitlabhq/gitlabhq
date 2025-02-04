@@ -1,0 +1,5 @@
+---
+RSpec/ExpectInLet:
+  Exclude:
+    - 'ee/spec/support/shared_examples/requests/identity_verification_shared_examples.rb'
+    - 'spec/support/shared_examples/quick_actions/issuable/issuable_quick_actions_shared_examples.rb'

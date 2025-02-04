@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Principles of Importer Design
 ---
-
-# Principles of Importer Design
 
 ## Security
 
@@ -31,7 +30,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 - Workers that loop over collections should be equipped with a progress pointer that allows them to pick up where they left off if interrupted.
   - [Example using ID tracking](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134229)
   - [Example using page counter](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139775)
-- Write-heavy workers should implement [`defer_on_database_health_signal`](../sidekiq/index.md#deferring-sidekiq-workers) to avoid saturating the database. However, at the time of writing, a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429871#note_1738917399) prevents us from using this.
+- Write-heavy workers should implement [`defer_on_database_health_signal`](../sidekiq/_index.md#deferring-sidekiq-workers) to avoid saturating the database. However, at the time of writing, a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/429871#note_1738917399) prevents us from using this.
 - We should enforce limits on worker concurrency to avoid saturating resources. You can find an example of this in the Bitbucket [`ParallelScheduling` class](https://gitlab.com/gitlab-org/gitlab/blob/3254590fd2105fcd995f0ccb5e0b3e214c9a59c6/lib/gitlab/bitbucket_import/parallel_scheduling.rb#L76).
 - Importers should be tested at scale on a staging environment, especially when implementing new functionality or enabling a feature flag.
 

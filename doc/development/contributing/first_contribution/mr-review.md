@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Create a merge request
 ---
-
-# Create a merge request
 
 Now you're ready to push changes from the community fork to the main GitLab repository!
 

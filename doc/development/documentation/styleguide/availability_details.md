@@ -3,9 +3,8 @@ info: For assistance with this Style Guide page, see https://handbook.gitlab.com
 stage: none
 group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
+title: Product availability details
 ---
-
-# Product availability details
 
 Product availability details provide information about a feature and are displayed under the topic title.
 
@@ -93,7 +92,7 @@ In addition:
 - Ensure that the output generates properly.
 - Ensure the version history begins with `> -`.
 - If possible, include a link to the related issue. If there is no related issue, link to a merge request, or epic.
-- Do not link to [confidential issues](../styleguide/index.md#confidential-or-restricted-access-links).
+- Do not link to [confidential issues](../styleguide/_index.md#confidential-or-restricted-access-links).
 - Do not link to the pricing page. Do not include the subscription tier.
 
 #### Updated features
@@ -219,7 +218,7 @@ For example, if a feature applies to one tier for GitLab.com and a different ava
 
 In this case, do any or all of the following:
 
-- Use a [`NOTE`](index.md#note) alert box to describe the availability details.
+- Use a [`NOTE`](_index.md#note) alert box to describe the availability details.
 - Add availability details under other topic titles where this information makes more sense.
 - Do not add availability details under the H1.
 

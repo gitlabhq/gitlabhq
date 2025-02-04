@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: RuboCop rule development guidelines
 ---
-
-# RuboCop rule development guidelines
 
 Our codebase style is defined and enforced by [RuboCop](https://github.com/rubocop-hq/rubocop).
 
@@ -28,7 +27,7 @@ discussions, nitpicking, or back-and-forth in reviews. The
 list of styles that commonly come up in reviews and are not enforced.
 
 Additionally, we have dedicated
-[test-specific style guides and best practices](testing_guide/index.md).
+[test-specific style guides and best practices](testing_guide/_index.md).
 
 ## Disabling rules inline
 

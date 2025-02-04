@@ -2,8 +2,8 @@
 stage: Package
 group: Container Registry
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Harbor registry
 ---
-# Harbor registry
 
 ## Enable Harbor registry
 

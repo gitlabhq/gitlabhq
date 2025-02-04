@@ -91,7 +91,7 @@ The GitLab.com AI gateway is the default Enterprise offering and is not self-hos
 you connect your instance to the GitLab-hosted AI gateway, which
 integrates with external vendor LLM providers (such as Google Vertex or Anthropic).
 
-These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/index.md),
+These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/_index.md),
 offering a ready-to-use AI solution without the need for on-premise infrastructure.
 
 For licensing, you must have a GitLab Ultimate subscription, and either [GitLab Duo Pro](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial) or [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md)

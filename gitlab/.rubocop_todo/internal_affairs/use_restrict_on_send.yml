@@ -1,0 +1,12 @@
+---
+InternalAffairs/UseRestrictOnSend:
+  Exclude:
+    - 'rubocop/cop/gitlab/feature_available_usage.rb'
+    - 'rubocop/cop/migration/add_concurrent_foreign_key.rb'
+    - 'rubocop/cop/migration/add_concurrent_index.rb'
+    - 'rubocop/cop/migration/add_timestamps.rb'
+    - 'rubocop/cop/migration/background_migrations.rb'
+    - 'rubocop/cop/migration/remove_concurrent_index.rb'
+    - 'rubocop/cop/migration/with_lock_retries_with_change.rb'
+    - 'rubocop/cop/project_path_helper.rb'
+    - 'rubocop/cop/safe_params.rb'

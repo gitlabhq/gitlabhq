@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Database query comments with Marginalia
 ---
-
-# Database query comments with Marginalia
 
 The [Marginalia gem](https://github.com/basecamp/marginalia) is used to add
 query comments containing application related context information to PostgreSQL

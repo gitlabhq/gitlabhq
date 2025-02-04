@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Analytics dashboards
 ---
-
-# Analytics dashboards
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [experiment](../../policy/development_stages_support.md#experiment).
 
@@ -196,7 +195,7 @@ See [`value_stream.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/ap
 
 #### Introducing visualizations behind a feature flag
 
-While developing new visualizations we can use [feature flags](../feature_flags/index.md#create-a-new-feature-flag) to mitigate risks of disruptions or incorrect data for users.
+While developing new visualizations we can use [feature flags](../feature_flags/_index.md#create-a-new-feature-flag) to mitigate risks of disruptions or incorrect data for users.
 
 The [`from_data`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/product_analytics/panel.rb) method builds the panel objects for a dashboard. Using the `filter_map` method, we can add a condition to skip rendering panels that include the visualization we are developing.
 

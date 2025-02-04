@@ -1,0 +1,6 @@
+---
+RSpec/RepeatedSubjectCall:
+  Exclude:
+    - 'spec/support/shared_examples/environments/create_for_job_shared_examples.rb'
+    - 'spec/support/shared_examples/graphql/mutations/boards_list_create_shared_examples.rb'
+    - 'spec/support/shared_examples/services/container_expiration_policy_shared_examples.rb'

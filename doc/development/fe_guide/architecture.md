@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Architecture
 ---
-
-# Architecture
 
 At GitLab, there are no dedicated "software architects". Everyone is encouraged to make their own decisions and document them appropriately. To know how or where to document these decisions, read on.
 

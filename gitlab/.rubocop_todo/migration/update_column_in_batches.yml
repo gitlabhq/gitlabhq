@@ -1,0 +1,7 @@
+---
+Migration/UpdateColumnInBatches:
+  Exclude:
+    - 'db/migrate/20240228144013_migrate_custom_permissions.rb'
+    - 'db/migrate/20240501113440_extend_gitlabcom_duo_pro_trials.rb'
+    - 'db/migrate/20240510125400_increase_quantity_for_gitlabcom_duo_pro_trials.rb'
+    - 'db/post_migrate/20240422165035_update_kustomization_api_version.rb'

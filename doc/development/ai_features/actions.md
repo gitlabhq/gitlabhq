@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: AI actions
 ---
-
-# AI actions
 
 This page includes how to implement actions and migrate them to the AI Gateway.
 
@@ -17,7 +16,7 @@ a given prompt.
 ### 1. Add your action to the Cloud Connector feature list
 
 The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
-If there's no entry for your feature, [add the feature as a Cloud Connector unit primitive](../cloud_connector/index.md#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers):
+If there's no entry for your feature, [add the feature as a Cloud Connector unit primitive](../cloud_connector/_index.md#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers):
 
 For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
 

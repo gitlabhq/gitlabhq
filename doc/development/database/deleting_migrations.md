@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Delete existing migrations
 ---
-
-# Delete existing migrations
 
 When removing existing migrations from the GitLab project, you have to take into account
 the possibility of the migration already been included in past releases or in the current release, and thus already executed on GitLab.com and/or in self-managed instances.

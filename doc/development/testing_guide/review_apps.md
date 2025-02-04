@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Using review apps in the development of GitLab
 ---
-
-# Using review apps in the development of GitLab
 
 Review apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
 
@@ -255,4 +254,4 @@ find a way to limit it to only us.**
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

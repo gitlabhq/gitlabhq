@@ -1,0 +1,4 @@
+---
+Database/RescueStatementTimeout:
+  Exclude:
+    - 'app/services/issues/relative_position_rebalancing_service.rb'

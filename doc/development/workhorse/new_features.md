@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Adding new features to Workhorse
 ---
-
-# Adding new features to Workhorse
 
 GitLab Workhorse is a smart reverse proxy for GitLab. It handles
 [long HTTP requests](#what-are-long-requests), such as:
@@ -74,5 +73,5 @@ The Workhorse maintainers can help you assess the situation.
 - In 2020, `@nolith` presented the talk
   ["Speed up the monolith. Building a smart reverse proxy in Go"](https://archive.fosdem.org/2020/schedule/event/speedupmonolith/)
   at FOSDEM. The talk includes more details on the history of Workhorse and the NFS removal.
-- The [uploads development documentation](../uploads/index.md) contains the most common
+- The [uploads development documentation](../uploads/_index.md) contains the most common
   use cases for adding a new type of upload.

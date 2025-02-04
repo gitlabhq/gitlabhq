@@ -2,9 +2,8 @@
 stage: Growth
 group: Acquisition
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Experiment rollouts and feature flags
 ---
-
-# Experiment rollouts and feature flags
 
 ## Experiment rollout issue
 
@@ -23,7 +22,7 @@ In either case, an outcome of the experiment should be posted to the issue with 
 
 When there is a case on GitLab.com (SaaS) that necessitates turning off all experiments, we have this control.
 
-You can toggle experiments on SaaS on and off using the `gitlab_experiment` [feature flag](../feature_flags/index.md).
+You can toggle experiments on SaaS on and off using the `gitlab_experiment` [feature flag](../feature_flags/_index.md).
 
 This can be done via ChatOps:
 

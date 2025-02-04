@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Swapping Tables
 ---
-
-# Swapping Tables
 
 Sometimes you need to replace one table with another. For example, when
 migrating data in a very large table it's often better to create a copy of the

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Polling with ETag caching
 ---
-
-# Polling with ETag caching
 
 Polling for changes (repeatedly asking server if there are any new changes)
 introduces high load on a GitLab instance, because it usually requires

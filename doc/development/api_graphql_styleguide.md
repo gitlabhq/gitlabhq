@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Backend GraphQL API guide
 ---
-
-# Backend GraphQL API guide
 
 This document contains style and technical guidance for engineers implementing the backend of the [GitLab GraphQL API](../api/graphql/index.md).
 
@@ -645,7 +644,7 @@ end
 
 ## Feature flags
 
-You can implement [feature flags](../development/feature_flags/index.md) in GraphQL to toggle:
+You can implement [feature flags](../development/feature_flags/_index.md) in GraphQL to toggle:
 
 - The return value of a field.
 - The behavior of an argument or mutation.

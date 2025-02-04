@@ -20,8 +20,8 @@ GitLab SAML SSO SCIM doesn't support updating users.
 
 When SCIM is enabled for a GitLab group, membership of that group is synchronized between GitLab and an identity provider.
 
-The [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
-Identity providers can use the [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) to develop a SCIM app.
+The [internal GitLab group SCIM API](../../../development/internal_api/_index.md#group-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+Identity providers can use the [internal GitLab group SCIM API](../../../development/internal_api/_index.md#group-scim-api) to develop a SCIM app.
 
 To set up SCIM on GitLab Self-Managed, see [Configure SCIM for GitLab Self-Managed](../../../administration/settings/scim_setup.md).
 
@@ -177,7 +177,7 @@ attributes and modify them accordingly. The source attribute that you map to the
 target attribute must match the attribute used for the SAML `NameID`.
 
 If a mapping is not listed in the table, use the Microsoft Entra ID defaults. For a list of required attributes,
-refer to the [internal group SCIM API](../../../development/internal_api/index.md#group-scim-api) documentation.
+refer to the [internal group SCIM API](../../../development/internal_api/_index.md#group-scim-api) documentation.
 
 ### Configure Okta
 

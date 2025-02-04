@@ -57,7 +57,7 @@ Value stream analytics offers different features at the project and group level 
 |Authorization|At least reporter|At least reporter|Can be public|
 
 NOTE:
-Feature parity of project-level with group-level value stream analytics is achieved by using the new record `ProjectNamespace`. For details about this consolidation initiative, see the [Organization documentation](../../../development/organization/index.md).
+Feature parity of project-level with group-level value stream analytics is achieved by using the new record `ProjectNamespace`. For details about this consolidation initiative, see the [Organization documentation](../../../development/organization/_index.md).
 
 ## How value stream analytics works
 

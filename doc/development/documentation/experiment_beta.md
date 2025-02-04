@@ -2,9 +2,8 @@
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects
 stage: none
 group: unassigned
+title: Documenting experimental and beta features
 ---
-
-# Documenting experimental and beta features
 
 When you document an [experiment or beta](../../policy/development_stages_support.md) feature:
 

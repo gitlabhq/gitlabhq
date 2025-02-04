@@ -1,0 +1,8 @@
+---
+RSpec/InstanceVariable:
+  Exclude:
+    - 'spec/support/shared_contexts/controllers/ldap_omniauth_callbacks_controller_shared_context.rb'
+    - 'spec/support/shared_contexts/email_shared_context.rb'
+    - 'spec/support/shared_examples/features/wiki/user_views_wiki_empty_shared_examples.rb'
+    - 'spec/support/shared_examples/path_extraction_shared_examples.rb'
+    - 'spec/support/shared_examples/requests/api/notes_shared_examples.rb'

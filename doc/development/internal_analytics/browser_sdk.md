@@ -2,11 +2,10 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Browser SDK
 ---
 
-# Browser SDK
-
-This SDK is for instrumenting web sites and applications to send data for the GitLab [product analytics functionality](../index.md).
+This SDK is for instrumenting web sites and applications to send data for the GitLab [product analytics functionality](../_index.md).
 
 ## How to use the Browser SDK
 

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Type hinting overview
 ---
-
-# Type hinting overview
 
 The Frontend codebase of the GitLab project currently does not require nor enforces types. Adding
 type annotations is optional, and we don't currently enforce any type safety in the JavaScript

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Dark mode
 ---
-
-# Dark mode
 
 This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [Profile preferences](../../user/profile/preferences.md#dark-mode).
 

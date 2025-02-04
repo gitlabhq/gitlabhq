@@ -1,0 +1,11 @@
+---
+Migration/EnsureFactoryForTable:
+  Exclude:
+    - 'db/migrate/20240207134321_create_audit_events_group_streaming_event_type_filters.rb'
+    - 'db/migrate/20240221145450_create_audit_events_instance_streaming_event_type_filters.rb'
+    - 'db/migrate/20240301210341_create_catalog_resource_component_usages_table.rb'
+    - 'db/migrate/20240304184128_create_ci_build_names_table.rb'
+    - 'db/migrate/20240306121653_create_relation_import_tracker.rb'
+    - 'db/migrate/20240404192955_create_early_access_program_tracking_events.rb'
+    - 'db/migrate/20241216070908_create_compliance_requirements_controls.rb'
+    - 'db/migrate/20241227065733_create_project_control_compliance_statuses.rb'

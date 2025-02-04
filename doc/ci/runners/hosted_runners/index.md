@@ -148,4 +148,4 @@ Jobs that run on generally available images are covered by the defined service-l
 
 A maximum of two generally available images are supported at a time. After a new generally available image is released,
 the oldest generally available image becomes deprecated. A deprecated image is no longer updated and is deleted after 3 months
-in accordance with the [deprecation guidelines](../../../development/deprecation_guidelines/index.md).
+in accordance with the [deprecation guidelines](../../../development/deprecation_guidelines/_index.md).

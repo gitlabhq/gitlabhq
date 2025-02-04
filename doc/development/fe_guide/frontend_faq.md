@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Frontend FAQ
 ---
-
-# Frontend FAQ
 
 ## Rules of Frontend FAQ
 
@@ -203,7 +202,7 @@ See [dark mode docs](dark_mode.md)
 
 ### 10. How to render GitLab-flavored Markdown?
 
-If you need to render [GitLab-flavored Markdown](../gitlab_flavored_markdown/index.md), then there are two things that you require:
+If you need to render [GitLab-flavored Markdown](../gitlab_flavored_markdown/_index.md), then there are two things that you require:
 
 - Pass the GLFM content with the `v-safe-html` directive to a `div` HTML element inside your Vue component
 - Add the `md` class to the root div, which will apply the appropriate CSS styling

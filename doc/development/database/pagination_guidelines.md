@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Pagination guidelines
 ---
-
-# Pagination guidelines
 
 This document gives an overview of the current capabilities and provides best practices for paginating over data in GitLab, and in particular for PostgreSQL.
 

@@ -210,7 +210,7 @@ nodes to be a deploy node. This target node will be configured to run migrations
 
 ### Rails
 
-Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), [Workhorse](../development/workhorse/index.md), and [NGINX](../development/architecture.md#nginx).
+Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), [Workhorse](../development/workhorse/_index.md), and [NGINX](../development/architecture.md#nginx).
 
 Each of these components have different behaviours when it comes to doing a live upgrade. While Puma can allow
 for a graceful reload, Workhorse doesn't. The best approach is to drain the node gracefully through other means,

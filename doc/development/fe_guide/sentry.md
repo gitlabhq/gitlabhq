@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Sentry monitoring in the frontend development of GitLab
 ---
-
-# Sentry monitoring in the frontend development of GitLab
 
 The GitLab Frontend team uses Sentry as an observability tool to monitor how the UI performs for
 users on `gitlab.com`.

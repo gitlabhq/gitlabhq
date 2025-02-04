@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Composite Identity
 ---
-
-# Composite Identity
 
 GitLab Duo with Amazon Q uses a [composite identity](../../user/gitlab_duo/security.md)
 to authenticate requests.

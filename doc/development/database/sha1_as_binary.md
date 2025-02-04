@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Storing SHA1 Hashes As Binary
 ---
-
-# Storing SHA1 Hashes As Binary
 
 Storing SHA1 hashes as strings is not very space efficient. A SHA1 as a string
 requires at least 40 bytes, an additional byte to store the encoding, and

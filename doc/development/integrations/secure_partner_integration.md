@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Static Analysis
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Secure Partner Integration - Onboarding Process
 ---
-
-# Secure Partner Integration - Onboarding Process
 
 If you want to integrate your product with the [Secure Stage](https://about.gitlab.com/direction/secure/),
 this page describes the developer workflow GitLab intends for
@@ -77,7 +76,7 @@ and complete an integration with the Secure stage.
 1. Get a test account to begin developing your integration. You can
    request a [GitLab.com Subscription Sandbox](https://about.gitlab.com/partners/technology-partners/integrate/#gitlabcom-subscription-sandbox-request)
    or an [EE Developer License](https://about.gitlab.com/partners/technology-partners/integrate/#requesting-ultimate-dev-license-for-rd).
-1. Provide a [pipeline job](../../development/pipelines/index.md)
+1. Provide a [pipeline job](../../development/pipelines/_index.md)
    template that users could integrate into their own GitLab pipelines.
 1. Create a report artifact with your pipeline jobs.
 1. Ensure your pipeline jobs create a report artifact that GitLab can process

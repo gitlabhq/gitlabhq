@@ -2,9 +2,8 @@
 stage: Plan
 group: Optimize
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Aggregated Value Stream Analytics
 ---
-
-# Aggregated Value Stream Analytics
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

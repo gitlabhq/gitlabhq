@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Gitaly development guidelines
 ---
-
-# Gitaly development guidelines
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab Rails,
 Workhorse and GitLab Shell.
@@ -199,7 +198,7 @@ Re-run steps 2-5 each time you want to try out new changes.
 
 ---
 
-[Return to Development documentation](index.md)
+[Return to Development documentation](_index.md)
 
 ## Wrapping RPCs in feature flags
 

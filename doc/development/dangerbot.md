@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Danger bot
 ---
-
-# Danger bot
 
 The GitLab CI/CD pipeline includes a `danger-review` job that uses [Danger](https://github.com/danger/danger)
 to perform a variety of automated checks on the code under test.

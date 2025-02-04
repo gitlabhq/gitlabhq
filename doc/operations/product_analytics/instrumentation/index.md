@@ -1,11 +1,11 @@
 ---
-redirect_to: '../../../development/internal_analytics/index.md'
+redirect_to: '../../../development/internal_analytics/_index.md'
 remove_date: '2025-04-17'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](../../../development/internal_analytics/index.md).
+This document was moved to [another location](../../../development/internal_analytics/_index.md).
 
 <!-- This redirect file can be deleted after <2025-04-17>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

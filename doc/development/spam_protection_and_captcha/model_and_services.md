@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Model and services spam protection and CAPTCHA support
 ---
-
-# Model and services spam protection and CAPTCHA support
 
 Before adding any spam or CAPTCHA support to the REST API, GraphQL API, or Web UI, you must
 first add the necessary support to:

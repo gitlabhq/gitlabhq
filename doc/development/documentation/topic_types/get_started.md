@@ -2,9 +2,8 @@
 stage: none
 group: Style Guide
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Get started page type
 ---
-
-# Get started page type
 
 A **Get started** page introduces high-level concepts for a broad feature area.
 While a specific feature might be defined in the feature documentation,

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: API style guide
 ---
-
-# API style guide
 
 This style guide recommends best practices for API development.
 
@@ -21,7 +20,7 @@ For example, they could share the same [services](reusing_abstractions.md#servic
 
 ## Frontend
 
-See the [frontend guide](fe_guide/index.md#introduction)
+See the [frontend guide](fe_guide/_index.md#introduction)
 on details on which API to use when developing in the frontend.
 
 ## Instance variables
@@ -138,7 +137,7 @@ and can be changed or removed at any time without prior notice.
 
 While in the [experiment status](../policy/development_stages_support.md#experiment):
 
-- Use a feature flag that is [off by default](feature_flags/index.md#beta-type).
+- Use a feature flag that is [off by default](feature_flags/_index.md#beta-type).
 - When the flag is off:
   - Any added endpoints must return `404 Not Found`.
   - Any added arguments must be ignored.
@@ -148,7 +147,7 @@ While in the [experiment status](../policy/development_stages_support.md#experim
 
 While in the [beta status](../policy/development_stages_support.md#beta):
 
-- Use a feature flag that is [on by default](feature_flags/index.md#beta-type).
+- Use a feature flag that is [on by default](feature_flags/_index.md#beta-type).
 - The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
 - The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes.
 
@@ -369,7 +368,7 @@ it's own file in the [`validators`](https://gitlab.com/gitlab-org/gitlab/-/tree/
 
 ## Internal API
 
-The [internal API](internal_api/index.md) is documented for internal use. Keep it up to date so we know what endpoints
+The [internal API](internal_api/_index.md) is documented for internal use. Keep it up to date so we know what endpoints
 different components are making use of.
 
 ## Avoiding N+1 problems

@@ -137,6 +137,6 @@ All changes from users _without_ the **Allowed to push** permission must be rout
 
 - [`CODEOWNERS` syntax](reference.md)
 - [Advanced `CODEOWNERS` configuration](advanced.md)
-- [Development guidelines](../../../development/code_owners/index.md)
+- [Development guidelines](../../../development/code_owners/_index.md)
 - [Protected branches](../repository/branches/protected.md)
 - [Troubleshooting Code Owners](troubleshooting.md)

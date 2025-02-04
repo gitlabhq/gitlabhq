@@ -1,0 +1,6 @@
+---
+# Cop supports --autocorrect.
+RSpec/Dialect:
+  Exclude:
+    - 'ee/spec/support/shared_examples/requests/api/graphql/work_item_type_list_ee_shared_examples.rb'
+    - 'spec/factories/projects/ci_feature_usages.rb'

@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Development guide for GitLab CI/CD templates (Deprecated)
 ---
-
-# Development guide for GitLab CI/CD templates (Deprecated)
 
 NOTE:
 With the introduction of the [CI/CD Catalog](../../ci/components/index.md#cicd-catalog),
@@ -117,7 +116,7 @@ with a consistent format.
 
 The `before_script`, `script`, and `after_script` keywords of every job are linted
 using [ShellCheck](https://www.shellcheck.net/) and should follow the
-[Shell scripting standards and style guidelines](../shell_scripting_guide/index.md)
+[Shell scripting standards and style guidelines](../shell_scripting_guide/_index.md)
 as much as possible.
 
 ShellCheck assumes that the script is designed to run using [Bash](https://www.gnu.org/software/bash/).

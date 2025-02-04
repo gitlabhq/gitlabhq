@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Changelog entries
 ---
-
-# Changelog entries
 
 This guide contains instructions for when and how to generate a changelog entry
 file, as well as information and history about our changelog process.
@@ -104,11 +103,11 @@ EE: true
   database records created during Cycle Analytics model spec."
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
-- Any [experiment](experiment_guide/index.md) changes **should not** have a changelog entry.
+- Any [experiment](experiment_guide/_index.md) changes **should not** have a changelog entry.
 - An MR that includes only documentation changes **should not** have a changelog entry.
 
 For more information, see
-[how to handle changelog entries with feature flags](feature_flags/index.md#changelog).
+[how to handle changelog entries with feature flags](feature_flags/_index.md#changelog).
 
 ## Writing good changelog entries
 
@@ -206,4 +205,4 @@ For more information about interactive rebases, take a look at
 
 ---
 
-[Return to Development documentation](index.md)
+[Return to Development documentation](_index.md)

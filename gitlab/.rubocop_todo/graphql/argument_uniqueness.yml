@@ -1,0 +1,4 @@
+---
+GraphQL/ArgumentUniqueness:
+  Exclude:
+    - 'app/graphql/resolvers/merge_requests_resolver.rb'

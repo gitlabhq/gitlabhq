@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Performance Guidelines
 ---
-
-# Performance Guidelines
 
 This document describes various guidelines to ensure good and consistent performance of GitLab.
 

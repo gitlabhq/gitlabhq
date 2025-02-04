@@ -51,18 +51,17 @@ You can view merge requests for your project, group, or yourself.
 
 ::Tabs
 
-:::TabTitle Assigned to you
+:::TabTitle You're participating in
 
-To view all merge requests assigned to you, use the <kbd>Shift</kbd> + <kbd>m</kbd>
+To view all merge requests on the homepage, use the <kbd>Shift</kbd> + <kbd>m</kbd>
 [keyboard shortcut](../../shortcuts.md), or:
 
-1. On the left sidebar, select **Search or go to**.
-1. From the dropdown list, select **Merge requests assigned to me**.
+1. On the left sidebar, select the **Merge requests** icon.
 
 or:
 
-1. On the left sidebar, select **Code > Merge requests** (**{merge-request}**).
-1. From the dropdown list, select **Assigned**.
+1. On the left sidebar, select **Search or go to**.
+1. From the dropdown list, select **Merge requests**.
 
 :::TabTitle For a project
 

@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Web UI spam protection and CAPTCHA support
 ---
-
-# Web UI spam protection and CAPTCHA support
 
 The approach for adding spam protection and CAPTCHA support to a new UI area of the GitLab application
 depends upon how the existing code is implemented.

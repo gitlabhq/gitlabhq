@@ -2,9 +2,8 @@
 stage: AI-powered
 group: Duo Chat
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab Duo Chat
 ---
-
-# GitLab Duo Chat
 
 GitLab Duo Chat aims to assist users with AI in ideation and creation tasks as
 well as in learning tasks across the entire Software Development Lifecycle
@@ -56,7 +55,7 @@ That said, it does not mean that Chat can't write commit messages, nor that it w
 ## Set up GitLab Duo Chat
 
 To set up Duo Chat locally, go through the
-[general setup instructions for AI features](index.md).
+[general setup instructions for AI features](_index.md).
 
 ## Working with GitLab Duo Chat
 
@@ -79,7 +78,7 @@ you find a solution.
 | Problem                                                               | Solution                                                                                                                                                                                                                                                                              |
 |-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | There is no Chat button in the GitLab UI.                             | Make sure your user is a part of a group with Premium or Ultimate license and enabled Chat.                                                                                                                                                                                              |
-| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI gateway](index.md#required-install-ai-gateway) is set up correctly.                                                                                                                                                                                      |
+| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI gateway](_index.md#required-install-ai-gateway) is set up correctly.                                                                                                                                                                                      |
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no Chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `CloudConnector::Access.new(data: { available_services: [{ name: "duo_chat", serviceStartTime: ":date_in_the_future" }] }).save`. |
 
@@ -89,7 +88,7 @@ that Chat sends to assist troubleshooting.
 ## Contributing to GitLab Duo Chat
 
 From the code perspective, Chat is implemented in the similar fashion as other
-AI features. Read more about GitLab [AI Abstraction layer](index.md#feature-development-abstraction-layer).
+AI features. Read more about GitLab [AI Abstraction layer](_index.md#feature-development-abstraction-layer).
 
 The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb)
 that includes a system prompt explaining how the large language model should

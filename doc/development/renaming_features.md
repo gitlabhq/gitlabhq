@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Renaming features
 ---
-
-# Renaming features
 
 Sometimes the business asks to change the name of a feature. Broadly speaking, there are 2 approaches to that task. They basically trade between immediate effort and future complexity/bug risk:
 

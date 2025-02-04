@@ -3,9 +3,8 @@ stage: Plan
 group: Knowledge
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "GitLab's development guidelines for Wikis"
+title: Wikis development guidelines
 ---
-
-# Wikis development guidelines
 
 The wiki functionality in GitLab is based on [Gollum 4.x](https://github.com/gollum/gollum/).
 It's used in the [Gitaly](gitaly.md) Ruby service, and accessed from the Rails app through Gitaly RPC calls.

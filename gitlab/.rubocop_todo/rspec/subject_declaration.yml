@@ -1,0 +1,5 @@
+---
+RSpec/SubjectDeclaration:
+  Exclude:
+    - 'spec/support/shared_examples/finders/issues_finder_shared_examples.rb'
+    - 'spec/support/shared_examples/lib/gitlab/diff_file_collections_shared_examples.rb'

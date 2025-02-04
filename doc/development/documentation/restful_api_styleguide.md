@@ -3,9 +3,8 @@ info: For assistance with this Style Guide page, see https://handbook.gitlab.com
 stage: none
 group: unassigned
 description: 'Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.'
+title: Documenting REST API resources
 ---
-
-# Documenting REST API resources
 
 REST API resources are documented in Markdown under
 [`/doc/api`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api). Each
@@ -245,8 +244,8 @@ you can use in the API documentation.
 
 WARNING:
 Do not use information for real users, URLs, or tokens. For documentation, refer to our
-relevant style guide sections on [Fake user information](styleguide/index.md#fake-user-information),
-[Fake URLs](styleguide/index.md#fake-urls), and [Fake tokens](styleguide/index.md#fake-tokens).
+relevant style guide sections on [Fake user information](styleguide/_index.md#fake-user-information),
+[Fake URLs](styleguide/_index.md#fake-urls), and [Fake tokens](styleguide/_index.md#fake-tokens).
 
 ### Simple cURL command
 

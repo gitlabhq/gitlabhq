@@ -1,0 +1,14 @@
+---
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'config/application.rb'
+    - 'config/initializers/1_settings.rb'
+    - 'ee/spec/support/shared_examples/features/protected_branches_access_control_shared_examples.rb'
+    - 'lib/gitlab/fake_application_settings.rb'
+    - 'lib/gitlab/otp_key_rotator.rb'
+    - 'lib/gitlab/reference_extractor.rb'
+    - 'lib/gitlab/sidekiq_middleware/server_metrics.rb'
+    - 'lib/gitlab/tracking/incident_management.rb'
+    - 'lib/quality/seeders/issues.rb'
+    - 'lib/tasks/gitlab/seed/group_seed.rake'
+    - 'spec/support/shared_examples/models/email_format_shared_examples.rb'

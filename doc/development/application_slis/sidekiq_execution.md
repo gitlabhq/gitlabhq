@@ -2,14 +2,13 @@
 stage: Platforms
 group: Scalability
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Sidekiq execution SLIs (service level indicators)
 ---
-
-# Sidekiq execution SLIs (service level indicators)
 
 > - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/700) in GitLab 16.0. This version of Sidekiq execution SLIs replaces the old version of the SLI where you can now drill down by workers in the [Application SLI Violations dashboard](https://dashboards.gitlab.net/d/general-application-sli-violations/general-application-sli-violations?orgId=1&var-PROMETHEUS_DS=Global&var-environment=gprd&var-stage=main&var-product_stage=All&var-stage_group=All&var-component=sidekiq_execution) for stage groups.
 
 NOTE:
-This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/index.md#error-budget)
+This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
 by default.
 
 The Sidekiq execution Apdex measures the duration of successful jobs completion as an indicator for
@@ -57,10 +56,10 @@ For more information on the execution latency requirement and how to set a job's
 ### Error budget attribution and ownership
 
 This SLI is used for service level monitoring. It feeds into the
-[error budget for stage groups](../stage_group_observability/index.md#error-budget).
+[error budget for stage groups](../stage_group_observability/_index.md#error-budget).
 
 The workers for the SLI feed into a group's error budget based on the
-[feature category declared on it](../feature_categorization/index.md).
+[feature category declared on it](../feature_categorization/_index.md).
 
 To know which workers are included for your group, see the
 Sidekiq Completion Rate panel on the

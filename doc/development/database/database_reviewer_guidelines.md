@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Database Reviewer Guidelines
 ---
-
-# Database Reviewer Guidelines
 
 This page includes introductory material for new database reviewers.
 
@@ -71,7 +70,7 @@ The following guides provide a quick introduction and links to follow on more ad
 We also have licensed access to The Art of PostgreSQL. If you are interested in getting access, GitLab team
 members can check out the issue here: `https://gitlab.com/gitlab-org/database-team/team-tasks/-/issues/23`.
 
-Finally, you can find various guides in the [Database guides](index.md) page that cover more specific
+Finally, you can find various guides in the [Database guides](_index.md) page that cover more specific
 topics and use cases. The most frequently required during database reviewing are the following:
 
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations.

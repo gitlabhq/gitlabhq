@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Issues workflow
 ---
-
-# Issues workflow
 
 ## Creating an issue
 
@@ -84,7 +83,7 @@ the affected files to find someone.
 
 We also have triage automation in place, described [in our handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
 
-For information about which labels to apply to issues, see [Labels](../labels/index.md).
+For information about which labels to apply to issues, see [Labels](../labels/_index.md).
 
 ## Issue weight
 
@@ -162,6 +161,6 @@ and assignee.
 The maintainer must always agree before an outstanding discussion is resolved in
 this manner, and will be the one to create the issue. The title and description
 should be of the same quality as those created
-[in the usual manner](../labels/index.md#technical-debt-and-deferred-ux) - in particular, the issue title
+[in the usual manner](../labels/_index.md#technical-debt-and-deferred-ux) - in particular, the issue title
 **must not** begin with `Follow-up`! The creating maintainer should also expect
 to be involved in some capacity when work begins on the follow-up issue.

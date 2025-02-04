@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Source Editor
 ---
-
-# Source Editor
 
 **Source Editor** provides the editing experience at GitLab. This thin wrapper around
 [the Monaco editor](https://microsoft.github.io/monaco-editor/) provides necessary

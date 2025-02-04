@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: State management guidance
 ---
-
-# State management guidance
 
 At GitLab we support two solutions for client state management: [Apollo](https://www.apollographql.com/) and [Pinia](https://pinia.vuejs.org/).
 It is non-trivial to pick either of these as your primary state manager.

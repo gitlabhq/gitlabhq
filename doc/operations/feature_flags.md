@@ -24,7 +24,7 @@ For a click-through demo, see [Feature Flags](https://go.gitlab.com/YKuzLt).
 
 NOTE:
 To contribute to the development of the GitLab product, view
-[this feature flag content](../development/feature_flags/index.md) instead.
+[this feature flag content](../development/feature_flags/_index.md) instead.
 
 ## How it works
 

@@ -3,6 +3,7 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how to contribute to GitLab Documentation.
+title: Redirects in GitLab documentation
 ---
 
 <!--
@@ -12,8 +13,6 @@ description: Learn how to contribute to GitLab Documentation.
 
   https://gitlab.com/gitlab-org/gitlab-docs/-/blob/1979f985708d64558bb487fbe9ed5273729c01b7/Rakefile#L306
 -->
-
-# Redirects in GitLab documentation
 
 When you move, rename, or delete a page, you must add a redirect. Redirects reduce
 how often users get 404s when they visit the documentation site from out-of-date links.
@@ -103,7 +102,7 @@ might link to the old file:
    grep -r "path/to/file.html" .
     ```
 
-1. In [all of the doc projects](site_architecture/index.md#source-files), search for links in the docs
+1. In [all of the doc projects](site_architecture/_index.md#source-files), search for links in the docs
    and codebase. Search for all variations, including full URL and just the path.
    For example, go to the root directory of the `gitlab` project and run:
 

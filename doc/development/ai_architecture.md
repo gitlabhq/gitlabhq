@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: AI Architecture
 ---
-
-# AI Architecture
 
 This document describes architecture shared by the GitLab Duo AI features. For historical motivation and goals of this architecture, see the [AI gateway Architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
@@ -45,7 +44,7 @@ AIGW -down-> Models : prompts
 @enduml
 ```
 
-- **AI Abstraction layer** - Every GitLab instance (Self-Managed, GitLab.com, ..) contains an [AI Abstraction layer](ai_features/index.md) which provides a framework for implementing new AI features in the monolith. This layer adds contextual information to the request and does request pre/post processing.
+- **AI Abstraction layer** - Every GitLab instance (Self-Managed, GitLab.com, ..) contains an [AI Abstraction layer](ai_features/_index.md) which provides a framework for implementing new AI features in the monolith. This layer adds contextual information to the request and does request pre/post processing.
 
 ### Systems
 
@@ -78,7 +77,7 @@ There are two primary reasons for this: the best AI models are cloud-based as th
 The AI gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
 
 Calls to the AI-gateway from GitLab-rails can be made using the
-[Abstraction Layer](ai_features/index.md#feature-development-abstraction-layer).
+[Abstraction Layer](ai_features/_index.md#feature-development-abstraction-layer).
 By default, these actions are performed asynchronously via a Sidekiq
 job to prevent long-running requests in Puma. It should be used for
 non-latency sensitive actions due to the added latency by Sidekiq.

@@ -2,9 +2,8 @@
 stage: Foundations
 group: Personal Productivity
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Navigation sidebar
 ---
-
-# Navigation sidebar
 
 Follow these guidelines when contributing additions or changes to the
 [redesigned](https://gitlab.com/groups/gitlab-org/-/epics/9044) navigation

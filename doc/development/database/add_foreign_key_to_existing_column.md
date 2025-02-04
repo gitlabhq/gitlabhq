@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Add a foreign key constraint to an existing column
 ---
-
-# Add a foreign key constraint to an existing column
 
 Foreign keys ensure consistency between related database tables. The current database review process **always** encourages you to add [foreign keys](foreign_keys.md) when creating tables that reference records from other tables.
 

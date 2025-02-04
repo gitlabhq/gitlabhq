@@ -3,9 +3,8 @@ info: For assistance with this Style Guide page, see https://about.gitlab.com/ha
 stage: none
 group: unassigned
 description: 'Learn how to document version-specific changes'
+title: Version-specific changes
 ---
-
-# Version-specific changes
 
 A version-specific page contains upgrade notes a GitLab administrator
 should follow when upgrading their GitLab Self-Managed instance.

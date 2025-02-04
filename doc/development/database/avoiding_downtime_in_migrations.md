@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Avoiding downtime in migrations
 ---
-
-# Avoiding downtime in migrations
 
 When working with a database certain operations may require downtime. As we
 cannot have downtime in migrations we need to use a set of steps to get the
@@ -409,7 +408,7 @@ If the table and the ActiveRecord model is not in use yet, removing the old
 table and creating a new one is the preferred way to "rename" the table.
 
 Renaming a table is possible without downtime by following our multi-release
-[rename table process](rename_database_tables.md#rename-table-without-downtime).
+[rename table process](rename_database_tables.md).
 
 ## Adding foreign keys
 

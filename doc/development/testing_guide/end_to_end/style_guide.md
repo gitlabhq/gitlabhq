@@ -2,13 +2,12 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Style guide for writing end-to-end tests
 ---
-
-# Style guide for writing end-to-end tests
 
 This document describes the conventions used at GitLab for writing End-to-end (E2E) tests using the GitLab QA project.
 
-This guide is an extension of the primary [testing standards and style guidelines](../index.md). If this guide defines a rule that contradicts the primary guide, this guide takes precedence.
+This guide is an extension of the primary [testing standards and style guidelines](../_index.md). If this guide defines a rule that contradicts the primary guide, this guide takes precedence.
 
 ## `click_` versus `go_to_`
 

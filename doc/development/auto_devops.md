@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Auto DevOps development guidelines
 ---
-
-# Auto DevOps development guidelines
 
 This document provides a development guide for contributors to
 [Auto DevOps](../topics/autodevops/index.md).

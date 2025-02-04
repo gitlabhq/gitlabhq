@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Frontend testing standards and style guidelines
 ---
-
-# Frontend testing standards and style guidelines
 
 There are two types of test suites encountered while developing frontend code
 at GitLab. We use Jest for JavaScript unit and integration testing,
@@ -16,7 +15,7 @@ Most of the time, you should use [RSpec](https://github.com/rspec/rspec-rails#fe
 Regression tests should be written for bug fixes to prevent them from recurring
 in the future.
 
-See the [Testing Standards and Style Guidelines](index.md) page for more
+See the [Testing Standards and Style Guidelines](_index.md) page for more
 information on general testing practices at GitLab.
 
 ## Vue.js testing
@@ -1938,4 +1937,4 @@ You are no longer required to manually keeping chromedriver in sync.
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

@@ -1763,7 +1763,7 @@ returned by the API or viewed through the UI. When these limits impact the resul
 field contains a value of `true`. Retrieve the diff data without these limits by
 adding the `access_raw_diffs` parameter, which accesses diffs not from the database, but from Gitaly directly.
 This approach is generally slower and more resource-intensive, but isn't subject to size limits
-placed on database-backed diffs. [Limits inherent to Gitaly](../development/merge_request_concepts/diffs/index.md#diff-limits)
+placed on database-backed diffs. [Limits inherent to Gitaly](../development/merge_request_concepts/diffs/_index.md#diff-limits)
 still apply.
 
 Example response:

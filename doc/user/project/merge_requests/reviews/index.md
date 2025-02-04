@@ -29,6 +29,18 @@ To review merge requests, you can use:
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 
+## Finding merge requests to review
+
+Merge requests that you need to review are in the **Review requested** category of the [merge request homepage](../../../../tutorials/merge_requests/homepage.md). To view all merge requests on the homepage, use the <kbd>Shift</kbd> + <kbd>m</kbd>
+[keyboard shortcut](../../../shortcuts.md), or:
+
+1. On the left sidebar, select the **Merge requests** icon.
+
+or:
+
+1. On the left sidebar, select **Search or go to**.
+1. From the dropdown list, select **Merge requests**.
+
 ## View the review status of a merge request
 
 To do this:

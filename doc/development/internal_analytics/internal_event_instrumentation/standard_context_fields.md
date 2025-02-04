@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab Standard Context Fields
 ---
-
-# GitLab Standard Context Fields
 
 Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/proposals/-/blob/master/doc/data_usage_collection_outside_gitlab_codebase.md?ref_type=heads), describes all the fields available in the GitLab Standard Context schema.
 

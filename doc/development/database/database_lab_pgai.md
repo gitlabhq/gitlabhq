@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Database Lab access using the `pgai` Ruby gem
 ---
-
-# Database Lab access using the `pgai` Ruby gem
 
 [@mbobin](https://gitlab.com/mbobin) created the [`pgai` Ruby Gem](https://gitlab.com/mbobin/pgai/#pgai) that
 greatly simplifies access to a database clone, with support for:

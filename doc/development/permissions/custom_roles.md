@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Custom Roles
 ---
-
-# Custom Roles
 
 Ultimate customers can create custom roles and define those roles by assigning specific abilities.
 
@@ -198,7 +197,7 @@ before in a separate merge request, before completing the below.
 
 ### Step 3: Create a feature flag (optional)
 
-- If you would like to toggle the custom ability using a [feature flag](../feature_flags/index.md), create a feature flag with name `custom_ability_<name>`. Such as, for ability `read_code`, the feature flag will be `custom_ability_read_code`. When this feature flag is disabled, the custom ability will be hidden when creating a new custom role, or when fetching custom abilities for a user.
+- If you would like to toggle the custom ability using a [feature flag](../feature_flags/_index.md), create a feature flag with name `custom_ability_<name>`. Such as, for ability `read_code`, the feature flag will be `custom_ability_read_code`. When this feature flag is disabled, the custom ability will be hidden when creating a new custom role, or when fetching custom abilities for a user.
 
 ### Step 4: Update policies
 
@@ -294,7 +293,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 
 ### Step 6: Update documentation
 
-Follow the [Contribute to the GitLab documentation](../../development/documentation/index.md) page to make the following changes to the documentation:
+Follow the [Contribute to the GitLab documentation](../../development/documentation/_index.md) page to make the following changes to the documentation:
 
 - Update the list of custom abilities by running `bundle exec rake gitlab:custom_roles:compile_docs`
 - Update the GraphQL documentation by running `bundle exec rake gitlab:graphql:compile_docs`

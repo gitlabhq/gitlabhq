@@ -3,9 +3,8 @@ stage: none
 group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 description: "GitLab development guidelines - testing best practices."
+title: Testing best practices
 ---
-
-# Testing best practices
 
 ## Test Design
 
@@ -138,7 +137,7 @@ If the specs fail the check they must be fixed before than can run in random ord
 
 ### Test slowness
 
-GitLab has a massive test suite that, without [parallelization](../pipelines/index.md#test-suite-parallelization), can take hours
+GitLab has a massive test suite that, without [parallelization](../pipelines/_index.md#test-suite-parallelization), can take hours
 to run. It's important that we make an effort to write tests that are accurate
 and effective _as well as_ fast.
 
@@ -537,7 +536,7 @@ To find people that could help, search for `backend testing performance` on the 
 
 ### Feature category metadata
 
-You must [set feature category metadata for each RSpec example](../feature_categorization/index.md#rspec-examples).
+You must [set feature category metadata for each RSpec example](../feature_categorization/_index.md#rspec-examples).
 
 ### Tests depending on EE license
 
@@ -1090,7 +1089,7 @@ where it was discussed.
 
 ### Feature flags in tests
 
-This section was moved to [developing with feature flags](../feature_flags/index.md).
+This section was moved to [developing with feature flags](../feature_flags/_index.md).
 
 ### Pristine test environments
 
@@ -1754,7 +1753,7 @@ end
 In critical cases where an error on a constant could have a catastrophic impact,
 testing the constant values might be useful as an added safeguard. For example,
 if it could bring down the entire GitLab service, cause a customer to be billed more than they should be,
-or [cause the universe to implode](../contributing/verify/index.md#do-not-cause-our-universe-to-implode).
+or [cause the universe to implode](../contributing/verify/_index.md#do-not-cause-our-universe-to-implode).
 
 ### Factories
 
@@ -1921,4 +1920,4 @@ GITLAB_TESTING_LOG_LEVEL=debug
 
 ---
 
-[Return to Testing documentation](index.md)
+[Return to Testing documentation](_index.md)

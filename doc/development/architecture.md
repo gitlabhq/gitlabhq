@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab architecture overview
 ---
-
-# GitLab architecture overview
 
 ## Software delivery
 
@@ -583,7 +582,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 #### GitLab Shell
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab-shell/)
-- [Documentation](gitlab_shell/index.md)
+- [Documentation](gitlab_shell/_index.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/)
@@ -591,7 +590,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 
-[GitLab Shell](gitlab_shell/index.md) is a program designed at GitLab to handle SSH-based `git` sessions, and modifies the list of authorized keys. GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
+[GitLab Shell](gitlab_shell/_index.md) is a program designed at GitLab to handle SSH-based `git` sessions, and modifies the list of authorized keys. GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
 
 #### GitLab Workhorse
 
@@ -1011,12 +1010,12 @@ in Rails, scheduled to run whenever an SSH key is modified by a user.
 instead of keys. In this case, `AuthorizedKeysCommand` is replaced with an
 `AuthorizedPrincipalsCommand`. This extracts a username from the certificate
 without using the Rails internal API, which is used instead of `key_id` in the
-[`/api/internal/allowed`](internal_api/index.md) call later.
+[`/api/internal/allowed`](internal_api/_index.md) call later.
 
 GitLab Shell also has a few operations that do not involve Gitaly, such as
 resetting two-factor authentication codes. These are handled in the same way,
 except there is no round-trip into Gitaly - Rails performs the action as part
-of the [internal API](internal_api/index.md) call, and GitLab Shell streams the
+of the [internal API](internal_api/_index.md) call, and GitLab Shell streams the
 response back to the user directly.
 
 ## System layout

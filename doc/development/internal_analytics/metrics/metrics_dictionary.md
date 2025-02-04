@@ -2,11 +2,10 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Metrics Dictionary Guide
 ---
 
-# Metrics Dictionary Guide
-
-[Service Ping](../service_ping/index.md) metrics are defined in individual YAML files definitions from which the
+[Service Ping](../service_ping/_index.md) metrics are defined in individual YAML files definitions from which the
 [Metrics Dictionary](https://metrics.gitlab.com/) is built. Currently, the metrics dictionary is built automatically once an hour.
 
 - When a change to a metric is made in a YAML file, you can see the change in the dictionary within 1 hour of the change getting deployed to production.

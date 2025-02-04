@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: FIPS 140-2 and 140-3
 ---
-
-# FIPS 140-2 and 140-3
 
 FIPS is short for "Federal Information Processing Standard", which defines certain security practices for a "cryptographic module" (CM). A cryptographic
 module is set of hardware, software, and/or firmware that implements approved security functions (including cryptographic algorithms and key generation)

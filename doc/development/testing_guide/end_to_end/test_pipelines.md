@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: End-to-end test pipelines
 ---
-
-# End-to-end test pipelines
 
 ## `e2e:test-on-cng`
 
@@ -44,7 +43,7 @@ Jobs in `test` stage perform following actions:
 
 #### report
 
-This stage is responsible for [allure test report](index.md#allure-report) generation as well as test metrics upload.
+This stage is responsible for [allure test report](_index.md#allure-report) generation as well as test metrics upload.
 
 ### Debugging
 
@@ -75,7 +74,7 @@ This job consists of two components that implement selective test execution:
 - The [`detect_changes`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/tasks/ci.rake) Rake task determines which e2e specs should be executed
   in a particular merge request pipeline. This task analyzes changes in a particular merge request and determines which specs must be executed.
   Based on that, a `dry-run` of every [scenario](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/qa/scenario/test) executes and determines if a
-  scenario contains any executable tests. Selective test execution uses [these criteria](index.md#selective-test-execution) to determine which specific
+  scenario contains any executable tests. Selective test execution uses [these criteria](_index.md#selective-test-execution) to determine which specific
   tests to execute.
 - [`generate-e2e-pipeline`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/generate-e2e-pipeline) is executed, which generates a child
   pipeline YAML definition file with appropriate environment variables.
@@ -88,7 +87,7 @@ E2E test execution pipeline consists of several stages which all support executi
 
 This stage is responsible for the following tasks:
 
-- Fetching `knapsack` reports that support [parallel test execution](index.md#test-parallelization).
+- Fetching `knapsack` reports that support [parallel test execution](_index.md#test-parallelization).
 - Triggering downstream pipeline which builds the [`omnibus-gitlab`](https://gitlab.com/gitlab-org/omnibus-gitlab) Docker image.
 
 ##### test
@@ -98,7 +97,7 @@ This stage runs e2e tests against different types of GitLab configurations. The 
 
 ##### report
 
-This stage is responsible for [allure test report](index.md#allure-report) generation.
+This stage is responsible for [allure test report](_index.md#allure-report) generation.
 
 ## `e2e:test-on-gdk`
 
@@ -140,7 +139,7 @@ execution of E2E tests.
 
 ##### .pre
 
-This stage is responsible for fetching `knapsack` reports that support [parallel test execution](index.md#test-parallelization).
+This stage is responsible for fetching `knapsack` reports that support [parallel test execution](_index.md#test-parallelization).
 
 ##### test
 
@@ -152,7 +151,7 @@ tests against the GDK instance running in the container.
 
 ##### report
 
-This stage is responsible for [allure test report](index.md#allure-report) generation.
+This stage is responsible for [allure test report](_index.md#allure-report) generation.
 
 ## Adding new jobs to E2E test pipelines
 

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Merge request analytics with ClickHouse
 ---
-
-# Merge request analytics with ClickHouse
 
 The [merge request analytics feature](../../../user/analytics/merge_request_analytics.md)
 shows statistics about the merged merge requests in the project and also exposes record-level metadata.

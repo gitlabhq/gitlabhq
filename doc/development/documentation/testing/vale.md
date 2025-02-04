@@ -3,9 +3,8 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: Learn how to contribute to GitLab Documentation.
+title: Vale documentation tests
 ---
-
-# Vale documentation tests
 
 [Vale](https://vale.sh/) is a grammar, style, and word usage linter for the
 English language. Vale's configuration is stored in the [`.vale.ini`](https://vale.sh/docs/topics/config/) file located
@@ -22,7 +21,7 @@ You can use Vale:
 
 - [On the command line](https://vale.sh/docs/vale-cli/structure/).
 - [In a code editor](#configure-vale-in-your-editor).
-- [In a Git hook](index.md#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
+- [In a Git hook](_index.md#configure-pre-push-hooks). Vale only reports errors in the Git hook (the same
   configuration as the CI/CD pipelines), and does not report suggestions or warnings.
 
 ## Install Vale

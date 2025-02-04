@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Int range partitioning
 ---
-
-# Int range partitioning
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132148) in GitLab 16.8.
 

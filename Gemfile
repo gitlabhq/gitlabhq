@@ -266,7 +266,7 @@ gem 'asciidoctor', '~> 2.0.18', feature_category: :markdown
 gem 'asciidoctor-include-ext', '~> 0.4.0', require: false, feature_category: :markdown
 gem 'asciidoctor-plantuml', '~> 0.0.16', feature_category: :markdown
 gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdown
-gem 'rouge', '~> 4.4.0', feature_category: :shared
+gem 'rouge', '~> 4.5.0', feature_category: :shared
 gem 'truncato', '~> 0.7.12', feature_category: :team_planning
 gem 'nokogiri', '~> 1.18', feature_category: :shared
 gem 'gitlab-glfm-markdown', '~> 0.0.21', feature_category: :markdown
@@ -362,7 +362,7 @@ gem 'sanitize', '~> 6.0.2', feature_category: :shared
 gem 'babosa', '~> 2.0', feature_category: :shared
 
 # Sanitizes SVG input
-gem 'loofah', '~> 2.22.0', feature_category: :shared
+gem 'loofah', '~> 2.24.0', feature_category: :shared
 
 # Used to provide license templates
 gem 'licensee', '~> 9.16', feature_category: :shared

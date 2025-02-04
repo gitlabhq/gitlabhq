@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Translating GitLab
 ---
-
-# Translating GitLab
 
 For managing the translation process, we use [Crowdin](https://crowdin.com).
 To contribute translations at [`translate.gitlab.com`](https://translate.gitlab.com),

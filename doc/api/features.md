@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/index.md).
+This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/_index.md).
 
 All methods require administrator authorization.
 
@@ -123,7 +123,7 @@ POST /features/:name
 | `name`          | string         | yes      | Name of the feature to create or update                                                                                                                                                          |
 | `value`         | integer/string | yes      | `true` or `false` to enable/disable, or an integer for percentage of time                                                                                                                        |
 | `key`           | string         | no       | `percentage_of_actors` or `percentage_of_time` (default)                                                                                                                                         |
-| `feature_group` | string         | no       | A [Feature group](../development/feature_flags/index.md#feature-groups) name                                                                                                                                                                             |
+| `feature_group` | string         | no       | A [Feature group](../development/feature_flags/_index.md#feature-groups) name                                                                                                                                                                             |
 | `user`          | string         | no       | A GitLab username or comma-separated multiple usernames                                                                                                                                          |
 | `group`         | string         | no       | A GitLab group's path, for example `gitlab-org`, or comma-separated multiple group paths                                                                                                         |
 | `namespace`     | string         | no       | A GitLab group or user namespace's path, for example `john-doe`, or comma-separated multiple namespace paths. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353117) in GitLab 15.0. |

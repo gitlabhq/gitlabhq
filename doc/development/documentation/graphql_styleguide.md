@@ -3,9 +3,8 @@ stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "Writing styles, markup, formatting, and other standards for GraphQL API's GitLab Documentation."
+title: Creating a GraphQL example page
 ---
-
-# Creating a GraphQL example page
 
 GraphQL APIs are different from [RESTful APIs](restful_api_styleguide.md). Reference
 information is generated in our [GraphQL API resources](../../api/graphql/reference/_index.md) page.

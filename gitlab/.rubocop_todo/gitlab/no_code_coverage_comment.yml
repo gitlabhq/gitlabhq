@@ -1,0 +1,13 @@
+---
+Gitlab/NoCodeCoverageComment:
+  Exclude:
+    - 'app/services/ci/job_artifacts/destroy_batch_service.rb'
+    - 'app/workers/database/batched_background_migration/single_database_worker.rb'
+    - 'ee/app/models/concerns/geo/replicable_model.rb'
+    - 'ee/lib/gitlab/geo/replicator.rb'
+    - 'lib/gitlab/cleanup/personal_access_tokens.rb'
+    - 'lib/gitlab/cycle_analytics/summary/defaults.rb'
+    - 'lib/gitlab/seeder.rb'
+    - 'lib/gitlab/webpack/dev_server_middleware.rb'
+    - 'lib/tasks/gems.rake'
+    - 'lib/tasks/gitlab/db.rake'

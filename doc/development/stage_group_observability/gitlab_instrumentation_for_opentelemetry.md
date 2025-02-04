@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GitLab instrumentation for OpenTelemetry
 ---
-
-# GitLab instrumentation for OpenTelemetry
 
 ## Enable OpenTelemetry tracing, metrics, and logs in GDK development
 

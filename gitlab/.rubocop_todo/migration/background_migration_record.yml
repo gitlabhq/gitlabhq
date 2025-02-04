@@ -1,0 +1,19 @@
+---
+Migration/BackgroundMigrationRecord:
+  Exclude:
+    - 'ee/lib/ee/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
+    - 'ee/lib/ee/gitlab/background_migration/create_security_setting.rb'
+    - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
+    - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_in_batch.rb'
+    - 'ee/lib/ee/gitlab/background_migration/migrate_requirements_to_work_items.rb'
+    - 'ee/lib/ee/gitlab/background_migration/populate_latest_pipeline_ids.rb'
+    - 'lib/gitlab/background_migration/backfill_draft_status_on_merge_requests.rb'
+    - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
+    - 'lib/gitlab/background_migration/backfill_topics_title.rb'
+    - 'lib/gitlab/background_migration/fix_first_mentioned_in_commit_at.rb'
+    - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
+    - 'lib/gitlab/background_migration/migrate_null_private_profile_to_false.rb'
+    - 'lib/gitlab/background_migration/populate_latest_pipeline_ids.rb'
+    - 'lib/gitlab/background_migration/project_namespaces/models/namespace.rb'
+    - 'lib/gitlab/background_migration/project_namespaces/models/project.rb'
+    - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'

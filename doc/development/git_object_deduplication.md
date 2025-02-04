@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: How Git object deduplication works in GitLab
 ---
-
-# How Git object deduplication works in GitLab
 
 When a GitLab user [forks a project](../user/project/repository/forking_workflow.md),
 GitLab creates a new Project with an associated Git repository that is a

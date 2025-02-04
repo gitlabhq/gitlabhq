@@ -2,8 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Git LFS development guidelines
 ---
-# Git LFS development guidelines
 
 This page contains developer-centric information for GitLab team members. For the
 user documentation, see [Git Large File Storage](../topics/git/lfs/index.md).

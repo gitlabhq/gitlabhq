@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Test import project
 ---
-
-# Test import project
 
 For testing, we can import our own [GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/) project (named `gitlabhq` in this case) under a group named `qa-perf-testing`. Project tarballs that can be used for testing can be found over on the [performance-data](https://gitlab.com/gitlab-org/quality/performance-data) project. A different project could be used if required.
 

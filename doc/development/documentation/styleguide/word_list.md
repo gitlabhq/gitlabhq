@@ -3,16 +3,15 @@ stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
+title: Recommended word list
 ---
-
-# Recommended word list
 
 To help ensure consistency in the documentation, the Technical Writing team
 recommends these word choices. In addition:
 
 - The GitLab handbook contains a list of
   [top misused terms](https://handbook.gitlab.com/handbook/communication/top-misused-terms/).
-- The documentation [style guide](../styleguide/index.md#language) includes details
+- The documentation [style guide](../styleguide/_index.md#language) includes details
   about language and capitalization.
 - The GitLab handbook provides guidance on the [use of third-party trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
 
@@ -392,7 +391,7 @@ Instead of:
 
 Use **cannot** instead of **can not**.
 
-See also [contractions](index.md#contractions).
+See also [contractions](_index.md#contractions).
 
 ## card
 
@@ -1017,7 +1016,7 @@ of the fields at once. For example:
 1. Expand **General pipelines**.
 1. Complete the fields.
 
-Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
+Learn more about [documenting multiple fields at once](_index.md#documenting-multiple-fields-at-once).
 
 ## filename
 
@@ -1176,7 +1175,7 @@ Do not use **the `gitlab` chart**, **the GitLab Chart**, or **the cloud-native c
 You use the **GitLab Helm chart** to deploy **cloud-native GitLab** in a Kubernetes cluster.
 
 If you use it in a context of describing the
-[different installation methods](index.md#how-to-document-different-installation-methods)
+[different installation methods](_index.md#how-to-document-different-installation-methods)
 use `Helm chart (Kubernetes)`.
 
 ## GitLab Pages
@@ -1345,7 +1344,7 @@ Instead of:
 - For installations from source...
 
 For more information, see the
-[different installation methods](index.md#how-to-document-different-installation-methods).
+[different installation methods](_index.md#how-to-document-different-installation-methods).
 
 ## -ing words
 
@@ -1789,7 +1788,7 @@ Instead of:
 - For installations that use Omnibus GitLab...
 
 For more information, see the
-[different installation methods](index.md#how-to-document-different-installation-methods).
+[different installation methods](_index.md#how-to-document-different-installation-methods).
 
 ## on
 
@@ -2014,7 +2013,7 @@ we would talk to a colleague, and to avoid differentiation between `we` and `the
 - Set the variable. (It's required.)
 - You can set the variable. (It's optional.)
 
-See also [recommended steps](index.md#recommended-steps).
+See also [recommended steps](_index.md#recommended-steps).
 
 ## register
 
@@ -2459,7 +2458,7 @@ Always follow these words with a noun. For example:
 ## to which, of which
 
 Try to avoid **to which** and **of which**, and let the preposition dangle at the end of the sentence instead.
-For examples, see [Prepositions](index.md#prepositions).
+For examples, see [Prepositions](_index.md#prepositions).
 
 ## to-do item
 
@@ -2692,7 +2691,7 @@ Sometimes you might need to use **yet** when writing a task. If you use
 **yet**, ensure the surrounding phrases are written
 in present tense, active voice.
 
-[View guidance about how to write about future features](index.md#promising-features-in-future-versions).
+[View guidance about how to write about future features](_index.md#promising-features-in-future-versions).
 
 ## you, your, yours
 

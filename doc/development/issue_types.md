@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Issue Types (deprecated)
 ---
-
-# Issue Types (deprecated)
 
 WARNING:
 We have deprecated Issue Types in favor of [Work Items and Work Item Types](work_items.md).

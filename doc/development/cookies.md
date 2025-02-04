@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Cookies
 ---
-
-# Cookies
 
 In general, there is usually a better place to store data for users than in cookies. For backend development PostgreSQL, Redis, and [session storage](session.md) are available. For frontend development, cookies may be more secure than `localStorage`, `IndexedDB` or other options.
 

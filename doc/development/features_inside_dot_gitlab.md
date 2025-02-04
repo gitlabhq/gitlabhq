@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Features inside the `.gitlab/` directory
 ---
-
-# Features inside the `.gitlab/` directory
 
 We have implemented standard features that depend on configuration files in the `.gitlab/` directory. You can find `.gitlab/` in various GitLab repositories.
 When implementing new features, refer to these existing features to avoid conflicts:

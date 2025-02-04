@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Pipeline Wizard
 ---
-
-# Pipeline Wizard
 
 The Pipeline Wizard is a Vue frontend component that helps users create a
 pipeline by using input fields. The type of input fields and the form of the final

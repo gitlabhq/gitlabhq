@@ -1,0 +1,7 @@
+---
+Metrics/AbcSize:
+  Exclude:
+    - 'app/models/instance_configuration.rb'
+    - 'app/services/projects/create_service.rb'
+    - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'
+    - 'lib/gitlab/sidekiq_middleware/server_metrics.rb'

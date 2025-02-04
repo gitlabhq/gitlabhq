@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Ruby upgrade guidelines
 ---
-
-# Ruby upgrade guidelines
 
 We strive to run GitLab using the latest Ruby MRI releases to benefit from performance and
 security updates and new Ruby APIs. When upgrading Ruby across GitLab, we should do

@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Task topic type
 ---
-
-# Task topic type
 
 A task gives instructions for how to complete a procedure.
 
@@ -159,4 +158,4 @@ how to write the phrase for each role.
 
 ## Related topics
 
-- [How to write task steps](../styleguide/index.md#navigation)
+- [How to write task steps](../styleguide/_index.md#navigation)

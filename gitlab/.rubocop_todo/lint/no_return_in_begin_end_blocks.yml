@@ -1,0 +1,14 @@
+---
+Lint/NoReturnInBeginEndBlocks:
+  Exclude:
+    - 'app/models/concerns/metric_image_uploading.rb'
+    - 'app/models/merge_request.rb'
+    - 'app/services/security/ci_configuration/sast_parser_service.rb'
+    - 'ee/app/services/epic_issues/create_service.rb'
+    - 'ee/app/services/gitlab_subscriptions/preview_billable_user_change_service.rb'
+    - 'ee/app/services/security/token_revocation_service.rb'
+    - 'ee/lib/api/vulnerability_findings.rb'
+    - 'ee/lib/ee/gitlab/scim/filter_parser.rb'
+    - 'lib/gitlab/git/repository.rb'
+    - 'lib/object_storage/config.rb'
+    - 'spec/support/database/prevent_cross_joins.rb'

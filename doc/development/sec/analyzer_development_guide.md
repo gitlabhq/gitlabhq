@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Static Analysis
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Sec section analyzer development
 ---
-
-# Sec section analyzer development
 
 Analyzers are shipped as Docker images to execute within a CI pipeline context. This guide describes development and testing
 practices across analyzers.
@@ -140,7 +139,7 @@ For more information, refer to the [project README](https://gitlab.com/gitlab-or
 
 GitLab Security Products use an independent versioning system from GitLab `MAJOR.MINOR`. All products use a variation of [Semantic Versioning](https://semver.org) and are available as Docker images.
 
-`Major` is bumped with every new major release of GitLab, when [breaking changes are allowed](../deprecation_guidelines/index.md). `Minor` is bumped for new functionality, and `Patch` is reserved for bugfixes.
+`Major` is bumped with every new major release of GitLab, when [breaking changes are allowed](../deprecation_guidelines/_index.md). `Minor` is bumped for new functionality, and `Patch` is reserved for bugfixes.
 
 The analyzers are released as Docker images following this scheme:
 
@@ -297,7 +296,7 @@ To backport a critical fix or patch to an earlier version, follow the steps belo
 
 We occasionally need to build out new analyzer projects to support new frameworks and tools.
 In doing so we should follow [our engineering Open Source guidelines](https://handbook.gitlab.com/handbook/engineering/open-source/),
-including licensing and [code standards](../../development/go_guide/index.md).
+including licensing and [code standards](../../development/go_guide/_index.md).
 
 In addition, to write a custom analyzer that will integrate into the GitLab application
 a minimal feature set is required:
@@ -338,7 +337,7 @@ Security report schemas are versioned using SchemaVer: `MODEL-REVISION-ADDITION`
 is responsible for the
 [`security-report-schemas` project](https://gitlab.com/gitlab-org/security-products/security-report-schemas),
 including the compatibility of GitLab and the schema versions. Schema changes must follow the
-product-wide [deprecation guidelines](../deprecation_guidelines/index.md).
+product-wide [deprecation guidelines](../deprecation_guidelines/_index.md).
 
 When a new `MODEL` version is introduced, analyzers that adopt the new schema are responsible for
 ensuring that GitLab deployments that do not vendor this new schema version continue to ingest

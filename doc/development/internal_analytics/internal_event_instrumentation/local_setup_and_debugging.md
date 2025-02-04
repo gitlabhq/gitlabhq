@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Local setup and debugging
 ---
-
-# Local setup and debugging
 
 NOTE:
 To track user interactions in the browser, browser settings, such as privacy filters (e.g.

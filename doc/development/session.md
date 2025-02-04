@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Accessing session data
 ---
-
-# Accessing session data
 
 Session data in GitLab is stored in Redis and can be accessed in a variety of ways.
 

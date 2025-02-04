@@ -2,9 +2,8 @@
 stage: Systems
 group: Geo
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Geo self-service framework
 ---
-
-# Geo self-service framework
 
 NOTE:
 This document is subject to change as we continue to implement and iterate on the framework.

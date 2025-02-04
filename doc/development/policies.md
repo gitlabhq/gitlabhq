@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: The `DeclarativePolicy` framework
 ---
-
-# `DeclarativePolicy` framework
 
 The DeclarativePolicy framework is designed to assist in performance of policy checks, and to enable ease of extension for EE. The DSL code in `app/policies` is what `Ability.allowed?` uses to check whether a particular action is allowed on a subject.
 

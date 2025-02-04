@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Foreign keys and associations
 ---
-
-# Foreign keys and associations
 
 When adding an association to a model you must also add a foreign key. For
 example, say you have the following model:
@@ -236,5 +235,5 @@ end
 ```
 
 Using a foreign key as primary key saves space but can make
-[batch counting](../internal_analytics/metrics/metrics_instrumentation.md#batch-counters-example) in [Service Ping](../internal_analytics/service_ping/index.md) less efficient.
+[batch counting](../internal_analytics/metrics/metrics_instrumentation.md#batch-counters-example) in [Service Ping](../internal_analytics/service_ping/_index.md) less efficient.
 Consider using a regular `id` column if the table is relevant for Service Ping.

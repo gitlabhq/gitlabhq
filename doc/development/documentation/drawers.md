@@ -2,9 +2,8 @@
 stage: none
 group: Documentation Guidelines
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Create content for drawers
 ---
-
-# Create content for drawers
 
 In the GitLab UI, you can display help content in
 [a drawer component](https://design.gitlab.com/components/drawer/).

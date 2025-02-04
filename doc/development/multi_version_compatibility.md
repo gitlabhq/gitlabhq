@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Backwards compatibility across updates
 ---
-
-# Backwards compatibility across updates
 
 GitLab deployments can be broken down into many components. Updating GitLab is not atomic. Therefore, **many components must be backwards-compatible**.
 
@@ -123,7 +122,7 @@ For major or minor version updates of Rails or Puma:
 
 ### Feature flags
 
-[Feature flags](feature_flags/index.md) are a tool, not a strategy, for handling backward compatibility problems.
+[Feature flags](feature_flags/_index.md) are a tool, not a strategy, for handling backward compatibility problems.
 
 For example, it is safe to add a new feature with frontend and API changes, if both
 frontend and API changes are disabled by default. This can be done with multiple

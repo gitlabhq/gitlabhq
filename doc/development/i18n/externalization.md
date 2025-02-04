@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Internationalization for GitLab
 ---
-
-# Internationalization for GitLab
 
 For working with internationalization (i18n),
 [GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most

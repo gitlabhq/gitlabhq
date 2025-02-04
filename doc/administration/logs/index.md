@@ -713,7 +713,7 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/features_json.log` on Linux package installations.
 - `/home/git/gitlab/log/features_json.log` on self-compiled installations.
 
-The modification events from [Feature flags in development of GitLab](../../development/feature_flags/index.md)
+The modification events from [Feature flags in development of GitLab](../../development/feature_flags/_index.md)
 are recorded in this file. For example:
 
 ```json

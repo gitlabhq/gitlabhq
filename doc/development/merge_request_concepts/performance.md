@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Merge Request Performance Guidelines
 ---
-
-# Merge Request Performance Guidelines
 
 Each new introduced merge request **should be performant by default**.
 
@@ -215,7 +214,7 @@ Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
 
 **Summary:** a merge request **should not** execute duplicated cached queries.
 
-Rails provides an [SQL Query Cache](../cached_queries.md#cached-queries-guidelines),
+Rails provides an [SQL Query Cache](../cached_queries.md),
 used to cache the results of database queries for the duration of the request.
 
 See [why cached queries are considered bad](../cached_queries.md#why-cached-queries-are-considered-bad) and
@@ -528,7 +527,7 @@ end
 
 The usage of shared temporary storage is required if your intent
 is to persistent file for a disk-based storage, and not Object Storage.
-[Workhorse direct upload](../uploads/index.md#direct-upload) when accepting file
+[Workhorse direct upload](../uploads/_index.md#direct-upload) when accepting file
 can write it to shared storage, and later GitLab Rails can perform a move operation.
 The move operation on the same destination is instantaneous.
 The system instead of performing `copy` operation just re-attaches file into a new place.
@@ -552,7 +551,7 @@ that implements a seamless support for Shared and Object Storage-based persisten
 #### Data access
 
 Each feature that accepts data uploads or allows to download them needs to use
-[Workhorse direct upload](../uploads/index.md#direct-upload). It means that uploads needs to be
+[Workhorse direct upload](../uploads/_index.md#direct-upload). It means that uploads needs to be
 saved directly to Object Storage by Workhorse, and all downloads needs to be served
 by Workhorse.
 
@@ -564,5 +563,5 @@ can time out, which is especially problematic for slow clients. If clients take 
 to upload/download the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).
 
-For the above reasons it is required that [Workhorse direct upload](../uploads/index.md#direct-upload) is implemented
+For the above reasons it is required that [Workhorse direct upload](../uploads/_index.md#direct-upload) is implemented
 for all file uploads and downloads.

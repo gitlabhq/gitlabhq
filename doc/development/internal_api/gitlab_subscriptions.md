@@ -2,9 +2,8 @@
 stage: Fulfillment
 group: Provision
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: GitLab Subscriptions Internal API
 ---
-
-# GitLab Subscriptions Internal API
 
 The GitLab Subscriptions internal API is used by the CustomersDot application,
 it cannot be used by other consumers. This documentation is intended for people

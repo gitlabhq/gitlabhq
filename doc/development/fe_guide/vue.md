@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Vue
 ---
-
-# Vue
 
 To get started with Vue, read through [their documentation](https://v2.vuejs.org/v2/guide/index.html).
 
@@ -379,7 +378,7 @@ export default {
 
 #### Accessing feature flags
 
-After pushing a feature flag to the [frontend](../feature_flags/index.md#frontend),
+After pushing a feature flag to the [frontend](../feature_flags/_index.md#frontend),
 use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject)
 mechanisms in Vue to make feature flags available to any descendant components
 in a Vue application. The `glFeatures` object is already provided in
@@ -445,6 +444,8 @@ visitUrlWithAlerts('/dashboard/groups', [
 ```
 
 If you need to manually remove a persisted alert, you can use the [`removeGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/7063dce68b8231442567707024b2f29e48ce2f64/app/assets/javascripts/lib/utils/global_alerts.js#L31) utility function.
+
+If you need to programmatically dismiss an alert, you can use the [`dismissGlobalAlertById`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/utils/global_alerts.js#L43) utility function.
 
 ### A folder for Components
 

@@ -2,9 +2,8 @@
 stage: Plan
 group: Optimize
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Value stream analytics development guidelines
 ---
-
-# Value stream analytics development guidelines
 
 For information on how to configure value stream analytics (VSA) in GitLab, see our [analytics documentation](../user/group/value_stream_analytics/index.md).
 

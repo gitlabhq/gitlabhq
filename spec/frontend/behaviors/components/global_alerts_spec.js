@@ -3,9 +3,20 @@ import { GlAlert } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GlobalAlerts from '~/behaviors/components/global_alerts.vue';
-import { getGlobalAlerts, setGlobalAlerts, removeGlobalAlertById } from '~/lib/utils/global_alerts';
+import {
+  GLOBAL_ALERTS_DISMISS_EVENT,
+  eventHub,
+  getGlobalAlerts,
+  setGlobalAlerts,
+  removeGlobalAlertById,
+} from '~/lib/utils/global_alerts';
 
-jest.mock('~/lib/utils/global_alerts');
+jest.mock('~/lib/utils/global_alerts', () => ({
+  ...jest.requireActual('~/lib/utils/global_alerts'),
+  getGlobalAlerts: jest.fn(),
+  setGlobalAlerts: jest.fn(),
+  removeGlobalAlertById: jest.fn(),
+}));
 
 describe('GlobalAlerts', () => {
   const alert1 = {
@@ -39,6 +50,36 @@ describe('GlobalAlerts', () => {
   };
 
   const findAllAlerts = () => wrapper.findAllComponents(GlAlert);
+
+  describe('created', () => {
+    beforeEach(() => {
+      getGlobalAlerts.mockImplementationOnce(() => []);
+
+      jest.spyOn(eventHub, '$on').mockImplementation();
+    });
+
+    it(`should register the "${GLOBAL_ALERTS_DISMISS_EVENT}" event handler in the event hub`, async () => {
+      await createComponent();
+
+      expect(eventHub.$on).toHaveBeenCalledWith(GLOBAL_ALERTS_DISMISS_EVENT, expect.any(Function));
+    });
+  });
+
+  describe('beforeDestroy', () => {
+    beforeEach(() => {
+      getGlobalAlerts.mockImplementationOnce(() => []);
+
+      jest.spyOn(eventHub, '$off').mockImplementation();
+    });
+
+    it(`should remove the "${GLOBAL_ALERTS_DISMISS_EVENT}" event handler from the event hub`, async () => {
+      await createComponent();
+
+      wrapper.destroy();
+
+      expect(eventHub.$off).toHaveBeenCalledWith(GLOBAL_ALERTS_DISMISS_EVENT, expect.any(Function));
+    });
+  });
 
   describe('when there are alerts to display', () => {
     beforeEach(() => {
@@ -74,6 +115,19 @@ describe('GlobalAlerts', () => {
         await nextTick();
 
         expect(findAllAlerts().length).toBe(1);
+        expect(removeGlobalAlertById).toHaveBeenCalledWith(alert1.id);
+      });
+    });
+
+    describe(`when alert is dismissed by ID`, () => {
+      it('removes alert', async () => {
+        await createComponent();
+
+        eventHub.$emit(GLOBAL_ALERTS_DISMISS_EVENT, alert1.id);
+
+        await nextTick();
+
+        expect(findAllAlerts()).toHaveLength(1);
         expect(removeGlobalAlertById).toHaveBeenCalledWith(alert1.id);
       });
     });

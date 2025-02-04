@@ -2,9 +2,8 @@
 stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Security report ingestion overview
 ---
-
-# Security report ingestion overview
 
 WARNING:
 The `Vulnerability::Feedback` model is currently undergoing deprecation and should be actively avoided in all further development. It is currently maintained with feature parity to enable revert should any issues arise, but is intended to be removed in 16.0. Any interactions relating to the Feedback model are superseded by the `StateTransition`, `IssueLink`, and `MergeRequestLink` models. You can find out more on [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).

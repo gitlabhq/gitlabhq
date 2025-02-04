@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: LLM logging
 ---
-
-# LLM logging
 
 In addition to standard logging in the GitLab Rails Monolith instance, specialized logging is available for features based on large language models (LLMs).
 

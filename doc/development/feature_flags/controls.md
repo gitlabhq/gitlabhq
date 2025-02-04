@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+title: Use ChatOps to enable and disable feature flags
 ---
-
-# Use ChatOps to enable and disable feature flags
 
 NOTE:
 This document explains how to contribute to the development of the GitLab product.
@@ -122,7 +121,7 @@ Let's say you are releasing a new functionality that runs a few times per day, f
 hourly cron job. And this new functionality is controlled by the newly introduced feature flag.
 For example, [rewriting the database query for a cron job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128759/diffs).
 In this case, releasing the feature flag for a percentage below 25% might give you slow feedback
-regarding whether to proceed with the rollout or not. Also, if the cron job fails, it will [retry](../sidekiq/index.md#retries).
+regarding whether to proceed with the rollout or not. Also, if the cron job fails, it will [retry](../sidekiq/_index.md#retries).
 So the consequences of something going wrong won't be that big. In this case, releasing with a percentage of 25% or 50%
 will be an acceptable choice.
 
@@ -260,7 +259,7 @@ You can use the `--user` option to enable a feature flag for a specific user:
 If you would like to gather feedback internally first,
 feature flags scoped to a user can also be enabled
 for GitLab team members with the `gitlab_team_members`
-[feature group](index.md#feature-groups):
+[feature group](_index.md#feature-groups):
 
 ```shell
 /chatops run feature set --feature-group=gitlab_team_members some_feature true

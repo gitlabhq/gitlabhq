@@ -2,9 +2,8 @@
 stage: Foundations
 group: Personal Productivity
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Cascading Settings
 ---
-
-# Cascading Settings
 
 Have you ever wanted to add a setting on a GitLab project and/or group that had a default value that was inherited from a parent in the hierarchy?
 

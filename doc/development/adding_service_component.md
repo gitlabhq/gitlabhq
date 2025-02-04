@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Adding a new Service Component to GitLab
 ---
-
-# Adding a new Service Component to GitLab
 
 The GitLab product is made up of several service components that run as independent system processes in communication with each other. These services can be run on the same instance, or spread across different instances. A list of the existing components can be found in the [GitLab architecture overview](architecture.md).
 
@@ -19,7 +18,7 @@ The following outline re-uses the [maturity metric](https://handbook.gitlab.com/
   - [Handling service dependencies](#handling-service-dependencies)
 - Viable
   - [Bundled with GitLab installations](#bundling-a-service-with-gitlab)
-  - [End-to-end testing in GitLab QA](testing_guide/end_to_end/beginners_guide/index.md)
+  - [End-to-end testing in GitLab QA](testing_guide/end_to_end/beginners_guide/_index.md)
   - [Release management](#release-management)
   - [Enabled on GitLab.com](feature_flags/controls.md#enabling-a-feature-for-gitlabcom)
 - Complete
@@ -52,7 +51,7 @@ The first iteration should be to add the ability to connect and use the service 
 
 **For services that depend on the existing GitLab codebase:**
 
-The first iteration should be opt-in, either through the `gitlab.yml` configuration or through [feature flags](feature_flags/index.md). For these types of services it is often necessary to [bundle the service and its dependencies with GitLab](#bundling-a-service-with-gitlab) as part of the initial integration.
+The first iteration should be opt-in, either through the `gitlab.yml` configuration or through [feature flags](feature_flags/_index.md). For these types of services it is often necessary to [bundle the service and its dependencies with GitLab](#bundling-a-service-with-gitlab) as part of the initial integration.
 
 NOTE:
 [ActionCable](https://docs.gitlab.com/omnibus/settings/actioncable.html) is an example of a service that has been added this way.

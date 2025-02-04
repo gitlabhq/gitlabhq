@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Exploratory testing of CAPTCHAs
 ---
-
-# Exploratory testing of CAPTCHAs
 
 You can reliably test CAPTCHA on review apps, and in your local development environment (GDK).
 You can always:

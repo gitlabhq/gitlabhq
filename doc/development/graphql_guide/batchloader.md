@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GraphQL BatchLoader
 ---
-
-# GraphQL BatchLoader
 
 GitLab uses the [batch-loader](https://github.com/exAspArk/batch-loader) Ruby gem to optimize and avoid N+1 SQL queries.
 

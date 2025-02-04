@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Development seed files
 ---
-
-# Development seed files
 
 Development seed files are listed under `gitlab/db/fixtures/development/` and `gitlab/ee/db/fixtures/development/`
 folders. These files are used to populate the database with records to help verifying if feature functionalities, like charts, are working as expected on local host.

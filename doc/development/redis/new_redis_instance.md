@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Add a new Redis instance
 ---
-
-# Add a new Redis instance
 
 GitLab can make use of multiple [Redis instances](../redis.md#redis-instances).
 These instances are functionally partitioned so that, for example, we
@@ -87,7 +86,7 @@ may decide that it is OK to incur a small amount of data loss and switch
 over through configuration only.
 
 If there is not a more natural way to mark where the data is stored, using a
-[feature flag](../feature_flags/index.md) may be convenient:
+[feature flag](../feature_flags/_index.md) may be convenient:
 
 - It does not require an application restart to take effect.
 - It applies to all application instances (Sidekiq, API, web, etc.) at
@@ -162,7 +161,7 @@ MultiStore uses two feature flags to control the actual migration:
 - `use_primary_and_secondary_stores_for_[store_name]`
 - `use_primary_store_as_default_for_[store_name]`
 
-For example, if our new Redis instance is called `Gitlab::Redis::Foo`, we can [create](../feature_flags/index.md#create-a-new-feature-flag) two feature flags by executing:
+For example, if our new Redis instance is called `Gitlab::Redis::Foo`, we can [create](../feature_flags/_index.md#create-a-new-feature-flag) two feature flags by executing:
 
 ```shell
 bin/feature-flag use_primary_and_secondary_stores_for_foo
@@ -246,6 +245,6 @@ If we decide to keep the migration code:
 
 - We should document the migration steps.
 - If we used a feature flag, we should ensure it's an
-  [ops type feature flag](../feature_flags/index.md#ops-type), as these are long-lived flags.
+  [ops type feature flag](../feature_flags/_index.md#ops-type), as these are long-lived flags.
 
 Otherwise, we can remove the flags and conclude the project.

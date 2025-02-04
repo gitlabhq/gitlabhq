@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "Developer documentation explaining how the different parts of the Vue-based frontend diffs are generated."
+title: Merge request diffs frontend overview
 ---
-
-# Merge request diffs frontend overview
 
 This document provides an overview on how the frontend diffs Vue application works, and
 the various different parts that exist. It should help contributors:

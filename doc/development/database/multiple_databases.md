@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Cells Infrastructure
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Multiple Databases
 ---
-
-# Multiple Databases
 
 To allow GitLab to scale further we
 [decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
@@ -51,12 +50,12 @@ The usage of schema enforces the base class to be used:
 ### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
 This content has been moved to a
-[new location](../cells/index.md#choose-either-the-gitlab_main_cell-or-gitlab_main_clusterwide-schema)
+[new location](../cells/_index.md#choose-either-the-gitlab_main_cell-or-gitlab_main_clusterwide-schema)
 
 ### Defining a sharding key for all cell-local tables
 
 This content has been moved to a
-[new location](../cells/index.md#defining-a-sharding-key-for-all-cell-local-tables)
+[new location](../cells/_index.md#defining-a-sharding-key-for-all-cell-local-tables)
 
 ### The impact of `gitlab_schema`
 
@@ -730,7 +729,7 @@ Later, this foreign key can be converted to a loose foreign key, like we did in 
 In our testing CI pipelines, we test GitLab by default with multiple databases set up, using
 both `main` and `ci` databases. But in merge requests, for example when we modify some database-related code or
 add the label `~"pipeline:run-single-db"` to the MR, we additionally run our tests in
-[two other database modes](../pipelines/index.md#single-database-testing):
+[two other database modes](../pipelines/_index.md#single-database-testing):
 `single-db` and `single-db-ci-connection`.
 
 To handle situations where our tests need to run in specific database modes, we have some RSpec helpers

@@ -2,9 +2,8 @@
 stage: Systems
 group: Cloud Connector
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: 'Cloud Connector: Architecture'
 ---
-
-# Cloud Connector: Architecture
 
 [GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector/) is a way to access services common to
 multiple GitLab deployments, instances, and cells. As of now, Cloud Connector is not a

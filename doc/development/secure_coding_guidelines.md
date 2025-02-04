@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Secure coding development guidelines
 ---
-
-# Secure coding development guidelines
 
 This document contains descriptions and guidelines for addressing security
 vulnerabilities commonly identified in the GitLab codebase. They are intended
@@ -106,7 +105,7 @@ Some example of well implemented access controls and tests:
 
 When developing features that interact with or trigger pipelines, it's essential to consider the broader implications these actions have on the system's security and operational integrity.
 
-The [CI/CD development guidelines](../development/cicd/index.md) are essential reading material. No SAST or RuboCop rules enforce these guidelines.
+The [CI/CD development guidelines](cicd/_index.md) are essential reading material. No SAST or RuboCop rules enforce these guidelines.
 
 ## Regular Expressions guidelines
 
@@ -1817,7 +1816,7 @@ Logging helps track events for debugging. Logging also allows the application to
 ### Related topics
 
 - [Log system in GitLab](../administration/logs/index.md)
-- [Audit event development guidelines](../development/audit_event_guide/index.md))
+- [Audit event development guidelines](../development/audit_event_guide/_index.md))
 - [Security logging overview](https://handbook.gitlab.com/handbook/security/security-operations/security-logging/)
 - [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
 

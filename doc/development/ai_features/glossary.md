@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo Glossary
 ---
-
-# GitLab Duo Glossary
 
 This is a list of terms that may have a general meaning but also may have a
 specific meaning at GitLab. If you encounter a piece of technical jargon related

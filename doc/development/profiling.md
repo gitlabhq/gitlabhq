@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Profiling
 ---
-
-# Profiling
 
 To make it easier to track down performance problems GitLab comes with a set of
 profiling tools, some of these are available by default while others need to be

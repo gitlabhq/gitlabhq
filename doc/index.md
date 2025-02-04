@@ -78,5 +78,5 @@ To contribute to GitLab:
 
 | Topic                                                       | Description |
 |:------------------------------------------------------------|:------------|
-| [Contribute to GitLab development](development/index.md).  | Contribute to GitLab development. |
-| [Contribute to the documentation](development/documentation/index.md) | Contribute to GitLab documentation. |
+| [Contribute to GitLab development](development/_index.md).  | Contribute to GitLab development. |
+| [Contribute to the documentation](development/documentation/_index.md) | Contribute to GitLab documentation. |

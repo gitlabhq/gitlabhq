@@ -1,0 +1,4 @@
+---
+Cop/ExperimentsTestCoverage:
+  Exclude:
+    - 'ee/lib/api/experiments.rb'

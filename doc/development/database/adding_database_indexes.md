@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Adding Database Indexes
 ---
-
-# Adding Database Indexes
 
 Indexes can be used to speed up database queries, but when should you add a new
 index? Traditionally the answer to this question has been to add an index for
@@ -151,7 +150,7 @@ consider [indexing asynchronously](#create-indexes-asynchronously).
 ### Add an index to support new or updated queries
 
 Always examine the query plans for new or updated queries. First, confirm they do not time-out
-or significantly exceed [the recommended query timings](query_performance.md#query-performance-guidelines)
+or significantly exceed [the recommended query timings](query_performance.md)
 without a dedicated index.
 
 If the queries don't time-out or breach the query timings:

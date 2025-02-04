@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Rake tasks for developers
 ---
-
-# Rake tasks for developers
 
 Rake tasks are available for developers and others contributing to GitLab.
 
@@ -524,7 +523,7 @@ bundle exec rake gitlab:graphql:update_all
 ## Update audit event types documentation
 
 For information on updating audit event types documentation, see
-[Generate documentation](audit_event_guide/index.md#generate-documentation).
+[Generate documentation](audit_event_guide/_index.md#generate-documentation).
 
 ## Update OpenAPI client for Error Tracking feature
 

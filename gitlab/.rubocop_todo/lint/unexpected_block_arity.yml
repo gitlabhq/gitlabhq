@@ -1,0 +1,5 @@
+---
+Lint/UnexpectedBlockArity:
+  Exclude:
+    - 'app/services/issues/referenced_merge_requests_service.rb'
+    - 'lib/gitlab/issuable_sorter.rb'

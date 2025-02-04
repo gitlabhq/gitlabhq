@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Design tokens
 ---
-
-# Design tokens
 
 GitLab uses design tokens to maintain a single source of truth that, through automation, can be formatted for different uses.
 

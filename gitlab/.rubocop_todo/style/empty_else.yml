@@ -1,0 +1,23 @@
+---
+# Cop supports --autocorrect.
+Style/EmptyElse:
+  Exclude:
+    - 'app/controllers/concerns/sends_blob.rb'
+    - 'app/controllers/google_api/authorizations_controller.rb'
+    - 'app/finders/group_finder.rb'
+    - 'app/models/legacy_diff_discussion.rb'
+    - 'app/models/resource_state_event.rb'
+    - 'app/models/resource_timebox_event.rb'
+    - 'app/services/award_emojis/add_service.rb'
+    - 'config/initializers/doorkeeper_openid_connect.rb'
+    - 'ee/app/helpers/ee/kerberos_helper.rb'
+    - 'ee/app/services/gitlab_subscriptions/check_future_renewal_service.rb'
+    - 'ee/app/services/projects/update_mirror_service.rb'
+    - 'ee/lib/elastic/latest/note_instance_proxy.rb'
+    - 'ee/lib/gitlab/analytics/cycle_analytics/summary/change_failure_rate.rb'
+    - 'lib/gitlab/auth/o_auth/provider.rb'
+    - 'lib/gitlab/ci/variables/collection.rb'
+    - 'lib/gitlab/database/sha256_attribute.rb'
+    - 'lib/gitlab/git.rb'
+    - 'lib/gitlab/sidekiq_daemon/monitor.rb'
+    - 'lib/peek/views/external_http.rb'

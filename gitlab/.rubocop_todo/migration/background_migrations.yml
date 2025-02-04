@@ -1,0 +1,5 @@
+---
+Migration/BackgroundMigrations:
+  Exclude:
+    - 'ee/db/geo/post_migrate/20220202101354_migrate_job_artifact_registry.rb'
+    - 'lib/gitlab/database/migrations/background_migration_helpers.rb'

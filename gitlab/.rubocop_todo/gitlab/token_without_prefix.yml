@@ -1,0 +1,4 @@
+---
+Gitlab/TokenWithoutPrefix:
+  Exclude:
+    - 'app/models/application_setting.rb'

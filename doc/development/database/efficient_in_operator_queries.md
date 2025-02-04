@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Efficient `IN` operator queries
 ---
-
-# Efficient `IN` operator queries
 
 This document describes a technique for building efficient ordered database queries with the `IN`
 SQL operator and the usage of a GitLab utility module to help apply the technique.

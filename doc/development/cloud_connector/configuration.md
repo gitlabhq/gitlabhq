@@ -2,9 +2,8 @@
 stage: Systems
 group: Cloud Connector
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: 'Cloud Connector: Configuration'
 ---
-
-# Cloud Connector: Configuration
 
 A GitLab Rails instance accesses backend services uses a [Cloud Connector Service Access Token](architecture.md#access-control):
 
@@ -226,7 +225,7 @@ Configuration is stored in the `gitlab-cloud-connector` gem using a [unit primit
 GitLab.com still uses the [legacy `available_services` structure](#legacy-structure).
 The `Gitlab::CloudConnector::AvailableServicesGenerator` generates legacy structure for compatibility.
 
-To add a new unit primitive, follow [Register new feature for Self-Managed, Dedicated and GitLab.com customers](index.md#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers)
+To add a new unit primitive, follow [Register new feature for Self-Managed, Dedicated and GitLab.com customers](_index.md#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers)
 
 #### CustomersDot configuration
 
@@ -236,4 +235,4 @@ The configuration is located in [`cloud_connector.yml`](https://gitlab.com/gitla
 and represents an almost exact copy of the GitLab.com configuration.
 
 We are in the process of removing `cloud_connector.yml` as part of our effort to use the `gitlab-cloud-connector` gem as the Single Source of Truth (SSoT) for unit primitive configuration.
-To add a new unit primitive during this transition period, follow the [Transition period from old configuration process](index.md#transition-from-old-configuration).
+To add a new unit primitive during this transition period, follow the [Transition period from old configuration process](_index.md#transition-from-old-configuration).

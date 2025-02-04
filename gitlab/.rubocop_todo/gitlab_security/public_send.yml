@@ -1,0 +1,8 @@
+---
+GitlabSecurity/PublicSend:
+  Exclude:
+    - 'ee/app/helpers/push_rules_helper.rb'
+    - 'ee/app/models/ee/namespace_setting.rb'
+    - 'ee/app/models/ee/project.rb'
+    - 'ee/app/models/push_rule.rb'
+    - 'lib/gitlab/diff/file.rb'

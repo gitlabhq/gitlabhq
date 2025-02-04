@@ -1,0 +1,4 @@
+---
+Rails/MigrationTimestamp:
+  Exclude:
+    - 'ee/db/geo/migrate/20180402170913_add_missing_on_primary_to_job_artifact_registry..rb'

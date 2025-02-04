@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Using Solargraph
 ---
-
-# Using Solargraph
 
 Gemfile packages [Solargraph](https://github.com/castwide/solargraph) language server for additional IntelliSense and code formatting capabilities with editors that support it.
 

@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Quick start for Internal Event Tracking
 ---
-
-# Quick start for Internal Event Tracking
 
 In an effort to provide a more efficient, scalable, and unified tracking API, GitLab is deprecating existing RedisHLL and Snowplow tracking. Instead, we're implementing a new `track_event` (Backend) and `trackEvent`(Frontend) method.
 With this approach, we can update both RedisHLL counters and send Snowplow events without worrying about the underlying implementation.

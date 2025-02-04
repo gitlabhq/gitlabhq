@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Running tests that require special setup
 ---
-
-# Running tests that require special setup
 
 ## Jenkins tests
 
@@ -546,7 +545,7 @@ end
 
 You can verify whether GitLab is appropriately redirecting your session to the `canary` or `non-canary` nodes with the `menu.canary?` method.
 
-The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](../beginners_guide/index.md).
+The above spec is verbose, written specifically this way to ensure the idea behind the implementation is clear. We recommend following the practices detailed within our [Beginner's guide to writing end-to-end tests](../beginners_guide/_index.md).
 
 ## Tests for GitLab as OpenID Connect (OIDC) and OAuth provider
 

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Python Merge Requests Guidelines
 ---
-
-# Python Merge Requests Guidelines
 
 GitLab standard [code review guidelines](../code_review.md#approval-guidelines) apply to Python projects as well.
 
@@ -36,7 +35,7 @@ In addition to code reviews, maintainers are responsible for guiding architectur
 - Review for performance implications.
 - Check for security vulnerabilities.
 - Assess code change impact on existing systems.
-- Verify that the MR has the correct [MR type label](../labels/index.md#type-labels) and is assigned to the current milestone.
+- Verify that the MR has the correct [MR type label](../labels/_index.md#type-labels) and is assigned to the current milestone.
 
 **Additional responsibilities:**
 

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Generating chaos in a test GitLab instance
 ---
-
-# Generating chaos in a test GitLab instance
 
 <!-- vale gitlab_base.Spelling = NO -->
 

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 
-This API is for listing A/B experiments [defined in GitLab](../development/experiment_guide/index.md).
+This API is for listing A/B experiments [defined in GitLab](../development/experiment_guide/_index.md).
 
 The user must be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members) to access the API.
 

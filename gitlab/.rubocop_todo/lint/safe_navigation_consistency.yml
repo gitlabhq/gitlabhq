@@ -1,0 +1,16 @@
+---
+# Cop supports --autocorrect.
+Lint/SafeNavigationConsistency:
+  Exclude:
+    - 'app/models/concerns/ci/deployable.rb'
+    - 'app/policies/packages/policies/dependency_proxy/group_policy.rb'
+    - 'app/workers/container_expiration_policies/cleanup_container_repository_worker.rb'
+    - 'ee/app/controllers/concerns/ee/groups/params.rb'
+    - 'ee/app/models/ee/issue.rb'
+    - 'ee/app/services/ee/members/create_service.rb'
+    - 'ee/lib/ee/gitlab/auth/saml/user.rb'
+    - 'ee/lib/gitlab/status_page/storage.rb'
+    - 'lib/api/helpers.rb'
+    - 'lib/gitlab/bitbucket_server_import/importers/pull_request_note_importer.rb'
+    - 'lib/gitlab/bitbucket_server_import/importers/pull_request_notes_importer.rb'
+    - 'lib/gitlab/submodule_links.rb'

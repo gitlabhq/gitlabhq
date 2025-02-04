@@ -2,9 +2,8 @@
 info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
+title: Metadata
 ---
-
-# Metadata
 
 Each documentation Markdown page contains YAML front matter.
 All values in the metadata are treated as strings and are used for the

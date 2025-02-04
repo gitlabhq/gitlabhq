@@ -1,0 +1,10 @@
+---
+# Cop supports --autocorrect.
+Gitlab/Rails/SafeFormat:
+  Exclude:
+    - 'app/graphql/types/project_type.rb'
+    - 'app/helpers/emails_helper.rb'
+    - 'app/helpers/groups/group_members_helper.rb'
+    - 'app/helpers/search_helper.rb'
+    - 'app/models/integrations/beyond_identity.rb'
+    - 'app/services/security/ci_configuration/base_create_service.rb'

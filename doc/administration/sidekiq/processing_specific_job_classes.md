@@ -108,7 +108,7 @@ employed by routing rules. A query includes two components:
 ### Available attributes
 
 Queue matching query works upon the worker attributes, described in
-[Sidekiq style guide](../../development/sidekiq/index.md). We support querying
+[Sidekiq style guide](../../development/sidekiq/_index.md). We support querying
 based on a subset of worker attributes:
 
 - `feature_category` - the

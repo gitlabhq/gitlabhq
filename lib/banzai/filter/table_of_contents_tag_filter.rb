@@ -16,7 +16,7 @@ module Banzai
       prepend Concerns::PipelineTimingCheck
 
       OR_SELF = 'descendant-or-self::text()'
-      TOC_QUERY = %(#{OR_SELF}[ancestor::p and starts-with(translate(., '[TOC]', '[toc]'), '[toc]')]).freeze
+      TOC_QUERY = %(#{OR_SELF}[parent::p and starts-with(translate(., '[TOC]', '[toc]'), '[toc]')]).freeze
       GOLLUM_TOC_QUERY =
         %(#{OR_SELF}[ancestor::a[@data-wikilink="true"] and starts-with(translate(., '_TOC_', '_toc_'), '_toc_')])
         .freeze
@@ -33,6 +33,10 @@ module Banzai
         end
 
         doc.xpath(TOC_QUERY).each do |node|
+          next unless node.parent.children.size == 1 &&
+            node.text? &&
+            node.content.strip.casecmp?('[toc]')
+
           process_toc_tag(node)
         end
 
@@ -45,7 +49,7 @@ module Banzai
       def process_toc_tag(node)
         build_toc
 
-        # we still need to go one step up to also replace the surrounding <p></p>
+        # Replace the entire paragraph containing the TOC tag
         node.parent.replace(result[:toc].presence || '')
       end
 

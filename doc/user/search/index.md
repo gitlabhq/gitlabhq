@@ -64,7 +64,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
 
 To improve the performance of your instance's global search, an administrator can limit the search scope
-by disabling one or more [`ops` feature flags](../../development/feature_flags/index.md#ops-type).
+by disabling one or more [`ops` feature flags](../../development/feature_flags/_index.md#ops-type).
 
 | Scope          | Feature flag                       | Description                                                                               |
 |----------------|------------------------------------|-------------------------------------------------------------------------------------------|

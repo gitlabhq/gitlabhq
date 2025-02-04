@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Ruby style guide
 ---
-
-# Ruby style guide
 
 This is a GitLab-specific style guide for Ruby code. Everything documented in this page can be [reopened for discussion](https://handbook.gitlab.com/handbook/values/#disagree-commit-and-disagree).
 
@@ -23,7 +22,7 @@ Some styles we have decided [no one should not have a strong opinion on](#styles
 See also:
 
 - [Guidelines for reusing abstractions](../reusing_abstractions.md).
-- [Test-specific style guides and best practices](../testing_guide/index.md).
+- [Test-specific style guides and best practices](../testing_guide/_index.md).
 
 ## Styles we have no rule for
 

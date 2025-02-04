@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Vue 3 Testing
 ---
-
-# Vue 3 Testing
 
 As we transition to using Vue 3, it's important that our tests pass in Vue 3 mode.
 We're adding progressively stricter checks to our pipelines to enforce proper Vue 3 testing.

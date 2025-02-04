@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: What you should know about Omnibus packages
 ---
-
-# What you should know about Omnibus packages
 
 Most users install GitLab using our Omnibus packages. As a developer it can be
 good to know how the Omnibus packages differ from what you have on your laptop

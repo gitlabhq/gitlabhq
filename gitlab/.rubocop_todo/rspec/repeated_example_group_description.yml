@@ -1,0 +1,9 @@
+---
+RSpec/RepeatedExampleGroupDescription:
+  Exclude:
+    - 'ee/spec/support/shared_examples/services/scoped_label_shared_examples.rb'
+    - 'spec/support/shared_examples/models/application_setting_shared_examples.rb'
+    - 'spec/support/shared_examples/models/concerns/limitable_shared_examples.rb'
+    - 'spec/support/shared_examples/requests/api/composer_packages_shared_examples.rb'
+    - 'spec/support/shared_examples/serializers/diff_file_entity_shared_examples.rb'
+    - 'spec/support/shared_examples/services/container_registry_auth_service_shared_examples.rb'

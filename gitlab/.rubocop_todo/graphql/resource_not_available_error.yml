@@ -1,0 +1,28 @@
+---
+# Cop supports --autocorrect.
+Graphql/ResourceNotAvailableError:
+  Exclude:
+    - 'app/graphql/mutations/achievements/create.rb'
+    - 'app/graphql/mutations/admin/sidekiq_queues/delete_jobs.rb'
+    - 'app/graphql/mutations/design_management/move.rb'
+    - 'app/graphql/mutations/issues/bulk_update.rb'
+    - 'app/graphql/mutations/issues/set_crm_contacts.rb'
+    - 'app/graphql/mutations/issues/set_escalation_status.rb'
+    - 'app/graphql/mutations/notes/create/base.rb'
+    - 'app/graphql/mutations/notes/create/note.rb'
+    - 'app/graphql/mutations/notes/reposition_image_diff_note.rb'
+    - 'app/graphql/mutations/notes/update/image_diff_note.rb'
+    - 'app/graphql/mutations/todos/mark_all_done.rb'
+    - 'app/graphql/mutations/work_items/export.rb'
+    - 'app/graphql/resolvers/ci/runner_setup_resolver.rb'
+    - 'app/graphql/resolvers/concerns/search_arguments.rb'
+    - 'app/graphql/resolvers/container_repository_tags_resolver.rb'
+    - 'app/graphql/resolvers/design_management/versions_resolver.rb'
+    - 'app/graphql/resolvers/kas/agent_configurations_resolver.rb'
+    - 'app/graphql/resolvers/kas/agent_connections_resolver.rb'
+    - 'app/graphql/resolvers/projects/snippets_resolver.rb'
+    - 'ee/app/graphql/mutations/ai/action.rb'
+    - 'ee/app/graphql/mutations/audit_events/instance_external_audit_event_destinations/base.rb'
+    - 'ee/app/graphql/mutations/issues/set_escalation_policy.rb'
+    - 'ee/app/graphql/mutations/projects/set_locked.rb'
+    - 'ee/app/graphql/resolvers/incident_management/oncall_shifts_resolver.rb'

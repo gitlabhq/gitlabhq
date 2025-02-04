@@ -3,13 +3,12 @@ stage: Plan
 group: Knowledge
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 description: "The Banzai pipeline and parsing."
+title: The Banzai pipeline and parsing
 ---
 
 <!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
 
-# The Banzai pipeline and parsing
-
-Parsing and rendering [GitLab Flavored Markdown](index.md) into HTML involves different components:
+Parsing and rendering [GitLab Flavored Markdown](_index.md) into HTML involves different components:
 
 - Banzai pipeline and it's various filters
 - Markdown parser

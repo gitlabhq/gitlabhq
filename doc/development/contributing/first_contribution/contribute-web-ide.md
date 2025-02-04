@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Contribute code with the Web IDE
 ---
-
-# Contribute code with the Web IDE
 
 The [GitLab Web IDE](../../../user/project/web_ide/index.md) is a built-in advanced editor with commit staging.
 

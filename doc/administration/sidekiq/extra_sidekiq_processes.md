@@ -147,7 +147,7 @@ Instead of a queue, a queue namespace can also be provided, to have the process
 automatically listen on all queues in that namespace without needing to
 explicitly list all the queue names. For more information about queue namespaces,
 see the relevant section in the
-[Sidekiq development documentation](../../development/sidekiq/index.md#queue-namespaces).
+[Sidekiq development documentation](../../development/sidekiq/_index.md#queue-namespaces).
 
 ### Monitor the `sidekiq-cluster` command
 

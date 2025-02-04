@@ -64,7 +64,7 @@ Configuring the object storage using the consolidated form has a number of advan
 - It [uploads files to S3 with proper `Content-MD5` headers](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/222).
 
 When the consolidated form is used,
-[direct upload](../development/uploads/index.md#direct-upload) is enabled
+[direct upload](../development/uploads/_index.md#direct-upload) is enabled
 automatically. Thus, only the following providers can be used:
 
 - [Amazon S3-compatible providers](#amazon-s3)

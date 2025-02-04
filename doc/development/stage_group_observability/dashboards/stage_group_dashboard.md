@@ -2,9 +2,8 @@
 stage: Platforms
 group: Scalability
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Stage group dashboard
 ---
-
-# Stage group dashboard
 
 The stage group dashboard is generated dashboard that contains metrics
 for common components used by most stage groups. The dashboard is
@@ -19,9 +18,9 @@ contents, and how they can be customized.
 
 ![A panel showing metrics for a 28-day error budget including availability, budget remaining, and budget spent](img/stage_group_dashboards_28d_budget_v14_10.png)
 
-The top panels display the [error budget](../index.md#error-budget).
+The top panels display the [error budget](../_index.md#error-budget).
 These panels always show the 28 days before the end time selected in the
-[time range controls](index.md#time-range-controls). This data doesn't
+[time range controls](_index.md#time-range-controls). This data doesn't
 follow the selected range. It does respect the filters for environment
 and stage.
 

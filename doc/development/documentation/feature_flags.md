@@ -3,11 +3,10 @@ info: For assistance with this Style Guide page, see https://handbook.gitlab.com
 stage: none
 group: unassigned
 description: "GitLab development - how to document features deployed behind feature flags"
+title: Document features deployed behind feature flags
 ---
 
-# Document features deployed behind feature flags
-
-GitLab uses [feature flags](../feature_flags/index.md) to roll
+GitLab uses [feature flags](../feature_flags/_index.md) to roll
 out the deployment of its own features.
 
 When the state of a feature flag changes, the developer who made the change
@@ -19,7 +18,7 @@ Every feature introduced to the codebase, even if it's behind a disabled flag,
 must be documented. For more information, see
 [the discussion that led to this decision](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47917#note_459984428). [Experiment and beta](../../policy/development_stages_support.md) features are usually behind a flag and must also be documented. For more information, see [Document experiment or beta features](experiment_beta.md).
 
-When the feature is [implemented in multiple merge requests](../feature_flags/index.md#feature-flags-in-gitlab-development),
+When the feature is [implemented in multiple merge requests](../feature_flags/_index.md#feature-flags-in-gitlab-development),
 discuss the plan with your technical writer.
 
 You can create a documentation issue and delay the documentation if the feature:

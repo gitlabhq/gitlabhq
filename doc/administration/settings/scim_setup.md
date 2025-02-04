@@ -18,7 +18,7 @@ You can use the open standard System for Cross-domain Identity Management (SCIM)
 - Block users.
 - Re-add users (reactivate SCIM identity).
 
-The [internal GitLab SCIM API](../../development/internal_api/index.md#instance-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+The [internal GitLab SCIM API](../../development/internal_api/_index.md#instance-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 
 If you are a GitLab.com user, see [configuring SCIM for GitLab.com groups](../../user/group/saml_sso/scim_setup.md).
 
@@ -203,7 +203,7 @@ attributes and modify them accordingly. The source attribute that you map to the
 target attribute must match the attribute used for the SAML `NameID`.
 
 If a mapping is not listed in the table, use the Microsoft Entra ID defaults. For a list of required attributes,
-refer to the [internal instance SCIM API](../../development/internal_api/index.md#instance-scim-api) documentation.
+refer to the [internal instance SCIM API](../../development/internal_api/_index.md#instance-scim-api) documentation.
 
 #### Configure settings
 
@@ -225,7 +225,7 @@ Removing or deactivating a user on the identity provider blocks the user on
 the GitLab instance, while the SCIM identity remains linked to the GitLab user.
 
 To update the user SCIM identity, use the
-[internal GitLab SCIM API](../../development/internal_api/index.md#update-a-single-scim-provisioned-user-1).
+[internal GitLab SCIM API](../../development/internal_api/_index.md#update-a-single-scim-provisioned-user-1).
 
 ### Reactivate access
 

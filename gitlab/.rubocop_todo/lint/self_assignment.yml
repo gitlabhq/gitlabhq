@@ -1,0 +1,4 @@
+---
+Lint/SelfAssignment:
+  Exclude:
+    - 'app/models/remote_mirror.rb'

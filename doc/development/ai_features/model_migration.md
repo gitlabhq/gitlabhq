@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Model Migration Process
 ---
-
-# Model Migration Process
 
 ## Introduction
 
@@ -111,7 +110,7 @@ Note: While we're moving toward AI gateway holding the prompts, feature flag imp
 
 ### Implementation Steps
 
-For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/index.md).
+For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/_index.md).
 
 NOTE:
 Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI gateway codebase, as they won't have access to the new GitLab release.

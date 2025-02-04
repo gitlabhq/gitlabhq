@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Database required stops
 ---
-
-# Database required stops
 
 This page describes which database changes require GitLab upgrade stops. If you're interested
 about a comprehensive list of causes, refer to [causes of required stops](../avoiding_required_stops.md#causes-of-required-stops).

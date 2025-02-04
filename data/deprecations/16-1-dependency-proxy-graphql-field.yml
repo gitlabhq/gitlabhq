@@ -1,6 +1,6 @@
 - title: "GraphQL deprecation of `dependencyProxyTotalSizeInBytes` field"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
   announcement_milestone: "16.1"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: trizzi  # (required) GitLab username of the person reporting the deprecation
   stage: Package  # (required) String value of the stage that the feature was created in. e.g., Growth

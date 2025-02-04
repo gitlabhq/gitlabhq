@@ -2,9 +2,8 @@
 stage: Growth
 group: Acquisition
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Implementing an A/B/n experiment
 ---
-
-# Implementing an A/B/n experiment
 
 ## Implementing an experiment
 
@@ -57,7 +56,7 @@ Feature.enable(:pill_color, experiment(:pill_color, actor: User.first))
 
 To roll out your experiment feature flag on an environment, run
 the following command using ChatOps (which is covered in more depth in the
-[Feature flags in development of GitLab](../feature_flags/index.md) documentation).
+[Feature flags in development of GitLab](../feature_flags/_index.md) documentation).
 This command creates a scenario where half of everyone who encounters
 the experiment would be assigned the _control_, 25% would be assigned the _red_
 variant, and 25% would be assigned the _blue_ variant:

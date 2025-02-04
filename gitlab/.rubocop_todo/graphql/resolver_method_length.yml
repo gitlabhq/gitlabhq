@@ -1,0 +1,4 @@
+---
+GraphQL/ResolverMethodLength:
+  Exclude:
+    - 'app/graphql/types/ci/stage_type.rb'

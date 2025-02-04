@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Sidekiq Compatibility across Updates
 ---
-
-# Sidekiq Compatibility across Updates
 
 The arguments for a Sidekiq job are stored in a queue while it is
 scheduled for execution. During a online update, this could lead to
@@ -28,7 +27,7 @@ others - particularly [latency-sensitive jobs](worker_attributes.md#latency-sens
 this will result in a poor user experience.
 
 This only applies to new worker classes when they are first introduced.
-As we recommend [using feature flags](../feature_flags/index.md) as a general
+As we recommend [using feature flags](../feature_flags/_index.md) as a general
 development process, it's best to control the entire change (including
 scheduling of the new Sidekiq worker) with a feature flag.
 
@@ -192,7 +191,7 @@ Add a migration (not a post-deployment migration) that uses `sidekiq_remove_jobs
 
 ### In the M+2 release
 
-Delete the worker class file and follow the guidance in our [Sidekiq queues documentation](../sidekiq/index.md#sidekiq-queues) around running Rake tasks to regenerate/update related files.
+Delete the worker class file and follow the guidance in our [Sidekiq queues documentation](../sidekiq/_index.md#sidekiq-queues) around running Rake tasks to regenerate/update related files.
 
 ## Renaming queues
 

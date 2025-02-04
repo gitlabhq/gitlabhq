@@ -165,7 +165,7 @@ There are several ways you can contribute to Cloud Seed:
 
 - Use Cloud Seed and [share feedback](https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new?template=general_feedback).
 - If you are familiar with Ruby on Rails or Vue.js,
-  consider [contributing to GitLab](../development/contributing/index.md) as a developer.
+  consider [contributing to GitLab](../development/contributing/_index.md) as a developer.
   - Much of Cloud Seed is an internal module in the GitLab codebase.
 - If you are familiar with GitLab pipelines, consider contributing to
   the [Cloud Seed Library](https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library) project.

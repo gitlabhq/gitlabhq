@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Database Dictionary
 ---
-
-# Database Dictionary
 
 This page documents the database schema for GitLab, so data analysts and other groups can
 locate the feature categories responsible for specific database tables.

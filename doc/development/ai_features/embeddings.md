@@ -2,9 +2,8 @@
 stage: Foundations
 group: Global Search
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: Embeddings
 ---
-
-# Embeddings
 
 Embeddings are a way of representing data in a vectorised format, making it easy and efficient to find similar documents.
 
@@ -88,7 +87,7 @@ The following process outlines the steps to get embeddings generated and stored 
    Elastic::MigrationWorker.new.perform
    ```
 
-1. Make sure you can run [GitLab Duo features on your local environment](../ai_features/index.md#instructions-for-setting-up-gitlab-duo-features-in-the-local-development-environment).
+1. Make sure you can run [GitLab Duo features on your local environment](../ai_features/_index.md#instructions-for-setting-up-gitlab-duo-features-in-the-local-development-environment).
 1. Ensure running the following in a rails console outputs an embedding (a vector of 768 dimensions). If not, there is a problem with the AI setup.
 
    ```ruby

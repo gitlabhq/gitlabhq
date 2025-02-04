@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+title: GraphQL API merge request checklist
 ---
-
-# GraphQL API merge request checklist
 
 The GitLab GraphQL API has a fair degree of complexity so it's important that merge requests containing GraphQL changes be reviewed by someone familiar with GraphQL.
 You can ping one via the `@gitlab-org/graphql-experts` group in a MR or in the [`#f_graphql` channel](https://gitlab.slack.com/archives/C6MLS3XEU) in Slack (available to GitLab team members only).

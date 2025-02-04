@@ -1,0 +1,4 @@
+---
+RSpec/MissingExpectationTargetMethod:
+  Exclude:
+    - 'spec/support/helpers/after_next_helpers.rb'

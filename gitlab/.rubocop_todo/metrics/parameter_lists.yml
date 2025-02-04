@@ -1,0 +1,7 @@
+---
+Metrics/ParameterLists:
+  Exclude:
+    - 'app/helpers/avatars_helper.rb'
+    - 'app/helpers/blob_helper.rb'
+    - 'app/models/packages/sem_ver.rb'
+    - 'app/models/repository.rb'
