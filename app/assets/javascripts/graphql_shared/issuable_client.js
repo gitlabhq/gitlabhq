@@ -50,6 +50,9 @@ export const config = {
             toReference({ __typename: 'LocalWorkItemChildIsExpanded', id: variables.id }),
         },
       },
+      MergeRequestConnection: {
+        merge: true,
+      },
       DesignManagement: {
         merge(existing = {}, incoming) {
           return { ...existing, ...incoming };

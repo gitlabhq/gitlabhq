@@ -1218,6 +1218,7 @@ entry and paste the spreadsheet:
 ### JSON
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
+> - Ability to use Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375177) in GitLab 17.9.
 
 To render tables with JSON code blocks, use the following syntax:
 
@@ -1339,6 +1340,26 @@ You can use the `filter` attribute to render a table with content filtered dynam
       {"a": "211", "b": "222", "c": "233"}
     ],
     "filter" : true
+}
+```
+````
+
+You can use the `markdown` attribute to allow for GLFM Markdown in the items and caption,
+including GitLab references. Fields do not support Markdown.
+
+````markdown
+```json:table
+{
+    "fields" : [
+        {"key": "a", "label": "AA"},
+        {"key": "b", "label": "BB"},
+        {"key": "c", "label": "CC"}
+    ],
+    "items" : [
+      {"a": "11", "b": "**22**", "c": "33"},
+      {"a": "#1", "b": "222", "c": "233"}
+    ],
+    "markdown" : true
 }
 ```
 ````

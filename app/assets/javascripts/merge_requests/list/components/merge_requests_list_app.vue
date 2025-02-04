@@ -141,6 +141,7 @@ export default {
     initialEmail: { default: '' },
     getMergeRequestsQuery: { default: undefined },
     getMergeRequestsCountsQuery: { default: undefined },
+    getMergeRequestsApprovalsQuery: { default: undefined },
     isProject: { default: true },
     groupId: { default: undefined },
     showNewResourceDropdown: { default: undefined },
@@ -189,6 +190,29 @@ export default {
       skip() {
         return !this.hasAnyMergeRequests || isEmpty(this.pageParams) || !this.getMergeRequestsQuery;
       },
+    },
+    // The approvals data gets loaded in a seperate request so that if it timesout due to
+    // the large amount of data getting processed on the backend we can still render the
+    // merge request list.
+    // The data here gets stored in cache and then loaded through the `@client` directives
+    // in the merge request query.
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
+    mergeRequestApprovals: {
+      query() {
+        return this.getMergeRequestsApprovalsQuery;
+      },
+      variables() {
+        return this.queryVariables;
+      },
+      skip() {
+        return (
+          !this.hasAnyMergeRequests ||
+          isEmpty(this.pageParams) ||
+          !this.getMergeRequestsApprovalsQuery
+        );
+      },
+      manual: true,
+      result() {},
     },
     mergeRequestCounts: {
       query() {
@@ -842,7 +866,12 @@ export default {
       </template>
 
       <template #approval-status="{ issuable = {} }">
-        <li v-if="issuable.approvalsRequired || issuable.approvedBy.nodes.length" class="!gl-mr-0">
+        <li
+          v-if="
+            issuable.approvalsRequired || (issuable.approvedBy && issuable.approvedBy.nodes.length)
+          "
+          class="!gl-mr-0"
+        >
           <approval-count :merge-request="issuable" full-text class="gl-mt-1" />
         </li>
       </template>

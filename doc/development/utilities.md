@@ -285,6 +285,10 @@ end
 
 Read the documentation on [`ReactiveCaching`](reactive_caching.md).
 
+## `TokenAuthenticatable`
+
+Read the documentation on [`TokenAuthenticatable`](token_authenticatable.md).
+
 ## `CircuitBreaker`
 
 The `Gitlab::CircuitBreaker` can be wrapped around any class that needs to run code with circuit breaker protection. It provides a `run_with_circuit` method that wraps a code block with circuit breaker functionality, which helps prevent cascading failures and improves system resilience. For more information about the circuit breaker pattern, see:

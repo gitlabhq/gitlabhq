@@ -78,6 +78,12 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
         let(:action) { result }
       end
 
+      it 'triggers GraphQL subscription userMergeRequestUpdated' do
+        expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(current_user, merge_request)
+
+        result
+      end
+
       context 'when merge_request_dashboard feature flag is enabled' do
         before do
           stub_feature_flags(merge_request_dashboard: true)

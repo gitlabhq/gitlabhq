@@ -42,6 +42,7 @@ import MergeRequestsListApp from '~/merge_requests/list/components/merge_request
 import { BRANCH_LIST_REFRESH_INTERVAL } from '~/merge_requests/list/constants';
 import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_counts.query.graphql';
+import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queries/group/get_merge_requests_approvals.query.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import MergeRequestReviewers from '~/issuable/components/merge_request_reviewers.vue';
 import issuableEventHub from '~/issues/list/eventhub';
@@ -65,10 +66,28 @@ function createComponent({
 } = {}) {
   getQueryResponseMock = jest.fn().mockResolvedValue(response);
   getCountsQueryResponseMock = jest.fn().mockResolvedValue(getCountsQueryResponse);
-  const apolloProvider = createMockApollo([
-    [getMergeRequestsCountsQuery, getCountsQueryResponseMock],
-    [getMergeRequestsQuery, getQueryResponseMock],
-  ]);
+  const getApprovalsQueryResponseMock = jest.fn().mockResolvedValue(response);
+
+  const apolloProvider = createMockApollo(
+    [
+      [getMergeRequestsCountsQuery, getCountsQueryResponseMock],
+      [getMergeRequestsQuery, getQueryResponseMock],
+      [getMergeRequestsApprovalsQuery, getApprovalsQueryResponseMock],
+    ],
+    {},
+    {
+      typePolicies: {
+        Query: {
+          fields: {
+            project: { merge: true },
+          },
+        },
+        MergeRequestConnection: {
+          merge: true,
+        },
+      },
+    },
+  );
   router = new VueRouter({ mode: 'history' });
   router.push = jest.fn();
 
@@ -93,6 +112,7 @@ function createComponent({
       defaultBranch: 'main',
       getMergeRequestsCountsQuery,
       getMergeRequestsQuery,
+      getMergeRequestsApprovalsQuery,
       ...provide,
     },
     apolloProvider,
@@ -147,7 +167,7 @@ describe('Merge requests list app', () => {
 
   describe('fetching branches', () => {
     const apiVersion = 1;
-    const projectId = 2;
+    const projectId = 1;
     const fullPath = 'gitlab-org/gitlab';
     const allBranchesPath = `/api/${apiVersion}/projects/${encodeURIComponent(fullPath)}/repository/branches`;
     const sourceBranchPath = `/-/autocomplete/merge_request_source_branches.json?project_id=${projectId}`;
@@ -204,6 +224,10 @@ describe('Merge requests list app', () => {
 
       beforeEach(() => {
         axiosMock.resetHistory();
+
+        const initialTime = new Date(2025, 0, 1, 12, 0, 0).getTime();
+        jest.useFakeTimers({ legacyFakeTimers: false });
+        jest.setSystemTime(initialTime);
 
         createComponent();
 

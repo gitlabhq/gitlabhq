@@ -64,11 +64,12 @@ praefect:
     - .qa
   variables:
     QA_SCENARIO: Test::Integration::Praefect
+    QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "false"
   rules:
     - !reference [.rules:test:smoke-for-omnibus-mr, rules]
-    - if: $QA_SUITES =~ /Test::Instance::All/
+    - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== gitaly transactions enabled ===========
 # https://docs.gitlab.com/ee/architecture/blueprints/gitaly_transaction_management/
@@ -79,12 +80,13 @@ gitaly-transactions:
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Integration::Praefect
+    QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
     QA_RUN_IN_PARALLEL: true
     QA_PARALLEL_PROCESSES: 6
   rules:
-    - if: $QA_SUITES =~ /Test::Instance::All/
+    - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== gitaly reftables backend ===========
 # Verifies that E2E tests that interact with the gitaly backend work when the reftables backend is in use
@@ -97,10 +99,11 @@ gitaly-reftables-backend:
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Integration::Praefect
+    QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
     QA_CAN_TEST_PRAEFECT: "true"
     QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
   rules:
-    - if: $QA_SUITES =~ /Test::Instance::All/
+    - if: $QA_SUITES =~ /Test::Instance::Create/
 
 # ========== git sha256 enabled ===========
 git-sha256-repositories:

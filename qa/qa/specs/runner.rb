@@ -7,7 +7,7 @@ require 'tempfile'
 module QA
   module Specs
     class Runner < Scenario::Template
-      attr_accessor :tty, :tags, :options
+      attr_accessor :tty, :tags, :spec_pattern, :options
 
       RegexMismatchError = Class.new(StandardError)
 
@@ -15,6 +15,8 @@ module QA
       DEFAULT_TEST_PATH_ARGS = [DEFAULT_TEST_PATH].freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
       DEFAULT_SKIPPED_TAGS = %w[~orchestrated].freeze
+
+      ABSOLUTE_PATH_PREFIX_PATTERN = %r{^(\./|#{Runtime::Path.qa_root})?}
 
       def initialize
         @tty = false
@@ -64,8 +66,28 @@ module QA
         @spec_paths ||= options.select { |opt| opt.include?(DEFAULT_TEST_PATH) }
       end
 
+      def scenario_specs
+        return [] unless spec_pattern
+
+        @scenario_specs ||= Dir.glob(spec_pattern)
+      end
+
       def rspec_paths
-        @rspec_paths ||= custom_spec_paths.presence || DEFAULT_TEST_PATH_ARGS
+        return @rspec_paths if @rspec_paths
+
+        paths = custom_spec_paths.presence || DEFAULT_TEST_PATH_ARGS
+        return @rspec_paths = paths unless spec_pattern
+
+        @rspec_paths = paths.flat_map do |path|
+          next path if File.file?(path) && File.fnmatch(spec_pattern, path)
+          next specs_in_path(path) if File.directory?(path)
+
+          []
+        end
+      end
+
+      def specs_in_path(path)
+        scenario_specs.select { |spec| spec.match?(%r{#{ABSOLUTE_PATH_PREFIX_PATTERN}#{path}}) }
       end
 
       def build_initial_args
@@ -78,6 +100,13 @@ module QA
 
       def run_rspec(args)
         full_arg_list = [*args, "--", *rspec_paths]
+
+        if rspec_paths.empty?
+          Runtime::Logger.error("Scenario #{Runtime::Scenario.klass} has no specs to run!")
+          Runtime::Logger.error("Check if all tests have been filtered out by custom spec pattern!")
+
+          abort
+        end
 
         if Runtime::Scenario.attributes[:count_examples_only]
           count_examples_only(full_arg_list)

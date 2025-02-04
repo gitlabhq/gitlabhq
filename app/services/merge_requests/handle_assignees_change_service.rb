@@ -28,6 +28,8 @@ module MergeRequests
 
       invalidate_cache_counts(merge_request, users: old_assignees)
 
+      trigger_user_merge_request_updated(merge_request)
+
       execute_assignees_hooks(merge_request, old_assignees) if options['execute_hooks']
     end
 

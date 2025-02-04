@@ -50,6 +50,9 @@ exports[`PypiInstallation renders all the messages 1`] = `
           id="reference-1"
         >
           <div
+            class="gl-new-dropdown-arrow"
+          />
+          <div
             class="gl-new-dropdown-inner"
           >
             <ul

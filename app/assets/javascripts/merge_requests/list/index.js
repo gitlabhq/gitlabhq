@@ -9,6 +9,7 @@ import MoreactionsDropdown from './components/more_actions_dropdown.vue';
 export async function mountMergeRequestListsApp({
   getMergeRequestsQuery,
   getMergeRequestsCountsQuery,
+  getMergeRequestsApprovalsQuery,
   isProject = true,
 } = {}) {
   const el = document.querySelector('.js-merge-request-list-root');
@@ -85,6 +86,7 @@ export async function mountMergeRequestListsApp({
       resetPath,
       getMergeRequestsQuery,
       getMergeRequestsCountsQuery,
+      getMergeRequestsApprovalsQuery,
       isProject,
       groupId: groupId ? `${groupId}` : null,
       showNewResourceDropdown: parseBoolean(showNewResourceDropdown),

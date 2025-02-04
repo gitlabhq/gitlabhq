@@ -528,8 +528,6 @@ group :development, :test do
   gem 'gitlab-styles', '~> 13.0.2', feature_category: :tooling
   gem 'haml_lint', '~> 0.58', feature_category: :tooling
 
-  gem 'bundler-audit', '~> 0.9.1', require: false, feature_category: :shared
-
   # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.11.0', require: false, feature_category: :shared
   gem 'benchmark-memory', '~> 0.1', require: false, feature_category: :shared

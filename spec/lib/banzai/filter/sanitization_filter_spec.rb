@@ -40,6 +40,19 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
       expect(filter(act).to_html).to eq %q(<span>def</span>)
     end
 
+    it 'allows `data-table-*` attributes on `table` elements' do
+      html = <<-HTML
+        <table data-table-fields="foo" data-table-filter="true" data-table-markdown="true">
+        </table>
+      HTML
+
+      doc = filter(html)
+
+      expect(doc.at_css('table')['data-table-fields']).to eq 'foo'
+      expect(doc.at_css('table')['data-table-filter']).to eq 'true'
+      expect(doc.at_css('table')['data-table-markdown']).to eq 'true'
+    end
+
     it 'allows `text-align` property in `style` attribute on table elements' do
       html = <<~HTML
         <table>

@@ -1436,10 +1436,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.122.0.tgz#f3d21ff18d60510c4b6983a211dfbc39304a517b"
   integrity sha512-2ED6E6aYTpzOv4Tz2zFtPnBP/ZTSR1mNebHYkMfm+kx9u61ILwfVJjaQ3vu73BviToAs9+1bs7RIe3iAtzCB2g==
 
-"@gitlab/ui@107.0.1":
-  version "107.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-107.0.1.tgz#3698ae3d8f7764d5bc9e491bacabbe9b488377ed"
-  integrity sha512-LFAwVTiap0zg1B6AF9xa6R9PFqEKxwXiErG7lkq6aFQPKz7eH64+DIbLj4qrPp5BgSvyV+9tViYtgVO06MOwHg==
+"@gitlab/ui@107.7.1":
+  version "107.7.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-107.7.1.tgz#8d46342114b35227853b7631837d66c362c9713f"
+  integrity sha512-WEQILs6Tq3DRVGMmJrlqKy2M8ao/B/V2JAPHoAkV1LsAfDHwbUlLxwPRaO/xgivucqzOZe3jHEFpt5hqb+/iGA==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -6749,10 +6749,10 @@ domexception@^4.0.0:
   dependencies:
     webidl-conversions "^7.0.0"
 
-dompurify@^3.0.5, dompurify@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.3.tgz#05dd2175225324daabfca6603055a09b2382a4cd"
-  integrity sha512-U1U5Hzc2MO0oW3DF+G9qYN0aT7atAou4AgI0XjWz061nyBPbdxkfdhfy5uMgGn6+oLFCfn44ZGbdDqCzVmlOWA==
+dompurify@^3.0.5, dompurify@^3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.4.tgz#af5a5a11407524431456cf18836c55d13441cd8e"
+  integrity sha512-ysFSFEDVduQpyhzAob/kkuJjf5zWkZD8/A9ywSp1byueyuCfHamrCBa14/Oc2iiB0e51B+NpxSl5gmzn+Ms/mg==
   optionalDependencies:
     "@types/trusted-types" "^2.0.7"
 

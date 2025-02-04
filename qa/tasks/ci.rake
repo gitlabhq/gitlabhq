@@ -31,6 +31,7 @@ namespace :ci do
 
     diff = mr_diff
     qa_changes = QA::Tools::Ci::QaChanges.new(diff)
+    tests = []
 
     if diff.empty?
       logger.info("No changed file diff provided, full test suite will be executed")
@@ -48,7 +49,7 @@ namespace :ci do
       feature_flags_changes = QA::Tools::Ci::FfChanges.new(diff).fetch
       # on run-all label or framework changes do not infer specific tests
       run_all_tests = run_all_label_present || qa_changes.framework_changes? || !feature_flags_changes.nil?
-      tests = run_all_tests ? [] : qa_changes.qa_tests
+      tests = qa_changes.qa_tests unless run_all_tests
 
       if run_all_label_present
         logger.info("Merge request has pipeline:run-all-e2e label, full test suite will be executed")

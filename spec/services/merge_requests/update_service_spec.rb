@@ -726,6 +726,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           let(:action) { update_merge_request({ reviewer_ids: [user2.id] }) }
         end
 
+        it 'triggers GraphQL subscription userMergeRequestUpdated' do
+          expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user3, merge_request)
+          expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user2, merge_request)
+
+          update_merge_request(reviewer_ids: [user2.id])
+        end
+
         describe 'recording the first reviewer assigned at timestamp' do
           subject(:metrics) { merge_request.reload.metrics }
 

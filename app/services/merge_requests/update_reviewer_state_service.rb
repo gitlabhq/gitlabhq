@@ -15,6 +15,7 @@ module MergeRequests
         return error("Failed to update reviewer") unless reviewer.update(state: state)
 
         trigger_merge_request_reviewers_updated(merge_request)
+        trigger_user_merge_request_updated(merge_request)
 
         if current_user.merge_request_dashboard_enabled?
           invalidate_cache_counts(merge_request, users: merge_request.assignees)
