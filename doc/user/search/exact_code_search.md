@@ -29,7 +29,7 @@ and is used by default in groups where the feature is enabled.
 
 - For [GitLab.com](../../subscriptions/gitlab_com/index.md),
   exact code search is enabled in paid subscriptions.
-- For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+- For [GitLab Self-Managed](../../subscriptions/self_managed/index.md), an administrator must
   [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
@@ -93,14 +93,14 @@ This table shows some example queries for exact match and regular expression mod
 | `"class foo"`        | `"class foo"`                                           | `class foo` |
 | `class foo`          | `class foo`                                             | `class` and `foo` |
 | `foo or bar`         | `foo or bar`                                            | `foo` or `bar` |
-| `class Foo`          | `class Foo` (case insensitive)                          | `class` (case insensitive) and `Foo` (case sensitive) |
+| `class Foo`          | `class Foo` (case sensitive)                            | `class` (case insensitive) and `Foo` (case sensitive) |
 | `class Foo case:yes` | `class Foo` (case sensitive)                            | `class` and `Foo` (both case sensitive) |
 | `foo -bar`           | `foo -bar`                                              | `foo` but not `bar` |
 | `foo file:js`        | `foo` in files with names that contain `js`             | `foo` in files with names that contain `js` |
 | `foo -file:test`     | `foo` in files with names that do not contain `test`    | `foo` in files with names that do not contain `test` |
 | `foo lang:ruby`      | `foo` in Ruby source code                               | `foo` in Ruby source code |
 | `foo file:\.js$`     | `foo` in files with names that end with `.js`           | `foo` in files with names that end with `.js` |
-| `foo.*bar`           | None                                                    | `foo.*bar` (regular expression) |
+| `foo.*bar`           | `foo.*bar` (literal)                                    | `foo.*bar` (regular expression) |
 | `sym:foo`            | `foo` in symbols like class, method, and variable names | `foo` in symbols like class, method, and variable names |
 
 ## Known issues
@@ -109,3 +109,8 @@ This table shows some example queries for exact match and regular expression mod
   For more information, see [issue 455073](https://gitlab.com/gitlab-org/gitlab/-/issues/455073).
 - You can use exact code search on the default branch of a project only.
   For more information, see [issue 403307](https://gitlab.com/gitlab-org/gitlab/-/issues/403307).
+- Multiple matches on a single line are counted as one result.
+  For more information, see [issue 514526](https://gitlab.com/gitlab-org/gitlab/-/issues/514526).
+- If you encounter results where newlines are not displayed correctly,
+  you must update `gitlab-zoekt` to version 1.5.0 or later.
+  For more information, see [issue 516937](https://gitlab.com/gitlab-org/gitlab/-/issues/516937).
