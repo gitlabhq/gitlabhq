@@ -229,6 +229,11 @@ export default {
       required: false,
       default: '',
     },
+    addPadding: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -325,6 +330,7 @@ export default {
 <template>
   <div class="issuable-list-container">
     <issuable-tabs
+      :add-padding="addPadding"
       :tabs="tabs"
       :tab-counts="tabCounts"
       :current-tab="currentTab"

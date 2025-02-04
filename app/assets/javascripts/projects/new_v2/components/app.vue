@@ -7,6 +7,7 @@ import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector
 import SingleChoiceSelectorItem from '~/vue_shared/components/single_choice_selector_item.vue';
 
 import NewProjectDestinationSelect from './project_destination_select.vue';
+import Breadcrumb from './form_breadcrumb.vue';
 import CommandLine from './command_line.vue';
 
 const OPTIONS = {
@@ -68,6 +69,7 @@ export default {
     SingleChoiceSelector,
     SingleChoiceSelectorItem,
     NewProjectDestinationSelect,
+    Breadcrumb,
     CommandLine,
   },
   directives: {
@@ -189,75 +191,78 @@ export default {
 </script>
 
 <template>
-  <multi-step-form-template :title="__('Create new project')" :current-step="1">
-    <template #form>
-      <gl-form-group
-        v-if="canSelectNamespace"
-        :label="s__('ProjectNew|What do you want to create?')"
-      >
-        <gl-button-group class="gl-w-full">
-          <gl-button
-            category="primary"
-            variant="default"
-            size="medium"
-            :selected="isPersonalProject"
-            class="gl-w-full"
-            data-testid="personal-namespace-button"
-            @click="choosePersonalNamespace"
-          >
-            {{ s__('ProjectsNew|A personal project') }}
-          </gl-button>
-          <gl-button
-            category="primary"
-            variant="default"
-            size="medium"
-            :selected="!isPersonalProject"
-            class="gl-w-full"
-            data-testid="group-namespace-button"
-            @click="chooseGroupNamespace"
-          >
-            {{ s__('ProjectsNew|A project within a group') }}
-          </gl-button>
-        </gl-button-group>
-      </gl-form-group>
+  <div>
+    <breadcrumb />
 
-      <gl-form-group v-if="!isPersonalProject" :label="s__('ProjectsNew|Choose a group')">
-        <new-project-destination-select
-          :namespace-full-path="namespaceFullPath"
-          :namespace-id="namespaceId"
-          :track-label="trackLabel"
-          :root-url="rootUrl"
-          :groups-only="true"
-          data-testid="group-selector"
-        />
-      </gl-form-group>
+    <multi-step-form-template :title="__('Create new project')" :current-step="1">
+      <template #form>
+        <gl-form-group
+          v-if="canSelectNamespace"
+          :label="s__('ProjectNew|What do you want to create?')"
+        >
+          <gl-button-group class="gl-w-full">
+            <gl-button
+              category="primary"
+              variant="default"
+              size="medium"
+              :selected="isPersonalProject"
+              class="gl-w-full"
+              data-testid="personal-namespace-button"
+              @click="choosePersonalNamespace"
+            >
+              {{ s__('ProjectsNew|A personal project') }}
+            </gl-button>
+            <gl-button
+              category="primary"
+              variant="default"
+              size="medium"
+              :selected="!isPersonalProject"
+              class="gl-w-full"
+              data-testid="group-namespace-button"
+              @click="chooseGroupNamespace"
+            >
+              {{ s__('ProjectsNew|A project within a group') }}
+            </gl-button>
+          </gl-button-group>
+        </gl-form-group>
 
-      <single-choice-selector v-if="canChooseOption" checked="blank_project">
-        <single-choice-selector-item v-bind="$options.OPTIONS.blank" />
-        <single-choice-selector-item v-bind="$options.OPTIONS.template" />
-        <single-choice-selector-item
-          v-if="canImportProjects && importSourcesEnabled"
-          v-bind="$options.OPTIONS.ci"
-        />
-        <single-choice-selector-item v-if="isCiCdAvailable" v-bind="$options.OPTIONS.import">
-          {{ $options.OPTIONS.import.title }}
-          <div class="gl-flex gl-gap-2">
-            <gl-icon name="tanuki" />
-            <gl-icon name="github" />
-            <gl-icon name="bitbucket" />
-            <gl-icon name="gitea" />
-          </div>
-        </single-choice-selector-item>
-        <single-choice-selector-item v-bind="$options.OPTIONS.transfer" :disabled="true" />
-      </single-choice-selector>
-      <gl-alert v-else variant="danger" :dismissible="false">
-        {{ errorMessage }}
-      </gl-alert>
-    </template>
-    <template #footer>
-      <div v-if="newProjectGuidelines" v-safe-html="newProjectGuidelines" class="gl-mb-6"></div>
+        <gl-form-group v-if="!isPersonalProject" :label="s__('ProjectsNew|Choose a group')">
+          <new-project-destination-select
+            :namespace-full-path="namespaceFullPath"
+            :namespace-id="namespaceId"
+            :track-label="trackLabel"
+            :root-url="rootUrl"
+            :groups-only="true"
+            data-testid="group-selector"
+          />
+        </gl-form-group>
 
-      <command-line v-if="isPersonalProject" />
-    </template>
-  </multi-step-form-template>
+        <single-choice-selector v-if="canChooseOption" checked="blank_project">
+          <single-choice-selector-item v-bind="$options.OPTIONS.blank" />
+          <single-choice-selector-item v-bind="$options.OPTIONS.template" />
+          <single-choice-selector-item
+            v-if="canImportProjects && importSourcesEnabled"
+            v-bind="$options.OPTIONS.ci"
+          />
+          <single-choice-selector-item v-if="isCiCdAvailable" v-bind="$options.OPTIONS.import">
+            {{ $options.OPTIONS.import.title }}
+            <div class="gl-flex gl-gap-2">
+              <gl-icon name="tanuki" />
+              <gl-icon name="github" />
+              <gl-icon name="bitbucket" />
+              <gl-icon name="gitea" />
+            </div>
+          </single-choice-selector-item>
+          <single-choice-selector-item v-bind="$options.OPTIONS.transfer" :disabled="true" />
+        </single-choice-selector>
+        <gl-alert v-else variant="danger" :dismissible="false">
+          {{ errorMessage }}
+        </gl-alert>
+      </template>
+      <template #footer>
+        <div v-if="newProjectGuidelines" v-safe-html="newProjectGuidelines" class="gl-mb-6"></div>
+        <command-line v-if="isPersonalProject" />
+      </template>
+    </multi-step-form-template>
+  </div>
 </template>

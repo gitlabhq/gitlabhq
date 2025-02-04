@@ -17,13 +17,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Pages, feature_category: :pages do
 
     context 'when value is a hash' do
       context 'when the hash is valid' do
-        let(:config) { { path_prefix: 'prefix', expire_in: '1 day' } }
+        let(:config) { { path_prefix: 'prefix', expire_in: '1 day', publish: '/some-folder' } }
 
         it 'is valid' do
           expect(entry).to be_valid
           expect(entry.value).to eq({
             path_prefix: 'prefix',
-            expire_in: '1 day'
+            expire_in: '1 day',
+            publish: '/some-folder'
           })
         end
       end

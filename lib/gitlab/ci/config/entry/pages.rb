@@ -9,7 +9,7 @@ module Gitlab
         # Entry that represents the pages attributes
         #
         class Pages < ::Gitlab::Config::Entry::Node
-          ALLOWED_KEYS = %i[path_prefix expire_in].freeze
+          ALLOWED_KEYS = %i[path_prefix expire_in publish].freeze
 
           include ::Gitlab::Config::Entry::Attributable
           include ::Gitlab::Config::Entry::Validatable
@@ -23,6 +23,7 @@ module Gitlab
             with_options allow_nil: true do
               validates :path_prefix, type: String
               validates :expire_in, duration: { parser: ::Gitlab::Ci::Build::DurationParser }
+              validates :publish, type: String
             end
           end
         end

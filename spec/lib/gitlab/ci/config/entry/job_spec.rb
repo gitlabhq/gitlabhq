@@ -778,6 +778,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       :'something-else' | {} | false
       :'something-else' | { pages: true } | true
       :'something-else' | { pages: { path_prefix: 'foo' } } | true
+      :'something-else' | { pages: { publish: '/some-folder' } } | true
       :'something-else' | { pages: false } | false
       :'something-else' | { pages: nil } | false
     end

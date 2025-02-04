@@ -14,6 +14,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
+import { truncate } from '~/lib/utils/text_utility';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
@@ -27,6 +28,7 @@ export default {
     releasedMessage: s__('CiCatalog|Released %{timeAgo} by %{author}'),
     unreleased: s__('CiCatalog|Unreleased'),
   },
+  descriptionTruncateWidth: 260,
   components: {
     CiVerificationBadge,
     GlAvatar,
@@ -133,6 +135,9 @@ export default {
     starsHref() {
       return this.resource.starrersPath;
     },
+    truncatedDescription() {
+      return truncate(this.resource.description, this.$options.descriptionTruncateWidth);
+    },
   },
   methods: {
     getComponent(index) {
@@ -212,7 +217,11 @@ export default {
       </div>
       <div class="gl-flex gl-flex-col gl-justify-between gl-gap-2 gl-text-sm md:gl-flex-row">
         <div class="gl-flex gl-basis-2/3 gl-flex-col">
-          <markdown v-if="resource.description" :markdown="resource.description" />
+          <markdown
+            v-if="resource.description"
+            class="gl-hidden md:gl-block"
+            :markdown="truncatedDescription"
+          />
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"

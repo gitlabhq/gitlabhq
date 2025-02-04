@@ -55,28 +55,29 @@ To restrict `/search` to authenticated users only, do one of the following:
 To restrict global search to authenticated users only,
 enable the `ops` feature flag `block_anonymous_global_searches`.
 
-## Global search scopes
+## Disable global search scopes
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179688) in GitLab 17.9.
 
-To improve the performance of your instance's global search, an administrator can limit the search scope
-by disabling one or more [`ops` feature flags](../../development/feature_flags/_index.md#ops-type).
+Prerequisites:
 
-| Scope          | Feature flag                       | Description                                                                               |
-|----------------|------------------------------------|-------------------------------------------------------------------------------------------|
-| Code           | `global_search_code_tab`           | When enabled, global search includes code.                                                |
-| Commits        | `global_search_commits_tab`        | When enabled, global search includes commits.                                             |
-| Epics          | `global_search_epics_tab`          | When enabled, global search includes epics.                                               |
-| Issues         | `global_search_issues_tab`         | When enabled, global search includes issues.                                              |
-| Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests.                                      |
-| Users          | `global_search_users_tab`          | When enabled, global search and command palette includes users.                                               |
-| Wiki           | `global_search_wiki_tab`           | When enabled, global search includes project and [group wikis](../project/wiki/group.md). |
+- You must have administrator access to the instance.
 
-All global search scopes are enabled by default on self-managed instances.
+To improve the performance of your instance's global search,
+you can disable one or more search scopes.
+All global search scopes are enabled by default on GitLab Self-Managed instances.
+
+To disable one or more global search scopes:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Global search**.
+1. Clear the checkboxes for the scopes you want to disable.
+1. Select **Save changes**.
 
 ## Global search validation
 

@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillDastPreScanVerificationStepsProjectId
+description: Backfills sharding key `dast_pre_scan_verification_steps.project_id` from `dast_pre_scan_verifications`.
+feature_category: dynamic_application_security_testing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180046
+milestone: '17.9'
+queued_migration_version: 20250203154153
+finalized_by: # version of the migration that finalized this BBM

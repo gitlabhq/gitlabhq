@@ -50,10 +50,15 @@ export function initNewProjectForm() {
   };
 
   const provide = {
-    userNamespaceId,
     canCreateProject: parseBoolean(canCreateProject),
     projectHelpPath,
     pushToCreateProjectCommand,
+    namespaceId,
+    userNamespaceId,
+    rootPath,
+    parentGroupUrl,
+    parentGroupName,
+    projectsUrl,
   };
 
   return new Vue({

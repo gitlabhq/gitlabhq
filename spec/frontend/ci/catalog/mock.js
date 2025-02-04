@@ -716,3 +716,6 @@ export const mockComponentsEmpty = {
     },
   },
 };
+
+export const longResourceDescription =
+  'This innovative project leverages cutting-edge microservices architecture to deliver scalable cloud-native solutions. With comprehensive CI/CD pipelines, automated testing frameworks, and robust monitoring capabilities, it ensures reliable deployments and optimal performance. The modular design incorporates industry best practices for security, maintainability and extensibility. Advanced caching mechanisms and efficient database optimization techniques provide lightning-fast response times. Built using modern development frameworks and tools, it seamlessly integrates with existing enterprise systems while maintaining flexibility for future enhancements.';

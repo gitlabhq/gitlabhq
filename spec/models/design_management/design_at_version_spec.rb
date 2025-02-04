@@ -72,32 +72,15 @@ RSpec.describe DesignManagement::DesignAtVersion do
   end
 
   describe 'status methods' do
-    let!(:design_a) { create(:design, issue: issue) }
-    let!(:design_b) { create(:design, issue: issue) }
+    let_it_be(:design_a) { create(:design, issue: issue) }
+    let_it_be(:design_b) { create(:design, issue: issue) }
 
-    let!(:version_a) do
-      create(:design_version, designs: [design_a])
-    end
-
-    let!(:version_b) do
-      create(:design_version, designs: [design_b])
-    end
-
-    let!(:version_mod) do
-      create(:design_version, modified_designs: [design_a, design_b])
-    end
-
-    let!(:version_c) do
-      create(:design_version, deleted_designs: [design_a])
-    end
-
-    let!(:version_d) do
-      create(:design_version, deleted_designs: [design_b])
-    end
-
-    let!(:version_e) do
-      create(:design_version, designs: [design_a])
-    end
+    let_it_be(:version_a)   { create(:design_version, designs: [design_a]) }
+    let_it_be(:version_b)   { create(:design_version, designs: [design_b]) }
+    let_it_be(:version_mod) { create(:design_version, modified_designs: [design_a, design_b]) }
+    let_it_be(:version_c)   { create(:design_version, deleted_designs: [design_a]) }
+    let_it_be(:version_d)   { create(:design_version, deleted_designs: [design_b]) }
+    let_it_be(:version_e)   { create(:design_version, designs: [design_a]) }
 
     describe 'a design before it has been created' do
       subject { build(:design_at_version, design: design_b, version: version_a) }

@@ -8,7 +8,7 @@ import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_
 import ProjectVisibilityIcon from '~/ci/catalog/components/shared/project_visibility_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
-import { catalogSinglePageResponse } from '../../mock';
+import { catalogSinglePageResponse, longResourceDescription } from '../../mock';
 
 const defaultEvent = { preventDefault: jest.fn, ctrlKey: false, metaKey: false };
 const baseRoute = '/';
@@ -94,6 +94,19 @@ describe('CiResourcesListItem', () => {
       const markdown = findMarkdown();
       expect(markdown.exists()).toBe(true);
       expect(markdown.props().markdown).toBe(defaultProps.resource.description);
+    });
+
+    it('renders a truncated resource description', () => {
+      defaultProps.resource.description = longResourceDescription;
+      createComponent();
+
+      const markdown = findMarkdown();
+      expect(markdown.props().markdown.length).toBe(260);
+    });
+
+    it('hides the resource description on mobile devices', () => {
+      const markdown = findMarkdown();
+      expect(markdown.classes()).toEqual(expect.arrayContaining(['gl-hidden', 'md:gl-block']));
     });
   });
 

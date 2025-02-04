@@ -1,6 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/projects/new_v2/components/app.vue';
+import FormBreadcrumb from '~/projects/new_v2/components/form_breadcrumb.vue';
 import CommandLine from '~/projects/new_v2/components/command_line.vue';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
@@ -26,9 +27,16 @@ describe('New project creation app', () => {
   };
 
   const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findBreadcrumbs = () => wrapper.findComponent(FormBreadcrumb);
   const findSingleChoiceSelector = () => wrapper.findComponent(SingleChoiceSelector);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCommandLine = () => wrapper.findComponent(CommandLine);
+
+  it('renders breadcrumbs', () => {
+    createComponent();
+
+    expect(findBreadcrumbs().exists()).toBe(true);
+  });
 
   it('renders a form', () => {
     createComponent();

@@ -1037,6 +1037,14 @@ $$;
 
 COMMENT ON FUNCTION table_sync_function_e438f29263() IS 'Partitioning migration: table sync for ci_runner_machines table';
 
+CREATE FUNCTION timestamp_coalesce(t1 timestamp with time zone, t2 anyelement) RETURNS timestamp without time zone
+    LANGUAGE plpgsql IMMUTABLE
+    AS $$
+BEGIN
+  RETURN COALESCE(t1::TIMESTAMP, t2);
+END;
+$$;
+
 CREATE FUNCTION trigger_01b3fc052119() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1528,6 +1536,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "vulnerabilities"
   WHERE "vulnerabilities"."id" = NEW."vulnerability_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_29128c51c7c6() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "dast_pre_scan_verifications"
+  WHERE "dast_pre_scan_verifications"."id" = NEW."dast_pre_scan_verification_id";
 END IF;
 
 RETURN NEW;
@@ -11867,6 +11891,7 @@ CREATE TABLE dast_pre_scan_verification_steps (
     name text,
     verification_errors text[] DEFAULT '{}'::text[] NOT NULL,
     check_type smallint DEFAULT 0 NOT NULL,
+    project_id bigint,
     CONSTRAINT check_cd216b95e4 CHECK ((char_length(name) <= 255))
 );
 
@@ -26713,6 +26738,9 @@ ALTER TABLE web_hook_logs
 ALTER TABLE vulnerability_finding_evidences
     ADD CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE vulnerabilities
+    ADD CONSTRAINT check_e987357e3b CHECK ((detected_at IS NOT NULL)) NOT VALID;
+
 ALTER TABLE work_item_parent_links
     ADD CONSTRAINT check_e9c0111985 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
@@ -31875,6 +31903,8 @@ CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_sha_256 O
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
+CREATE INDEX index_dast_pre_scan_verification_steps_on_project_id ON dast_pre_scan_verification_steps USING btree (project_id);
+
 CREATE UNIQUE INDEX index_dast_pre_scan_verifications_on_ci_pipeline_id ON dast_pre_scan_verifications USING btree (ci_pipeline_id);
 
 CREATE INDEX index_dast_pre_scan_verifications_on_dast_profile_id ON dast_pre_scan_verifications USING btree (dast_profile_id);
@@ -34501,6 +34531,8 @@ CREATE INDEX index_timelogs_on_timelog_category_id ON timelogs USING btree (time
 
 CREATE INDEX index_timelogs_on_user_id ON timelogs USING btree (user_id);
 
+CREATE INDEX index_todos_coalesced_snoozed_until_created_at ON todos USING btree (user_id, state, timestamp_coalesce(snoozed_until, created_at));
+
 CREATE INDEX index_todos_on_author_id ON todos USING btree (author_id);
 
 CREATE INDEX index_todos_on_author_id_and_created_at ON todos USING btree (author_id, created_at);
@@ -34942,6 +34974,10 @@ CREATE INDEX index_vulnerability_user_mentions_on_project_id ON vulnerability_us
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id ON vulnerability_user_mentions USING btree (vulnerability_id) WHERE (note_id IS NULL);
 
 CREATE UNIQUE INDEX index_vulns_user_mentions_on_vulnerability_id_and_note_id ON vulnerability_user_mentions USING btree (vulnerability_id, note_id);
+
+CREATE INDEX index_web_hook_logs_daily_on_web_hook_id_and_created_at ON ONLY web_hook_logs_daily USING btree (web_hook_id, created_at);
+
+CREATE INDEX index_web_hook_logs_daily_part_on_created_at_and_web_hook_id ON ONLY web_hook_logs_daily USING btree (created_at, web_hook_id);
 
 CREATE INDEX index_web_hook_logs_on_web_hook_id_and_created_at ON ONLY web_hook_logs USING btree (web_hook_id, created_at);
 
@@ -37435,9 +37471,9 @@ CREATE TRIGGER assign_zoekt_tasks_id_trigger BEFORE INSERT ON zoekt_tasks FOR EA
 
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER ci_builds_loose_fk_trigger AFTER DELETE ON ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER ci_builds_loose_fk_trigger AFTER DELETE ON ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_builds');
 
-CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_pipelines');
 
 CREATE TRIGGER ci_runner_machines_loose_fk_trigger AFTER DELETE ON ci_runner_machines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -37459,9 +37495,9 @@ CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE 
 
 CREATE TRIGGER organizations_loose_fk_trigger AFTER DELETE ON organizations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
-CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_builds');
 
-CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_pipelines');
 
 CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -37544,6 +37580,8 @@ CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_
 CREATE TRIGGER trigger_25d35f02ab55 BEFORE INSERT OR UPDATE ON ml_candidate_metadata FOR EACH ROW EXECUTE FUNCTION trigger_25d35f02ab55();
 
 CREATE TRIGGER trigger_25fe4f7da510 BEFORE INSERT OR UPDATE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION trigger_25fe4f7da510();
+
+CREATE TRIGGER trigger_29128c51c7c6 BEFORE INSERT OR UPDATE ON dast_pre_scan_verification_steps FOR EACH ROW EXECUTE FUNCTION trigger_29128c51c7c6();
 
 CREATE TRIGGER trigger_2a994bb5629f BEFORE INSERT OR UPDATE ON incident_management_pending_alert_escalations FOR EACH ROW EXECUTE FUNCTION trigger_2a994bb5629f();
 

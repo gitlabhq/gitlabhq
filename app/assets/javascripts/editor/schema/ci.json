@@ -2430,7 +2430,7 @@
           "additionalProperties": false
         },
         "publish": {
-          "description": "A path to a directory that contains the files to be published with Pages",
+          "description": "Deprecated. Use `pages.publish` instead. A path to a directory that contains the files to be published with Pages.",
           "type": "string"
         },
         "pages": {
@@ -2446,6 +2446,10 @@
                 "expire_in": {
                   "type": "string",
                   "markdownDescription": "How long the deployment should be active. Deployments that have expired are no longer available on the web. Supports a wide variety of formats, e.g. '1 week', '3 mins 4 sec', '2 hrs 20 min', '2h20min', '6 mos 1 day', '47 yrs 6 mos and 4d', '3 weeks and 2 days'. Set to 'never' to prevent extra deployments from expiring. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#pagesexpire_in)."
+                },
+                "publish": {
+                  "type": "string",
+                  "markdownDescription": "A path to a directory that contains the files to be published with Pages."
                 }
               }
             },

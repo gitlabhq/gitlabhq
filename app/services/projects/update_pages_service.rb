@@ -108,7 +108,7 @@ module Projects
         file_count: deployment_validations.entries_count,
         file_sha256: build.job_artifacts_archive.file_sha256,
         ci_build_id: build.id,
-        root_directory: build.options[:publish]
+        root_directory: build.pages[:publish]
       }
     end
 

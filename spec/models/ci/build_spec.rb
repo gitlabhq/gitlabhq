@@ -4386,8 +4386,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       true  | {}                    | {}
       true  | { publish: nil }      | {}
       true  | { publish: 'public' } | { publish: 'public' }
+      true  | { pages: { publish: 'public' } } | { publish: 'public' }
       true  | { publish: '$CUSTOM_FOLDER' } | { publish: 'custom_folder' }
+      true  | { pages: { publish: '$CUSTOM_FOLDER' } } | { publish: 'custom_folder' }
       true  | { publish: '$CUSTOM_FOLDER/$CUSTOM_SUBFOLDER' } | { publish: 'custom_folder/custom_subfolder' }
+      true  | { pages: { publish: '$CUSTOM_FOLDER/$CUSTOM_SUBFOLDER' } } | { publish: 'custom_folder/custom_subfolder' }
     end
 
     with_them do

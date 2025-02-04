@@ -21860,6 +21860,9 @@ msgstr ""
 msgid "Edits"
 msgstr ""
 
+msgid "Either the `publish` or `pages.publish` option may be present in `.gitlab-ci.yml`, but not both."
+msgstr ""
+
 msgid "Either the title or description must reference a Jira issue."
 msgstr ""
 
@@ -24082,6 +24085,9 @@ msgid "Failed to destroy compliance requirement"
 msgstr ""
 
 msgid "Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later."
+msgstr ""
+
+msgid "Failed to export framework"
 msgstr ""
 
 msgid "Failed to fetch Namespace: %{fullPath}"
@@ -34998,6 +35004,9 @@ msgstr ""
 msgid "MemberRole|Save role"
 msgstr ""
 
+msgid "MemberRole|Security policy dependency"
+msgstr ""
+
 msgid "MemberRole|Select a %{linkStart} default role%{linkEnd} to predefine a set of permissions."
 msgstr ""
 
@@ -35049,9 +35058,6 @@ msgstr ""
 msgid "MemberRole|This role is available by default and cannot be changed."
 msgstr ""
 
-msgid "MemberRole|To delete custom role, remove role from all group members."
-msgstr ""
-
 msgid "MemberRole|To delete custom role, remove role from all users."
 msgstr ""
 
@@ -35065,6 +35071,12 @@ msgid "MemberRole|Use LDAP sync role"
 msgstr ""
 
 msgid "MemberRole|View permissions"
+msgstr ""
+
+msgid "MemberRole|You can't delete this custom role until you remove it from all group members."
+msgstr ""
+
+msgid "MemberRole|You can't delete this custom role until you remove it from all security policies:"
 msgstr ""
 
 msgid "MemberRole|You must fill out all required fields."

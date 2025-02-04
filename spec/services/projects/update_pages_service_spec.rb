@@ -201,6 +201,38 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           end
         end
 
+        context 'when the directory specified with `pages.publish` is included in the artifacts' do
+          let(:options) { { pages: { publish: 'foo' } } }
+
+          it 'sets the correct root directory for pages deployment' do
+            expect(service.execute[:status]).to eq(:success)
+
+            deployment = project.pages_deployments.last
+            expect(deployment.root_directory).to eq('foo')
+          end
+        end
+
+        context 'when `publish` and `pages.publish` is not specified and there is a folder named `public`' do
+          let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }
+          let(:metadata_filename) { "spec/fixtures/pages.zip.meta" }
+
+          it 'creates pages_deployment and saves it in the metadata' do
+            expect(service.execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when `publish` and `pages.publish` both are specified' do
+          let(:options) { { pages: { publish: 'foo' }, publish: 'bar' } }
+
+          it 'returns an error' do
+            expect(service.execute[:status]).not_to eq(:success)
+
+            expect(GenericCommitStatus.last.description)
+              .to eq(
+                "Either the `publish` or `pages.publish` option may be present in `.gitlab-ci.yml`, but not both.")
+          end
+        end
+
         context 'when the directory specified with `publish` is not included in the artifacts' do
           let(:options) { { publish: 'bar' } }
 

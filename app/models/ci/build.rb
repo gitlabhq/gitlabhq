@@ -471,6 +471,7 @@ module Ci
 
     def pages_generator?
       return false unless Gitlab.config.pages.enabled
+      return false unless options.present?
       return true if options[:pages].is_a?(Hash) || options[:pages] == true
 
       options[:pages] != false && name == 'pages' # Legacy behaviour
@@ -479,11 +480,7 @@ module Ci
     def pages
       return {} unless pages_generator? && publish_path_available?
 
-      {}.tap do |result|
-        result[:publish] = ExpandVariables.expand(options[:publish].to_s, -> {
-          base_variables.sort_and_expand_all
-        })
-      end
+      { publish: expanded_publish_path }
     end
     strong_memoize_attr :pages
 
@@ -995,8 +992,19 @@ module Ci
       options&.dig(:artifacts, :exclude)&.any?
     end
 
+    def publish_path
+      return unless options.present?
+      return options[:publish] unless options[:pages].is_a?(Hash)
+
+      options.dig(:pages, :publish) || options[:publish]
+    end
+
     def publish_path_available?
-      options&.dig(:publish).present?
+      publish_path.present?
+    end
+
+    def expanded_publish_path
+      ExpandVariables.expand(publish_path.to_s, -> { base_variables.sort_and_expand_all })
     end
 
     def multi_build_steps?

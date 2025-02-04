@@ -82,14 +82,17 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-You can enable automatic removal of group members who either:
+You can automatically remove group members who have no activity in the group for a specified period of time (default and minimum is 90 days).
+The following actions count as activity:
 
-- Were added to the group more than a week ago and have no activity in the group.
-- Have no activity in the group for a specified period of time. The default and minimum is 90 days. Activities involve:
-  - Git HTTP/SSH activities, such as `clone` and `push`.
-  - Visiting pages related to dashboards, projects, issues, merge requests, settings, and so on.
-  - Using the API in the scope of the group.
-  - Using the GraphQL API in the scope of the group.
+- Interacting with projects through Git HTTP/SSH events, such as `clone` and `push`.
+- Visiting pages in GitLab, such as dashboards, projects, issues, merge requests, or settings.
+- Using the REST or GraphQL API in the scope of the group.
+
+NOTE:
+Activity has not been recorded for members added before 2025-01-22. These members will not be removed until 2025-04-22, even if they have been dormant for over 90 days.
+
+To turn on automatic dormant member removal:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Settings > General**.

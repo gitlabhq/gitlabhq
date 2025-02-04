@@ -43,11 +43,14 @@ export default {
     failureReason() {
       return this.pipeline.failureReason;
     },
+    hasPipelineErrorMessages() {
+      return this.pipeline?.errorMessages?.nodes?.length;
+    },
     isAutoDevopsPipeline() {
       return this.pipeline.configSource === AUTO_DEVOPS_SOURCE;
     },
-    yamlErrorMessages() {
-      return this.pipeline?.yamlErrorMessages || '';
+    yamlErrorMessage() {
+      return this.pipeline?.errorMessages.nodes[0].content || '';
     },
     triggeredByPath() {
       return this.pipeline?.triggeredByPath;
@@ -56,7 +59,7 @@ export default {
       return {
         schedule: this.isScheduledPipeline,
         trigger: this.pipeline.trigger,
-        invalid: this.pipeline.yamlErrors,
+        invalid: this.hasPipelineErrorMessages,
         child: this.pipeline.child,
         latest: this.pipeline.latest,
         mergeTrainPipeline: this.isMergeTrainPipeline,
@@ -123,7 +126,7 @@ export default {
     >
       {{ s__('Pipelines|merge train') }}
     </gl-badge>
-    <gl-badge v-if="badges.invalid" v-gl-tooltip :title="yamlErrorMessages" variant="danger">
+    <gl-badge v-if="badges.invalid" v-gl-tooltip :title="yamlErrorMessage" variant="danger">
       {{ s__('Pipelines|yaml invalid') }}
     </gl-badge>
     <gl-badge v-if="badges.failed" v-gl-tooltip :title="failureReason" variant="danger">

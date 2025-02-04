@@ -53,7 +53,7 @@
       .syntax-theme.row
         - Gitlab::ColorSchemes.each do |scheme|
           %label.col-6.col-sm-4.col-md-3.col-lg-auto.gl-mb-5
-            .preview= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class}-scheme-preview.png"
+            .preview= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview"
             = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
               scheme.name,
               radio_options: { checked: user_color_schema_id == scheme.id }

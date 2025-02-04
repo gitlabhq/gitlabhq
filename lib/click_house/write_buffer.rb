@@ -2,7 +2,7 @@
 
 module ClickHouse
   module WriteBuffer
-    include Gitlab::Redis::BackwardsCompatibility
+    extend Gitlab::Redis::BackwardsCompatibility
 
     BUFFER_KEY_PREFIX = 'clickhouse_write_buffer_'
 

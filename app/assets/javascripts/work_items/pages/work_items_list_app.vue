@@ -41,6 +41,7 @@ import { scrollUp } from '~/lib/utils/scroll_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __, s__ } from '~/locale';
 import {
+  OPERATOR_IS,
   OPERATORS_IS,
   OPERATORS_IS_NOT_OR,
   TOKEN_TITLE_ASSIGNEE,
@@ -52,6 +53,7 @@ import {
   TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_SEARCH_WITHIN,
   TOKEN_TITLE_TYPE,
+  TOKEN_TITLE_STATE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -61,6 +63,7 @@ import {
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_STATE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
@@ -126,6 +129,11 @@ export default {
       required: false,
       default: false,
     },
+    withTabs: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -142,6 +150,7 @@ export default {
       workItemStateCounts: {},
       activeItem: null,
       isRefetching: false,
+      hasStateToken: false,
     };
   },
   apollo: {
@@ -167,6 +176,10 @@ export default {
             document.title = `Issues · ${data.project.name} · GitLab`;
           }
         }
+        if (!this.withTabs) {
+          this.hasAnyIssues = Boolean(data?.[this.namespace].workItems.nodes);
+          this.isInitialLoadComplete = true;
+        }
         this.checkDrawerParams();
       },
       error(error) {
@@ -185,7 +198,7 @@ export default {
         return data?.[this.namespace].workItemStateCounts ?? {};
       },
       skip() {
-        return isEmpty(this.pageParams);
+        return isEmpty(this.pageParams) || !this.withTabs;
       },
       result({ data }) {
         const { all } = data?.[this.namespace].workItemStateCounts ?? {};
@@ -371,6 +384,22 @@ export default {
         });
       }
 
+      if (!this.withTabs) {
+        tokens.push({
+          type: TOKEN_TYPE_STATE,
+          title: TOKEN_TITLE_STATE,
+          icon: 'issue-open-m',
+          unique: true,
+          token: GlFilteredSearchToken,
+          operators: OPERATORS_IS,
+          options: [
+            { value: STATUS_ALL, title: __('Any') },
+            { value: STATUS_OPEN, title: __('Open') },
+            { value: STATUS_CLOSED, title: __('Closed') },
+          ],
+        });
+      }
+
       tokens.sort((a, b) => a.title.localeCompare(b.title));
 
       return tokens;
@@ -417,6 +446,12 @@ export default {
           : this.activeItem?.workItemType;
       return this.workItemType || activeWorkItemTypeName;
     },
+    tabs() {
+      if (this.withTabs) {
+        return this.$options.issuableListTabs;
+      }
+      return [];
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -439,6 +474,7 @@ export default {
   },
   created() {
     this.updateData(this.initialSort);
+    this.addStateToken();
     this.autocompleteCache = new AutocompleteCache();
   },
   methods: {
@@ -488,6 +524,8 @@ export default {
     },
     handleFilter(tokens) {
       this.filterTokens = tokens;
+      this.hasStateToken = this.checkIfStateTokenExists();
+      this.updateState(tokens);
       this.pageParams = getInitialPageParams(this.pageSize);
 
       this.$router.push({ query: this.urlParams });
@@ -568,7 +606,12 @@ export default {
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
-      this.filterTokens = getFilterTokens(window.location.search);
+      this.filterTokens = getFilterTokens(window.location.search, !this.withTabs);
+      if (!this.hasStateToken && this.state === STATUS_ALL) {
+        this.filterTokens = this.filterTokens.filter(
+          (filterToken) => filterToken.type !== TOKEN_TYPE_STATE,
+        );
+      }
 
       this.pageParams = getInitialPageParams(
         this.pageSize,
@@ -606,6 +649,27 @@ export default {
         }
       }
     },
+    updateState(tokens) {
+      if (!this.withTabs) {
+        this.state =
+          tokens.find((token) => token.type === TOKEN_TYPE_STATE)?.value.data || STATUS_ALL;
+      }
+    },
+    addStateToken() {
+      this.hasStateToken = this.checkIfStateTokenExists();
+      if (!this.withTabs && !this.hasStateToken) {
+        this.filterTokens.push({
+          type: TOKEN_TYPE_STATE,
+          value: {
+            data: STATUS_OPEN,
+            operator: OPERATOR_IS,
+          },
+        });
+      }
+    },
+    checkIfStateTokenExists() {
+      return this.filterTokens.some((filterToken) => filterToken.type === TOKEN_TYPE_STATE);
+    },
   },
 };
 </script>
@@ -627,6 +691,7 @@ export default {
     />
     <issuable-list
       :active-issuable="activeItem"
+      :add-padding="!withTabs"
       :current-tab="state"
       :default-page-size="pageSize"
       :error="error"
@@ -648,7 +713,7 @@ export default {
       :sort-options="$options.sortOptions"
       sync-filter-and-sort
       :tab-counts="tabCounts"
-      :tabs="$options.issuableListTabs"
+      :tabs="tabs"
       use-keyset-pagination
       :prevent-redirect="workItemDrawerEnabled"
       @click-tab="handleClickTab"
