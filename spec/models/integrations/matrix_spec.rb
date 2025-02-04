@@ -7,7 +7,7 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
     let(:payload) do
       {
         body: be_present,
-        msgtype: 'm.text',
+        msgtype: 'm.notice',
         format: 'org.matrix.custom.html',
         formatted_body: be_present
       }
@@ -41,7 +41,7 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
 
     it 'sets webhook value' do
       expect(integration).to be_valid
-      expect(integration.webhook).to start_with('https://matrix.org/_matrix/client/v3/rooms/!qPKKM111FFKKsfoCVy:matrix')
+      expect(integration.webhook).to start_with("https://matrix-client.matrix.org/_matrix/client/v3/rooms/#{subject.room}")
     end
 
     context 'with custom hostname' do
@@ -58,12 +58,18 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
 
   describe '#notify' do
     let(:message) { instance_double(Integrations::ChatMessage::PushMessage, summary: '_Test message') }
-    let(:header) { { 'Content-Type' => 'application/json' } }
+    let(:header) do
+      {
+        'Content-Type' => 'application/json',
+        'Authorization' => "Bearer #{subject.token}"
+      }
+    end
+
     let(:response) { instance_double(HTTParty::Response, success?: true) }
     let(:body) do
       {
         body: '_Test message',
-        msgtype: 'm.text',
+        msgtype: 'm.notice',
         format: 'org.matrix.custom.html',
         formatted_body: Banzai.render_and_post_process('_Test message', context)
       }.compact_blank

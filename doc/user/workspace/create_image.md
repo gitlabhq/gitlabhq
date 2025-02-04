@@ -109,3 +109,7 @@ components:
 ```
 
 You're all set! You can now use this custom image with any [workspace](index.md) you create in GitLab.
+
+## Related topics
+
+- [Troubleshooting Workspaces](workspaces_troubleshooting.md)

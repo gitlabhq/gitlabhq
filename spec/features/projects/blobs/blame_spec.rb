@@ -32,6 +32,18 @@ RSpec.describe 'File blame', :js, feature_category: :source_code_management do
     end
   end
 
+  it 'displays a find file button that opens the global search modal' do
+    visit_blob_blame(path)
+
+    within_testid 'blob-content-holder' do
+      expect(page).to have_button _('Find file')
+
+      click_button 'Find file'
+    end
+
+    expect(page).to have_css('.global-search-modal')
+  end
+
   it 'displays the blame page without pagination' do
     visit_blob_blame(path)
 

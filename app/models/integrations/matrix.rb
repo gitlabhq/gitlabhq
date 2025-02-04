@@ -4,12 +4,12 @@ module Integrations
   class Matrix < Integration
     include Base::ChatNotification
 
-    MATRIX_HOSTNAME = "%{hostname}/_matrix/client/v3/rooms/%{roomId}/send/m.room.message/?access_token=%{token}" # gitleaks:allow
+    MATRIX_HOSTNAME = "%{hostname}/_matrix/client/v3/rooms/%{roomId}/send/m.room.message/"
 
     field :hostname,
       section: SECTION_TYPE_CONNECTION,
-      help: 'Custom hostname of the Matrix server. The default value is `https://matrix.org`.',
-      placeholder: 'https://matrix.org',
+      help: 'Custom hostname of the Matrix server. The default value is `https://matrix-client.matrix.org`.',
+      placeholder: 'https://matrix-client.matrix.org',
       exposes_secrets: true,
       required: false
 
@@ -82,11 +82,11 @@ module Integrations
     private
 
     def set_webhook
-      hostname = self.hostname.presence || 'https://matrix.org'
+      hostname = self.hostname.presence || 'https://matrix-client.matrix.org'
 
       return unless token.present? && room.present?
 
-      self.webhook = format(MATRIX_HOSTNAME, hostname: hostname, roomId: room, token: token)
+      self.webhook = format(MATRIX_HOSTNAME, hostname: hostname, roomId: room)
     end
 
     def notify(message, _opts)
@@ -94,12 +94,15 @@ module Integrations
 
       body = {
         body: message.summary,
-        msgtype: 'm.text',
+        msgtype: 'm.notice',
         format: 'org.matrix.custom.html',
         formatted_body: Banzai.render_and_post_process(message.summary, context)
       }.compact_blank
 
-      header = { 'Content-Type' => 'application/json' }
+      header = {
+        'Content-Type' => 'application/json',
+        'Authorization' => "Bearer #{token}"
+      }
       url = URI.parse(webhook)
       url.path << (Time.current.to_f * 1000).round.to_s
       response = Gitlab::HTTP.put(url, headers: header, body: Gitlab::Json.dump(body))

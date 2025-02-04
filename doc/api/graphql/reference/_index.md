@@ -20718,7 +20718,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 Work items linked to the epic.
 
-Returns [`WorkItemConnection`](#workitemconnection).
+Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
@@ -24597,7 +24597,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 Work items linked to the epic.
 
-Returns [`WorkItemConnection`](#workitemconnection).
+Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
@@ -24854,7 +24854,7 @@ DETAILS:
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 
-Returns [`WorkItemConnection`](#workitemconnection).
+Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
@@ -28056,7 +28056,7 @@ DETAILS:
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 
-Returns [`WorkItemConnection`](#workitemconnection).
+Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):

@@ -174,7 +174,7 @@ module Types
 
     field :external_author, GraphQL::Types::String, null: true, description: 'Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated.'
 
-    field :linked_work_items, ::Types::WorkItemType.connection_type,
+    field :linked_work_items, ::Types::WorkItems::LinkedItemType.connection_type,
       null: true, complexity: 5, resolver: Resolvers::WorkItems::LinkedItemsResolver,
       description: 'Work items linked to the issue.', extras: [:lookahead],
       experiment: { milestone: '17.8' }

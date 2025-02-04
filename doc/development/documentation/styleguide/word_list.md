@@ -1130,12 +1130,13 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Merge Request Summary
 - GitLab Duo Product Analytics
 - GitLab Duo Root Cause Analysis
-- GitLab Duo Self-Hosted Models
+- GitLab Duo Self-Hosted
 - GitLab Duo Test Generation
 - GitLab Duo Vulnerability Explanation
 - GitLab Duo Vulnerability Resolution
 
-After the first use, use the feature name without **GitLab Duo**.
+Excluding GitLab Duo Self-Hosted, after the first use, use the feature name
+without **GitLab Duo**.
 
 ## GitLab Duo Enterprise
 
@@ -1150,6 +1151,14 @@ Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless appr
 
 You can use **the GitLab Duo Pro add-on** (with this capitalization) but you do not need to use **add-on**
 and should leave it off when you can.
+
+## GitLab Duo Self-Hosted
+
+When referring to the feature, always write **GitLab Duo Self-Hosted** in full
+and in title case, unless you are
+[referring to a language model that's hosted by a customer, rather than GitLab](#self-hosted-model).
+
+Do not use **Self-Hosted** by itself.
 
 ## GitLab Duo Workflow
 
@@ -2238,15 +2247,14 @@ Use **self-hosted model** (lowercase) to refer to a language model that's hosted
 
 The language model might be an LLM (large language model), but it might not be.
 
-## Self-Hosted Models
+## Self-Hosted
 
-Use title case for the **GitLab Duo Self-Hosted Models** feature.
+To avoid confusion with [**GitLab Self-Managed**](#gitlab-self-managed),
+when referring to the [**GitLab Duo Self-Hosted** feature](#gitlab-duo-self-hosted),
+do not use **Self-Hosted** by itself.
 
-On first mention on a page, use **GitLab Duo Self-Hosted Models**.
-Thereafter, use **Self-Hosted Models** by itself.
-
-This phrase applies when specifically referring to the feature name only.
-If you're writing about [self-hosted models](#self-hosted-model), no need to use title case.
+Always write **GitLab Duo Self-Hosted** in full and in title case, unless you are
+[referring to a language model that's hosted by a customer, rather than GitLab](#self-hosted-model).
 
 ## self-managed
 

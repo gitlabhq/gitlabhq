@@ -2,6 +2,7 @@ import Vue from 'vue';
 import initBlob from '~/pages/projects/init_blob';
 import redirectToCorrectPage from '~/blame/blame_redirect';
 import BlamePreferences from '~/blame/preferences/blame_preferences.vue';
+import { initFindFileShortcut } from '~/projects/behaviors';
 
 const initBlamePreferences = () => {
   const el = document.getElementById('js-blame-preferences');
@@ -16,3 +17,4 @@ const initBlamePreferences = () => {
 redirectToCorrectPage();
 initBlamePreferences();
 initBlob();
+initFindFileShortcut();

@@ -18,10 +18,11 @@ module Authn
         ::API::Entities::Ci::Runner
       end
 
-      def revoke!(_current_user)
+      def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type'
+        service = ::Ci::Runners::ResetAuthenticationTokenService.new(runner: revocable, current_user: current_user)
+        service.execute
       end
     end
   end

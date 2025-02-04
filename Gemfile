@@ -529,7 +529,7 @@ group :development, :test do
   gem 'haml_lint', '~> 0.58', feature_category: :tooling
 
   # Benchmarking & profiling
-  gem 'benchmark-ips', '~> 2.11.0', require: false, feature_category: :shared
+  gem 'benchmark-ips', '~> 2.14.0', require: false, feature_category: :shared
   gem 'benchmark-memory', '~> 0.1', require: false, feature_category: :shared
 
   # Profiling data from CI/CD pipelines

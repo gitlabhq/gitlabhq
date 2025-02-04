@@ -108,20 +108,24 @@ Example response:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `api_admin_token_revoke`. Disabled by default.
 > - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178211) in GitLab 17.9.
+> - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179066) in GitLab 17.9.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-Revokes a given token. This endpoint supports the following token types:
+Revokes or resets a given token based on the token type. This endpoint supports the following token types:
 
-- [Personal access tokens](../../user/profile/personal_access_tokens.md)
-- [Project access tokens](../../security/tokens/_index.md#project-access-tokens)
-- [Group access tokens](../../security/tokens/_index.md#group-access-tokens)
-- [Deploy tokens](../../user/project/deploy_tokens/index.md)
-- [Feed tokens](../../security/tokens/_index.md#feed-token)
-- [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)
+| Token type                                                                                  | Supported action   |
+|---------------------------------------------------------------------------------------------|--------------------|
+| [Personal access tokens](../../user/profile/personal_access_tokens.md)                      | Revoke             |
+| [Project access tokens](../../security/tokens/_index.md#project-access-tokens)               | Revoke             |
+| [Group access tokens](../../security/tokens/_index.md#group-access-tokens)                   | Revoke             |
+| [Deploy tokens](../../user/project/deploy_tokens/index.md)                                  | Revoke             |
+| [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)          | Revoke             |
+| [Feed tokens](../../security/tokens/_index.md#feed-token)                                    | Reset              |
+| [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens) | Reset              |
 
 ```plaintext
 DELETE /api/v4/admin/token

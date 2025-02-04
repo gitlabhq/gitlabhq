@@ -410,7 +410,7 @@ class Commit
   end
 
   def cherry_pick_description(user)
-    message_body = ["(cherry picked from commit #{sha})"]
+    message_body = ["(cherry-picked from commit #{sha})"]
 
     if merged_merge_request?(user)
       commits_in_merge_request = merged_merge_request(user).commits

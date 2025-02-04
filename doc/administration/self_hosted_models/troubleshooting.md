@@ -63,10 +63,43 @@ model configuration.
 
      ```shell
      docker exec -it <ai-gateway-container> sh
-     poetry run troubleshoot --model-name "mistral" --model-endpoint "http://localhost:4000"
+     poetry run troubleshoot [options]
      ```
 
-     After troubleshooting is complete, stop and restart the AI gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`. Authentication **must not be bypassed in production**.
+      The `troubleshoot` command supports the following options:
+
+      | Option | Description | Default | Example |
+      |--------|-------------|---------|---------|
+      | `--endpoint` | AI Gateway endpoint | `localhost:5052` | `--endpoint=localhost:5052` |
+      | `--model-family` | Model family to test. Possible values are `mistral`, `mixtral`, `gpt`, or `claude_3` | - | `--model-family=mistral` |
+      | `--model-endpoint` | Model endpoint. For models hosted on vLLM, add the `/v1` suffix. | - | `--model-endpoint=http://localhost:4000/v1` |
+      | `--model-identifier` | Model identifier. | - | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` |
+      | `--api-key` | Model API key. | - | `--api-key=your-api-key` |
+
+     **Examples:**
+
+     For a `claude_3` model running on AWS Bedrock:
+
+     ```shell
+     poetry run troubleshoot \
+       --model-family=claude_3 \
+       --model-identifier=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
+     ```
+
+     For a `mixtral` model running on vLLM:
+   
+     ```shell
+     poetry run troubleshoot \
+       --model-family=mixtral \
+       --model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1 \
+       --api-key=your-api-key \
+       --model-endpoint=http://<your-model-endpoint>/v1
+     ```
+
+After troubleshooting is complete, stop and restart the AI gateway container **without** `AIGW_AUTH__BYPASS_EXTERNAL=true`.
+
+WARNING:
+You must not bypass authentication in production.
 
 Verify the output of the commands, and fix accordingly.
 
@@ -218,7 +251,7 @@ To resolve this, contact your network administrator.
 ## The image's platform does not match the host
 
 When [finding the AI gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-release),
-you might get an error that states `The requested image’s platform (linux/amd64) does not match the detected host`.
+you might get an error that states `The requested image's platform (linux/amd64) does not match the detected host`.
 
 To work around this error, add `--platform linux/amd64` to the `docker run` command:
 

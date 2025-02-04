@@ -271,3 +271,7 @@ see [Create a custom workspace image that supports arbitrary user IDs](../worksp
 
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+
+## Related topics
+
+- [Troubleshooting Workspaces](workspaces_troubleshooting.md)

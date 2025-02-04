@@ -230,38 +230,9 @@ USER gitlab-workspaces
 
 ## Related topics
 
+- [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md)
+- [Workspace settings](settings.md)
+- [Workspace configuration](configuration.md)
+- [Troubleshooting Workspaces](workspaces_troubleshooting.md)
 - [Quickstart guide for GitLab remote development workspaces](https://go.gitlab.com/AVKFvy)
 - [Set up your infrastructure for on-demand, cloud-based development environments in GitLab](https://go.gitlab.com/dp75xo)
-
-## Troubleshooting
-
-When working with workspaces, you might encounter the following issues.
-
-### Error: `Failed to renew lease`
-
-Creating a workspace can fail due to a known issue in the GitLab agent for Kubernetes.
-The following error message might appear in the agent's log:
-
-```plaintext
-{"level":"info","time":"2023-01-01T00:00:00.000Z","msg":"failed to renew lease gitlab-agent-remote-dev-dev/agent-123XX-lock: timed out waiting for the condition\n","agent_id":XXXX}
-```
-
-This issue occurs when an agent instance cannot renew its leadership lease, which results
-in the shutdown of leader-only modules including the `remote_development` module.
-To resolve this issue, restart the agent instance.
-
-### Error: `No agents available to create workspaces`
-
-When you create a workspace in a project, you might get the following error:
-
-```plaintext
-No agents available to create workspaces. Please consult Workspaces documentation for troubleshooting.
-```
-
-To resolve this issue:
-
-- If you do not have at least the Developer role for the workspace and agent projects, contact your administrator.
-- If the ancestor groups of the project do not have an allowed agent,
-  [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group) for any of these groups.
-- If the `remote_development` module is disabled for the GitLab agent,
-  set [`enabled`](settings.md#enabled) to `true`.

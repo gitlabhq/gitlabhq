@@ -47,6 +47,7 @@ describe('NotificationsDropdown', () => {
   const findDropdownItemAt = (index) =>
     findAllNotificationsDropdownItems().at(index).findComponent(GlDropdownItem);
   const findNotificationsModal = () => wrapper.findComponent(CustomNotificationsModal);
+  const tooltipTitlePrefix = 'Notification setting';
 
   const clickDropdownItemAt = async (index) => {
     const dropdownItem = findDropdownItemAt(index);
@@ -85,13 +86,13 @@ describe('NotificationsDropdown', () => {
         expect(findDropdown().props().text).toBe('Custom');
       });
 
-      it("doesn't show the button text when showLabel is false", () => {
+      it('shows the tooltip text when showLabel is false', () => {
         wrapper = createComponent({
           initialNotificationLevel: 'custom',
           showLabel: false,
         });
 
-        expect(findDropdown().props().text).toBe(null);
+        expect(findDropdown().props().text).toBe(`${tooltipTitlePrefix} - Custom`);
       });
 
       it('opens the modal when the user clicks the button', async () => {
@@ -127,17 +128,16 @@ describe('NotificationsDropdown', () => {
         expect(findDropdown().props('text')).toBe('Global');
       });
 
-      it("doesn't show the button text when showLabel is false", () => {
+      it('shows the tooltip text when showLabel is false', () => {
         wrapper = createComponent({
           showLabel: false,
         });
 
-        expect(findDropdown().props('text')).toBe(null);
+        expect(findDropdown().props('text')).toBe(`${tooltipTitlePrefix} - Global`);
       });
     });
 
     describe('button tooltip', () => {
-      const tooltipTitlePrefix = 'Notification setting';
       it.each`
         level              | title
         ${'global'}        | ${'Global'}

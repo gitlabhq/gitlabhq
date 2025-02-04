@@ -177,6 +177,15 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
         end
       end
 
+      context 'when the token is a runner authentication token' do
+        let(:plaintext) { runner_authentication_token.token }
+
+        it 'resets the runner token' do
+          expect { delete_token }.to change { runner_authentication_token.reload.token }
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
       context 'when the revocation feature is disabled' do
         before do
           stub_feature_flags(api_admin_token_revoke: false)

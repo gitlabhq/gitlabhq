@@ -72,14 +72,13 @@ export default {
       return this.selectedNotificationLevel === 'disabled' ? 'notifications-off' : 'notifications';
     },
     buttonText() {
-      return this.showLabel
-        ? this.$options.i18n.notificationTitles[this.selectedNotificationLevel]
-        : null;
-    },
-    buttonTooltip() {
       const notificationTitle =
         this.$options.i18n.notificationTitles[this.selectedNotificationLevel] ||
         this.selectedNotificationLevel;
+
+      if (this.showLabel) {
+        return notificationTitle;
+      }
 
       return this.emailsDisabled
         ? this.$options.i18n.notificationDescriptions.owner_disabled
@@ -122,7 +121,7 @@ export default {
 <template>
   <div :class="containerClass">
     <gl-dropdown
-      v-gl-tooltip="{ title: buttonTooltip }"
+      v-gl-tooltip="{ title: buttonText }"
       data-testid="notification-dropdown"
       :size="buttonSize"
       :icon="buttonIcon"
@@ -130,6 +129,7 @@ export default {
       :disabled="emailsDisabled"
       :split="isCustomNotification"
       :text="buttonText"
+      :text-sr-only="!showLabel"
       :no-flip="noFlip"
       :aria-label="__('Notification setting - Custom')"
       @click="openNotificationsModal"

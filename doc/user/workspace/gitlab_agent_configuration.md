@@ -73,7 +73,7 @@ To allow a cluster agent for workspaces in a group:
 
 GitLab updates the status of the selected agent to **Allowed**, and displays the agent in the **Allowed agents** tab.
 
-## Remove an allowed cluster agent for workspaces within a group
+## Remove an allowed cluster agent for workspaces in a group
 
 Prerequisites:
 
@@ -123,3 +123,4 @@ For more information about configuring `user_access`, see
 - [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md)
 - [Workspace settings](settings.md)
 - [Workspace configuration](configuration.md)
+- [Troubleshooting Workspaces](workspaces_troubleshooting.md)
