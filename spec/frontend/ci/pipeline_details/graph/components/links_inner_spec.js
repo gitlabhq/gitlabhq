@@ -39,44 +39,47 @@ describe('Links Inner component', () => {
   const findLinkSvg = () => wrapper.find('#link-svg');
   const findAllLinksPath = () => findLinkSvg().findAll('path');
 
-  // We create fixture so that each job has an empty div that represent
-  // the JobPill in the DOM. Each `JobPill` would have different coordinates,
-  // so we increment their coordinates on each iteration to simulate different positions.
+  const createJobId = (jobName, pipelineId) => `${jobName.replace(/[\s/]/g, '_')}-${pipelineId}`;
+
   const setHTMLFixtureLocal = ({ stages }) => {
-    const jobs = createJobsHash(stages);
-    const arrayOfJobs = Object.keys(jobs);
+    const POSITION_OFFSET = 10; // Pixel offset between each job element
+    const jobs = Object.keys(createJobsHash(stages));
 
-    const linksHtmlElements = arrayOfJobs.map((job) => {
-      return `<div id=${job}-${defaultProps.pipelineId} />`;
-    });
+    // Create HTML elements and set fixture in one go
+    setHTMLFixture(
+      `<div id="${containerId}">${jobs
+        .map((job) => `<div id=${createJobId(job, defaultProps.pipelineId)} />`)
+        .join(' ')}
+      </div>`,
+    );
 
-    setHTMLFixture(`<div id="${containerId}">${linksHtmlElements.join(' ')}</div>`);
-
-    // We are mocking the clientRect data of each job and the container ID.
+    // Mock container position
     jest
       .spyOn(document.getElementById(containerId), 'getBoundingClientRect')
       .mockImplementation(() => rootRect);
 
-    arrayOfJobs.forEach((job, index) => {
-      jest
-        .spyOn(
-          document.getElementById(`${job}-${defaultProps.pipelineId}`),
-          'getBoundingClientRect',
-        )
-        .mockImplementation(() => {
-          const newValue = 10 * index;
-          const { left, right, top, bottom, x, y } = jobRect;
-          return {
-            ...jobRect,
-            left: left + newValue,
-            right: right + newValue,
-            top: top + newValue,
-            bottom: bottom + newValue,
-            x: x + newValue,
-            y: y + newValue,
-          };
-        });
+    // Mock job positions
+    jobs.forEach((job, index) => {
+      const element = document.getElementById(createJobId(job, defaultProps.pipelineId));
+      if (!element) {
+        throw new Error(`Job element ${job} not found after setting fixture`);
+      }
+
+      jest.spyOn(element, 'getBoundingClientRect').mockImplementation(() => ({
+        ...jobRect,
+        left: jobRect.left + index * POSITION_OFFSET,
+        right: jobRect.right + index * POSITION_OFFSET,
+        top: jobRect.top + index * POSITION_OFFSET,
+        bottom: jobRect.bottom + index * POSITION_OFFSET,
+        x: jobRect.x + index * POSITION_OFFSET,
+        y: jobRect.y + index * POSITION_OFFSET,
+      }));
     });
+  };
+
+  const setupComponentWithFixture = (data) => {
+    setHTMLFixtureLocal(data);
+    createComponent({ pipelineData: data.stages });
   };
 
   afterEach(() => {
@@ -123,8 +126,7 @@ describe('Links Inner component', () => {
 
   describe('with one need', () => {
     beforeEach(() => {
-      setHTMLFixtureLocal(pipelineData);
-      createComponent({ pipelineData: pipelineData.stages });
+      setupComponentWithFixture(pipelineData);
     });
 
     it('renders one link', () => {
@@ -142,8 +144,7 @@ describe('Links Inner component', () => {
 
   describe('with a parallel need', () => {
     beforeEach(() => {
-      setHTMLFixtureLocal(parallelNeedData);
-      createComponent({ pipelineData: parallelNeedData.stages });
+      setupComponentWithFixture(parallelNeedData);
     });
 
     it('renders only one link for all the same parallel jobs', () => {
@@ -161,8 +162,7 @@ describe('Links Inner component', () => {
 
   describe('with same stage needs', () => {
     beforeEach(() => {
-      setHTMLFixtureLocal(sameStageNeeds);
-      createComponent({ pipelineData: sameStageNeeds.stages });
+      setupComponentWithFixture(sameStageNeeds);
     });
 
     it('renders the correct number of links', () => {
@@ -180,8 +180,7 @@ describe('Links Inner component', () => {
 
   describe('with a large number of needs', () => {
     beforeEach(() => {
-      setHTMLFixtureLocal(largePipelineData);
-      createComponent({ pipelineData: largePipelineData.stages });
+      setupComponentWithFixture(largePipelineData);
     });
 
     it('renders the correct number of links', () => {
@@ -199,8 +198,7 @@ describe('Links Inner component', () => {
 
   describe('interactions', () => {
     beforeEach(() => {
-      setHTMLFixtureLocal(largePipelineData);
-      createComponent({ pipelineData: largePipelineData.stages });
+      setupComponentWithFixture(largePipelineData);
     });
 
     it('highlight needs on hover', async () => {
@@ -212,8 +210,6 @@ describe('Links Inner component', () => {
       expect(firstLink.classes(defaultColorClass)).toBe(true);
       expect(firstLink.classes(hoverColorClass)).toBe(false);
 
-      // Because there is a watcher, we need to set the props after the component
-      // has mounted.
       await wrapper.setProps({ highlightedJob: 'test_1' });
 
       expect(firstLink.classes(defaultColorClass)).toBe(false);

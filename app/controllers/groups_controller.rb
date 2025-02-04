@@ -62,7 +62,7 @@ class GroupsController < Groups::ApplicationController
 
   feature_category :groups_and_projects, [
     :index, :new, :create, :show, :edit, :update,
-    :destroy, :details, :transfer, :activity, :projects
+    :destroy, :details, :transfer, :activity
   ]
   feature_category :team_planning, [:issues, :issues_calendar, :preview_markdown]
   feature_category :code_review_workflow, [:merge_requests, :unfoldered_environment_names]
@@ -73,7 +73,7 @@ class GroupsController < Groups::ApplicationController
 
   urgency :low, [:issues, :issues_calendar, :preview_markdown]
   # TODO: Set #show to higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/334795
-  urgency :low, [:merge_requests, :show, :create, :new, :update, :projects, :destroy, :edit, :activity]
+  urgency :low, [:merge_requests, :show, :create, :new, :update, :destroy, :edit, :activity]
 
   def index
     redirect_to(current_user ? dashboard_groups_path : explore_groups_path)

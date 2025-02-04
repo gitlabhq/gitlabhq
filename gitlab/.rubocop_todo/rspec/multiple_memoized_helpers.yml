@@ -1,5 +1,0 @@
----
-RSpec/MultipleMemoizedHelpers:
-  Exclude:
-    - 'spec/support/shared_contexts/policies/project_policy_shared_context.rb'
-    - 'spec/support/shared_contexts/requests/api/debian_repository_shared_context.rb'

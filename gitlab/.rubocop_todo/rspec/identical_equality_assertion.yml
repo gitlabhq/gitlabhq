@@ -1,5 +1,0 @@
----
-RSpec/IdenticalEqualityAssertion:
-  Exclude:
-    - 'spec/support/shared_contexts/models/concerns/integrations/enable_ssl_verification_shared_context.rb'
-    - 'spec/support/shared_examples/graphql/connection_paged_nodes_shared_examples.rb'

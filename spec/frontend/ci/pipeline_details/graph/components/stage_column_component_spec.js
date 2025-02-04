@@ -90,9 +90,10 @@ describe('stage column component', () => {
         props: {
           groups: [
             {
-              title: 'Fish',
-              size: 1,
               jobs: [mockJob],
+              name: 'test',
+              size: 1,
+              title: 'Fish',
             },
           ],
         },

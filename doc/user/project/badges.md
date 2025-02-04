@@ -202,6 +202,9 @@ Then you can use the link to embed the badge in your HTML or Markdown pages.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
 
+NOTE:
+The pipeline status badge is based on specific Git revisions (branches). Ensure you select the appropriate branch to view the correct pipeline status.
+
 ## Customize badges
 
 You can customize the following aspects of a badge:

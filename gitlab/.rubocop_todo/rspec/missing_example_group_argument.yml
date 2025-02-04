@@ -1,6 +1,0 @@
----
-RSpec/MissingExampleGroupArgument:
-  Exclude:
-    - 'ee/spec/support/shared_examples/controllers/concerns/description_diff_actions_shared_examples.rb'
-    - 'spec/factories/projects/ci_feature_usages.rb'
-    - 'spec/support/shared_examples/graphql/sorted_paginated_query_shared_examples.rb'

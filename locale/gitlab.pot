@@ -4829,6 +4829,9 @@ msgstr ""
 msgid "AdminUsers|Private profile"
 msgstr ""
 
+msgid "AdminUsers|Projects limit"
+msgstr ""
+
 msgid "AdminUsers|Projects, issues, merge requests, and comments of this user are hidden from other users."
 msgstr ""
 

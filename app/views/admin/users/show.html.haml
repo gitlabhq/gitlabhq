@@ -58,7 +58,8 @@
               %span.gl-text-subtle= _('Secondary email:')
               .gl-col-span-2
                 %strong= render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-                = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'gl-float-right has-tooltip', title: _('Remove secondary email'), id: "remove_email_#{email.id}", category: :tertiary, size: :small, icon: 'remove'
+                - if can?(current_user, :admin_all_resources)
+                  = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'gl-float-right has-tooltip', title: _('Remove secondary email'), id: "remove_email_#{email.id}", category: :tertiary, size: :small, icon: 'remove'
           %li{ class: list_item_classes }
             %span.gl-text-subtle ID:
             .gl-col-span-2

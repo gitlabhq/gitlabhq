@@ -188,7 +188,7 @@ export default {
     /*
      End of the methods for the confirmation modal when enabled
     */
-    handleCreated(workItem) {
+    handleCreated({ workItem }) {
       this.$toast.show(this.workItemCreatedText, {
         autoHideDelay: 10000,
         action: {

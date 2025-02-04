@@ -24,6 +24,7 @@ fragment WorkItemHierarchy on WorkItem {
     ... on WorkItemWidgetHierarchy {
       type
       hasChildren
+      hasParent
       depthLimitReachedByType {
         workItemType {
           id

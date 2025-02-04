@@ -1915,6 +1915,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          hasParent: false,
           depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
@@ -2354,6 +2355,7 @@ export const workItemHierarchyResponse = {
             type: 'HIERARCHY',
             parent: null,
             hasChildren: true,
+            hasParent: false,
             rolledUpCountsByType: [],
             children: {
               nodes: childrenWorkItems,
@@ -2560,6 +2562,7 @@ export const workItemHierarchyTreeEmptyResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          hasParent: false,
           depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
@@ -2633,6 +2636,7 @@ export const mockHierarchyWidget = {
   type: 'HIERARCHY',
   parent: null,
   hasChildren: true,
+  hasParent: false,
   depthLimitReachedByType: mockDepthLimitReachedByType,
   rolledUpCountsByType: mockRolledUpCountsByType,
   children: {
@@ -2869,6 +2873,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
           type: 'HIERARCHY',
           parent: null,
           hasChildren: true,
+          hasParent: false,
           depthLimitReachedByType: mockDepthLimitReachedByType,
           rolledUpCountsByType: mockRolledUpCountsByType,
           children: {

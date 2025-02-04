@@ -1,4 +1,0 @@
----
-FactoryBot/ExcessiveCreateList:
-  Exclude:
-    - 'spec/support/shared_examples/services/notification_service_shared_examples.rb'

@@ -155,7 +155,7 @@ export const parallelNeedData = {
       groups: [
         {
           name: 'test_1',
-          jobs: [{ script: 'yarn test', stage: 'test', needs: ['build_1'] }],
+          jobs: [{ script: 'yarn test', stage: 'test', needs: ['build_1'], name: 'test_1 1/1' }],
         },
       ],
     },

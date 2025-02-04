@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/ExampleWording:
-  Exclude:
-    - 'spec/support/shared_examples/graphql/mutations/members/bulk_update_shared_examples.rb'
-    - 'spec/support/shared_examples/namespaces/hierarchy_examples.rb'
-    - 'spec/support/shared_examples/quick_actions/issuable/max_issuable_examples.rb'
-    - 'spec/support/shared_examples/services/migrate_to_ghost_user_service_shared_examples.rb'
-    - 'spec/support/shared_examples/uploaders/upload_type_shared_examples.rb'

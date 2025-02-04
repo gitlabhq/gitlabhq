@@ -46,10 +46,10 @@ Any dependencies are noted in the `Description` column for each permission.
 
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
-| Manage group members | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. | [`admin_group_member`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) | Group | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) |
 | Archive project | Allows archiving of projects. | [`archive_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) | Project | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) |
 | Delete group | Ability to delete or restore a group. This ability does not allow deleting top-level groups. Review the Retention period settings to prevent accidental deletion. | [`remove_group`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145166) | Group | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/425962) |
 | Delete project | Allows deletion of projects. | [`remove_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) | Project | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/425959) |
+| Manage group members | Add or remove users in a group, and assign roles to users. When assigning a role, users with this custom permission must select a role that has the same or fewer permissions as the default role used as the base for their custom role. | [`admin_group_member`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131914) | Group | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/17364) |
 
 ## Infrastructure as code
 

@@ -1,5 +1,0 @@
----
-RSpec/PendingWithoutReason:
-  Exclude:
-    - 'ee/spec/support/shared_examples/models/vulnerabilities/cvss_vector_validator_shared_examples.rb'
-    - 'spec/support/shared_examples/services/wiki_pages/destroy_service_shared_examples.rb'

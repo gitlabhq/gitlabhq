@@ -797,6 +797,17 @@ flags are added to the scanner's CLI options.
   </thead>
   <tbody>
     <tr>
+      <td rowspan="1">
+        GitLab Advanced SAST
+      </td>
+      <td>
+        <code>--multi-core</code>
+      </td>
+      <td>
+        Specify the number of CPU cores to utilize for scanning. This can significantly improve scan performance on multi-core systems. When setting this value, ensure that the number of cores specified does not exceed the total number of cores available to the container. Note that multi-core execution will require proportionally more memory than single-core execution. Exceeding the available cores or memory resources may lead to resource contention and suboptimal performance. Defaults to <code>1</code>.
+      </td>
+    </tr>
+    <tr>
       <td rowspan="3">
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep</a>
       </td>

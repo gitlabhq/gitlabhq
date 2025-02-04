@@ -19,11 +19,10 @@ RSpec.describe 'User browse group projects page', feature_category: :groups_and_
       context 'when group has archived project', :js do
         let!(:project) { create :project, :archived, namespace: group }
 
-        it 'renders projects list' do
+        it 'redirects to the groups overview page' do
           visit projects_group_path(group)
 
-          expect(page).to have_link project.name
-          expect(page).to have_css('span.gl-badge.badge-info', text: 'Archived')
+          expect(page).to have_current_path(group_path(group))
         end
       end
     end

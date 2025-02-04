@@ -290,11 +290,9 @@ export default {
       return this.displayableChildrenCount === 0;
     },
     showClosedItemsButton() {
-      return (
-        !this.showClosed &&
-        !this.hasNextPage &&
-        this.children?.length > this.displayableChildrenCount
-      );
+      if (this.hasNextPage) return false;
+
+      return !this.showClosed && this.children?.length > this.displayableChildrenCount;
     },
     closedChildrenCount() {
       return Math.max(0, this.children.length - this.displayableChildrenCount);

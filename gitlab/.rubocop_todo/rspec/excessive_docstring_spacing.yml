@@ -1,7 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/ExcessiveDocstringSpacing:
-  Exclude:
-    - 'ee/spec/support/shared_examples/features/password_complexity_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/models/concerns/protected_ref_access_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/projects/google_cloud/google_oauth2_config_examples.rb'

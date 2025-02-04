@@ -1,4 +1,0 @@
----
-Style/OpenStructUse:
-  Exclude:
-    - 'spec/support/helpers/repo_helpers.rb'

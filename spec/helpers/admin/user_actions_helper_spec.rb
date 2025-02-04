@@ -3,14 +3,13 @@
 require "spec_helper"
 
 RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
-  describe '#admin_actions' do
-    let_it_be(:current_user) { build(:user) }
+  describe '#admin_actions', :enable_admin_mode do
+    let_it_be(:current_user) { build(:user, :admin) }
 
     subject { helper.admin_actions(user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:can?).with(current_user, :destroy_user, user).and_return(true)
     end
 
     context 'the user is a bot' do
@@ -20,8 +19,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     end
 
     context 'the current user and user are the same' do
-      let_it_be(:user) { build(:user) }
-      let_it_be(:current_user) { user }
+      let_it_be(:user) { current_user }
 
       it { is_expected.to contain_exactly("edit") }
     end
@@ -137,6 +135,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
       let_it_be(:user) { build(:user) }
 
       before do
+        allow(helper).to receive(:can?).and_call_original
         allow(helper).to receive(:can?).with(current_user, :destroy_user, user).and_return(false)
       end
 

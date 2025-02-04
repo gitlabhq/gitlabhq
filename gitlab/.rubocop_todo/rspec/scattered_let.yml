@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/ScatteredLet:
-  Exclude:
-    - 'spec/support/shared_examples/graphql/sorted_paginated_query_shared_examples.rb'

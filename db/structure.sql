@@ -22604,6 +22604,44 @@ CREATE SEQUENCE vulnerabilities_id_seq
 
 ALTER SEQUENCE vulnerabilities_id_seq OWNED BY vulnerabilities.id;
 
+CREATE TABLE vulnerability_archived_records (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    archive_id bigint NOT NULL,
+    vulnerability_identifier bigint NOT NULL,
+    data jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+CREATE SEQUENCE vulnerability_archived_records_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_archived_records_id_seq OWNED BY vulnerability_archived_records.id;
+
+CREATE TABLE vulnerability_archives (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    archived_records_count integer DEFAULT 0 NOT NULL,
+    date date NOT NULL,
+    CONSTRAINT chk_rails_6b9e2d707f CHECK ((archived_records_count >= 0))
+);
+
+CREATE SEQUENCE vulnerability_archives_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_archives_id_seq OWNED BY vulnerability_archives.id;
+
 CREATE TABLE vulnerability_export_parts (
     id bigint NOT NULL,
     vulnerability_export_id bigint NOT NULL,
@@ -25576,6 +25614,10 @@ ALTER TABLE ONLY virtual_registries_packages_maven_upstreams ALTER COLUMN id SET
 ALTER TABLE ONLY vs_code_settings ALTER COLUMN id SET DEFAULT nextval('vs_code_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerabilities ALTER COLUMN id SET DEFAULT nextval('vulnerabilities_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_archived_records ALTER COLUMN id SET DEFAULT nextval('vulnerability_archived_records_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_archives ALTER COLUMN id SET DEFAULT nextval('vulnerability_archives_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_export_parts ALTER COLUMN id SET DEFAULT nextval('vulnerability_export_parts_id_seq'::regclass);
 
@@ -28581,6 +28623,12 @@ ALTER TABLE ONLY vs_code_settings
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT vulnerabilities_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_archived_records
+    ADD CONSTRAINT vulnerability_archived_records_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_archives
+    ADD CONSTRAINT vulnerability_archives_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_export_parts
     ADD CONSTRAINT vulnerability_export_parts_pkey PRIMARY KEY (id);
@@ -34739,6 +34787,14 @@ CREATE INDEX index_vulnerabilities_project_id_and_id_on_default_branch ON vulner
 
 CREATE INDEX index_vulnerabilities_project_id_state_severity_default_branch ON vulnerabilities USING btree (project_id, state, severity, present_on_default_branch);
 
+CREATE INDEX index_vulnerability_archived_records_on_archive_id ON vulnerability_archived_records USING btree (archive_id);
+
+CREATE INDEX index_vulnerability_archived_records_on_project_id ON vulnerability_archived_records USING btree (project_id);
+
+CREATE UNIQUE INDEX index_vulnerability_archived_records_on_vulnerability_id ON vulnerability_archived_records USING btree (vulnerability_identifier);
+
+CREATE UNIQUE INDEX index_vulnerability_archives_on_project_id_and_date ON vulnerability_archives USING btree (project_id, date);
+
 CREATE INDEX index_vulnerability_export_parts_on_organization_id ON vulnerability_export_parts USING btree (organization_id);
 
 CREATE INDEX index_vulnerability_export_parts_on_vulnerability_export_id ON vulnerability_export_parts USING btree (vulnerability_export_id);
@@ -40413,6 +40469,9 @@ ALTER TABLE ONLY incident_management_oncall_participants
 
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT fk_rails_601d5bec3a FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_archived_records
+    ADD CONSTRAINT fk_rails_601e008d4b FOREIGN KEY (archive_id) REFERENCES vulnerability_archives(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
     ADD CONSTRAINT fk_rails_604908851f FOREIGN KEY (system_access_microsoft_application_id) REFERENCES system_access_microsoft_applications(id) ON DELETE CASCADE;

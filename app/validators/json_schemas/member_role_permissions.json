@@ -73,6 +73,9 @@
     "read_admin_subscription": {
       "type": "boolean"
     },
+    "read_admin_users": {
+      "type": "boolean"
+    },
     "read_code": {
       "type": "boolean"
     },

@@ -13,7 +13,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: ->(req) { req.format == :ics } # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :issues, as: :issues_group # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :merge_requests, as: :merge_requests_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :projects, as: :projects_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :projects, as: :projects_group, to: redirect('%{id}') # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :details, as: :details_group # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :activity, as: :activity_group # rubocop:disable Cop/PutGroupRoutesUnderScope
       put :transfer, as: :transfer_group # rubocop:disable Cop/PutGroupRoutesUnderScope

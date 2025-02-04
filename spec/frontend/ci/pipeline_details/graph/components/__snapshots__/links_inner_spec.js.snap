@@ -14,27 +14,27 @@ exports[`Links Inner component with a large number of needs matches snapshot and
   >
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M202,118C52,118,52,138,102,138"
+      d="M212,128C62,128,62,148,112,148"
       stroke-width="2"
     />
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M202,118C62,118,62,148,112,148"
+      d="M212,128C72,128,72,158,122,158"
       stroke-width="2"
     />
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M222,138C72,138,72,158,122,158"
+      d="M232,148C82,148,82,168,132,168"
       stroke-width="2"
     />
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M212,128C82,128,82,168,132,168"
+      d="M222,138C92,138,92,178,142,178"
       stroke-width="2"
     />
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M232,148C92,148,92,178,142,178"
+      d="M242,158C102,158,102,188,152,188"
       stroke-width="2"
     />
   </svg>
@@ -55,7 +55,7 @@ exports[`Links Inner component with a parallel need matches snapshot and has exp
   >
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M192,108C32,108,32,118,82,118"
+      d="M222,138C72,138,72,158,122,158"
       stroke-width="2"
     />
   </svg>
@@ -76,7 +76,7 @@ exports[`Links Inner component with one need matches snapshot and has expected p
   >
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M202,118C52,118,52,138,102,138"
+      d="M212,128C62,128,62,148,112,148"
       stroke-width="2"
     />
   </svg>
@@ -97,12 +97,12 @@ exports[`Links Inner component with same stage needs matches snapshot and has ex
   >
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M192,108C32,108,32,118,82,118"
+      d="M192,108C42,108,42,128,92,128"
       stroke-width="2"
     />
     <path
       class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
-      d="M202,118C42,118,42,128,92,128"
+      d="M212,128C52,128,52,138,102,138"
       stroke-width="2"
     />
   </svg>
