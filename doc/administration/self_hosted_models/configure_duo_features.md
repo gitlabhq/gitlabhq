@@ -1,11 +1,11 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Configure your GitLab instance to use self-hosted models.
+description: Configure your GitLab instance to use GitLab Duo Self-Hosted.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure GitLab to access self-hosted models
+# Configure GitLab to access GitLab Duo Self-Hosted
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -19,7 +19,7 @@ DETAILS:
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
-1. [Confirm that a fully self-hosted model configuration is appropriate for your use case](index.md#decide-on-your-configuration-type).
+1. [Confirm that a fully self-hosted configuration is appropriate for your use case](index.md#decide-on-your-configuration-type).
 1. Configure your GitLab instance.
 1. Configure the self-hosted model.
 1. Configure the GitLab Duo features to use your self-hosted model.
@@ -28,7 +28,7 @@ To configure your GitLab instance to access the available self-hosted models in 
 
 Prerequisites:
 
-- [Upgrade to the latest version of GitLab](../../update/index.md).
+- [Upgrade to the latest version of GitLab](../../update/_index.md).
 
 To configure your GitLab instance to access the AI gateway:
 

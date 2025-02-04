@@ -5,7 +5,7 @@ description: Supported Models and Hardware Requirements.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Supported self-hosted models and hardware requirements
+# Supported GitLab Duo Self-Hosted models and hardware requirements
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -21,7 +21,7 @@ The following table shows the supported models along with their specific feature
 
 ## Approved LLMs
 
-Install one of the following GitLab-approved LLM models:
+Install one of the following GitLab-approved large language models (LLMs):
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -58,7 +58,7 @@ The following models are under evaluation, and support is limited:
 
 ## Hardware requirements
 
-The following hardware specifications are the minimum requirements for running self-hosted models on-premise. Requirements vary significantly based on the model size and intended usage:
+The following hardware specifications are the minimum requirements for running GitLab Duo Self-Hosted on-premise. Requirements vary significantly based on the model size and intended usage:
 
 ### Base system requirements
 

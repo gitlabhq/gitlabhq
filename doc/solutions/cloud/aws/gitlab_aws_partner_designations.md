@@ -3,9 +3,8 @@ stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 description: GitLab partnership certifications and designations from AWS.
+title: GitLab partnership certifications and designations from AWS
 ---
-
-# GitLab partnership certifications and designations from AWS
 
 The certifications and designations outlined here can be validated on [GitLabs partner page at AWS](https://partners.amazonaws.com/partners/001E0000018YWFfIAO/GitLab,%20Inc.).
 

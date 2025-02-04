@@ -15245,6 +15245,9 @@ msgstr ""
 msgid "Configure settings for exact code search."
 msgstr ""
 
+msgid "Configure settings for global search."
+msgstr ""
+
 msgid "Configure specific limits for Files API requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -21851,6 +21854,9 @@ msgstr ""
 msgid "Editing"
 msgstr ""
 
+msgid "Editor toolbar"
+msgstr ""
+
 msgid "Edits"
 msgstr ""
 
@@ -22106,10 +22112,19 @@ msgstr ""
 msgid "Enable cleanup policy caching."
 msgstr ""
 
+msgid "Enable code tab in global search results"
+msgstr ""
+
+msgid "Enable commits tab in global search results"
+msgstr ""
+
 msgid "Enable diagrams.net"
 msgstr ""
 
 msgid "Enable email notification"
+msgstr ""
+
+msgid "Enable epics tab in global search results"
 msgstr ""
 
 msgid "Enable exact code search"
@@ -22145,7 +22160,13 @@ msgstr ""
 msgid "Enable integration"
 msgstr ""
 
+msgid "Enable issues tab in global search results"
+msgstr ""
+
 msgid "Enable maintenance mode"
+msgstr ""
+
+msgid "Enable merge requests tab in global search results"
 msgstr ""
 
 msgid "Enable multipart emails"
@@ -22175,6 +22196,9 @@ msgstr ""
 msgid "Enable security training"
 msgstr ""
 
+msgid "Enable snippet tab in global search results"
+msgstr ""
+
 msgid "Enable two-factor authentication"
 msgstr ""
 
@@ -22190,7 +22214,13 @@ msgstr ""
 msgid "Enable user deactivation emails"
 msgstr ""
 
+msgid "Enable users tab in global search results"
+msgstr ""
+
 msgid "Enable version check"
+msgstr ""
+
+msgid "Enable wiki tab in global search results"
 msgstr ""
 
 msgid "EnableReviewApp|Add a job in your CI/CD configuration that:"
@@ -26396,6 +26426,9 @@ msgid "Global"
 msgstr ""
 
 msgid "Global SAML group membership lock"
+msgstr ""
+
+msgid "Global Search"
 msgstr ""
 
 msgid "Global Search is disabled for this scope"
@@ -64618,7 +64651,7 @@ msgstr ""
 msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
 msgstr ""
 
-msgid "Wiki|There are no pages in this wiki yet"
+msgid "Wiki|There are no pages in this wiki yet."
 msgstr ""
 
 msgid "Wiki|Use the sidebar to find a different page."

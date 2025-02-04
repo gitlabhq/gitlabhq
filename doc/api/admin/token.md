@@ -40,12 +40,12 @@ Gets information for a given token. This endpoint supports the following tokens:
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Impersonation tokens](../../api/rest/authentication.md#impersonation-tokens)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)
-- [Feed tokens](../../security/tokens/index.md#feed-token)
+- [Feed tokens](../../security/tokens/_index.md#feed-token)
 - [OAuth application secrets](../../integration/oauth_provider.md)
-- [Cluster agent tokens](../../security/tokens/index.md#gitlab-cluster-agent-tokens)
-- [Runner authentication tokens](../../security/tokens/index.md#runner-authentication-tokens)
+- [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)
+- [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens)
 - [Pipeline trigger tokens](../../ci/triggers/index.md#create-a-pipeline-trigger-token)
-- [CI/CD Job Tokens](../../security/tokens/index.md#cicd-job-tokens)
+- [CI/CD Job Tokens](../../security/tokens/_index.md#cicd-job-tokens)
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 - [GitLab session cookies](../../user/profile/active_sessions.md)
 
@@ -117,11 +117,11 @@ This feature is available for testing, but not ready for production use.
 Revokes a given token. This endpoint supports the following token types:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
-- [Project access tokens](../../security/tokens/index.md#project-access-tokens)
-- [Group access tokens](../../security/tokens/index.md#group-access-tokens)
+- [Project access tokens](../../security/tokens/_index.md#project-access-tokens)
+- [Group access tokens](../../security/tokens/_index.md#group-access-tokens)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)
-- [Feed tokens](../../security/tokens/index.md#feed-token)
-- [Cluster agent tokens](../../security/tokens/index.md#gitlab-cluster-agent-tokens)
+- [Feed tokens](../../security/tokens/_index.md#feed-token)
+- [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)
 
 ```plaintext
 DELETE /api/v4/admin/token

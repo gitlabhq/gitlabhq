@@ -199,13 +199,13 @@ Project permissions for [model registry](project/ml/model_registry/index.md) and
 
 ### Monitoring
 
-Project permissions for monitoring including [error tracking](../operations/error_tracking.md) and [incident management](../operations/incident_management/index.md):
+Project permissions for monitoring including [error tracking](../operations/error_tracking.md) and [incident management](../operations/incident_management/_index.md):
 
 | Action                                                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View an [incident](../operations/incident_management/incidents.md)                                                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Assign an [incident management](../operations/incident_management/index.md) alert                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Participate in on-call rotation for [Incident Management](../operations/incident_management/index.md)               |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Assign an [incident management](../operations/incident_management/_index.md) alert                                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Participate in on-call rotation for [Incident Management](../operations/incident_management/_index.md)              |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [alerts](../operations/incident_management/alerts.md)                                                          |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [error tracking](../operations/error_tracking.md) list                                                         |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [escalation policies](../operations/incident_management/escalation_policies.md)                                |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -330,7 +330,7 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Change custom settings for [project integrations](project/integrations/index.md) |       |         |          |           |     ✓      |   ✓   |       |
 | Edit comments (posted by any user)                                        |       |         |          |           |     ✓      |   ✓   |       |
 | Add [deploy keys](project/deploy_keys/index.md)                           |       |         |          |           |     ✓      |   ✓   |       |
-| Manage [Project Operations](../operations/index.md)                       |       |         |          |           |     ✓      |   ✓   |       |
+| Manage [Project Operations](../operations/_index.md)                      |       |         |          |           |     ✓      |   ✓   |       |
 | View [Usage Quotas](storage_usage_quotas.md) page                         |       |         |          |           |     ✓      |   ✓   |       |
 | Globally delete [snippets](snippets.md)                                   |       |         |          |           |     ✓      |   ✓   |       |
 | Globally edit [snippets](snippets.md)                                     |       |         |          |           |     ✓      |   ✓   |       |

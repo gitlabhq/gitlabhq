@@ -169,7 +169,7 @@ REST API requests can be detected as spam. If a request is detected as spam and:
 ## Error: `404 Not Found` when using a reverse proxy
 
 If your GitLab instance uses a reverse proxy, you might see `404 Not Found` errors when
-using a GitLab [editor extension](../../editor_extensions/index.md), the GitLab CLI, or
+using a GitLab [editor extension](../../editor_extensions/_index.md), the GitLab CLI, or
 API calls with URL-encoded parameters.
 
 This problem occurs when your reverse proxy decodes characters like `/`, `?`, and `@`

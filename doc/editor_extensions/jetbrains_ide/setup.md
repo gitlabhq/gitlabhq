@@ -3,9 +3,8 @@ stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Connect and use GitLab Duo in JetBrains IDEs."
+title: Install and set up the GitLab plugin for JetBrains IDEs
 ---
-
-# Install and set up the GitLab plugin for JetBrains IDEs
 
 Download the plugin from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
 and install it.

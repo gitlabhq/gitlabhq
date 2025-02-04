@@ -157,11 +157,19 @@ export default {
       return routeQuery;
     },
     filters() {
-      return pick(this.routeQueryWithoutPagination, [
+      const filters = pick(this.routeQueryWithoutPagination, [
         FILTERED_SEARCH_TOKEN_LANGUAGE,
         FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
         FILTERED_SEARCH_TERM_KEY,
       ]);
+
+      // Normalize the property to Number since Vue Router 4 will
+      // return this and all other query variables as a string
+      filters[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL] = Number(
+        filters[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
+      );
+
+      return filters;
     },
     timestampType() {
       const SORT_MAP = {

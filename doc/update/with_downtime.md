@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Multi-node upgrades with downtime
 ---
-
-# Multi-node upgrades with downtime
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -22,7 +21,7 @@ Before starting this process, verify the version-specific upgrading instructions
 - [GitLab 16 changes](versions/gitlab_16_changes.md)
 - [GitLab 15 changes](versions/gitlab_15_changes.md)
 
-For a single node installation, you must only [upgrade the GitLab package](package/index.md).
+For a single node installation, you must only [upgrade the GitLab package](package/_index.md).
 
 The process for upgrading a number of components of a multi-node GitLab
 installation is the same as for zero-downtime upgrades.
@@ -80,7 +79,7 @@ kubectl scale deploy -n <namespace> -l release=<helm release name> -l 'app in (p
 In summary:
 
 1. Check the Consul nodes are all healthy.
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version) on all your Consul servers.
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version) on all your Consul servers.
 1. Restart all GitLab services **one node at a time**:
 
    ```shell
@@ -125,7 +124,7 @@ The Praefect nodes, however, can be upgraded by using an AMI redeployment proces
 
 ## Upgrade the Gitaly nodes not part of Gitaly cluster
 
-For Gitaly servers which are not part of Gitaly cluster, [upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+For Gitaly servers which are not part of Gitaly cluster, [upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 If you have multiple Gitaly shards or have multiple load-balanced Gitaly nodes
 using NFS, it doesn't matter in which order you upgrade the Gitaly servers.
@@ -134,7 +133,7 @@ using NFS, it doesn't matter in which order you upgrade the Gitaly servers.
 
 For non-clustered PostgreSQL servers:
 
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 1. The upgrade process does not restart PostgreSQL when the binaries are upgraded.
    Restart to load the new version:
@@ -164,7 +163,7 @@ Follow the following process:
    sudo gitlab-ctl patroni members
    ```
 
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version) on one of the replica nodes.
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version) on one of the replica nodes.
 
 1. Restart to load the new version:
 
@@ -189,11 +188,11 @@ Follow the following process:
 If you run PgBouncer on your Rails (application) nodes, then
 PgBouncer are upgraded as part of the application server upgrade.
 
-[Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version) on the PgBouncer nodes.
+[Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version) on the PgBouncer nodes.
 
 ## Upgrade the Redis node
 
-Upgrade a standalone Redis server by [upgrading the GitLab package](package/index.md#upgrade-to-a-specific-version).
+Upgrade a standalone Redis server by [upgrading the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 ## Upgrade Redis HA (using Sentinel)
 
@@ -256,7 +255,7 @@ running all database migrations. On the deploy node:
       sudo gitlab-ctl reconfigure
       ```
 
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 1. If you modified `gitlab.rb` on the deploy node to bypass PgBouncer:
    1. Update `gitlab.rb` on the deploy node. Change `gitlab_rails['db_host']`
@@ -279,7 +278,7 @@ set to anything in `gitlab.rb` on these nodes.
 
 They can be upgraded in parallel:
 
-1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 1. Ensure all services are restarted:
 
@@ -305,4 +304,4 @@ kubectl scale deploy -lapp=prometheus,release=<helm release name> -n <namespace>
 
 ## Upgrade the Monitor node
 
-[Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version).
+[Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).

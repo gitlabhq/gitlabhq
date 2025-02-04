@@ -34,7 +34,7 @@ You can only restore a backup to **exactly the same version and type (CE or EE)*
 of GitLab on which it was created. For example, CE 15.1.4.
 
 If your backup is a different version than the current installation, you must
-[downgrade](../../update/package/downgrade.md) or [upgrade](../../update/package/index.md#upgrade-to-a-specific-version) your GitLab installation
+[downgrade](../../update/package/downgrade.md) or [upgrade](../../update/package/_index.md#upgrade-to-a-specific-version) your GitLab installation
 before restoring the backup.
 
 ### GitLab secrets must be restored
@@ -294,7 +294,7 @@ restoring a single project or group, you can use a workaround by restoring
 your backup to a separate, temporary GitLab instance, and then export your
 project or group from there:
 
-1. [Install a new GitLab](../../install/index.md) instance at the same version as
+1. [Install a new GitLab](../../install/_index.md) instance at the same version as
    the backed-up instance from which you want to restore.
 1. [Restore the backup](#restore-gitlab) into this new instance, then
    export your [project](../../user/project/settings/import_export.md)

@@ -105,17 +105,17 @@ class SearchService
   end
 
   def global_search_enabled_for_scope?
-    return false if show_snippets? && Feature.disabled?(:global_search_snippet_titles_tab, current_user, type: :ops)
+    return false if show_snippets? && !::Gitlab::CurrentSettings.global_search_snippet_titles_enabled?
 
     case params[:scope]
     when 'issues'
-      Feature.enabled?(:global_search_issues_tab, current_user, type: :ops)
+      ::Gitlab::CurrentSettings.global_search_issues_enabled?
     when 'merge_requests'
-      Feature.enabled?(:global_search_merge_requests_tab, current_user, type: :ops)
+      ::Gitlab::CurrentSettings.global_search_merge_requests_enabled?
     when 'snippet_titles'
-      Feature.enabled?(:global_search_snippet_titles_tab, current_user, type: :ops)
+      ::Gitlab::CurrentSettings.global_search_snippet_titles_enabled?
     when 'users'
-      Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
+      ::Gitlab::CurrentSettings.global_search_users_enabled?
     else
       true
     end

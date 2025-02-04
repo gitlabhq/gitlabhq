@@ -2750,7 +2750,8 @@ test-job:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
 > - `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137907) in GitLab 16.8.
 
-Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
+Use `image:docker` to pass options to the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html)
+runner. This keyword does not work with other executor types.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

@@ -109,7 +109,7 @@ To upgrade both the operating system (OS) and GitLab:
 
 1. Upgrade the OS.
 1. Check if it's necessary to [update the GitLab package sources](#update-gitlab-package-sources-after-upgrading-the-os).
-1. [Upgrade GitLab](../../update/index.md).
+1. [Upgrade GitLab](../../update/_index.md).
 
 ## Corrupted Postgres indexes after upgrading the OS
 

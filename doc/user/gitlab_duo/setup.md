@@ -45,7 +45,7 @@ and [must be turned on](turn_on_off.md#turn-on-beta-and-experimental-features).
 
 ## Allow inbound connections from clients to the GitLab instance
 
-- GitLab instances must allow inbound connections from Duo clients ([IDEs](../../editor_extensions/index.md),
+- GitLab instances must allow inbound connections from Duo clients ([IDEs](../../editor_extensions/_index.md),
   Code Editors, and GitLab Web Frontend) on port 443 with `https://` and `wss://`.
 - Both `HTTP2` and the `'upgrade'` header must be allowed, because GitLab Duo
   uses both REST and WebSockets.

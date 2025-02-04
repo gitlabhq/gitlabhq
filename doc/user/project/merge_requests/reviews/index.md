@@ -22,8 +22,8 @@ To review merge requests, you can use:
 
 - The GitLab interface.
 - Visual Studio Code, if you have configured the
-  [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/index.md).
-- Your terminal window, if you have configured the [GitLab CLI](../../../../editor_extensions/gitlab_cli/index.md).
+  [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/_index.md).
+- Your terminal window, if you have configured the [GitLab CLI](../../../../editor_extensions/gitlab_cli/_index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).

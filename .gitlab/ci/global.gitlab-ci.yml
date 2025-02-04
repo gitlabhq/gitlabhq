@@ -9,8 +9,14 @@
       - stuck_or_timeout_failure
       - unknown_failure
     exit_codes:
-      - 110  # known infrastructure error https://gitlab.com/gitlab-org/gitlab/-/issues/501325
-      - 111  # low free disk space https://gitlab.com/gitlab-org/gitlab/-/issues/498142
+      # https://docs.gitlab.com/ee/development/pipelines/internals.html#custom-exit-codes
+      - 110  # network connection error
+      - 111  # low free disk space
+      - 160  # failed to upload/download job artifact
+      - 162  # gitaly spawn failed
+      - 164  # Redis cluster error
+      - 165  # segmentation fault
+      - 166  # EEXIST: file already exists
 
 .default-utils-before_script:
   before_script:

@@ -151,7 +151,7 @@ export default {
           items: [
             {
               text: this.$options.i18n.version,
-              href: helpPagePath('update/index.md'),
+              href: helpPagePath('update/_index.md'),
               version: `${this.sidebarData.gitlab_version.major}.${this.sidebarData.gitlab_version.minor}`,
               extraAttrs: {
                 ...this.trackingAttrs('version_help_dropdown'),

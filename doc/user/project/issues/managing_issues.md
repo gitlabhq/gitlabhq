@@ -444,7 +444,7 @@ To change issue type:
 1. Edit the issue and select an issue type from the **Issue type** dropdown list:
 
    - Issue
-   - [Incident](../../../operations/incident_management/index.md)
+   - [Incident](../../../operations/incident_management/_index.md)
 
 1. Select **Save changes**.
 

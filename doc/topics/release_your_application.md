@@ -33,5 +33,5 @@ release features incrementally.
 - Use GitLab CI/CD to target any type of infrastructure accessible by GitLab Runner.
   [User and pre-defined environment variables](../ci/variables/index.md) and CI/CD templates
   support setting up a vast number of deployment strategies.
-- Use GitLab [Cloud Seed](../cloud_seed/index.md), an open-source Incubation Engineering program,
+- Use GitLab [Cloud Seed](../cloud_seed/_index.md), an open-source Incubation Engineering program,
   to set up deployment credentials and deploy your application to Google Cloud Run with minimal friction.

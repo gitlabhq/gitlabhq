@@ -3,9 +3,8 @@ stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Connect and use GitLab Duo in Neovim."
+title: Install and set up the GitLab plugin for Neovim
 ---
-
-# Install and set up the GitLab plugin for Neovim
 
 Prerequisites:
 
@@ -98,7 +97,7 @@ To configure this extension:
    ```
 
 1. [Configure Omni Completion](#configure-omni-completion) to set up the key mapping to trigger Code Suggestions.
-1. Optional. [Configure `<Plug>` key mappings](index.md#configure-plug-key-mappings).
+1. Optional. [Configure `<Plug>` key mappings](_index.md#configure-plug-key-mappings).
 1. Optional. Set up helptags using `:helptags ALL` for access to
    [`:help gitlab.txt`](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/doc/gitlab.txt).
 

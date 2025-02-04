@@ -63,6 +63,7 @@ export default {
         bulletList: __('Add a bullet list'),
         numberedList: __('Add a numbered list'),
         taskList: __('Add a checklist'),
+        editorToolbar: __('Editor toolbar'),
       },
     };
   },
@@ -101,6 +102,8 @@ export default {
   <div
     class="gl-border-b gl-flex gl-w-full gl-flex-wrap gl-items-center gl-gap-y-2 gl-rounded-t-base gl-border-default gl-px-3 gl-py-3"
     data-testid="formatting-toolbar"
+    role="toolbar"
+    :aria-label="i18n.editorToolbar"
   >
     <div class="gl-flex">
       <toolbar-text-style-dropdown

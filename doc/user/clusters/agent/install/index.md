@@ -29,7 +29,7 @@ Before you can install the agent in your cluster, you need:
 
 ## Bootstrap the agent with Flux support (recommended)
 
-You can install the agent by bootstrapping it with the [GitLab CLI (`glab`)](../../../../editor_extensions/gitlab_cli/index.md) and Flux.
+You can install the agent by bootstrapping it with the [GitLab CLI (`glab`)](../../../../editor_extensions/gitlab_cli/_index.md) and Flux.
 
 Prerequisites:
 

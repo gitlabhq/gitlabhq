@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab 17 changes
 ---
-
-# GitLab 17 changes
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -281,7 +280,7 @@ security requirements for TLS, not SSH. [OpenSSH](https://www.openssh.com/) and
 [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md) have their
 own configuration settings for the allowed cryptographic algorithms.
 
-Check the [GitLab documentation on securing your installation](../../security/index.md)
+Check the [GitLab documentation on securing your installation](../../security/_index.md)
 for more details.
 
 ## 17.5.0

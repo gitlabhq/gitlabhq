@@ -21,7 +21,7 @@ Keep your GitLab instance up and running.
 - [Rails console](../../administration/operations/rails_console.md)
 - [Use SSH certificates](../../administration/operations/ssh_certificates.md)
 - [Enable encrypted configuration](../../administration/encrypted_configuration.md)
-- [Rake tasks](../../raketasks/index.md)
+- [Rake tasks](../../raketasks/_index.md)
 - [Backup and restore](../../administration/backup_restore/index.md)
 - [Inactive project deletion](../../administration/inactive_project_deletion.md)
 - [Move repositories](../../administration/operations/moving_repositories.md)

@@ -94,7 +94,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     end
 
     context 'for issues tab' do
-      where(:tab_enabled, :feature_flag_enabled, :project, :condition) do
+      where(:tab_enabled, :setting_enabled, :project, :condition) do
         false | false | nil | false
         false | true | nil | true
         false | true | ref(:project_double) | false
@@ -107,8 +107,8 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
 
       with_them do
         before do
-          stub_feature_flags(global_search_issues_tab: feature_flag_enabled)
           allow(search_navigation).to receive(:tab_enabled_for_project?).with(:issues).and_return(tab_enabled)
+          stub_application_setting(global_search_issues_enabled: setting_enabled)
         end
 
         it 'data item condition is set correctly' do
@@ -118,7 +118,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     end
 
     context 'for merge requests tab' do
-      where(:tab_enabled, :feature_flag_enabled, :project, :condition) do
+      where(:tab_enabled, :setting_enabled, :project, :condition) do
         false | false | nil | false
         true | false | nil | true
         false | false | ref(:project_double) | false
@@ -131,8 +131,8 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
 
       with_them do
         before do
-          stub_feature_flags(global_search_merge_requests_tab: feature_flag_enabled)
           allow(search_navigation).to receive(:tab_enabled_for_project?).with(:merge_requests).and_return(tab_enabled)
+          stub_application_setting(global_search_merge_requests_enabled: setting_enabled)
         end
 
         it 'data item condition is set correctly' do
@@ -219,7 +219,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     end
 
     context 'for users tab' do
-      where(:feature_flag_enabled, :can_read_users_list, :project, :tab_enabled, :condition) do
+      where(:setting_enabled, :can_read_users_list, :project, :tab_enabled, :condition) do
         false | false | ref(:project_double) | true | true
         false | false | nil | false | false
         false | true | nil | false | false
@@ -230,7 +230,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
 
       with_them do
         before do
-          stub_feature_flags(global_search_users_tab: feature_flag_enabled)
+          stub_application_setting(global_search_users_enabled: setting_enabled)
           allow(search_navigation).to receive(:tab_enabled_for_project?).with(:users).and_return(tab_enabled)
           allow(search_navigation).to receive(:can?)
             .with(user, :read_users_list, project_double).and_return(can_read_users_list)
@@ -243,7 +243,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     end
 
     context 'for snippet_titles tab' do
-      where(:project, :show_snippets, :feature_flag_enabled, :condition) do
+      where(:project, :show_snippets, :setting_enabled, :condition) do
         ref(:project_double) | true | false | false
         nil | false | false | false
         ref(:project_double) | false | false | false
@@ -258,7 +258,7 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
         let(:options) { { show_snippets: show_snippets } }
 
         before do
-          stub_feature_flags(global_search_snippet_titles_tab: feature_flag_enabled)
+          stub_application_setting(global_search_snippet_titles_enabled: setting_enabled)
         end
 
         it 'data item condition is set correctly' do

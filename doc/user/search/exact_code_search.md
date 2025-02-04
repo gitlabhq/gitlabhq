@@ -111,3 +111,6 @@ This table shows some example queries for exact match and regular expression mod
   For more information, see [issue 403307](https://gitlab.com/gitlab-org/gitlab/-/issues/403307).
 - Multiple matches on a single line are counted as one result.
   For more information, see [issue 514526](https://gitlab.com/gitlab-org/gitlab/-/issues/514526).
+- If you encounter results where newlines are not displayed correctly,
+  you must update `gitlab-zoekt` to version 1.5.0 or later.
+  For more information, see [issue 516937](https://gitlab.com/gitlab-org/gitlab/-/issues/516937).

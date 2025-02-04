@@ -419,7 +419,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
       context 'global snippet search is disabled' do
         it 'returns forbidden response' do
-          stub_feature_flags(global_search_snippet_titles_tab: false)
+          stub_application_setting(global_search_snippet_titles_enabled: false)
           get api(endpoint, user), params: { search: 'awesome', scope: 'snippet_titles' }
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -427,7 +427,7 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
       context 'global snippet search is enabled' do
         it 'returns ok response' do
-          stub_feature_flags(global_search_snippet_titles_tab: true)
+          stub_application_setting(global_search_snippet_titles_enabled: true)
           get api(endpoint, user), params: { search: 'awesome', scope: 'snippet_titles' }
           expect(response).to have_gitlab_http_status(:ok)
         end

@@ -7,7 +7,7 @@ title: Avoiding required stops
 
 Required stops are any changes to GitLab [components](architecture.md) or
 dependencies that result in the need to upgrade to and stop at a specific
-`major.minor` version when [upgrading GitLab](../update/index.md).
+`major.minor` version when [upgrading GitLab](../update/_index.md).
 
 While Development maintains a [maintenance policy](../policy/maintenance.md)
 that results in a three-release (3 month) backport window - GitLab maintains a
@@ -197,8 +197,8 @@ it might affect one of the following projects:
 ## Further reading
 
 - [Documentation: Database required stops](database/required_stops.md)
-- [Documentation: Upgrading GitLab](../update/index.md)
-  - [Package (Omnibus) upgrade](../update/package/index.md)
+- [Documentation: Upgrading GitLab](../update/_index.md)
+  - [Package (Omnibus) upgrade](../update/package/_index.md)
   - [Docker upgrade](../install/docker/upgrade.md)
   - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade.html)
 - [Example of required stop planning issue (17.3)](https://gitlab.com/gitlab-org/gitlab/-/issues/457453)

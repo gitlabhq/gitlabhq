@@ -72,6 +72,31 @@ module ApplicationSettingsHelper
     end
   end
 
+  def global_search_settings_checkboxes(form)
+    [
+      form.gitlab_ui_checkbox_component(
+        :global_search_issues_enabled,
+        _("Enable issues tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_issues_enabled, multiple: false }
+      ),
+      form.gitlab_ui_checkbox_component(
+        :global_search_merge_requests_enabled,
+        _("Enable merge requests tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_merge_requests_enabled, multiple: false }
+      ),
+      form.gitlab_ui_checkbox_component(
+        :global_search_snippet_titles_enabled,
+        _("Enable snippet tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_snippet_titles_enabled, multiple: false }
+      ),
+      form.gitlab_ui_checkbox_component(
+        :global_search_users_enabled,
+        _("Enable users tab in global search results"),
+        checkbox_options: { checked: @application_setting.global_search_users_enabled, multiple: false }
+      )
+    ]
+  end
+
   def restricted_level_checkboxes(form)
     restricted_visibility_levels_help_text = {
       Gitlab::VisibilityLevel::PUBLIC => s_(
@@ -544,7 +569,11 @@ module ApplicationSettingsHelper
       :require_personal_access_token_expiry,
       :observability_backend_ssl_verification_enabled,
       :show_migrate_from_jenkins_banner,
-      :ropc_without_client_credentials
+      :ropc_without_client_credentials,
+      :global_search_snippet_titles_enabled,
+      :global_search_users_enabled,
+      :global_search_issues_enabled,
+      :global_search_merge_requests_enabled
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

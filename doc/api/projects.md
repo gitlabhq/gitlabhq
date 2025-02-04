@@ -1472,7 +1472,7 @@ settings with access control options can be one of:
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/index.md). |
+| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
@@ -1595,7 +1595,7 @@ settings with access control options can be one of:
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/index.md). |
+| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
@@ -1733,7 +1733,7 @@ Supported project visibility attributes:
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
-| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/index.md). |
+| `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |

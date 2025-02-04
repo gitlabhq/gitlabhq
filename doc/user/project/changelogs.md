@@ -76,7 +76,7 @@ in the API documentation.
 
 Prerequisites:
 
-- You have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/index.md),
+- You have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),
   version 1.30.0 or later.
 - Your repository's tag naming schema matches
   [the expected tag naming format](#customize-the-tag-format-when-extracting-versions).

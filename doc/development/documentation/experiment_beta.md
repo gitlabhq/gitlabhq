@@ -59,7 +59,7 @@ When documenting a GitLab Duo experiment:
 - Document the feature near other similar features.
 - Make sure you add history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
   in the `#developer-relations-early-access-program` Slack channel,
   post a comment that mentions the feature and its status.
 
@@ -71,7 +71,7 @@ When a GitLab Duo experiment moves to beta:
   `Experimental features` to the `Beta features` section.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
   in the `#developer-relations-early-access-program` Slack channel,
   post a comment that mentions the feature and its status.
 
@@ -83,6 +83,6 @@ When a GitLab Duo feature becomes generally available:
   `Beta features` or `Experimental features` section to the `Generally available features` section.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).
-- For features that are part of the [Early Access Program](../../policy/early_access_program/index.md#add-a-feature-to-the-program)
+- For features that are part of the [Early Access Program](../../policy/early_access_program/_index.md#add-a-feature-to-the-program)
   in the `#developer-relations-early-access-program` Slack channel,
   post a comment that mentions the feature and its status.

@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Self-compiled installation
 ---
-
-# Self-compiled installation
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -14,7 +13,7 @@ This is the official installation guide to set up a production GitLab server
 using the source files. It was created for and tested on **Debian/Ubuntu** operating systems.
 Read [requirements.md](requirements.md) for hardware and operating system requirements.
 If you want to install on RHEL/CentOS, you should use the [Linux packages](https://about.gitlab.com/install/).
-For many other installation options, see the [main installation page](index.md).
+For many other installation options, see the [main installation page](_index.md).
 
 This guide is long because it covers many cases and includes all commands you
 need, this is [one of the few installation scripts that actually work out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).

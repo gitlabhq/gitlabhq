@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Convert a Linux package CE instance to EE
 ---
-
-# Convert a Linux package CE instance to EE
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -69,7 +68,7 @@ To convert a Linux package CE instance to EE:
    ::EndTabs
 
    To use `dpkg` or `rpm` instead of using `apt-get` or `yum` follow
-   [Upgrade using a manually downloaded package](index.md#by-using-a-downloaded-package).
+   [Upgrade using a manually downloaded package](_index.md#by-using-a-downloaded-package).
 
 1. Install the `gitlab-ee` Linux package. The install automatically uninstalls the `gitlab-ce` package on your GitLab.
 
@@ -123,4 +122,4 @@ To convert a Linux package CE instance to EE:
    [advanced search](../../user/search/advanced_search.md).
 
 That's it! You can now use GitLab Enterprise Edition! To upgrade to a newer
-version, follow [Upgrading Linux package instances](index.md).
+version, follow [Upgrading Linux package instances](_index.md).

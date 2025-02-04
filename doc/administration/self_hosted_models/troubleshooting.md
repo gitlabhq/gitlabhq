@@ -1,11 +1,11 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Troubleshooting tips for deploying self-hosted models
+description: Troubleshooting tips for deploying GitLab Duo Self-Hosted
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting GitLab Duo Self-Hosted Models
+# Troubleshooting GitLab Duo Self-Hosted
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -17,7 +17,7 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 > - Feature flag `ai_custom_model` removed in GitLab 17.8
 
-When working with GitLab Duo Self-Hosted Models, you might encounter issues.
+When working with GitLab Duo Self-Hosted, you might encounter issues.
 
 Before you begin troubleshooting, you should:
 
@@ -40,7 +40,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
 model configuration.
 
 1. Debug the GitLab to AI gateway connection. From your GitLab instance, run the
-   [Rake task](../../raketasks/index.md):
+   [Rake task](../../raketasks/_index.md):
 
    ```shell
    gitlab-rake "gitlab:duo:verify_self_hosted_setup[<username>]"

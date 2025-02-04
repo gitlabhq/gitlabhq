@@ -14,7 +14,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Duo is a suite of AI-powered features that assist you while you work in GitLab.
 These features aim to help increase velocity and solve key pain points across the software development lifecycle.
 
-GitLab Duo features are available in [IDE extensions](../../editor_extensions/index.md) and the GitLab UI.
+GitLab Duo features are available in [IDE extensions](../../editor_extensions/_index.md) and the GitLab UI.
 Some features are also available as part of [GitLab Duo Chat](../gitlab_duo_chat_examples.md).
 
 - [Get started with GitLab Duo](../get_started/getting_started_gitlab_duo.md).
@@ -64,7 +64,7 @@ To improve your workflow while authoring code, try these features:
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide): Fix quality problems, like bugs or typos, in the selected code.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
-- [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli): Discover or recall `git` commands.
+- [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli): Discover or recall `git` commands.
 
 ## Reviewing code
 
@@ -108,7 +108,7 @@ To improve your security, try these features:
 | [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | Ultimate | GitLab Duo Enterprise | GitLab.com | Beta |
 | [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |

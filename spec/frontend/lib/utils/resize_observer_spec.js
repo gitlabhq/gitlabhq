@@ -20,7 +20,9 @@ describe('ResizeObserver Utility', () => {
 
     jest.spyOn(document.documentElement, 'scrollTo');
 
-    setHTMLFixture(`<div id="content-body"><div id="note_1234">note to scroll to</div></div>`);
+    setHTMLFixture(
+      `<div id="content-body"><div id="note_1234">note to scroll to</div><textarea id="reply-field"></textarea></div>`,
+    );
 
     const target = document.querySelector('#note_1234');
 
@@ -100,6 +102,15 @@ describe('ResizeObserver Utility', () => {
           top: topHeight + scrollAmount,
           behavior: 'instant',
         });
+      });
+
+      it('does not scroll if another element is focused', () => {
+        const anchorEl = document.getElementById('reply-field');
+        anchorEl.focus();
+
+        triggerResize();
+
+        expect(document.documentElement.scrollTo).not.toHaveBeenCalled();
       });
     });
   });

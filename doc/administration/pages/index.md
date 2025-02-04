@@ -359,9 +359,9 @@ are accessible only as single-domain sites.
 Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
-- [TLS-terminating load balancer](../../install/aws/index.md#load-balancer)
+- [TLS-terminating load balancer](../../install/aws/_index.md#load-balancer)
 
-This setup is primarily intended to be used when [installing a GitLab POC on Amazon Web Services](../../install/aws/index.md). This includes a TLS-terminating [classic load balancer](../../install/aws/index.md#load-balancer) that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
+This setup is primarily intended to be used when [installing a GitLab POC on Amazon Web Services](../../install/aws/_index.md). This includes a TLS-terminating [classic load balancer](../../install/aws/_index.md#load-balancer) that listens for HTTPS connections, manages TLS certificates, and forwards HTTP traffic to the instance.
 
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 

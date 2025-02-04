@@ -308,6 +308,48 @@ wrapper.findComponent(GlKeysetNavigation).vm.$emit('push');
 await waitForPromises()
 ```
 
+#### Debugging
+
+More often than not you will find yourself running into cryptic errors like the one below.
+
+```shell
+Unexpected calls to console (1) with:
+
+        [1] warn: [Vue Router warn]: uncaught error during route navigation:
+
+      23 |     .join('\n');
+      24 |
+    > 25 |   throw new Error(
+         |         ^
+      26 |     `Unexpected calls to console (${consoleCalls.length}) with:\n${consoleCallsList}\n`,
+      27 |   );
+      28 | };
+```
+
+In order to better understand what Vue router needs, use `jest.fn()` to override `console.warn` so you can see the output of the error.
+
+```javascript
+console.warn = jest.fn()
+
+afterEach(() => {
+  console.log(console.warn.mock.calls)
+})
+```
+
+This will turn the above into a digestible error. Don't forget to remove this code before you submit your MR.
+
+```shell
+'[Vue Router warn]: Record with path "/" is either missing a "component(s)" or "children" property.'
+```
+
+#### Component and Children property
+
+Unlike Vue router 3 (Vue 2), Vue router 4 requires a `component` or `children` property (with their respective `component`) to be defined. In some scenarios we have historically used Vue router to manage router query variables without a `router-view`, for example in `app/assets/javascripts/projects/your_work/components/app.vue`.
+
+This is an anti-pattern, as Vue router is overkill, a preferable approach would be to use vanilla JS to manage query routes with [URL searchParams](https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams) for example.
+
+When rewriting the component is not possible, passing the `App` component that the application is rendering without the use of `router-view` will let the tests pass, however, this opens up the possibility of introducing unwanted behavior in the future if a `<router-view />` is added to the component and should be used with care.
+
 ## Quarantine list
 
 The `scripts/frontend/quarantined_vue3_specs.txt` file is built up of all the known failing Vue 3 test files.

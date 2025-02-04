@@ -21,7 +21,7 @@ In this tutorial, use the GitLab CLI (`glab`) to:
 
 ## Before you begin
 
-- You must install and sign in to the [GitLab CLI](../../editor_extensions/gitlab_cli/index.md) (`glab`).
+- You must install and sign in to the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md) (`glab`).
 
 ## Create a step
 

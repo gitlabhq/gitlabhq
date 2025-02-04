@@ -2,13 +2,12 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting the GitLab Workflow extension for VS Code
 ---
-
-# Troubleshooting the GitLab Workflow extension for VS Code
 
 If you encounter any issues with the GitLab Workflow extension for VS Code, or have feature requests for it:
 
-1. Check the [extension documentation](index.md)
+1. Check the [extension documentation](_index.md)
    for known issues and solutions.
 1. Report bugs or request features in the
    [`gitlab-vscode-extension` issue queue](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
@@ -47,7 +46,7 @@ Request failed: Can't add GitLab account for https://gitlab.com. Check your inst
 Fetching resource from https://gitlab.com/api/v4/personal_access_tokens/self failed
 ```
 
-You must [enable proxy authentication](../language_server/index.md#enable-proxy-authentication)
+You must [enable proxy authentication](../language_server/_index.md#enable-proxy-authentication)
 for the GitLab Language Server.
 
 ## Configure self-signed certificates

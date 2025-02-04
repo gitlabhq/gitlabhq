@@ -48,9 +48,9 @@ For an explanation of the variables see the [additional examples below](#overrid
 
 ## Against GitLab in Docker
 
-GitLab can be [installed in Docker](../../../../install/docker/index.md).
+GitLab can be [installed in Docker](../../../../install/docker/_index.md).
 
-See the section above for situations that might require adjustment to the commands below or to the configuration of the GitLab instance. [You can find more information in the documentation](../../../../install/docker/index.md).
+See the section above for situations that might require adjustment to the commands below or to the configuration of the GitLab instance. [You can find more information in the documentation](../../../../install/docker/_index.md).
 
 ### On a Unix like operating system
 

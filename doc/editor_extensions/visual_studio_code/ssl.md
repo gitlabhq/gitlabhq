@@ -2,9 +2,8 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using the VS Code extension with self-signed certificates
 ---
-
-# Using the VS Code extension with self-signed certificates
 
 You can still use the GitLab Workflow extension for VS Code even if your GitLab instance uses a self-signed SSL certificate.
 

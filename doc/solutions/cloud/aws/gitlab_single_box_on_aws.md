@@ -2,9 +2,8 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+title: Provision GitLab on a single EC2 instance in AWS
 ---
-
-# Provision GitLab on a single EC2 instance in AWS
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

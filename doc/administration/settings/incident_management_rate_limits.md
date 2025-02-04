@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 You can limit the number of inbound alerts for [incidents](../../operations/incident_management/incidents.md)
-that can be created in a period of time. The inbound [incident management](../../operations/incident_management/index.md)
+that can be created in a period of time. The inbound [incident management](../../operations/incident_management/_index.md)
 alert limit can help prevent overloading your incident responders by reducing the
 number of alerts or duplicate issues.
 

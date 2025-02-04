@@ -58,7 +58,7 @@ multiple machines.
 
 NOTE:
 When configured to run on their own servers, Gitaly servers must be
-[upgraded](../../update/package/index.md) before Gitaly clients in your cluster.
+[upgraded](../../update/package/_index.md) before Gitaly clients in your cluster.
 
 NOTE:
 [Disk requirements](index.md#disk-requirements) apply to Gitaly nodes.

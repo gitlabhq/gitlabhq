@@ -3,9 +3,8 @@ stage: AI-Powered
 group: AI Framework
 description: Set up your self-hosted model GitLab AI gateway
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install the GitLab AI gateway
 ---
-
-# Install the GitLab AI gateway
 
 The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) is a standalone service that gives access to AI-powered GitLab Duo features.
 

@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Responding to security incidents
 ---
-
-# Responding to security incidents
 
 When a security incident occurs, you should primarily follow the processes defined by your organization. The GitLab Security Operations team created this guide:
 
@@ -32,7 +31,7 @@ This scenario refers to security events where sensitive authentication or author
 
 This scenario might also include the exposure of sensitive information about third-party credentials through GitLab services. The exposure could occur through, for example, accidental commits to public GitLab projects, or misconfiguration of CI/CD settings. For more information, see:
 
-- [Overview of GitLab tokens](../security/tokens/index.md)
+- [Overview of GitLab tokens](../security/tokens/_index.md)
 - [GitLab CI/CD variable security](../ci/variables/index.md#cicd-variable-security)
 
 #### Response
@@ -67,7 +66,7 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/tokens/index.md#runner-registration-tokens-deprecated).
+- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/tokens/_index.md#runner-registration-tokens-deprecated).
 - [Reset user passwords](../security/reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](../security/two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
@@ -188,7 +187,7 @@ Before you ask GitLab for help, search the [GitLab documentation](https://docs.g
 
 ### Security best practices
 
-Review the [GitLab Security documentation](../security/index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
+Review the [GitLab Security documentation](../security/_index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
 
 #### Hardening Recommendations
 

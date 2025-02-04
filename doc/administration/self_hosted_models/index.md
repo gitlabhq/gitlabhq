@@ -1,11 +1,11 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Get started with self-hosted AI models.
+description: Get started with GitLab Duo Self-Hosted.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Duo Self-Hosted Models
+# GitLab Duo Self-Hosted
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -17,13 +17,13 @@ DETAILS:
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 > - Feature flag `ai_custom_model` removed in GitLab 17.8
 
-To maintain full control over your data privacy, security, and the deployment of large language models (LLMs) in your own infrastructure, use GitLab Duo Self-Hosted Models.
+To maintain full control over your data privacy, security, and the deployment of large language models (LLMs) in your own infrastructure, use GitLab Duo Self-Hosted.
 
-By deploying self-hosted models, you can manage the entire lifecycle of requests made to LLM backends for GitLab Duo features, ensuring that all requests stay in your enterprise network, and avoiding external dependencies.
+By deploying GitLab Duo Self-Hosted, you can manage the entire lifecycle of requests made to LLM backends for GitLab Duo features, ensuring that all requests stay in your enterprise network, and avoiding external dependencies.
 
-## Why use self-hosted models
+## Why use GitLab Duo Self-Hosted
 
-With self-hosted models, you can:
+With GitLab Duo Self-Hosted, you can:
 
 - Choose any GitLab-approved LLM.
 - Retain full control over data by keeping all request/response logs in your domain, ensuring complete privacy and security with no external API calls.
@@ -35,7 +35,7 @@ This setup ensures enterprise-level privacy and flexibility, allowing seamless i
 
 ### Supported GitLab Duo Chat features
 
-You can use the following GitLab Duo Chat features with a self-hosted model:
+You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 
 - [Ask about GitLab](../../user/gitlab_duo_chat/examples.md#ask-about-gitlab)
 - [Ask about a specific issue](../../user/gitlab_duo_chat/examples.md#ask-about-a-specific-issue)
@@ -53,7 +53,7 @@ You can use the following GitLab Duo Chat features with a self-hosted model:
 
 ### Prerequisites
 
-Before setting up a self-hosted model infrastructure, you must have:
+Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 
 - A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
 - A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
@@ -62,7 +62,7 @@ Before setting up a self-hosted model infrastructure, you must have:
 
 ## Decide on your configuration type
 
-The configuration for self-hosted models is different to the default configuration
+The configuration for GitLab Duo Self-Hosted is different to the default configuration
 that uses GitLab external AI vendors.
 
 NOTE:
@@ -72,19 +72,18 @@ Both of the following configuration types are for GitLab Self-Managed instances.
 
 In a fully self-hosted configuration, you deploy your own AI gateway and LLMs in your infrastructure, without relying on external public services. This gives you full control over your data and security.
 
-If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you can use self-hosted models.
+If you have an offline environment with physical barriers or security policies that prevent or limit internet access, and comprehensive LLM controls, you can use GitLab Duo Self-Hosted.
 
 For licensing, you must have a GitLab Ultimate subscription and GitLab Duo Enterprise. Offline Enterprise licenses are available for those customers with fully isolated offline environments. To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md).
 
-For more information, see the
-[self-hosted AI gateway configuration diagram](configuration_types.md#self-hosted-ai-gateway).
+For more information, see:
 
-To set up a self-hosted infrastructure, see
-[Set up a self-hosted infrastructure](#set-up-a-self-hosted-infrastructure).
+- [Set up a GitLab Duo Self-Hosted infrastructure](#set-up-a-gitlab-duo-self-hosted-infrastructure)
+- The [self-hosted AI gateway configuration diagram](configuration_types.md#self-hosted-ai-gateway).
 
 ### GitLab.com AI gateway with default GitLab external vendor LLMs
 
-If you do not meet the use case criteria for self-hosted models, you can use the
+If you do not meet the use case criteria for GitLab Duo Self-Hosted, you can use the
 GitLab.com AI gateway with default GitLab external vendor LLMs.
 
 The GitLab.com AI gateway is the default Enterprise offering and is not self-hosted. In this configuration,
@@ -101,9 +100,9 @@ For more information, see the
 
 To set up this infrastructure, see [how to configure GitLab Duo on a GitLab Self-Managed instance](../../user/gitlab_duo/setup.md).
 
-## Set up a self-hosted infrastructure
+## Set up a GitLab Duo Self-Hosted infrastructure
 
-To set up a fully isolated self-hosted model infrastructure:
+To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
 
 1. **Install a Large Language Model (LLM) Serving Infrastructure**
 

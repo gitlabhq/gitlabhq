@@ -10,7 +10,7 @@ WARNING:
 **The `release-cli` is in maintenance mode**.
 The `release-cli` does not accept new features.
 All new feature development happens in the `glab` CLI,
-so you should use the [`glab` CLI](../../../editor_extensions/gitlab_cli/index.md) whenever possible.
+so you should use the [`glab` CLI](../../../editor_extensions/gitlab_cli/_index.md) whenever possible.
 The `release-cli` is in maintenance mode, and [issue cli#7450](https://gitlab.com/gitlab-org/cli/-/issues/7450) proposes to deprecate it as the `glab` CLI matures.
 
 The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-cli)

@@ -68,6 +68,8 @@ export function scrollToTargetOnResize({
   }
 
   function keepTargetAtTop() {
+    if (document.activeElement !== document.body) return;
+
     const anchorEl = document.getElementById(targetId);
     if (!anchorEl) return;
 

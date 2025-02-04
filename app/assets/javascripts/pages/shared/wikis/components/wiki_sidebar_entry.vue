@@ -52,15 +52,19 @@ export default {
       this.isCollapsed = !this.isCollapsed;
     },
     highlight(text) {
-      return this.searchTerm
-        ? String(escape(text)).replace(
-            new RegExp(this.searchTerm, 'i'),
-            (match) => `<strong>${match}</strong>`,
-          )
-        : escape(text);
+      if (!this.searchTerm) {
+        return escape(text);
+      }
+
+      const escapedText = escape(text);
+      const regex = new RegExp(`(${this.searchTerm})`, 'i');
+      return `${escapedText.replace(
+        regex,
+        (match) => `<span class="gl-bg-status-warning">${match}</span>`,
+      )}`;
     },
   },
-  safeHtmlConfig: { ALLOWED_TAGS: ['strong'] },
+  safeHtmlConfig: { ALLOWED_TAGS: ['span'] },
 };
 </script>
 <template>

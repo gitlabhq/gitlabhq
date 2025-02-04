@@ -22,7 +22,7 @@ When authenticating with the API, you can use:
 - A [pipeline trigger token](#create-a-pipeline-trigger-token) to trigger a branch or tag pipeline
   with the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
 - A [CI/CD job token](../jobs/ci_job_token.md) to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).
-- Another [token with API access](../../security/tokens/index.md) to create a new pipeline
+- Another [token with API access](../../security/tokens/_index.md) to create a new pipeline
   with the [project pipeline API endpoint](../../api/pipelines.md#create-a-new-pipeline).
 
 ## Create a pipeline trigger token
@@ -50,7 +50,7 @@ in a way that malicious users could access them. A leaked trigger token could be
 used to force an unscheduled deployment, attempt to access CI/CD variables,
 or other malicious uses. [Masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
 help improve the security of trigger tokens. For more information about keeping tokens secure,
-see the [security considerations](../../security/tokens/index.md#security-considerations).
+see the [security considerations](../../security/tokens/_index.md#security-considerations).
 
 ## Trigger a pipeline
 

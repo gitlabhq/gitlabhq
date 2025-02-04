@@ -104,7 +104,7 @@ might be a better fit when the application has a number of moving parts.
 
 ## Docker image with multiple services
 
-[GitLab Docker image](../../install/docker/index.md) is based on the Linux package.
+[GitLab Docker image](../../install/docker/_index.md) is based on the Linux package.
 
 Considering that container spawned from this image contains multiple processes,
 these types of containers are also referred to as 'fat containers'.

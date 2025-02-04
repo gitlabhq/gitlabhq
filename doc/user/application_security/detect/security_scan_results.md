@@ -11,7 +11,7 @@ analyzing, and remediating vulnerabilities.
 
 During feature development, security scan results are shown in the pipeline and merge request. For
 VS Code users, the
-[GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/index.md) also
+[GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md) also
 shows security scan results. Identifying risks during development means they can be
 evaluated and remediated proactively.
 

@@ -240,7 +240,7 @@ You cannot add your license because there is no **Subscription** area.
 This issue might occur if:
 
 - You're running GitLab Community Edition. Before you add your license, you
-  must [upgrade to Enterprise Edition](../update/index.md#community-to-enterprise-edition).
+  must [upgrade to Enterprise Edition](../update/_index.md#community-to-enterprise-edition).
 - You're using GitLab.com. You cannot add a GitLab Self-Managed license to GitLab.com.
   To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/gitlab_com/index.md).
 

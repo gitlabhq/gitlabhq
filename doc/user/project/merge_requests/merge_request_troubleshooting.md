@@ -182,7 +182,7 @@ exists, you can still check out the branch, as it isn't affected.
 glab mr checkout <merge_request_iid>
 ```
 
-More information on the [GitLab terminal client](../../../editor_extensions/gitlab_cli/index.md).
+More information on the [GitLab terminal client](../../../editor_extensions/gitlab_cli/_index.md).
 
 ### Check out locally by adding a Git alias
 

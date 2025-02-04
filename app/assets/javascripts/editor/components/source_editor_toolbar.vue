@@ -63,6 +63,8 @@ export default {
     <div
       v-if="hasGroupItems($options.groups.edit)"
       class="md-header-toolbar gl-ml-auto gl-flex gl-flex-wrap gl-gap-3"
+      role="toolbar"
+      :aria-label="__('Editor toolbar')"
     >
       <source-editor-toolbar-button
         v-for="item in getGroupItems($options.groups.edit)"

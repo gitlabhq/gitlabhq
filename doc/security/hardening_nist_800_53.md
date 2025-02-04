@@ -2,9 +2,8 @@
 stage: GitLab Dedicated
 group: US Public Sector Services
 info: All material changes to this page must be approved by the [FedRAMP Compliance team](https://about.gitlab.com/handbook/security/security-assurance/dedicated-compliance/index.md). To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments.
+title: NIST 800-53 compliance
 ---
-
-# NIST 800-53 compliance
 
 DETAILS:
 **Tier:** Ultimate
@@ -354,7 +353,7 @@ understand the applicable compliance requirements.
 Once audit events have been configured, those events must be monitored.
 GitLab provides a centralized management interface for compiling system
 alerts from a SIEM or other security tooling, triaging alerts and
-incidents, and informing stakeholders. The [incident management documentation](../operations/incident_management/index.md)
+incidents, and informing stakeholders. The [incident management documentation](../operations/incident_management/_index.md)
 outlines how GitLab can be used to run the aforementioned activities
 in a security incident response organization.
 
@@ -460,11 +459,11 @@ GitLab provides extensive documentation on the architectures supported
 in a self-managed instance. GitLab supports the following cloud service
 providers:
 
-- [Azure](../install/azure/index.md)
+- [Azure](../install/azure/_index.md)
 
-- [Google Cloud Platform](../install/google_cloud_platform/index.md)
+- [Google Cloud Platform](../install/google_cloud_platform/_index.md)
 
-- [Amazon Web Services](../install/aws/index.md)
+- [Amazon Web Services](../install/aws/_index.md)
 
 GitLab provides a [decision tree for assisting customers with selecting reference architectures and availability models](../administration/reference_architectures/index.md#decision-tree).
 Most cloud service providers provide resiliency in a region for
@@ -700,7 +699,7 @@ access tokens (personal access tokens not supported by FIPS) and OAuth
 
 #### Extensions
 
-[Extensions](../editor_extensions/index.md)
+[Extensions](../editor_extensions/_index.md)
 may meet NIST 800-53 requirements depending on which integrations are
 established. Editor and IDE extensions, for example, may be permissible
 whereas integrations with third parties may violate authorization

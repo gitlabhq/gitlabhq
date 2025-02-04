@@ -128,72 +128,13 @@ The token also includes custom claims provided by GitLab:
 The ID token is encoded by using RS256 and signed with a dedicated private key. The expiry time for the token is set to
 the job's timeout if specified, or 5 minutes if no timeout is specified.
 
-## Manual ID Token authentication
+## ID Token authentication with third party services
 
 You can use ID tokens for OIDC authentication with a third party service. For example:
 
-```yaml
-manual_authentication:
-  variables:
-    VAULT_ADDR: http://vault.example.com:8200
-  image: vault:latest
-  id_tokens:
-    VAULT_ID_TOKEN:
-      aud: http://vault.example.com
-  script:
-    - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-example jwt=$VAULT_ID_TOKEN)"
-    - export PASSWORD="$(vault kv get -field=password secret/myproject/example/db)"
-    - my-authentication-script.sh $VAULT_TOKEN $PASSWORD
-```
-
-## Automatic ID Token authentication with HashiCorp Vault
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
-[`secrets`](../yaml/index.md#secrets) keyword.
-
-If you previously used `CI_JOB_JWT` to fetch secrets from Vault, learn how to switch
-to ID tokens with the [Update HashiCorp Vault configuration to use ID Tokens](convert-to-id-tokens.md) tutorial.
-
-### Configure automatic ID Token authentication
-
-If one ID token is defined, the `secrets` keyword automatically uses it to authenticate with Vault. For example:
-
-```yaml
-job_with_secrets:
-  id_tokens:
-    VAULT_ID_TOKEN:
-      aud: https://vault.example.com
-  secrets:
-    PROD_DB_PASSWORD:
-      vault: example/db/password # authenticates using $VAULT_ID_TOKEN
-  script:
-    - access-prod-db.sh --token $PROD_DB_PASSWORD
-```
-
-If more than one ID token is defined, use the `token` keyword to specify which token should be used. For example:
-
-```yaml
-job_with_secrets:
-  id_tokens:
-    FIRST_ID_TOKEN:
-      aud: https://first.service.com
-    SECOND_ID_TOKEN:
-      aud: https://second.service.com
-  secrets:
-    FIRST_DB_PASSWORD:
-      vault: first/db/password
-      token: $FIRST_ID_TOKEN
-    SECOND_DB_PASSWORD:
-      vault: second/db/password
-      token: $SECOND_ID_TOKEN
-  script:
-    - access-first-db.sh --token $FIRST_DB_PASSWORD
-    - access-second-db.sh --token $SECOND_DB_PASSWORD
-```
+- [HashiCorp Vault](hashicorp_vault.md)
+- [Google Cloud Secret Manager](gcp_secret_manager.md#configure-gitlab-cicd-to-use-gcp-secret-manager-secrets)
+- [Azure Key Vault](azure_key_vault.md#use-azure-key-vault-secrets-in-a-cicd-job)
 
 ## Troubleshooting
 

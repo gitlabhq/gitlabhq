@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Steps after installing GitLab
 ---
-
-# Steps after installing GitLab
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -37,7 +36,7 @@ installation.
 
 ## Security
 
-- [Secure GitLab](../security/index.md):
+- [Secure GitLab](../security/_index.md):
   Recommended practices to secure your GitLab instance.
 - Sign up for the GitLab [Security Newsletter](https://about.gitlab.com/company/preference-center/) to get notified for security updates upon release.
 
@@ -51,7 +50,7 @@ installation.
 
 - [Back up and restore GitLab](../administration/backup_restore/index.md): Learn the different
   ways you can back up or restore GitLab.
-- [Upgrade GitLab](../update/index.md): Every month, a new feature-rich GitLab version
+- [Upgrade GitLab](../update/_index.md): Every month, a new feature-rich GitLab version
   is released. Learn how to upgrade to it, or to an interim release that contains a security fix.
 - [Release and maintenance policy](../policy/maintenance.md): Learn about GitLab
   policies governing version naming, as well as release pace for major, minor and patch releases.

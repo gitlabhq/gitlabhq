@@ -3,9 +3,8 @@ stage: Systems
 group: Distribution
 description: Prerequisites for installation.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab installation requirements
 ---
-
-# GitLab installation requirements
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -119,7 +118,7 @@ The main GitLab application uses three schemas:
 
 During Rails database migrations, GitLab might create or modify schemas or tables.
 Database migrations are tested against the schema definition in the GitLab codebase.
-If you modify any schema, [GitLab upgrades](../update/index.md) might fail.
+If you modify any schema, [GitLab upgrades](../update/_index.md) might fail.
 
 ### PostgreSQL tuning
 
@@ -228,4 +227,4 @@ Running GitLab with JavaScript disabled in these browsers is not supported.
 ## Related topics
 
 - [Install GitLab Runner](https://docs.gitlab.com/runner/install/)
-- [Secure your installation](../security/index.md)
+- [Secure your installation](../security/_index.md)

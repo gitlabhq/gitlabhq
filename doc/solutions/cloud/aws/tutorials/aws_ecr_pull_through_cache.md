@@ -3,9 +3,8 @@ stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 description: "Integrations Solutions Index for GitLab and AWS."
+title: 'Tutorial: Configuring AWS ECR Pull Through Cache Rules for Authenticated Access to GitLab.com Projects'
 ---
-
-# Tutorial: Configuring AWS ECR Pull Through Cache Rules for Authenticated Access to GitLab.com Projects
 
 1. Open the Amazon ECR console at <https://console.aws.amazon.com/ecr/>.
 

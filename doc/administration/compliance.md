@@ -13,7 +13,7 @@ DETAILS:
 GitLab compliance features ensure your GitLab instance meets common compliance standards, and are available at various pricing tiers. For more information about compliance management, see the compliance
 management [solutions page](https://about.gitlab.com/solutions/compliance/).
 
-The [security features](../security/index.md) in GitLab may also help you meet relevant compliance standards.
+The [security features](../security/_index.md) in GitLab may also help you meet relevant compliance standards.
 
 ## Policy management
 

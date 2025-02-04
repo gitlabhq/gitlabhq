@@ -53,7 +53,7 @@ Set up incident management features to troubleshoot issues and resolve incidents
 
 For more information, see:
 
-- [Incident Management](../../operations/incident_management/index.md)
+- [Incident Management](../../operations/incident_management/_index.md)
 
 ## Step 4: Analyze and improve
 

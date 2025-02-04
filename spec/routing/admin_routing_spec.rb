@@ -213,3 +213,10 @@ RSpec.describe Admin::RunnersController, "routing" do
     expect(get("/admin/runners/runner_setup_scripts")).to route_to('admin/runners#runner_setup_scripts')
   end
 end
+
+RSpec.describe Admin::ApplicationSettingsController, 'routing', feature_category: :global_search do
+  it 'redirects /search to #search' do
+    expect(get('/admin/application_settings/search')).to route_to('admin/application_settings#search')
+    expect(patch('/admin/application_settings/search')).to route_to('admin/application_settings#search')
+  end
+end

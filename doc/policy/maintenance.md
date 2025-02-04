@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab release and maintenance policy
 ---
-
-# GitLab release and maintenance policy
 
 The [Delivery Group](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/delivery/) are the owners of the maintenance policy and must approve any requested updates. This follows our [DRI model](https://handbook.gitlab.com/handbook/people-group/directly-responsible-individuals/) and is in place to ensure predictability for customers.
 
@@ -59,7 +58,7 @@ Version-specific change documentation for Linux packages is available for:
 - [GitLab 16](../update/versions/gitlab_16_changes.md)
 - [GitLab 15](../update/versions/gitlab_15_changes.md)
 
-Instructions are available for downloading the Linux package locally and [manually installing](../update/package/index.md#by-using-a-downloaded-package) it.
+Instructions are available for downloading the Linux package locally and [manually installing](../update/package/_index.md#by-using-a-downloaded-package) it.
 
 A step-by-step guide to [upgrading the Linux package-bundled PostgreSQL is documented separately](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 

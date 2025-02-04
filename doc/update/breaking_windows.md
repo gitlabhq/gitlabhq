@@ -3,9 +3,8 @@ stage: none
 group: none
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 noindex: true
+title: Breaking change deployments on GitLab.com
 ---
-
-# Breaking change deployments on GitLab.com
 
 Changes are deployed continuously to GitLab.com. However, breaking changes
 can require more time to prepare for.

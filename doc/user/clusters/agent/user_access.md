@@ -162,7 +162,7 @@ Prerequisites:
 
 ### Configure local access with the GitLab CLI (recommended)
 
-You can use the [GitLab CLI `glab`](../../../editor_extensions/gitlab_cli/index.md) to create or update
+You can use the [GitLab CLI `glab`](../../../editor_extensions/gitlab_cli/_index.md) to create or update
 a Kubernetes configuration file to access the agent Kubernetes API.
 
 Use `glab cluster agent` commands to manage cluster connections:

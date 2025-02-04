@@ -472,7 +472,7 @@ registry to the target project's [job token allowlist](jobs/ci_job_token.md#add-
 
 These errors might also happen when trying to use a [project access token](../user/project/settings/project_access_tokens.md)
 to access images in another project. Project access tokens are scoped to one project,
-and therefore cannot access images in other projects. You must use [a different token type](../security/tokens/index.md)
+and therefore cannot access images in other projects. You must use [a different token type](../security/tokens/_index.md)
 with wider scope.
 
 ### `Something went wrong on our end` message or `500` error when running a pipeline

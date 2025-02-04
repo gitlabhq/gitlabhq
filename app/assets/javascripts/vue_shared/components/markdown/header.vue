@@ -322,6 +322,7 @@ export default {
     ),
     hidePreview: __('Continue editing'),
     preview: __('Preview'),
+    editorToolbar: __('Editor toolbar'),
   },
 };
 </script>
@@ -336,7 +337,11 @@ export default {
         data-testid="md-header-toolbar"
         class="md-header-toolbar gl-flex gl-grow gl-items-start gl-gap-y-2 gl-py-3"
       >
-        <div class="gl-flex gl-flex-wrap gl-gap-y-2">
+        <div
+          class="gl-flex gl-flex-wrap gl-gap-y-2"
+          role="toolbar"
+          :aria-label="$options.i18n.editorToolbar"
+        >
           <gl-button
             v-if="enablePreview"
             data-testid="preview-toggle"

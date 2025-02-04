@@ -707,8 +707,9 @@ For secrets management in GitLab, you can use one of the supported integrations
 for an external service. These services securely store secrets outside of your GitLab project,
 though you must have a subscription for the service:
 
-- [HashiCorp Vault](../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
-- [Azure Key Vault](../secrets/azure_key_vault.md).
+- [HashiCorp Vault](../secrets/hashicorp_vault.md)
+- [Azure Key Vault](../secrets/azure_key_vault.md)
+- [Google Cloud Secret Manager](../secrets/gcp_secret_manager.md)
 
 GitLab also supports [OIDC authentication](../secrets/id_token_authentication.md)
 for other third party services that support OIDC.

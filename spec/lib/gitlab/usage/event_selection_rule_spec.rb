@@ -51,6 +51,24 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
         expect(event_selection_rule.redis_key_for_date)
           .to eq('{event_counters}_example_event-filter:[label:npm,property:deploy_token]')
       end
+
+      context 'with unique identifier' do
+        let(:event_selection_rule) do
+          described_class.new(
+            name: 'example_event',
+            time_framed: false,
+            filter: filter,
+            unique_identifier_name: :user
+          )
+        end
+
+        it 'returns the correct key with filter' do
+          expect(event_selection_rule.redis_key_for_date)
+            .to eq('{hll_counters}_example_event-filter:[label:npm,property:deploy_token]-user')
+
+          expect(event_selection_rule.redis_key_for_date).to match(Gitlab::Redis::HLL::KEY_REGEX)
+        end
+      end
     end
 
     context "when time framed" do

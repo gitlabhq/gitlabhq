@@ -3,9 +3,8 @@ stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code."
+title: CI/CD pipelines in the VS Code extension
 ---
-
-# CI/CD pipelines in the VS Code extension
 
 If your GitLab project uses CI/CD pipelines, you can start, watch, and debug CI/CD pipelines from the
 GitLab Workflow extension for VS Code. When you work locally on a Git branch, the bottom status bar

@@ -80,7 +80,7 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 
 - Use a long root password, stored in a vault.
 - Install trusted SSL certificate and establish a process for renewal and revocation.
-- [Configure SSH key restrictions](../security/ssh_keys_restrictions.md#restrict-allowed-ssh-key-technologies-and-minimum-length) per your organization's guidelines.
+- [Configure SSH key restrictions](../security/ssh_keys_restrictions.md) per your organization's guidelines.
 - [Disable new sign-ups](settings/sign_up_restrictions.md#disable-new-sign-ups).
 - Require email confirmation.
 - Set password length limit, configure SSO or SAML user management.

@@ -36,6 +36,7 @@ module Admin
     feature_category :integrations, [:integrations, :slack_app_manifest_share, :slack_app_manifest_download]
     feature_category :pages, [:lets_encrypt_terms_of_service]
     feature_category :observability, [:reset_error_tracking_access_token]
+    feature_category :global_search, [:search]
 
     VALID_SETTING_PANELS = %w[general repository
       ci_cd reporting metrics_and_profiling

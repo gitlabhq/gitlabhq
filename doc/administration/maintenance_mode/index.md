@@ -174,7 +174,7 @@ To monitor queues and disable jobs:
 
 ### Incident management
 
-[Incident management](../../operations/incident_management/index.md) functions are limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/manage_incidents.md#create-an-incident) are paused entirely. Notifications and paging on alerts and incidents are therefore disabled.
+[Incident management](../../operations/incident_management/_index.md) functions are limited. The creation of [alerts](../../operations/incident_management/alerts.md) and [incidents](../../operations/incident_management/manage_incidents.md#create-an-incident) are paused entirely. Notifications and paging on alerts and incidents are therefore disabled.
 
 ### Feature flags
 

@@ -5,7 +5,7 @@ description: Supported LLM Serving Platforms.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Self-hosted models supported platforms
+# GitLab Duo Self-Hosted supported platforms
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -86,7 +86,7 @@ Examples:
 1. [AWS Bedrock](https://aws.amazon.com/bedrock/).
    A fully managed service that allows developers to build and scale generative AI applications using pre-trained models from leading AI companies. It seamlessly integrates with other AWS services and offers a pay-as-you-go pricing model.
 
-   You must configure the GitLab instance with your appropriate AWS IAM permissions before accessing Bedrock models. You cannot do this in the self-hosted models UI. For example, you can authenticate the AI Gateway instance by defining the [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting the Docker image. For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+   You must configure the GitLab instance with your appropriate AWS IAM permissions before accessing Bedrock models. You cannot do this in the GitLab Duo Self-Hosted UI. For example, you can authenticate the AI Gateway instance by defining the [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting the Docker image. For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
 
    - [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
 

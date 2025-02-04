@@ -209,7 +209,9 @@ class ActiveSession
       session_keys.each_slice(SESSION_BATCH_SIZE).flat_map do |session_keys_batch|
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
           raw_sessions = if Gitlab::Redis::ClusterUtil.cluster?(redis)
-                           Gitlab::Redis::ClusterUtil.batch_get(session_keys_batch, redis)
+                           redis.with_readonly_pipeline do
+                             Gitlab::Redis::ClusterUtil.batch_get(session_keys_batch, redis)
+                           end
                          else
                            redis.mget(session_keys_batch)
                          end
@@ -261,7 +263,9 @@ class ActiveSession
     found = Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
       entry_keys = session_ids.map { |session_id| key_name(user_id, session_id) }
       entries = if Gitlab::Redis::ClusterUtil.cluster?(redis)
-                  Gitlab::Redis::ClusterUtil.batch_get(entry_keys, redis)
+                  redis.with_readonly_pipeline do
+                    Gitlab::Redis::ClusterUtil.batch_get(entry_keys, redis)
+                  end
                 else
                   redis.mget(entry_keys)
                 end
@@ -276,7 +280,9 @@ class ActiveSession
     fallbacks = Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
       entry_keys = missing.map { |session_id| key_name_v1(user_id, session_id) }
       entries = if Gitlab::Redis::ClusterUtil.cluster?(redis)
-                  Gitlab::Redis::ClusterUtil.batch_get(entry_keys, redis)
+                  redis.with_readonly_pipeline do
+                    Gitlab::Redis::ClusterUtil.batch_get(entry_keys, redis)
+                  end
                 else
                   redis.mget(entry_keys)
                 end

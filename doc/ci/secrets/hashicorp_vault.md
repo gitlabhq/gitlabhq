@@ -12,7 +12,7 @@ DETAILS:
 
 WARNING:
 Authenticating with `CI_JOB_JWT` was [deprecated in GitLab 15.9 and removed in GitLab 17.0](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated).
-Use [ID tokens to authenticate with HashiCorp Vault](id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
+Use [ID tokens to authenticate with HashiCorp Vault](hashicorp_vault.md#example)
 instead, as demonstrated on this page.
 
 NOTE:
@@ -311,6 +311,8 @@ to provide details about your Vault server:
   to use for reading secrets and authentication. If no namespace is specified, Vault uses the root (`/`) namespace.
   The setting is ignored by Vault Open Source.
 
+### Automatic ID token authentication with Hashicorp Vault
+
 The following job, when run for the default branch, can read secrets under `secret/myproject/staging/`,
 but not the secrets under `secret/myproject/production/`:
 
@@ -333,6 +335,45 @@ In this example:
 - `@secrets` - The vault name, where your Secrets Engines are enabled.
 - `secret/myproject/staging/db` - The path location of the secret in Vault.
 - `password` The field to be fetched in the referenced secret.
+
+If more than one ID token is defined, use the `token` keyword to specify which token should be used. For example:
+
+```yaml
+job_with_secrets:
+  id_tokens:
+    FIRST_ID_TOKEN:
+      aud: https://first.service.com
+    SECOND_ID_TOKEN:
+      aud: https://second.service.com
+  secrets:
+    FIRST_DB_PASSWORD:
+      vault: first/db/password
+      token: $FIRST_ID_TOKEN
+    SECOND_DB_PASSWORD:
+      vault: second/db/password
+      token: $SECOND_ID_TOKEN
+  script:
+    - access-first-db.sh --token $FIRST_DB_PASSWORD
+    - access-second-db.sh --token $SECOND_DB_PASSWORD
+```
+
+### Manual ID Token authentication
+
+You can use ID tokens to authenticate with HashiCorp Vault manually. For example:
+
+```yaml
+manual_authentication:
+  variables:
+    VAULT_ADDR: http://vault.example.com:8200
+  image: vault:latest
+  id_tokens:
+    VAULT_ID_TOKEN:
+      aud: http://vault.example.com
+  script:
+    - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=myproject-example jwt=$VAULT_ID_TOKEN)"
+    - export PASSWORD="$(vault kv get -field=password secret/myproject/example/db)"
+    - my-authentication-script.sh $VAULT_TOKEN $PASSWORD
+```
 
 ### Limit token access to Vault secrets
 

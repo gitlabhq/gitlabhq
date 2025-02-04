@@ -2,9 +2,8 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+title: Provision GitLab Instances on AWS
 ---
-
-# Provision GitLab Instances on AWS
 
 ## Available Infrastructure as Code for GitLab Instance Installation on AWS
 

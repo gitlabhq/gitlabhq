@@ -101,7 +101,7 @@ The results of this testing are [available publicly on the GPT wiki](https://git
 ## Setup instructions
 
 To install GitLab for this default reference architecture, use the standard
-[installation instructions](../../install/index.md).
+[installation instructions](../../install/_index.md).
 
 You can also optionally configure GitLab to use an [external PostgreSQL service](../postgresql/external.md)
 or [external object storage service](../object_storage.md). It improves performance and reliability, but at an increased complexity cost.

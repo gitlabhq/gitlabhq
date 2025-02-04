@@ -3,9 +3,8 @@ stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 description: "Integrations Solutions Index for GitLab and AWS."
+title: Integrate with AWS
 ---
-
-# Integrate with AWS
 
 Learn how to integrate GitLab and AWS.
 

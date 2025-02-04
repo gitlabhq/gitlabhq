@@ -3,9 +3,8 @@ stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Connect and use GitLab Duo in JetBrains IDEs."
+title: JetBrains troubleshooting
 ---
-
-# JetBrains troubleshooting
 
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/?sort=created_date&state=opened&first_page_size=100)
@@ -28,10 +27,10 @@ To enable debug logs in JetBrains:
 
 If you experience [certificate errors](#certificate-errors) or other connection errors, and
 use a HTTP proxy to connect to your GitLab instance, you must
-[configure the Language Server to use a proxy](../language_server/index.md#configure-the-language-server-to-use-a-proxy)
+[configure the Language Server to use a proxy](../language_server/_index.md#configure-the-language-server-to-use-a-proxy)
 for the GitLab Language Server.
 
-You can also [enable proxy authentication](../language_server/index.md#enable-proxy-authentication).
+You can also [enable proxy authentication](../language_server/_index.md#enable-proxy-authentication).
 
 ## Enable GitLab Language Server debug logs
 

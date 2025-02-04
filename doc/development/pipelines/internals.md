@@ -250,6 +250,28 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `code-backstage-qa-patterns` | Combination of `code-patterns`, `backstage-patterns`, and `qa-patterns`. |
 | `static-analysis-patterns`   | Only create jobs for Static Analytics configuration-related changes.     |
 
+## Custom exit codes
+
+GitLab CI uses custom exit codes to categorize different types of job failures. This helps with automated failure tracking and retry logic. To see which exit codes trigger automatic retries, check the retry rules in [GitLab global CI configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml).
+
+The table below lists current exit codes and their meanings:
+
+| exit code |                         Description   |
+|-----------|---------------------------------------|
+|110        | network connection error              |
+|111        | low disk space                        |
+|112        | known flaky test failure              |
+|160        | failed to upload/download job artifact|
+|161        | 5XX server error                      |
+|162        | Gitaly spawn failure                  |
+|163        | RSpec job timeout                     |
+|164        | Redis cluster error                   |
+|165        | segmentation fault                    |
+|166        | EEXIST: file already exists           |
+|167        | `gitlab.com` overloaded               |
+
+This list can be expanded as new failure patterns emerge. To avoid conflicts with standard Bash exit codes, new custom codes must be 160 or higher.
+
 ## Best Practices
 
 ### When to use `extends:`, `<<: *xyz` (YAML anchors), or `!reference`

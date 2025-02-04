@@ -473,9 +473,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       end
     end
 
-    context 'when global_search_users_tab feature flag is disabled' do
+    context 'when global_search_users_enabled setting is disabled' do
       before do
-        stub_feature_flags(global_search_users_tab: false)
+        stub_application_setting(global_search_users_enabled: false)
       end
 
       it 'does not return results' do
@@ -524,9 +524,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       end
     end
 
-    context 'when global_search_users_tab feature flag is disabled' do
+    context 'when global_search_users_enabled setting is disabled' do
       before do
-        stub_feature_flags(global_search_users_tab: false)
+        stub_application_setting(global_search_users_enabled: false)
       end
 
       it 'does not return results' do

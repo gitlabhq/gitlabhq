@@ -83,6 +83,16 @@ RSpec.describe ApplicationSettingsHelper do
         ])
     end
 
+    it 'contains search parameters' do
+      expected_fields = %i[
+        global_search_snippet_titles_enabled
+        global_search_users_enabled
+        global_search_issues_enabled
+        global_search_merge_requests_enabled
+      ]
+      expect(helper.visible_attributes).to include(*expected_fields)
+    end
+
     it 'contains GitLab for Slack app parameters' do
       params = %i[slack_app_enabled slack_app_id slack_app_secret slack_app_signing_secret slack_app_verification_token]
 
@@ -352,6 +362,28 @@ RSpec.describe ApplicationSettingsHelper do
       end
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#global_search_settings_checkboxes', feature_category: :global_search do
+    let_it_be(:application_setting) { build(:application_setting) }
+
+    before do
+      application_setting.global_search_issues_enabled = true
+      application_setting.global_search_merge_requests_enabled = false
+      application_setting.global_search_users_enabled = false
+      application_setting.global_search_snippet_titles_enabled = true
+      helper.instance_variable_set(:@application_setting, application_setting)
+    end
+
+    it 'returns correctly checked checkboxes' do
+      helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
+        result = helper.global_search_settings_checkboxes(form)
+        expect(result[0]).to have_checked_field('Enable issues tab in global search results', with: 1)
+        expect(result[1]).not_to have_checked_field('Enable merge requests tab in global search results', with: 1)
+        expect(result[2]).to have_checked_field('Enable snippet tab in global search results', with: 1)
+        expect(result[3]).not_to have_checked_field('Enable users tab in global search results', with: 1)
+      end
     end
   end
 

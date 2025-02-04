@@ -81,7 +81,7 @@ https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+A
 ```
 
 WARNING:
-Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/index.md#security-considerations)
+Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/_index.md#security-considerations)
 for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
 
 ## Revoke or rotate a personal access token

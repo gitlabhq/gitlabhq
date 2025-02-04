@@ -3,9 +3,8 @@ stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 description: Doing SRE for Gitaly instances on AWS.
+title: SRE Considerations for Gitaly on AWS
 ---
-
-# SRE Considerations for Gitaly on AWS
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

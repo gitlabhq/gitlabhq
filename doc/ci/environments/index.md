@@ -731,7 +731,7 @@ or human error can cause major issues with an environment. Things like:
 - An operator misconfigures infrastructure.
 - A bug is introduced into the production application code.
 
-You can use [incident management](../../operations/incident_management/index.md)
+You can use [incident management](../../operations/incident_management/_index.md)
 to get alerts when there are critical issues that need immediate attention.
 
 ### View the latest alerts for environments
