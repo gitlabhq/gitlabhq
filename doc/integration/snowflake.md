@@ -14,7 +14,7 @@ DETAILS:
 
 The Snowflake [GitLab Data Connector](https://app.snowflake.com/marketplace/listing/GZTYZXESENG/gitlab-gitlab-data-connector) pulls data into [Snowflake](https://www.snowflake.com/en/).
 
-In Snowflake you can then view, combine, manipulate, and report on all of the data. The GitLab Data Connector is based on [GitLab REST APIs](../api/rest/index.md) and
+In Snowflake you can then view, combine, manipulate, and report on all of the data. The GitLab Data Connector is based on [GitLab REST APIs](../api/rest/_index.md) and
 requires both Snowflake and GitLab configuration.
 
 ## Prerequisites

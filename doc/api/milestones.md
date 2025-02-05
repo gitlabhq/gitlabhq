@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Project milestones API
 ---
-
-# Project milestones API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -33,7 +32,7 @@ Parameters:
 
 | Attribute                         | Type   | Required | Description |
 | ----------------------------      | ------ | -------- | ----------- |
-| `id`                              | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`                              | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `iids[]`                          | integer array | no | Return only the milestones having the given `iid`. Ignored if `include_ancestors` is `true`.  |
 | `state`                           | string | no | Return only `active` or `closed` milestones |
 | `title`                           | string | no | Return only the milestones having the given `title` |
@@ -79,7 +78,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Create new milestone
@@ -94,7 +93,7 @@ Parameters:
 
 | Attribute     | Type           | Required | Description                                                                                                     |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `title`       | string         | yes      | The title of a milestone                                                                                        |
 | `description` | string         | no       | The description of the milestone                                                                                |
 | `due_date`    | string         | no       | The due date of the milestone (`YYYY-MM-DD`)                                                                    |
@@ -112,7 +111,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 | `title`        | string         | no       | The title of a milestone                                                                                        |
 | `description`  | string         | no       | The description of the milestone                                                                                |
@@ -135,7 +134,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Get all issues assigned to a single milestone
@@ -150,7 +149,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Get all merge requests assigned to a single milestone
@@ -165,7 +164,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Promote project milestone to a group milestone
@@ -183,7 +182,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
 ## Get all burndown chart events for a single milestone
@@ -202,5 +201,5 @@ Parameters:
 
 | Attribute      | Type           | Required | Description                                                                                                     |
 |----------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |

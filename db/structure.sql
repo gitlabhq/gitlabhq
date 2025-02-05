@@ -26738,6 +26738,9 @@ ALTER TABLE approval_merge_request_rules
 ALTER TABLE sbom_occurrences_vulnerabilities
     ADD CONSTRAINT check_a02e48df9c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE issue_links
+    ADD CONSTRAINT check_c32f659c75 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 

@@ -2,9 +2,8 @@
 stage: Growth
 group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Experiments API (GitLab team only)
 ---
-
-# Experiments API (GitLab team only)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

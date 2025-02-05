@@ -295,7 +295,7 @@ and helps ensure consistent behavior.
 
 Test changes in a CI/CD pipeline (like any other project) by creating a `.gitlab-ci.yml`
 in the root directory. Make sure to test both the behavior and potential side-effects
-of the component. You can use the [GitLab API](../../api/rest/index.md) if needed.
+of the component. You can use the [GitLab API](../../api/rest/_index.md) if needed.
 
 For example:
 
@@ -630,7 +630,7 @@ Prerequisites:
   - Have at least one [CI/CD component in the `templates/` directory](#directory-structure)
     for the commit SHA of the tag being released.
 - You must use the [`release` keyword](../yaml/index.md#release) in a CI/CD job to create the release,
-  not the [Releases API](../../api/releases/index.md#create-a-release).
+  not the [Releases API](../../api/releases/_index.md#create-a-release).
 
 To publish a new version of the component to the catalog:
 

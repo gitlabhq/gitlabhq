@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group webhooks API
 ---
-
-# Group webhooks API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -29,7 +28,7 @@ Supported attributes:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -96,7 +95,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer        | yes      | The ID of a group hook. |
 
 Example request:
@@ -161,7 +160,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description                                                                                                                                                                                 |
 |-----------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                                                                                                          |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                          |
 | `hook_id` | integer           | Yes      | The ID of a project hook.                                                                                                                                                                   |
 | `status` | integer or string | No | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
 | `page`             | integer | No | Page to retrieve. Defaults to `1`.                                                                                                                                                          |
@@ -442,7 +441,7 @@ Supported attributes:
 
 | Attribute | Type             | Required | Description             |
 |-----------|------------------|----------|-------------------------|
-| `id`      | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer          | Yes      | The ID of a group hook. |
 | `hook_event_id`      | integer | Yes      | The ID of a hook event. |
 
@@ -472,7 +471,7 @@ Supported attributes:
 
 | Attribute                    | Type           | Required | Description |
 | -----------------------------| -------------- |----------| ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `url`                        | string         | yes      | The hook URL. |
 | `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
 | `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
@@ -558,7 +557,7 @@ Supported attributes:
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id`                    | integer        | yes      | The ID of the group hook. |
 | `url`                        | string         | yes      | The hook URL. |
 | `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
@@ -652,7 +651,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
 Example request:
@@ -681,7 +680,7 @@ POST /groups/:id/hooks/:hook_id/test/:trigger
 | Attribute | Type              | Required | Description                                                                                                                                                                                                                                                |
 |-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `hook_id` | integer           | Yes      | The ID of the group hook.                                                                                                                                                                                                                                  |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                                                                                                                                                                           |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                                                                                           |
 | `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example request:
@@ -710,7 +709,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the custom header. |
 | `value`   | string            | Yes      | The value of the custom header. |
@@ -737,7 +736,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the custom header. |
 
@@ -761,7 +760,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the URL variable. |
 | `value`   | string            | Yes      | The value of the URL variable. |
@@ -786,7 +785,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | The ID of the group hook. |
 | `key`     | string            | Yes      | The key of the URL variable. |
 

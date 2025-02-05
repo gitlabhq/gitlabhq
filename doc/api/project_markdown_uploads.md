@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Markdown uploads API
 ---
-
-# Markdown uploads API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -30,7 +29,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
 | `file`    | string            | Yes      | File to be uploaded. |
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 To upload a file from your file system, use the `--form` argument. This causes cURL to post data using the
 `Content-Type: multipart/form-data` header. The `file=` parameter must point to a file on your file system and be
@@ -78,7 +77,7 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -129,7 +128,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |:------------|:------------------|:---------|:------------|
-| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | ID of the upload. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the uploaded file in the response body.
@@ -158,7 +157,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description |
 |:-----------|:------------------|:---------|:------------|
-| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `secret`   | string            | Yes      | 32-character secret of the upload. |
 | `filename` | string            | Yes      | Filename of the upload. |
 
@@ -188,7 +187,7 @@ Supported attributes:
 
 | Attribute   | Type              | Required | Description |
 |:------------|:------------------|:---------|:------------|
-| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `upload_id` | integer           | Yes      | ID of the upload. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) status code without any response body.
@@ -217,7 +216,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description |
 |:-----------|:------------------|:---------|:------------|
-| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `secret`   | string            | Yes      | 32-character secret of the upload. |
 | `filename` | string            | Yes      | Filename of the upload. |
 

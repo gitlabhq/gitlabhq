@@ -99,8 +99,8 @@ For full control over the migration process, you can write your own custom scrip
 your Jira issues to GitLab in a way that suits your needs exactly. GitLab provides APIs to help
 automate your migration:
 
-- [REST API](../../../api/rest/index.md)
-- [GraphQL API](../../../api/graphql/index.md)
+- [REST API](../../../api/rest/_index.md)
+- [GraphQL API](../../../api/graphql/_index.md)
 
 To get started, familiarize yourself with the following GitLab API endpoints:
 

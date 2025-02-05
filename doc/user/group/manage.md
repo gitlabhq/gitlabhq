@@ -55,7 +55,7 @@ member with the Owner role.
 
 Changing a group's path (group URL) can have unintended side effects. Read how redirects behave
 for [projects](../project/repository/index.md#repository-path-changes)
-and in the [API](../../api/rest/index.md#redirects)
+and in the [API](../../api/rest/_index.md#redirects)
 before you proceed.
 
 If you are changing the path so it can be claimed by another group or user,

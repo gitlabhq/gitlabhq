@@ -73,7 +73,7 @@ Features or configuration can only be removed/changed in a major release.
 
 They must be [deprecated in advance](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
 
-For API removals, see the [GraphQL](../../api/graphql/index.md#deprecation-and-removal-process) and [GitLab API](../documentation/restful_api_styleguide.md#deprecations) guidelines.
+For API removals, see the [GraphQL](../../api/graphql/_index.md#deprecation-and-removal-process) and [GitLab API](../documentation/restful_api_styleguide.md#deprecations) guidelines.
 
 For configuration removals, see the [Omnibus deprecation policy](../../administration/package_information/deprecation_policy.md).
 

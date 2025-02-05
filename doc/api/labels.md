@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Labels API
 ---
-
-# Labels API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -16,7 +15,7 @@ Interact with [labels](../user/project/labels.md) using the REST API.
 
 Get all labels for a given project.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 ```plaintext
 GET /projects/:id/labels
@@ -24,7 +23,7 @@ GET /projects/:id/labels
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | -------        | -------- | ---------------------                                                                                                                                                        |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                                              |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                                              |
 | `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 | `search` | string | no | Keyword to filter labels by. |
@@ -120,7 +119,7 @@ GET /projects/:id/labels/:label_id
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | -------        | -------- | ---------------------                                                                                                                                                        |
-| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                                              |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                                              |
 | `label_id` | integer or string | yes | The ID or title of a project's label. |
 | `include_ancestor_groups` | boolean | no | Include ancestor groups. Defaults to `true`. |
 
@@ -157,7 +156,7 @@ POST /projects/:id/labels
 
 | Attribute     | Type    | Required | Description                  |
 | ------------- | ------- | -------- | ---------------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description` | string  | no       | The description of the label |
@@ -196,7 +195,7 @@ DELETE /projects/:id/labels/:label_id
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`            | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`            | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 
 ```shell
@@ -217,7 +216,7 @@ PUT /projects/:id/labels/:label_id
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 | `new_name`      | string  | yes if `color` is not provided    | The new name of the label        |
 | `color`         | string  | yes if `new_name` is not provided | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
@@ -261,7 +260,7 @@ PUT /projects/:id/labels/:label_id/promote
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes | The ID or title of a group's label. |
 
 ```shell
@@ -299,7 +298,7 @@ POST /projects/:id/labels/:label_id/subscribe
 
 | Attribute  | Type              | Required | Description                          |
 | ---------- | ----------------- | -------- | ------------------------------------ |
-| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
 ```shell
@@ -337,7 +336,7 @@ POST /projects/:id/labels/:label_id/unsubscribe
 
 | Attribute  | Type              | Required | Description                          |
 | ---------- | ----------------- | -------- | ------------------------------------ |
-| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer or string    | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
 ```shell

@@ -17,14 +17,14 @@ title: GraphQL API resources
 
 This documentation is self-generated based on GitLab current GraphQL schema.
 
-The API can be explored using the [interactive GraphQL explorer](../index.md#interactive-graphql-explorer). Developers can also [generate a machine-readable GraphQL schema in IDL and JSON formats](../../../development/rake_tasks.md#update-machine-readable-schema-files).
+The API can be explored using the [interactive GraphQL explorer](../_index.md#interactive-graphql-explorer). Developers can also [generate a machine-readable GraphQL schema in IDL and JSON formats](../../../development/rake_tasks.md#update-machine-readable-schema-files).
 
 Each table below documents a GraphQL type. Types match loosely to models, but not all
 fields and methods on a model are available via GraphQL.
 
 WARNING:
 Fields that are deprecated are marked with **{warning-solid}**.
-Items (fields, enums, etc) that have been removed according to our [deprecation process](../index.md#deprecation-and-removal-process) can be found
+Items (fields, enums, etc) that have been removed according to our [deprecation process](../_index.md#deprecation-and-removal-process) can be found
 in [Removed Items](../removed_items.md).
 
 <!-- vale off -->
@@ -19598,7 +19598,7 @@ Self-hosted LLM servers.
 
 ### `AiUsageData`
 
-Usage data for events stored in the default PostgreSQL database. Data retained for three months. Requires a personal access token. Ultimate with GitLab Duo Enterprise only.
+Usage data for events stored in the default PostgreSQL database. Data retained for three months. Requires a personal access token. Endpoint works only on the top-level group. Ultimate with GitLab Duo Enterprise only.
 
 #### Fields
 

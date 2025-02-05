@@ -1,18 +1,22 @@
+import { cloneDeep } from 'lodash';
 import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
 import {
   addHierarchyChild,
   removeHierarchyChild,
   addHierarchyChildren,
   setNewWorkItemCache,
+  updateCacheAfterCreatingNote,
   updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
-import { findHierarchyWidgets } from '~/work_items/utils';
+import { findHierarchyWidgets, findNotesWidget } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import {
-  workItemHierarchyResponse,
   childrenWorkItems,
+  createWorkItemNoteResponse,
+  mockWorkItemNotesByIidResponse,
+  workItemHierarchyResponse,
   workItemResponseFactory,
 } from '../mock_data';
 
@@ -459,6 +463,46 @@ describe('work items graphql cache utils', () => {
           }),
         }),
       );
+    });
+  });
+
+  describe('updateCacheAfterCreatingNote', () => {
+    const findDiscussions = ({ workspace }) =>
+      findNotesWidget(workspace.workItem).discussions.nodes;
+
+    it('adds a new discussion to the notes widget', () => {
+      const currentNotes = mockWorkItemNotesByIidResponse.data;
+      const newNote = createWorkItemNoteResponse().data.createNote.note;
+
+      expect(findDiscussions(currentNotes)).toHaveLength(3);
+
+      const updatedNotes = updateCacheAfterCreatingNote(currentNotes, newNote);
+
+      expect(findDiscussions(updatedNotes)).toHaveLength(4);
+      expect(findDiscussions(updatedNotes).at(-1)).toBe(newNote.discussion);
+    });
+
+    it('does not modify notes widget when newNote is undefined', () => {
+      const currentNotes = mockWorkItemNotesByIidResponse.data;
+      const newNote = undefined;
+
+      expect(findDiscussions(currentNotes)).toHaveLength(3);
+
+      const updatedNotes = updateCacheAfterCreatingNote(currentNotes, newNote);
+
+      expect(findDiscussions(updatedNotes)).toHaveLength(3);
+    });
+
+    it('does not add duplicate discussions', () => {
+      const currentNotes = cloneDeep(mockWorkItemNotesByIidResponse.data);
+      const newNote = createWorkItemNoteResponse().data.createNote.note;
+      findDiscussions(currentNotes).push(newNote.discussion);
+
+      expect(findDiscussions(currentNotes)).toHaveLength(4);
+
+      const updatedNotes = updateCacheAfterCreatingNote(currentNotes, newNote);
+
+      expect(findDiscussions(updatedNotes)).toHaveLength(4);
     });
   });
 

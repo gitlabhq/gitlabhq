@@ -356,7 +356,7 @@ Now, it's time to create the database:
 
 1. Go to the RDS dashboard, select **Databases** from the left menu, and select **Create database**.
 1. Select **Standard Create** for the database creation method.
-1. Select **PostgreSQL** as the database engine and select the minimum PostgreSQL version as defined for your GitLab version in our [database requirements](../../install/requirements.md#postgresql).
+1. Select **PostgreSQL** as the database engine and select the minimum PostgreSQL version as defined for your GitLab version in our [database requirements](../requirements.md#postgresql).
 1. Because this is a production server, let's choose **Production** from the **Templates** section.
 1. Under **Availability & durability**, select **Multi-AZ DB instance** to have a standby RDS instance provisioned in a different [Availability Zone](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
 1. Under **Settings**, use:
@@ -422,7 +422,7 @@ persistence and is used to store session data, temporary cache information, and 
 1. Under **Cluster info** give the cluster a name (`gitlab-redis`) and a description.
 1. Under **Location** select **AWS Cloud** and enable **Multi-AZ** option.
 1. In the Cluster settings section:
-   1. For the Engine version, select the Redis version as defined for your GitLab version in our [Redis requirements](../../install/requirements.md#redis).
+   1. For the Engine version, select the Redis version as defined for your GitLab version in our [Redis requirements](../requirements.md#redis).
    1. Leave the port as `6379` because this is what we used in our Redis security group above.
    1. Select the node type (at least `cache.t3.medium`, but adjust to your needs) and the number of replicas.
 1. In the Connectivity settings section:
@@ -514,7 +514,7 @@ From the EC2 dashboard:
 
 1. Use the section below titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI and select **Launch**.
 1. In the **Name and tags** section, set the **Name** to `GitLab`.
-1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../../install/requirements.md) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
+1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../requirements.md) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `gitlab`) and save the `gitlab.pem` file for later use.
 1. In the **Network settings** section:

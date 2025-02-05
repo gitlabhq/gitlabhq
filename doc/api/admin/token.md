@@ -3,9 +3,8 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Documentation for the REST API that exposes token information."
+title: Token information API
 ---
-
-# Token information API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -38,7 +37,7 @@ Prerequisites:
 Gets information for a given token. This endpoint supports the following tokens:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
-- [Impersonation tokens](../../api/rest/authentication.md#impersonation-tokens)
+- [Impersonation tokens](../rest/authentication.md#impersonation-tokens)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)
 - [Feed tokens](../../security/tokens/_index.md#feed-token)
 - [OAuth application secrets](../../integration/oauth_provider.md)

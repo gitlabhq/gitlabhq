@@ -505,7 +505,7 @@ agent to be authorized is [not yet implemented](https://gitlab.com/gitlab-org/gi
 
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](../../api/rest/index.md#namespaced-paths) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](../../api/rest/_index.md#namespaced-paths) |
 
 ```plaintext
 GET /internal/kubernetes/project_info

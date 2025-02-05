@@ -2,9 +2,8 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Linked epics API
 ---
-
-# Linked epics API
 
 DETAILS:
 **Tier:** Ultimate
@@ -17,7 +16,7 @@ WARNING:
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
-[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](../api/graphql/epic_work_items_api_migration_guide.md).
+[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
 If the Related Epics feature is not available in your GitLab plan, a `403` status code is returned.
@@ -35,7 +34,7 @@ Supported attributes:
 
 | Attribute  | Type           | Required               | Description                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
-| `id`       | integer/string | Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`       | integer/string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `created_after` | string | no | Return related epic links created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
 | `created_before` | string | no | Return related epic links created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `updated_after` | string | no | Return related epic links updated on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
@@ -157,7 +156,7 @@ Supported attributes:
 | Attribute  | Type           | Required               | Description                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
 | `epic_iid` | integer        | Yes | Internal ID of a group's epic                                             |
-| `id`       | integer/string | Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`       | integer/string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -235,9 +234,9 @@ Supported attributes:
 | Attribute           | Type           | Required                    | Description                           |
 |---------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`          | integer        | Yes      | Internal ID of a group's epic.        |
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                | integer/string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `target_epic_iid`   | integer/string | Yes      | Internal ID of a target group's epic. |
-| `target_group_id`   | integer/string | Yes      | ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths). |
+| `target_group_id`   | integer/string | Yes      | ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `link_type`         | string         | No      | Type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`. |
 
 Example request:
@@ -356,7 +355,7 @@ Supported attributes:
 | Attribute                | Type           | Required                    | Description                           |
 |--------------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`               | integer        | Yes      | Internal ID of a group's epic.        |
-| `id`                     | integer/string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                     | integer/string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `related_epic_link_id`   | integer/string | Yes      | Internal ID of a related epic link. |
 
 Example request:

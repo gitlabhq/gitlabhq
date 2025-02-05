@@ -223,7 +223,7 @@ After the above steps have been completed, the automatic release process execute
 1. A project maintainer merges an MR into the default branch.
 1. The default pipeline is triggered, and the `upsert git tag` job is executed.
    - If the most recent version in the `CHANGELOG.md` matches one of the Git tags, the job is a no-op.
-   - Else, this job automatically creates a new release and Git tag using the [releases API](../../api/releases/index.md#create-a-release). The version and message is obtained from the most recent entry in the `CHANGELOG.md` file for the project.
+   - Else, this job automatically creates a new release and Git tag using the [releases API](../../api/releases/_index.md#create-a-release). The version and message is obtained from the most recent entry in the `CHANGELOG.md` file for the project.
 1. A pipeline is automatically triggered for the new Git tag. This pipeline releases the `latest`, `major`, `minor` and `patch` Docker images of the analyzer.
 
 ### Service account used in the automatic release process
@@ -296,7 +296,7 @@ To backport a critical fix or patch to an earlier version, follow the steps belo
 
 We occasionally need to build out new analyzer projects to support new frameworks and tools.
 In doing so we should follow [our engineering Open Source guidelines](https://handbook.gitlab.com/handbook/engineering/open-source/),
-including licensing and [code standards](../../development/go_guide/_index.md).
+including licensing and [code standards](../go_guide/_index.md).
 
 In addition, to write a custom analyzer that will integrate into the GitLab application
 a minimal feature set is required:

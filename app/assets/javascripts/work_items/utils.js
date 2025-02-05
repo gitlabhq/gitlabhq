@@ -48,6 +48,9 @@ export const findHierarchyWidgets = (widgets) =>
 export const findLinkedItemsWidget = (workItem) =>
   workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_LINKED_ITEMS);
 
+export const findNotesWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_NOTES);
+
 export const findStartAndDueDateWidget = (workItem) =>
   workItem.widgets?.find((widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE);
 

@@ -353,4 +353,4 @@ Analytics::CycleAnalytics::ReaggregationWorker.new.perform
 
 #### Value stream analytics
 
-For instructions on how to seed data for value stream analytics, see [development seed files](../development/development_seed_files.md).
+For instructions on how to seed data for value stream analytics, see [development seed files](development_seed_files.md).

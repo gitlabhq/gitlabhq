@@ -40,7 +40,8 @@ module Gitlab
           user_type: :import_user,
           name: 'Import User',
           username: username_and_email_generator.username,
-          email: username_and_email_generator.email
+          email: username_and_email_generator.email,
+          organizations: [root_ancestor.organization]
         ) do |u|
           u.assign_personal_namespace(root_ancestor.organization)
         end

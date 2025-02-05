@@ -98,6 +98,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`secure_ci_job_token_policies_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170930) | Permissions are updated for a CI_JOB_TOKEN scope | **{check-circle}** Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/495144) | Project |
+| [`user_authorized_oauth_application`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179187) | User authorized an OAuth application | **{check-circle}** Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/514152) | User |
 
 ### Build artifacts
 

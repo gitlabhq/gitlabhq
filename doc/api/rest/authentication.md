@@ -3,9 +3,8 @@ stage: Foundations
 group: Import and Integrate
 description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: REST API authentication
 ---
-
-# REST API authentication
 
 Most API requests require authentication, or return only public data when authentication isn't
 provided. When authentication is not required, the documentation for each endpoint specifies this.

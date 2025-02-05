@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Debian group distributions API
 ---
-
-# Debian group distributions API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -43,7 +42,7 @@ GET /groups/:id/-/debian_distributions
 
 | Attribute  | Type            | Required | Description |
 | ---------- | --------------- | -------- | ----------- |
-| `id`       | integer/string  | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-paths). |
+| `id`       | integer/string  | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string          | no       | Filter with specific `codename`. |
 | `suite`    | string          | no       | Filter with specific `suite`. |
 
@@ -85,7 +84,7 @@ GET /groups/:id/-/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-paths). |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -124,7 +123,7 @@ GET /groups/:id/-/debian_distributions/:codename/key.asc
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-paths). |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
@@ -161,7 +160,7 @@ POST /groups/:id/-/debian_distributions
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-paths). |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename`                    | string         | yes      | The codename of a Debian distribution. |
 | `suite`                       | string         | no       | The suite of the new Debian distribution. |
 | `origin`                      | string         | no       | The origin of the new Debian distribution. |
@@ -208,7 +207,7 @@ PUT /groups/:id/-/debian_distributions/:codename
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-paths). |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename`                    | string         | yes      | The Debian distribution's new codename.  |
 | `suite`                       | string         | no       | The Debian distribution's new suite. |
 | `origin`                      | string         | no       | The Debian distribution's new origin. |
@@ -255,7 +254,7 @@ DELETE /groups/:id/-/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-paths). |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string         | yes      | The codename of the Debian distribution. |
 
 ```shell

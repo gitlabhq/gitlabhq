@@ -24,7 +24,7 @@ The main steps are:
       - Raises a `GraphQL::ExecutionError` exception.
       - Includes the relevant information added as error fields to the response via the `extensions:` parameter.
         For more details on these fields, refer to the section in the GraphQL API documentation on
-        [Resolve mutations detected as spam](../../api/graphql/index.md#resolve-mutations-detected-as-spam).
+        [Resolve mutations detected as spam](../../api/graphql/_index.md#resolve-mutations-detected-as-spam).
 
    NOTE:
    If you use the standard ApolloLink or Axios interceptor CAPTCHA support described

@@ -522,7 +522,7 @@ subscribe.
 ### GraphQL subscriptions: Backend
 
 GitLab supports [GraphQL](https://graphql.org) for clients to request structured data from the server
-using GraphQL queries. Refer to the [GitLab GraphQL overview](../api/graphql/index.md) to learn about why we adopted GraphQL.
+using GraphQL queries. Refer to the [GitLab GraphQL overview](../api/graphql/_index.md) to learn about why we adopted GraphQL.
 GraphQL support in the GitLab backend is provided by the [`graphql-ruby`](https://graphql-ruby.org) gem.
 
 Ordinarily, GraphQL queries are client-initiated HTTP POST requests that follow the standard request-response cycle.

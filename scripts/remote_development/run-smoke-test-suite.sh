@@ -71,6 +71,11 @@ function run_rspec_fast {
       files_for_fast+=("$file")
   done < <(git grep -l -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb')
 
+  printf "Running rspec command:\n\n"
+  printf "bin/rspec "
+  printf "%s " "${files_for_fast[@]}"
+  printf "\n\n"
+
   bin/rspec "${files_for_fast[@]}"
 }
 
@@ -81,18 +86,18 @@ function run_jest {
   yarn jest ee/spec/frontend/workspaces
 }
 
-function run_rspec_rails_non_fast {
+function run_rspec_non_fast {
   trap onexit_err ERR
 
   printf "\n\n${BBlue}Running backend RSpec non-fast specs${Color_Off}\n\n"
 
-  files_for_rails=()
+  files_for_non_fast=()
 
   while IFS='' read -r file; do
-      files_for_rails+=("$file")
+      files_for_non_fast+=("$file")
   done < <(git grep -L -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
-  files_for_rails+=(
+  files_for_non_fast+=(
       "ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb"
       "ee/spec/graphql/types/query_type_spec.rb"
       "ee/spec/graphql/types/subscription_type_spec.rb"
@@ -102,7 +107,12 @@ function run_rspec_rails_non_fast {
       "spec/support_specs/matchers/result_matchers_spec.rb"
   )
 
-  bin/rspec --format documentation "${files_for_rails[@]}"
+  printf "Running rspec command:\n\n"
+  printf "bin/rspec --format documentation "
+  printf "%s " "${files_for_non_fast[@]}"
+  printf "\n\n"
+
+  bin/rspec --format documentation "${files_for_non_fast[@]}"
 }
 
 function run_rspec_feature {
@@ -132,12 +142,15 @@ function main {
   # Run linting before tests
   [ -z "${SKIP_RUBOCOP}" ] && run_rubocop
 
-  # Test sections are sorted roughly in increasing order of execution time.
+  # Test sections are sorted roughly in increasing order of execution time, in order to get the fastest feedback on failures.
   [ -z "${SKIP_FP}" ] && run_fp
   [ -z "${SKIP_FAST}" ] && run_rspec_fast
   [ -z "${SKIP_JEST}" ] && run_jest
-  [ -z "${SKIP_RAILS}" ] && run_rspec_rails_non_fast
+  [ -z "${SKIP_NON_FAST}" ] && run_rspec_non_fast
   [ -z "${SKIP_FEATURE}" ] && run_rspec_feature
+
+  # Convenience ENV vars to run focused sections, copy and paste as a prefix to script command, and remove the one(s) you want to run focused
+  # SKIP_RUBOCOP=1 SKIP_FP=1 SKIP_FAST=1 SKIP_JEST=1 SKIP_NON_FAST=1 SKIP_FEATURE=1
 
   print_success_message
 }

@@ -3,9 +3,8 @@ stage: Package
 group: Package Registry
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Documentation for the REST API for Package Protection Rules in GitLab."
+title: Protected packages API
 ---
-
-# Protected packages API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -29,7 +28,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of package protection rules.
 
@@ -80,7 +79,7 @@ Supported attributes:
 
 | Attribute                             | Type            | Required | Description                    |
 |---------------------------------------|-----------------|----------|--------------------------------|
-| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_name_pattern`                | string          | Yes      | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | Yes      | Package type protected by the protection rule. For example `npm`. |
 | `minimum_access_level_for_push`       | string          | Yes      | Minimum GitLab access level able to push a package. Must be at least `maintainer`. For example `maintainer`, `owner` or `admin`. |
@@ -122,7 +121,7 @@ Supported attributes:
 
 | Attribute                             | Type            | Required | Description                    |
 |---------------------------------------|-----------------|----------|--------------------------------|
-| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_protection_rule_id`          | integer         | Yes      | ID of the package protection rule to be updated. |
 | `package_name_pattern`                | string          | No       | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | No       | Package type protected by the protection rule. For example `npm`. |
@@ -163,7 +162,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_protection_rule_id`  | integer         | Yes      | ID of the package protection rule to be deleted. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).

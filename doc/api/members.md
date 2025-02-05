@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group and project members API
 ---
-
-# Group and project members API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -47,7 +46,7 @@ GET /projects/:id/members
 
 | Attribute        | Type              | Required | Description |
 |------------------|-------------------|----------|-------------|
-| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `query`          | string            | no       | Filters results based on a given name, email, or username. Use partial values to widen the scope of the query. |
 | `user_ids`       | array of integers | no       | Filter the results on the given user IDs. |
 | `skip_users`     | array of integers | no       | Filter skipped users out of the results. |
@@ -144,7 +143,7 @@ GET /projects/:id/members/all
 
 | Attribute        | Type              | Required | Description |
 |------------------|-------------------|----------|-------------|
-| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `query`          | string            | no       | Filters results based on a given name, email, or username. Use partial values to widen the scope of the query. |
 | `user_ids`       | array of integers | no       | Filter the results on the given user IDs. |
 | `show_seat_info` | boolean           | no       | Show seat information for users. |
@@ -240,7 +239,7 @@ GET /projects/:id/members/:user_id
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -297,7 +296,7 @@ GET /projects/:id/members/all/:user_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer or string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer | yes   | The user ID of the member. |
 
 ```shell
@@ -342,7 +341,7 @@ Prerequisites:
 - You must have the Owner role to access the API endpoint for billing permissions, as shown in [billing permissions](../user/free_user_limit.md).
 - This API endpoint works on top-level groups only. It does not work on subgroups.
 
-This function takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
+This function takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict the list of users.
 
 Use the `search` parameter to search for billable group members by name, and `sort` to sort the results.
 
@@ -352,7 +351,7 @@ GET /groups/:id/billable_members
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `search`  | string            | no       | A query string to search for group members by name, username, or public email. |
 | `sort`    | string            | no       | A query string containing parameters that specify the sort attribute and order. See supported values below. |
 
@@ -438,7 +437,7 @@ are included. For instance, if the requested group is `Top-Level Group`, and the
 of both `Top-Level Group / Subgroup One` and `Other Group / Subgroup Two`, then only `Top-Level Group / Subgroup One`
 is returned, because `Other Group / Subgroup Two` is not in the `Top-Level Group` hierarchy.
 
-This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict
+This API endpoint takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict
 the list of memberships.
 
 ```plaintext
@@ -447,7 +446,7 @@ GET /groups/:id/billable_members/:user_id/memberships
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the billable member. |
 
 ```shell
@@ -505,7 +504,7 @@ For instance, if the requested group is `Top-Level Group`, and the requested use
 
 The response lists only indirect memberships. Direct memberships are not included.
 
-This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
+This API endpoint takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict the list of memberships.
 
 ```plaintext
 GET /groups/:id/billable_members/:user_id/indirect
@@ -513,7 +512,7 @@ GET /groups/:id/billable_members/:user_id/indirect
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the billable member. |
 
 ```shell
@@ -560,7 +559,7 @@ DELETE /groups/:id/billable_members/:user_id
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -584,7 +583,7 @@ PUT /groups/:id/members/:user_id/state
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 | `state`   | string            | yes      | The new state for the user. State is either `awaiting` or `active`. |
 
@@ -612,7 +611,7 @@ POST /projects/:id/members
 
 | Attribute        | Type              | Required                           | Description |
 |------------------|-------------------|------------------------------------|-------------|
-| `id`             | integer or string | yes                                | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes                                | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer or string | yes, if `username` is not provided | The user ID of the new member or multiple IDs separated by commas. |
 | `username`       | string            | yes, if `user_id` is not provided  | The username of the new member or multiple usernames separated by commas. |
 | `access_level`   | integer           | yes                                | [A valid access level](access_requests.md#valid-access-levels). |
@@ -706,7 +705,7 @@ PUT /projects/:id/members/:user_id
 
 | Attribute        | Type              | Required | Description |
 |------------------|-------------------|----------|-------------|
-| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id`        | integer           | yes      | The user ID of the member. |
 | `access_level`   | integer           | yes      | A [valid access level](access_requests.md#valid-access-levels). |
 | `expires_at`     | string            | no       | A date string in the format `YEAR-MONTH-DAY`. |
@@ -772,7 +771,7 @@ POST /groups/:id/members/:user_id/override
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -817,7 +816,7 @@ DELETE /groups/:id/members/:user_id/override
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -867,7 +866,7 @@ DELETE /projects/:id/members/:user_id
 
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
-| `id`                 | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-paths). |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `user_id`            | integer           | yes      | The user ID of the member. |
 | `skip_subresources`  | boolean           | false    | Whether the deletion of direct memberships of the removed member in subgroups and projects should be skipped. Default is `false`. |
 | `unassign_issuables` | boolean           | false    | Whether the removed member should be unassigned from any issues or merge requests inside a given group or project. Default is `false`. |
@@ -891,7 +890,7 @@ PUT /groups/:id/members/:member_id/approve
 
 | Attribute   | Type              | Required | Description |
 |-------------|-------------------|----------|-------------|
-| `id`        | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/_index.md#namespaced-paths). |
 | `member_id` | integer           | yes      | The ID of the member. |
 
 Example request:
@@ -911,7 +910,7 @@ POST /groups/:id/members/approve_all
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the top-level group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -934,7 +933,7 @@ This request returns all matching group and project members from all groups and 
 
 When the member is an invited user that has not signed up for a GitLab account yet, the invited email address is returned.
 
-This API endpoint takes [pagination](rest/index.md#pagination) parameters `page` and `per_page` to restrict the list of members.
+This API endpoint takes [pagination](rest/_index.md#pagination) parameters `page` and `per_page` to restrict the list of members.
 
 ```plaintext
 GET /groups/:id/pending_members
@@ -942,7 +941,7 @@ GET /groups/:id/pending_members
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

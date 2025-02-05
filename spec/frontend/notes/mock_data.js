@@ -1312,3 +1312,61 @@ export const notesFilters = [
     value: 2,
   },
 ];
+
+export const singleNoteResponseFactory = ({ urlHash, authorId = 1 } = {}) => {
+  const id = urlHash?.replace('note_', '') || '5678';
+  return {
+    data: {
+      note: {
+        id: `gid://gitlab/Note/${id}`,
+        discussion: {
+          id: 'gid://gitlab/Discussion/1',
+          notes: {
+            nodes: [
+              {
+                id: `gid://gitlab/Note/${id}`,
+                author: {
+                  id: `gid://gitlab/User/${authorId}`,
+                  name: 'Administrator',
+                  username: 'root',
+                  avatar_url: '',
+                  web_url: '',
+                  web_path: '',
+                },
+                award_emoji: {
+                  nodes: [
+                    {
+                      emoji: 'test',
+                      name: 'test',
+                      user: {
+                        id: 'gid://gitlab/User/1',
+                        name: 'Administrator',
+                        username: 'root',
+                        avatar_url: '',
+                        web_url: '',
+                        web_path: '',
+                      },
+                    },
+                  ],
+                },
+                note_html: 'my quick note',
+                created_at: '2020-01-01T10:00:00.000Z',
+                last_edited_at: null,
+                last_edited_by: null,
+                internal: false,
+                url: '/note/1',
+                userPermissions: {
+                  awardEmoji: true,
+                  adminNote: true,
+                  readNote: true,
+                  createNote: true,
+                  resolveNote: true,
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+};

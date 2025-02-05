@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Documentation for the REST API for managing Git repository files in GitLab."
+title: Repository files API
 ---
-
-# Repository files API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -42,7 +41,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `file_path` | string         | yes      | URL encoded full path to new file, such as `lib%2Fclass%2Erb`. |
 | `ref`       | string         | yes      | The name of branch, tag or commit. |
 
@@ -111,7 +110,7 @@ GET /projects/:id/repository/files/:file_path/blame
 | Attribute       | Type              | Required | Description |
 |-----------------|-------------------|----------|-------------|
 | `file_path`     | string            | yes   | URL-encoded full path to new file, such as`lib%2Fclass%2Erb`. |
-| `id`            | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`            | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `range[end]`    | integer           | yes   | The last line of the range to blame. |
 | `range[start]`  | integer           | yes   | The first line of the range to blame. |
 | `ref`           | string            | yes   | The name of branch, tag or commit. |
@@ -226,7 +225,7 @@ GET /projects/:id/repository/files/:file_path/raw
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|------------|
 | `file_path` | string         | yes      | URL-encoded full path to new file, such as `lib%2Fclass%2Erb`. |
-| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `lfs`       | boolean        | no       | Determines if the response should be Git LFS file contents, rather than the pointer. Ignored if the file is not tracked by Git LFS. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27892) in GitLab 15.7. |
 | `ref`       | string         | no       | The name of branch, tag or commit. Default is the `HEAD` of the project. |
 
@@ -253,7 +252,7 @@ POST /projects/:id/repository/files/:file_path
 | `commit_message`   | string         | yes      | The commit message. |
 | `content`          | string         | yes      | The file's content. |
 | `file_path`        | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
-| `id`               | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`               | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `author_email`     | string         | no       | The commit author's email address. |
 | `author_name`      | string         | no       | The commit author's name. |
 | `encoding`         | string         | no       | Change encoding to `base64`. Default is `text`. |
@@ -293,7 +292,7 @@ PUT /projects/:id/repository/files/:file_path
 | `commit_message` | string         | yes      | The commit message. |
 | `content`        | string         | yes      | The file's content. |
 | `file_path`      | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
-| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)  |
+| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)  |
 | `author_email`   | string         | no       | The commit author's email address. |
 | `author_name`    | string         | no       | The commit author's name. |
 | `encoding`       | string         | no       | Change encoding to `base64`. Default is `text`. |
@@ -342,7 +341,7 @@ DELETE /projects/:id/repository/files/:file_path
 | `branch`         | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
 | `commit_message` | string         | yes      | The commit message. |
 | `file_path`      | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
-| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `author_email`   | string         | no       | The commit author's email address. |
 | `author_name`    | string         | no       | The commit author's name. |
 | `last_commit_id` | string         | no       | Last known file commit ID. |

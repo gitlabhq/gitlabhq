@@ -34,7 +34,7 @@ View some of the most popular topics:
 | Popular topic                                                                  | Description |
 |:-------------------------------------------------------------------------------|:------------|
 | [CI/CD YAML syntax reference](ci/yaml/index.md)                                | Available configuration options for `.gitlab-ci.yml` files. |
-| [REST API](api/rest/index.md)                                                  | Use the REST API to extend GitLab. |
+| [REST API](api/rest/_index.md)                                                  | Use the REST API to extend GitLab. |
 | [Environments and deployments](ci/environments/index.md)                       | Deploy your application to different environments. |
 | [Configuring runners](ci/runners/configure_runners.md)                         | Get started using runners. |
 | [Two-factor authentication](user/profile/account/two_factor_authentication.md) | Improve the security of your GitLab account. |
@@ -66,11 +66,11 @@ If you are coming to GitLab from another platform:
 
 To build integrations with GitLab:
 
-| Topic                                      | Description |
-|:-------------------------------------------|:------------|
-| [GitLab REST API](api/rest/index.md)           | Integrate with GitLab using our REST API. |
-| [GitLab GraphQL API](api/graphql/index.md) | Integrate with GitLab using our GraphQL API. |
-| [Integrations](integration/index.md)      | Integrations with third-party products. |
+| Topic                                       | Description |
+|:--------------------------------------------|:------------|
+| [GitLab REST API](api/rest/_index.md)       | Integrate with GitLab using our REST API. |
+| [GitLab GraphQL API](api/graphql/_index.md) | Integrate with GitLab using our GraphQL API. |
+| [Integrations](integration/index.md)        | Integrations with third-party products. |
 
 ## Contribute to GitLab
 

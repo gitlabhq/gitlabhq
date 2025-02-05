@@ -153,7 +153,7 @@ You can access a group by using its ID instead of its name at `https://gitlab.ex
 For example, if your group `example-group` has an ID `123456`, you can access the group either at
 `https://gitlab.example.com/example-group` or `https://gitlab.example.com/-/g/123456`.
 
-You might need the group ID if you want to interact with it using the [GitLab API](../../api/index.md).
+You might need the group ID if you want to interact with it using the [GitLab API](../../api/_index.md).
 
 To copy the Group ID:
 

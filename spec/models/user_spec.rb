@@ -279,10 +279,10 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe 'organizations association' do
-      let_it_be(:default_organization) { create(:organization, :default) }
+      let_it_be(:organization) { create(:organization) }
 
       it 'does not create a cross-database query' do
-        user = create(:user)
+        user = create(:user, organizations: [organization])
 
         with_cross_joins_prevented do
           expect(user.organizations.count).to eq(1)
@@ -754,15 +754,6 @@ RSpec.describe User, feature_category: :user_profile do
       let(:user) { build(:user, username: username) }
 
       include_examples 'username validations'
-
-      context 'when created without an organization' do
-        let_it_be(:default_organization) { create(:organization, :default) }
-        let_it_be(:user) { create(:user) }
-
-        it 'is assigned to the default organization' do
-          expect(user.reload.organizations).to contain_exactly(Organizations::Organization.default_organization)
-        end
-      end
     end
 
     context 'when updating user' do
@@ -1921,30 +1912,6 @@ RSpec.describe User, feature_category: :user_profile do
       it 'synchronizes the gpg keys when the email is updated' do
         expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
         user.update!(email: 'shawnee.ritchie@denesik.com')
-      end
-    end
-  end
-
-  context 'when after_create_commit :create_default_organization_user on default organization' do
-    let_it_be(:default_organization) { create(:organization, :default) }
-    let(:user) { create(:user) }
-
-    subject(:create_user) { user }
-
-    context 'when user is created as an instance admin' do
-      let(:user) { create(:admin) }
-
-      it 'adds user to organization_users as an owner of default organization' do
-        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
-        expect(default_organization.owner?(user)).to be(true)
-      end
-    end
-
-    context 'when user is created as a regular user' do
-      it 'adds user to organization_users as a regular user of default organization' do
-        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
-        expect(default_organization.owner?(user)).to be(false)
-        expect(default_organization.user?(user)).to be(true)
       end
     end
   end

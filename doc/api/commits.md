@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Documentation for the REST API for Git commits in GitLab."
+title: Commits API
 ---
-
-# Commits API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -35,7 +34,7 @@ GET /projects/:id/repository/commits
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `ref_name` | string | no | The name of a repository branch, tag or revision range, or if not given the default branch |
 | `since` | string | no | Only commits after or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ` |
 | `until` | string | no | Only commits before or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ` |
@@ -105,12 +104,12 @@ POST /projects/:id/repository/commits
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `branch` | string | yes | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
 | `commit_message` | string | yes | Commit message |
 | `start_branch` | string | no | Name of the branch to start the new branch from |
 | `start_sha` | string | no | SHA of the commit to start the new branch from |
-| `start_project` | integer/string | no | The project ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) to start the new branch from. Defaults to the value of `id`. |
+| `start_project` | integer/string | no | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to start the new branch from. Defaults to the value of `id`. |
 | `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
@@ -197,7 +196,7 @@ Example response:
 }
 ```
 
-GitLab supports [form encoding](rest/index.md#array-and-hash-types). The following is an example using Commit API with form encoding:
+GitLab supports [form encoding](rest/_index.md#array-and-hash-types). The following is an example using Commit API with form encoding:
 
 ```shell
 curl --request POST \
@@ -235,7 +234,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 | `stats` | boolean | no | Include commit stats. Default is true |
 
@@ -291,7 +290,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha` | string | yes | The commit hash  |
 | `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
 
@@ -328,7 +327,7 @@ Parameters:
 
 | Attribute      | Type           | Required | Description |
 | -------------- | -------------- | -------- | ----------- |
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `sha`          | string         | yes      | The commit hash. |
 | `first_parent` | boolean        | no       | Follow only the first parent commit upon seeing a merge commit. |
 
@@ -359,7 +358,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha` | string | yes | The commit hash  |
 | `branch` | string | yes | The name of the branch  |
 | `dry_run` | boolean | no | Does not commit any changes. Default is false. |
@@ -434,7 +433,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                     |
 | --------- | ----           | -------- | -----------                                                                     |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha`     | string         | yes      | Commit SHA to revert                                                            |
 | `branch`  | string         | yes      | Target branch name                                                              |
 | `dry_run` | boolean        | no       | Does not commit any changes. Default is false. |
@@ -504,7 +503,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 | `unidiff` | boolean | no | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
 
@@ -542,7 +541,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```shell
@@ -596,7 +595,7 @@ POST /projects/:id/repository/commits/:sha/comments
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha`       | string  | yes | The commit SHA or name of a repository branch or tag |
 | `note`      | string  | yes | The text of the comment |
 | `path`      | string  | no  | The file path relative to the repository |
@@ -645,7 +644,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha`     | string | yes | The commit hash or name of a repository branch or tag |
 
 ```shell
@@ -707,7 +706,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 
 | Attribute     | Type           | Required | Description                                                                          |
 |---------------|----------------| -------- |--------------------------------------------------------------------------------------|
-| `id`          | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).          |
+| `id`          | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).          |
 | `sha`         | string         | Yes | Hash of the commit.                                                                      |
 | `ref`         | string         | No  | Name of the branch or tag. Default is the default branch.          |
 | `stage`       | string         | No  | Filter statuses by [build stage](../ci/yaml/index.md#stages). For example, `test`.             |
@@ -786,7 +785,7 @@ POST /projects/:id/statuses/:sha
 
 | Attribute | Type | Required | Description                                                                                                           |
 | --------- | ---- | -------- |-----------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                           |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                           |
 | `sha`     | string  | yes   | The commit SHA                                                                                                        |
 | `state`   | string  | yes   | The state of the status. Can be one of the following: `pending`, `running`, `success`, `failed`, `canceled`, `skipped` |
 | `ref`     | string  | no    | The `ref` (branch or tag) to which the status refers. Must be 255 characters or fewer.                                                                  |
@@ -839,7 +838,7 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha`     | string  | yes   | The commit SHA |
 
 ```shell
@@ -912,7 +911,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```shell

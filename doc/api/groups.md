@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Groups API
 ---
-
-# Groups API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -29,7 +28,7 @@ Parameters:
 
 | Attribute                | Type           | Required | Description |
 |--------------------------|----------------|----------|-------------|
-| `id`                     | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                     | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). (Deprecated, [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To get the details of all projects in a group, use the [list a group's projects endpoint](#list-projects).) |
 
@@ -282,9 +281,9 @@ List groups.
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
-When accessed without authentication, this endpoint also supports [keyset pagination](rest/index.md#keyset-based-pagination):
+When accessed without authentication, this endpoint also supports [keyset pagination](rest/_index.md#keyset-based-pagination):
 
 - When requesting consecutive pages of results, you should use keyset pagination.
 - Beyond a specific offset limit (specified by [max offset allowed by the REST API for offset-based pagination](../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination)), offset pagination is unavailable.
@@ -496,7 +495,7 @@ List details of the group.
 
 Get a list of projects in this group. When accessed without authentication, only public projects are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 ```plaintext
 GET /groups/:id/projects
@@ -506,7 +505,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `archived`                    | boolean        | no       | Limit by archived status |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, `star_count` or `last_activity_at` fields. Default is `created_at` |
@@ -582,7 +581,7 @@ To distinguish between a project in the group and a project shared to the group,
 
 Get a list of projects shared to this group. When accessed without authentication, only public shared projects are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 ```plaintext
 GET /groups/:id/projects/shared
@@ -592,7 +591,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `archived`                    | boolean        | no       | Limit by archived status |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private` |
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count` or `last_activity_at` fields. Default is `created_at` |
@@ -733,7 +732,7 @@ Parameters:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`             | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `username`       | string         | no       | Return single user with a specific username |
 | `search`         | string         | no       | Search users by name, email, username |
 | `active`         | boolean        | no       | Return only active users |
@@ -819,12 +818,12 @@ Parameters:
 
 | Attribute                  | Type           | Required              | Description |
 |:---------------------------|:---------------|:----------------------|:------------|
-| `id`                       | integer/string | yes                   | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                       | integer/string | yes                   | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `include_saml_users`       | boolean        | yes (see description) | Include users with a SAML identity. Either this value or `include_service_accounts` must be `true`. |
 | `include_service_accounts` | boolean        | yes (see description) | Include service account users. Either this value or `include_saml_users` must be `true`. |
 | `search`                   | string         | no                    | Search users by name, email, username. |
 
-If successful, returns [`200 OK`](../api/rest/troubleshooting.md#status-codes) and the
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
 Example response:
@@ -880,7 +879,7 @@ Example response:
 
 Get a list of visible direct subgroups in this group.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 If you request this list as:
 
@@ -892,7 +891,7 @@ Parameters:
 
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) of the immediate parent group |
+| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only subgroup short paths are searched (not full paths) |
@@ -963,13 +962,13 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 Get a list of visible descendant groups of this group.
 When accessed without authentication, only public groups are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 Parameters:
 
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) of the immediate parent group |
+| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only descendant group short paths are searched (not full paths) |
@@ -1078,13 +1077,13 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 Get a list of groups where the given group has been invited. When accessed without authentication, only public shared groups are returned.
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 Parameters:
 
 | Attribute                             | Type              | Required | Description |
 | ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `skip_groups`                         | array of integers | no       | Skip the specified group IDs |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
@@ -1157,13 +1156,13 @@ Example response:
 Get a list of invited groups in the given group. When accessed without authentication, only public invited groups are returned.
 This endpoint is rate-limited to 60 requests per minute per user (for authenticated users) or IP (for unauthenticated users).
 
-By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination).
 
 Parameters:
 
 | Attribute                             | Type              | Required | Description |
 | ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
 | `relation`                            | array of strings  | no       | Filter the groups by relation (direct or inherited) |
@@ -1574,7 +1573,7 @@ Parameters:
 
 | Attribute            | Type           | Required | Description |
 |----------------------|----------------|----------|-------------|
-| `id`                 | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`                 | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `permanently_remove` | boolean/string | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. Premium and Ultimate only. |
 | `full_path`          | string         | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#get-a-single-group). Premium and Ultimate only. |
 
@@ -1599,7 +1598,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 
 ### Revoke a token
 
@@ -1633,7 +1632,7 @@ POST /groups/:id/tokens/revoke
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `token`   | string            | Yes      | The plaintext token. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and
@@ -1683,7 +1682,7 @@ POST /groups/:id/share
 
 | Attribute      | Type           | Required | Description |
 |----------------|----------------|----------|-------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `group_id`     | integer        | yes      | The ID of the group to share with |
 | `group_access` | integer        | yes      | The [role (`access_level`)](members.md#roles) to grant the group |
 | `expires_at`   | string         | no       | Share expiration date in ISO 8601 format: 2016-09-26 |
@@ -1698,7 +1697,7 @@ DELETE /groups/:id/share/:group_id
 
 | Attribute  | Type           | Required | Description |
 |------------|----------------|----------|-------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `group_id` | integer        | yes      | The ID of the group to share with |
 
 ### Transfer a project to a group
@@ -1714,8 +1713,8 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 | ------------ | -------------- | -------- | ----------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/index.md#namespaced-paths) |
-| `project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths) |
+| `project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -1758,7 +1757,7 @@ GET /groups/:id/transfer_locations
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group to be transferred](rest/index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group to be transferred](rest/_index.md#namespaced-paths). |
 | `search`  | string            | No       | The group names to search for. |
 
 Example request:

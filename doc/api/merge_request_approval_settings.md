@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Documentation for the REST API for merge request approval settings in GitLab."
+title: Merge request approval settings API
 ---
-
-# Merge request approval settings API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -33,7 +32,7 @@ Parameters:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer or string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -96,7 +95,7 @@ Parameters:
 
 | Attribute                                            | Type              | Required | Description |
 |------------------------------------------------------|-------------------|----------|-------------|
-| `id`                                                 | integer or string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                                                 | integer or string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `allow_author_approval`                              | boolean           | No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
 | `allow_committer_approval`                           | boolean           | No       | Allow or prevent committers from self approving merge requests. |
 | `allow_overrides_to_approver_list_per_merge_request` | boolean           | No       | Allow or prevent overriding approvers per merge request. |
@@ -172,7 +171,7 @@ Parameters:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`             | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -235,7 +234,7 @@ Parameters:
 
 | Attribute                                            | Type              | Required | Description |
 |------------------------------------------------------|-------------------|----------|-------------|
-| `id`                                                 | integer or string | Yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                                                 | integer or string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `allow_author_approval`                              | boolean           | No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
 | `allow_committer_approval`                           | boolean           | No       | Allow or prevent committers from self approving merge requests. |
 | `allow_overrides_to_approver_list_per_merge_request` | boolean           | No       | Allow or prevent overriding approvers per merge request. |

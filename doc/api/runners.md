@@ -2,9 +2,8 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Runners API
 ---
-
-# Runners API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -12,7 +11,7 @@ DETAILS:
 
 This page describes endpoints for runners registered to an instance. To create a runner linked to the current user, see [Create a runner](users.md#create-a-runner-linked-to-a-user).
 
-[Pagination](rest/index.md#pagination) is available on the following API endpoints (they return 20 items by default):
+[Pagination](rest/_index.md#pagination) is available on the following API endpoints (they return 20 items by default):
 
 ```plaintext
 GET /runners
@@ -230,7 +229,7 @@ Example response:
 ]
 ```
 
-To view more than the first 20 runners, use [pagination](rest/index.md#pagination).
+To view more than the first 20 runners, use [pagination](rest/_index.md#pagination).
 
 ## Get runner's details
 
@@ -604,7 +603,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 
 | Attribute        | Type           | Required | Description                                                                                                                                                                                                          |
 |------------------|----------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)                                                                                                  |
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                                                                                  |
 | `scope`          | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                                                 |
 | `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                 |
 | `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
@@ -679,7 +678,7 @@ POST /projects/:id/runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell
@@ -729,7 +728,7 @@ DELETE /projects/:id/runners/:runner_id
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```shell

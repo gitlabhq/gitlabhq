@@ -293,7 +293,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 
 ### Step 6: Update documentation
 
-Follow the [Contribute to the GitLab documentation](../../development/documentation/_index.md) page to make the following changes to the documentation:
+Follow the [Contribute to the GitLab documentation](../documentation/_index.md) page to make the following changes to the documentation:
 
 - Update the list of custom abilities by running `bundle exec rake gitlab:custom_roles:compile_docs`
 - Update the GraphQL documentation by running `bundle exec rake gitlab:graphql:compile_docs`

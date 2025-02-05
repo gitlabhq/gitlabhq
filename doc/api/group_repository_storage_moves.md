@@ -3,9 +3,8 @@ stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Documentation for the REST API for moving the storage for repositories in a GitLab group."
+title: Group repository storage moves API
 ---
-
-# Group repository storage moves API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -50,7 +49,7 @@ GET /group_repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time, because the API results
-are [paginated](rest/index.md#pagination).
+are [paginated](rest/_index.md#pagination).
 
 Example request:
 
@@ -87,7 +86,7 @@ GET /groups/:group_id/repository_storage_moves
 ```
 
 By default, `GET` requests return 20 results at a time, because the API results
-are [paginated](rest/index.md#pagination).
+are [paginated](rest/_index.md#pagination).
 
 Supported attributes:
 

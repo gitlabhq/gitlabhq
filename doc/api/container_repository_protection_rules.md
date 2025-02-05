@@ -3,9 +3,8 @@ stage: Package
 group: Container Registry
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Documentation for the REST API for container repository protection rules in GitLab."
+title: Container repository protection rules API
 ---
-
-# Container repository protection rules API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -27,7 +26,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of container repository protection rules.
 
@@ -80,7 +79,7 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `repository_path_pattern`         | string         | Yes      | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 | `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. |
 | `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level required to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when `minimum_access_level_for_push` is not set. |
@@ -124,7 +123,7 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `protection_rule_id`              | integer        | Yes      | ID of the protection rule to be updated. |
 | `repository_path_pattern`         | string         | No       | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 | `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. To unset the value, use an empty string `""`. |
@@ -167,7 +166,7 @@ Supported attributes:
 
 | Attribute            | Type           | Required | Description |
 |----------------------|----------------|----------|-------------|
-| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `protection_rule_id` | integer        | Yes      | ID of the container repository protection rule to be deleted. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).

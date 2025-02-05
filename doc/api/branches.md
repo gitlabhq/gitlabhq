@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Documentation for the REST API for Git branches in GitLab."
+title: Branches API
 ---
-
-# Branches API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -30,7 +29,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).|
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).|
 | `search`  | string         | no       | Return list of branches containing the search string. Use `^term` to find branches that begin with `term`, and `term$` to find branches that end with `term`. |
 | `regex`   | string         | no       | Return list of branches with names matching a [re2](https://github.com/google/re2/wiki/Syntax) regular expression. |
 
@@ -93,8 +92,8 @@ Parameters:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
-| `branch`  | string            | yes      | [URL-encoded name](rest/index.md#namespaced-paths) of the branch. |
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `branch`  | string            | yes      | [URL-encoded name](rest/_index.md#namespaced-paths) of the branch. |
 
 Example request:
 
@@ -158,7 +157,7 @@ Parameters:
 
 | Attribute | Type    | Required | Description |
 |-----------|---------|----------|-------------|
-| `id`      | integer | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `branch`  | string  | yes      | Name of the branch. |
 | `ref`     | string  | yes      | Branch name or commit SHA to create branch from. |
 
@@ -218,7 +217,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `branch`  | string         | yes      | Name of the branch. |
 
 Example request:
@@ -249,7 +248,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                                                  |
 |:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 

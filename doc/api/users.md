@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Users API
 ---
-
-# Users API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -17,7 +16,7 @@ You can [manage your account](../user/profile/index.md) and
 
 Get a list of users.
 
-Takes [pagination parameters](rest/index.md#offset-based-pagination) `page` and `per_page` to restrict the list of users.
+Takes [pagination parameters](rest/_index.md#offset-based-pagination) `page` and `per_page` to restrict the list of users.
 
 ### As a regular user
 
@@ -70,7 +69,7 @@ Example response:
 ]
 ```
 
-This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). In GitLab 17.0 and later, keyset pagination is required for responses of 50,000 and above.
+This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination). In GitLab 17.0 and later, keyset pagination is required for responses of 50,000 and above.
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 

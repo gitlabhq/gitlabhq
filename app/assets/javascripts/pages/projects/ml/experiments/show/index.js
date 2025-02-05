@@ -42,6 +42,7 @@ const initShowExperiment = () => {
 
   return new Vue({
     el: element,
+    name: 'MlExperimentsShow',
     apolloProvider,
     render(h) {
       return h(MlExperimentsShow, { props });

@@ -339,7 +339,7 @@ bundle exec rake rubocop:todo:generate\[Gitlab/NamespacedClass,Lint/Syntax\]
 
 Some shells require brackets to be escaped or quoted.
 
-See [Resolving RuboCop exceptions](../development/rubocop_development_guide.md#resolving-rubocop-exceptions)
+See [Resolving RuboCop exceptions](rubocop_development_guide.md#resolving-rubocop-exceptions)
 on how to proceed from here.
 
 ### Run RuboCop in graceful mode

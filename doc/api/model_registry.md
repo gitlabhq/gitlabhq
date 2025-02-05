@@ -2,9 +2,8 @@
 stage: Deploy
 group: MLOps
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Model registry API
 ---
-
-# Model registry API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -22,7 +21,7 @@ Parameters:
 
 | Attribute          | Type              | Required | Description                                                                            |
 |--------------------|-------------------|----------|----------------------------------------------------------------------------------------|
-| `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths)    |
+| `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)    |
 | `model_version_id` | integer           | yes      | The model version ID for the file                                                      |
 | `path`             | string            | yes      | File directory path                                                                    |
 | `filename`         | string            | yes      | Filename                                                                               |

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Users::Internal, feature_category: :user_profile do
-  let_it_be(:default_organization) { create(:organization, :default) }
+  let_it_be(:organization) { create(:organization) }
 
   shared_examples 'bot users' do |bot_type, username, email|
     it 'creates the user if it does not exist' do
@@ -16,7 +16,13 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
       bot_user = described_class.public_send(bot_type)
 
       expect(bot_user.namespace.route).to be_present
-      expect(bot_user.namespace.organization).to eq(default_organization)
+      expect(bot_user.namespace.organization).to eq(organization)
+    end
+
+    it 'assigns the first found organization to the created user' do
+      bot_user = described_class.public_send(bot_type)
+
+      expect(bot_user.organizations.first).to eq(organization)
     end
 
     it 'does not create a new user if it already exists' do

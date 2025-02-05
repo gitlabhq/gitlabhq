@@ -65,7 +65,7 @@ Consult these topics for information on contributing to specific GitLab features
 
 - [API style guide](api_styleguide.md) for contributing to the API
 - [GraphQL API style guide](api_graphql_styleguide.md) for contributing to the
-  [GraphQL API](../api/graphql/index.md)
+  [GraphQL API](../api/graphql/_index.md)
 
 ### GitLab components and features
 

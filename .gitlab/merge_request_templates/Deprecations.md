@@ -103,7 +103,11 @@ Remove unnecessary spaces and text, and update the [deprecations doc's `.md` fil
    1. To double check that it worked, you can run `bin/rake gitlab:docs:check_deprecations`
       to verify that the doc is up to date.
 
-1. Commit the updated file and push the changes.
+1. Update the `breaking_windows.md` file:
+
+   1. From the command line (in the branch), run `bin/rake gitlab:docs:compile_windows`.
+
+1. Commit the updated files and push the changes.
 1. Set the merge request to auto-merge, or if the pipeline is already complete, merge.
 
 If you have trouble running the Rake task, check the [troubleshooting steps](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecation-rake-task-troubleshooting).

@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: SAML API
 ---
-
-# SAML API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -28,7 +27,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -67,7 +66,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description               |
 | --------- | -------------- | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `uid`     | string         | yes      | External UID of the user. |
 
 Example request:
@@ -101,7 +100,7 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description               |
 | --------- | ------ | -------- | ------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `uid`     | string | yes      | External UID of the user. |
 
 Example request:
@@ -124,7 +123,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `uid`     | string  | yes      | External UID of the user. |
 
 Example request:
@@ -146,15 +145,15 @@ Example response:
 
 ### Get a single SAML identity
 
-Use the Users API to [get a single SAML identity](../api/users.md#as-an-administrator).
+Use the Users API to [get a single SAML identity](users.md#as-an-administrator).
 
 ### Update `extern_uid` field for a SAML identity
 
-Use the Users API to [update the `extern_uid` field of a user](../api/users.md#modify-a-user).
+Use the Users API to [update the `extern_uid` field of a user](users.md#modify-a-user).
 
 ### Delete a single SAML identity
 
-Use the Users API to [delete a single identity of a user](../api/users.md#delete-authentication-identity-from-a-user).
+Use the Users API to [delete a single identity of a user](users.md#delete-authentication-identity-from-a-user).
 
 ## SAML group links
 
@@ -178,7 +177,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
@@ -223,7 +222,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
@@ -262,7 +261,7 @@ Supported attributes:
 
 | Attribute         | Type              | Required | Description |
 |:------------------|:------------------|:---------|:------------|
-| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `saml_group_name` | string            | yes      | Name of the SAML group. |
 | `access_level`    | integer           | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group. |
 | `member_role_id`  | integer           | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
@@ -303,7 +302,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`              | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 
 Example request:

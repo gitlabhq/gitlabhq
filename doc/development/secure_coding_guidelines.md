@@ -1816,7 +1816,7 @@ Logging helps track events for debugging. Logging also allows the application to
 ### Related topics
 
 - [Log system in GitLab](../administration/logs/index.md)
-- [Audit event development guidelines](../development/audit_event_guide/_index.md))
+- [Audit event development guidelines](audit_event_guide/_index.md))
 - [Security logging overview](https://handbook.gitlab.com/handbook/security/security-operations/security-logging/)
 - [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
 

@@ -19,6 +19,7 @@ const initIndexMlExperiments = () => {
 
   return new Vue({
     el: element,
+    name: 'MlExperimentsIndexApp',
     render(h) {
       return h(MlExperimentsIndex, { props });
     },

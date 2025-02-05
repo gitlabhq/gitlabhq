@@ -393,7 +393,7 @@ Please keep in mind that the clientSubscriptionId must be unique for every reque
 ### Duo Chat GraphQL queries
 
 1. [Set up GitLab Duo Chat](#set-up-gitlab-duo-chat)
-1. Visit [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
+1. Visit [GraphQL explorer](../../api/graphql/_index.md#interactive-graphql-explorer).
 1. Execute the `aiAction` mutation. Here is an example:
 
    ```graphql

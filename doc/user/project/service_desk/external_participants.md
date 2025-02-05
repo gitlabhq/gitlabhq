@@ -87,7 +87,7 @@ The external participant's email address is then obfuscated in:
 
 - The author field of a Service Desk ticket.
 - All [system notes](../system_notes.md) that mention an external participant.
-- The [REST](../../../api/notes.md) and [GraphQL](../../../api/graphql/index.md) APIs.
+- The [REST](../../../api/notes.md) and [GraphQL](../../../api/graphql/_index.md) APIs.
 - The warning message below the comment editor.
 
 For example:

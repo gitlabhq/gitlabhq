@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group enterprise users API
 ---
-
-# Group enterprise users API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -24,7 +23,7 @@ Prerequisites:
 
 Lists all enterprise users for a given top-level group.
 
-Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
+Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
 ```plaintext
 GET /groups/:id/enterprise_users
@@ -34,7 +33,7 @@ Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group. |
+| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `username`       | string         | no       | Return a user with a given username. |
 | `search`         | string         | no       | Return users with a matching name, email, or username. Use partial values to increase results. |
 | `active`         | boolean        | no       | Return only active users. |
@@ -125,7 +124,7 @@ Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group. |
+| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `user_id`        | integer        | yes      | ID of user account. |
 
 Example request:
@@ -207,7 +206,7 @@ Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of a top-level group. |
+| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `user_id`        | integer        | yes      | ID of user account. |
 
 Example request:

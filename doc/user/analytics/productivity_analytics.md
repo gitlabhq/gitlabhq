@@ -31,6 +31,8 @@ Productivity analytics display the following charts:
 - A scatterplot that illustrates the number of merge request metrics (such as number of commits per merge request) per day (merged date).
 - A table that lists merge request titles, time to merge, and duration between commits, comments, and merge dates.
 
+![Productivity analytics chart of merge requests over time](img/productivity_analytics_mrs_v17_9.png)
+
 ## View productivity analytics
 
 Prerequisites:

@@ -15,7 +15,7 @@ feedback, and suggestions.
   GraphQL.
 - [GraphQL API documentation style guide](../documentation/graphql_styleguide.md): documentation
   style guide for GraphQL.
-- [GraphQL API](../../api/graphql/index.md): user documentation for the GitLab GraphQL API.
+- [GraphQL API](../../api/graphql/_index.md): user documentation for the GitLab GraphQL API.
 - [GraphQL authorization](authorization.md): guide to using authorization in GraphQL.
 - [GraphQL BatchLoader](batchloader.md): development documentation on the BatchLoader.
 - [GraphQL pagination](pagination.md): development documentation on pagination.

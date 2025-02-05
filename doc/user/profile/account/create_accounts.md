@@ -87,11 +87,25 @@ To create a user through the Rails console:
    u.save!
    ```
 
-   For GitLab 16.11 and later, run:
+   For GitLab 16.11 through 17.6, run:
 
    ```ruby
    u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
    u.assign_personal_namespace(Organizations::Organization.default_organization)
    u.skip_confirmation! # Use only if you want the user to be automatically confirmed. If you do not use this, the user receives a confirmation email.
    u.save!
+   ```
+
+   For GitLab 17.7 and later, run:
+
+   ```ruby
+   u = Users::CreateService.new(nil,
+     username: 'test_user',
+     email: 'test@example.com',
+     name: 'Test User',
+     password: '123password',
+     password_confirmation: '123password',
+     organization_id: Organizations::Organization.first.id,
+     skip_confirmation: true
+   ).execute
    ```

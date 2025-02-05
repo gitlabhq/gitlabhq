@@ -37,9 +37,9 @@ The current [project](../user/project/settings/import_export.md#migrate-projects
 [group](../user/project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated) imports are file based, so
 they require an export step to generate the file to be imported.
 
-Group migration by direct transfer leverages the [GitLab API](../api/rest/index.md) to speed the migration.
+Group migration by direct transfer leverages the [GitLab API](../api/rest/_index.md) to speed the migration.
 
-And, because we're on the road to [GraphQL](../api/graphql/index.md),
+And, because we're on the road to [GraphQL](../api/graphql/_index.md),
 Group migration by direct transfer can contribute to expanding GraphQL API coverage, which benefits both GitLab
 and its users.
 

@@ -46,7 +46,7 @@ score, and KEV status for the vulnerability. EPSS scores are rounded to the seco
 
 For example, the following GraphQL API query returns all vulnerabilities in a given project and
 their CVE ID, EPSS score, and KEV status (`isKnownExploit`). Run the query in the
-[GraphQL explorer](../../../api/graphql/index.md#interactive-graphql-explorer) or any other GraphQL
+[GraphQL explorer](../../../api/graphql/_index.md#interactive-graphql-explorer) or any other GraphQL
 client.
 
 ```graphql

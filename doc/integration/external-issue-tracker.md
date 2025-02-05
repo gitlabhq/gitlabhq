@@ -49,7 +49,7 @@ You can configure any of the following external issue trackers:
 - [ClickUp](../user/project/integrations/clickup.md)
 - [Custom issue tracker](../user/project/integrations/custom_issue_tracker.md)
 - [Engineering Workflow Management (EWM)](../user/project/integrations/ewm.md)
-- [Jira](../integration/jira/index.md)
+- [Jira](jira/index.md)
 - [Phorge](../user/project/integrations/phorge.md)
 - [Redmine](../user/project/integrations/redmine.md)
 - [YouTrack](../user/project/integrations/youtrack.md)

@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use custom emoji with GraphQL
 ---
-
-# Use custom emoji with GraphQL
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -40,7 +39,7 @@ The query accepts these attributes:
 
 | Attribute    | Type           | Required               | Description |
 | :----------- | :------------- | :--------------------- | :---------- |
-| `group_path` | integer/string | Yes | ID or [URL-encoded path of the top-level group](../rest/index.md#namespaced-paths). |
+| `group_path` | integer/string | Yes | ID or [URL-encoded path of the top-level group](../rest/_index.md#namespaced-paths). |
 | `name`       | string         | Yes | Name of the custom emoji. |
 | `file`       | string         | Yes | URL of the custom emoji image. |
 

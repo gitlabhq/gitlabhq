@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Group and project access requests API
 ---
-
-# Group and project access requests API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -37,7 +36,7 @@ GET /projects/:id/access_requests
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 Example request:
 
@@ -86,7 +85,7 @@ POST /projects/:id/access_requests
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group or project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group or project](rest/_index.md#namespaced-paths) |
 
 Example request:
 
@@ -121,7 +120,7 @@ PUT /projects/:id/access_requests/:user_id/approve
 
 | Attribute      | Type           | Required | Description |
 |----------------|----------------|----------|-------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `user_id`      | integer        | yes      | The user ID of the access requester |
 | `access_level` | integer        | no       | A valid access level (defaults: `30`, the Developer role) |
 
@@ -158,7 +157,7 @@ DELETE /projects/:id/access_requests/:user_id
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `user_id` | integer        | yes      | The user ID of the access requester |
 
 Example request:

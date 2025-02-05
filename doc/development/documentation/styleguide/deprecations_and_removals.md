@@ -13,7 +13,7 @@ If a feature is not generally available, you can delete the content outright ins
 
 NOTE:
 REST API docs [have a separate deprecation style](../restful_api_styleguide.md#deprecations).
-The GraphQL API [has a separate deprecation process](../../../api/graphql/index.md#deprecation-and-removal-process),
+The GraphQL API [has a separate deprecation process](../../../api/graphql/_index.md#deprecation-and-removal-process),
 and [style for the deprecation reason](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
 
 ## Features not actively being developed

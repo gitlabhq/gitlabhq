@@ -690,8 +690,8 @@ which includes concepts such as:
 #### Leveraging APIs
 
 GitLab provides a robust set of APIs to support the application,
-including [REST](../api/rest/index.md) and
-[GraphQL](../api/graphql/index.md) APIs.
+including [REST](../api/rest/_index.md) and
+[GraphQL](../api/graphql/_index.md) APIs.
 Securing APIs starts with the proper configuration of authentication for
 users and jobs calling the API endpoints. GitLab recommends configuring
 access tokens (personal access tokens not supported by FIPS) and OAuth

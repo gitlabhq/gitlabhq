@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Namespaces API
 ---
-
-# Namespaces API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -12,7 +11,7 @@ DETAILS:
 
 Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [Namespaces](../user/namespace/index.md).
 
-This API uses [Pagination](rest/index.md#pagination) to filter results.
+This API uses [Pagination](rest/_index.md#pagination) to filter results.
 
 ## List all namespaces
 
@@ -126,7 +125,7 @@ GET /namespaces/:id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path](rest/index.md#namespaced-paths) of the namespace. |
+| `id`      | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the namespace. |
 
 Example request:
 

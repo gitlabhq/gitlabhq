@@ -103,7 +103,7 @@ with the deployed staging AI gateway. To do this:
 After purchasing the Duo add-on, existing eligible users can be assigned/un-assigned to the Duo `add_on_purchase` in bulk. There are a few ways to perform this action, that apply for both SaaS and Self-managed instances,
 
 1. [Duo users management UI](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
-1. [GraphQL endpoint](../../api/graphql/assign_gitlab_duo_seats.md#assign-gitlab-duo-seats-by-using-graphql)
+1. [GraphQL endpoint](../../api/graphql/assign_gitlab_duo_seats.md)
 1. [Rake task](../../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro)
 
 The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_assign_service.rb)/[BulkUnassignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_unassign_service.rb), which evaluates eligibility criteria preliminarily before assigning/un-assigning the passed users in a single SQL operation.

@@ -291,7 +291,7 @@ To fix the problem:
 
 ### Query GraphQL for default branches
 
-You can use a [GraphQL query](../../../../api/graphql/index.md)
+You can use a [GraphQL query](../../../../api/graphql/_index.md)
 to retrieve the default branches for all projects in a group.
 
 To return all projects in a single page of results, replace `GROUPNAME` with the

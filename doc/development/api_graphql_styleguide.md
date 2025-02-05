@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Backend GraphQL API guide
 ---
 
-This document contains style and technical guidance for engineers implementing the backend of the [GitLab GraphQL API](../api/graphql/index.md).
+This document contains style and technical guidance for engineers implementing the backend of the [GitLab GraphQL API](../api/graphql/_index.md).
 
 ## Relation to REST API
 
@@ -27,7 +27,7 @@ which is an accessible but shortened version of information in the [GraphQL spec
 ### Deep Dive
 
 In March 2019, Nick Thomas hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/issues/1`)
-on the GitLab [GraphQL API](../api/graphql/index.md) to share domain-specific knowledge
+on the GitLab [GraphQL API](../api/graphql/_index.md) to share domain-specific knowledge
 with anyone who may work in this part of the codebase in the future. You can find the
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [recording on YouTube](https://www.youtube.com/watch?v=-9L_1MWrjkg), and the slides on
@@ -93,7 +93,7 @@ a connection.
 
 ### Max complexity
 
-Complexity is explained [on our client-facing API page](../api/graphql/index.md#maximum-query-complexity).
+Complexity is explained [on our client-facing API page](../api/graphql/_index.md#maximum-query-complexity).
 
 Fields default to adding `1` to a query's complexity score, but developers can
 [specify a custom complexity](#field-complexity) when defining a field.
@@ -164,7 +164,7 @@ field :environments,
 ## Breaking changes
 
 The GitLab GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versioning) which means
-developers must familiarize themselves with our [Deprecation and Removal process](../api/graphql/index.md#deprecation-and-removal-process).
+developers must familiarize themselves with our [Deprecation and Removal process](../api/graphql/_index.md#deprecation-and-removal-process).
 
 Breaking changes are:
 
@@ -190,7 +190,7 @@ See the [deprecating schema items](#deprecating-schema-items) section for how to
 ### Breaking change exemptions
 
 See the
-[GraphQL API breaking change exemptions documentation](../api/graphql/index.md#breaking-change-exemptions).
+[GraphQL API breaking change exemptions documentation](../api/graphql/_index.md#breaking-change-exemptions).
 
 ## Global IDs
 
@@ -205,7 +205,7 @@ See also:
 - [Exposing Global IDs](#exposing-global-ids).
 - [Mutation arguments](#object-identifier-arguments).
 - [Deprecating Global IDs](#deprecate-global-ids).
-- [Customer-facing Global ID documentation](../api/graphql/index.md#global-ids).
+- [Customer-facing Global ID documentation](../api/graphql/_index.md#global-ids).
 
 We have a custom scalar type (`Types::GlobalIDType`) which should be used as the
 type of input and output arguments when the value is a `GlobalID`. The benefits
@@ -244,7 +244,7 @@ The following are a list of tools to help you to optimize your GraphQL code:
 N+1 problems can be discovered during development of a feature by:
 
 - Tailing `development.log` while you execute GraphQL queries that return collections of data.
-  [Bullet](../development/profiling.md#bullet) may help.
+  [Bullet](profiling.md#bullet) may help.
 - Observing the [performance bar](../administration/monitoring/performance/performance_bar.md) if
   executing queries in the GitLab UI.
 - Adding a [request spec](#testing-tips-and-tricks) that asserts there are no (or limited) N+1
@@ -548,7 +548,7 @@ field :tags,
 ### Field complexity
 
 The GitLab GraphQL API uses a _complexity_ score to limit performing overly complex queries.
-Complexity is described in [our client documentation](../api/graphql/index.md#maximum-query-complexity) on the topic.
+Complexity is described in [our client documentation](../api/graphql/_index.md#maximum-query-complexity) on the topic.
 
 Complexity limits are defined in [`app/graphql/gitlab_schema.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/gitlab_schema.rb).
 
@@ -644,7 +644,7 @@ end
 
 ## Feature flags
 
-You can implement [feature flags](../development/feature_flags/_index.md) in GraphQL to toggle:
+You can implement [feature flags](feature_flags/_index.md) in GraphQL to toggle:
 
 - The return value of a field.
 - The behavior of an argument or mutation.
@@ -732,7 +732,7 @@ Rather than removing fields, arguments, [enum values](#enums), or [mutations](#m
 they must be _deprecated_ instead.
 
 The deprecated parts of the schema can then be removed in a future release
-in accordance with the [GitLab deprecation process](../api/graphql/index.md#deprecation-and-removal-process).
+in accordance with the [GitLab deprecation process](../api/graphql/_index.md#deprecation-and-removal-process).
 
 To deprecate a schema item in GraphQL:
 
@@ -876,7 +876,7 @@ DEPRECATIONS = [
 ].freeze
 ```
 
-Then follow our regular [deprecation process](../api/graphql/index.md#deprecation-and-removal-process). To later remove
+Then follow our regular [deprecation process](../api/graphql/_index.md#deprecation-and-removal-process). To later remove
 support for the former argument style, remove the `Deprecation`:
 
 ```ruby
@@ -908,7 +908,7 @@ You can mark GraphQL schema items (fields, arguments, enum values, and mutations
 [experiments](../policy/development_stages_support.md#experiment).
 
 An item marked as an experiment is
-[exempt from the deprecation process](../api/graphql/index.md#breaking-change-exemptions) and can be
+[exempt from the deprecation process](../api/graphql/_index.md#breaking-change-exemptions) and can be
 removed at any time without notice. Mark an item as an experiment when it is subject to
 change and not ready for public use.
 
@@ -935,7 +935,7 @@ mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, experiment: { milestone:
 
 Experimental GraphQL items is a custom GitLab feature that leverages GraphQL deprecations. An experimental item
 appears as deprecated in the GraphQL schema. Like all deprecated schema items, you can test an
-experimental field in the [interactive GraphQL explorer](../api/graphql/index.md#interactive-graphql-explorer) (GraphiQL).
+experimental field in the [interactive GraphQL explorer](../api/graphql/_index.md#interactive-graphql-explorer) (GraphiQL).
 However, be aware that the GraphiQL autocomplete editor doesn't suggest deprecated fields.
 
 The item shows as `experiment` in our generated GraphQL documentation and its GraphQL schema description.
@@ -1207,7 +1207,7 @@ To limit the amount of queries performed, we can use [BatchLoader](graphql_guide
 
 ### Writing resolvers
 
-Our code should aim to be thin declarative wrappers around finders and [services](../development/reusing_abstractions.md#service-classes). You can
+Our code should aim to be thin declarative wrappers around finders and [services](reusing_abstractions.md#service-classes). You can
 repeat lists of arguments, or extract them to concerns. Composition is preferred over
 inheritance in most cases. Treat resolvers like controllers: resolvers should be a DSL
 that compose other application abstractions.
@@ -1718,7 +1718,7 @@ single mutation when multiple are performed in a single request.
 
 Similar to [writing resolvers](#writing-resolvers), the `resolve` method of a mutation
 should aim to be a thin declarative wrapper around a
-[service](../development/reusing_abstractions.md#service-classes).
+[service](reusing_abstractions.md#service-classes).
 
 The `resolve` method receives the mutation's arguments as keyword arguments.
 From here, we can call the service that modifies the resource.
@@ -1927,7 +1927,7 @@ needs of the _user_ from the needs of the _client_.
 If the user does need to know about it, communicate with frontend developers
 to make sure the error information we are passing back is relevant and serves a purpose.
 
-See also the [frontend GraphQL guide](../development/fe_guide/graphql.md#handling-errors).
+See also the [frontend GraphQL guide](fe_guide/graphql.md#handling-errors).
 
 ### Aliasing and deprecating mutations
 
@@ -2559,7 +2559,7 @@ This generated GraphQL documentation needs to be updated when the schema changes
 For information on generating GraphQL documentation and schema files, see
 [updating the schema documentation](rake_tasks.md#update-graphql-documentation-and-schema-definitions).
 
-To help our readers, you should also add a new page to our [GraphQL API](../api/graphql/index.md) documentation.
+To help our readers, you should also add a new page to our [GraphQL API](../api/graphql/_index.md) documentation.
 For guidance, see the [GraphQL API](documentation/graphql_styleguide.md) page.
 
 ## Include a changelog entry

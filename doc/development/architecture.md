@@ -35,7 +35,7 @@ Kubernetes platform. The largest known GitLab instance is on GitLab.com, which i
 
 A typical installation uses NGINX or Apache as a web server to proxy through
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse) and into the [Puma](https://puma.io)
-application server. GitLab serves web pages and the [GitLab API](../api/rest/index.md) using the Puma
+application server. GitLab serves web pages and the [GitLab API](../api/rest/_index.md) using the Puma
 application server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent
 database backend for job information, metadata, and incoming jobs.
 
@@ -621,8 +621,8 @@ Grafana is an open source, feature rich metrics dashboard and graph editor for G
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4104)
   - [Charts](https://docs.gitlab.com/charts/charts/globals#tracing)
-  - [Source](../development/distributed_tracing.md#enabling-distributed-tracing)
-  - [GDK](../development/distributed_tracing.md#using-jaeger-in-the-gitlab-development-kit)
+  - [Source](distributed_tracing.md#enabling-distributed-tracing)
+  - [GDK](distributed_tracing.md#using-jaeger-in-the-gitlab-development-kit)
 - Layer: Monitoring
 - GitLab.com: [Configuration to enable Tracing for a GitLab instance](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4104) issue.
 

@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: REST API deprecations and removals
 ---
-
-# REST API deprecations and removals
 
 The following API changes will occur between REST API v4 and v5.
 No date is set for this upgrade.

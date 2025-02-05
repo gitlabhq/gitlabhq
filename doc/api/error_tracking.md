@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Error Tracking settings API
 ---
-
-# Error Tracking settings API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -23,7 +22,7 @@ GET /projects/:id/error_tracking/settings
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -60,7 +59,7 @@ Supported attributes:
 
 | Attribute    | Type    | Required | Description                                                                                                                                                     |
 | ------------ | ------- |----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).                                            |
+| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                            |
 | `active`     | boolean | yes      | Pass `true` to enable the error tracking setting configuration or `false` to disable it.                                                                        |
 | `integrated` | boolean | yes      | Pass `true` to enable the integrated error tracking backend. |
 
@@ -94,7 +93,7 @@ PATCH /projects/:id/error_tracking/settings
 
 | Attribute    | Type    | Required | Description           |
 | ------------ | ------- | -------- | --------------------- |
-| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`         | integer | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `active`     | boolean | yes      | Pass `true` to enable the already configured error tracking settings or `false` to disable it. |
 | `integrated` | boolean | no       | Pass `true` to enable the integrated error tracking backend. |
 
@@ -128,7 +127,7 @@ GET /projects/:id/error_tracking/client_keys
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -164,7 +163,7 @@ POST /projects/:id/error_tracking/client_keys
 
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
-| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request POST \
@@ -194,7 +193,7 @@ DELETE /projects/:id/error_tracking/client_keys/:key_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `key_id`  | integer | yes | The ID of the client key. |
 
 ```shell

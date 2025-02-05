@@ -65,7 +65,7 @@ Offset-based pagination is the easiest way to paginate over records, however, it
 - Avoid using page numbers, use next and previous page buttons.
   - Keyset pagination doesn't support page numbers.
 - For APIs, advise against building URLs for the next page by "hand".
-  - Promote the usage of the [`Link` header](../../api/rest/index.md#pagination-link-header) where the URLs for the next and previous page are provided by the backend.
+  - Promote the usage of the [`Link` header](../../api/rest/_index.md#pagination-link-header) where the URLs for the next and previous page are provided by the backend.
   - This way changing the URL structure is possible without breaking backward compatibility.
 
 NOTE:
@@ -219,7 +219,7 @@ We can argue that a typical user does not visit these pages. However, API users 
 
 Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page, however, it's not a drop-in replacement for offset-based pagination. When moving an API endpoint from offset-based pagination to keyset-based pagination, both must be supported. Removing one type of pagination entirely is a [breaking changes](../../update/terminology.md#breaking-change).
 
-Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/index.md#keyset-based-pagination).
+Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/_index.md#keyset-based-pagination).
 
 Consider the following `issues` table:
 

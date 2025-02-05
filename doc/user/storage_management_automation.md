@@ -71,7 +71,7 @@ glab api groups/YOURGROUPNAME/projects
 
 #### Using the GitLab CLI
 
-Some API endpoints require [pagination](../api/rest/index.md#pagination) and subsequent page fetches to retrieve all results. The GitLab CLI provides the flag `--paginate`.
+Some API endpoints require [pagination](../api/rest/_index.md#pagination) and subsequent page fetches to retrieve all results. The GitLab CLI provides the flag `--paginate`.
 
 Requests that require a POST body formatted as JSON data can be written as `key=value` pairs passed to the `--raw-field` parameter.
 

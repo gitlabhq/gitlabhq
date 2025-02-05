@@ -227,7 +227,7 @@ DORA metrics are displayed in the following analytics features:
 - [Value Streams Dashboard](value_streams_dashboard.md) includes the [DORA metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panels) and [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
 - [CI/CD analytics charts](ci_cd_analytics.md) show the history of DORA metrics over time.
 - [Insights reports](../project/insights/index.md) provide the option to create custom charts with [DORA query parameters](../../user/project/insights/index.md#dora-query-parameters).
-- [GraphQL API](../../api/graphql/reference/_index.md) (with the interactive [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer)) and [REST API](../../api/dora/metrics.md) support the retrieval of metrics data.
+- [GraphQL API](../../api/graphql/reference/_index.md) (with the interactive [GraphQL explorer](../../api/graphql/_index.md#interactive-graphql-explorer)) and [REST API](../../api/dora/metrics.md) support the retrieval of metrics data.
 
 ## Project and group availability
 

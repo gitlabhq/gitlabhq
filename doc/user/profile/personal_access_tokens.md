@@ -169,7 +169,7 @@ To disable the enterprise users' personal access tokens:
 
 Token usage information is updated every 10 minutes. GitLab considers a token used when the token is used to:
 
-- Authenticate with the [REST](../../api/rest/index.md) or [GraphQL](../../api/graphql/index.md) APIs.
+- Authenticate with the [REST](../../api/rest/_index.md) or [GraphQL](../../api/graphql/_index.md) APIs.
 - Perform a Git operation.
 
 To view the last time a token was used, and the IP addresses from where the token was used:

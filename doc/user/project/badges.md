@@ -123,7 +123,7 @@ You can access a latest release badge image by using the following link:
 https://gitlab.example.com/<namespace>/<project>/-/badges/release.svg
 ```
 
-By default, the badge fetches the release sorted using the [`released_at`](../../api/releases/index.md#create-a-release)
+By default, the badge fetches the release sorted using the [`released_at`](../../api/releases/_index.md#create-a-release)
 time with the `?order_by` query parameter.
 
 ```plaintext

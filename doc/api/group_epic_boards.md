@@ -2,9 +2,8 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group epic boards API
 ---
-
-# Group epic boards API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -27,7 +26,7 @@ GET /groups/:id/epic_boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/epic_boards"
@@ -110,7 +109,7 @@ GET /groups/:id/epic_boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 | `board_id` | integer | yes | The ID of an epic board |
 
 ```shell
@@ -193,7 +192,7 @@ GET /groups/:id/epic_boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 | `board_id` | integer | yes | The ID of an epic board |
 
 ```shell
@@ -252,7 +251,7 @@ GET /groups/:id/epic_boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) accessible by the authenticated user |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user |
 | `board_id` | integer | yes | The ID of an epic board |
 | `list_id` | integer | yes | The ID of an epic board's list |
 

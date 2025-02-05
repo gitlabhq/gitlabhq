@@ -2,9 +2,8 @@
 stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Epic Issues API
 ---
-
-# Epic Issues API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -14,7 +13,7 @@ WARNING:
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
-[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](../api/graphql/epic_work_items_api_migration_guide.md).
+[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
 Every API call to the epic issues API endpoint must be authenticated.
@@ -27,7 +26,7 @@ If the Epics feature is not available, a `403` status code is returned.
 
 ## Epic Issues pagination
 
-API results [are paginated](rest/index.md#pagination). Requests that return
+API results [are paginated](rest/_index.md#pagination). Requests that return
 multiple issues default to returning 20 results at a time.
 
 ## List issues for an epic
@@ -40,7 +39,7 @@ GET /groups/:id/epics/:epic_iid/issues
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 
 ```shell
@@ -135,7 +134,7 @@ POST /groups/:id/epics/:epic_iid/issues/:issue_id
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
 | `issue_id`          | integer/string   | yes        | The ID of the issue.          |
 
@@ -241,7 +240,7 @@ DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 
 | Attribute           | Type             | Required   | Description                                                                                          |
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.                |
 | `epic_issue_id`     | integer/string   | yes        | The ID of the issue - epic association.     |
 
@@ -347,7 +346,7 @@ PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 
 | Attribute           | Type             | Required   | Description                                                                                          |
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths)                |
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `epic_iid`          | integer/string   | yes        | The internal ID of the epic.                |
 | `epic_issue_id`     | integer/string   | yes        | The ID of the issue - epic association.     |
 | `move_before_id`    | integer/string   | no         | The ID of the issue - epic association that should be placed before the link in the question.     |

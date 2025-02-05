@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create an audit report by using GraphQL
 ---
-
-# Create an audit report by using GraphQL
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

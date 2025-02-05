@@ -154,13 +154,13 @@ When you [rename a user](../../profile/index.md#change-your-username),
   work after a rename.
 - The redirects are available as long as the original path is not claimed by
   another group, user, or project.
-- [API redirects](../../../api/rest/index.md#redirects) may need to be followed explicitly.
+- [API redirects](../../../api/rest/_index.md#redirects) may need to be followed explicitly.
 
 After you change a path, you must update the existing URL in the following resources:
 
 - [Include statements](../../../ci/yaml/includes.md) except [`include:component`](../../../ci/components/index.md),
   otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
-- Namespaced API calls that use the [encoded path](../../../api/rest/index.md#namespaced-paths)
+- Namespaced API calls that use the [encoded path](../../../api/rest/_index.md#namespaced-paths)
   instead of the numeric namespace and project IDs.
 - [Docker image references](../../../ci/yaml/index.md#image).
 - Variables that specify a project or namespace.

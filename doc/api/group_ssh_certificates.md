@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group SSH certificates API
 ---
-
-# Group SSH certificates API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -31,7 +30,7 @@ Parameters:
 | `id`      | integer | Yes       | The ID of the group. |
 
 By default, `GET` requests return 20 results at a time because the API results are paginated.
-Read more on [pagination](rest/index.md#pagination).
+Read more on [pagination](rest/_index.md#pagination).
 
 Example request:
 

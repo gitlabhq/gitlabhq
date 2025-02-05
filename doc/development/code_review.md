@@ -521,7 +521,7 @@ Here is a summary, which is also reflected in other sections.
    - Discussions on one particular part of the code will not block other parts of the code from being merged.
    - Smaller MRs are often simpler, and you can consider skipping the first review and [sending directly to the maintainer](#getting-your-merge-request-reviewed-approved-and-merged), or skipping one of the suggested competency areas (frontend or backend, for example).
    - Mocks can be a good approach, even though they add another MR later; replacing a mock with a server request is usually a quick MR to review.
-     - Be sure that any UI with mocked data is behind a [feature flag](../development/feature_flags/_index.md).
+     - Be sure that any UI with mocked data is behind a [feature flag](feature_flags/_index.md).
    - Pull common dependencies into the first MRs to avoid excessive rebases.
      - For sequential MRs use [stacked diffs](../user/project/merge_requests/stacked_diffs.md).
      - For dependent MRs (for example, `A` -> `B` -> `C`), have their branches target each other instead of `master`. For example, have `C` target `B`, `B` target `A`, and `A` target `master`. This way each MR will have only their corresponding `diff`.

@@ -3,9 +3,8 @@ stage: AI-Powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Documentation for the REST API for Duo Chat."
+title: GitLab Duo Chat Completions API
 ---
-
-# GitLab Duo Chat Completions API
 
 The GitLab Duo Chat Completions API generates Chat responses. This API is for internal use only.
 

@@ -1,0 +1,10 @@
+---
+name: user_authorized_oauth_application
+description: User authorized an OAuth application
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/514152
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179187
+feature_category: authorization
+milestone: '17.9'
+saved_to_database: true
+streamed: true
+scope: [User]

@@ -175,7 +175,9 @@ module Users
         )
 
         # https://gitlab.com/gitlab-org/gitlab/-/issues/442780
-        user.assign_personal_namespace(::Organizations::Organization.first)
+        organization = ::Organizations::Organization.first
+        user.assign_personal_namespace(organization)
+        user.organizations << organization
 
         Users::UpdateService.new(user, user: user).execute(validate: false)
         user

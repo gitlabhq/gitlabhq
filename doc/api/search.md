@@ -2,9 +2,8 @@
 stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Search API
 ---
-
-# Search API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -459,7 +458,7 @@ GET /groups/:id/search
 
 | Attribute | Type | Required | Description  |
 | --------- | ---- | -------- | -------------|
-| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths). |
+| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `scope`       | string   | Yes | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`. |
 | `search`      | string   | Yes | The search term. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports only `issues` scope; other scopes are ignored. |
@@ -854,7 +853,7 @@ GET /projects/:id/search
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ------------|
-| `id` | integer or string | Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id` | integer or string | Yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `scope`       | string   | Yes | The scope to search in. Values include `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`. |
 | `search`      | string   | Yes | The search term. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports `issues` scope; other scopes are ignored. |

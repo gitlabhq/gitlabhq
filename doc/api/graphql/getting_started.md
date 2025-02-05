@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Run GraphQL API queries and mutations
 ---
-
-# Run GraphQL API queries and mutations
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -46,7 +45,7 @@ You can run GraphQL queries in a `curl` request on the command line on your
 local computer. The requests `POST` to `/api/graphql`
 with the query as the payload. You can authorize your request by generating a
 [personal access token](../../user/profile/personal_access_tokens.md) to use as
-a bearer token. Read more about [GraphQL Authentication](index.md#authentication).
+a bearer token. Read more about [GraphQL Authentication](_index.md#authentication).
 
 Example:
 
@@ -104,7 +103,7 @@ NOTE:
 In the GitLab GraphQL API, `id` refers to a
 [Global ID](https://graphql.org/learn/global-object-identification/),
 which is an object identifier in the format of `"gid://gitlab/Issue/123"`.
-For more information, see [Global IDs](index.md#global-ids).
+For more information, see [Global IDs](_index.md#global-ids).
 
 [GitLab GraphQL Schema](reference/_index.md) outlines which objects and fields are
 available for clients to query and their corresponding data types.
@@ -171,7 +170,7 @@ More about queries:
 
 If you've signed in to GitLab and use [GraphiQL](#graphiql), all queries are performed as
 you, the authenticated user. For more information, read about
-[GraphQL Authentication](index.md#authentication).
+[GraphQL Authentication](_index.md#authentication).
 
 ### Mutations
 
@@ -348,7 +347,7 @@ More about introspection:
 
 ### Query complexity
 
-The calculated [complexity score and limit](index.md#maximum-query-complexity) for a query can be revealed to clients by
+The calculated [complexity score and limit](_index.md#maximum-query-complexity) for a query can be revealed to clients by
 querying for `queryComplexity`.
 
 ```graphql

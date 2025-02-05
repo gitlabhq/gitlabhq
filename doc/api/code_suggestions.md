@@ -3,9 +3,8 @@ stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Documentation for the REST API for Code Suggestions."
+title: Code Suggestions API
 ---
-
-# Code Suggestions API
 
 Use the Code Suggestions API to access the Code Suggestions feature.
 

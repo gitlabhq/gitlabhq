@@ -30,7 +30,7 @@ If GitLab cannot comment on a Jira issue, ensure the Jira user you created for t
 - Post comments on a Jira issue.
 - Transition the Jira issue.
 
-When the [GitLab issue tracker](../../integration/external-issue-tracker.md) is disabled, Jira issue references and comments do not work.
+When the [GitLab issue tracker](../external-issue-tracker.md) is disabled, Jira issue references and comments do not work.
 If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), ensure you add your GitLab Self-Managed IP addresses or [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist in Jira.
 
 For the root cause, check the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.

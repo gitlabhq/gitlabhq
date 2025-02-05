@@ -60,7 +60,7 @@ you can access the project either at `https://gitlab.example.com/alex/my-project
 NOTE:
 In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
 
-You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/index.md).
+You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/_index.md).
 
 To copy the project ID:
 

@@ -20,7 +20,7 @@ To add this support, you must implement the following areas as applicable:
    [REST API documentation](../../api/rest/troubleshooting.md#requests-detected-as-spam).
 1. [GraphQL API](graphql_api.md): The changes needed to add spam or CAPTCHA support to GraphQL
    mutations. Refer to the related
-   [GraphQL API documentation](../../api/graphql/index.md#resolve-mutations-detected-as-spam).
+   [GraphQL API documentation](../../api/graphql/_index.md#resolve-mutations-detected-as-spam).
 1. [Web UI](web_ui.md): The various possible scenarios encountered when adding
    spam/CAPTCHA support to the web UI, depending on whether the UI is JavaScript API-based (Vue or
    plain JavaScript) or HTML-form (HAML) based.
@@ -46,7 +46,7 @@ The possible values include:
 
 ## Related topics
 
-- [Spam and CAPTCHA support in the GraphQL API](../../api/graphql/index.md#resolve-mutations-detected-as-spam)
+- [Spam and CAPTCHA support in the GraphQL API](../../api/graphql/_index.md#resolve-mutations-detected-as-spam)
 - [Spam and CAPTCHA support in the REST API](../../api/rest/troubleshooting.md#requests-detected-as-spam)
 - [reCAPTCHA Spam and Anti-bot Protection](../../integration/recaptcha.md)
 - [Akismet and spam logs](../../integration/akismet.md)

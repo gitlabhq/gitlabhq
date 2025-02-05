@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: User tokens API
 ---
-
-# User tokens API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -122,7 +121,7 @@ Example response:
 
 Lists all impersonation tokens for a given user.
 
-Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
+Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
 Prerequisites:
 

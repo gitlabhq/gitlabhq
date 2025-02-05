@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: User SSH and GPG keys API
 ---
-
-# User SSH and GPG keys API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -16,7 +15,7 @@ Use this API to interact with SSH and GPG keys for users. For more information, 
 
 Lists all SSH keys for your user account.
 
-Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
+Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
 Prerequisites:
 

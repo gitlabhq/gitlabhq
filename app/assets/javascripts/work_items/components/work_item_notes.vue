@@ -307,8 +307,8 @@ export default {
       subscribeToMore: [
         {
           document: workItemNoteCreatedSubscription,
-          updateQuery(previousResult, { subscriptionData }) {
-            return updateCacheAfterCreatingNote(previousResult, subscriptionData);
+          updateQuery(previousResult, { subscriptionData: { data } }) {
+            return updateCacheAfterCreatingNote(previousResult, data?.workItemNoteCreated);
           },
           variables() {
             return {

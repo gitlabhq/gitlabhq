@@ -56,8 +56,8 @@ For instructions on how to write stories, refer to the [official Storybook instr
 
 ## Using GitLab REST and GraphQL APIs
 
-You can write stories for components that use either the GitLab [REST](../../api/rest/index.md) or
-[GraphQL](../../api/graphql/index.md) APIs.
+You can write stories for components that use either the GitLab [REST](../../api/rest/_index.md) or
+[GraphQL](../../api/graphql/_index.md) APIs.
 
 ### Set up API access token and GitLab instance URL
 

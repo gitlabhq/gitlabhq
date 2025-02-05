@@ -2,15 +2,14 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: REST API resources
 ---
-
-# REST API resources
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
+Available resources for the [GitLab REST API](_index.md) can be grouped in the following contexts:
 
 - [Projects](#project-resources)
 - [Groups](#group-resources)
@@ -100,7 +99,7 @@ The following API resources are available in the project context:
 | [Protected tags](protected_tags.md)                                            | `/projects/:id/protected_tags` |
 | [PyPI packages](packages/pypi.md)                                              | `/projects/:id/packages/pypi` (also available for groups) |
 | [Release links](releases/links.md)                                             | `/projects/:id/releases/.../assets/links` |
-| [Releases](releases/index.md)                                                  | `/projects/:id/releases` |
+| [Releases](releases/_index.md)                                                 | `/projects/:id/releases` |
 | [Remote mirrors](remote_mirrors.md)                                            | `/projects/:id/remote_mirrors` |
 | [Repositories](repositories.md)                                                | `/projects/:id/repository` |
 | [Repository files](repository_files.md)                                        | `/projects/:id/repository/files` |

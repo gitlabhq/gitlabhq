@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Issues API
 ---
-
-# Issues API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -19,7 +18,7 @@ request on that project results in a `404` status code.
 
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
-Read more on [pagination](rest/index.md#pagination).
+Read more on [pagination](rest/_index.md#pagination).
 
 NOTE:
 The `references.relative` attribute is relative to the group or project of the issue being requested.
@@ -286,7 +285,7 @@ Supported attributes:
 
 | Attribute           | Type             | Required   | Description                                                                                                                   |
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | Yes        | The global ID or [URL-encoded path of the group](rest/index.md#namespaced-paths).                 |
+| `id`                | integer/string   | Yes        | The global ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                 |
 | `assignee_id`       | integer          | No         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. |
 | `assignee_username` | string array     | No         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE, the `assignee_username` array should only contain a single value. Otherwise, an invalid parameter error is returned. |
 | `author_id`         | integer          | No         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
@@ -493,7 +492,7 @@ Supported attributes:
 
 | Attribute           | Type             | Required   | Description                                                                                                                   |
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | Yes        | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).               |
+| `id`                | integer/string   | Yes        | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).               |
 | `assignee_id`       | integer          | No         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. |
 | `assignee_username` | string array     | No         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE, the `assignee_username` array should only contain a single value. Otherwise, an invalid parameter error is returned. |
 | `author_id`         | integer          | No         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
@@ -865,7 +864,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -1027,7 +1026,7 @@ Supported attributes:
 
 | Attribute                                 | Type           | Required | Description  |
 |-------------------------------------------|----------------|----------|--------------|
-| `id`                                      | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`                                      | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `assignee_id`                             | integer        | No       | The ID of the user to assign the issue to. Only appears on GitLab Free. |
 | `assignee_ids`                            | integer array  | No       | The IDs of the users to assign the issue to. Premium and Ultimate only.|
 | `confidential`                            | boolean        | No       | Set an issue to be confidential. Default is `false`.  |
@@ -1199,7 +1198,7 @@ Supported attributes:
 
 | Attribute      | Type    | Required | Description                                                                                                |
 |----------------|---------|----------|------------------------------------------------------------------------------------------------------------|
-| `id`           | integer/string | Yes | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`           | integer/string | Yes | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid`    | integer | Yes      | The internal ID of a project's issue.                                                                       |
 | `add_labels`   | string  | No       | Comma-separated label names to add to an issue. If a label does not already exist, this creates a new project label and assigns it to the issue. |
 | `assignee_ids` | integer array | No | The ID of the users to assign the issue to. Set to `0` or provide an empty value to unassign all assignees. |
@@ -1361,7 +1360,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -1386,7 +1385,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of the project's issue. |
 | `move_after_id` | integer | No | The global ID of a project's issue that should be placed after this issue. |
 | `move_before_id` | integer | No | The global ID of a project's issue that should be placed before this issue. |
@@ -1416,7 +1415,7 @@ Supported attributes:
 
 | Attribute       | Type    | Required | Description                          |
 |-----------------|---------|----------|--------------------------------------|
-| `id`            | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`            | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid`     | integer | Yes      | The internal ID of a project's issue. |
 | `to_project_id` | integer | Yes      | The ID of the new project.            |
 
@@ -1570,7 +1569,7 @@ Supported attributes:
 
 | Attribute       | Type           | Required               | Description                       |
 | --------------- | -------------- | ---------------------- | --------------------------------- |
-| `id`            | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`            | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid`     | integer        | Yes | Internal ID of a project's issue. |
 | `to_project_id` | integer        | Yes | ID of the new project.            |
 | `with_notes`    | boolean        | No | Clone the issue with [notes](notes.md). Default is `false`. |
@@ -1688,7 +1687,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -1837,7 +1836,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -1917,7 +1916,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2047,7 +2046,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | :---------- | :------------- | :------- | :---------- |
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid` | integer        | Yes      | The internal ID of a project's issue. |
 | `body`      | String         | Yes      | The content of a note. Must contain `/promote` at the start of a new line. If the note only contains `/promote`, promotes the issue, but doesn't add a comment. Otherwise, the other lines form a comment.|
 
@@ -2106,7 +2105,7 @@ Supported attributes:
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
 | `duration`  | string  | Yes      | The duration in human-readable format. For example: `3h30m`. |
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).      |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).      |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue.     |
 
 Example request:
@@ -2140,7 +2139,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2175,7 +2174,7 @@ Supported attributes:
 | Attribute   | Type    | Required | Description                              |
 |-------------|---------|----------|------------------------------------------|
 | `duration`  | string  | Yes      | The duration in human-readable format. For example: `3h30m` |
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue.    |
 | `summary`   | string  | No       | A summary of how the time was spent.  |
 
@@ -2210,7 +2209,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2247,7 +2246,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2287,7 +2286,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2452,7 +2451,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description                        |
 | ----------- | ---------------| -------- | ---------------------------------- |
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid` | integer        | Yes      | The internal ID of a project issue. |
 
 Example request:
@@ -2536,7 +2535,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2588,7 +2587,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2633,7 +2632,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 | `file` | file | Yes      | The image file to be uploaded. |
 | `url` | string | No      | The URL to view more metric information. |
@@ -2676,7 +2675,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 
 Example request:
@@ -2721,7 +2720,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 | `image_id` | integer | Yes      | The ID of the image. |
 | `url` | string | No      | The URL to view more metric information. |
@@ -2764,7 +2763,7 @@ Supported attributes:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-paths).  |
+| `id`        | integer/string | Yes      | The global ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).  |
 | `issue_iid` | integer | Yes      | The internal ID of a project's issue. |
 | `image_id` | integer | Yes      | The ID of the image. |
 

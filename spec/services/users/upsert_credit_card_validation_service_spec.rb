@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user_profile do
   include CryptoHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   let(:user_id) { user.id }
 

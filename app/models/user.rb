@@ -407,8 +407,6 @@ class User < ApplicationRecord
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
 
-  after_create_commit :create_default_organization_user
-
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }
 
@@ -2904,12 +2902,6 @@ class User < ApplicationRecord
 
   def prefix_for_feed_token
     FEED_TOKEN_PREFIX
-  end
-
-  def create_default_organization_user
-    return unless organizations.blank?
-
-    Organizations::OrganizationUser.create_default_organization_record_for(id, user_is_admin: admin?)
   end
 
   # method overridden in EE

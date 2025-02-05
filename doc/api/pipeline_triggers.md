@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Pipeline trigger tokens API
 ---
-
-# Pipeline trigger tokens API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -22,7 +21,7 @@ GET /projects/:id/triggers
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers"
@@ -55,7 +54,7 @@ GET /projects/:id/triggers/:trigger_id
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `id`         | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`         | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `trigger_id` | integer        | Yes      | The trigger ID |
 
 ```shell
@@ -85,7 +84,7 @@ POST /projects/:id/triggers
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
 | `description` | string         | Yes      | The trigger name |
-| `id`          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -114,7 +113,7 @@ PUT /projects/:id/triggers/:trigger_id
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
-| `id`          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `trigger_id`  | integer        | Yes      | The trigger ID |
 | `description` | string         | No       | The trigger name |
 
@@ -145,7 +144,7 @@ DELETE /projects/:id/triggers/:trigger_id
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `id`         | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) |
+| `id`         | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `trigger_id` | integer        | Yes      | The trigger ID |
 
 ```shell
@@ -171,7 +170,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths). |
+| `id`        | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `ref`       | string         | Yes      | The branch or tag to run the pipeline on. |
 | `token`     | string         | Yes      | The trigger token or CI/CD job token. |
 | `variables` | hash           | No       | A map of key-valued strings containing the pipeline variables. For example: `{ VAR1: "value1", VAR2: "value2" }`. |

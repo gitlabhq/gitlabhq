@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Service account users API
 ---
-
-# Service account users API
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -22,7 +21,7 @@ DETAILS:
 
 Lists all service account users.
 
-Use the `page` and `per_page` [pagination parameters](rest/index.md#offset-based-pagination) to filter the results.
+Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
 Prerequisites:
 

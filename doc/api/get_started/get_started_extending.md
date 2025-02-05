@@ -2,9 +2,8 @@
 stage: none
 group: none
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Get started extending GitLab
 ---
-
-# Get started extending GitLab
 
 Interact programmatically with GitLab.
 Automate tasks, integrate with other tools, and create custom workflows.

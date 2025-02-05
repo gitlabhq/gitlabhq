@@ -3,9 +3,8 @@ stage: Software Supply Chain Security
 group: Authentication
 description: Third-party authorization to GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: OAuth 2.0 identity provider API
 ---
-
-# OAuth 2.0 identity provider API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

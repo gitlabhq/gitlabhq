@@ -5,4 +5,7 @@ import { EditMlModel } from '~/ml/model_registry/apps';
 
 Vue.use(VueRouter);
 
-initSimpleApp('#js-mount-edit-ml-model', EditMlModel, { withApolloProvider: true });
+initSimpleApp('#js-mount-edit-ml-model', EditMlModel, {
+  withApolloProvider: true,
+  name: 'EditMlModel',
+});

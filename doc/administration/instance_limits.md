@@ -391,7 +391,7 @@ and to limit memory consumption.
 When using offset-based pagination in the REST API, there is a limit to the maximum
 requested offset into the set of results. This limit is only applied to endpoints that
 also support keyset-based pagination. More information about pagination options can be
-found in the [API documentation section on pagination](../api/rest/index.md#pagination).
+found in the [API documentation section on pagination](../api/rest/_index.md#pagination).
 
 To set this limit for a GitLab Self-Managed instance, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

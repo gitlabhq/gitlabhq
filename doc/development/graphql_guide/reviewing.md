@@ -29,7 +29,7 @@ Check the MR for any [breaking changes](../api_graphql_styleguide.md#breaking-ch
 
 If a feature is marked as an [experiment](../api_graphql_styleguide.md#mark-schema-items-as-experiments), you can make breaking changes immediately, with no deprecation period.
 
-For more information, see [deprecation and removal process](../../api/graphql/index.md#deprecation-and-removal-process).
+For more information, see [deprecation and removal process](../../api/graphql/_index.md#deprecation-and-removal-process).
 
 ### Multiversion compatibility
 

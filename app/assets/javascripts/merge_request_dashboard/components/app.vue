@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import TabTitle from './tab_title.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
@@ -41,6 +42,7 @@ export default {
         .map((list) => ({ query: list.query, variables: list.variables }));
     },
   },
+  docsPath: helpPagePath('/tutorials/merge_requests/homepage.html'),
 };
 </script>
 
@@ -173,8 +175,12 @@ export default {
       </template>
     </gl-tabs>
     <div class="gl-mt-6 gl-text-center">
-      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/512314">
+      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/515912">
         {{ __('Leave feedback') }}
+      </gl-link>
+      <span class="gl-mx-2">|</span>
+      <gl-link :href="$options.docsPath">
+        {{ __('Documentation') }}
       </gl-link>
     </div>
   </div>

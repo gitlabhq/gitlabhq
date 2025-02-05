@@ -12,10 +12,11 @@ import { findWidget } from '~/issues/list/utils';
 import {
   findHierarchyWidgets,
   findHierarchyWidgetChildren,
+  findNotesWidget,
+  getNewWorkItemAutoSaveKey,
   isNotesWidget,
   newWorkItemFullPath,
   newWorkItemId,
-  getNewWorkItemAutoSaveKey,
 } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -41,8 +42,7 @@ import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
-const getNotesWidgetFromSourceData = (draftData) =>
-  draftData?.workspace?.workItem?.widgets.find(isNotesWidget);
+const getNotesWidgetFromSourceData = (draftData) => findNotesWidget(draftData?.workspace?.workItem);
 
 const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
   const noteWidgetIndex = draftData.workspace.workItem.widgets.findIndex(isNotesWidget);
@@ -53,13 +53,12 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
  * Work Item note create subscription update query callback
  *
  * @param currentNotes
- * @param subscriptionData
+ * @param newNote
  */
-export const updateCacheAfterCreatingNote = (currentNotes, subscriptionData) => {
-  if (!subscriptionData.data?.workItemNoteCreated) {
+export const updateCacheAfterCreatingNote = (currentNotes, newNote) => {
+  if (!newNote) {
     return currentNotes;
   }
-  const newNote = subscriptionData.data.workItemNoteCreated;
 
   return produce(currentNotes, (draftData) => {
     const notesWidget = getNotesWidgetFromSourceData(draftData);

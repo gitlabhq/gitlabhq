@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can also retrieve [DORA metrics](../../user/analytics/dora_metrics.md) with the [GraphQL API](../../api/graphql/reference/_index.md).
+You can also retrieve [DORA metrics](../../user/analytics/dora_metrics.md) with the [GraphQL API](../graphql/reference/_index.md).
 
 All methods require at least the Reporter role.
 
@@ -24,7 +24,7 @@ GET /projects/:id/dora/metrics
 
 | Attribute            | Type             | Required | Description |
 |:---------------------|:-----------------|:---------|:------------|
-| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-paths) can be accessed by the authenticated user. |
+| `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the project](../rest/_index.md#namespaced-paths) can be accessed by the authenticated user. |
 | `metric`             | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`. |
 | `end_date`           | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date. |
 | `environment_tiers`  | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. |
@@ -62,7 +62,7 @@ GET /groups/:id/dora/metrics
 
 | Attribute           | Type             | Required | Description |
 |:--------------------|:-----------------|:---------|:------------|
-| `id`                | integer/string   | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-paths) can be accessed by the authenticated user. |
+| `id`                | integer/string   | yes      | The ID or [URL-encoded path of the project](../rest/_index.md#namespaced-paths) can be accessed by the authenticated user. |
 | `metric`            | string           | yes      | One of `deployment_frequency`, `lead_time_for_changes`, `time_to_restore_service` or `change_failure_rate`. |
 | `end_date`          | string           | no       | Date range to end at. ISO 8601 Date format, for example `2021-03-01`. Default is the current date. |
 | `environment_tiers` | array of strings | no       | The [tiers of the environments](../../ci/environments/index.md#deployment-tier-of-environments). Default is `production`. |

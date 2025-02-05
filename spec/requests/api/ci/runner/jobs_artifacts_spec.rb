@@ -335,12 +335,36 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
         end
 
+        context 'when the project is being erased' do
+          before do
+            job.project.update!(pending_delete: true)
+          end
+
+          it 'returns 403 Forbidden' do
+            upload_artifacts(file_upload, headers_with_token)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
         context 'when job does not exist anymore' do
           before do
             allow(job).to receive(:id).and_return(non_existing_record_id)
           end
 
           it 'returns 403 Forbidden' do
+            upload_artifacts(file_upload, headers_with_token)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when job is finished' do
+          before do
+            job.success!
+          end
+
+          it 'returns a 403 Forbidden' do
             upload_artifacts(file_upload, headers_with_token)
 
             expect(response).to have_gitlab_http_status(:forbidden)

@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Agents API
 ---
-
-# Agents API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -28,7 +27,7 @@ Parameters:
 
 | Attribute | Type              | Required  | Description                                                                                                     |
 |-----------|-------------------|-----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`      | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`      | integer or string | yes       | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 
 Response:
 
@@ -106,7 +105,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description                                                                                                     |
 |------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 | `agent_id` | integer           | yes      | ID of the agent                                                                                                 |
 
 Response:
@@ -168,7 +167,7 @@ Parameters:
 
 | Attribute | Type              | Required | Description                                                                                                     |
 |-----------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 | `name`    | string            | yes      | Name for the agent                                                                                              |
 
 Response:
@@ -232,7 +231,7 @@ Parameters:
 
 | Attribute  | Type              | Required | Description                                                                                                     |
 |------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user |
 | `agent_id` | integer           | yes      | ID of the agent                                                                                                 |
 
 Example request:
@@ -257,7 +256,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required  | Description                                                                                                      |
 |------------|-------------------|-----------|------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id` | integer or string | yes       | ID of the agent.                                                                                                 |
 
 Response:
@@ -326,7 +325,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description                                                                                                       |
 |------------|-------------------|----------|-------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user.  |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user.  |
 | `agent_id` | integer           | yes      | ID of the agent.                                                                                                  |
 | `token_id` | integer           | yes      | ID of the token.                                                                                                  |
 
@@ -386,7 +385,7 @@ Supported attributes:
 
 | Attribute     | Type              | Required | Description                                                                                                      |
 |---------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id`    | integer           | yes      | ID of the agent.                                                                                                 |
 | `name`        | string            | yes      | Name for the token.                                                                                              |
 | `description` | string            | no       | Description for the token.                                                                                       |
@@ -450,7 +449,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required | Description                                                                                                      |
 |------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------- -|
-| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`       | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id` | integer           | yes      | ID of the agent.                                                                                                 |
 | `token_id` | integer           | yes      | ID of the token.                                                                                                 |
 
@@ -485,7 +484,7 @@ Supported attributes:
 
 | Attribute  | Type              | Required  | Description                                                                                                           |
 |------------|-------------------|-----------|-----------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`       | integer or string | yes       | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id` | integer or string | yes       | ID of the agent.                                                                                                      |
 
 Response:
@@ -538,7 +537,7 @@ Supported attributes:
 
 | Attribute              | Type              | Required | Description                                                                                                            |
 |------------------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user.  |
+| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user.  |
 | `agent_id`             | integer           | yes      | ID of the agent.                                                                                                       |
 | `url_configuration_id` | integer           | yes      | ID of the URL configuration.                                                                                           |
 
@@ -592,7 +591,7 @@ Supported attributes:
 
 | Attribute     | Type              | Required | Description                                                                                                           |
 |---------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`          | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id`    | integer           | yes      | ID of the agent.                                                                                                      |
 | `url`         | string            | yes      | Agent URL for this URL configuration.                                                                                 |
 | `client_cert` | string            | no       | Client certificate in PEM format if mTLS authentication should be used. Must be provided with `client_key`.           |
@@ -669,7 +668,7 @@ Supported attributes:
 
 | Attribute              | Type              | Required | Description                                                                                                           |
 |------------------------|-------------------|----------|-----------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-paths) maintained by the authenticated user. |
+| `id`                   | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) maintained by the authenticated user. |
 | `agent_id`             | integer           | yes      | ID of the agent.                                                                                                      |
 | `url_configuration_id` | integer           | yes      | ID of the URL configuration.                                                                                          |
 

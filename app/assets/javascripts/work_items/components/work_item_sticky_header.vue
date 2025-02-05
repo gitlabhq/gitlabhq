@@ -4,7 +4,7 @@ import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { isNotesWidget } from '../utils';
+import { findNotesWidget } from '../utils';
 import WorkItemActions from './work_item_actions.vue';
 import TodosToggle from './shared/todos_toggle.vue';
 import WorkItemStateBadge from './work_item_state_badge.vue';
@@ -107,7 +107,7 @@ export default {
       return this.workItem.userPermissions?.reportSpam;
     },
     isDiscussionLocked() {
-      return this.workItem.widgets?.find(isNotesWidget)?.discussionLocked;
+      return findNotesWidget(this.workItem)?.discussionLocked;
     },
     workItemType() {
       return this.workItem.workItemType?.name;

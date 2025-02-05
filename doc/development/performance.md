@@ -17,22 +17,22 @@ This document describes various guidelines to ensure good and consistent perform
   - [Tooling](#tooling)
   - Database:
     - [Query performance guidelines](database/query_performance.md)
-    - [Pagination performance guidelines](../development/database/pagination_performance_guidelines.md)
-    - [Keyset pagination performance](../development/database/keyset_pagination.md#performance)
+    - [Pagination performance guidelines](database/pagination_performance_guidelines.md)
+    - [Keyset pagination performance](database/keyset_pagination.md#performance)
   - [Troubleshooting import/export performance issues](../user/project/settings/import_export_troubleshooting.md#troubleshooting-performance-issues)
   - [Pipelines performance in the `gitlab` project](pipelines/performance.md)
 - Frontend:
-  - [Performance guidelines and monitoring](../development/fe_guide/performance.md)
+  - [Performance guidelines and monitoring](fe_guide/performance.md)
   - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)
   - [`gdk measure` and `gdk measure-workflow`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#measure-performance)
 - QA:
   - [Load performance testing](../ci/testing/load_performance_testing.md)
   - [GitLab Performance Tool project](https://gitlab.com/gitlab-org/quality/performance)
-  - [Review apps performance metrics](../development/testing_guide/review_apps.md#performance-metrics)
+  - [Review apps performance metrics](testing_guide/review_apps.md#performance-metrics)
 - Monitoring & Overview:
   - [GitLab performance monitoring](../administration/monitoring/performance/index.md)
   - [Development department performance indicators](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/)
-  - [Service measurement](../development/service_measurement.md)
+  - [Service measurement](service_measurement.md)
 - Self-managed administration and customer-focused:
   - [File system performance benchmarking](../administration/operations/filesystem_benchmarking.md)
   - [Sidekiq performance troubleshooting](../administration/sidekiq/sidekiq_troubleshooting.md)

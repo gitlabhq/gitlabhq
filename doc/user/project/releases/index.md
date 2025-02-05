@@ -106,7 +106,7 @@ You can create a release:
 
 - [Using a job in your CI/CD pipeline](#creating-a-release-by-using-a-cicd-job).
 - [In the Releases page](#create-a-release-in-the-releases-page).
-- Using the [Releases API](../../../api/releases/index.md#create-a-release).
+- Using the [Releases API](../../../api/releases/_index.md#create-a-release).
 
 ### Create a release in the Releases page
 
@@ -209,7 +209,7 @@ project.
 
 ## Upcoming releases
 
-You can create a release ahead of time by using the [Releases API](../../../api/releases/index.md#upcoming-releases).
+You can create a release ahead of time by using the [Releases API](../../../api/releases/_index.md#upcoming-releases).
 When you set a future `released_at` date, an **Upcoming Release** badge is displayed next to the
 release tag. When the `released_at` date and time has passed, the badge is automatically removed.
 
@@ -220,7 +220,7 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
 
 You can create a release in the past using either the
-[Releases API](../../../api/releases/index.md#historical-releases) or the UI. When you set
+[Releases API](../../../api/releases/_index.md#historical-releases) or the UI. When you set
 a past `released_at` date, an **Historical release** badge is displayed next to
 the release tag. Due to being released in the past, [release evidence](release_evidence.md)
 is not available.
@@ -228,7 +228,7 @@ is not available.
 ## Edit a release
 
 To edit the details of a release after it's created, you can use the
-[Update a release API](../../../api/releases/index.md#update-a-release) or the UI.
+[Update a release API](../../../api/releases/_index.md#update-a-release) or the UI.
 
 Prerequisites:
 
@@ -254,7 +254,7 @@ Prerequisites:
 - You must have at least the Developer role. Read more about [Release permissions](#release-permissions).
 
 To delete a release, use either the
-[Delete a release API](../../../api/releases/index.md#delete-a-release) or the UI.
+[Delete a release API](../../../api/releases/_index.md#delete-a-release) or the UI.
 
 In the UI:
 
@@ -272,7 +272,7 @@ You can associate a release with one or more [project milestones](../milestones/
 [GitLab Premium](https://about.gitlab.com/pricing/) customers can specify [group milestones](../milestones/index.md#project-milestones-and-group-milestones) to associate with a release.
 
 You can do this in the user interface, or by including a `milestones` array in your request to
-the [Releases API](../../../api/releases/index.md#create-a-release).
+the [Releases API](../../../api/releases/_index.md#create-a-release).
 
 In the user interface, to associate milestones to a release:
 

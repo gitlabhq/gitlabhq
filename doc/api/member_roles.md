@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Member roles API
 ---
-
-# Member roles API
 
 DETAILS:
 **Tier:** Ultimate
@@ -205,7 +204,7 @@ Supported attributes:
 
 | Attribute | Type | Required | Description |
 |:----------|:--------|:---------|:-------------------------------------|
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) of the group |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the group |
 
 Example request:
 
@@ -288,7 +287,7 @@ Parameters:
 
 | Attribute | Type                | Required | Description |
 |:----------|:--------|:---------|:-------------------------------------|
-| `id`      | integer/string      | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) of the group. |
+| `id`      | integer/string      | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the group. |
 | `admin_cicd_variables` | boolean | no       | Permission to create, read, update, and delete CI/CD variables. |
 | `admin_compliance_framework` | boolean | no       | Permission to administer compliance frameworks. |
 | `admin_group_member` | boolean | no       | Permission to add, remove and assign members in a group. |
@@ -364,7 +363,7 @@ DELETE /groups/:id/member_roles/:member_role_id
 
 | Attribute | Type | Required | Description |
 |:----------|:--------|:---------|:-------------------------------------|
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-paths) of the group. |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the group. |
 | `member_role_id` | integer | yes   | The ID of the member role. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empty response.
