@@ -3,6 +3,7 @@ import $ from 'jquery';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { insertText } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
+import { isValidURL } from '~/lib/utils/url_utility';
 
 const LINK_TAG_PATTERN = '[{text}](url)';
 const INDENT_CHAR = ' ';
@@ -67,6 +68,48 @@ function lineAfterSelection(text, textArea) {
 }
 
 /**
+ * Returns the single character before the current selection,
+ * or empty string if there is none.
+ *
+ * @param {String} text - the text of the targeted text area
+ * @param {Object} textArea - the targeted text area
+ * @returns {String}
+ */
+function characterBeforeSelection(text, textArea) {
+  return text.substring(Math.max(0, textArea.selectionStart - 1), textArea.selectionStart);
+}
+
+/**
+ * Returns the single character after the current selection,
+ * or empty string if there is none.
+ *
+ * @param {String} text - the text of the targeted text area
+ * @param {Object} textArea - the targeted text area
+ * @returns {String}
+ */
+function characterAfterSelection(text, textArea) {
+  return text.substring(textArea.selectionEnd, Math.min(textArea.selectionEnd + 1, text.length));
+}
+
+/**
+ * Returns true if either brackets or parentheses surround the current
+ * selection, false otherwise.
+ *
+ * @param {String} text - the text of the targeted text area
+ * @param {Object} textArea - the targeted text area
+ * @returns {Boolean}
+ */
+function isSelectionBracketed(text, textArea) {
+  const before = characterBeforeSelection(text, textArea);
+  const after = characterAfterSelection(text, textArea);
+  const pairedBrackets = {
+    '[': ']',
+    '(': ')',
+  };
+  return pairedBrackets[before] === after;
+}
+
+/**
  * Returns the text lines that encompass the current selection
  *
  * @param {Object} textArea - the targeted text area
@@ -125,6 +168,26 @@ function setNewSelectionRange(
   }
 
   textArea.setSelectionRange(newStart, newEnd);
+}
+
+function isURL(text) {
+  // Extracted as part of markdown_paste_url feature. Retaining
+  // old behavior for Add a link if flag is disabled. Replace
+  // isURL call sites with isValidURL when removing the flag
+  if (gon.features?.markdownPasteUrl) {
+    return isValidURL(text);
+  }
+  if (URL) {
+    try {
+      const url = new URL(text);
+      if (url.origin !== 'null' || url.origin === null) {
+        return true;
+      }
+    } catch (e) {
+      // ignore - no valid url
+    }
+  }
+  return false;
 }
 
 function convertMonacoSelectionToAceFormat(sel) {
@@ -293,17 +356,9 @@ export function insertMarkdownText({
   // check for link pattern and selected text is an URL
   // if so fill in the url part instead of the text part of the pattern.
   if (tag === LINK_TAG_PATTERN) {
-    if (URL) {
-      try {
-        const url = new URL(selected);
-
-        if (url.origin !== 'null' || url.origin === null) {
-          tag = '[text]({text})';
-          select = 'text';
-        }
-      } catch (e) {
-        // ignore - no valid url
-      }
+    if (isURL(selected)) {
+      tag = '[text]({text})';
+      select = 'text';
     }
   }
 
@@ -530,6 +585,7 @@ function handleSurroundSelectedText(e, textArea) {
     });
   }
 }
+
 /* eslint-enable @gitlab/require-i18n-strings */
 
 /**
@@ -627,6 +683,37 @@ export function compositionEndNoteText() {
   compositioningNoteText = false;
 }
 
+function handleMarkdownPasteUrl(e) {
+  const textArea = e.target;
+  if (textArea.selectionStart === textArea.selectionEnd) return;
+  const text = textArea.value;
+  // If the user has selected [text](_url_), or [_text_](url),
+  // we want to do a simple paste not add additional markdown.
+  if (isSelectionBracketed(text, textArea)) return;
+  if (!e.clipboardData) return;
+
+  let pastedText = e.clipboardData.getData('text');
+  if (!pastedText) return;
+  pastedText = pastedText.trim();
+  if (isURL(pastedText)) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const selected = selectedText(text, textArea);
+
+    const textToInsert = `[${selected}](${pastedText})`;
+    insertText(textArea, textToInsert);
+  }
+  // If it wasn't a URL, just let default paste happen
+}
+
+export function handlePasteModifications(e) {
+  if (!gon.features?.markdownPasteUrl) return;
+  // Transparently unwrap event in case we're bound through jQuery.
+  // Need the original event to access the clipboard.
+  const event = e?.originalEvent ? e.originalEvent : e;
+  handleMarkdownPasteUrl(event);
+}
+
 export function updateTextForToolbarBtn($toolbarBtn) {
   const $textArea = $toolbarBtn.closest('.md-area').find('textarea');
   if (!$textArea.length) return;
@@ -656,6 +743,7 @@ export function addMarkdownListeners(form) {
     .on('keydown', keypressNoteText)
     .on('compositionstart', compositionStartNoteText)
     .on('compositionend', compositionEndNoteText)
+    .on('paste', handlePasteModifications)
     .each(function attachTextareaShortcutHandlers() {
       Shortcuts.initMarkdownEditorShortcuts($(this), updateTextForToolbarBtn);
     });
@@ -695,6 +783,7 @@ export function removeMarkdownListeners(form) {
     .off('keydown', keypressNoteText)
     .off('compositionstart', compositionStartNoteText)
     .off('compositionend', compositionEndNoteText)
+    .off('paste', handlePasteModifications)
     .each(function removeTextareaShortcutHandlers() {
       Shortcuts.removeMarkdownEditorShortcuts($(this));
     });

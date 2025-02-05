@@ -3369,6 +3369,9 @@ msgstr ""
 msgid "Add email participants that don't have a GitLab account."
 msgstr ""
 
+msgid "Add entries"
+msgstr ""
+
 msgid "Add environment"
 msgstr ""
 
@@ -11063,6 +11066,9 @@ msgstr ""
 msgid "CICD|Add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} with a domain, or create an AUTO_DEVOPS_PLATFORM_TARGET CI variable."
 msgstr ""
 
+msgid "CICD|Add all authentication log entries to the allowlist"
+msgstr ""
+
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
@@ -11078,6 +11084,9 @@ msgstr ""
 msgid "CICD|Allow Git push requests to the repository"
 msgstr ""
 
+msgid "CICD|An error occurred while adding the authentication log entries. Please try again."
+msgstr ""
+
 msgid "CICD|Are you sure you want to remove %{namespace} from the job token allowlist?"
 msgstr ""
 
@@ -11088,6 +11097,9 @@ msgid "CICD|Authentication events from the last 30 days. %{linkStart}Learn more.
 msgstr ""
 
 msgid "CICD|Authentication log"
+msgstr ""
+
+msgid "CICD|Authentication log entries were successfully added to the allowlist."
 msgstr ""
 
 msgid "CICD|Authorized groups and projects"
@@ -11150,6 +11162,9 @@ msgstr ""
 msgid "CICD|Group or project"
 msgstr ""
 
+msgid "CICD|Groups and projects on the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. Entries added from the authentication log can be removed later if needed."
+msgstr ""
+
 msgid "CICD|Job token permissions"
 msgstr ""
 
@@ -11201,6 +11216,9 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
+msgid "CICD|The process to add entries could take a moment to complete with large logs or allowlists."
+msgstr ""
+
 msgid "CICD|There are several CI/CD limits in place."
 msgstr ""
 
@@ -11217,6 +11235,9 @@ msgid "CICD|Use separate caches for protected branches"
 msgstr ""
 
 msgid "CICD|When enabled, all projects must use their allowlist to control CI/CD job token access between projects. The option to allow access from all groups and projects is hidden. %{link_start}Learn More.%{link_end}"
+msgstr ""
+
+msgid "CICD|You're about to add all entries from the authentication log to the allowlist for %{projectName}. Duplicate entries will be ignored."
 msgstr ""
 
 msgid "CICD|group enabled"

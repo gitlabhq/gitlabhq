@@ -1,6 +1,7 @@
 import './clipboard';
 import './clipboard_event';
 import './create_object_url';
+import './data_transfer';
 import './drag_event';
 import './element_scroll_into_view';
 import './element_scroll_by';

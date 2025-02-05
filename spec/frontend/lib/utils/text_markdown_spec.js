@@ -8,6 +8,7 @@ import {
   updateTextForToolbarBtn,
   resolveSelectedImage,
   repeatCodeBackticks,
+  handlePasteModifications,
 } from '~/lib/utils/text_markdown';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import '~/lib/utils/jquery_at_who';
@@ -735,6 +736,117 @@ describe('init markdown', () => {
           });
 
           expect(textArea.value).toEqual(`before \n${selected}\nafter `);
+        });
+      });
+      describe('and clipboard being pasted', () => {
+        beforeEach(() => {
+          textArea.addEventListener('paste', handlePasteModifications);
+        });
+        afterEach(() => {
+          textArea.removeEventListener('paste', handlePasteModifications);
+        });
+        const synthesizePasteEvent = (textBeingPasted) => {
+          // From __helpers__/dom_shims at time of writing
+          const dt = new DataTransfer();
+          dt.setData('text/plain', textBeingPasted);
+          const ce = new ClipboardEvent('paste', {
+            clipboardData: dt,
+          });
+          jest.spyOn(ce, 'preventDefault');
+          return ce;
+        };
+
+        const parseTextSpec = (t) => {
+          // quick and dirty, because I control the input.
+          // toss all underscores, and use the (translated) indices
+          // of the first two as the selectionBounds
+          const selectionStart = t.indexOf('_');
+          return {
+            text: t.replaceAll('_', ''),
+            selectionStart,
+            selectionEnd: selectionStart + t.substring(selectionStart + 1).indexOf('_'),
+          };
+        };
+        /*
+         * Fragility Note: These tests are validating the current incomplete simulation
+         * of the system paste event. Through a combination of jest, jsdom, and our local
+         * dom_shims helpers, the current behavior when dispatching a paste event is:
+         * 1. The textArea is expected to receive an event with a proper target and
+         *    a clipboard event defined in our dom_shims.
+         * 2. This allows the function being tested to call insertText, and have it update
+         *    the value of the textArea as expected.
+         * 3. HOWEVER: If our handler does NOT call e.preventDefault, in the live site
+         *    we expect the system paste handler to still update the textArea widget.
+         *    For these tests, that does not happen, and the effective behavior
+         *    of the default paste behavior is a noop.
+         * If that situation changes, and the test harness is fixed such that the system
+         * default paste behavior is properly simulated, these test cases will have to be
+         * updated.
+         * I've tried to be nice to our future selves by including that expected future
+         * behavior in the test cases. If the system paste is properly simulated:
+         * 1. Update this test to validate that `afterSystemPaste` is now the expected
+         *    value regardless of preventDefault
+         * 2. Either remove beforeSystemPaste from this function and the examples below,
+         *    or leave it as canary to flag breakage of the system paste simulation.
+         */
+        const pasteMatchesExpectation = ({
+          textSpec,
+          pastedValue,
+          beforeSystemPaste,
+          preventDefault,
+          afterSystemPaste,
+        }) => {
+          const pasteEvent = synthesizePasteEvent(pastedValue);
+          const { text: thisText, selectionStart, selectionEnd } = parseTextSpec(textSpec);
+          textArea.value = thisText;
+          textArea.setSelectionRange(selectionStart, selectionEnd);
+          textArea.dispatchEvent(pasteEvent);
+          if (!preventDefault) {
+            // If this test fails, read block comment above. It may be time to
+            // clean up these tests
+            expect(textArea.value).not.toBe(afterSystemPaste);
+          }
+          expect(textArea.value).toBe(beforeSystemPaste);
+          expect(jest.mocked(pasteEvent.preventDefault).mock.calls).toHaveLength(
+            preventDefault ? 1 : 0,
+          );
+        };
+        describe('contains a URL', () => {
+          const url = 'http://example.com';
+
+          describe('markdown_paste_url flag enabled', () => {
+            beforeEach(() => {
+              gon.features = { ...gon.features, markdownPasteUrl: true };
+            });
+            it.each`
+              textSpec              | pastedValue | beforeSystemPaste             | preventDefault | afterSystemPaste
+              ${'_link_'}           | ${`${url}`} | ${`[link](${url})`}           | ${true}        | ${`[link](${url})`}
+              ${'[_text_](url)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[${url}](url)`}
+              ${'[text](_url_)'}    | ${`${url}`} | ${'[text](url)'}              | ${false}       | ${`[text](${url})`}
+              ${'[s_ubtext_](url)'} | ${`${url}`} | ${`[s[ubtext](${url})](url)`} | ${true}        | ${`[s[ubtext](${url})](url)`}
+            `('uses selected text as markdown link text', pasteMatchesExpectation);
+          });
+          describe('markdown_paste_url flag disabled', () => {
+            beforeEach(() => {
+              gon.features = { ...gon.features, markdownPasteUrl: false };
+            });
+            it.each`
+              textSpec              | pastedValue | beforeSystemPaste   | preventDefault | afterSystemPaste
+              ${'_link_'}           | ${`${url}`} | ${'link'}           | ${false}       | ${`${url}`}
+              ${'[_text_](url)'}    | ${`${url}`} | ${'[text](url)'}    | ${false}       | ${`[${url}](url)`}
+              ${'[text](_url_)'}    | ${`${url}`} | ${'[text](url)'}    | ${false}       | ${`[text](${url})`}
+              ${'[s_ubtext_](url)'} | ${`${url}`} | ${'[subtext](url)'} | ${false}       | ${`[s${url}](url)`}
+            `('handlePaste inserts nothing, and does not prevent default', pasteMatchesExpectation);
+          });
+        });
+        describe('does not contain a URL', () => {
+          it.each`
+            textSpec              | pastedValue    | beforeSystemPaste   | preventDefault | afterSystemPaste
+            ${'_link_'}           | ${'just text'} | ${'link'}           | ${false}       | ${'just text'}
+            ${'[_text_](url)'}    | ${'just text'} | ${'[text](url)'}    | ${false}       | ${'[just text](url)'}
+            ${'[text](_url_)'}    | ${'just text'} | ${'[text](url)'}    | ${false}       | ${'[text](just text)'}
+            ${'[s_ubtext_](url)'} | ${'just text'} | ${'[subtext](url)'} | ${false}       | ${'[sjust text](url)'}
+          `('handlePaste inserts nothing, and does not prevent default', pasteMatchesExpectation);
         });
       });
     });

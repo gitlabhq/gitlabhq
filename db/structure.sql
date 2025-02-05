@@ -30723,7 +30723,7 @@ CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details
 
 CREATE INDEX idx_user_member_roles_on_member_role_id ON user_member_roles USING btree (member_role_id);
 
-CREATE INDEX idx_user_member_roles_on_user_id ON user_member_roles USING btree (user_id);
+CREATE UNIQUE INDEX idx_user_member_roles_on_user_id_unique ON user_member_roles USING btree (user_id);
 
 CREATE INDEX idx_vuln_reads_for_filtering ON vulnerability_reads USING btree (project_id, state, dismissal_reason, severity DESC, vulnerability_id DESC NULLS LAST);
 

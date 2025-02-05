@@ -651,7 +651,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/ee/users/reject_service_spec.rb'
     - 'ee/spec/services/ee/users/update_service_spec.rb'
     - 'ee/spec/services/ee/vulnerability_feedback_module/update_service_spec.rb'
-    - 'ee/spec/services/elastic/data_migration_service_spec.rb'
     - 'ee/spec/services/epic_issues/destroy_service_spec.rb'
     - 'ee/spec/services/epic_issues/list_service_spec.rb'
     - 'ee/spec/services/epic_issues/update_service_spec.rb'

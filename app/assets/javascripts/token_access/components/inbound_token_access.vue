@@ -29,6 +29,7 @@ import {
 } from '../constants';
 import TokenAccessTable from './token_access_table.vue';
 import NamespaceForm from './namespace_form.vue';
+import AutopopulateAllowlistModal from './autopopulate_allowlist_modal.vue';
 
 export default {
   i18n: {
@@ -75,6 +76,7 @@ export default {
     },
   ],
   components: {
+    AutopopulateAllowlistModal,
     GlAlert,
     GlButton,
     GlCollapsibleListbox,
@@ -195,6 +197,9 @@ export default {
         namespace: this.namespaceToRemove?.fullPath,
       });
     },
+    showAutopopulateModal() {
+      return this.selectedAction === JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG;
+    },
   },
   methods: {
     hideSelectedAction() {
@@ -265,13 +270,18 @@ export default {
       this.refetchGroupsAndProjects();
       return Promise.resolve();
     },
+    refetchAllowlist() {
+      this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
+      this.hideSelectedAction();
+    },
     refetchGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
     },
     selectAction(action, showFormFn) {
-      // TODO: render autopopulate modal when selected
       this.selectedAction = action;
-      showFormFn();
+      if (action === JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT) {
+        showFormFn();
+      }
     },
     showNamespaceForm(namespace, showFormFn) {
       this.namespaceToEdit = namespace;
@@ -289,6 +299,12 @@ export default {
 
 <template>
   <div class="gl-mt-5">
+    <autopopulate-allowlist-modal
+      :project-name="projectName"
+      :show-modal="showAutopopulateModal"
+      @hide="hideSelectedAction"
+      @refetch-allowlist="refetchAllowlist"
+    />
     <gl-loading-icon v-if="$apollo.queries.inboundJobTokenScopeEnabled.loading" size="md" />
     <template v-else>
       <div class="gl-font-bold">

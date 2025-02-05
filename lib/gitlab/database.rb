@@ -12,7 +12,9 @@ module Gitlab
     # TABLES_TO_BE_RENAMED = {
     #   'old_name' => 'new_name'
     # }.freeze
-    TABLES_TO_BE_RENAMED = {}.freeze
+    TABLES_TO_BE_RENAMED = {
+      'remote_development_namespace_cluster_agent_mappings' => 'namespace_cluster_agent_mappings'
+    }.freeze
 
     # Minimum PostgreSQL version requirement per documentation:
     # https://docs.gitlab.com/ee/install/requirements.html#postgresql-requirements

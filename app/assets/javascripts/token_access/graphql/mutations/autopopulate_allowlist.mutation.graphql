@@ -1,0 +1,6 @@
+mutation CiJobTokenScopeAutopopulateAllowlist($projectPath: ID!) {
+  ciJobTokenScopeAutopopulateAllowlist(input: { projectPath: $projectPath }) {
+    status
+    errors
+  }
+}

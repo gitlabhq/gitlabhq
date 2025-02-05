@@ -18,3 +18,7 @@ While information in this section gives valuable and qualified guidance on ways 
 - [Cloud Solutions](cloud/_index.md)
 - [Coding Languages and Frameworks](languages/_index.md)
 - [Integrations](integrations/_index.md)
+
+## Self-Hosted Model
+
+- [Complete AWS/Google Cloud Deployment Guide with Ollama Integration](integrations/aws_googlecloud_ollama.md)

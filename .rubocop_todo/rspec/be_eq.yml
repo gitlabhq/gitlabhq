@@ -421,7 +421,6 @@ RSpec/BeEq:
     - 'ee/spec/services/ee/namespace_settings/assign_attributes_service_spec.rb'
     - 'ee/spec/services/ee/users/build_service_spec.rb'
     - 'ee/spec/services/ee/work_items/import_csv_service_spec.rb'
-    - 'ee/spec/services/elastic/data_migration_service_spec.rb'
     - 'ee/spec/services/epic_issues/destroy_service_spec.rb'
     - 'ee/spec/services/epics/create_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'

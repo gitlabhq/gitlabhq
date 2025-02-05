@@ -287,3 +287,26 @@ export const mockAuthLogsResponse = (hasNextPage = false) => ({
     },
   },
 });
+
+export const mockAutopopulateAllowlistResponse = {
+  data: {
+    ciJobTokenScopeAutopopulateAllowlist: {
+      status: 'complete',
+      errors: [],
+      __typename: 'CiJobTokenScopeAutopopulateAllowlistPayload',
+    },
+  },
+};
+
+export const mockAutopopulateAllowlistError = {
+  data: {
+    ciJobTokenScopeAutopopulateAllowlist: {
+      errors: [
+        {
+          message: 'An error occurred',
+        },
+      ],
+      __typename: 'CiJobTokenScopeAutopopulateAllowlistPayload',
+    },
+  },
+};

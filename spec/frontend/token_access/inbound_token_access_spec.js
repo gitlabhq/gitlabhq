@@ -6,7 +6,11 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
-import { JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT } from '~/token_access/constants';
+import {
+  JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT,
+  JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG,
+} from '~/token_access/constants';
+import AutopopulateAllowlistModal from '~/token_access/components/autopopulate_allowlist_modal.vue';
 import NamespaceForm from '~/token_access/components/namespace_form.vue';
 import inboundRemoveGroupCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
@@ -59,6 +63,7 @@ describe('TokenAccess component', () => {
   const failureHandler = jest.fn().mockRejectedValue(error);
   const mockToastShow = jest.fn();
 
+  const findAutopopulateAllowlistModal = () => wrapper.findComponent(AutopopulateAllowlistModal);
   const findFormSelector = () => wrapper.findByTestId('form-selector');
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
@@ -379,6 +384,7 @@ describe('TokenAccess component', () => {
     beforeEach(() =>
       createComponent(
         [
+          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
           [
             inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
             inboundGroupsAndProjectsWithScopeResponseHandler,
@@ -388,18 +394,48 @@ describe('TokenAccess component', () => {
       ),
     );
 
-    it('toggle form button is replaced by actions dropdown', () => {
-      expect(findToggleFormBtn().exists()).toBe(false);
-      expect(findFormSelector().exists()).toBe(true);
-    });
+    describe('autopopulate entries', () => {
+      it('replaces toggle form button with actions dropdown', () => {
+        expect(findToggleFormBtn().exists()).toBe(false);
+        expect(findFormSelector().exists()).toBe(true);
+      });
 
-    it('Add group or project option renders the namespace form', async () => {
-      expect(findNamespaceForm().exists()).toBe(false);
+      it('renders the namespace form when clicking "Add group or project option"', async () => {
+        expect(findNamespaceForm().exists()).toBe(false);
 
-      findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
-      await nextTick();
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT);
+        await nextTick();
 
-      expect(findNamespaceForm().exists()).toBe(true);
+        expect(findNamespaceForm().exists()).toBe(true);
+      });
+
+      it('renders the autopopulate allowlist modal when clicking "All projects in authentication log"', async () => {
+        expect(findAutopopulateAllowlistModal().props('showModal')).toBe(false);
+
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
+        await nextTick();
+
+        expect(findAutopopulateAllowlistModal().props('showModal')).toBe(true);
+      });
+
+      it('unselects dropdown option when autopopulate allowlist modal is hidden', async () => {
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
+        findAutopopulateAllowlistModal().vm.$emit('hide');
+        await nextTick();
+
+        expect(findFormSelector().props('selected')).toBe(null);
+      });
+
+      it('refetches allowlist when autopopulate mutation is successful', async () => {
+        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(1);
+
+        findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
+        findAutopopulateAllowlistModal().vm.$emit('refetch-allowlist');
+        await nextTick();
+
+        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(2);
+        expect(findFormSelector().props('selected')).toBe(null);
+      });
     });
   });
 
