@@ -56,7 +56,7 @@ In GitLab 17.7, follow these instructions to turn off GitLab Duo
 for a group, including its subgroups and projects.
 
 NOTE:
-In GitLab 17.7, you cannot turn off GitLab Duo for subgroups or for GitLab Self-Managed.
+In GitLab 17.7, you cannot turn off GitLab Duo for groups or subgroups on GitLab Self-Managed, or for subgroups on GitLab.com.
 
 Prerequisites:
 
