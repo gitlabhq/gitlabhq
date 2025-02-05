@@ -3176,7 +3176,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/ee/post_receive_service.rb'
     - 'ee/app/services/ee/preview_markdown_service.rb'
     - 'ee/app/services/ee/protected_branches/api_service.rb'
-    - 'ee/app/services/ee/protected_branches/base_service.rb'
     - 'ee/app/services/ee/protected_branches/create_service.rb'
     - 'ee/app/services/ee/protected_branches/destroy_service.rb'
     - 'ee/app/services/ee/protected_branches/legacy_api_update_service.rb'

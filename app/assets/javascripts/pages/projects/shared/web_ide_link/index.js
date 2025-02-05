@@ -49,6 +49,7 @@ export default ({ el, router }) => {
           projectPath,
           cssClasses,
           ...options,
+          gitRef: ref,
         },
       });
     },

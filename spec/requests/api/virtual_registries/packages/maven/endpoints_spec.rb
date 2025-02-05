@@ -39,7 +39,7 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
         expect(::VirtualRegistries::Cache::EntryUploader).to receive(:workhorse_authorize).with(
           a_hash_including(
             use_final_store_path: true,
-            final_store_path_root_id: registry.id
+            final_store_path_config: { override_path: be_instance_of(String) }
           )
         ).and_call_original
 

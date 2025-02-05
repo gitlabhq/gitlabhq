@@ -41,6 +41,16 @@ describe('PerformanceGraph', () => {
       expect(findLineChart().props('data')[1].data.length).toBe(5);
       expect(findLineChart().props('data')[2].data.length).toBe(1);
     });
+
+    it('sorts the data by created_at in ascending order', () => {
+      createWrapper();
+
+      const data = findLineChart()
+        .props('data')[0]
+        .data.map(({ value }) => value[1]);
+
+      expect(data).toEqual([0.3, 0.4, 0.6, 0.5]);
+    });
   });
 
   describe('empty state', () => {

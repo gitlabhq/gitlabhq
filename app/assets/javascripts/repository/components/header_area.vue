@@ -275,6 +275,7 @@ export default {
           :gitpod-url="gitpodUrl"
           :user-preferences-gitpod-path="userPreferencesGitpodPath"
           :user-profile-enable-gitpod-path="userProfileEnableGitpodPath"
+          :git-ref="currentRef"
           disable-fork-modal
           v-on="$listeners"
         />

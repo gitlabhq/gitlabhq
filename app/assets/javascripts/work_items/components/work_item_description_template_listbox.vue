@@ -74,7 +74,9 @@ export default {
     },
     items() {
       return this.descriptionTemplates
-        .filter(({ name }) => (this.searchTerm ? name.includes(this.searchTerm) : true))
+        .filter(({ name }) =>
+          this.searchTerm ? name.toLowerCase().includes(this.searchTerm.toLowerCase()) : true,
+        )
         .reduce((groups, current) => {
           const idx = groups.findIndex((group) => group.text === current.category);
           if (idx > -1) {

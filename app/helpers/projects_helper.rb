@@ -674,10 +674,19 @@ module ProjectsHelper
     end
 
     title = visibility_icon_description(project)
-    container_class = ['has-tooltip', css_class].compact.join(' ')
+    container_class = [
+      'has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit',
+      css_class
+    ].compact.join(' ')
     data = { container: 'body', placement: 'top' }
 
-    content_tag(:span, class: container_class, data: data, title: title) do
+    content_tag(
+      :button,
+      class: container_class,
+      data: data,
+      title: title,
+      type: 'button',
+      aria: { label: title }) do
       visibility_level_icon(project.visibility_level, options: { class: icon_css_class })
     end
   end

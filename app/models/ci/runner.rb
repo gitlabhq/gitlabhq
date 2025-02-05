@@ -331,7 +331,7 @@ module Ci
       end
     end
 
-    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
     def self.sharded_table_proxy_model
       @sharded_table_proxy_class ||= Class.new(self) do
         self.table_name = :ci_runners_e59bb2812d
@@ -445,7 +445,7 @@ module Ci
       tag_list.any?
     end
 
-    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
     def ensure_partitioned_runner_record_exists
       self.class.sharded_table_proxy_model.insert_all(
         [attributes.except('tag_list')], unique_by: [:id, :runner_type],
@@ -541,7 +541,7 @@ module Ci
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
         # Avoid inserting partitioned runner managers that refer to a missing ci_runners partitioned record, since
         # the backfill is not yet finalized.
-        ensure_partitioned_runner_record_exists
+        ensure_partitioned_runner_record_exists if Feature.disabled?(:reject_orphaned_runners, Feature.current_request)
 
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id

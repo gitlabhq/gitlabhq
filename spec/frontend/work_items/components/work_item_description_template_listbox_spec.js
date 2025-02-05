@@ -29,7 +29,7 @@ const mockTemplatesList = [
     projectId: 3,
   },
   {
-    name: 'template 4',
+    name: 'Bug',
     __typename: 'WorkItemDescriptionTemplate',
     category: 'GROUP C',
     projectId: 4,
@@ -162,9 +162,9 @@ describe('WorkItemDescriptionTemplateListbox', () => {
           expect(text).toContain('GROUP C');
         });
 
-        it('allows searching to narrow down results', async () => {
-          // only matches 'template 4'
-          findListbox().vm.$emit('search', '4');
+        it('allows case insensitive searching to narrow down results', async () => {
+          // only matches 'Bug'
+          findListbox().vm.$emit('search', 'bug');
           await nextTick();
           expect(findListbox().props('items')).toHaveLength(1);
         });

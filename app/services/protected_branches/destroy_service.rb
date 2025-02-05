@@ -7,8 +7,23 @@ module ProtectedBranches
 
       protected_branch.destroy.tap do
         refresh_cache
-        after_execute
+        publish_deleted_event
       end
+    end
+
+    def publish_deleted_event
+      parent_type = if project_or_group.is_a?(Project)
+                      ::Repositories::ProtectedBranchDestroyedEvent::PARENT_TYPES[:project]
+                    else
+                      ::Repositories::ProtectedBranchDestroyedEvent::PARENT_TYPES[:group]
+                    end
+
+      ::Gitlab::EventStore.publish(
+        ::Repositories::ProtectedBranchDestroyedEvent.new(data: {
+          parent_id: project_or_group.id,
+          parent_type: parent_type
+        })
+      )
     end
   end
 end

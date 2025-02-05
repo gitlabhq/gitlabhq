@@ -152,14 +152,24 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(runner_manager.contacted_at).to eq Time.current
             end
 
-            # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
-            context 'when runner is not yet synced to partitioned table', :aggregate_failures do
+            # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/504963 (when ci_runners is swapped)
+            # This is because the new table will have check constraints for these scenarios, and therefore
+            # any orphaned runners will be missing
+            context 'when runner is missing sharding_key_id', :aggregate_failures do
               let(:connection) { Ci::ApplicationRecord.connection }
-              let(:non_partitioned_runner) { runner }
+              let(:params) { { token: 'foo' } }
+              let(:non_partitioned_runner) do
+                connection.execute(<<~SQL)
+                  INSERT INTO ci_runners(created_at, runner_type, token, sharding_key_id)
+                    VALUES(NOW(), #{runner_type}, '#{params[:token]}', NULL);
+                SQL
+
+                Ci::Runner.where(runner_type: runner_type).last
+              end
 
               before do
-                # Allow creating legacy runners that are not present in the partitioned table (created when FK was not
-                # present)
+                # Allow creating orphaned runners that are not present in the partitioned table and
+                # are not associated with any group or project (created when FK was not present)
                 connection.transaction do
                   connection.execute(<<~SQL)
                     ALTER TABLE ci_runners DISABLE TRIGGER ALL;
@@ -173,30 +183,38 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 end
               end
 
-              it 'creates respective ci_runner_machines record and syncs runner to partitioned table' do
-                expect { request }
-                  .to change { runner.runner_managers.reload.count }.from(0).to(1)
-                  .and change { partitioned_runner_exists?(non_partitioned_runner) }.from(false).to(true)
-
-                expect(response).to have_gitlab_http_status(:created)
-                expect(non_partitioned_runner.contacted_at).to be_nil
-              end
-
-              context 'when project runner is missing sharding_key_id' do
-                let(:params) { { token: 'foo' } }
-                let(:runner) { Ci::Runner.project_type.last }
-                let(:non_partitioned_runner) do
-                  connection.execute(<<~SQL)
-                    INSERT INTO ci_runners(created_at, runner_type, token, sharding_key_id) VALUES(NOW(), 3, 'foo', NULL);
-                  SQL
-
-                  runner
-                end
+              context 'when group runner is missing sharding_key_id' do
+                let(:runner_type) { 2 }
+                let(:runner) { non_partitioned_runner }
 
                 it 'returns unprocessable entity status code', :aggregate_failures do
                   expect { request }.not_to change { Ci::RunnerManager.count }.from(0)
                   expect(response).to have_gitlab_http_status(:unprocessable_entity)
                   expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+                end
+              end
+
+              context 'when project runner is missing sharding_key_id' do
+                let(:runner_type) { 3 }
+                let(:runner) { non_partitioned_runner }
+
+                it 'returns unprocessable entity status code', :aggregate_failures do
+                  expect { request }.not_to change { Ci::RunnerManager.count }.from(0)
+                  expect(response).to have_gitlab_http_status(:unprocessable_entity)
+                  expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+                end
+
+                # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
+                context 'with reject_orphaned_runners FF disabled' do
+                  before do
+                    stub_feature_flags(reject_orphaned_runners: false)
+                  end
+
+                  it 'returns unprocessable entity status code', :aggregate_failures do
+                    expect { request }.not_to change { Ci::RunnerManager.count }.from(0)
+                    expect(response).to have_gitlab_http_status(:unprocessable_entity)
+                    expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+                  end
                 end
               end
 

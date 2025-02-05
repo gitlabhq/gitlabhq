@@ -297,7 +297,10 @@ class GraphqlController < ApplicationController
 
     # Merging to :metadata will ensure these are logged as top level keys
     payload[:metadata] ||= {}
+
     payload[:metadata][:graphql] = logs
+
+    payload[:metadata][:referer] = request.headers['Referer'] if logs.any? { |log| log[:operation_name] == 'GLQL' }
 
     payload[:exception_object] = @exception_object if @exception_object
   end

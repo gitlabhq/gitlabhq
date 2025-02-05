@@ -28,6 +28,7 @@ module VirtualRegistries
           enum :status, default: 0, processing: 1, pending_destruction: 2, error: 3
 
           ignore_column :downloaded_at, remove_with: '17.9', remove_after: '2025-01-23'
+          ignore_column :file_final_path, remove_with: '17.11', remove_after: '2025-03-23'
 
           sha_attribute :file_sha1
           sha_attribute :file_md5
@@ -39,18 +40,19 @@ module VirtualRegistries
             :file_sha1,
             presence: true
           validates :upstream_etag, :content_type, length: { maximum: 255 }
-          validates :relative_path, :object_storage_key, :file_final_path, length: { maximum: 1024 }
+          validates :relative_path, :object_storage_key, length: { maximum: 1024 }
           validates :file_md5, length: { is: 32 }, allow_nil: true
           validates :file_sha1, length: { is: 40 }
           validates :relative_path,
             uniqueness: { scope: [:upstream_id, :status] },
             if: :default?
+          validates :object_storage_key, uniqueness: { scope: :relative_path }
           validates :file, presence: true
 
           mount_file_store_uploader ::VirtualRegistries::Cache::EntryUploader
 
           before_validation :set_object_storage_key,
-            if: -> { object_storage_key.blank? && relative_path && upstream && upstream.registry }
+            if: -> { object_storage_key.blank? && upstream && upstream.registry }
           attr_readonly :object_storage_key
 
           scope :search_by_relative_path, ->(query) do
@@ -106,18 +108,7 @@ module VirtualRegistries
           private
 
           def set_object_storage_key
-            self.object_storage_key = Gitlab::HashedPath.new(
-              'virtual_registries',
-              'packages',
-              'maven',
-              upstream.registry.id,
-              'upstream',
-              upstream.id,
-              'cache',
-              'entry',
-              OpenSSL::Digest::SHA256.hexdigest(relative_path),
-              root_hash: upstream.registry.id
-            ).to_s
+            self.object_storage_key = upstream.object_storage_key_for(registry_id: upstream.registry.id)
           end
         end
       end

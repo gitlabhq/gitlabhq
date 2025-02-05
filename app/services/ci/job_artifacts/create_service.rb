@@ -27,7 +27,7 @@ module Ci
           has_length: false,
           maximum_size: max_size(artifact_type),
           use_final_store_path: true,
-          final_store_path_root_id: project.id
+          final_store_path_config: { root_hash: project.id }
         )
 
         if lsif?(artifact_type)

@@ -161,7 +161,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       let(:params) { super().merge(use_final_store_path: true) }
 
       it_behaves_like 'workhorse authorize' do
-        let(:workhorse_authorize_params) { { has_length: true, use_final_store_path: true, final_store_path_root_id: project.id } }
+        let(:workhorse_authorize_params) { { has_length: true, use_final_store_path: true, final_store_path_config: { root_hash: project.id } } }
       end
     end
   end

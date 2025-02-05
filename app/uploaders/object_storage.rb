@@ -177,7 +177,7 @@ module ObjectStorage
         [CarrierWave.generate_cache_id, SecureRandom.hex].join('-')
       end
 
-      def generate_final_store_path(root_id:)
+      def generate_final_store_path(root_hash:)
         hash = Digest::SHA2.hexdigest(SecureRandom.uuid)
 
         # We prefix '@final' to prevent clashes and make the files easily recognizable
@@ -186,21 +186,26 @@ module ObjectStorage
 
         # We generate a hashed path of the root ID (e.g. Project ID) to distribute directories instead of
         # filling up one root directory with a bunch of files.
-        Gitlab::HashedPath.new(sub_path, root_hash: root_id).to_s
+        Gitlab::HashedPath.new(sub_path, root_hash: root_hash).to_s
       end
 
+      # final_store_path_config is only used if use_final_store_path is set to true
+      # Two keys are available:
+      # - :root_hash. The root hash used in Gitlab::HashedPath for the path generation.
+      # - :override_path. If set, the path generation is skipped and this value is used instead.
+      #                   Make sure that this value is unique for each upload.
       def workhorse_authorize(
         has_length:,
         maximum_size: nil,
         use_final_store_path: false,
-        final_store_path_root_id: nil)
+        final_store_path_config: {})
         {}.tap do |hash|
           if self.direct_upload_to_object_store?
             hash[:RemoteObject] = workhorse_remote_upload_options(
               has_length: has_length,
               maximum_size: maximum_size,
               use_final_store_path: use_final_store_path,
-              final_store_path_root_id: final_store_path_root_id
+              final_store_path_config: final_store_path_config
             )
           else
             hash[:TempPath] = workhorse_local_upload_path
@@ -231,13 +236,18 @@ module ObjectStorage
         has_length:,
         maximum_size: nil,
         use_final_store_path: false,
-        final_store_path_root_id: nil)
+        final_store_path_config: {})
         return unless direct_upload_to_object_store?
 
         if use_final_store_path
-          raise MissingFinalStorePathRootId unless final_store_path_root_id.present?
+          id = if final_store_path_config[:override_path].present?
+                 final_store_path_config[:override_path]
+               else
+                 raise MissingFinalStorePathRootId unless final_store_path_config[:root_hash].present?
 
-          id = generate_final_store_path(root_id: final_store_path_root_id)
+                 generate_final_store_path(root_hash: final_store_path_config[:root_hash])
+               end
+
           upload_path = with_bucket_prefix(id)
           prepare_pending_direct_upload(id)
         else

@@ -28,6 +28,11 @@ module VirtualRegistries
         true
       end
 
+      override :direct_upload_final_path_attribute_name
+      def direct_upload_final_path_attribute_name
+        :object_storage_key
+      end
+
       private
 
       def set_content_type(file)

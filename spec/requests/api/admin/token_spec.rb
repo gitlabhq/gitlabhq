@@ -186,6 +186,16 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
         end
       end
 
+      context 'when the token is an oauth application token' do
+        let(:plaintext) { oauth_application.plaintext_secret }
+
+        it 'resets the token' do
+          expect { delete_token }.to change { oauth_application.reload.secret }
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
       context 'when the revocation feature is disabled' do
         before do
           stub_feature_flags(api_admin_token_revoke: false)

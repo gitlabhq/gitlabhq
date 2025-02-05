@@ -22,6 +22,15 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
         expect(entity.protected_branches.last.merge_access_levels.map(&:access_level)).to match_array([Gitlab::Access::MAINTAINER])
       end
 
+      it 'publishes ProtectedBranchCreatedEvent event' do
+        expect { service.execute }.to publish_event(Repositories::ProtectedBranchCreatedEvent)
+          .with(
+            protected_branch_id: an_instance_of(Integer),
+            parent_id: entity.id,
+            parent_type: entity.is_a?(Project) ? 'project' : 'group'
+          )
+      end
+
       it 'refreshes the cache' do
         expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
           expect(cache_service).to receive(:refresh)

@@ -12,12 +12,20 @@ module API
         JOB_TOKEN_PARAM = :token
         LEGACY_SYSTEM_XID = '<legacy>'
 
-        # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/504277 is closed.
+        # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
         UnknownRunnerOwnerError = Class.new(StandardError)
 
         def authenticate_runner!(ensure_runner_manager: true, update_contacted_at: true)
           track_runner_authentication
           forbidden! unless current_runner
+
+          # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/504963 (when ci_runners is swapped)
+          # This is because the new table will have check constraints for these scenarios, and therefore
+          # any orphaned runners will be missing
+          if Feature.enabled?(:reject_orphaned_runners, Feature.current_request) &&
+              current_runner.sharding_key_id.nil? && !current_runner.instance_type?
+            unprocessable_entity!('Runner is orphaned')
+          end
 
           current_runner.heartbeat if update_contacted_at
           return unless ensure_runner_manager

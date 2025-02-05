@@ -59,6 +59,24 @@ module VirtualRegistries
           cache_entries.default
         end
 
+        def object_storage_key_for(registry_id:)
+          hash = Digest::SHA2.hexdigest(SecureRandom.uuid)
+          Gitlab::HashedPath.new(
+            'virtual_registries',
+            'packages',
+            'maven',
+            registry_id.to_s,
+            'upstream',
+            id.to_s,
+            'cache',
+            'entry',
+            hash[0..1],
+            hash[2..3],
+            hash[4..],
+            root_hash: registry_id
+          ).to_s
+        end
+
         private
 
         def reset_credentials

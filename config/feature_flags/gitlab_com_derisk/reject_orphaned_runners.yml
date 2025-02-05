@@ -1,0 +1,9 @@
+---
+name: reject_orphaned_runners
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516862
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180163
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516929
+milestone: '17.9'
+group: group::runner
+type: gitlab_com_derisk
+default_enabled: false

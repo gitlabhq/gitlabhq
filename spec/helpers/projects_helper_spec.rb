@@ -1821,12 +1821,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       it 'returns visibility level content_tag' do
-        expected_result = "<span class=\"has-tooltip\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\">#{icon}</span>"
+        expected_result = "<button class=\"has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\" type=\"button\" aria-label=\"#{description}\">#{icon}</button>"
         expect(helper.visibility_level_content(project)).to eq(expected_result)
       end
 
       it 'returns visibility level content_tag with extra CSS classes' do
-        expected_result = "<span class=\"has-tooltip extra-class\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\">#{icon}</span>"
+        expected_result = "<button class=\"has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit extra-class\" data-container=\"body\" data-placement=\"top\" title=\"#{description}\" type=\"button\" aria-label=\"#{description}\">#{icon}</button>"
 
         expect(helper).to receive(:visibility_level_icon)
           .with(anything, options: { class: 'extra-icon-class' })

@@ -247,4 +247,23 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
 
     it { is_expected.to contain_exactly(default_cache_entry) }
   end
+
+  describe '#object_storage_key_for' do
+    let_it_be(:upstream) { build_stubbed(:virtual_registries_packages_maven_upstream) }
+
+    let(:registry_id) { '555' }
+
+    subject { upstream.object_storage_key_for(registry_id: registry_id) }
+
+    it 'contains the expected terms' do
+      is_expected.to include("virtual_registries/packages/maven/#{registry_id}/upstream/#{upstream.id}/cache/entry")
+    end
+
+    it 'does not return the same value when called twice' do
+      first_value = upstream.object_storage_key_for(registry_id: registry_id)
+      second_value = upstream.object_storage_key_for(registry_id: registry_id)
+
+      expect(first_value).not_to eq(second_value)
+    end
+  end
 end

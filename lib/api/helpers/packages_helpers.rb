@@ -60,7 +60,7 @@ module API
 
         params = { has_length: has_length, use_final_store_path: use_final_store_path }
         params[:maximum_size] = maximum_size unless has_length
-        params[:final_store_path_root_id] = subject.id if use_final_store_path
+        params[:final_store_path_config] = { root_hash: subject.id } if use_final_store_path
         ::Packages::PackageFileUploader.workhorse_authorize(**params)
       end
 

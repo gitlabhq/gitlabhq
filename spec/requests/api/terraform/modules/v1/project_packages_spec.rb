@@ -89,7 +89,7 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
 
       it 'sends use_final_store_path with true' do
         expect(::Packages::PackageFileUploader).to receive(:workhorse_authorize).with(
-          hash_including(use_final_store_path: true, final_store_path_root_id: project.id)
+          hash_including(use_final_store_path: true, final_store_path_config: { root_hash: project.id })
         ).and_call_original
 
         api_request

@@ -797,11 +797,37 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       end
     end
 
-    it 'appends metadata for logging' do
-      post :execute, params: { _json: graphql_queries }
+    context 'when source is not glql' do
+      it 'appends metadata for logging' do
+        post :execute, params: { _json: graphql_queries }
 
-      expect(controller).to have_received(:append_info_to_payload)
-      expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_logs)
+        expect(controller).to have_received(:append_info_to_payload)
+        expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_logs)
+        expect(log_payload.dig(:metadata, :referer)).to be_nil
+      end
+    end
+
+    context 'when source is glql' do
+      let(:query_1) { { query: graphql_query_for('project', { 'fullPath' => 'foo' }, %w[id name], 'GLQL') } }
+      let(:query_2) { { query: graphql_query_for('project', { 'fullPath' => 'bar' }, %w[id], 'GLQL') } }
+
+      let(:expected_glql_logs) do
+        expected_logs.map do |q|
+          q.merge(operation_name: "GLQL")
+        end
+      end
+
+      before do
+        request.headers['Referer'] = 'path'
+      end
+
+      it 'appends glql-related metadata for logging' do
+        post :execute, params: { _json: graphql_queries }
+
+        expect(controller).to have_received(:append_info_to_payload)
+        expect(log_payload.dig(:metadata, :graphql)).to match_array(expected_glql_logs)
+        expect(log_payload.dig(:metadata, :referer)).to eq('path')
+      end
     end
 
     it 'appends the exception in case of errors' do

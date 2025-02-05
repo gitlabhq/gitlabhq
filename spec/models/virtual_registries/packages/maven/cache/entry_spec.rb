@@ -22,7 +22,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::Cache::Entry, type: :model, f
       it { is_expected.to validate_length_of(attr).is_at_most(255) }
     end
 
-    %i[relative_path object_storage_key file_final_path].each do |attr|
+    %i[relative_path object_storage_key].each do |attr|
       it { is_expected.to validate_length_of(attr).is_at_most(1024) }
     end
 
@@ -35,6 +35,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::Cache::Entry, type: :model, f
       end
 
       it { is_expected.to validate_uniqueness_of(:relative_path).scoped_to(:upstream_id, :status) }
+      it { is_expected.to validate_uniqueness_of(:object_storage_key).scoped_to(:relative_path) }
 
       context 'with a similar cached response in a different status' do
         let!(:cache_entry_in_error) do
@@ -103,6 +104,7 @@ RSpec.describe VirtualRegistries::Packages::Maven::Cache::Entry, type: :model, f
     it 'can not be null' do
       cache_entry.object_storage_key = nil
       cache_entry.relative_path = nil
+      cache_entry.upstream = nil
 
       expect(cache_entry).to be_invalid
       expect(cache_entry.errors.full_messages).to include("Object storage key can't be blank")
