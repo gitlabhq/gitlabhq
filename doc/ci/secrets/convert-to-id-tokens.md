@@ -231,10 +231,10 @@ job:
       file: false
 ```
 
-Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../../ci/variables/index.md#define-a-cicd-variable-in-the-ui),
+Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-ui),
 if preferred.
 
-We use [`secrets:file:false`](../../ci/yaml/index.md#secretsfile) because ID tokens place secrets in a file by default, but we need it to work as a regular variable to match the old behavior.
+We use [`secrets:file:false`](../yaml/index.md#secretsfile) because ID tokens place secrets in a file by default, but we need it to work as a regular variable to match the old behavior.
 
 ### KV Secrets Engine v2
 

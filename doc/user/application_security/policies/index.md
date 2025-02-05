@@ -16,8 +16,10 @@ their organization.
 Security teams can ensure:
 
 - Security scanners are enforced in development team pipelines with proper configuration.
-- That all scan jobs execute without any changes or alterations.
-- That proper approvals are provided on merge requests based on results from those findings.
+- All scan jobs execute without any changes or alterations.
+- Proper approvals are provided on merge requests, based on results from those findings.
+- Vulnerabilities that are no longer detected are resolved automatically, reducing the workload of
+  triaging vulnerabilities.
 
 Compliance teams can:
 
@@ -32,6 +34,8 @@ The following policy types are available:
 - [Merge request approval policy](merge_request_approval_policies.md). Enforce project-level settings and
   approval rules based on scan results.
 - [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
+- [Vulnerability management policy](vulnerability_management_policy.md). Automatically resolve
+  vulnerabilities that are no longer detected in the default branch.
 
 ## Security policy project
 

@@ -753,7 +753,7 @@ the following questions in preparation:
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../../ci/index.md).
+   - Read about the [key GitLab CI/CD features](../index.md).
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md)
      and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploy
      a static site.

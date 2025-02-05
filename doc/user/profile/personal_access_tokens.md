@@ -167,7 +167,7 @@ When you delete or block an enterprise user account, their personal access token
 
 > - In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
 > - The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
-> - Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../administration/feature_flags.md) named `pat_ip`. Disabled by default.
+> - Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../administration/feature_flags.md) named `pat_ip`. Enabled by default in 17.9.
 
 Token usage information is updated every 10 minutes. GitLab considers a token used when the token is used to:
 

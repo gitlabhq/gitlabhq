@@ -141,6 +141,7 @@ describe('CE IssuesListApp component', () => {
     showNewIssueLink: true,
     signInPath: 'sign/in/path',
     groupId: '',
+    commentTemplatePaths: [],
   };
 
   let defaultQueryResponse = getIssuesQueryResponse;

@@ -86,7 +86,7 @@ Dynamic environments:
 - Have dynamic names, usually based on the value of a CI/CD variable.
 - Are a feature of [review apps](../review_apps/index.md).
 
-An environment has one of three states, depending on whether its [stop job](../../ci/yaml/index.md#environmenton_stop) has run:
+An environment has one of three states, depending on whether its [stop job](../yaml/index.md#environmenton_stop) has run:
 
 - `available`: The environment exists. There might be a deployment.
 - `stopping`: The _on stop job_ has started. This state does not apply when there is no on stop job defined.
@@ -238,7 +238,7 @@ Note the following:
 - If the environment URL isn't valid (for example, the URL is malformed), the system doesn't update
   the environment URL.
 - If the script that runs in `stop_review` exists only in your repository and therefore can't use
-  `GIT_STRATEGY: none` or `GIT_STRATEGY: empty`, configure [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md)
+  `GIT_STRATEGY: none` or `GIT_STRATEGY: empty`, configure [merge request pipelines](../pipelines/merge_request_pipelines.md)
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
 
@@ -289,7 +289,7 @@ To achieve the same result as renaming an environment:
 ## CI/CD variables
 
 To customize your environments and deployments, you can use any of the
-[predefined CI/CD variables](../../ci/variables/predefined_variables.md),
+[predefined CI/CD variables](../variables/predefined_variables.md),
 and define custom CI/CD variables.
 
 ### Limit the environment scope of a CI/CD variable

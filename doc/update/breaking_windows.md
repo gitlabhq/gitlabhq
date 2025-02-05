@@ -91,5 +91,4 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [Dependency Proxy token scope enforcement](https://gitlab.com/gitlab-org/gitlab/-/issues/426887) | High | Package | Group |
 | [REST API endpoint `pre_receive_secret_detection_enabled` is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/514413) | Medium | Application_security_testing | Instance |
 | [Remove duoProAssignedUsersCount GraphQL field](https://gitlab.com/gitlab-org/gitlab/-/issues/498671) | Low | Plan | Group, project |
-| [Secret detection analyzer doesn't run as root user by default](https://gitlab.com/gitlab-org/gitlab/-/issues/476160) | Low | Application_security_testing | Instance |
 | [Remove `previousStageJobsOrNeeds` from GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/424417) | Low | Verify | Instance |

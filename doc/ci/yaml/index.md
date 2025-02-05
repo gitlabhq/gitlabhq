@@ -2356,7 +2356,7 @@ Every time the review app is deployed, that lifetime is also reset to `1 day`.
 
 The `auto_stop_in` keyword can be used for all [environment actions](#environmentaction) except `stop`.
 Some actions can be used to reset the scheduled stop time for the environment. For more information, see
-[Access an environment for preparation or verification purposes](../../ci/environments/index.md#access-an-environment-for-preparation-or-verification-purposes).
+[Access an environment for preparation or verification purposes](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes).
 
 **Related topics**:
 
@@ -5299,10 +5299,10 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 - [Use tags to control which jobs a runner can run](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job)
 - Runner tags for hosted runners:
-  - [Hosted runners on Linux](../../ci/runners/hosted_runners/linux.md)
-  - [GPU-enabled hosted runners](../../ci/runners/hosted_runners/gpu_enabled.md)
-  - [Hosted runners on macOS](../../ci/runners/hosted_runners/macos.md)
-  - [Hosted runners on Windows](../../ci/runners/hosted_runners/windows.md)
+  - [Hosted runners on Linux](../runners/hosted_runners/linux.md)
+  - [GPU-enabled hosted runners](../runners/hosted_runners/gpu_enabled.md)
+  - [Hosted runners on macOS](../runners/hosted_runners/macos.md)
+  - [Hosted runners on Windows](../runners/hosted_runners/windows.md)
 
 ### `timeout`
 

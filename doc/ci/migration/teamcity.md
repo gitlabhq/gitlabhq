@@ -184,8 +184,8 @@ spanish:
 
 Build configurations in TeamCity allow you to define [artifacts](https://www.jetbrains.com/help/teamcity/build-artifact.html) generated during the build process.
 
-In GitLab, any job can use the [`artifacts`](../../ci/yaml/index.md#artifacts) keyword to define a set of artifacts to
-be stored when a job completes. [Artifacts](../../ci/jobs/job_artifacts.md) are files that can be used in later jobs,
+In GitLab, any job can use the [`artifacts`](../yaml/index.md#artifacts) keyword to define a set of artifacts to
+be stored when a job completes. [Artifacts](../jobs/job_artifacts.md) are files that can be used in later jobs,
 for testing or deployment.
 
 For example, a GitLab CI/CD `.gitlab-ci.yml` file that uses artifacts:
@@ -265,7 +265,7 @@ For a migration from TeamCity, ask yourself the following questions in preparati
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../../ci/index.md).
+   - Read about the [key GitLab CI/CD features](../index.md).
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
    - Review the [CI/CD YAML syntax reference](../yaml/index.md).
 1. Set up and configure GitLab.

@@ -107,7 +107,7 @@ from Jenkins to GitLab CI/CD.
 
 [Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
 that are triggered when certain event take place, such as a new commit being pushed.
-A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../../ci/yaml/index.md).
+A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../yaml/index.md).
 
 Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored
 in a separate source control repository.
@@ -316,8 +316,8 @@ deploy-job:
 
 #### Container Images
 
-In GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../../ci/docker/using_docker_images.md)
-using the [image](../../ci/yaml/index.md#image) keyword.
+In GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../docker/using_docker_images.md)
+using the [image](../yaml/index.md#image) keyword.
 
 For example, in a `Jenkinsfile`:
 
@@ -541,8 +541,8 @@ windows_job:
 
 #### Artifacts
 
-In GitLab, any job can use the [`artifacts`](../../ci/yaml/index.md#artifacts) keyword to define a set of artifacts to
-be stored when a job completes. [Artifacts](../../ci/jobs/job_artifacts.md) are files that can be used in later jobs,
+In GitLab, any job can use the [`artifacts`](../yaml/index.md#artifacts) keyword to define a set of artifacts to
+be stored when a job completes. [Artifacts](../jobs/job_artifacts.md) are files that can be used in later jobs,
 for example for testing or deployment.
 
 For example, in a `Jenkinsfile`:
@@ -597,7 +597,7 @@ use_cat:
 
 #### Caching
 
-A [cache](../../ci/caching/index.md) is created when a job downloads one or more files and
+A [cache](../caching/index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
 [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
@@ -705,7 +705,7 @@ Before starting a migration you should create a [migration plan](plan_a_migratio
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../../ci/index.md).
+   - Read about the [key GitLab CI/CD features](../index.md).
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
    - Review the [CI/CD YAML syntax reference](../yaml/index.md).
 1. Set up and configure GitLab.

@@ -333,7 +333,7 @@ A Pipeline that has more jobs than the instance's defined [CI/CD limits](../admi
 fails to start.
 
 To reduce the number of jobs in a single pipeline, you can split your `.gitlab-ci.yml`
-configuration into more independent [parent-child pipelines](../ci/pipelines/pipeline_architectures.md#parent-child-pipelines).
+configuration into more independent [parent-child pipelines](pipelines/pipeline_architectures.md#parent-child-pipelines).
 
 ## Pipeline warnings
 
@@ -488,8 +488,8 @@ To resolve this, see the [workaround in issue 352382](https://gitlab.com/gitlab-
 
 ### `config should be an array of hashes` error message
 
-You might see an error similar to the following when using [`!reference` tags](../ci/yaml/yaml_optimization.md#reference-tags)
-with the [`parallel:matrix` keyword](../ci/yaml/index.md#parallelmatrix):
+You might see an error similar to the following when using [`!reference` tags](yaml/yaml_optimization.md#reference-tags)
+with the [`parallel:matrix` keyword](yaml/index.md#parallelmatrix):
 
 ```plaintext
 This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config should be an array of hashes.

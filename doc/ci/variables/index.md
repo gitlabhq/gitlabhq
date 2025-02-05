@@ -828,7 +828,7 @@ To limit the use of pipeline variables to only the Maintainer role and higher:
 When users with the Developer role or lower try to [use pipeline variables](#use-pipeline-variables),
 they receive the `Insufficient permissions to set pipeline variables` error message.
 
-If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
+If you [store your CI/CD configurations in a different repository](../pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 use this setting for control over the environment the pipeline runs in.
 
 #### Set a minimum role for pipeline variables

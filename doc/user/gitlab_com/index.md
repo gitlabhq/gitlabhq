@@ -399,6 +399,21 @@ The following table describes the rate limits for GitLab.com:
 | API requests from a user to `/api/v4/users/:id`                  | 300 requests per 10 minutes   |
 | GitLab package cloud requests for an IP address ([introduced](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/24083) in GitLab 16.11) | 3,000 requests per minute |
 | GitLab repository files | 500 requests per minute |
+| User followers requests (`/api/v4/users/:id/followers`)            | 100 requests per minute       |
+| User following requests (`/api/v4/users/:id/following`)            | 100 requests per minute       |
+| User status requests (`/api/v4/users/:user_id/status`)             | 240 requests per minute       |
+| User SSH keys requests (`/api/v4/users/:user_id/keys`)             | 120 requests per minute       |
+| Single SSH key requests (`/api/v4/users/:id/keys/:key_id`)         | 120 requests per minute       |
+| User GPG keys requests (`/api/v4/users/:id/gpg_keys`)              | 120 requests per minute       |
+| Single GPG key requests (`/api/v4/users/:id/gpg_keys/:key_id`)     | 120 requests per minute       |
+| User projects requests (`/api/v4/users/:user_id/projects`)         | 300 requests per minute       |
+| User contributed projects requests (`/api/v4/users/:user_id/contributed_projects`) | 100 requests per minute |
+| User starred projects requests (`/api/v4/users/:user_id/starred_projects`) | 100 requests per minute      |
+| Projects list requests (`/api/v4/projects`)                        | 2,000 requests per 10 minutes |
+| Group projects requests (`/api/v4/groups/:id/projects`)            | 600 requests per minute       |
+| Single project requests (`/api/v4/projects/:id`)                   | 400 requests per minute       |
+| Groups list requests (`/api/v4/groups`)                            | 200 requests per minute       |
+| Single group requests (`/api/v4/groups/:id`)                       | 400 requests per minute       |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

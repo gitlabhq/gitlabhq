@@ -306,8 +306,8 @@ Pipelines can also be [scheduled by using Cron syntax](../pipelines/schedules.md
 
 #### Container Images
 
-With GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../../ci/docker/using_docker_images.md)
-by using the [`image`](../../ci/yaml/index.md#image) keyword.
+With GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../docker/using_docker_images.md)
+by using the [`image`](../yaml/index.md#image) keyword.
 
 For example, in a GitHub Actions `workflow` file:
 
@@ -430,7 +430,7 @@ login:
 ```
 
 Additionally, [GitHub Actions](https://docs.github.com/en/actions/learn-github-actions/contexts)
-and [GitLab CI/CD](../../ci/variables/predefined_variables.md) provide built-in variables
+and [GitLab CI/CD](../variables/predefined_variables.md) provide built-in variables
 which contain data relevant to the pipeline and repository.
 
 #### Conditionals
@@ -510,8 +510,8 @@ windows_job:
 
 #### Artifacts
 
-In GitLab, any job can use the [artifacts](../../ci/yaml/index.md#artifacts) keyword to define a set
-of artifacts to be stored when a job completes. [Artifacts](../../ci/jobs/job_artifacts.md) are files
+In GitLab, any job can use the [artifacts](../yaml/index.md#artifacts) keyword to define a set
+of artifacts to be stored when a job completes. [Artifacts](../jobs/job_artifacts.md) are files
 that can be used in later jobs.
 
 For example, in a GitHub Actions `workflow` file:
@@ -562,7 +562,7 @@ use_cat:
 
 #### Caching
 
-A [cache](../../ci/caching/index.md) is created when a job downloads one or more files and
+A [cache](../caching/index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
 [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
@@ -597,7 +597,7 @@ cache-job:
 
 In GitHub an Action is a set of complex tasks that need to be frequently repeated and is saved
 to enable reuse without redefining a CI/CD pipeline. In GitLab the equivalent to an action would
-be a the [`include` keyword](../yaml/includes.md), which allows you to [add CI/CD pipelines from other files](../../ci/yaml/includes.md),
+be a the [`include` keyword](../yaml/includes.md), which allows you to [add CI/CD pipelines from other files](../yaml/includes.md),
 including template files built into GitLab.
 
 Sample GitHub Actions configuration:
@@ -675,7 +675,7 @@ Before starting a migration you should create a [migration plan](plan_a_migratio
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../../ci/index.md).
+   - Read about the [key GitLab CI/CD features](../index.md).
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
    - Review the [CI/CD YAML syntax reference](../yaml/index.md).
 1. Set up and configure GitLab.

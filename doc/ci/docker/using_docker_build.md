@@ -816,7 +816,7 @@ You might get an error that says
 `docker: error during connect: Post https://docker:2376/v1.40/containers/create: dial tcp: lookup docker on x.x.x.x:53: no such host`.
 
 This issue can occur when the service's image name
-[includes a registry hostname](../../ci/services/index.md#available-settings-for-services). For example:
+[includes a registry hostname](../services/index.md#available-settings-for-services). For example:
 
 ```yaml
 default:
@@ -825,7 +825,7 @@ default:
     - registry.hub.docker.com/library/docker:24.0.5-dind
 ```
 
-A service's hostname is [derived from the full image name](../../ci/services/index.md#accessing-the-services).
+A service's hostname is [derived from the full image name](../services/index.md#accessing-the-services).
 However, the shorter service hostname `docker` is expected.
 To allow service resolution and access, add an explicit alias for the service name `docker`:
 

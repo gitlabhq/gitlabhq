@@ -99,7 +99,8 @@ module Users
       new_mr_dashboard_banner: 96,
       planner_role_callout: 97,
       # EE-only
-      pipl_compliance_alert: 98
+      pipl_compliance_alert: 98,
+      new_merge_request_dashboard_welcome: 99
     }
 
     validates :feature_name,

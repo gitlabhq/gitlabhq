@@ -55,6 +55,11 @@ export default {
       required: false,
       default: null,
     },
+    newCommentTemplatePaths: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -280,6 +285,7 @@ export default {
         :work-item-iid="activeItem.iid"
         :modal-work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
+        :new-comment-template-paths="newCommentTemplatePaths"
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"

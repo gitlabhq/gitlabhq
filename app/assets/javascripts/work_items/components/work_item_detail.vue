@@ -1115,6 +1115,7 @@ export default {
       :active-item="activeChildItem"
       :open="isItemSelected"
       :issuable-type="activeChildItemType"
+      :new-comment-template-paths="newCommentTemplatePaths"
       click-outside-exclude-selector=".issuable-list"
       @close="activeChildItem = null"
       @workItemDeleted="deleteChildItem"

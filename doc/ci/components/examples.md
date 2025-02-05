@@ -128,7 +128,7 @@ This section provides practical examples of implementing common patterns in CI/C
 ### Use boolean inputs to conditionally configure jobs
 
 You can compose jobs with two conditionals by combining `boolean` type inputs and
-[`extends`](../../ci/yaml/index.md#extends) functionality.
+[`extends`](../yaml/index.md#extends) functionality.
 
 For example, to configure complex caching behavior with a `boolean` input:
 
@@ -163,7 +163,7 @@ the appropriate configuration is selected from the predefined hidden jobs
 ### Use `options` to conditionally configure jobs
 
 You can compose jobs with multiple options, for behavior similar to `if` and `elseif`
-conditionals. Use the [`extends`](../../ci/yaml/index.md#extends) with `string` type
+conditionals. Use the [`extends`](../yaml/index.md#extends) with `string` type
 and multiple `options` for any number of conditions.
 
 For example, to configure complex caching behavior with 3 different options:

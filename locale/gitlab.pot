@@ -5333,6 +5333,9 @@ msgstr ""
 msgid "AiPowered|Enroll in the Early Access Program"
 msgstr ""
 
+msgid "AiPowered|Enter the URL for your local AI Gateway. This endpoint is used for self-hosted models requests.%{br}The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\".%{br}For more information, see how to %{linkStart}install the GitLab AI Gateway.%{linkEnd}"
+msgstr ""
+
 msgid "AiPowered|Experiment and beta features"
 msgstr ""
 
@@ -5358,6 +5361,9 @@ msgid "AiPowered|Ideal for lowest latency. An IDE must be able to connect to htt
 msgstr ""
 
 msgid "AiPowered|Indirect connections through GitLab self-managed instance"
+msgstr ""
+
+msgid "AiPowered|Local AI Gateway URL"
 msgstr ""
 
 msgid "AiPowered|Might result in requests having higher latency."
@@ -6682,6 +6688,9 @@ msgid "An error occurred while updating the notification settings. Please try ag
 msgstr ""
 
 msgid "An error occurred while updating your settings."
+msgstr ""
+
+msgid "An error occurred while updating your settings. Reload the page to try again."
 msgstr ""
 
 msgid "An error occurred while uploading the file. Please try again."
@@ -37670,6 +37679,9 @@ msgstr ""
 msgid "New! Suggest changes directly"
 msgstr ""
 
+msgid "New, streamlined merge request homepage!"
+msgstr ""
+
 msgid "NewFramework|All todos done."
 msgstr ""
 
@@ -53019,6 +53031,9 @@ msgstr ""
 msgid "See examples."
 msgstr ""
 
+msgid "See how it works"
+msgstr ""
+
 msgid "See our website for help"
 msgstr ""
 
@@ -64336,6 +64351,9 @@ msgid "Welcome to GitLab, %{name}!"
 msgstr ""
 
 msgid "Welcome to GitLab,%{br_tag}%{name}!"
+msgstr ""
+
+msgid "Welcome to the new merge request homepage! This page gives you a centralized view of all the merge requests you're working on. Know at a glance what merge requests need your attention first so you can spend less time checking in, and more time reviewing and responding to feedback."
 msgstr ""
 
 msgid "Welcome, %{name}!"

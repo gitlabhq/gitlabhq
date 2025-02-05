@@ -52,6 +52,7 @@ it's reset to a pristine test after each test.
 - [Example 7](https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/3389#note_1534827164):
   A TCP socket used in a test was not closed before the next test, which also used
   the same port with another TCP socket.
+  [Example 8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179302#note_2324238692): A `let_it_be` depended on a stub defined in a `before` block. `let_it_be` executes during `before(:all)`, so the stub was not yet set. This exposed the tests to the actual method call, which happened to use a method cache.
 
 #### Dataset-specific
 

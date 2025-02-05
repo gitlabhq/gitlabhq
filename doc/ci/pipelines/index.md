@@ -274,7 +274,7 @@ DETAILS:
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501460) in GitLab 17.6
-and is planned for removal in 19.0. Use [CI/CD jobs with pipeline trigger tokens](../../ci/triggers/index.md#use-a-cicd-job) instead.
+and is planned for removal in 19.0. Use [CI/CD jobs with pipeline trigger tokens](../triggers/index.md#use-a-cicd-job) instead.
 This is a breaking change.
 
 You can set up your project to automatically trigger a pipeline based on tags in a different project.

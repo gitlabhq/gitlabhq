@@ -545,17 +545,18 @@ function log_disk_usage() {
 }
 
 # all functions below are for customizing CI job exit code
-export TRACE_FILE=stdout_stderr_log.out
-
 function run_with_custom_exit_code() {
   set +e # temprorarily disable exit on error to prevent premature exit
 
   # runs command passed in as argument, save standard error and standard output
   output=$("$@" 2>&1)
   initial_exit_code=$?
-  echo "$output" | tee "$TRACE_FILE"
 
-  find_custom_exit_code "$initial_exit_code"
+  local trace_file="stdout_stderr_log.out"
+
+  echo "$output" | tee "$trace_file"
+
+  find_custom_exit_code "$initial_exit_code" "$trace_file"
   new_exit_code=$?
 
   echo "new_exit_code=$new_exit_code"
@@ -566,33 +567,34 @@ function run_with_custom_exit_code() {
 
 function find_custom_exit_code() {
   local exit_code="$1"
+  local trace_file="$2"
 
   # Early return if exit code is 0
   [ "$exit_code" -eq 0 ] && return 0
 
-  # Check if TRACE_FILE is set
-  if [ -z "$TRACE_FILE" ] || [ ! -f "$TRACE_FILE" ]; then
-      echoerr "TRACE_FILE is not set or file does not exist"
+  # Check if trace_file is set
+  if [ -z "$trace_file" ] || [ ! -f "$trace_file" ]; then
+      echoerr "$trace_file is not set or file does not exist"
       exit "$exit_code"
   fi
 
   if grep -i -q \
     -e "Failed to connect to 127.0.0.1" \
     -e "Failed to open TCP connection to" \
-    -e "connection reset by peer" "$TRACE_FILE"; then
+    -e "connection reset by peer" "$trace_file"; then
 
     echoerr "Detected network connection error. Changing exit code to 110."
     exit_code=110
     alert_job_in_slack "$exit_code" "Network connection error"
 
-  elif grep -i -q -e "no space left on device" "$TRACE_FILE"; then
+  elif grep -i -q -e "no space left on device" "$trace_file"; then
     echoerr "Detected no space left on device. Changing exit code to 111."
     exit_code=111
     alert_job_in_slack "$exit_code" "Low disk space"
 
   elif grep -i -q \
     -e "error: downloading artifacts from coordinator" \
-    -e "error: uploading artifacts as \"archive\" to coordinator" "$TRACE_FILE"; then
+    -e "error: uploading artifacts as \"archive\" to coordinator" "$trace_file"; then
     echoerr "Detected artifact transit error. Changing exit code to 160."
     exit_code=160
     alert_job_in_slack "$exit_code" "Artifact transit error"
@@ -601,18 +603,18 @@ function find_custom_exit_code() {
     -e "500 Internal Server Error" \
     -e "Internal Server Error 500" \
     -e "502 Bad Gateway" \
-    -e "503 Service Unavailable" "$TRACE_FILE"; then
+    -e "503 Service Unavailable" "$trace_file"; then
     echoerr "Detected 5XX error. Changing exit code to 161."
     exit_code=161
     alert_job_in_slack "$exit_code" "5XX error"
 
-  elif grep -i -q -e "gitaly spawn failed" "$TRACE_FILE"; then
+  elif grep -i -q -e "gitaly spawn failed" "$trace_file"; then
     echoerr "Detected gitaly spawn failure error. Changing exit code to 162."
     exit_code=162
     alert_job_in_slack "$exit_code" "Gitaly spawn failure"
 
   elif grep -i -q -e \
-    "Rspec suite is exceeding the 80 minute limit and is forced to exit with error" "$TRACE_FILE"; then
+    "Rspec suite is exceeding the 80 minute limit and is forced to exit with error" "$trace_file"; then
     echoerr "Detected rspec timeout risk. Changing exit code to 163."
     exit_code=163
     alert_job_in_slack "$exit_code" "RSpec taking longer than 80 minutes and forced to fail."
@@ -620,23 +622,23 @@ function find_custom_exit_code() {
   elif grep -i -q \
     -e "Redis client could not fetch cluster information: Connection refused" \
     -e "Redis::Cluster::CommandErrorCollection" \
-    -e "CLUSTERDOWN The cluster is down" "$TRACE_FILE"; then
+    -e "CLUSTERDOWN The cluster is down" "$trace_file"; then
     echoerr "Detected Redis cluster error. Changing exit code to 164."
     exit_code=164
     alert_job_in_slack "$exit_code" "Redis cluster error"
 
-  elif grep -i -q -e "segmentation fault" "$TRACE_FILE"; then
+  elif grep -i -q -e "segmentation fault" "$trace_file"; then
     echoerr "Detected segmentation fault. Changing exit code to 165."
     exit_code=165
     alert_job_in_slack "$exit_code" "Segmentation fault"
 
-  elif grep -i -q -e "Error: EEXIST: file already exists" "$TRACE_FILE"; then
+  elif grep -i -q -e "Error: EEXIST: file already exists" "$trace_file"; then
     echoerr "Detected EEXIST error. Changing exit code to 166."
     exit_code=166
     alert_job_in_slack "$exit_code" "EEXIST: file already exists"
 
   elif grep -i -q -e \
-    "fatal: remote error: GitLab is currently unable to handle this request due to load" "$TRACE_FILE"; then
+    "fatal: remote error: GitLab is currently unable to handle this request due to load" "$trace_file"; then
     echoerr "Detected GitLab overload error in job trace. Changing exit code to 167."
     exit_code=167
     alert_job_in_slack "$exit_code" "gitlab.com overload"
@@ -650,8 +652,8 @@ function find_custom_exit_code() {
 }
 
 function alert_job_in_slack() {
-  exit_code=$1
-  alert_reason=$2
+  local exit_code=$1
+  local alert_reason=$2
   local slack_channel="#dx_development-analytics_alerts"
 
   echoinfo "Reporting ${CI_JOB_URL} to Slack channel ${slack_channel}"

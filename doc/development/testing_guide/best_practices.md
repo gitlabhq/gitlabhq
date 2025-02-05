@@ -968,6 +968,32 @@ allow stubs in `before(:all)`.
 See this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/340487) for more details.
 To resolve, use `let`, or change the factory to not use stubs.
 
+### `let_it_be` must not depend on a before block
+
+When using `let_it_be` in the middle of a spec, make sure that it does not depend on a `before` block, since the `let_it_be` will be executed first during `before(:all)`.
+
+In [this example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179302#note_2323774955), `create(:bar)` ran a callback which depended on the stub:
+
+```ruby
+let_it_be(:node) { create(:geo_node, :secondary) }
+
+before do
+  stub_current_geo_node(node)
+end
+
+context 'foo' do
+  let_it_be(:bar) { create(:bar) }
+
+  ...
+end
+```
+
+The stub isn't set when `create(:bar)` executes, so the tests are flaky.
+
+In this example, `before` cannot be replaced with `before_all` because you cannot use doubles or partial doubles from RSpec-mocks outside of the per-test lifecycle.
+
+Therefore, the solution is to use `let` or `let!` instead of `let_it_be(:bar)`.
+
 ### Time-sensitive tests
 
 [`ActiveSupport::Testing::TimeHelpers`](https://api.rubyonrails.org/classes/ActiveSupport/Testing/TimeHelpers.html)

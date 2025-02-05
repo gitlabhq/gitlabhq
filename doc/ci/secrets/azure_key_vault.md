@@ -21,7 +21,7 @@ Prerequisites:
 - Have a [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) on Azure.
   - Your IAM user must be [granted the **Key Vault Administrator** role assignment](https://learn.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal#grant-access)
     for the **resource group** assigned to the Key Vault. Otherwise, you can't create secrets inside the Key Vault.
-- [Configure OpenID Connect in Azure to retrieve temporary credentials](../../ci/cloud_services/azure/index.md). These
+- [Configure OpenID Connect in Azure to retrieve temporary credentials](../cloud_services/azure/index.md). These
   steps include instructions on how to create an Azure AD application for Key Vault access.
 - Add [CI/CD variables to your project](../variables/index.md#for-a-project) to provide details about your Vault server:
   - `AZURE_KEY_VAULT_SERVER_URL`: The URL of your Azure Key Vault server, such as `https://vault.example.com`.
@@ -48,7 +48,7 @@ job:
 
 In this example:
 
-- `aud` is the audience, which must match the audience used when [creating the federated identity credentials](../../ci/cloud_services/azure/index.md#create-azure-ad-federated-identity-credentials)
+- `aud` is the audience, which must match the audience used when [creating the federated identity credentials](../cloud_services/azure/index.md#create-azure-ad-federated-identity-credentials)
 - `name` is the name of the secret in Azure Key Vault.
 - `version` is the version of the secret in Azure Key Vault. The version is a generated
   GUID without dashes, which can be found on the Azure Key Vault secrets page.
@@ -58,7 +58,7 @@ In this example:
 
 ## Troubleshooting
 
-Refer to [OIDC for Azure troubleshooting](../../ci/cloud_services/azure/index.md#troubleshooting) for general
+Refer to [OIDC for Azure troubleshooting](../cloud_services/azure/index.md#troubleshooting) for general
 problems when setting up OIDC with Azure.
 
 ### `JWT token is invalid or malformed` message

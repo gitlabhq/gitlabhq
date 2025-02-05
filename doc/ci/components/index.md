@@ -248,7 +248,7 @@ This section describes some best practices for creating high quality component p
 While it's possible for a component to use other components in turn, make sure to carefully select the dependencies. To manage dependencies, you should:
 
 - Keep dependencies to a minimum. A small amount of duplication is usually better than having dependencies.
-- Rely on local dependencies whenever possible. For example, using [`include:local`](../../ci/yaml/index.md#includelocal) is a good way
+- Rely on local dependencies whenever possible. For example, using [`include:local`](../yaml/index.md#includelocal) is a good way
   to ensure the same Git SHA is used across multiple files.
 - When depending on components from other projects, pin their version to a release from the catalog rather than using moving target
   versions such as `~latest` or a Git reference. Using a release or Git SHA guarantees that you are fetching the same revision
@@ -771,7 +771,7 @@ When using third-party CI/CD components, consider the following security best pr
   with self-managed runners.
 - **Securely handle cache and artifacts**: Do not pass cache or artifacts from other jobs
   in your pipeline to CI/CD component jobs unless absolutely necessary.
-- **Limit CI_JOB_TOKEN access**: Restrict [CI/CD job token (`CI_JOB_TOKEN`) project access and permissions](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)
+- **Limit CI_JOB_TOKEN access**: Restrict [CI/CD job token (`CI_JOB_TOKEN`) project access and permissions](../jobs/ci_job_token.md#control-job-token-access-to-your-project)
   for projects using CI/CD components.
 - **Review CI/CD component changes**: Carefully review all changes to the CI/CD component configuration
   before changing to use an updated commit SHA or release tag for the component.
