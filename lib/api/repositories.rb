@@ -174,6 +174,8 @@ module API
         optional :format, type: String, desc: 'The archive format', documentation: { example: 'tar.gz' }
         optional :path, type: String,
           desc: 'Subfolder of the repository to be downloaded', documentation: { example: 'files/archives' }
+        optional :include_lfs_blobs, type: Boolean, default: true,
+          desc: 'Used to exclude LFS objects from archive'
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         check_archive_rate_limit!(current_user, user_project) do
@@ -182,7 +184,7 @@ module API
 
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
 
-        send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path]
+        send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], include_lfs_blobs: params[:include_lfs_blobs]
       rescue StandardError
         not_found!('File')
       end

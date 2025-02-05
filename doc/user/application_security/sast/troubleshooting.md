@@ -17,7 +17,7 @@ experience a problem not addressed here, or the information here does not fix yo
 ## Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
+[debug-level logging](../troubleshooting_application_security.md#debug-level-logging).
 
 ## Changes in the CI/CD template
 
@@ -83,7 +83,7 @@ For information on this, see the [general Application Security troubleshooting s
 sast is used for configuration only, and its script should not be executed
 ```
 
-For information on this, see the [GitLab Secure troubleshooting section](../../application_security/troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+For information on this, see the [GitLab Secure troubleshooting section](../troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
 ## SAST jobs run unexpectedly
 

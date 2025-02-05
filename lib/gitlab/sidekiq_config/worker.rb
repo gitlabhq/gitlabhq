@@ -60,7 +60,8 @@ module Gitlab
           resource_boundary: get_worker_resource_boundary,
           weight: get_weight,
           idempotent: idempotent?,
-          tags: get_tags
+          tags: get_tags,
+          queue_namespace: queue_namespace&.to_sym
         }
       end
 

@@ -124,7 +124,7 @@ Before this automatic expiry date is applied, you should do the following to min
 
 For more information, see the:
 
-- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
+- [Deprecations and removals documentation](../deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
 ## Issues to be aware of when upgrading from 17.1 and earlier

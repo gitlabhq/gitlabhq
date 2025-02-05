@@ -46,4 +46,4 @@ Use GitLab Pages to publish a static website directly from your project.
 |-------|-------------|--------------------|
 | [Create a Pages website from a CI/CD template](../user/project/pages/getting_started/pages_ci_cd_template.md) | Quickly generate a Pages website for your project using a CI/CD template for a popular Static Site Generator (SSG). | **{star}** |
 | [Create a Pages website from scratch](../user/project/pages/getting_started/pages_from_scratch.md) | Create all the components of a Pages website from a blank project. | |
-| [Build, test, and deploy your Hugo site with GitLab](../tutorials/hugo/index.md) | Generate your Hugo site using a CI/CD template and GitLab Pages. | **{star}** |
+| [Build, test, and deploy your Hugo site with GitLab](hugo/index.md) | Generate your Hugo site using a CI/CD template and GitLab Pages. | **{star}** |

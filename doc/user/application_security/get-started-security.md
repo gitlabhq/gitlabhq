@@ -109,7 +109,7 @@ For more information, see:
 
 - [Scan execution policy](policies/scan_execution_policies.md)
 - [Container scans](container_scanning/index.md)
-- [Operational container scanning](../../user/clusters/agent/vulnerabilities.md)
+- [Operational container scanning](../clusters/agent/vulnerabilities.md)
 
 ## Step 6: Limit new vulnerabilities
 

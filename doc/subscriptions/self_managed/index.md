@@ -64,10 +64,10 @@ A user is not counted as a billable user if:
 
 The amount of **Billable users** is reported once a day in the **Admin** area.
 
-### Users in license
+### Users in subscription
 
-The number of users you've paid for in the current license loaded on the system.
-The number does not change unless you add seats during your current subscription period.
+The number of users in subscription represents the number of users included in your current license, based on what you've paid for.
+This number remains the same throughout your subscription period unless you purchase more seats.
 
 ### Maximum users
 
@@ -362,7 +362,7 @@ The **Subscription** page includes the following information:
 - Licensee
 - Plan
 - When it was uploaded, started, and when it expires
-- Number of [users in license](#users-in-license)
+- Number of [users in subscription](#users-in-subscription)
 - Number of [billable users](#billable-users)
 - [Maximum users](#maximum-users)
 - Number of [users over subscription](#users-over-subscription)
@@ -376,7 +376,7 @@ Prerequisites:
 You can export your license usage into a CSV file.
 
 This file contains the information GitLab uses to manually process
-[quarterly reconciliations](../../subscriptions/quarterly_reconciliation.md)
+[quarterly reconciliations](../quarterly_reconciliation.md)
 or [renewals](#renew-your-subscription). If your instance is firewalled or an
 offline environment, you must provide GitLab with this information.
 

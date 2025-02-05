@@ -16,7 +16,8 @@ module Gitlab
         name: :to_s,
         resource_boundary: :to_sym,
         tags: :to_sym,
-        urgency: :to_sym
+        urgency: :to_sym,
+        queue_namespace: :to_sym
       }.freeze
 
       QueryError = Class.new(StandardError)

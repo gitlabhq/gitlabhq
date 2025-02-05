@@ -161,6 +161,8 @@ To disable the enterprise users' personal access tokens:
 1. Under **Personal access tokens**, select **Disable personal access tokens**.
 1. Select **Save changes**.
 
+When you delete or block an enterprise user account, their personal access tokens are automatically revoked.
+
 ## View the time at and IPs where a token was last used
 
 > - In GitLab 16.0 and earlier, token usage information is updated every 24 hours.

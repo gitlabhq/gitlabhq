@@ -4,7 +4,7 @@ const { spawnSync } = require('node:child_process');
 const { readFile, open, stat, mkdir } = require('node:fs/promises');
 const { join, relative, dirname } = require('node:path');
 const defaultChalk = require('chalk');
-const program = require('commander');
+const { program } = require('commander');
 const IS_EE = require('../../config/helpers/is_ee_env');
 const { getLocalQuarantinedFiles } = require('./jest_vue3_quarantine_utils');
 
@@ -27,7 +27,6 @@ let filesThatChanged;
 
 function parseArguments() {
   program
-    .usage('[options] <SPEC ...>')
     .description(
       `
 Checks whether Jest specs quarantined under Vue 3 should be unquarantined.
@@ -68,17 +67,19 @@ Locally:
       '--stdio',
       `Let Jest write to stderr as normal. By default, it writes to ${JEST_STDERR}. Should not be used in CI, as it can exceed maximum job log size.`,
     )
+    .argument('[spec...]', 'List of spec files to run (incompatible with --all)')
     .parse(process.argv);
+  const options = program.opts();
 
   let invalidArgumentsMessage;
 
   if (!IS_CI) {
-    if (!program.all && program.args.length === 0) {
+    if (!options.all && program.args.length === 0) {
       invalidArgumentsMessage =
         'No spec files to check!\n\nWhen run locally, either add the --all option, or a list of spec files to check.';
     }
 
-    if (program.all && program.args.length > 0) {
+    if (options.all && program.args.length > 0) {
       invalidArgumentsMessage = `Do not pass arguments in addition to the --all option.`;
     }
   }
@@ -204,7 +205,7 @@ function getTestArguments() {
       './scripts/frontend/check_jest_vue3_quarantine_sequencer.js',
     ];
 
-    if (program.all) {
+    if (program.opts().all) {
       console.warn(
         'Running in CI with --all. Checking all quarantined specs, subject to FixtureCISequencer sharding behavior.',
       );
@@ -218,7 +219,7 @@ function getTestArguments() {
     return ciArguments(filesThatChanged);
   }
 
-  if (program.all) {
+  if (program.opts().all) {
     console.warn('Running locally with --all. Checking all quarantined specs.');
     return ['--runTestsByPath', ...quarantinedFiles];
   }
@@ -244,7 +245,7 @@ function getTestArguments() {
 }
 
 async function getStdio() {
-  if (program.stdio) {
+  if (program.opts().stdio) {
     return 'inherit';
   }
 

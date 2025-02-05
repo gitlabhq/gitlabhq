@@ -19,7 +19,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## Issues to be aware of when upgrading from 15.11
 
-- [PostgreSQL 12 is not supported starting from GitLab 16](../../update/deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
+- [PostgreSQL 12 is not supported starting from GitLab 16](../deprecations.md#postgresql-12-deprecated). Upgrade PostgreSQL to at least version 13.6 before upgrading to GitLab 16.0 or later.
 - If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
 - Starting with 16.0, GitLab Self-Managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
@@ -197,7 +197,7 @@ that enables [High Availability (HA)](../../administration/reference_architectur
 (3k users or more), you're using
 [PostgreSQL replication and failover for Linux package installations](../../administration/postgresql/replication_and_failover.md), which uses Patroni.
 
-If this is your case, read [Multi-node upgrades with downtime](../../update/with_downtime.md) on how to upgrade your multi-node instance.
+If this is your case, read [Multi-node upgrades with downtime](../with_downtime.md) on how to upgrade your multi-node instance.
 
 For more information on the changes introduced between version 2.1.0 and version 3.0.1, see the [Patroni release notes](https://patroni.readthedocs.io/en/latest/releases.html).
 
@@ -1262,7 +1262,7 @@ Before this automatic expiry date is applied, you should do the following to min
 
 For more information, see the:
 
-- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
+- [Deprecations and removals documentation](../deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
 ### Geo installations

@@ -12,6 +12,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :activity_pub
 - :name: authorized_project_update:authorized_project_update_project_recalculate
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculateWorker
   :feature_category: :permissions
@@ -21,6 +22,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :authorized_project_update
 - :name: authorized_project_update:authorized_project_update_project_recalculate_per_user
   :worker_name: AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker
   :feature_category: :permissions
@@ -30,6 +32,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :authorized_project_update
 - :name: authorized_project_update:authorized_project_update_user_refresh_from_replica
   :worker_name: AuthorizedProjectUpdate::UserRefreshFromReplicaWorker
   :feature_category: :permissions
@@ -39,6 +42,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :authorized_project_update
 - :name: authorized_project_update:authorized_project_update_user_refresh_over_user_range
   :worker_name: AuthorizedProjectUpdate::UserRefreshOverUserRangeWorker
   :feature_category: :permissions
@@ -48,6 +52,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :authorized_project_update
 - :name: authorized_project_update:authorized_project_update_user_refresh_with_low_urgency
   :worker_name: AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker
   :feature_category: :permissions
@@ -57,6 +62,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace: :authorized_project_update
 - :name: auto_devops:auto_devops_disable
   :worker_name: AutoDevops::DisableWorker
   :feature_category: :auto_devops
@@ -66,6 +72,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :auto_devops
 - :name: auto_merge:auto_merge_process
   :worker_name: AutoMergeProcessWorker
   :feature_category: :continuous_delivery
@@ -75,6 +82,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace: :auto_merge
 - :name: batched_background_migrations:database_batched_background_migration_ci_execution
   :worker_name: Database::BatchedBackgroundMigration::CiExecutionWorker
   :feature_category: :database
@@ -84,6 +92,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :batched_background_migrations
 - :name: batched_background_migrations:database_batched_background_migration_main_execution
   :worker_name: Database::BatchedBackgroundMigration::MainExecutionWorker
   :feature_category: :database
@@ -93,6 +102,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :batched_background_migrations
 - :name: chaos:chaos_cpu_spin
   :worker_name: Chaos::CpuSpinWorker
   :feature_category: :not_owned
@@ -102,6 +112,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :chaos
 - :name: chaos:chaos_db_spin
   :worker_name: Chaos::DbSpinWorker
   :feature_category: :not_owned
@@ -111,6 +122,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :chaos
 - :name: chaos:chaos_kill
   :worker_name: Chaos::KillWorker
   :feature_category: :not_owned
@@ -120,6 +132,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :chaos
 - :name: chaos:chaos_leak_mem
   :worker_name: Chaos::LeakMemWorker
   :feature_category: :not_owned
@@ -129,6 +142,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :chaos
 - :name: chaos:chaos_sleep
   :worker_name: Chaos::SleepWorker
   :feature_category: :not_owned
@@ -138,6 +152,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :chaos
 - :name: cluster_agent:clusters_agents_delete_expired_events
   :worker_name: Clusters::Agents::DeleteExpiredEventsWorker
   :feature_category: :deployment_management
@@ -147,6 +162,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cluster_agent
 - :name: cluster_agent:clusters_agents_notify_git_push
   :worker_name: Clusters::Agents::NotifyGitPushWorker
   :feature_category: :deployment_management
@@ -156,6 +172,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cluster_agent
 - :name: container_repository:cleanup_container_repository
   :worker_name: CleanupContainerRepositoryWorker
   :feature_category: :container_registry
@@ -165,6 +182,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :container_repository
 - :name: container_repository:container_expiration_policies_cleanup_container_repository
   :worker_name: ContainerExpirationPolicies::CleanupContainerRepositoryWorker
   :feature_category: :container_registry
@@ -174,6 +192,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :container_repository
 - :name: container_repository:container_registry_record_data_repair_detail
   :worker_name: ContainerRegistry::RecordDataRepairDetailWorker
   :feature_category: :container_registry
@@ -183,6 +202,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :container_repository
 - :name: container_repository_delete:container_registry_delete_container_repository
   :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
   :feature_category: :container_registry
@@ -192,6 +212,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :container_repository_delete
 - :name: cronjob:admin_email
   :worker_name: AdminEmailWorker
   :feature_category: :source_code_management
@@ -201,6 +222,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:analytics_usage_trends_count_job_trigger
   :worker_name: Analytics::UsageTrends::CountJobTriggerWorker
   :feature_category: :devops_reports
@@ -210,6 +232,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:anti_abuse_banned_user_project_deletion_cron
   :worker_name: AntiAbuse::BannedUserProjectDeletionCronWorker
   :feature_category: :instance_resiliency
@@ -219,6 +242,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:authorized_project_update_periodic_recalculate
   :worker_name: AuthorizedProjectUpdate::PeriodicRecalculateWorker
   :feature_category: :permissions
@@ -228,6 +252,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:batched_git_ref_updates_cleanup_scheduler
   :worker_name: BatchedGitRefUpdates::CleanupSchedulerWorker
   :feature_category: :gitaly
@@ -237,6 +262,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:bulk_imports_stale_import
   :worker_name: BulkImports::StaleImportWorker
   :feature_category: :importers
@@ -246,6 +272,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_archive_traces_cron
   :worker_name: Ci::ArchiveTracesCronWorker
   :feature_category: :continuous_integration
@@ -255,6 +282,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_catalog_resources_aggregate_last30_day_usage
   :worker_name: Ci::Catalog::Resources::AggregateLast30DayUsageWorker
   :feature_category: :pipeline_composition
@@ -264,6 +292,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_catalog_resources_cleanup_last_usages
   :worker_name: Ci::Catalog::Resources::CleanupLastUsagesWorker
   :feature_category: :pipeline_composition
@@ -273,6 +302,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_catalog_resources_process_sync_events
   :worker_name: Ci::Catalog::Resources::ProcessSyncEventsWorker
   :feature_category: :pipeline_composition
@@ -282,6 +312,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_click_house_finished_pipelines_sync_cron
   :worker_name: Ci::ClickHouse::FinishedPipelinesSyncCronWorker
   :feature_category: :fleet_visibility
@@ -291,6 +322,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_delete_unit_tests
   :worker_name: Ci::DeleteUnitTestsWorker
   :feature_category: :code_testing
@@ -300,6 +332,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_partitioning
   :worker_name: Ci::PartitioningWorker
   :feature_category: :ci_scaling
@@ -309,6 +342,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_pipeline_artifacts_expire_artifacts
   :worker_name: Ci::PipelineArtifacts::ExpireArtifactsWorker
   :feature_category: :job_artifacts
@@ -318,6 +352,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_runners_reconcile_existing_runner_versions_cron
   :worker_name: Ci::Runners::ReconcileExistingRunnerVersionsCronWorker
   :feature_category: :fleet_visibility
@@ -327,6 +362,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_runners_stale_machines_cleanup_cron
   :worker_name: Ci::Runners::StaleMachinesCleanupCronWorker
   :feature_category: :fleet_visibility
@@ -336,6 +372,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_schedule_delete_objects_cron
   :worker_name: Ci::ScheduleDeleteObjectsCronWorker
   :feature_category: :continuous_integration
@@ -345,6 +382,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_schedule_old_pipelines_removal_cron
   :worker_name: Ci::ScheduleOldPipelinesRemovalCronWorker
   :feature_category: :continuous_integration
@@ -354,6 +392,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_schedule_unlock_pipelines_in_queue_cron
   :worker_name: Ci::ScheduleUnlockPipelinesInQueueCronWorker
   :feature_category: :job_artifacts
@@ -363,6 +402,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_stuck_builds_drop_canceling
   :worker_name: Ci::StuckBuilds::DropCancelingWorker
   :feature_category: :continuous_integration
@@ -372,6 +412,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_stuck_builds_drop_running
   :worker_name: Ci::StuckBuilds::DropRunningWorker
   :feature_category: :continuous_integration
@@ -381,6 +422,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_stuck_builds_drop_scheduled
   :worker_name: Ci::StuckBuilds::DropScheduledWorker
   :feature_category: :continuous_integration
@@ -390,6 +432,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ci_update_locked_unknown_artifacts
   :worker_name: Ci::UpdateLockedUnknownArtifactsWorker
   :feature_category: :job_artifacts
@@ -399,6 +442,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:concurrency_limit_resume
   :worker_name: ConcurrencyLimit::ResumeWorker
   :feature_category: :scalability
@@ -408,6 +452,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:container_expiration_policy
   :worker_name: ContainerExpirationPolicyWorker
   :feature_category: :container_registry
@@ -417,6 +462,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:container_registry_cleanup
   :worker_name: ContainerRegistry::CleanupWorker
   :feature_category: :container_registry
@@ -426,6 +472,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_batched_background_migration
   :worker_name: Database::BatchedBackgroundMigrationWorker
   :feature_category: :database
@@ -435,6 +482,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_batched_background_migration_ci_database
   :worker_name: Database::BatchedBackgroundMigration::CiDatabaseWorker
   :feature_category: :database
@@ -444,6 +492,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_ci_namespace_mirrors_consistency_check
   :worker_name: Database::CiNamespaceMirrorsConsistencyCheckWorker
   :feature_category: :cell
@@ -453,6 +502,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_ci_project_mirrors_consistency_check
   :worker_name: Database::CiProjectMirrorsConsistencyCheckWorker
   :feature_category: :cell
@@ -462,6 +512,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_drop_detached_partitions
   :worker_name: Database::DropDetachedPartitionsWorker
   :feature_category: :database
@@ -471,6 +522,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_monitor_locked_tables
   :worker_name: Database::MonitorLockedTablesWorker
   :feature_category: :cell
@@ -480,6 +532,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_partition_management
   :worker_name: Database::PartitionManagementWorker
   :feature_category: :database
@@ -489,6 +542,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:dependency_proxy_cleanup_dependency_proxy
   :worker_name: DependencyProxy::CleanupDependencyProxyWorker
   :feature_category: :virtual_registry
@@ -498,6 +552,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:dependency_proxy_image_ttl_group_policy
   :worker_name: DependencyProxy::ImageTtlGroupPolicyWorker
   :feature_category: :virtual_registry
@@ -507,6 +562,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:environments_auto_delete_cron
   :worker_name: Environments::AutoDeleteCronWorker
   :feature_category: :continuous_delivery
@@ -516,6 +572,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:environments_auto_stop_cron
   :worker_name: Environments::AutoStopCronWorker
   :feature_category: :continuous_delivery
@@ -525,6 +582,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:expire_build_artifacts
   :worker_name: ExpireBuildArtifactsWorker
   :feature_category: :job_artifacts
@@ -534,6 +592,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:export_prune_project_export_jobs
   :worker_name: Gitlab::Export::PruneProjectExportJobsWorker
   :feature_category: :importers
@@ -543,6 +602,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:gitlab_performance_bar_stats
   :worker_name: GitlabPerformanceBarStatsWorker
   :feature_category: :observability
@@ -552,6 +612,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:gitlab_service_ping
   :worker_name: GitlabServicePingWorker
   :feature_category: :service_ping
@@ -561,6 +622,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:import_export_project_cleanup
   :worker_name: ImportExportProjectCleanupWorker
   :feature_category: :importers
@@ -570,6 +632,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:import_stuck_project_import_jobs
   :worker_name: Gitlab::Import::StuckProjectImportJobsWorker
   :feature_category: :importers
@@ -579,6 +642,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:issue_due_scheduler
   :worker_name: IssueDueSchedulerWorker
   :feature_category: :team_planning
@@ -588,6 +652,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:issues_reschedule_stuck_issue_rebalances
   :worker_name: Issues::RescheduleStuckIssueRebalancesWorker
   :feature_category: :team_planning
@@ -597,6 +662,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:jira_import_stuck_jira_import_jobs
   :worker_name: Gitlab::JiraImport::StuckJiraImportJobsWorker
   :feature_category: :importers
@@ -606,6 +672,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:loose_foreign_keys_cleanup
   :worker_name: LooseForeignKeys::CleanupWorker
   :feature_category: :cell
@@ -615,6 +682,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:member_invitation_reminder_emails
   :worker_name: MemberInvitationReminderEmailsWorker
   :feature_category: :groups_and_projects
@@ -624,6 +692,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:members_expiring
   :worker_name: Members::ExpiringWorker
   :feature_category: :system_access
@@ -633,6 +702,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:members_schedule_prune_deletions
   :worker_name: Members::SchedulePruneDeletionsWorker
   :feature_category: :seat_cost_management
@@ -642,6 +712,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:merge_requests_process_scheduled_merge
   :worker_name: MergeRequests::ProcessScheduledMergeWorker
   :feature_category: :code_review_workflow
@@ -651,6 +722,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
   :feature_category: :observability
@@ -660,6 +732,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:namespaces_enable_descendants_cache_cron
   :worker_name: Namespaces::EnableDescendantsCacheCronWorker
   :feature_category: :groups_and_projects
@@ -669,6 +742,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:namespaces_process_outdated_namespace_descendants_cron
   :worker_name: Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker
   :feature_category: :groups_and_projects
@@ -678,6 +752,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:namespaces_prune_aggregation_schedules
   :worker_name: Namespaces::PruneAggregationSchedulesWorker
   :feature_category: :source_code_management
@@ -687,6 +762,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:object_storage_delete_stale_direct_uploads
   :worker_name: ObjectStorage::DeleteStaleDirectUploadsWorker
   :feature_category: :job_artifacts
@@ -696,6 +772,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:packages_cleanup_delete_orphaned_dependencies
   :worker_name: Packages::Cleanup::DeleteOrphanedDependenciesWorker
   :feature_category: :package_registry
@@ -705,6 +782,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:packages_cleanup_package_registry
   :worker_name: Packages::CleanupPackageRegistryWorker
   :feature_category: :package_registry
@@ -714,6 +792,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:packages_debian_cleanup_dangling_package_files
   :worker_name: Packages::Debian::CleanupDanglingPackageFilesWorker
   :feature_category: :package_registry
@@ -723,6 +802,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:pages_deactivate_expired_deployments_cron
   :worker_name: Pages::DeactivateExpiredDeploymentsCronWorker
   :feature_category: :pages
@@ -732,6 +812,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:pages_deactivated_deployments_delete_cron
   :worker_name: Pages::DeactivatedDeploymentsDeleteCronWorker
   :feature_category: :pages
@@ -741,6 +822,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:pages_domain_removal_cron
   :worker_name: PagesDomainRemovalCronWorker
   :feature_category: :pages
@@ -750,6 +832,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:pages_domain_ssl_renewal_cron
   :worker_name: PagesDomainSslRenewalCronWorker
   :feature_category: :pages
@@ -759,6 +842,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:pages_domain_verification_cron
   :worker_name: PagesDomainVerificationCronWorker
   :feature_category: :pages
@@ -768,6 +852,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:pause_control_resume
   :worker_name: PauseControl::ResumeWorker
   :feature_category: :global_search
@@ -777,6 +862,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:personal_access_tokens_expired_notification
   :worker_name: PersonalAccessTokens::ExpiredNotificationWorker
   :feature_category: :system_access
@@ -786,6 +872,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:personal_access_tokens_expiring
   :worker_name: PersonalAccessTokens::ExpiringWorker
   :feature_category: :system_access
@@ -795,6 +882,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:pipeline_schedule
   :worker_name: PipelineScheduleWorker
   :feature_category: :continuous_integration
@@ -804,6 +892,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:projects_inactive_projects_deletion_cron
   :worker_name: Projects::InactiveProjectsDeletionCronWorker
   :feature_category: :groups_and_projects
@@ -813,6 +902,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:projects_schedule_refresh_build_artifacts_size_statistics
   :worker_name: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
   :feature_category: :job_artifacts
@@ -822,6 +912,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:prune_old_events
   :worker_name: PruneOldEventsWorker
   :feature_category: :user_profile
@@ -831,6 +922,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:releases_manage_evidence
   :worker_name: Releases::ManageEvidenceWorker
   :feature_category: :release_evidence
@@ -840,6 +932,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:releases_publish_event
   :worker_name: Releases::PublishEventWorker
   :feature_category: :release_orchestration
@@ -849,6 +942,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:remove_expired_group_links
   :worker_name: RemoveExpiredGroupLinksWorker
   :feature_category: :system_access
@@ -858,6 +952,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:remove_expired_members
   :worker_name: RemoveExpiredMembersWorker
   :feature_category: :system_access
@@ -867,6 +962,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:remove_unaccepted_member_invites
   :worker_name: RemoveUnacceptedMemberInvitesWorker
   :feature_category: :system_access
@@ -876,6 +972,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:remove_unreferenced_lfs_objects
   :worker_name: RemoveUnreferencedLfsObjectsWorker
   :feature_category: :source_code_management
@@ -885,6 +982,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:repository_archive_cache
   :worker_name: RepositoryArchiveCacheWorker
   :feature_category: :source_code_management
@@ -894,6 +992,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:repository_check_dispatch
   :worker_name: RepositoryCheck::DispatchWorker
   :feature_category: :source_code_management
@@ -903,6 +1002,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:resource_access_tokens_inactive_tokens_deletion_cron
   :worker_name: ResourceAccessTokens::InactiveTokensDeletionCronWorker
   :feature_category: :system_access
@@ -912,6 +1012,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:schedule_merge_request_cleanup_refs
   :worker_name: ScheduleMergeRequestCleanupRefsWorker
   :feature_category: :code_review_workflow
@@ -921,6 +1022,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:schedule_migrate_external_diffs
   :worker_name: ScheduleMigrateExternalDiffsWorker
   :feature_category: :code_review_workflow
@@ -930,6 +1032,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:service_desk_custom_email_verification_cleanup
   :worker_name: ServiceDesk::CustomEmailVerificationCleanupWorker
   :feature_category: :service_desk
@@ -939,6 +1042,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ssh_keys_expired_notification
   :worker_name: SshKeys::ExpiredNotificationWorker
   :feature_category: :compliance_management
@@ -948,6 +1052,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:ssh_keys_expiring_soon_notification
   :worker_name: SshKeys::ExpiringSoonNotificationWorker
   :feature_category: :compliance_management
@@ -957,6 +1062,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:stuck_ci_jobs
   :worker_name: StuckCiJobsWorker
   :feature_category: :continuous_integration
@@ -966,6 +1072,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:stuck_export_jobs
   :worker_name: StuckExportJobsWorker
   :feature_category: :importers
@@ -975,6 +1082,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:stuck_merge_jobs
   :worker_name: StuckMergeJobsWorker
   :feature_category: :code_review_workflow
@@ -984,6 +1092,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:trending_projects
   :worker_name: TrendingProjectsWorker
   :feature_category: :source_code_management
@@ -993,6 +1102,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:update_container_registry_info
   :worker_name: UpdateContainerRegistryInfoWorker
   :feature_category: :container_registry
@@ -1002,6 +1112,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:user_status_cleanup_batch
   :worker_name: UserStatusCleanup::BatchWorker
   :feature_category: :user_profile
@@ -1011,6 +1122,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:users_create_statistics
   :worker_name: Users::CreateStatisticsWorker
   :feature_category: :user_profile
@@ -1020,6 +1132,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:users_deactivate_dormant_users
   :worker_name: Users::DeactivateDormantUsersWorker
   :feature_category: :seat_cost_management
@@ -1029,6 +1142,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:users_migrate_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
   :feature_category: :user_profile
@@ -1038,6 +1152,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:users_unconfirmed_secondary_emails_deletion_cron
   :worker_name: Users::UnconfirmedSecondaryEmailsDeletionCronWorker
   :feature_category: :user_management
@@ -1047,6 +1162,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:x509_issuer_crl_check
   :worker_name: X509IssuerCrlCheckWorker
   :feature_category: :source_code_management
@@ -1056,6 +1172,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :cronjob
 - :name: dependency_proxy:purge_dependency_proxy_cache
   :worker_name: PurgeDependencyProxyCacheWorker
   :feature_category: :virtual_registry
@@ -1065,6 +1182,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :dependency_proxy
 - :name: dependency_proxy_blob:dependency_proxy_cleanup_blob
   :worker_name: DependencyProxy::CleanupBlobWorker
   :feature_category: :virtual_registry
@@ -1074,6 +1192,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_blob:virtual_registries_packages_cache_destroy_orphan_entries
   :worker_name: VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker
   :feature_category: :virtual_registry
@@ -1083,6 +1202,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_blob:virtual_registries_packages_destroy_orphan_cached_responses
   :worker_name: VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker
   :feature_category: :virtual_registry
@@ -1092,6 +1212,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
   :feature_category: :virtual_registry
@@ -1101,6 +1222,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :dependency_proxy_manifest
 - :name: deployment:deployments_archive_in_project
   :worker_name: Deployments::ArchiveInProjectWorker
   :feature_category: :continuous_delivery
@@ -1110,6 +1232,7 @@
   :weight: 3
   :idempotent: true
   :tags: []
+  :queue_namespace: :deployment
 - :name: deployment:deployments_hooks
   :worker_name: Deployments::HooksWorker
   :feature_category: :continuous_delivery
@@ -1119,6 +1242,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace: :deployment
 - :name: deployment:deployments_link_merge_request
   :worker_name: Deployments::LinkMergeRequestWorker
   :feature_category: :continuous_delivery
@@ -1128,6 +1252,7 @@
   :weight: 3
   :idempotent: true
   :tags: []
+  :queue_namespace: :deployment
 - :name: deployment:deployments_update_environment
   :worker_name: Deployments::UpdateEnvironmentWorker
   :feature_category: :continuous_delivery
@@ -1137,6 +1262,7 @@
   :weight: 3
   :idempotent: true
   :tags: []
+  :queue_namespace: :deployment
 - :name: gcp_cluster:cluster_configure_istio
   :worker_name: ClusterConfigureIstioWorker
   :feature_category: :deployment_management
@@ -1146,6 +1272,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_install_app
   :worker_name: ClusterInstallAppWorker
   :feature_category: :deployment_management
@@ -1155,6 +1282,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_patch_app
   :worker_name: ClusterPatchAppWorker
   :feature_category: :deployment_management
@@ -1164,6 +1292,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_provision
   :worker_name: ClusterProvisionWorker
   :feature_category: :deployment_management
@@ -1173,6 +1302,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_update_app
   :worker_name: ClusterUpdateAppWorker
   :feature_category: :deployment_management
@@ -1182,6 +1312,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_upgrade_app
   :worker_name: ClusterUpgradeAppWorker
   :feature_category: :deployment_management
@@ -1191,6 +1322,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_wait_for_app_installation
   :worker_name: ClusterWaitForAppInstallationWorker
   :feature_category: :deployment_management
@@ -1200,6 +1332,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_wait_for_app_update
   :worker_name: ClusterWaitForAppUpdateWorker
   :feature_category: :deployment_management
@@ -1209,6 +1342,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:cluster_wait_for_ingress_ip_address
   :worker_name: ClusterWaitForIngressIpAddressWorker
   :feature_category: :deployment_management
@@ -1218,6 +1352,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_applications_activate_integration
   :worker_name: Clusters::Applications::ActivateIntegrationWorker
   :feature_category: :deployment_management
@@ -1227,6 +1362,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_applications_deactivate_integration
   :worker_name: Clusters::Applications::DeactivateIntegrationWorker
   :feature_category: :deployment_management
@@ -1236,6 +1372,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_applications_uninstall
   :worker_name: Clusters::Applications::UninstallWorker
   :feature_category: :deployment_management
@@ -1245,6 +1382,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_applications_wait_for_uninstall_app
   :worker_name: Clusters::Applications::WaitForUninstallAppWorker
   :feature_category: :deployment_management
@@ -1254,6 +1392,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_cleanup_project_namespace
   :worker_name: Clusters::Cleanup::ProjectNamespaceWorker
   :feature_category: :deployment_management
@@ -1263,6 +1402,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:clusters_cleanup_service_account
   :worker_name: Clusters::Cleanup::ServiceAccountWorker
   :feature_category: :deployment_management
@@ -1272,6 +1412,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:wait_for_cluster_creation
   :worker_name: WaitForClusterCreationWorker
   :feature_category: :deployment_management
@@ -1281,6 +1422,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :gcp_cluster
 - :name: github_gists_importer:github_gists_import_finish_import
   :worker_name: Gitlab::GithubGistsImport::FinishImportWorker
   :feature_category: :importers
@@ -1290,6 +1432,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :github_gists_importer
 - :name: github_gists_importer:github_gists_import_import_gist
   :worker_name: Gitlab::GithubGistsImport::ImportGistWorker
   :feature_category: :importers
@@ -1299,6 +1442,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_gists_importer
 - :name: github_gists_importer:github_gists_import_start_import
   :worker_name: Gitlab::GithubGistsImport::StartImportWorker
   :feature_category: :importers
@@ -1308,6 +1452,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_gists_importer
 - :name: github_importer:github_import_attachments_import_issue
   :worker_name: Gitlab::GithubImport::Attachments::ImportIssueWorker
   :feature_category: :importers
@@ -1317,6 +1462,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_attachments_import_merge_request
   :worker_name: Gitlab::GithubImport::Attachments::ImportMergeRequestWorker
   :feature_category: :importers
@@ -1326,6 +1472,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_attachments_import_note
   :worker_name: Gitlab::GithubImport::Attachments::ImportNoteWorker
   :feature_category: :importers
@@ -1335,6 +1482,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_attachments_import_release
   :worker_name: Gitlab::GithubImport::Attachments::ImportReleaseWorker
   :feature_category: :importers
@@ -1344,6 +1492,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_collaborator
   :worker_name: Gitlab::GithubImport::ImportCollaboratorWorker
   :feature_category: :importers
@@ -1353,6 +1502,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_diff_note
   :worker_name: Gitlab::GithubImport::ImportDiffNoteWorker
   :feature_category: :importers
@@ -1362,6 +1512,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_issue
   :worker_name: Gitlab::GithubImport::ImportIssueWorker
   :feature_category: :importers
@@ -1371,6 +1522,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_issue_event
   :worker_name: Gitlab::GithubImport::ImportIssueEventWorker
   :feature_category: :importers
@@ -1380,6 +1532,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_lfs_object
   :worker_name: Gitlab::GithubImport::ImportLfsObjectWorker
   :feature_category: :importers
@@ -1389,6 +1542,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_note
   :worker_name: Gitlab::GithubImport::ImportNoteWorker
   :feature_category: :importers
@@ -1398,6 +1552,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_protected_branch
   :worker_name: Gitlab::GithubImport::ImportProtectedBranchWorker
   :feature_category: :importers
@@ -1407,6 +1562,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_import_pull_request
   :worker_name: Gitlab::GithubImport::ImportPullRequestWorker
   :feature_category: :importers
@@ -1416,6 +1572,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_pull_requests_import_merged_by
   :worker_name: Gitlab::GithubImport::PullRequests::ImportMergedByWorker
   :feature_category: :importers
@@ -1425,6 +1582,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_pull_requests_import_review
   :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewWorker
   :feature_category: :importers
@@ -1434,6 +1592,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_pull_requests_import_review_request
   :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker
   :feature_category: :importers
@@ -1443,6 +1602,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_refresh_import_jid
   :worker_name: Gitlab::GithubImport::RefreshImportJidWorker
   :feature_category: :importers
@@ -1452,6 +1612,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_replay_events
   :worker_name: Gitlab::GithubImport::ReplayEventsWorker
   :feature_category: :importers
@@ -1461,6 +1622,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_finish_import
   :worker_name: Gitlab::GithubImport::Stage::FinishImportWorker
   :feature_category: :importers
@@ -1470,6 +1632,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_attachments
   :worker_name: Gitlab::GithubImport::Stage::ImportAttachmentsWorker
   :feature_category: :importers
@@ -1479,6 +1642,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_base_data
   :worker_name: Gitlab::GithubImport::Stage::ImportBaseDataWorker
   :feature_category: :importers
@@ -1488,6 +1652,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_collaborators
   :worker_name: Gitlab::GithubImport::Stage::ImportCollaboratorsWorker
   :feature_category: :importers
@@ -1497,6 +1662,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_issue_events
   :worker_name: Gitlab::GithubImport::Stage::ImportIssueEventsWorker
   :feature_category: :importers
@@ -1506,6 +1672,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_issues_and_diff_notes
   :worker_name: Gitlab::GithubImport::Stage::ImportIssuesAndDiffNotesWorker
   :feature_category: :importers
@@ -1515,6 +1682,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_lfs_objects
   :worker_name: Gitlab::GithubImport::Stage::ImportLfsObjectsWorker
   :feature_category: :importers
@@ -1524,6 +1692,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_notes
   :worker_name: Gitlab::GithubImport::Stage::ImportNotesWorker
   :feature_category: :importers
@@ -1533,6 +1702,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_protected_branches
   :worker_name: Gitlab::GithubImport::Stage::ImportProtectedBranchesWorker
   :feature_category: :importers
@@ -1542,6 +1712,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_pull_requests
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsWorker
   :feature_category: :importers
@@ -1551,6 +1722,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_pull_requests_merged_by
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker
   :feature_category: :importers
@@ -1560,6 +1732,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_pull_requests_review_requests
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWorker
   :feature_category: :importers
@@ -1569,6 +1742,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_pull_requests_reviews
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewsWorker
   :feature_category: :importers
@@ -1578,6 +1752,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: github_importer:github_import_stage_import_repository
   :worker_name: Gitlab::GithubImport::Stage::ImportRepositoryWorker
   :feature_category: :importers
@@ -1587,6 +1762,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :github_importer
 - :name: incident_management:incident_management_add_severity_system_note
   :worker_name: IncidentManagement::AddSeveritySystemNoteWorker
   :feature_category: :incident_management
@@ -1596,6 +1772,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :incident_management
 - :name: incident_management:incident_management_pager_duty_process_incident
   :worker_name: IncidentManagement::PagerDuty::ProcessIncidentWorker
   :feature_category: :incident_management
@@ -1605,6 +1782,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :incident_management
 - :name: incident_management:incident_management_process_alert_worker_v2
   :worker_name: IncidentManagement::ProcessAlertWorkerV2
   :feature_category: :incident_management
@@ -1614,6 +1792,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace: :incident_management
 - :name: jira_connect:integrations_jira_connect_remove_branch
   :worker_name: Integrations::JiraConnect::RemoveBranchWorker
   :feature_category: :integrations
@@ -1623,6 +1802,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_forward_event
   :worker_name: JiraConnect::ForwardEventWorker
   :feature_category: :integrations
@@ -1632,6 +1812,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_jira_cloud_app_deactivation
   :worker_name: JiraConnect::JiraCloudAppDeactivationWorker
   :feature_category: :integrations
@@ -1641,6 +1822,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_retry_request
   :worker_name: JiraConnect::RetryRequestWorker
   :feature_category: :integrations
@@ -1650,6 +1832,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_send_uninstalled_hook
   :worker_name: JiraConnect::SendUninstalledHookWorker
   :feature_category: :integrations
@@ -1659,6 +1842,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_branch
   :worker_name: JiraConnect::SyncBranchWorker
   :feature_category: :integrations
@@ -1668,6 +1852,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_builds
   :worker_name: JiraConnect::SyncBuildsWorker
   :feature_category: :integrations
@@ -1677,6 +1862,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_deployments
   :worker_name: JiraConnect::SyncDeploymentsWorker
   :feature_category: :integrations
@@ -1686,6 +1872,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_feature_flags
   :worker_name: JiraConnect::SyncFeatureFlagsWorker
   :feature_category: :integrations
@@ -1695,6 +1882,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_merge_request
   :worker_name: JiraConnect::SyncMergeRequestWorker
   :feature_category: :integrations
@@ -1704,6 +1892,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_project
   :worker_name: JiraConnect::SyncProjectWorker
   :feature_category: :integrations
@@ -1713,6 +1902,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_connect
 - :name: jira_importer:jira_import_advance_stage
   :worker_name: Gitlab::JiraImport::AdvanceStageWorker
   :feature_category: :importers
@@ -1722,6 +1912,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: jira_importer:jira_import_import_issue
   :worker_name: Gitlab::JiraImport::ImportIssueWorker
   :feature_category: :importers
@@ -1731,6 +1922,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: jira_importer:jira_import_stage_finish_import
   :worker_name: Gitlab::JiraImport::Stage::FinishImportWorker
   :feature_category: :importers
@@ -1740,6 +1932,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: jira_importer:jira_import_stage_import_attachments
   :worker_name: Gitlab::JiraImport::Stage::ImportAttachmentsWorker
   :feature_category: :importers
@@ -1749,6 +1942,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: jira_importer:jira_import_stage_import_issues
   :worker_name: Gitlab::JiraImport::Stage::ImportIssuesWorker
   :feature_category: :importers
@@ -1758,6 +1952,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: jira_importer:jira_import_stage_import_labels
   :worker_name: Gitlab::JiraImport::Stage::ImportLabelsWorker
   :feature_category: :importers
@@ -1767,6 +1962,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: jira_importer:jira_import_stage_import_notes
   :worker_name: Gitlab::JiraImport::Stage::ImportNotesWorker
   :feature_category: :importers
@@ -1776,6 +1972,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: jira_importer:jira_import_stage_start_import
   :worker_name: Gitlab::JiraImport::Stage::StartImportWorker
   :feature_category: :importers
@@ -1785,6 +1982,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :jira_importer
 - :name: mail_scheduler:mail_scheduler_issue_due
   :worker_name: MailScheduler::IssueDueWorker
   :feature_category: :team_planning
@@ -1794,6 +1992,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :mail_scheduler
 - :name: mail_scheduler:mail_scheduler_notification_service
   :worker_name: MailScheduler::NotificationServiceWorker
   :feature_category: :team_planning
@@ -1803,6 +2002,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :mail_scheduler
 - :name: object_pool:object_pool_create
   :worker_name: ObjectPool::CreateWorker
   :feature_category: :gitaly
@@ -1812,6 +2012,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :object_pool
 - :name: object_pool:object_pool_destroy
   :worker_name: ObjectPool::DestroyWorker
   :feature_category: :gitaly
@@ -1821,6 +2022,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :object_pool
 - :name: object_pool:object_pool_join
   :worker_name: ObjectPool::JoinWorker
   :feature_category: :gitaly
@@ -1830,6 +2032,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :object_pool
 - :name: object_pool:object_pool_schedule_join
   :worker_name: ObjectPool::ScheduleJoinWorker
   :feature_category: :gitaly
@@ -1839,6 +2042,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :object_pool
 - :name: object_storage:object_storage_migrate_uploads
   :worker_name: ObjectStorage::MigrateUploadsWorker
   :feature_category: :not_owned
@@ -1848,6 +2052,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :object_storage
 - :name: package_cleanup:packages_cleanup_execute_policy
   :worker_name: Packages::Cleanup::ExecutePolicyWorker
   :feature_category: :package_registry
@@ -1857,6 +2062,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_cleanup_package_file
   :worker_name: Packages::CleanupPackageFileWorker
   :feature_category: :package_registry
@@ -1866,6 +2072,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_mark_package_files_for_destruction
   :worker_name: Packages::MarkPackageFilesForDestructionWorker
   :feature_category: :package_registry
@@ -1875,6 +2082,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_npm_cleanup_stale_metadata_cache
   :worker_name: Packages::Npm::CleanupStaleMetadataCacheWorker
   :feature_category: :package_registry
@@ -1884,6 +2092,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_nuget_cleanup_stale_symbols
   :worker_name: Packages::Nuget::CleanupStaleSymbolsWorker
   :feature_category: :package_registry
@@ -1893,6 +2102,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_cleanup
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
   :feature_category: :package_registry
@@ -1902,6 +2112,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_debian_process_package_file
   :worker_name: Packages::Debian::ProcessPackageFileWorker
   :feature_category: :package_registry
@@ -1911,6 +2122,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_go_sync_packages
   :worker_name: Packages::Go::SyncPackagesWorker
   :feature_category: :package_registry
@@ -1920,6 +2132,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_helm_extraction
   :worker_name: Packages::Helm::ExtractionWorker
   :feature_category: :package_registry
@@ -1929,6 +2142,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_maven_metadata_sync
   :worker_name: Packages::Maven::Metadata::SyncWorker
   :feature_category: :package_registry
@@ -1938,6 +2152,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_npm_create_metadata_cache
   :worker_name: Packages::Npm::CreateMetadataCacheWorker
   :feature_category: :package_registry
@@ -1947,6 +2162,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_npm_deprecate_package
   :worker_name: Packages::Npm::DeprecatePackageWorker
   :feature_category: :package_registry
@@ -1956,6 +2172,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_npm_process_package_file
   :worker_name: Packages::Npm::ProcessPackageFileWorker
   :feature_category: :package_registry
@@ -1965,6 +2182,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_nuget_extraction
   :worker_name: Packages::Nuget::ExtractionWorker
   :feature_category: :package_registry
@@ -1974,6 +2192,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_rubygems_extraction
   :worker_name: Packages::Rubygems::ExtractionWorker
   :feature_category: :package_registry
@@ -1983,6 +2202,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: package_repositories:packages_terraform_module_process_package_file
   :worker_name: Packages::TerraformModule::ProcessPackageFileWorker
   :feature_category: :package_registry
@@ -1992,6 +2212,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :package_repositories
 - :name: pipeline_background:ci_archive_trace
   :worker_name: Ci::ArchiveTraceWorker
   :feature_category: :continuous_integration
@@ -2001,6 +2222,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_build_trace_chunk_flush
   :worker_name: Ci::BuildTraceChunkFlushWorker
   :feature_category: :continuous_integration
@@ -2010,6 +2232,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_daily_build_group_report_results
   :worker_name: Ci::DailyBuildGroupReportResultsWorker
   :feature_category: :code_testing
@@ -2019,6 +2242,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_job_artifacts_track_artifact_report
   :worker_name: Ci::JobArtifacts::TrackArtifactReportWorker
   :feature_category: :code_testing
@@ -2028,6 +2252,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_pending_builds_update_group
   :worker_name: Ci::PendingBuilds::UpdateGroupWorker
   :feature_category: :continuous_integration
@@ -2037,6 +2262,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_pending_builds_update_project
   :worker_name: Ci::PendingBuilds::UpdateProjectWorker
   :feature_category: :continuous_integration
@@ -2046,6 +2272,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_pipeline_artifacts_coverage_report
   :worker_name: Ci::PipelineArtifacts::CoverageReportWorker
   :feature_category: :code_testing
@@ -2055,6 +2282,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_pipeline_artifacts_create_quality_report
   :worker_name: Ci::PipelineArtifacts::CreateQualityReportWorker
   :feature_category: :code_quality
@@ -2064,6 +2292,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_ref_delete_unlock_artifacts
   :worker_name: Ci::RefDeleteUnlockArtifactsWorker
   :feature_category: :continuous_integration
@@ -2073,6 +2302,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_refs_unlock_previous_pipelines
   :worker_name: Ci::Refs::UnlockPreviousPipelinesWorker
   :feature_category: :continuous_integration
@@ -2082,6 +2312,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_test_failure_history
   :worker_name: Ci::TestFailureHistoryWorker
   :feature_category: :continuous_integration
@@ -2091,6 +2322,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_track_failed_build
   :worker_name: Ci::TrackFailedBuildWorker
   :feature_category: :static_application_security_testing
@@ -2100,6 +2332,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_creation:ci_external_pull_requests_create_pipeline
   :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
   :feature_category: :pipeline_composition
@@ -2109,6 +2342,7 @@
   :weight: 4
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_creation
 - :name: pipeline_creation:create_pipeline
   :worker_name: CreatePipelineWorker
   :feature_category: :pipeline_composition
@@ -2118,6 +2352,7 @@
   :weight: 4
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_creation
 - :name: pipeline_creation:merge_requests_create_pipeline
   :worker_name: MergeRequests::CreatePipelineWorker
   :feature_category: :pipeline_composition
@@ -2127,6 +2362,7 @@
   :weight: 4
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_creation
 - :name: pipeline_creation:run_pipeline_schedule
   :worker_name: RunPipelineScheduleWorker
   :feature_category: :pipeline_composition
@@ -2136,6 +2372,7 @@
   :weight: 4
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_creation
 - :name: pipeline_default:ci_create_downstream_pipeline
   :worker_name: Ci::CreateDownstreamPipelineWorker
   :feature_category: :continuous_integration
@@ -2145,6 +2382,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:ci_drop_pipeline
   :worker_name: Ci::DropPipelineWorker
   :feature_category: :continuous_integration
@@ -2154,6 +2392,7 @@
   :weight: 3
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:ci_merge_requests_add_todo_when_build_fails
   :worker_name: Ci::MergeRequests::AddTodoWhenBuildFailsWorker
   :feature_category: :continuous_integration
@@ -2163,6 +2402,7 @@
   :weight: 3
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:ci_pipeline_bridge_status
   :worker_name: Ci::PipelineBridgeStatusWorker
   :feature_category: :continuous_integration
@@ -2172,6 +2412,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:ci_pipeline_cleanup_ref
   :worker_name: Ci::PipelineCleanupRefWorker
   :feature_category: :continuous_integration
@@ -2181,6 +2422,7 @@
   :weight: 3
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:ci_retry_pipeline
   :worker_name: Ci::RetryPipelineWorker
   :feature_category: :continuous_integration
@@ -2190,6 +2432,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:pipeline_metrics
   :worker_name: PipelineMetricsWorker
   :feature_category: :continuous_integration
@@ -2199,6 +2442,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_default:pipeline_notification
   :worker_name: PipelineNotificationWorker
   :feature_category: :continuous_integration
@@ -2208,6 +2452,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_default
 - :name: pipeline_hooks:pipeline_hooks
   :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration
@@ -2217,6 +2462,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_hooks
 - :name: pipeline_processing:build_queue
   :worker_name: BuildQueueWorker
   :feature_category: :continuous_integration
@@ -2226,6 +2472,7 @@
   :weight: 5
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:ci_build_finished
   :worker_name: Ci::BuildFinishedWorker
   :feature_category: :continuous_integration
@@ -2235,6 +2482,7 @@
   :weight: 5
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:ci_build_prepare
   :worker_name: Ci::BuildPrepareWorker
   :feature_category: :continuous_integration
@@ -2244,6 +2492,7 @@
   :weight: 5
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:ci_build_schedule
   :worker_name: Ci::BuildScheduleWorker
   :feature_category: :continuous_integration
@@ -2253,6 +2502,7 @@
   :weight: 5
   :idempotent: false
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:ci_initial_pipeline_process
   :worker_name: Ci::InitialPipelineProcessWorker
   :feature_category: :continuous_integration
@@ -2262,6 +2512,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:ci_pipeline_finished
   :worker_name: Ci::PipelineFinishedWorker
   :feature_category: :continuous_integration
@@ -2271,6 +2522,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
   :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
   :feature_category: :continuous_delivery
@@ -2280,6 +2532,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group_worker_v2
   :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2
   :feature_category: :continuous_delivery
@@ -2289,6 +2542,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:pipeline_process
   :worker_name: PipelineProcessWorker
   :feature_category: :continuous_integration
@@ -2298,6 +2552,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:stage_update
   :worker_name: StageUpdateWorker
   :feature_category: :continuous_integration
@@ -2307,6 +2562,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: pipeline_processing:update_head_pipeline_for_merge_request
   :worker_name: UpdateHeadPipelineForMergeRequestWorker
   :feature_category: :continuous_integration
@@ -2316,6 +2572,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace: :pipeline_processing
 - :name: repository_check:repository_check_batch
   :worker_name: RepositoryCheck::BatchWorker
   :feature_category: :source_code_management
@@ -2325,6 +2582,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :repository_check
 - :name: repository_check:repository_check_clear
   :worker_name: RepositoryCheck::ClearWorker
   :feature_category: :source_code_management
@@ -2334,6 +2592,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :repository_check
 - :name: repository_check:repository_check_single_repository
   :worker_name: RepositoryCheck::SingleRepositoryWorker
   :feature_category: :source_code_management
@@ -2343,6 +2602,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :repository_check
 - :name: terraform:terraform_states_destroy
   :worker_name: Terraform::States::DestroyWorker
   :feature_category: :infrastructure_as_code
@@ -2352,6 +2612,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :terraform
 - :name: todos_destroyer:todos_destroyer_confidential_issue
   :worker_name: TodosDestroyer::ConfidentialIssueWorker
   :feature_category: :notifications
@@ -2361,6 +2622,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_destroyed_designs
   :worker_name: TodosDestroyer::DestroyedDesignsWorker
   :feature_category: :notifications
@@ -2370,6 +2632,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_destroyed_issuable
   :worker_name: TodosDestroyer::DestroyedIssuableWorker
   :feature_category: :notifications
@@ -2379,6 +2642,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_entity_leave
   :worker_name: TodosDestroyer::EntityLeaveWorker
   :feature_category: :notifications
@@ -2388,6 +2652,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_group_private
   :worker_name: TodosDestroyer::GroupPrivateWorker
   :feature_category: :notifications
@@ -2397,6 +2662,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_private_features
   :worker_name: TodosDestroyer::PrivateFeaturesWorker
   :feature_category: :notifications
@@ -2406,6 +2672,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_project_private
   :worker_name: TodosDestroyer::ProjectPrivateWorker
   :feature_category: :notifications
@@ -2415,6 +2682,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: unassign_issuables:members_destroyer_unassign_issuables
   :worker_name: MembersDestroyer::UnassignIssuablesWorker
   :feature_category: :user_management
@@ -2424,6 +2692,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :unassign_issuables
 - :name: update_namespace_statistics:namespaces_root_statistics
   :worker_name: Namespaces::RootStatisticsWorker
   :feature_category: :source_code_management
@@ -2433,6 +2702,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :update_namespace_statistics
 - :name: update_namespace_statistics:namespaces_schedule_aggregation
   :worker_name: Namespaces::ScheduleAggregationWorker
   :feature_category: :source_code_management
@@ -2442,6 +2712,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace: :update_namespace_statistics
 - :name: analytics_usage_trends_counter_job
   :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports
@@ -2451,6 +2722,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: anti_abuse_ban_duplicate_users
   :worker_name: AntiAbuse::BanDuplicateUsersWorker
   :feature_category: :instance_resiliency
@@ -2460,6 +2732,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: anti_abuse_banned_user_project_deletion
   :worker_name: AntiAbuse::BannedUserProjectDeletionWorker
   :feature_category: :instance_resiliency
@@ -2469,6 +2742,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: anti_abuse_spam_abuse_events
   :worker_name: AntiAbuse::SpamAbuseEventsWorker
   :feature_category: :instance_resiliency
@@ -2478,6 +2752,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: anti_abuse_trust_score
   :worker_name: AntiAbuse::TrustScoreWorker
   :feature_category: :instance_resiliency
@@ -2487,6 +2762,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: anti_abuse_trust_score_cleanup
   :worker_name: AntiAbuse::TrustScoreCleanupWorker
   :feature_category: :instance_resiliency
@@ -2496,6 +2772,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: approve_blocked_pending_approval_users
   :worker_name: ApproveBlockedPendingApprovalUsersWorker
   :feature_category: :user_profile
@@ -2505,6 +2782,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: authorized_keys
   :worker_name: AuthorizedKeysWorker
   :feature_category: :source_code_management
@@ -2514,6 +2792,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: authorized_projects
   :worker_name: AuthorizedProjectsWorker
   :feature_category: :permissions
@@ -2523,6 +2802,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: background_migration
   :worker_name: BackgroundMigrationWorker
   :feature_category: :database
@@ -2532,6 +2812,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: background_migration_ci_database
   :worker_name: BackgroundMigration::CiDatabaseWorker
   :feature_category: :database
@@ -2541,6 +2822,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: batched_git_ref_updates_project_cleanup
   :worker_name: BatchedGitRefUpdates::ProjectCleanupWorker
   :feature_category: :gitaly
@@ -2550,6 +2832,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_advance_stage
   :worker_name: Gitlab::BitbucketImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2559,6 +2842,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_import_issue
   :worker_name: Gitlab::BitbucketImport::ImportIssueWorker
   :feature_category: :importers
@@ -2568,6 +2852,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_import_issue_notes
   :worker_name: Gitlab::BitbucketImport::ImportIssueNotesWorker
   :feature_category: :importers
@@ -2577,6 +2862,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_import_lfs_object
   :worker_name: Gitlab::BitbucketImport::ImportLfsObjectWorker
   :feature_category: :importers
@@ -2586,6 +2872,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_import_pull_request
   :worker_name: Gitlab::BitbucketImport::ImportPullRequestWorker
   :feature_category: :importers
@@ -2595,6 +2882,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_import_pull_request_notes
   :worker_name: Gitlab::BitbucketImport::ImportPullRequestNotesWorker
   :feature_category: :importers
@@ -2604,6 +2892,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_finish_import
   :worker_name: Gitlab::BitbucketImport::Stage::FinishImportWorker
   :feature_category: :importers
@@ -2613,6 +2902,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_import_issues
   :worker_name: Gitlab::BitbucketImport::Stage::ImportIssuesWorker
   :feature_category: :importers
@@ -2622,6 +2912,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_import_issues_notes
   :worker_name: Gitlab::BitbucketImport::Stage::ImportIssuesNotesWorker
   :feature_category: :importers
@@ -2631,6 +2922,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_import_lfs_objects
   :worker_name: Gitlab::BitbucketImport::Stage::ImportLfsObjectsWorker
   :feature_category: :importers
@@ -2640,6 +2932,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_import_pull_requests
   :worker_name: Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker
   :feature_category: :importers
@@ -2649,6 +2942,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_import_pull_requests_notes
   :worker_name: Gitlab::BitbucketImport::Stage::ImportPullRequestsNotesWorker
   :feature_category: :importers
@@ -2658,6 +2952,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_import_repository
   :worker_name: Gitlab::BitbucketImport::Stage::ImportRepositoryWorker
   :feature_category: :importers
@@ -2667,6 +2962,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_import_stage_import_users
   :worker_name: Gitlab::BitbucketImport::Stage::ImportUsersWorker
   :feature_category: :importers
@@ -2676,6 +2972,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_advance_stage
   :worker_name: Gitlab::BitbucketServerImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2685,6 +2982,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_import_lfs_object
   :worker_name: Gitlab::BitbucketServerImport::ImportLfsObjectWorker
   :feature_category: :importers
@@ -2694,6 +2992,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_import_pull_request
   :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestWorker
   :feature_category: :importers
@@ -2703,6 +3002,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_import_pull_request_note
   :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker
   :feature_category: :importers
@@ -2712,6 +3012,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_import_pull_request_notes
   :worker_name: Gitlab::BitbucketServerImport::ImportPullRequestNotesWorker
   :feature_category: :importers
@@ -2721,6 +3022,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_stage_finish_import
   :worker_name: Gitlab::BitbucketServerImport::Stage::FinishImportWorker
   :feature_category: :importers
@@ -2730,6 +3032,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_stage_import_lfs_objects
   :worker_name: Gitlab::BitbucketServerImport::Stage::ImportLfsObjectsWorker
   :feature_category: :importers
@@ -2739,6 +3042,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_stage_import_notes
   :worker_name: Gitlab::BitbucketServerImport::Stage::ImportNotesWorker
   :feature_category: :importers
@@ -2748,6 +3052,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_stage_import_pull_requests
   :worker_name: Gitlab::BitbucketServerImport::Stage::ImportPullRequestsWorker
   :feature_category: :importers
@@ -2757,6 +3062,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_stage_import_repository
   :worker_name: Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker
   :feature_category: :importers
@@ -2766,6 +3072,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: bitbucket_server_import_stage_import_users
   :worker_name: Gitlab::BitbucketServerImport::Stage::ImportUsersWorker
   :feature_category: :importers
@@ -2775,6 +3082,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_import
   :worker_name: BulkImportWorker
   :feature_category: :importers
@@ -2784,6 +3092,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_entity
   :worker_name: BulkImports::EntityWorker
   :feature_category: :importers
@@ -2793,6 +3102,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_export_request
   :worker_name: BulkImports::ExportRequestWorker
   :feature_category: :importers
@@ -2802,6 +3112,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_finish_batched_pipeline
   :worker_name: BulkImports::FinishBatchedPipelineWorker
   :feature_category: :importers
@@ -2811,6 +3122,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_finish_batched_relation_export
   :worker_name: BulkImports::FinishBatchedRelationExportWorker
   :feature_category: :importers
@@ -2820,6 +3132,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_finish_project_import
   :worker_name: BulkImports::FinishProjectImportWorker
   :feature_category: :importers
@@ -2829,6 +3142,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_pipeline
   :worker_name: BulkImports::PipelineWorker
   :feature_category: :importers
@@ -2838,6 +3152,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_pipeline_batch
   :worker_name: BulkImports::PipelineBatchWorker
   :feature_category: :importers
@@ -2847,6 +3162,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_relation_batch_export
   :worker_name: BulkImports::RelationBatchExportWorker
   :feature_category: :importers
@@ -2856,6 +3172,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_relation_export
   :worker_name: BulkImports::RelationExportWorker
   :feature_category: :importers
@@ -2865,6 +3182,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_transform_references
   :worker_name: BulkImports::TransformReferencesWorker
   :feature_category: :importers
@@ -2874,6 +3192,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: bulk_imports_user_contributions_export
   :worker_name: BulkImports::UserContributionsExportWorker
   :feature_category: :importers
@@ -2883,6 +3202,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: chat_notification
   :worker_name: ChatNotificationWorker
   :feature_category: :integrations
@@ -2892,6 +3212,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: ci_cancel_pipeline
   :worker_name: Ci::CancelPipelineWorker
   :feature_category: :continuous_integration
@@ -2901,6 +3222,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_cancel_redundant_pipelines
   :worker_name: Ci::CancelRedundantPipelinesWorker
   :feature_category: :continuous_integration
@@ -2910,6 +3232,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_click_house_finished_pipelines_sync
   :worker_name: Ci::ClickHouse::FinishedPipelinesSyncWorker
   :feature_category: :fleet_visibility
@@ -2919,6 +3242,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
   :feature_category: :continuous_integration
@@ -2928,6 +3252,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_destroy_old_pipelines
   :worker_name: Ci::DestroyOldPipelinesWorker
   :feature_category: :continuous_integration
@@ -2937,6 +3262,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_execute_build_hooks
   :worker_name: Ci::ExecuteBuildHooksWorker
   :feature_category: :pipeline_composition
@@ -2946,6 +3272,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_initialize_pipelines_iid_sequence
   :worker_name: Ci::InitializePipelinesIidSequenceWorker
   :feature_category: :continuous_integration
@@ -2955,6 +3282,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_job_artifacts_expire_project_build_artifacts
   :worker_name: Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker
   :feature_category: :job_artifacts
@@ -2964,6 +3292,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_job_token_log_authorization
   :worker_name: Ci::JobToken::LogAuthorizationWorker
   :feature_category: :secrets_management
@@ -2973,6 +3302,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_low_urgency_cancel_redundant_pipelines
   :worker_name: Ci::LowUrgencyCancelRedundantPipelinesWorker
   :feature_category: :continuous_integration
@@ -2982,6 +3312,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_parse_secure_file_metadata
   :worker_name: Ci::ParseSecureFileMetadataWorker
   :feature_category: :mobile_devops
@@ -2991,6 +3322,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_runners_process_runner_version_update
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
   :feature_category: :fleet_visibility
@@ -3000,6 +3332,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_runners_update_project_runners_owner
   :worker_name: Ci::Runners::UpdateProjectRunnersOwnerWorker
   :feature_category: :runner
@@ -3009,6 +3342,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
   :feature_category: :job_artifacts
@@ -3018,6 +3352,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_update_build_names
   :worker_name: Ci::UpdateBuildNamesWorker
   :feature_category: :continuous_integration
@@ -3027,6 +3362,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ci_user_cancel_pipeline
   :worker_name: Ci::UserCancelPipelineWorker
   :feature_category: :continuous_integration
@@ -3036,6 +3372,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: counters_cleanup_refresh
   :worker_name: Counters::CleanupRefreshWorker
   :feature_category: :not_owned
@@ -3045,6 +3382,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: create_commit_signature
   :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management
@@ -3054,6 +3392,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: create_note_diff_file
   :worker_name: CreateNoteDiffFileWorker
   :feature_category: :code_review_workflow
@@ -3063,6 +3402,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: database_lock_tables
   :worker_name: Database::LockTablesWorker
   :feature_category: :cell
@@ -3072,6 +3412,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: default
   :worker_name:
   :feature_category: :not_owned
@@ -3081,6 +3422,7 @@
   :weight: 1
   :idempotent:
   :tags: []
+  :queue_namespace:
 - :name: delete_diff_files
   :worker_name: DeleteDiffFilesWorker
   :feature_category: :code_review_workflow
@@ -3090,6 +3432,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: delete_merged_branches
   :worker_name: DeleteMergedBranchesWorker
   :feature_category: :source_code_management
@@ -3099,6 +3442,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: delete_stored_files
   :worker_name: DeleteStoredFilesWorker
   :feature_category: :not_owned
@@ -3108,6 +3452,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: delete_user
   :worker_name: DeleteUserWorker
   :feature_category: :user_management
@@ -3117,6 +3462,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: design_management_copy_design_collection
   :worker_name: DesignManagement::CopyDesignCollectionWorker
   :feature_category: :design_management
@@ -3126,6 +3472,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: design_management_new_version
   :worker_name: DesignManagement::NewVersionWorker
   :feature_category: :design_management
@@ -3135,6 +3482,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: destroy_pages_deployments
   :worker_name: DestroyPagesDeploymentsWorker
   :feature_category: :pages
@@ -3144,6 +3492,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: detect_repository_languages
   :worker_name: DetectRepositoryLanguagesWorker
   :feature_category: :source_code_management
@@ -3153,6 +3502,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: disallow_two_factor_for_group
   :worker_name: DisallowTwoFactorForGroupWorker
   :feature_category: :groups_and_projects
@@ -3162,6 +3512,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: disallow_two_factor_for_subgroups
   :worker_name: DisallowTwoFactorForSubgroupsWorker
   :feature_category: :groups_and_projects
@@ -3171,6 +3522,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: email_receiver
   :worker_name: EmailReceiverWorker
   :feature_category: :team_planning
@@ -3180,6 +3532,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: emails_on_push
   :worker_name: EmailsOnPushWorker
   :feature_category: :source_code_management
@@ -3189,6 +3542,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: environments_auto_recover
   :worker_name: Environments::AutoRecoverWorker
   :feature_category: :continuous_delivery
@@ -3198,6 +3552,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: environments_auto_stop
   :worker_name: Environments::AutoStopWorker
   :feature_category: :continuous_delivery
@@ -3207,6 +3562,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: environments_canary_ingress_update
   :worker_name: Environments::CanaryIngress::UpdateWorker
   :feature_category: :continuous_delivery
@@ -3216,6 +3572,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: environments_recalculate_auto_stop
   :worker_name: Environments::RecalculateAutoStopWorker
   :feature_category: :environment_management
@@ -3225,6 +3582,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: environments_stop_job_failed
   :worker_name: Environments::StopJobFailedWorker
   :feature_category: :continuous_delivery
@@ -3234,6 +3592,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: environments_stop_job_success
   :worker_name: Environments::StopJobSuccessWorker
   :feature_category: :continuous_delivery
@@ -3243,6 +3602,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: error_tracking_issue_link
   :worker_name: ErrorTrackingIssueLinkWorker
   :feature_category: :observability
@@ -3252,6 +3612,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: export_csv
   :worker_name: ExportCsvWorker
   :feature_category: :team_planning
@@ -3261,6 +3622,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: external_service_reactive_caching
   :worker_name: ExternalServiceReactiveCachingWorker
   :feature_category: :not_owned
@@ -3270,6 +3632,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: file_hook
   :worker_name: FileHookWorker
   :feature_category: :webhooks
@@ -3279,6 +3642,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: flush_counter_increments
   :worker_name: FlushCounterIncrementsWorker
   :feature_category: :not_owned
@@ -3288,6 +3652,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: github_import_advance_stage
   :worker_name: Gitlab::GithubImport::AdvanceStageWorker
   :feature_category: :importers
@@ -3297,6 +3662,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: google_cloud_create_cloudsql_instance
   :worker_name: GoogleCloud::CreateCloudsqlInstanceWorker
   :feature_category: :not_owned
@@ -3306,6 +3672,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: google_cloud_fetch_google_ip_list
   :worker_name: GoogleCloud::FetchGoogleIpListWorker
   :feature_category: :job_artifacts
@@ -3315,6 +3682,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: group_destroy
   :worker_name: GroupDestroyWorker
   :feature_category: :groups_and_projects
@@ -3324,6 +3692,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: group_export
   :worker_name: GroupExportWorker
   :feature_category: :importers
@@ -3333,6 +3702,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: group_import
   :worker_name: GroupImportWorker
   :feature_category: :importers
@@ -3342,6 +3712,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: groups_update_statistics
   :worker_name: Groups::UpdateStatisticsWorker
   :feature_category: :source_code_management
@@ -3351,6 +3722,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: groups_update_two_factor_requirement_for_members
   :worker_name: Groups::UpdateTwoFactorRequirementForMembersWorker
   :feature_category: :system_access
@@ -3360,6 +3732,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: import_bulk_imports_source_users_attributes
   :worker_name: Import::BulkImports::SourceUsersAttributesWorker
   :feature_category: :importers
@@ -3369,6 +3742,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: import_delete_placeholder_user
   :worker_name: Import::DeletePlaceholderUserWorker
   :feature_category: :importers
@@ -3378,6 +3752,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: import_issues_csv
   :worker_name: ImportIssuesCsvWorker
   :feature_category: :team_planning
@@ -3387,6 +3762,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: import_load_placeholder_references
   :worker_name: Import::LoadPlaceholderReferencesWorker
   :feature_category: :importers
@@ -3396,6 +3772,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: import_reassign_placeholder_user_records
   :worker_name: Import::ReassignPlaceholderUserRecordsWorker
   :feature_category: :importers
@@ -3405,6 +3782,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: import_refresh_import_jid
   :worker_name: Gitlab::Import::RefreshImportJidWorker
   :feature_category: :importers
@@ -3414,6 +3792,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: incident_management_close_incident
   :worker_name: IncidentManagement::CloseIncidentWorker
   :feature_category: :incident_management
@@ -3423,6 +3802,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: integrations_create_external_cross_reference
   :worker_name: Integrations::CreateExternalCrossReferenceWorker
   :feature_category: :integrations
@@ -3432,6 +3812,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: integrations_execute
   :worker_name: Integrations::ExecuteWorker
   :feature_category: :integrations
@@ -3441,6 +3822,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: integrations_group_mention
   :worker_name: Integrations::GroupMentionWorker
   :feature_category: :integrations
@@ -3450,6 +3832,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: integrations_irker
   :worker_name: Integrations::IrkerWorker
   :feature_category: :integrations
@@ -3459,6 +3842,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: integrations_propagate_integration_descendant
   :worker_name: Integrations::PropagateIntegrationDescendantWorker
   :feature_category: :integrations
@@ -3468,6 +3852,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: integrations_slack_event
   :worker_name: Integrations::SlackEventWorker
   :feature_category: :integrations
@@ -3477,6 +3862,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: invalid_gpg_signature_update
   :worker_name: InvalidGpgSignatureUpdateWorker
   :feature_category: :source_code_management
@@ -3486,6 +3872,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: issuable_create_reminder
   :worker_name: Issuable::CreateReminderWorker
   :feature_category: :code_review_workflow
@@ -3495,6 +3882,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: issuable_export_csv
   :worker_name: IssuableExportCsvWorker
   :feature_category: :team_planning
@@ -3504,6 +3892,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: issuable_label_links_destroy
   :worker_name: Issuable::LabelLinksDestroyWorker
   :feature_category: :team_planning
@@ -3513,6 +3902,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: issuable_related_links_create
   :worker_name: Issuable::RelatedLinksCreateWorker
   :feature_category: :portfolio_management
@@ -3522,6 +3912,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: issuables_clear_groups_issue_counter
   :worker_name: Issuables::ClearGroupsIssueCounterWorker
   :feature_category: :team_planning
@@ -3531,6 +3922,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: issues_close
   :worker_name: Issues::CloseWorker
   :feature_category: :source_code_management
@@ -3540,6 +3932,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: issues_placement
   :worker_name: Issues::PlacementWorker
   :feature_category: :team_planning
@@ -3549,6 +3942,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: issues_rebalancing
   :worker_name: Issues::RebalancingWorker
   :feature_category: :team_planning
@@ -3558,6 +3952,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: mailers
   :worker_name: ActionMailer::MailDeliveryJob
   :feature_category: :not_owned
@@ -3567,6 +3962,7 @@
   :weight: 2
   :idempotent:
   :tags: []
+  :queue_namespace:
 - :name: members_expiring_email_notification
   :worker_name: Members::ExpiringEmailNotificationWorker
   :feature_category: :system_access
@@ -3576,6 +3972,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: members_prune_deletions
   :worker_name: Members::PruneDeletionsWorker
   :feature_category: :seat_cost_management
@@ -3585,6 +3982,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge
   :worker_name: MergeWorker
   :feature_category: :code_review_workflow
@@ -3594,6 +3992,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_request_cleanup_refs
   :worker_name: MergeRequestCleanupRefsWorker
   :feature_category: :code_review_workflow
@@ -3603,6 +4002,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_request_mergeability_check
   :worker_name: MergeRequestMergeabilityCheckWorker
   :feature_category: :code_review_workflow
@@ -3612,6 +4012,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_cleanup_ref
   :worker_name: MergeRequests::CleanupRefWorker
   :feature_category: :code_review_workflow
@@ -3621,6 +4022,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_close_issue
   :worker_name: MergeRequests::CloseIssueWorker
   :feature_category: :code_review_workflow
@@ -3630,6 +4032,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_create_approval_event
   :worker_name: MergeRequests::CreateApprovalEventWorker
   :feature_category: :code_review_workflow
@@ -3639,6 +4042,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_create_approval_note
   :worker_name: MergeRequests::CreateApprovalNoteWorker
   :feature_category: :code_review_workflow
@@ -3648,6 +4052,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_delete_source_branch
   :worker_name: MergeRequests::DeleteSourceBranchWorker
   :feature_category: :code_review_workflow
@@ -3657,6 +4062,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_execute_approval_hooks
   :worker_name: MergeRequests::ExecuteApprovalHooksWorker
   :feature_category: :code_review_workflow
@@ -3666,6 +4072,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_handle_assignees_change
   :worker_name: MergeRequests::HandleAssigneesChangeWorker
   :feature_category: :code_review_workflow
@@ -3675,6 +4082,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_mergeability_check_batch
   :worker_name: MergeRequests::MergeabilityCheckBatchWorker
   :feature_category: :code_review_workflow
@@ -3684,6 +4092,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_process_auto_merge_from_event
   :worker_name: MergeRequests::ProcessAutoMergeFromEventWorker
   :feature_category: :continuous_delivery
@@ -3693,6 +4102,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow
@@ -3702,6 +4112,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_resolve_todos_after_approval
   :worker_name: MergeRequests::ResolveTodosAfterApprovalWorker
   :feature_category: :code_review_workflow
@@ -3711,6 +4122,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: merge_requests_update_head_pipeline
   :worker_name: MergeRequests::UpdateHeadPipelineWorker
   :feature_category: :code_review_workflow
@@ -3720,6 +4132,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: migrate_external_diffs
   :worker_name: MigrateExternalDiffsWorker
   :feature_category: :code_review_workflow
@@ -3729,6 +4142,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: ml_experiment_tracking_associate_ml_candidate_to_package
   :worker_name: Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker
   :feature_category: :mlops
@@ -3738,6 +4152,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: namespaces_process_sync_events
   :worker_name: Namespaces::ProcessSyncEventsWorker
   :feature_category: :cell
@@ -3747,6 +4162,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: namespaces_update_root_statistics
   :worker_name: Namespaces::UpdateRootStatisticsWorker
   :feature_category: :source_code_management
@@ -3756,6 +4172,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: new_issue
   :worker_name: NewIssueWorker
   :feature_category: :team_planning
@@ -3765,6 +4182,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: new_merge_request
   :worker_name: NewMergeRequestWorker
   :feature_category: :code_review_workflow
@@ -3774,6 +4192,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: new_note
   :worker_name: NewNoteWorker
   :feature_category: :team_planning
@@ -3783,6 +4202,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: pages
   :worker_name: PagesWorker
   :feature_category: :pages
@@ -3792,6 +4212,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: pages_deactivate_mr_deployments
   :worker_name: Pages::DeactivateMrDeploymentsWorker
   :feature_category: :pages
@@ -3801,6 +4222,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: pages_delete_pages_deployment
   :worker_name: Pages::DeletePagesDeploymentWorker
   :feature_category: :pages
@@ -3810,6 +4232,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: pages_domain_ssl_renewal
   :worker_name: PagesDomainSslRenewalWorker
   :feature_category: :pages
@@ -3819,6 +4242,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: pages_domain_verification
   :worker_name: PagesDomainVerificationWorker
   :feature_category: :pages
@@ -3828,6 +4252,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: pages_reset_pages_default_domain_redirect
   :worker_name: Pages::ResetPagesDefaultDomainRedirectWorker
   :feature_category: :pages
@@ -3837,6 +4262,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: post_receive
   :worker_name: PostReceive
   :feature_category: :source_code_management
@@ -3846,6 +4272,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: process_commit
   :worker_name: ProcessCommitWorker
   :feature_category: :source_code_management
@@ -3855,6 +4282,7 @@
   :weight: 3
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: project_cache
   :worker_name: ProjectCacheWorker
   :feature_category: :source_code_management
@@ -3864,6 +4292,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: project_destroy
   :worker_name: ProjectDestroyWorker
   :feature_category: :source_code_management
@@ -3873,6 +4302,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: project_export
   :worker_name: ProjectExportWorker
   :feature_category: :importers
@@ -3882,6 +4312,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: projects_after_import
   :worker_name: Projects::AfterImportWorker
   :feature_category: :importers
@@ -3891,6 +4322,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_delete_branch
   :worker_name: Projects::DeleteBranchWorker
   :feature_category: :source_code_management
@@ -3900,6 +4332,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_finalize_project_statistics_refresh
   :worker_name: Projects::FinalizeProjectStatisticsRefreshWorker
   :feature_category: :not_owned
@@ -3909,6 +4342,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_forks_sync
   :worker_name: Projects::Forks::SyncWorker
   :feature_category: :source_code_management
@@ -3918,6 +4352,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_git_garbage_collect
   :worker_name: Projects::GitGarbageCollectWorker
   :feature_category: :gitaly
@@ -3927,6 +4362,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: projects_import_export_after_import_merge_requests
   :worker_name: Projects::ImportExport::AfterImportMergeRequestsWorker
   :feature_category: :importers
@@ -3936,6 +4372,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_import_export_create_relation_exports
   :worker_name: Projects::ImportExport::CreateRelationExportsWorker
   :feature_category: :importers
@@ -3945,6 +4382,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_import_export_import_completion_notification
   :worker_name: Projects::ImportExport::ImportCompletionNotificationWorker
   :feature_category: :importers
@@ -3954,6 +4392,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_import_export_parallel_project_export
   :worker_name: Projects::ImportExport::ParallelProjectExportWorker
   :feature_category: :importers
@@ -3963,6 +4402,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_import_export_relation_export
   :worker_name: Projects::ImportExport::RelationExportWorker
   :feature_category: :importers
@@ -3972,6 +4412,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_import_export_relation_import
   :worker_name: Projects::ImportExport::RelationImportWorker
   :feature_category: :importers
@@ -3981,6 +4422,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_import_export_wait_relation_exports
   :worker_name: Projects::ImportExport::WaitRelationExportsWorker
   :feature_category: :importers
@@ -3990,6 +4432,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_inactive_projects_deletion_notification
   :worker_name: Projects::InactiveProjectsDeletionNotificationWorker
   :feature_category: :groups_and_projects
@@ -3999,6 +4442,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_post_creation
   :worker_name: Projects::PostCreationWorker
   :feature_category: :source_code_management
@@ -4008,6 +4452,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_process_sync_events
   :worker_name: Projects::ProcessSyncEventsWorker
   :feature_category: :cell
@@ -4017,6 +4462,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_record_target_platforms
   :worker_name: Projects::RecordTargetPlatformsWorker
   :feature_category: :activation
@@ -4026,6 +4472,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_refresh_build_artifacts_size_statistics
   :worker_name: Projects::RefreshBuildArtifactsSizeStatisticsWorker
   :feature_category: :job_artifacts
@@ -4035,6 +4482,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_schedule_bulk_repository_shard_moves
   :worker_name: Projects::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
@@ -4044,6 +4492,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: projects_update_repository_storage
   :worker_name: Projects::UpdateRepositoryStorageWorker
   :feature_category: :gitaly
@@ -4053,6 +4502,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: propagate_integration
   :worker_name: PropagateIntegrationWorker
   :feature_category: :integrations
@@ -4062,6 +4512,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: propagate_integration_group
   :worker_name: PropagateIntegrationGroupWorker
   :feature_category: :integrations
@@ -4071,6 +4522,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: propagate_integration_inherit
   :worker_name: PropagateIntegrationInheritWorker
   :feature_category: :integrations
@@ -4080,6 +4532,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: propagate_integration_inherit_descendant
   :worker_name: PropagateIntegrationInheritDescendantWorker
   :feature_category: :integrations
@@ -4089,6 +4542,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: propagate_integration_project
   :worker_name: PropagateIntegrationProjectWorker
   :feature_category: :integrations
@@ -4098,6 +4552,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: reactive_caching
   :worker_name: ReactiveCachingWorker
   :feature_category: :not_owned
@@ -4107,6 +4562,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: rebase
   :worker_name: RebaseWorker
   :feature_category: :source_code_management
@@ -4116,6 +4572,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: redis_migration
   :worker_name: RedisMigrationWorker
   :feature_category: :redis
@@ -4125,6 +4582,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: releases_create_evidence
   :worker_name: Releases::CreateEvidenceWorker
   :feature_category: :release_evidence
@@ -4134,6 +4592,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: remote_mirror_notification
   :worker_name: RemoteMirrorNotificationWorker
   :feature_category: :source_code_management
@@ -4143,6 +4602,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: repositories_post_receive
   :worker_name: Repositories::PostReceiveWorker
   :feature_category: :source_code_management
@@ -4152,6 +4612,7 @@
   :weight: 5
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: repositories_rewrite_history
   :worker_name: Repositories::RewriteHistoryWorker
   :feature_category: :source_code_management
@@ -4161,6 +4622,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: repository_cleanup
   :worker_name: RepositoryCleanupWorker
   :feature_category: :source_code_management
@@ -4170,6 +4632,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: repository_fork
   :worker_name: RepositoryForkWorker
   :feature_category: :source_code_management
@@ -4179,6 +4642,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: repository_import
   :worker_name: RepositoryImportWorker
   :feature_category: :importers
@@ -4188,6 +4652,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: repository_update_remote_mirror
   :worker_name: RepositoryUpdateRemoteMirrorWorker
   :feature_category: :source_code_management
@@ -4197,6 +4662,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: service_desk_email_receiver
   :worker_name: ServiceDeskEmailReceiverWorker
   :feature_category: :service_desk
@@ -4206,6 +4672,7 @@
   :weight: 2
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: snippets_schedule_bulk_repository_shard_moves
   :worker_name: Snippets::ScheduleBulkRepositoryShardMovesWorker
   :feature_category: :gitaly
@@ -4215,6 +4682,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: snippets_update_repository_storage
   :worker_name: Snippets::UpdateRepositoryStorageWorker
   :feature_category: :gitaly
@@ -4224,6 +4692,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: ssh_keys_update_last_used_at
   :worker_name: SshKeys::UpdateLastUsedAtWorker
   :feature_category: :source_code_management
@@ -4233,6 +4702,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: system_hook_push
   :worker_name: SystemHookPushWorker
   :feature_category: :source_code_management
@@ -4242,6 +4712,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: update_external_pull_requests
   :worker_name: UpdateExternalPullRequestsWorker
   :feature_category: :continuous_integration
@@ -4251,6 +4722,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: update_highest_role
   :worker_name: UpdateHighestRoleWorker
   :feature_category: :seat_cost_management
@@ -4260,6 +4732,7 @@
   :weight: 2
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: update_merge_requests
   :worker_name: UpdateMergeRequestsWorker
   :feature_category: :code_review_workflow
@@ -4269,6 +4742,7 @@
   :weight: 3
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: update_project_statistics
   :worker_name: UpdateProjectStatisticsWorker
   :feature_category: :source_code_management
@@ -4278,6 +4752,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: upload_checksum
   :worker_name: UploadChecksumWorker
   :feature_category: :geo_replication
@@ -4287,6 +4762,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: users_track_namespace_visits
   :worker_name: Users::TrackNamespaceVisitsWorker
   :feature_category: :navigation
@@ -4296,6 +4772,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: web_hook
   :worker_name: WebHookWorker
   :feature_category: :webhooks
@@ -4305,6 +4782,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: web_hooks_log_destroy
   :worker_name: WebHooks::LogDestroyWorker
   :feature_category: :webhooks
@@ -4314,6 +4792,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: web_hooks_log_execution
   :worker_name: WebHooks::LogExecutionWorker
   :feature_category: :webhooks
@@ -4323,6 +4802,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: wikis_git_garbage_collect
   :worker_name: Wikis::GitGarbageCollectWorker
   :feature_category: :gitaly
@@ -4332,6 +4812,7 @@
   :weight: 1
   :idempotent: false
   :tags: []
+  :queue_namespace:
 - :name: work_items_copy_timelogs
   :worker_name: WorkItems::CopyTimelogsWorker
   :feature_category: :team_planning
@@ -4341,6 +4822,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: work_items_import_work_items_csv
   :worker_name: WorkItems::ImportWorkItemsCsvWorker
   :feature_category: :team_planning
@@ -4350,6 +4832,7 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:
 - :name: x509_certificate_revoke
   :worker_name: X509CertificateRevokeWorker
   :feature_category: :source_code_management
@@ -4359,3 +4842,4 @@
   :weight: 1
   :idempotent: true
   :tags: []
+  :queue_namespace:

@@ -230,7 +230,7 @@ Development teams:
 To enforce a security policy project on a group, subgroup, or project, you must have either:
 
 - The Owner role in that group, subgroup, or project.
-- A [custom role](../../../user/custom_roles.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
+- A [custom role](../../custom_roles.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
 
 The Owner role and custom roles with the `manage_security_policy_link` permission follow the standard hierarchy rules across groups, subgroups, and projects:
 
@@ -266,7 +266,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the
+- You must have the Owner role or [custom role](../../custom_roles.md) with the
   `manage_security_policy_link` permission to link to the security policy project. For more
   information, see [separation of duties](#separation-of-duties).
 
@@ -312,7 +312,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the
+- You must have the Owner role or [custom role](../../custom_roles.md) with the
   `manage_security_policy_link` permission to link to the security policy project. For more
   information, see [separation of duties](#separation-of-duties).
 - To support approval groups globally across your instance, enable
@@ -365,7 +365,7 @@ granularly per policy, you can set a "policy scope" in each policy.
 
 Prerequisites:
 
-- You must have the Owner role or [custom role](../../../user/custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
+- You must have the Owner role or [custom role](../../custom_roles.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
 
 To link a group, subgroup, or project to a security policy project:
 

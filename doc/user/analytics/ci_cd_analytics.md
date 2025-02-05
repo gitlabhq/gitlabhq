@@ -47,7 +47,6 @@ Prerequisites:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view CI/CD analytics for a group:
 
@@ -60,10 +59,6 @@ The page displays metrics and charts for:
 - DORA metrics
 
 ### For a project
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view CI/CD analytics for a project:
 

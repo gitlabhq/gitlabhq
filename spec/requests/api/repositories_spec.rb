@@ -295,8 +295,26 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     let(:project_id) { CGI.escape(project.full_path) }
     let(:route) { "/projects/#{project_id}/repository/archive" }
 
+    let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
+    let(:format) { 'tar.gz' }
+    let(:path) { nil }
+    let(:metadata) { project.repository.archive_metadata(nil, storage_path, format, append_sha: nil, path: path) }
+
     before do
       allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    end
+
+    def expected_archive_request(repository, metadata, path, include_lfs_blobs)
+      Base64.encode64(
+        Gitaly::GetArchiveRequest.new(
+          repository: repository.gitaly_repository,
+          commit_id: metadata['CommitId'],
+          prefix: metadata['ArchivePrefix'],
+          format: Gitaly::GetArchiveRequest::Format::TAR_GZ,
+          path: path,
+          include_lfs_blobs: include_lfs_blobs
+        ).to_proto
+      )
     end
 
     shared_examples_for 'repository archive' do
@@ -309,6 +327,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
         expect(type).to eq('git-archive')
         expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
+        expect(params['GetArchiveRequest']).to eq(expected_archive_request(project.repository, metadata, path, true))
         expect(response.parsed_body).to be_empty
       end
 
@@ -338,6 +357,20 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         it_behaves_like '404 response' do
           let(:request) { get api("#{route}?sha=xxx", current_user) }
           let(:message) { '404 File Not Found' }
+        end
+      end
+
+      context 'when include_lfs_blobs is false' do
+        it 'returns the correct GetArchiveRequest' do
+          get api("#{route}?include_lfs_blobs=false", current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          type, params = workhorse_send_data
+
+          expect(type).to eq('git-archive')
+          expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
+          expect(params['GetArchiveRequest']).to eq(expected_archive_request(project.repository, metadata, path, false))
         end
       end
 

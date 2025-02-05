@@ -132,10 +132,6 @@ You can add [comments](discussions/index.md) and reply to threads in OKRs.
 
 To show who is responsible for an OKR, you can assign users to it.
 
-Users on GitLab Free can assign one user per OKR.
-Users on GitLab Premium and Ultimate can assign multiple users to a single OKR.
-See also [multiple assignees for issues](project/issues/multiple_assignees_for_issues.md).
-
 Prerequisites:
 
 - You must have at least the Planner role for the project.

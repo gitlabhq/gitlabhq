@@ -88,7 +88,7 @@ Prerequisites:
 - Pipeline is part of an active [merge request pipeline](../../../ci/pipelines/merge_request_pipelines.md) that has a defined source and target Git branch.
 - Project includes one of the [supported languages](#supported-languages-and-package-managers).
 - Project is adding new dependencies to the source or feature branch.
-- For merge request (MR) comments, ensure a Guest level [project access token](../../../user/project/settings/project_access_tokens.md),
+- For merge request (MR) comments, ensure a Guest level [project access token](../../project/settings/project_access_tokens.md),
   and the source branch is either a protected branch or the **Protect variable** CI/CD variable
   [option is unchecked](../../../ci/variables/index.md#for-a-project).
 

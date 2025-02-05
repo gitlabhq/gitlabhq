@@ -74,7 +74,7 @@ module Gitlab
         ]
       end
 
-      def send_git_archive(repository, ref:, format:, append_sha:, path: nil)
+      def send_git_archive(repository, ref:, format:, append_sha:, path: nil, include_lfs_blobs: true)
         format ||= 'tar.gz'
         format = format.downcase
 
@@ -88,7 +88,7 @@ module Gitlab
 
         raise "Repository or ref not found" if metadata.empty?
 
-        params = send_git_archive_params(repository, metadata, path, archive_format(format))
+        params = send_git_archive_params(repository, metadata, path, archive_format(format), include_lfs_blobs)
 
         # If present, DisableCache must be a Boolean. Otherwise
         # workhorse ignores it.
@@ -366,7 +366,7 @@ module Gitlab
         end
       end
 
-      def send_git_archive_params(repository, metadata, path, format)
+      def send_git_archive_params(repository, metadata, path, format, include_lfs_blobs)
         {
           'ArchivePath' => metadata['ArchivePath'],
           'GetArchiveRequest' => encode_binary(
@@ -376,7 +376,7 @@ module Gitlab
               prefix: metadata['ArchivePrefix'],
               format: format,
               path: Gitlab::EncodingHelper.encode_binary(path.presence || ""),
-              include_lfs_blobs: true
+              include_lfs_blobs: include_lfs_blobs
             ).to_proto
           )
         }

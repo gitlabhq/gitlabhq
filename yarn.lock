@@ -1412,7 +1412,8 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.0":
+"@gitlab/noop@^1.0.0", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.0":
+  name jackspeak
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
   integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
@@ -1431,10 +1432,10 @@
     stylelint-declaration-strict-value "1.10.4"
     stylelint-scss "6.0.0"
 
-"@gitlab/svgs@3.122.0":
-  version "3.122.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.122.0.tgz#f3d21ff18d60510c4b6983a211dfbc39304a517b"
-  integrity sha512-2ED6E6aYTpzOv4Tz2zFtPnBP/ZTSR1mNebHYkMfm+kx9u61ILwfVJjaQ3vu73BviToAs9+1bs7RIe3iAtzCB2g==
+"@gitlab/svgs@3.123.0":
+  version "3.123.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.123.0.tgz#1fa3b1a709755ff7c8ef67e18c0442101655ebf0"
+  integrity sha512-yjVn+utOTIKk8d9JlvGo6EgJ4TQ+CKpe3RddflAqtsQqQuL/2MlVdtaUePybxYzWIaumFuh5LouQ6BrWyw1niQ==
 
 "@gitlab/ui@107.7.1":
   version "107.7.1"
@@ -5358,7 +5359,7 @@ comma-separated-tokens@^2.0.0:
   resolved "https://registry.yarnpkg.com/comma-separated-tokens/-/comma-separated-tokens-2.0.2.tgz#d4c25abb679b7751c880be623c1179780fe1dd98"
   integrity sha512-G5yTt3KQN4Yn7Yk4ed73hlZ1evrFKXeUW3086p3PRFNp7m2vIjI6Pg+Kgb+oyzhd9F2qdcoj67+y3SdxL5XWsg==
 
-commander@2, commander@^2.19.0, commander@^2.20.0, commander@^2.20.3:
+commander@2, commander@^2.19.0, commander@^2.20.0:
   version "2.20.3"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
@@ -5372,6 +5373,11 @@ commander@^10.0.0, commander@^10.0.1:
   version "10.0.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
   integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
+
+commander@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-13.1.0.tgz#776167db68c78f38dcce1f9b8d7b8b9a488abf46"
+  integrity sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==
 
 commander@^4.0.0:
   version "4.1.1"
@@ -9327,11 +9333,6 @@ iterall@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
-
-jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
-  integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
 
 jed@^1.1.1:
   version "1.1.1"

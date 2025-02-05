@@ -28,7 +28,7 @@ For an overview, see [Security Dashboard](https://www.youtube.com/watch?v=Uo-pDn
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383697) in GitLab 16.0.
 
-You can view vulnerability metrics also in the [Value Streams Dashboard](../../../user/analytics/value_streams_dashboard.md) comparison panel, which helps you understand security exposure in the context of your organization's software delivery workflows.
+You can view vulnerability metrics also in the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) comparison panel, which helps you understand security exposure in the context of your organization's software delivery workflows.
 
 ## Prerequisites
 

@@ -135,7 +135,7 @@ a large number of false positives.
 | `COVFUZZ_URL_PREFIX`      | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this value when using an offline environment. Default: `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
 | `COVFUZZ_USE_REGISTRY`    | Set to `true` to have the corpus stored in the GitLab corpus registry. The variables `COVFUZZ_CORPUS_NAME` and `COVFUZZ_GITLAB_TOKEN` are required if this variable is set to `true`. Default: `false`. |
 | `COVFUZZ_CORPUS_NAME`     | Name of the corpus to be used in the job. |
-| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [personal access token](../../../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [project access token](../../../user/project/settings/project_access_tokens.md#create-a-project-access-token) with API read/write access. |
+| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) or [project access token](../../project/settings/project_access_tokens.md#create-a-project-access-token) with API read/write access. |
 
 #### Seed corpus
 

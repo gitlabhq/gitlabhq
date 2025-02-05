@@ -3,7 +3,7 @@
 const { spawnSync } = require('node:child_process');
 const { readFileSync } = require('node:fs');
 const defaultChalk = require('chalk');
-const program = require('commander');
+const { program } = require('commander');
 
 const IS_CI = Boolean(process.env.CI);
 
@@ -27,7 +27,6 @@ function showVue3Help() {
 
 function parseArgumentsAndEnvironment() {
   program
-    .usage('[options]')
     .description(`Runs Jest under CI.`)
     .option(
       '--vue3',
@@ -50,21 +49,22 @@ function parseArgumentsAndEnvironment() {
       "Tell Jest to generate coverage. If not specified, it's enabled only on non-FOSS branch or tag pipelines under Vue 2, non-predictive runs.",
     )
     .parse(process.argv);
+  const options = program.opts();
 
   if (!IS_CI) {
     console.warn('This script is intended to run in CI only.');
-    if (program.vue3) showVue3Help();
+    if (options.vue3) showVue3Help();
     process.exit(1);
   }
 
-  if (program.vue3 && process.env.VUE_VERSION !== '3') {
+  if (options.vue3 && process.env.VUE_VERSION !== '3') {
     console.warn(
       `Expected environment variable VUE_VERSION=3 given option '--vue3', got VUE_VERSION="${process.env.VUE_VERSION}".`,
     );
     process.exit(1);
   }
 
-  if (!program.vue3 && ![undefined, '2'].includes(process.env.VUE_VERSION)) {
+  if (!options.vue3 && ![undefined, '2'].includes(process.env.VUE_VERSION)) {
     console.warn(
       `Expected unset environment variable VUE_VERSION, or VUE_VERSION=2, got VUE_VERSION="${process.env.VUE_VERSION}".`,
     );
@@ -72,7 +72,7 @@ function parseArgumentsAndEnvironment() {
   }
 
   const changedFiles = [];
-  if (program.predictive) {
+  if (options.predictive) {
     const { RSPEC_MATCHING_JS_FILES_PATH, RSPEC_CHANGED_FILES_PATH } = process.env;
 
     for (const [name, path] of Object.entries({
@@ -97,17 +97,17 @@ function parseArgumentsAndEnvironment() {
   }
 
   const coverage =
-    program.coverage ||
+    options.coverage ||
     (!process.env.CI_MERGE_REQUEST_IID &&
       !/^as-if-foss\//.test(process.env.CI_COMMIT_BRANCH) &&
-      !program.vue3 &&
-      !program.predictive);
+      !options.vue3 &&
+      !options.predictive);
 
   return {
-    vue3: program.vue3,
-    includeVue3Quarantined: program.includeVue3Quarantined,
-    predictive: program.predictive,
-    fixtures: program.fixtures,
+    vue3: options.vue3,
+    includeVue3Quarantined: options.includeVue3Quarantined,
+    predictive: options.predictive,
+    fixtures: options.fixtures,
     coverage,
     nodeIndex: process.env.CI_NODE_INDEX ?? '1',
     nodeTotal: process.env.CI_NODE_TOTAL ?? '1',

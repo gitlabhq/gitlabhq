@@ -15,7 +15,7 @@ When working with dependency scanning, you might encounter the following issues.
 ## Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
+[debug-level logging](../troubleshooting_application_security.md#debug-level-logging).
 
 ### Working around missing support for certain languages or package managers
 
@@ -60,7 +60,7 @@ affected. Read more in
 
 ### Getting warning message `gl-dependency-scanning-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../user/application_security/troubleshooting_application_security.md#getting-warning-messages--reportjson-no-matching-files).
+For information on this, see the [general Application Security troubleshooting section](../troubleshooting_application_security.md#getting-warning-messages--reportjson-no-matching-files).
 
 ## `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
@@ -79,7 +79,7 @@ scanning job might be triggered even if the scanner doesn't support your project
 
 ## Error: `dependency_scanning is used for configuration only, and its script should not be executed`
 
-For information, see the [GitLab Secure troubleshooting section](../../application_security/troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+For information, see the [GitLab Secure troubleshooting section](../troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
 ## Import multiple certificates for Java-based projects
 

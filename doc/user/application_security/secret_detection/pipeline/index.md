@@ -420,7 +420,7 @@ The `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable uses a format similar to [
 <AUTH_USER>:<AUTH_PASSWORD>@<PROJECT_PATH>@<GIT_SHA>
 ```
 
-If the configuration file is stored in a private project that requires authentication, you may use a [Group Access Token](../../../../user/group/settings/group_access_tokens.md) securely stored in a CI variable to load the remote ruleset:
+If the configuration file is stored in a private project that requires authentication, you may use a [Group Access Token](../../../group/settings/group_access_tokens.md) securely stored in a CI variable to load the remote ruleset:
 
 ```yaml
 include:
@@ -430,9 +430,9 @@ variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$GROUP_ACCESS_TOKEN@gitlab.com/example-group/remote-ruleset-project"
 ```
 
-The group access token must have the `read_repository` scope and at least the Reporter role. For details, see [Repository permissions](../../../../user/permissions.md#repository).
+The group access token must have the `read_repository` scope and at least the Reporter role. For details, see [Repository permissions](../../../permissions.md#repository).
 
-See [bot users for groups](../../../../user/group/settings/group_access_tokens.md#bot-users-for-groups) to learn how to find the username associated with a group access token.
+See [bot users for groups](../../../group/settings/group_access_tokens.md#bot-users-for-groups) to learn how to find the username associated with a group access token.
 
 #### Replace the default ruleset
 

@@ -31,7 +31,7 @@ This scenario refers to security events where sensitive authentication or author
 
 This scenario might also include the exposure of sensitive information about third-party credentials through GitLab services. The exposure could occur through, for example, accidental commits to public GitLab projects, or misconfiguration of CI/CD settings. For more information, see:
 
-- [Overview of GitLab tokens](../security/tokens/_index.md)
+- [Overview of GitLab tokens](tokens/_index.md)
 - [GitLab CI/CD variable security](../ci/variables/index.md#cicd-variable-security)
 
 #### Response
@@ -66,9 +66,9 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](../security/tokens/_index.md#runner-registration-tokens-deprecated).
-- [Reset user passwords](../security/reset_user_password.md).
-- Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](../security/two_factor_authentication.md).
+- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-deprecated).
+- [Reset user passwords](reset_user_password.md).
+- Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
 
 #### Event types
@@ -108,7 +108,7 @@ Under typical circumstances, the `CI_JOB_TOKEN` is not displayed in the job logs
 
 In such instances, you should:
 
-- Check if there are any recent modifications to the source code in the repository. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](../security/responding_to_security_incidents.md#suspected-compromised-user-account).
+- Check if there are any recent modifications to the source code in the repository. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
 - Any suspicious modification to any code that is called by that file can cause issues and should be investigated and may lead to exposed secrets.
 - Consider rotating the exposed secrets after determining the production impact of revocation.
 - Review [audit logs](../administration/audit_event_reports.md) available to you for any suspicious modifications to user and project settings.
@@ -140,7 +140,7 @@ It is important to [regularly update GitLab](../policy/maintenance.md), update y
 If you suspect that your GitLab instance has been compromised, you should:
 
 - Review the [audit events](../administration/audit_event_reports.md) available to you for suspicious account behavior.
-- Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](../security/responding_to_security_incidents.md#suspected-compromised-user-account) if necessary.
+- Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account) if necessary.
 - Review the Credentials Inventory, if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database, CI/CD pipelines, or elsewhere.
 - Update to the latest version of GitLab and adopt a plan to update after every security patch release.
@@ -173,7 +173,7 @@ Security incidents can occur as a result of improperly configured project or gro
 If you suspect unauthorized modifications to project settings, consider taking the following steps:
 
 - Begin by reviewing the available [audit events](../administration/audit_event_reports.md) to identify the user responsible for the action.
-- If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](../security/responding_to_security_incidents.md#suspected-compromised-user-account).
+- If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
 - Consider reverting the settings to their original state by referring to the audit events and consulting the project owners and maintainers for guidance.
 
 #### Event types
@@ -187,11 +187,11 @@ Before you ask GitLab for help, search the [GitLab documentation](https://docs.g
 
 ### Security best practices
 
-Review the [GitLab Security documentation](../security/_index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
+Review the [GitLab Security documentation](_index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
 
 #### Hardening Recommendations
 
-For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](../security/hardening.md).
+For more information about improving the security posture of your GitLab environment, see the [hardening recommendations](hardening.md).
 
 You can also consider implementing abuse rate limiting as detailed in [Git abuse rate limit](../user/group/reporting/git_abuse_rate_limit.md). Setting abuse rate limits may be helpful to automatically mitigate certain types of security incidents.
 

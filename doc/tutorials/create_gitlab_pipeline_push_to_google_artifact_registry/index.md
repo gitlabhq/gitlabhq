@@ -95,7 +95,7 @@ autoscaling fleet of runners on Compute Engine, with a runner manager that
 creates temporary runners to execute multiple jobs simultaneously.
 
 To set up your autoscaling fleet of runners, follow the instructions in
-[Set up GitLab Runner to execute your CI/CD jobs on Google Cloud](../../tutorials/set_up_gitlab_google_integration/index.md#set-up-gitlab-runner-to-execute-your-cicd-jobs-on-google-cloud).
+[Set up GitLab Runner to execute your CI/CD jobs on Google Cloud](../set_up_gitlab_google_integration/index.md#set-up-gitlab-runner-to-execute-your-cicd-jobs-on-google-cloud).
 Select Google Cloud as the environment where you want your runners to execute
 your CI/CD jobs, and fill out the rest of the configuration details.
 

@@ -43,7 +43,7 @@ GitLab already generates this document when the following requirements are met:
   supported by Gemnasium.
 - A successful pipeline was run on the default branch.
   You should not change the default behavior of allowing the
-  [application security jobs](../../application_security/detect/index.md) to fail.
+  [application security jobs](../detect/index.md) to fail.
 
 ## View project dependencies
 
@@ -71,7 +71,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) dependency filtering for groups in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
 > - Dependency filtering for group [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags.md). Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags.md). Enabled by default.
 
 You can filter the dependency list to focus on only a subset of dependencies. The dependency
 list is available for groups and projects.
@@ -140,7 +140,7 @@ Dependency paths are supported for the following package managers:
 
 ### Licenses
 
-If the [Dependency Scanning](../../application_security/dependency_scanning/index.md) CI job is configured,
+If the [Dependency Scanning](../dependency_scanning/index.md) CI job is configured,
 [discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/index.md) are displayed on this page.
 
 ## Download the dependency list

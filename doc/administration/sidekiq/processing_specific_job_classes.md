@@ -130,6 +130,9 @@ based on a subset of worker attributes:
   to load data in memory before saving it for export.
 - `tags` - short-lived annotations for queues. These are expected to frequently
   change from release to release, and may be removed entirely.
+- `queue_namespace` - Some workers are grouped by a namespace, and
+  `name` is prefixed with `<queue_namespace>:`. For example, for a queue `name` of `cronjob:admin_email`,
+  `queue_namespace` is `cronjob`. Use this attribute to select a group of workers.
 
 `has_external_dependencies` is a boolean attribute: only the exact
 string `true` is considered true, and everything else is considered

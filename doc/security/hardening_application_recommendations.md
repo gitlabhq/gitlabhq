@@ -117,7 +117,7 @@ to specifically allow only those addresses.
 
 For more details on **Visibility and access control**, see [visibility and access controls](../administration/settings/visibility_and_access_controls.md).
 For information on SSH settings, see
-[SSH keys restrictions](../security/ssh_keys_restrictions.md).
+[SSH keys restrictions](ssh_keys_restrictions.md).
 
 ### Account and limit
 

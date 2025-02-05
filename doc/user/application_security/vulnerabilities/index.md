@@ -77,7 +77,7 @@ To explain the vulnerability:
 
    - Select the text below the vulnerability description that reads _You can also use AI by asking GitLab Duo Chat to explain this vulnerability and a suggested fix._
    - In the upper right, from the **Resolve with merge request** dropdown list, select **Explain vulnerability**, then select **Explain vulnerability**.
-   - Open GitLab Duo Chat and use the [explain a vulnerability](../../../user/gitlab_duo_chat/examples.md#explain-a-vulnerability) command by typing `/vulnerability_explain`.
+   - Open GitLab Duo Chat and use the [explain a vulnerability](../../gitlab_duo_chat/examples.md#explain-a-vulnerability) command by typing `/vulnerability_explain`.
 
 The response is shown on the right side of the page.
 
@@ -134,7 +134,7 @@ To resolve the vulnerability:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerability and offered resolution. To create the MR privately, please [create a private fork](../../../user/project/merge_requests/confidential.md), and repeat this process.
+1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerability and offered resolution. To create the MR privately, please [create a private fork](../../project/merge_requests/confidential.md), and repeat this process.
 1. Add an additional commit to the MR. This forces a new pipeline to run.
 1. After the pipeline is complete, on the [pipeline security tab](../vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline), confirm that the vulnerability no longer appears.
 1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/index.md#change-status-of-vulnerabilities).
