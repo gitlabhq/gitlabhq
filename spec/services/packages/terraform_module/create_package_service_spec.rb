@@ -94,15 +94,6 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
 
         it_behaves_like 'duplicate package error'
         it_behaves_like 'with duplicate regex exception, allow creation of matching package'
-
-        context 'when packages_allow_duplicate_exceptions is disabled' do
-          before do
-            stub_feature_flags(packages_allow_duplicate_exceptions: false)
-          end
-
-          it_behaves_like 'duplicate package error'
-          it_behaves_like 'with duplicate regex exception, allow creation of matching package'
-        end
       end
 
       context 'when duplicates allowed' do
@@ -112,14 +103,6 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
 
         it_behaves_like 'creating a package'
         it_behaves_like 'with duplicate regex exception, prevent creation of matching package'
-
-        context 'when packages_allow_duplicate_exceptions is disabled' do
-          before do
-            stub_feature_flags(packages_allow_duplicate_exceptions: false)
-          end
-
-          it_behaves_like 'creating a package'
-        end
       end
 
       context 'for ancestor namespace' do
@@ -147,14 +130,6 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
           end
 
           it_behaves_like 'duplicate package error'
-
-          context 'with packages_allow_duplicate_exceptions disabled' do
-            before do
-              stub_feature_flags(packages_allow_duplicate_exceptions: false)
-            end
-
-            it_behaves_like 'creating a package'
-          end
         end
       end
 

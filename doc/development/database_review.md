@@ -236,7 +236,7 @@ Include in the MR description:
   access and size. Include in the MR description answers to these questions:
   - What is the anticipated growth for the new table over the next 3 months, 6 months, 1 year? What assumptions are these based on?
   - How many reads and writes per hour would you expect this table to have in 3 months, 6 months, 1 year? Under what circumstances are rows updated? What assumptions are these based on?
-  - Based on the anticipated data volume and access patterns, does the new table pose an availability risk to GitLab.com or self-managed instances? Does the proposed design scale to support the needs of GitLab.com and self-managed customers?
+  - Based on the anticipated data volume and access patterns, does the new table pose an availability risk to GitLab.com or GitLab Self-Managed instances? Does the proposed design scale to support the needs of GitLab.com and GitLab Self-Managed customers?
 
 #### Preparation when removing columns, tables, indexes, or other structures
 

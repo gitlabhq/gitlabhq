@@ -119,14 +119,6 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
           end
 
           it_behaves_like 'allows creating the file'
-
-          context 'when packages_allow_duplicate_exceptions is disabled' do
-            before do
-              stub_feature_flags(packages_allow_duplicate_exceptions: false)
-            end
-
-            it_behaves_like 'allows creating the file'
-          end
         end
       end
 
@@ -143,14 +135,6 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
           end
 
           it_behaves_like 'does not allow duplicates'
-
-          context 'when packages_allow_duplicate_exceptions is disabled' do
-            before do
-              stub_feature_flags(packages_allow_duplicate_exceptions: false)
-            end
-
-            it_behaves_like 'allows creating the file'
-          end
         end
 
         context 'with multiple files for the same package and the same pipeline' do

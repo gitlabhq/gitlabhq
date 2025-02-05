@@ -171,9 +171,12 @@ To allow publishing duplicate module names:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Packages and registries**.
 1. In the **Terraform module** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
-1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of packages to allow.
+1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of modules to allow.
 
 Your changes are automatically saved.
+
+NOTE:
+If **Allow duplicates** is turned on, you can specify module names that should not have duplicates in the **Exceptions** text box.
 
 You can also allow publishing duplicate names by enabling `terraform_module_duplicates_allowed` in the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
 

@@ -366,9 +366,9 @@ module Ci
 
       begin
         transaction do
-          if self.runner_projects.empty?
-            self.sharding_key_id = project.id
+          if ::Project.id_in(sharding_key_id).empty?
             self.clear_memoization(:owner)
+            self.sharding_key_id = fallback_owner_project&.id || project.id
           end
 
           self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
@@ -407,14 +407,9 @@ module Ci
       when 'group_type'
         ::Group.find_by_id(sharding_key_id)
       when 'project_type'
-        # NOTE: when a project is deleted, the respective ci_runner_projects records are not immediately
-        # deleted by the LFK, so we might find join records that point to a non-existing project
-        project = ::Project.find_by_id(sharding_key_id)
-        return project if project
+        owner_project = ::Project.find_by_id(sharding_key_id)
 
-        project_ids = runner_projects.order(:id).pluck(:project_id)
-        projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
-        Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
+        owner_project || fallback_owner_project
       end
     end
     strong_memoize_attr :owner
@@ -568,6 +563,14 @@ module Ci
 
     scope :with_upgrade_status, ->(upgrade_status) do
       joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))
+    end
+
+    def fallback_owner_project
+      # NOTE: when a project is deleted, the respective ci_runner_projects records are not immediately
+      # deleted by the LFK, so we might find join records that point to a still-existing project
+      project_ids = runner_projects.order(:id).pluck(:project_id)
+      projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
+      Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
     end
 
     def compute_token_expiration_instance

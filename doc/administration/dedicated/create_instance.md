@@ -218,4 +218,4 @@ Also plan ahead if you need the following GitLab Dedicated features:
 To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../../administration/dedicated/configure_instance.md).
 
 NOTE:
-New GitLab Dedicated instances use default settings for a self-managed instance. A GitLab administrator can change these settings from the [Admin Area](../../administration/admin_area.md).
+New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../administration/admin_area.md).

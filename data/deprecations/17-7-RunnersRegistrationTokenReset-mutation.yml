@@ -20,7 +20,7 @@
     as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
     For details, see [epic 7633](https://gitlab.com/groups/gitlab-org/-/epics/7633).
     This new architecture introduces a new method for registering runners and eliminates the legacy
-    [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+    [runner registration token](https://docs.gitlab.com/ee/security/tokens/index.html#runner-registration-tokens-deprecated).
     In GitLab 18.0, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
 #
   # When support for this feature ends, in XX.YY milestone format.
@@ -29,7 +29,7 @@
   # like [Free, Silver, Gold, Core, Premium, Ultimate]
   tiers:
   # Links to documentation and thumbnail image
-  documentation_url: https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner  # (optional) This is a link to the current documentation page
+  documentation_url: https://docs.gitlab.com/ee/api/runners.html#create-a-runner  # (optional) This is a link to the current documentation page
   image_url:
   # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   video_url:

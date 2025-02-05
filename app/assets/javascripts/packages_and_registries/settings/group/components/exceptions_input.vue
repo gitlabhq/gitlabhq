@@ -21,11 +21,6 @@ export default {
       required: false,
       default: false,
     },
-    duplicatesAllowed: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
     duplicateExceptionRegex: {
       type: String,
       default: '',
@@ -68,7 +63,7 @@ export default {
   >
     <gl-form-input
       :id="id"
-      :disabled="duplicatesAllowed || loading"
+      :disabled="loading"
       width="lg"
       :value="duplicateExceptionRegex"
       :state="isExceptionRegexValid"

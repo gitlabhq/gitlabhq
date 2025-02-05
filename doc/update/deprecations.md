@@ -1213,9 +1213,9 @@ Instance administrators can set higher or lower limits as needed in the Admin ar
 </div>
 
 The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
-This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
-with a GitLab instance at the instance, group, or project level through the API. In GitLab 17.0, registration tokens, and support for certain configuration arguments,
-will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html#prevent-your-runner-registration-workflow-from-breaking).
+This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#create-a-runner) a runner
+with a GitLab instance at the instance, group, or project level through the API. In GitLab 18.0, registration tokens, and support for certain configuration arguments,
+will start returning the HTTP `410 Gone` status code. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html#prevent-your-runner-registration-workflow-from-breaking).
 
 The configuration arguments disabled for runner authentication tokens are:
 
@@ -1451,7 +1451,7 @@ A new method to bind runners to a GitLab instance has been implemented
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 For details, see [epic 7633](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and eliminates the legacy
-[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+[runner registration token](https://docs.gitlab.com/ee/security/tokens/index.html#runner-registration-tokens-deprecated).
 In GitLab 18.0, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
 
 </div>
@@ -1524,7 +1524,7 @@ We plan to implement a new method to bind runners to a GitLab instance
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
-[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+[runner registration token](https://docs.gitlab.com/ee/security/tokens/index.html#runner-registration-tokens-deprecated).
 From GitLab 18.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
@@ -1737,7 +1737,7 @@ With the [upcoming default behavior change to the CI/CD job token](https://docs.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### `ciUsedMinutes` GraphQL field renamed to `ciDuration`
+### `ciMinutesUsed` GraphQL field renamed to `ciDuration`
 
 <div class="deprecation-notes">
 
@@ -1747,8 +1747,8 @@ With the [upcoming default behavior change to the CI/CD job token](https://docs.
 
 </div>
 
-The `ciDuration` field of the `CiRunnerUsage` and `CiRunnerUsageByProject` types replaces the former `ciUsedMinutes` field.
-Update all references to `ciUsedMinutes` from these types to `ciDuration`.
+The `ciDuration` field of the `CiRunnerUsage` and `CiRunnerUsageByProject` types replaces the former `ciMinutesUsed` field.
+Update all references to `ciMinutesUsed` from these types to `ciDuration`.
 
 </div>
 

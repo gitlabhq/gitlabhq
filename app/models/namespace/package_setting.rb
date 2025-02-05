@@ -44,13 +44,9 @@ class Namespace::PackageSetting < ApplicationRecord
         "\\A#{package.package_settings["#{package.package_type}_duplicate_exception_regex"]}\\z"
       )
 
-      if Feature.enabled?(:packages_allow_duplicate_exceptions, package.project.group)
-        regex_match = regex.match?(package.name) || regex.match?(package.version)
+      regex_match = regex.match?(package.name) || regex.match?(package.version)
 
-        duplicates_allowed ? !regex_match : regex_match
-      else
-        duplicates_allowed || regex.match?(package.name) || regex.match?(package.version)
-      end
+      duplicates_allowed ? !regex_match : regex_match
     end
   end
 end

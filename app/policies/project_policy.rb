@@ -667,6 +667,13 @@ class ProjectPolicy < BasePolicy
     enable :admin_protected_branch
   end
 
+  rule { can?(:manage_protected_tags) }.policy do
+    enable :read_protected_tags
+    enable :create_protected_tags
+    enable :update_protected_tags
+    enable :destroy_protected_tags
+  end
+
   rule { can?(:admin_build) }.enable :manage_trigger
   rule { can?(:admin_runner) }.enable :read_runner
 

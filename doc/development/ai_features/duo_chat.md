@@ -316,7 +316,7 @@ For more information, see [the guideline of the regression evaluator](https://gi
 
 ## GitLab Duo Chat Self-managed End-to-End Tests
 
-In MRs, the end-to-end tests exercise the Duo Chat functionality of self-managed instances by using an instance of the GitLab Linux package
+In MRs, the end-to-end tests exercise the Duo Chat functionality of GitLab Self-Managed instances by using an instance of the GitLab Linux package
 integrated with the `latest` version of AI gateway. The instance of AI gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
 To view the results of these tests, open the `e2e:test-on-omnibus-ee` child pipeline and view the `ai-gateway` job.
 

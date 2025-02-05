@@ -535,19 +535,48 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
 
     context 'with project runner' do
-      let(:runner) { create(:ci_runner, :project, projects: [other_project]) }
+      let_it_be_with_refind(:owner_project) { create(:project, group: group) }
+      let_it_be_with_reload(:fallback_owner_project) { create(:project, group: group) }
+
+      let(:associated_projects) { [owner_project, fallback_owner_project] }
+      let(:runner) { create(:ci_runner, :project, projects: associated_projects) }
 
       it 'assigns runner to project' do
         expect(assign_to).to be_truthy
 
         expect(runner).to be_project_type
-        expect(runner.runner_projects.pluck(:project_id)).to contain_exactly(project.id, other_project.id)
+        expect(runner.runner_projects.pluck(:project_id))
+          .to contain_exactly(project.id, owner_project.id, fallback_owner_project.id)
       end
 
       it 'does not change sharding_key_id or owner' do
         expect { assign_to }
-          .to not_change { runner.sharding_key_id }.from(other_project.id)
-          .and not_change { runner.owner }.from(other_project)
+          .to not_change { runner.sharding_key_id }.from(owner_project.id)
+          .and not_change { runner.owner }.from(owner_project)
+      end
+
+      context 'when sharding_key_id does not point to an existing project' do
+        subject(:assign_to) do
+          owner_project.destroy!
+
+          runner.assign_to(project)
+        end
+
+        it 'changes sharding_key_id and owner to fallback owner project' do
+          expect { assign_to }
+            .to change { runner.sharding_key_id }.from(owner_project.id).to(fallback_owner_project.id)
+            .and change { runner.owner }.from(owner_project).to(fallback_owner_project)
+        end
+
+        context 'and fallback does not exist' do
+          let(:associated_projects) { [owner_project] }
+
+          it 'changes sharding_key_id and owner to newly-assigned project' do
+            expect { assign_to }
+              .to change { runner.sharding_key_id }.from(owner_project.id).to(project.id)
+              .and change { runner.owner }.from(owner_project).to(project)
+          end
+        end
       end
     end
   end

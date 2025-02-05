@@ -239,7 +239,7 @@ Your migration **must be** reversible. This is very important, as it should
 be possible to downgrade in case of a vulnerability or bugs.
 
 **Note**: On GitLab production environments, if a problem occurs, a roll-forward strategy is used instead of rolling back migrations using `db:rollback`.
-On self-managed instances we advise users to restore the backup which was created before the upgrade process started.
+On GitLab Self-Managed, we advise users to restore the backup which was created before the upgrade process started.
 The `down` method is used primarily in the development environment, for example, when a developer wants to ensure
 their local copy of `structure.sql` file and database are in a consistent state when switching between commits or branches.
 
@@ -1544,7 +1544,7 @@ Any table which has some high read operation compared to current [high-traffic t
 
 As a general rule, we discourage adding columns to high-traffic tables that are purely for
 analytics or reporting of GitLab.com. This can have negative performance impacts for all
-self-managed instances without providing direct feature value to them.
+GitLab Self-Managed instances without providing direct feature value to them.
 
 ## Milestone
 

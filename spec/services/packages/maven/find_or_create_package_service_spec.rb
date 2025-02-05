@@ -55,14 +55,6 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       end
     end
 
-    shared_examples 'reuse existing package when packages_allow_duplicate_exceptions is disabled' do
-      before do
-        stub_feature_flags(packages_allow_duplicate_exceptions: false)
-      end
-
-      it_behaves_like 'reuse existing package'
-    end
-
     context 'with path including version' do
       # Note that "path with version" and "file type maven metadata xml" only exists for snapshot versions
       # In other words, we will never have an metadata xml upload on a path with version for a non snapshot version
@@ -237,8 +229,6 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
         end
 
         it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
-
-        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
       end
 
       context 'when the package version matches the exception regex' do
@@ -247,8 +237,6 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
         end
 
         it_behaves_like 'returning an error', with_message: 'Duplicate package is not allowed'
-
-        it_behaves_like 'reuse existing package when packages_allow_duplicate_exceptions is disabled'
       end
 
       context 'when the exception regex is blank' do

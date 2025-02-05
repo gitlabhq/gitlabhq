@@ -9,7 +9,6 @@ module Groups
 
       before_action do
         push_frontend_feature_flag(:maven_central_request_forwarding, group)
-        push_frontend_feature_flag(:packages_allow_duplicate_exceptions, group)
       end
 
       feature_category :package_registry

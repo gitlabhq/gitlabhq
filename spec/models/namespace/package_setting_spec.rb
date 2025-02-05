@@ -142,41 +142,6 @@ RSpec.describe Namespace::PackageSetting, feature_category: :package_registry do
       end
     end
 
-    context 'with packages_allow_duplicate_exceptions disabled' do
-      before do
-        stub_feature_flags(packages_allow_duplicate_exceptions: false)
-      end
-
-      context 'package types with package_settings' do
-        Namespace::PackageSetting::PACKAGES_WITH_SETTINGS.each do |package_type|
-          context "with package_type: #{package_type}" do
-            let_it_be(:package) { create("#{package_type}_package", package_name_and_version(package_type)) }
-            let_it_be(:package_type) { package.package_type }
-            let_it_be(:package_setting) { package.project.namespace.package_settings }
-
-            where(:duplicates_allowed, :duplicate_exception_regex, :result) do
-              true  | ''       | true
-              false | ''       | false
-              false | '.*'     | true
-              false | 'fo.*'   | true
-              false | '.*be.*' | true
-            end
-
-            with_them do
-              before do
-                package_setting.update!(
-                  "#{package_type}_duplicates_allowed" => duplicates_allowed,
-                  "#{package_type}_duplicate_exception_regex" => duplicate_exception_regex
-                )
-              end
-
-              it { is_expected.to be(result) }
-            end
-          end
-        end
-      end
-    end
-
     it_behaves_like 'package types without package_settings'
   end
 

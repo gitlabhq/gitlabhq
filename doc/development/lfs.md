@@ -258,4 +258,4 @@ resolved.
 
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - User documentation: [Git Large File Storage (LFS)](../topics/git/lfs/index.md)
-- [GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md) for self-managed instances
+- [GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md) for GitLab Self-Managed
