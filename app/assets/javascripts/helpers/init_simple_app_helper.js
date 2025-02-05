@@ -32,6 +32,8 @@ const getApolloProvider = (apolloProviderOption) => {
  * @param {Vue.component} component The Vue compoment to be built as the root of the app
  * @param {{withApolloProvider: boolean|VueApollo}} options. extra options to be passed to the vue app
  *      withApolloProvider: if true, instantiates a default apolloProvider. Also accepts and instance of VueApollo
+ * @param {{name: string}} Name of the app
+
  *
  * @example
  * ```html
@@ -39,13 +41,13 @@ const getApolloProvider = (apolloProviderOption) => {
  * ```
  *
  * ```javascript
- * initSimpleApp('#mount-here', MyApp, { withApolloProvider: true })
+ * initSimpleApp('#mount-here', MyApp, { withApolloProvider: true, name: 'MyAppRoot' })
  * ```
  *
  * This will mount MyApp as root on '#mount-here'. It will receive {'some': 'object'} as it's
  * view model prop.
  */
-export const initSimpleApp = (selector, component, { withApolloProvider } = {}) => {
+export const initSimpleApp = (selector, component, { withApolloProvider, name } = {}) => {
   const element = document.querySelector(selector);
 
   if (!element) {
@@ -57,6 +59,7 @@ export const initSimpleApp = (selector, component, { withApolloProvider } = {}) 
   return new Vue({
     el: element,
     apolloProvider: getApolloProvider(withApolloProvider),
+    name,
     render(h) {
       return h(component, { props });
     },

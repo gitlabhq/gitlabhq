@@ -36,7 +36,7 @@
       = gl_tab_link_to _('Merged'), merge_requests_merged_dashboard_path
       = gl_tab_link_to _('Search'), merge_requests_search_dashboard_path, item_active: true
 
-  %div{ class: "#{'gl-bg-gray-10' if merge_request_dashboard_enabled?(current_user)}" }
+  %div{ class: "#{'gl-bg-subtle' if merge_request_dashboard_enabled?(current_user)}" }
     - unless merge_request_dashboard_enabled?(current_user)
       .top-area
         = render 'shared/issuable/nav', type: :merge_requests, display_count: !(@no_filters_set || @search_timeout_occurred)

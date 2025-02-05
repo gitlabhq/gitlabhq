@@ -513,7 +513,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/gitaly_client/with_feature_flag_actors.rb'
     - 'lib/gitlab/github_import/client.rb'
     - 'lib/gitlab/github_import/representation/diff_notes/suggestion_formatter.rb'
-    - 'lib/gitlab/gl_repository/identifier.rb'
     - 'lib/gitlab/gpg/commit.rb'
     - 'lib/gitlab/graphql/lazy.rb'
     - 'lib/gitlab/graphql/pagination/keyset/connection.rb'

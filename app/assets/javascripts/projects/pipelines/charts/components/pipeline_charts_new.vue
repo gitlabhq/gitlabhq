@@ -95,7 +95,7 @@ export default {
 <template>
   <div>
     <h2>{{ s__('PipelineCharts|Pipelines') }}</h2>
-    <div class="gl-mb-4 gl-bg-gray-10 gl-p-4 gl-pb-2">
+    <div class="gl-mb-4 gl-bg-subtle gl-p-4 gl-pb-2">
       <gl-form-group :label="__('Date range')" label-for="date-range">
         <gl-collapsible-listbox
           id="date-range"

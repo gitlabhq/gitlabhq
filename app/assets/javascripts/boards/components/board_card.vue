@@ -231,7 +231,7 @@ export default {
         'gl-cursor-grab': isDraggable,
         'is-active !gl-bg-blue-50 hover:!gl-bg-blue-50': isActive,
         'is-disabled': isDisabled,
-        'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
+        'gl-cursor-not-allowed gl-bg-subtle': item.isLoading,
       },
     ]"
     :index="index"

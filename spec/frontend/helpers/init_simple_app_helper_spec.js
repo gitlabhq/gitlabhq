@@ -90,5 +90,22 @@ describe('helpers/init_simple_app_helper/initSimpleApp', () => {
         });
       });
     });
+    describe('name', () => {
+      describe('if no name is given', () => {
+        it('name is undefined', () => {
+          initMock('<div id="mount-here"></div>');
+
+          expect(wrapper.vm.$options.name).toBeUndefined();
+        });
+      });
+
+      describe('if a name is given', () => {
+        it('name is set to the given', () => {
+          initMock('<div id="mount-here"></div>', { name: 'CoolAppRoot' });
+
+          expect(wrapper.vm.$options.name).toBe('CoolAppRoot');
+        });
+      });
+    });
   });
 });

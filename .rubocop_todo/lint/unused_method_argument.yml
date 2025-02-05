@@ -104,7 +104,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/external_issue.rb'
     - 'app/models/group.rb'
     - 'app/models/integrations/buildkite.rb'
-    - 'app/models/integrations/ewm.rb'
     - 'app/models/integrations/microsoft_teams.rb'
     - 'app/models/integrations/mock_ci.rb'
     - 'app/models/integrations/mock_monitoring.rb'

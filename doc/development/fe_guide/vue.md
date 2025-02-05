@@ -149,7 +149,7 @@ export default {
 import MyComponent from './my_component.vue'
 import { initSimpleApp } from '~/helpers/init_simple_app_helper'
 
-initSimpleApp('#js-my-element', MyComponent)
+initSimpleApp('#js-my-element', MyComponent, { name: 'MyAppRoot' })
 ```
 
 ##### `provide` and `inject`

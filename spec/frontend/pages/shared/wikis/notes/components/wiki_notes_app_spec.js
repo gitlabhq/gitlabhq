@@ -12,7 +12,7 @@ import eventHub, {
   EVENT_EDIT_WIKI_DONE,
   EVENT_EDIT_WIKI_START,
 } from '~/pages/shared/wikis/event_hub';
-import { note, noteableId } from '../mock_data';
+import { note, noteableId, queryVariables } from '../mock_data';
 
 describe('WikiNotesApp', () => {
   let wrapper;
@@ -26,12 +26,9 @@ describe('WikiNotesApp', () => {
     },
   };
 
-  const createWrapper = ({ provideData = { containerType: 'project' } } = {}) =>
+  const createWrapper = ({ provideData = { queryVariables } } = {}) =>
     shallowMountExtended(WikiNotesApp, {
       provide: {
-        pageInfo: {
-          slug: 'home',
-        },
         containerId: noteableId,
         noteCount: 5,
         ...provideData,
@@ -207,7 +204,7 @@ describe('WikiNotesApp', () => {
         },
       ]);
 
-      // delete only note
+      // delete remaning note
       wikiDiscussions.at(2).vm.$emit('note-deleted', 32);
       const { discussions } = wrapper.vm;
       expect(discussions).toHaveLength(2);
@@ -220,8 +217,8 @@ describe('WikiNotesApp', () => {
   });
 
   describe('when fetching discussions', () => {
-    const setUpAndReturnVariables = (containerType) => {
-      wrapper = createWrapper({ provideData: { containerType } });
+    const setUpAndReturnVariables = (id) => {
+      wrapper = createWrapper({ provideData: { queryVariables: { ...queryVariables, ...id } } });
 
       const variablesSpy = jest.spyOn(WikiNotesApp.apollo.wikiPage, 'variables');
       WikiNotesApp.apollo.wikiPage.variables.call(wrapper.vm);
@@ -235,12 +232,12 @@ describe('WikiNotesApp', () => {
     });
 
     it('should set variable data when containerType is group', () => {
-      const variables = setUpAndReturnVariables('group');
+      const variables = setUpAndReturnVariables({ namespaceId: 'gid://gitlab/Group/7' });
       expect(variables).toMatchObject({ slug: 'home', namespaceId: 'gid://gitlab/Group/7' });
     });
 
     it('should set variable data when containerType is project', () => {
-      const variables = setUpAndReturnVariables('project');
+      const variables = setUpAndReturnVariables({ projectId: 'gid://gitlab/Project/7' });
 
       expect(variables).toMatchObject({ slug: 'home', projectId: 'gid://gitlab/Project/7' });
     });

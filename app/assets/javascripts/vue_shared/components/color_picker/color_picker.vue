@@ -17,7 +17,7 @@ import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 
 const PREVIEW_COLOR_DEFAULT_CLASSES =
-  'gl-relative gl-w-7 gl-bg-gray-10 gl-rounded-tl-base gl-rounded-bl-base';
+  'gl-relative gl-w-7 gl-bg-subtle gl-rounded-tl-base gl-rounded-bl-base';
 
 export default {
   name: 'ColorPicker',

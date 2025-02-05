@@ -13,7 +13,6 @@ Rails/LexicallyScopedActionFilter:
     - 'app/controllers/groups/milestones_controller.rb'
     - 'app/controllers/groups/settings/repository_controller.rb'
     - 'app/controllers/groups/uploads_controller.rb'
-    - 'app/controllers/groups_controller.rb'
     - 'app/controllers/import/base_controller.rb'
     - 'app/controllers/oauth/applications_controller.rb'
     - 'app/controllers/passwords_controller.rb'

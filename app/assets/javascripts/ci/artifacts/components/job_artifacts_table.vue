@@ -444,7 +444,7 @@ export default {
       :fields="fields"
       :busy="$apollo.queries.jobArtifacts.loading"
       stacked="sm"
-      details-td-class="!gl-bg-gray-10 !gl-p-0 gl-overflow-auto"
+      details-td-class="!gl-bg-subtle !gl-p-0 gl-overflow-auto"
       :tbody-tr-attr="$options.TBODY_TR_ATTR"
     >
       <template #table-busy>

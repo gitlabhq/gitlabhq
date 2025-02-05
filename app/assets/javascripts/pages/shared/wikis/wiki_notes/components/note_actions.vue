@@ -7,6 +7,7 @@ import {
   GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 export default {
@@ -24,6 +25,7 @@ export default {
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
     AbuseCategorySelector,
+    EmojiPicker,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -53,6 +55,11 @@ export default {
       required: false,
       default: '',
     },
+    canAwardEmoji: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -76,6 +83,13 @@ export default {
 </script>
 <template>
   <div class="note-actions gl-justify-end">
+    <emoji-picker
+      v-if="canAwardEmoji"
+      data-testid="note-emoji-button"
+      toggle-class="add-reaction-button btn-default-tertiary"
+      :right="false"
+      @click="(name) => $emit('award-emoji', name)"
+    />
     <gl-button
       v-if="showReply"
       ref="replyButton"

@@ -130,7 +130,7 @@ export default {
     <div
       :id="containerId"
       :ref="$options.CONTAINER_REF"
-      class="gl-overflow-auto gl-bg-gray-10"
+      class="gl-overflow-auto gl-bg-subtle"
       data-testid="graph-container"
     >
       <links-layer

@@ -175,7 +175,6 @@ Style/SuperArguments:
     - 'qa/qa/resource/merge_request.rb'
     - 'qa/qa/service/cluster_provider/gcloud.rb'
     - 'qa/qa/service/docker_run/smocker.rb'
-    - 'scripts/cells/application-settings-analysis.rb'
     - 'spec/lib/gitlab/database/no_overrides_for_through_associations_spec.rb'
     - 'spec/support/shared_examples/graphql/sorted_paginated_query_shared_examples.rb'
     - 'tooling/lib/tooling/crystalball/coverage_lines_strategy.rb'

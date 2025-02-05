@@ -16,7 +16,7 @@ export default {
 <template>
   <div
     ref="toc"
-    class="gl-m-3 gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-gray-10 gl-p-3"
+    class="gl-m-3 gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-subtle gl-p-3"
   >
     <span class="gl-py-3 gl-text-sm">{{ __('On this page') }}</span>
     <ul class="wiki-pages gl-text-sm">

@@ -41580,6 +41580,9 @@ msgstr ""
 msgid "Personal access token"
 msgstr ""
 
+msgid "Personal access token is required."
+msgstr ""
+
 msgid "Personal access token prefix"
 msgstr ""
 
@@ -64836,6 +64839,9 @@ msgstr[1] ""
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr ""
 
+msgid "WorkItem|Active"
+msgstr ""
+
 msgid "WorkItem|Active custom fields"
 msgstr ""
 
@@ -64888,6 +64894,12 @@ msgid "WorkItem|Aqua"
 msgstr ""
 
 msgid "WorkItem|Archive %{itemName}"
+msgstr ""
+
+msgid "WorkItem|Archived"
+msgstr ""
+
+msgid "WorkItem|Archived custom fields"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to cancel creating this %{workItemType}?"
@@ -65064,13 +65076,16 @@ msgstr ""
 msgid "WorkItem|Existing task"
 msgstr ""
 
-msgid "WorkItem|Failed to archive custom field."
+msgid "WorkItem|Failed to archive custom field %{fieldName}."
 msgstr ""
 
 msgid "WorkItem|Failed to create a branch for this %{workItemType}. Please try again."
 msgstr ""
 
 msgid "WorkItem|Failed to load custom fields."
+msgstr ""
+
+msgid "WorkItem|Failed to unarchive custom field %{fieldName}."
 msgstr ""
 
 msgid "WorkItem|Field"
@@ -65491,6 +65506,9 @@ msgid "WorkItem|Type changed."
 msgstr ""
 
 msgid "WorkItem|Unable to find selected template."
+msgstr ""
+
+msgid "WorkItem|Unarchive %{itemName}"
 msgstr ""
 
 msgid "WorkItem|Undo"

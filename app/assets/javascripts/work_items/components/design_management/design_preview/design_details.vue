@@ -356,7 +356,7 @@ export default {
 
 <template>
   <div
-    class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-gray-10 lg:gl-flex-row"
+    class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-subtle lg:gl-flex-row"
   >
     <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden">
       <design-toolbar

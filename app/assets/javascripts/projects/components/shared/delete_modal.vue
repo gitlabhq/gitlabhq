@@ -105,7 +105,7 @@ export default {
   <gl-modal
     :visible="visible"
     :modal-id="modalId"
-    footer-class="gl-bg-gray-10 gl-p-5"
+    footer-class="gl-bg-subtle gl-p-5"
     title-class="gl-text-red-500"
     :action-primary="modalActionProps.primary"
     :action-cancel="modalActionProps.cancel"

@@ -223,7 +223,6 @@ RSpec/ExpectChange:
     - 'spec/models/diff_note_spec.rb'
     - 'spec/models/environment_spec.rb'
     - 'spec/models/hooks/web_hook_log_spec.rb'
-    - 'spec/models/integrations/confluence_spec.rb'
     - 'spec/models/integrations/drone_ci_spec.rb'
     - 'spec/models/label_spec.rb'
     - 'spec/models/members/last_group_owner_assigner_spec.rb'

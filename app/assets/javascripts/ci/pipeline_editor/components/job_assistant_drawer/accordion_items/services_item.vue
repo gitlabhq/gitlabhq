@@ -66,7 +66,7 @@ export default {
     <div
       v-for="(service, index) in job.services"
       :key="index"
-      class="gl-relative gl-mb-5 gl-bg-gray-10 gl-p-5"
+      class="gl-relative gl-mb-5 gl-bg-subtle gl-p-5"
     >
       <gl-button
         v-if="canDeleteServices"

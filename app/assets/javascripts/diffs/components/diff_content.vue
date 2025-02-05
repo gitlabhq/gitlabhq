@@ -182,7 +182,7 @@ export default {
       </template>
       <div
         v-else-if="isWhitespaceOnly"
-        class="gl-flex gl-h-13 gl-items-center gl-justify-center gl-bg-gray-10"
+        class="gl-flex gl-h-13 gl-items-center gl-justify-center gl-bg-subtle"
         data-testid="diff-whitespace-only-state"
       >
         {{ __('Contains only whitespace changes.') }}

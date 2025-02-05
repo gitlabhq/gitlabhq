@@ -4,7 +4,6 @@ Layout/FirstHashElementIndentation:
   Exclude:
     - 'ee/spec/lib/gitlab/ci/reports/coverage_fuzzing/report_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/lease_spec.rb'
-    - 'ee/spec/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate_spec.rb'
     - 'ee/spec/mailers/credentials_inventory_mailer_spec.rb'
     - 'ee/spec/mailers/emails/requirements_spec.rb'
     - 'ee/spec/models/concerns/elastic/note_spec.rb'

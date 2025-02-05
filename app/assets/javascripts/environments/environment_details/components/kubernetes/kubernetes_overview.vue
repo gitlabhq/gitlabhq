@@ -283,7 +283,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="clusterAgent" class="-gl-mt-3 gl-bg-gray-10 gl-p-5">
+  <div v-if="clusterAgent" class="-gl-mt-3 gl-bg-subtle gl-p-5">
     <div class="gl-flex gl-flex-wrap gl-items-center gl-justify-between">
       <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-2 gl-mr-5 gl-grow" />
       <kubernetes-status-bar

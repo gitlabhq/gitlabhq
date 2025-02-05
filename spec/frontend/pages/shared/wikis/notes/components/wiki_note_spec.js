@@ -5,18 +5,35 @@ import WikiNote from '~/pages/shared/wikis/wiki_notes/components/wiki_note.vue';
 import NoteHeader from '~/pages/shared/wikis/wiki_notes/components/note_header.vue';
 import NoteActions from '~/pages/shared/wikis/wiki_notes/components/note_actions.vue';
 import NoteBody from '~/pages/shared/wikis/wiki_notes/components/note_body.vue';
-import DeleteNoteMutation from '~/wikis/graphql/notes/delete_wiki_page_note.mutation.graphql';
+import deleteNoteMutation from '~/wikis/graphql/notes/delete_wiki_page_note.mutation.graphql';
+import wikiNoteToggleAwardEmojiMutation from '~/wikis/graphql/notes/wiki_note_toggle_award_emoji.mutation.graphql';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import AwardsList from '~/vue_shared/components/awards_list.vue';
 import * as autosave from '~/lib/utils/autosave';
 import * as confirmViaGLModal from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import * as alert from '~/alert';
-import { noteableType, currentUserData, note, noteableId } from '../mock_data';
+import {
+  noteableType,
+  currentUserData,
+  note,
+  noteableId,
+  queryVariables,
+  awardEmoji,
+} from '../mock_data';
 
 describe('WikiNote', () => {
   let wrapper;
 
   const $apollo = {
     mutate: jest.fn(),
+  };
+
+  const noteWithEmojiAward = {
+    ...note,
+    awardEmoji: {
+      nodes: [awardEmoji],
+    },
   };
 
   const createWrapper = (props) => {
@@ -31,6 +48,7 @@ describe('WikiNote', () => {
       provide: {
         noteableType,
         currentUserData,
+        queryVariables,
       },
       stubs: {
         GlAvatarLink: {
@@ -108,6 +126,38 @@ describe('WikiNote', () => {
         noteableId,
         isEditing: false,
       });
+    });
+
+    it('should not render awards list', () => {
+      expect(wrapper.findComponent(AwardsList).exists()).toBe(false);
+    });
+  });
+
+  describe('when note has emoji awards', () => {
+    beforeEach(() => {
+      noteWithEmojiAward.userPermissions.awardEmoji = true;
+
+      wrapper = createWrapper({
+        note: noteWithEmojiAward,
+      });
+    });
+
+    it('should render awards list with the correct emojis', () => {
+      const awardsList = wrapper.findComponent(AwardsList);
+      expect(awardsList.props().awards).toMatchObject([awardEmoji]);
+    });
+
+    it('should pass canAwardEmoji prop as false when user cannot award emoji', () => {
+      noteWithEmojiAward.userPermissions.awardEmoji = false;
+      wrapper = createWrapper({ note: noteWithEmojiAward });
+
+      const noteActions = wrapper.findComponent(NoteActions);
+      expect(noteActions.props('canAwardEmoji')).toBe(false);
+    });
+
+    it('should pass canAwardEmoji prop to NoteActions as true when user can award emoji', () => {
+      const noteActions = wrapper.findComponent(NoteActions);
+      expect(noteActions.props('canAwardEmoji')).toBe(true);
     });
   });
 
@@ -329,7 +379,7 @@ describe('WikiNote', () => {
 
             await wrapper.vm.deleteNote();
             expect($apollo.mutate).toHaveBeenCalledWith({
-              mutation: DeleteNoteMutation,
+              mutation: deleteNoteMutation,
               variables: {
                 input: {
                   id: note.id,
@@ -369,6 +419,90 @@ describe('WikiNote', () => {
       describe('when not deleting', () => {
         it('should not apply deleting styles', () => {
           verifyEditingOrDeletingStyles(false);
+        });
+      });
+    });
+
+    describe('user can award emoji', () => {
+      beforeEach(() => {
+        noteWithEmojiAward.userPermissions.awardEmoji = true;
+      });
+
+      describe('isEmojiPresentForCurrentUser', () => {
+        afterEach(() => {
+          jest.restoreAllMocks();
+        });
+
+        it.each`
+          userId  | emojiName     | returnValue | description
+          ${'70'} | ${'star'}     | ${true}     | ${'correct user id, correct name'}
+          ${'1'}  | ${'star'}     | ${false}    | ${'incorrect user id, correct name'}
+          ${'70'} | ${'bar'}      | ${false}    | ${'correct user id, incorrect name'}
+          ${'2'}  | ${'thumbsup'} | ${false}    | ${'incorrect user id, incorrect name'}
+        `(
+          'should return true only when userId and emoji name match with their corresponding values in the emojiAward and false when any of they dont',
+          ({ userId, emojiName, returnValue }) => {
+            noteWithEmojiAward.awardEmoji.nodes[0].user.id = userId;
+
+            wrapper = createWrapper({
+              note: noteWithEmojiAward,
+            });
+            $apollo.mutate.mockResolvedValue({});
+
+            const spy = jest.spyOn(wrapper.vm, 'isEmojiPresentForCurrentUser');
+            const awardsList = wrapper.findComponent(AwardsList);
+            awardsList.vm.$emit('award', emojiName);
+
+            expect(spy).toHaveReturnedWith(returnValue);
+          },
+        );
+      });
+
+      describe('handleAwardEmoji', () => {
+        beforeEach(() => {
+          noteWithEmojiAward.userPermissions.awardEmoji = true;
+
+          wrapper = createWrapper({
+            note: noteWithEmojiAward,
+          });
+        });
+
+        afterEach(() => {
+          jest.restoreAllMocks();
+        });
+
+        it('should call the apollo mutation with the correct data when handleAwardEmoji is called with an emoji name', () => {
+          $apollo.mutate.mockResolvedValue({});
+          jest.spyOn(wrapper.vm, 'isEmojiPresentForCurrentUser').mockReturnValue(false);
+
+          const awardsList = wrapper.findComponent(AwardsList);
+          awardsList.vm.$emit('award', 'star');
+
+          expect($apollo.mutate).toHaveBeenCalledWith({
+            mutation: wikiNoteToggleAwardEmojiMutation,
+            variables: {
+              name: 'star',
+              awardableId: note.id,
+            },
+            optimisticResponse: {
+              awardEmojiToggle: {
+                errors: [],
+                toggledOn: true,
+              },
+            },
+            update: expect.any(Function),
+          });
+        });
+
+        it('should call the sentry capture exception function with the correct data if mutation fails', async () => {
+          jest.spyOn(Sentry, 'captureException');
+          $apollo.mutate.mockRejectedValue('error');
+
+          const awardsList = wrapper.findComponent(AwardsList);
+          awardsList.vm.$emit('award', 'star');
+
+          await nextTick();
+          expect(Sentry.captureException).toHaveBeenCalledWith('error');
         });
       });
     });

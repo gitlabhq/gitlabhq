@@ -29,7 +29,9 @@
   .form-group.gl-form-group
     %label.col-form-label{ for: 'personal_access_token' }= _('Personal access token')
     = hidden_field_tag(:namespace_id, params[:namespace_id])
-    = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { testid: 'personal-access-token-field' }
+    = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input js-import-github-pat-field', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { testid: 'personal-access-token-field' }
+    %p.invalid-feedback.js-import-github-pat-validation
+      = _('Personal access token is required.')
     %span.form-text.gl-text-subtle
       - code_pair = tag_pair(tag.code, :code_start, :code_end)
       - github_link_tag_pair = tag_pair(link_to('', 'https://github.com/settings/tokens', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
@@ -49,5 +51,5 @@
   .form-actions.gl-flex.gl-justify-end
     = render Pajamas::ButtonComponent.new(href: new_project_path) do
       = _('Cancel')
-    = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-ml-3', data: { testid: 'authenticate-button' } }) do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, type: :submit, button_options: { class: 'gl-ml-3 js-import-github-pat-authenticate', data: { testid: 'authenticate-button' } }) do
       = _('Authenticate')

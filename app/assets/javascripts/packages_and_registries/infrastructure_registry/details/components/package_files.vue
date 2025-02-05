@@ -155,7 +155,7 @@ export default {
 
       <template #row-details="{ item }">
         <div
-          class="gl-flex gl-grow gl-flex-col gl-rounded-base gl-bg-gray-10 gl-shadow-inner-1-gray-100"
+          class="gl-flex gl-grow gl-flex-col gl-rounded-base gl-bg-subtle gl-shadow-inner-1-gray-100"
         >
           <file-sha
             v-if="item.file_sha256"

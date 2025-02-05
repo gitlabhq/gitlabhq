@@ -68,7 +68,7 @@ export default {
       <gl-tabs v-model="selectedRelationTypeTabIdx" content-class="!gl-py-0 gl-mb-3">
         <gl-tab v-for="tab in $options.relationTypes" :key="tab.title" :title="tab.title">
           <div
-            class="gl-flex gl-flex-wrap gl-justify-between gl-gap-3 gl-border-0 gl-border-b-1 gl-border-solid gl-border-b-default gl-bg-gray-10 gl-p-5"
+            class="gl-flex gl-flex-wrap gl-justify-between gl-gap-3 gl-border-0 gl-border-b-1 gl-border-solid gl-border-b-default gl-bg-subtle gl-p-5"
           >
             <form class="gl-mr-3 gl-flex gl-grow" novalidate @submit.prevent>
               <github-organizations-box

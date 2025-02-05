@@ -10,7 +10,6 @@ Style/NumberedParameters:
     - 'app/helpers/hooks_helper.rb'
     - 'app/models/active_session.rb'
     - 'app/models/bulk_imports/entity.rb'
-    - 'app/models/integrations/clickup.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/youtrack.rb'
     - 'app/models/project.rb'

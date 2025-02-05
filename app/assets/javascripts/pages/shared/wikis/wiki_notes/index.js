@@ -3,6 +3,8 @@ import Vue from 'vue';
 import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import WikiNotesApp from './components/wiki_notes_app.vue';
 
 export default () => {
@@ -30,11 +32,22 @@ export default () => {
   Vue.use(VueApollo);
   const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
 
+  const pageInfoData = convertObjectPropsToCamelCase(JSON.parse(pageInfo));
+  const queryVariables = {
+    slug: pageInfoData.slug,
+  };
+
+  if (containerType === 'project') {
+    queryVariables.projectId = convertToGraphQLId(TYPENAME_PROJECT, containerId);
+  } else if (containerType === 'group') {
+    queryVariables.namespaceId = convertToGraphQLId(TYPENAME_GROUP, containerId);
+  }
+
   return new Vue({
     el,
     apolloProvider,
     provide: {
-      pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+      pageInfo: pageInfoData,
       containerId,
       containerType,
       markdownPreviewPath,
@@ -43,6 +56,7 @@ export default () => {
       registerPath,
       signInPath,
       noteableType,
+      queryVariables,
       noteCount: 5,
       lockedWikiDocsPath: '',
       markdownDocsPath: helpPagePath('user/markdown.md'),

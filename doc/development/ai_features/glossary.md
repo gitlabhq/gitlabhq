@@ -207,3 +207,30 @@ An agent tasked with overseeing and coordinating the actions of other agents wit
 ### Tool
 
 In the context of multi-agent workflows, a tool is a utility or application that agents can use to perform tasks. Tools are used to communicate with the outside world, and are an interface to something other than an LLM, like reading GitLab issues, cloning a repository, or reading documentation.
+
+## AI Context Terminology
+
+### Advanced Context Resolver
+
+Advanced context is a comprehensive set of code-related information extending
+beyond a single file, including open file tabs, imports, dependencies,
+cross-file symbols and definitions, and project-wide relevant code snippets.
+
+Advanced context *resolver* is a system designed to gather the above advanced context.
+By providing advanced context, the resolver providers the LLM with a more
+holistic understanding of the project structure, enabling more accurate and
+context-aware code suggestions and generation.
+
+### AI Context Policies
+
+A user-defined and user-managed mechanism allowing precise control over the
+content that can be sent to LLMs as contextual information.
+GitLab has an [architecture document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_management/)
+that proposes a format for AI Context Policies.
+
+### Supplementary User Context
+
+Information, such as open tabs in their IDE, files, and folders,
+that the user provides from their local environment to extend the default AI
+Context. This is sometimes called "pinned context" internally. GitLab Duo Chat users
+can provide supplementary user context with the `/include` command (IDE only).

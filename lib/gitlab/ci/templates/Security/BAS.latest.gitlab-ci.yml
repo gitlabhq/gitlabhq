@@ -16,7 +16,7 @@
 #   - deploy
 #   - dast
 #
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/breach_and_attack_simulation/index.html#extend-dynamic-application-security-testing-dast
+# This feature has been deprecated. Read more here: https://docs.gitlab.com/ee/update/deprecations.html#proxy-based-dast-deprecated
 
 include:
   - template: Security/DAST.latest.gitlab-ci.yml

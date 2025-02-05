@@ -66,7 +66,7 @@ export const note = {
   userPermissions: {
     __typename: 'NotePermissions',
     adminNote: false,
-    awardEmoji: true,
+    awardEmoji: false,
     readNote: true,
     createNote: true,
     resolveNote: false,
@@ -79,9 +79,23 @@ export const note = {
     resolvable: true,
     resolvedBy: null,
   },
+  awardEmoji: {
+    nodes: [],
+  },
+};
+
+export const awardEmoji = {
+  name: 'star',
+  user: {
+    id: 70,
+    name: 'user1',
+  },
+  __typename: 'AwardEmoji',
 };
 
 export const noteableId = '7';
+
+export const queryVariables = { slug: 'home', projectId: 'gid://gitlab/Group/7' };
 
 export const wikiCommentFormProvideData = {
   pageInfo,

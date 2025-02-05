@@ -632,7 +632,7 @@ export default {
       </project-setting-row>
     </div>
     <div
-      class="gl-mb-5 gl-flex gl-flex-col gl-gap-6 gl-border-1 gl-border-t-0 gl-border-solid gl-border-default gl-bg-gray-10 gl-px-5 gl-py-3"
+      class="gl-mb-5 gl-flex gl-flex-col gl-gap-6 gl-border-1 gl-border-t-0 gl-border-solid gl-border-default gl-bg-subtle gl-px-5 gl-py-3"
     >
       <project-setting-row
         ref="issues-settings"

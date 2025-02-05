@@ -18,4 +18,16 @@ global-components:
     - description: aria-describedby
   gl-link:
     element: a
-
+  gl-collapsible-listbox:
+    element: button
+    attributes:
+    - aria-*
+    # gives false results for listobx without toggle text but wih v-model providing an initial value
+    - toggle-text: aria-label
+    - toggle-aria-labelled-by: aria-labelledby
+    - list-aria-labelled-by: aria-labelledby
+  gl-disclosure-dropdown:
+    element: button
+    attributes:
+    - aria-*
+    - toggle-text: aria-label
