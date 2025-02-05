@@ -70,13 +70,22 @@ module Gitlab
         end
 
         def emitter
+          emitter_options = {
+            protocol: protocol,
+            on_success: method(:increment_successful_events_emissions),
+            on_failure: method(:failure_callback)
+          }
+
+          if Feature.enabled?(:snowplow_tracking_post_method, :instance, type: :gitlab_com_derisk)
+            # By default, Snowplow uses `get` method with buffer_size set to `1`.
+            # However, setting method to `post` changes default buffer_size to `10`
+            emitter_options[:method] = 'post'
+            emitter_options[:buffer_size] = 1
+          end
+
           SnowplowTracker::AsyncEmitter.new(
             endpoint: hostname,
-            options: {
-              protocol: protocol,
-              on_success: method(:increment_successful_events_emissions),
-              on_failure: method(:failure_callback)
-            }
+            options: emitter_options
           )
         end
 

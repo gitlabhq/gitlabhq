@@ -26,4 +26,4 @@ To open the command palette:
    - <kbd>></kbd> - Create a new object or find a menu item.
    - <kbd>@</kbd> - Search for a user.
    - <kbd>:</kbd> - Search for a project.
-   - <kbd>/</kbd> - Search for project files in the default repository branch.
+   - <kbd>~</kbd> - Search for project files in the default repository branch.

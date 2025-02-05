@@ -491,6 +491,29 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             )
           end
 
+          context 'when multiple memberships exist for the same user' do
+            before do
+              parent_group.add_owner(owner1)
+
+              # GroupFinder by default uses DISTINCT ON (user_id, invite_email), so the duplicate memberships
+              # must have differences in these columns to produce duplicate emails
+              member = Member.find_by(source: parent_group, user: owner1)
+              member.update!(invite_email: owner1.email)
+            end
+
+            it 'does not send duplicate emails to owner1' do
+              expect { notification_service }.to(
+                have_enqueued_email(
+                  owner1,
+                  project_bot.resource_bot_resource,
+                  [expiring_token_1, expiring_token_2],
+                  {},
+                  mail: "bot_resource_access_token_about_to_expire_email"
+                ).once
+              )
+            end
+          end
+
           shared_examples 'does not email inherited members' do
             it 'sends email to direct members' do
               expect { notification_service }.to(
@@ -644,6 +667,29 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
                 )
               )
             )
+          end
+
+          context 'when multiple memberships exist for the same user' do
+            before do
+              parent_group.add_owner(owner1)
+
+              # MembersFinder by defaul tuses DISTINCT ON (user_id, invite_email), so the duplicate memberships
+              # must have differences in these columns to produce duplicate emails
+              member = Member.find_by(source: parent_group, user: owner1)
+              member.update!(invite_email: owner1.email)
+            end
+
+            it 'does not send duplicate emails to owner1' do
+              expect { notification_service }.to(
+                have_enqueued_email(
+                  owner1,
+                  project_bot.resource_bot_resource,
+                  expiring_token,
+                  {},
+                  mail: "bot_resource_access_token_about_to_expire_email"
+                ).once
+              )
+            end
           end
 
           shared_examples 'does not email inherited members' do

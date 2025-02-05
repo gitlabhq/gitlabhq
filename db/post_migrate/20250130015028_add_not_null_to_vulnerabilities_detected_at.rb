@@ -5,11 +5,7 @@ class AddNotNullToVulnerabilitiesDetectedAt < Gitlab::Database::Migration[2.2]
 
   milestone '17.9'
 
-  def up
-    add_not_null_constraint :vulnerabilities, :detected_at, validate: false
-  end
-
-  def down
-    remove_not_null_constraint :vulnerabilities, :detected_at
+  def change
+    # reverted due to https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19236
   end
 end

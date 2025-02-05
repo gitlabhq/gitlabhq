@@ -248,6 +248,10 @@ RSpec.shared_context 'dashboard navbar structure' do
       {
         nav_item: _("Activity"),
         nav_sub_items: []
+      },
+      {
+        nav_item: _("Import history"),
+        nav_sub_items: []
       }
     ]
   end

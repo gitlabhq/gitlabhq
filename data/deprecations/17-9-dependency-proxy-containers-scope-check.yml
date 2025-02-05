@@ -1,0 +1,18 @@
+- title: "Dependency Proxy token scope enforcement"
+  announcement_milestone: "17.9"
+  removal_milestone: "18.0"
+  breaking_change: true
+  reporter: trizzi
+  stage: Package
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/426887
+  impact: high
+  scope: group
+  resolution_role: maintainer
+  manual_task: true
+  window: "3"
+  body: |
+    The Dependency Proxy for containers accepts `docker login` and `docker pull` requests using personal access tokens or group access tokens without validating their scopes.
+
+    In GitLab 18.0, the Dependency Proxy will require both `read_registry` and `write_registry` scopes for authentication. After this change, authentication attempts using tokens without these scopes will be rejected.
+
+    This is a breaking change. Before you upgrade, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy-for-container-images), and update your workflow variables and scripts with these new tokens.

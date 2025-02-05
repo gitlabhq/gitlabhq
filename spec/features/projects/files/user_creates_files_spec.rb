@@ -100,7 +100,7 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
 
       it 'does not allow directory traversal in file name' do
         submit_new_file(file_name: '../README.md')
-        expect(page).to have_content 'Path cannot include directory traversal'
+        expect(page).to have_content 'An error occurred creating the blob'
       end
 
       it 'creates and commits a new file' do

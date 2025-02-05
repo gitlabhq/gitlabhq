@@ -12806,6 +12806,8 @@ CREATE TABLE duo_workflows_events (
     event_type smallint NOT NULL,
     event_status smallint NOT NULL,
     message text,
+    correlation_id_value text,
+    CONSTRAINT check_5e35596b00 CHECK ((char_length(correlation_id_value) <= 128)),
     CONSTRAINT check_d96965e118 CHECK ((char_length(message) <= 255))
 );
 
@@ -13048,22 +13050,6 @@ CREATE SEQUENCE epic_issues_id_seq
     CACHE 1;
 
 ALTER SEQUENCE epic_issues_id_seq OWNED BY epic_issues.id;
-
-CREATE TABLE epic_metrics (
-    id bigint NOT NULL,
-    epic_id bigint NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
-
-CREATE SEQUENCE epic_metrics_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE epic_metrics_id_seq OWNED BY epic_metrics.id;
 
 CREATE TABLE epic_user_mentions (
     id bigint NOT NULL,
@@ -24907,8 +24893,6 @@ ALTER TABLE ONLY environments ALTER COLUMN id SET DEFAULT nextval('environments_
 
 ALTER TABLE ONLY epic_issues ALTER COLUMN id SET DEFAULT nextval('epic_issues_id_seq'::regclass);
 
-ALTER TABLE ONLY epic_metrics ALTER COLUMN id SET DEFAULT nextval('epic_metrics_id_seq'::regclass);
-
 ALTER TABLE ONLY epic_user_mentions ALTER COLUMN id SET DEFAULT nextval('epic_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY epics ALTER COLUMN id SET DEFAULT nextval('epics_id_seq'::regclass);
@@ -26775,9 +26759,6 @@ ALTER TABLE web_hook_logs
 ALTER TABLE vulnerability_finding_evidences
     ADD CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL)) NOT VALID;
 
-ALTER TABLE vulnerabilities
-    ADD CONSTRAINT check_e987357e3b CHECK ((detected_at IS NOT NULL)) NOT VALID;
-
 ALTER TABLE work_item_parent_links
     ADD CONSTRAINT check_e9c0111985 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
@@ -27287,9 +27268,6 @@ ALTER TABLE ONLY environments
 
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT epic_issues_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY epic_metrics
-    ADD CONSTRAINT epic_metrics_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY epic_user_mentions
     ADD CONSTRAINT epic_user_mentions_pkey PRIMARY KEY (id);
@@ -30337,6 +30315,8 @@ CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON d
 
 CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags USING btree (dast_profile_id);
 
+CREATE UNIQUE INDEX i_duo_workflows_events_on_correlation_id ON duo_workflows_events USING btree (correlation_id_value);
+
 CREATE INDEX i_gitlab_subscription_histories_on_namespace_change_type_plan ON gitlab_subscription_histories USING btree (namespace_id, change_type, hosted_plan_id);
 
 CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON remote_development_namespace_cluster_agent_mappings USING btree (cluster_agent_id);
@@ -32254,8 +32234,6 @@ CREATE INDEX index_epic_issues_on_epic_id_and_issue_id ON epic_issues USING btre
 CREATE UNIQUE INDEX index_epic_issues_on_issue_id ON epic_issues USING btree (issue_id);
 
 CREATE INDEX index_epic_issues_on_namespace_id ON epic_issues USING btree (namespace_id);
-
-CREATE INDEX index_epic_metrics ON epic_metrics USING btree (epic_id);
 
 CREATE INDEX index_epic_user_mentions_on_group_id ON epic_user_mentions USING btree (group_id);
 
@@ -41422,9 +41400,6 @@ ALTER TABLE ONLY pm_package_versions
 
 ALTER TABLE ONLY upload_states
     ADD CONSTRAINT fk_rails_d00f153613 FOREIGN KEY (upload_id) REFERENCES uploads(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY epic_metrics
-    ADD CONSTRAINT fk_rails_d071904753 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_source_user_placeholder_references
     ADD CONSTRAINT fk_rails_d0b75c434e FOREIGN KEY (source_user_id) REFERENCES import_source_users(id) ON DELETE CASCADE;

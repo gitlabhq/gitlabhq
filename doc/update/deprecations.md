@@ -550,6 +550,26 @@ To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOL
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Dependency Proxy token scope enforcement
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/426887).
+
+</div>
+
+The Dependency Proxy for containers accepts `docker login` and `docker pull` requests using personal access tokens or group access tokens without validating their scopes.
+
+In GitLab 18.0, the Dependency Proxy will require both `read_registry` and `write_registry` scopes for authentication. After this change, authentication attempts using tokens without these scopes will be rejected.
+
+This is a breaking change. Before you upgrade, create new access tokens with the [required scopes](https://docs.gitlab.com/ee/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy-for-container-images), and update your workflow variables and scripts with these new tokens.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Deprecate CI job implementation of Repository X-Ray
 
 <div class="deprecation-notes">

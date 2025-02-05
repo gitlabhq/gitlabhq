@@ -83,8 +83,6 @@ module Issuable
     has_many :labels, through: :label_links
     has_many :todos, as: :target
 
-    has_one :metrics, inverse_of: model_name.singular.to_sym, autosave: true
-
     delegate :name,
       :email,
       :public_email,

@@ -1,0 +1,8 @@
+---
+name: snowplow_tracking_post_method
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179417
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515796
+milestone: '17.9'
+group: group::analytics instrumentation
+default_enabled: false
+type: gitlab_com_derisk

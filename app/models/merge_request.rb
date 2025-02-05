@@ -67,6 +67,7 @@ class MergeRequest < ApplicationRecord
   delegate :suggested_reviewers, to: :predictions
 
   has_one :merge_schedule, class_name: 'MergeRequests::MergeSchedule', inverse_of: :merge_request
+  has_one :metrics, inverse_of: :merge_request, autosave: true
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request

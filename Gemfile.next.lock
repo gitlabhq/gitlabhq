@@ -1255,7 +1255,7 @@ GEM
     oj (3.13.23)
     oj-introspect (0.7.2)
       oj (>= 3.13.23)
-    omniauth (2.1.0)
+    omniauth (2.1.2)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection

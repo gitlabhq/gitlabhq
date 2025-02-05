@@ -1,2 +1,3 @@
 .nothing-here-block
-  = viewer.render_error_message.html_safe
+  - error_message = viewer.render_error_message.to_s
+  = error_message.sub(/^[a-z]/, &:upcase).html_safe

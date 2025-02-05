@@ -451,7 +451,7 @@
 {"name":"ohai","version":"18.1.18","platform":"ruby","checksum":"42ee8196945cb935fdeec93ba7aaee757d1d552f7b933912a1f25863c3cc1ff0"},
 {"name":"oj","version":"3.13.23","platform":"ruby","checksum":"206dfdc4020ad9974705037f269cfba211d61b7662a58c717cce771829ccef51"},
 {"name":"oj-introspect","version":"0.7.2","platform":"ruby","checksum":"c415a44567ed2870d8e963a69421d9322128e194fab7867e37e54d5a25d5333d"},
-{"name":"omniauth","version":"2.1.0","platform":"ruby","checksum":"bff7234f5ec9323622b217c7f26d52f850de0b0e2b8c807c3358fc79fe572300"},
+{"name":"omniauth","version":"2.1.2","platform":"ruby","checksum":"def03277298b8f8a5d3ff16cdb2eb5edb9bffed60ee7dda24cc0c89b3ae6a0ce"},
 {"name":"omniauth-alicloud","version":"3.0.0","platform":"ruby","checksum":"9c5c4f3abb40d774b946015f177d503fbde99b2b57c0858284c25cc39369013e"},
 {"name":"omniauth-atlassian-oauth2","version":"0.2.0","platform":"ruby","checksum":"eb07574a188ab8a03376ce288bce86bc2dd4a1382ffa5781cb5e2b7bc15d76c9"},
 {"name":"omniauth-auth0","version":"3.1.1","platform":"ruby","checksum":"3d9e83377b37394db077cf27082d29ccff93158f072d92fc59f1e88798c6c2b2"},

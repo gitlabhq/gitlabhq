@@ -958,8 +958,8 @@ class NotificationService
     resource = bot_user.resource_bot_resource
 
     if send_bot_rat_expiry_to_inherited?(resource)
-      inherited_rat_members_relation(resource, bot_user).find_each do |membership|
-        yield membership.user
+      inherited_rat_members_relation(resource, bot_user).find_each do |user|
+        yield user
       end
     else
       bot_user.resource_bot_owners_and_maintainers.find_each do |user|
@@ -969,31 +969,34 @@ class NotificationService
   end
 
   def inherited_rat_members_relation(resource, bot_user)
-    case resource
-    when Group
-      GroupMembersFinder.new(
-        resource,
-        bot_user,
-        params: {
-          access_levels: [
-            Gitlab::Access::OWNER,
-            Gitlab::Access::ADMIN
-          ],
-          non_invite: true
-        }
-      ).execute(include_relations: [:direct, :inherited]).non_minimal_access
-    when Project
-      MembersFinder
-        .new(
-          resource,
-          bot_user,
-          params: {
-            owners_and_maintainers: true
-          }
-        ).execute(include_relations: [:direct, :inherited])
-    else
-      raise ArgumentError, "#{bot_user} is not connected to a Group or Project"
-    end
+    finder = case resource
+             when Group
+               GroupMembersFinder.new(
+                 resource,
+                 bot_user,
+                 params: {
+                   access_levels: [
+                     Gitlab::Access::OWNER,
+                     Gitlab::Access::ADMIN
+                   ],
+                   non_invite: true
+                 }
+               ).execute(include_relations: [:direct, :inherited])
+             when Project
+               MembersFinder
+                 .new(
+                   resource,
+                   bot_user,
+                   params: {
+                     owners_and_maintainers: true,
+                     active_without_invites_and_requests: true
+                   }
+                 ).execute(include_relations: [:direct, :inherited])
+             else
+               raise ArgumentError, "#{bot_user} is not connected to a Group or Project"
+             end
+
+    User.id_in(finder.distinct(false).reselect('DISTINCT user_id')) # rubocop:disable CodeReuse/ActiveRecord -- moving this to the finder or model adds a lot of complexity and risk
   end
 
   def send_bot_rat_expiry_to_inherited?(group_or_project)

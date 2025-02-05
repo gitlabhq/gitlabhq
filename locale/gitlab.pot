@@ -24628,6 +24628,9 @@ msgstr ""
 msgid "File name of the Google Play service account key."
 msgstr ""
 
+msgid "File path"
+msgstr ""
+
 msgid "File permissions"
 msgstr ""
 
@@ -64768,16 +64771,10 @@ msgstr ""
 msgid "WorkItemCustomField|At least one option is required."
 msgstr ""
 
-msgid "WorkItemCustomField|Edit custom field"
-msgstr ""
-
 msgid "WorkItemCustomField|Name"
 msgstr ""
 
 msgid "WorkItemCustomField|Name is required."
-msgstr ""
-
-msgid "WorkItemCustomField|New custom field"
 msgstr ""
 
 msgid "WorkItemCustomField|Options"
@@ -64888,6 +64885,9 @@ msgid "WorkItem|Apricot"
 msgstr ""
 
 msgid "WorkItem|Aqua"
+msgstr ""
+
+msgid "WorkItem|Archive %{itemName}"
 msgstr ""
 
 msgid "WorkItem|Are you sure you want to cancel creating this %{workItemType}?"
@@ -65040,6 +65040,12 @@ msgstr ""
 msgid "WorkItem|Due"
 msgstr ""
 
+msgid "WorkItem|Edit %{fieldName}"
+msgstr ""
+
+msgid "WorkItem|Edit custom field %{fieldName}"
+msgstr ""
+
 msgid "WorkItem|Email participants"
 msgstr ""
 
@@ -65058,7 +65064,13 @@ msgstr ""
 msgid "WorkItem|Existing task"
 msgstr ""
 
+msgid "WorkItem|Failed to archive custom field."
+msgstr ""
+
 msgid "WorkItem|Failed to create a branch for this %{workItemType}. Please try again."
+msgstr ""
+
+msgid "WorkItem|Failed to load custom fields."
 msgstr ""
 
 msgid "WorkItem|Field"
@@ -65158,6 +65170,9 @@ msgid "WorkItem|New %{workItemName}"
 msgstr ""
 
 msgid "WorkItem|New %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|New custom field"
 msgstr ""
 
 msgid "WorkItem|New related %{workItemType}"

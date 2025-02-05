@@ -18,14 +18,17 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     freeze_time { example.run }
   end
 
-  context 'when snowplow is enabled' do
+  context 'when snowplow is enabled and POST is enabled' do
     before do
       stub_application_setting(snowplow_enabled: true)
+      stub_feature_flags(snowplow_tracking_post_method: true)
 
       expect(SnowplowTracker::AsyncEmitter)
         .to receive(:new)
         .with(endpoint: 'gitfoo.com',
           options: { protocol: 'https',
+                     method: 'post',
+                     buffer_size: 1,
                      on_success: subject.method(:increment_successful_events_emissions),
                      on_failure: subject.method(:failure_callback) })
         .and_return(emitter)
@@ -62,6 +65,26 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
 
         subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
       end
+    end
+  end
+
+  context "when snowplow POST is disabled" do
+    it "initializes emitter without specifying the method" do
+      stub_application_setting(snowplow_enabled: true)
+      stub_feature_flags(snowplow_tracking_post_method: false)
+
+      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
+      allow(tracker).to receive(:track_struct_event).and_call_original
+
+      expect(SnowplowTracker::AsyncEmitter)
+        .to receive(:new)
+        .with(endpoint: 'gitfoo.com',
+          options: { protocol: 'https',
+                     on_success: subject.method(:increment_successful_events_emissions),
+                     on_failure: subject.method(:failure_callback) })
+        .and_return(emitter)
+
+      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
     end
   end
 

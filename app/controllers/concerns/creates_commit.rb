@@ -53,7 +53,12 @@ module CreatesCommit
             redirect_to failure_path
           end
         end
-        format.json { render json: { message: _("failed"), filePath: failure_path } }
+        format.json do
+          render json: {
+            error: result[:message],
+            filePath: failure_path
+          }, status: :unprocessable_entity
+        end
       end
     end
   end

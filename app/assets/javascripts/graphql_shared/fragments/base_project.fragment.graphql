@@ -5,7 +5,6 @@ fragment BaseProject on Project {
   fullPath
   archived
   nameWithNamespace
-  organizationEditPath
   webUrl
   topics
   forksCount
