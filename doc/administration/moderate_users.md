@@ -20,10 +20,10 @@ This topic is specifically related to user moderation in GitLab Self-Managed. Fo
 A user in _pending approval_ state requires action by an administrator. A user sign up can be in a
 pending approval state because an administrator has enabled any of the following options:
 
-- [Require administrator approval for new sign-ups](../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
-- [User cap](../administration/settings/sign_up_restrictions.md#user-cap).
+- [Require administrator approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
+- [User cap](settings/sign_up_restrictions.md#user-cap).
 - [Block auto-created users (OmniAuth)](../integration/omniauth.md#configure-common-settings)
-- [Block auto-created users (LDAP)](../administration/auth/ldap/index.md#basic-configuration-settings)
+- [Block auto-created users (LDAP)](auth/ldap/index.md#basic-configuration-settings)
 
 When a user registers for an account while this setting is enabled:
 
@@ -77,7 +77,7 @@ Rejecting a user:
 
 ## View users pending role promotion
 
-If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
+If [administrator approval for role promotions](settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
 
 To view users pending role promotion:
 
@@ -116,7 +116,7 @@ To block a user:
 
 The user receives an email notification that their account has been blocked. After this email, they no longer receive notifications.
 
-To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the **Admin** area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
+To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the **Admin** area, see [resolving abuse reports](review_abuse_reports.md#resolving-abuse-reports).
 
 ### Unblock a user
 
@@ -174,7 +174,7 @@ To deactivate a user:
 1. On the dialog, select **Deactivate**.
 
 The user receives an email notification that their account has been deactivated. After this email, they no longer receive notifications.
-For more information, see [user deactivation emails](../administration/settings/email.md#user-deactivation-emails).
+For more information, see [user deactivation emails](settings/email.md#user-deactivation-emails).
 
 To deactivate users with the GitLab API, see [deactivate user](../api/user_moderation.md#deactivate-a-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
 
@@ -213,7 +213,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `delete_unconfirmed_users_setting`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1 [with a flag](feature_flags.md) named `delete_unconfirmed_users_setting`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124982) in GitLab 16.2.
 
 Prerequisites:
@@ -261,9 +261,9 @@ Users can also be reactivated using the [GitLab API](../api/user_moderation.md#r
 
 ## Ban and unban users
 
-> - Hiding merge requests of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107836) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `hide_merge_requests_from_banned_users`. Disabled by default.
-> - Hiding comments of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112973) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `hidden_notes`. Disabled by default.
-> - Hiding projects of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121488) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `hide_projects_of_banned_users`. Disabled by default.
+> - Hiding merge requests of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107836) in GitLab 15.8 [with a flag](feature_flags.md) named `hide_merge_requests_from_banned_users`. Disabled by default.
+> - Hiding comments of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112973) in GitLab 15.11 [with a flag](feature_flags.md) named `hidden_notes`. Disabled by default.
+> - Hiding projects of banned users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121488) in GitLab 16.2 [with a flag](feature_flags.md) named `hide_projects_of_banned_users`. Disabled by default.
 
 GitLab administrators can ban and unban users.
 You should ban a user when you want to block them and hide their activity from the instance.
@@ -365,7 +365,7 @@ The user is untrusted.
 
 ## Troubleshooting
 
-When moderating users, you may need to perform bulk actions on them based on certain conditions. The following rails console scripts show some examples of this. You may [start a rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session) and use scripts similar to the following:
+When moderating users, you may need to perform bulk actions on them based on certain conditions. The following rails console scripts show some examples of this. You may [start a rails console session](operations/rails_console.md#starting-a-rails-console-session) and use scripts similar to the following:
 
 ### Deactivate users that have no recent activity
 

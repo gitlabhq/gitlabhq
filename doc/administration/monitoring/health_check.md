@@ -40,7 +40,7 @@ Apdex measurements are used to determine uptime.
 ## IP allowlist
 
 To access monitoring resources, the requesting client IP needs to be included in the allowlist.
-For details, see [how to add IPs to the allowlist for the monitoring endpoints](../../administration/monitoring/ip_allowlist.md).
+For details, see [how to add IPs to the allowlist for the monitoring endpoints](../monitoring/ip_allowlist.md).
 
 ## Using the endpoints locally
 
@@ -156,7 +156,7 @@ This check is being exempt from Rack Attack.
 
 ## Sidekiq
 
-Learn how to configure the [Sidekiq health checks](../../administration/sidekiq/sidekiq_health_check.md).
+Learn how to configure the [Sidekiq health checks](../sidekiq/sidekiq_health_check.md).
 
 <!-- ## Troubleshooting
 

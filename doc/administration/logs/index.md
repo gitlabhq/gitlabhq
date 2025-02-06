@@ -1033,7 +1033,7 @@ The `llm.log` file logs information related to
 
 ### LLM input and output logging
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `expanded_ai_logging`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../feature_flags.md) named `expanded_ai_logging`. Disabled by default.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -1215,7 +1215,7 @@ For Linux package installations, the backup log is located at `/var/log/gitlab/g
 
 For Helm chart installations, the backup log is stored in the Toolbox pod, at `/var/log/gitlab/backup_json.log`.
 
-This log is populated when a [GitLab backup is created](../../administration/backup_restore/index.md). You can use this log to understand how the backup process performed.
+This log is populated when a [GitLab backup is created](../backup_restore/index.md). You can use this log to understand how the backup process performed.
 
 ## Performance bar stats
 

@@ -68,7 +68,7 @@ The same setting
 
 ## Enable silent admin exports
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `export_audit_events`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a flag](../feature_flags.md) named `export_audit_events`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153351) in GitLab 17.1. Feature flag `export_audit_events` removed.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152143) for file export downloads in GitLab 17.1.
 
@@ -85,7 +85,7 @@ To enable silent admin project and group file exports:
 
 ## Allow contribution mapping to administrators
 
-> - Introduced in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `importer_user_mapping`. Disabled by default.
+> - Introduced in GitLab 17.5 [with a flag](../feature_flags.md) named `importer_user_mapping`. Disabled by default.
 > - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175371) in GitLab 17.7.
 
 Allow mapping of imported user contributions to administrators.
@@ -120,7 +120,7 @@ This setting applies only to repositories
 [imported from a GitLab export file](../../user/project/settings/import_export.md#import-a-project-and-its-data).
 
 If you choose a size larger than the configured value for the web server,
-you may receive errors. See the [troubleshooting section](../../administration/settings/account_and_limit_settings.md#troubleshooting) for more
+you may receive errors. See the [troubleshooting section](../settings/account_and_limit_settings.md#troubleshooting) for more
 details.
 
 For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
@@ -223,7 +223,7 @@ To prevent using up the database or Sidekiq processes,
 administrators can configure the `concurrent_relation_batch_export_limit` setting.
 
 The default value is `8` jobs, which corresponds to a
-[reference architecture for up to 40 RPS or 2,000 users](../../administration/reference_architectures/2k_users.md).
+[reference architecture for up to 40 RPS or 2,000 users](../reference_architectures/2k_users.md).
 If you encounter `PG::QueryCanceled: ERROR: canceling statement due to statement timeout` errors
 or jobs getting interrupted due to Sidekiq memory limits, you might want to reduce this number.
 If you have enough resources, you can increase this number to process more concurrent export jobs.

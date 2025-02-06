@@ -102,7 +102,7 @@ This setting limits the request rate on the Packages API per user or IP. For mor
 
 This setting limits the request rate on the [Git LFS](../topics/git/lfs/index.md)
 requests per user. For more information, read
-[GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md).
+[GitLab Git Large File Storage (LFS) Administration](lfs/index.md).
 
 - **Default rate limit**: Disabled by default.
 
@@ -620,7 +620,7 @@ To update the `default` plan of one of these limits on a GitLab Self-Managed ins
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
-[maximum artifact size setting](../administration/settings/continuous_integration.md#maximum-artifacts-size)
+[maximum artifact size setting](settings/continuous_integration.md#maximum-artifacts-size)
 with the instance limit for the given artifact type, and choosing the smaller value.
 
 Limits are set in megabytes, so the smallest possible value that can be defined is `1 MB`.
@@ -820,7 +820,7 @@ To set this limit to `100` on your instance, run the following command in the
 Plan.default.actual_limits.update!(dotenv_variables: 100)
 ```
 
-You can also set this limit by using the [GitLab UI](../administration/settings/continuous_integration.md#set-cicd-limits) or the
+You can also set this limit by using the [GitLab UI](settings/continuous_integration.md#set-cicd-limits) or the
 [Plan limits API](../api/plan_limits.md).
 
 This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
@@ -936,7 +936,7 @@ Kubernetes aren't shown.
 
 GitLab has limits around:
 
-- The patch size for a single file. [This is configurable on GitLab Self-Managed](../administration/diff_limits.md).
+- The patch size for a single file. [This is configurable on GitLab Self-Managed](diff_limits.md).
 - The total size of all the diffs for a merge request.
 
 An upper and lower limit applies to each of these:
@@ -1038,7 +1038,7 @@ See the limits in the [Add a design to an issue](../user/project/issues/design_m
 
 ### Max push size
 
-The maximum allowed [push size](../administration/settings/account_and_limit_settings.md#max-push-size).
+The maximum allowed [push size](settings/account_and_limit_settings.md#max-push-size).
 
 Not set by default on GitLab Self-Managed. For GitLab.com, see [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings)
 
@@ -1151,7 +1151,7 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 ## Changelog API limits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
 > - [Enabled on GitLab.com and by default on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
 

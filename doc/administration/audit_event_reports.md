@@ -81,7 +81,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-When a user is [impersonated](../administration/admin_area.md#user-impersonation), their actions are logged as audit events with the following additional details:
+When a user is [impersonated](admin_area.md#user-impersonation), their actions are logged as audit events with the following additional details:
 
 - Audit events include information about the impersonating administrator.
 - Extra audit events are recorded for the start and end of the administrator's impersonation session.

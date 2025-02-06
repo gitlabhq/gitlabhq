@@ -83,7 +83,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-This command shows information about your [GitLab license](../../administration/license.md) and
+This command shows information about your [GitLab license](../license.md) and
 how many seats are used. It is only available on GitLab Enterprise
 installations: a license cannot be installed into GitLab Community Edition.
 

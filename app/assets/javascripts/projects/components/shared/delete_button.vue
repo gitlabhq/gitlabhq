@@ -15,6 +15,10 @@ export default {
       type: String,
       required: true,
     },
+    nameWithNamespace: {
+      type: String,
+      required: true,
+    },
     disabled: {
       type: Boolean,
       required: false,
@@ -79,6 +83,7 @@ export default {
     <delete-modal
       v-model="isModalVisible"
       :confirm-phrase="confirmPhrase"
+      :name-with-namespace="nameWithNamespace"
       :is-fork="isFork"
       :issues-count="issuesCount"
       :merge-requests-count="mergeRequestsCount"

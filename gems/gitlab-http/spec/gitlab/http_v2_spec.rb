@@ -246,6 +246,71 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
     end
   end
 
+  describe 'logging response size' do
+    context 'when GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE is not set' do
+      before do
+        stub_full_request('http://example.org', method: :any).to_return(status: 200, body: 'hello world')
+      end
+
+      it 'does not log response size' do
+        expect(described_class.configuration)
+          .not_to receive(:log_with_level)
+
+        described_class.get('http://example.org')
+      end
+
+      context 'when the request is async' do
+        it 'does not log response size' do
+          expect(described_class.configuration)
+            .not_to receive(:log_with_level)
+
+          described_class.get('http://example.org', async: true).execute.value
+        end
+      end
+    end
+
+    context 'when GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE is set' do
+      before do
+        described_class::Client.remove_instance_variable(:@should_log_response_size)
+        stub_env('GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE', 5)
+        stub_full_request('http://example.org', method: :any).to_return(status: 200, body: 'hello world')
+      end
+
+      it 'logs the response size' do
+        expect(described_class.configuration)
+          .to receive(:log_with_level)
+          .with(:debug, { message: "gitlab/http: response size", size: 11 })
+          .once
+
+        described_class.get('http://example.org')
+      end
+
+      context 'when the request is async' do
+        it 'logs response size' do
+          expect(described_class.configuration)
+            .to receive(:log_with_level)
+            .with(:debug, { message: "gitlab/http: response size", size: 11 })
+            .once
+
+          described_class.get('http://example.org', async: true).execute.value
+        end
+      end
+
+      context 'and the response size is smaller than the limit' do
+        before do
+          stub_env('GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE', 50)
+        end
+
+        it 'does not log the response size' do
+          expect(described_class.configuration)
+            .not_to receive(:log_with_level)
+
+          described_class.get('http://example.org')
+        end
+      end
+    end
+  end
+
   describe '.try_get' do
     let(:path) { 'http://example.org' }
     let(:default_timeout_options) { described_class::Client::DEFAULT_TIMEOUT_OPTIONS }

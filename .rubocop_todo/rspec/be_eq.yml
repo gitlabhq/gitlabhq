@@ -519,7 +519,6 @@ RSpec/BeEq:
     - 'ee/spec/workers/ee/projects/inactive_projects_deletion_cron_worker_spec.rb'
     - 'ee/spec/workers/ee/repository_check/batch_worker_spec.rb'
     - 'ee/spec/workers/ee/repository_check/single_repository_worker_spec.rb'
-    - 'ee/spec/workers/elastic_cluster_reindexing_cron_worker_spec.rb'
     - 'ee/spec/workers/elastic_remove_expired_namespace_subscriptions_from_index_cron_worker_spec.rb'
     - 'ee/spec/workers/llm/completion_worker_spec.rb'
     - 'ee/spec/workers/product_analytics/initialize_snowplow_product_analytics_worker_spec.rb'

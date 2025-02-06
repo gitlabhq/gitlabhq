@@ -14,7 +14,7 @@ You can customize some of the content in emails sent from your GitLab instance.
 
 ## Custom logo
 
-The logo in the header of some emails can be customized, see the [logo customization section](../../administration/appearance.md#customize-your-homepage-button).
+The logo in the header of some emails can be customized, see the [logo customization section](../appearance.md#customize-your-homepage-button).
 
 ## Include author name in email notification email body
 
@@ -107,7 +107,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
 > - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392761) in GitLab 16.5. Feature flag `deactivation_email_additional_text` removed.
 

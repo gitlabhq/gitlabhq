@@ -4,7 +4,7 @@
 - dismissal_path = current_user ? broadcast_message_dismissals_path : nil
 
 - if message.notification?
-  .broadcast-notification-message{ data: { testid: 'broadcast-notification-container' } }
+  .js-broadcast-notification-message.gl-fixed.gl-right-5.gl-bottom-5.gl-w-auto.gl-bg-default.gl-border.gl-shadow-sm.gl-rounded-base.gl-max-w-34{ class: 'gl-z-[999]', data: { testid: 'broadcast-notification-container' } }
     = render Pajamas::BroadcastBannerComponent.new(message: content, id: message.id, theme: nil, dismissable: true, expire_date: expire_date, cookie_key: cookie_key, dismissal_path: dismissal_path, button_testid: 'close-button')
 
 - else

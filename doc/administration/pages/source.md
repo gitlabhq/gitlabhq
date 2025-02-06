@@ -489,7 +489,7 @@ To change this value:
 
 ## Backup
 
-Pages are part of the [regular backup](../../administration/backup_restore/index.md) so there is nothing to configure.
+Pages are part of the [regular backup](../backup_restore/index.md) so there is nothing to configure.
 
 ## Security
 

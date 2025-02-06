@@ -94,7 +94,7 @@ Geo::TrackingBase::SecondaryNotConfigured: Geo secondary database is not configu
 
 On a Geo primary site this error can be ignored.
 
-This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../../administration/geo/index.md#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
+This happens because GitLab is attempting to display registries from the [Geo tracking database](../../../geo/index.md#geo-tracking-database) which doesn't exist on the primary site (only the original projects exist on the primary; no replicated projects are present, therefore no tracking database exists).
 
 ### Secondary site returns 400 error "Request header or cookie too large"
 
@@ -108,7 +108,7 @@ To fix this issue, set the primary site's internal URL to a URL that is:
 - Accessible from all secondary sites.
 
 1. Visit the primary site.
-1. [Set up the internal URLs](../../../../administration/geo_sites.md#set-up-the-internal-urls).
+1. [Set up the internal URLs](../../../geo_sites.md#set-up-the-internal-urls).
 
 ### Secondary site returns `Received HTTP code 403 from proxy after CONNECT`
 

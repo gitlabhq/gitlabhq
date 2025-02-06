@@ -28,6 +28,7 @@ describe('formatGraphQLProjects', () => {
     expect(firstFormattedProject).toMatchObject({
       id: getIdFromGraphQLId(firstMockProject.id),
       name: firstMockProject.nameWithNamespace,
+      nameWithNamespace: firstMockProject.nameWithNamespace,
       avatarLabel: firstMockProject.nameWithNamespace,
       mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,
       issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
@@ -36,7 +37,7 @@ describe('formatGraphQLProjects', () => {
         integerValue: 50,
       },
       availableActions: ['edit', 'delete'],
-      customProperty: firstMockProject.name,
+      customProperty: firstMockProject.nameWithNamespace,
     });
 
     expect(formattedProjects.length).toBe(projects.length);

@@ -66,7 +66,7 @@ translate between the human-readable project name and the hashed storage path. Y
 
 Administrators can look up a project's hashed path from its name or ID using:
 
-- The [**Admin** area](../administration/admin_area.md#administering-projects).
+- The [**Admin** area](admin_area.md#administering-projects).
 - A Rails console.
 
 To look up a project's hash path in the **Admin** area:

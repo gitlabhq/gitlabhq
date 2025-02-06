@@ -1444,7 +1444,7 @@ running multiple Gitaly storages.
 ### Grafana
 
 Grafana is included with GitLab, and can be used to monitor your Praefect
-cluster. See [Grafana Dashboard Service](../../administration/monitoring/performance/grafana_configuration.md)
+cluster. See [Grafana Dashboard Service](../monitoring/performance/grafana_configuration.md)
 for detailed documentation.
 
 To get started quickly:

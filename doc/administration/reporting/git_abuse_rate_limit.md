@@ -10,12 +10,12 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `git_abuse_rate_limit_feature_flag`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../feature_flags.md) named `git_abuse_rate_limit_feature_flag`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/394996) in GitLab 15.11. Feature flag `git_abuse_rate_limit_feature_flag` removed.
 
 This is the administration documentation. For information about Git abuse rate limiting for a group, see the [group documentation](../../user/group/reporting/git_abuse_rate_limit.md).
 
-Git abuse rate limiting is a feature to automatically [ban users](../../administration/moderate_users.md#ban-and-unban-users) who download, clone, or fork more than a specified number of repositories in any project in the instance in a given time frame. Banned users cannot sign in to the instance and cannot access any non-public group via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../user/profile/personal_access_tokens.md) or [group access token](../../user/group/settings/group_access_tokens.md).
+Git abuse rate limiting is a feature to automatically [ban users](../moderate_users.md#ban-and-unban-users) who download, clone, or fork more than a specified number of repositories in any project in the instance in a given time frame. Banned users cannot sign in to the instance and cannot access any non-public group via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../user/profile/personal_access_tokens.md) or [group access token](../../user/group/settings/group_access_tokens.md).
 
 Git abuse rate limiting does not apply to instance administrators, [deploy tokens](../../user/project/deploy_tokens/index.md), or [deploy keys](../../user/project/deploy_keys/index.md).
 

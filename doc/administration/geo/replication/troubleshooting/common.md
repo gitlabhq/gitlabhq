@@ -468,7 +468,7 @@ This machine's Geo node name matches a database record ... no
 ```
 
 For more information about recommended site names in the description of the Name field, see
-[Geo **Admin** area Common Settings](../../../../administration/geo_sites.md#common-settings).
+[Geo **Admin** area Common Settings](../../../geo_sites.md#common-settings).
 
 ### Check OS locale data compatibility
 

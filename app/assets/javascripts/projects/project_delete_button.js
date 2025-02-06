@@ -9,6 +9,7 @@ export default (selector = '#js-project-delete-button') => {
 
   const {
     confirmPhrase,
+    nameWithNamespace,
     formPath,
     isFork,
     isSecurityPolicyProject,
@@ -26,6 +27,7 @@ export default (selector = '#js-project-delete-button') => {
       return createElement(ProjectDeleteButton, {
         props: {
           confirmPhrase,
+          nameWithNamespace,
           disabled: parseBoolean(isSecurityPolicyProject),
           formPath,
           isFork: parseBoolean(isFork),

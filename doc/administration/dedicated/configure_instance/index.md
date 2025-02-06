@@ -13,7 +13,7 @@ DETAILS:
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Administrators can configure additional settings in their GitLab application by using the [**Admin** area](../../../administration/admin_area.md).
+Administrators can configure additional settings in their GitLab application by using the [**Admin** area](../../admin_area.md).
 
 As a GitLab-managed solution, you cannot change any GitLab functionality controlled by SaaS environment settings. Examples of such SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 
@@ -49,7 +49,7 @@ For all other instance configurations, submit a support ticket according to the
 
 ### Apply configuration changes in Switchboard
 
-You can apply configuration changes made in Switchboard immediately or defer them until your next scheduled weekly [maintenance window](../../../administration/dedicated/maintenance.md#maintenance-windows).
+You can apply configuration changes made in Switchboard immediately or defer them until your next scheduled weekly [maintenance window](../../dedicated/maintenance.md#maintenance-windows).
 
 When you apply changes immediately:
 

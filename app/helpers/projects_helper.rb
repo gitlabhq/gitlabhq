@@ -780,6 +780,7 @@ module ProjectsHelper
 
     {
       confirm_phrase: delete_confirm_phrase(project),
+      name_with_namespace: project.name_with_namespace,
       is_fork: project.forked? ? 'true' : 'false',
       issues_count: number_with_delimiter(issues_count),
       merge_requests_count: number_with_delimiter(merge_requests_count),

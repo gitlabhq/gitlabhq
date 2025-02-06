@@ -348,7 +348,7 @@ diagnose a problem with the S3 setup.
 ### Investigate a cleanup policy
 
 If you're unsure why your cleanup policy did or didn't delete a tag, execute the policy line by line
-by running the below script from the [Rails console](../../administration/operations/rails_console.md).
+by running the below script from the [Rails console](../operations/rails_console.md).
 This can help diagnose problems with the policy.
 
 ```ruby

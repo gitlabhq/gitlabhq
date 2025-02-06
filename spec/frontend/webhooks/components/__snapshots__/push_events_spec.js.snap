@@ -92,6 +92,7 @@ exports[`Webhook push events form editor component Different push events rules w
     <gl-form-input-stub
       data-testid="webhook_branch_filter_field"
       name="hook[push_events_branch_filter]"
+      type="text"
       value="foo"
     />
   </div>
@@ -139,6 +140,7 @@ exports[`Webhook push events form editor component Different push events rules w
     <gl-form-input-stub
       data-testid="webhook_branch_filter_field"
       name="hook[push_events_branch_filter]"
+      type="text"
       value="foo"
     />
   </div>
@@ -256,6 +258,7 @@ exports[`Webhook push events form editor component Different push events rules w
     <gl-form-input-stub
       data-testid="webhook_branch_filter_field"
       name="hook[push_events_branch_filter]"
+      type="text"
       value=""
     />
   </div>
@@ -303,6 +306,7 @@ exports[`Webhook push events form editor component Different push events rules w
     <gl-form-input-stub
       data-testid="webhook_branch_filter_field"
       name="hook[push_events_branch_filter]"
+      type="text"
       value=""
     />
   </div>

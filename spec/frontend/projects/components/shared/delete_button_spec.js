@@ -20,6 +20,7 @@ describe('DeleteButton', () => {
     mergeRequestsCount: 2,
     forksCount: 3,
     starsCount: 4,
+    nameWithNamespace: 'Foo / Bar',
   };
 
   const createComponent = (propsData) => {

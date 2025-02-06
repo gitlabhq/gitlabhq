@@ -39,22 +39,22 @@ GitLab team members with edit access can update the [source](https://lucid.app/l
 
 ### Gitaly setup
 
-GitLab Dedicated deploys Gitaly [in a sharded setup](../../administration/gitaly/index.md#before-deploying-gitaly-cluster), not a Gitaly Cluster. In this setup:
+GitLab Dedicated deploys Gitaly [in a sharded setup](../gitaly/index.md#before-deploying-gitaly-cluster), not a Gitaly Cluster. In this setup:
 
 - Customer repositories are spread across multiple virtual machines.
-- GitLab manages [storage weights](../../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) on behalf of the customer.
+- GitLab manages [storage weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored) on behalf of the customer.
 
 ### Geo setup
 
 GitLab Dedicated leverages GitLab Geo for [disaster recovery](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
 
-Geo does not use an active-active failover configuration. For more information, see [Geo](../../administration/geo/index.md).
+Geo does not use an active-active failover configuration. For more information, see [Geo](../geo/index.md).
 
 ### AWS PrivateLink connection (optional)
 
 Optionally, private connectivity is available for your GitLab Dedicated instance, using [AWS PrivateLink](https://aws.amazon.com/privatelink/) as a connection gateway.
 
-Both [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link) private links are supported.
+Both [inbound](../dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../dedicated/configure_instance/network_security.md#outbound-private-link) private links are supported.
 
 ![Diagram of a GitLab-managed AWS VPC using AWS PrivateLink to connect with a customer-managed AWS VPC.](img/privatelink_diagram_v17_1.png)
 

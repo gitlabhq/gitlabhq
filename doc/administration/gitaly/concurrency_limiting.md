@@ -81,7 +81,7 @@ information, see the [relevant documentation](monitoring.md#monitor-gitaly-concu
 
 ## Limit pack-objects concurrency
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7891) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `gitaly_pack_objects_limiting_remote_ip`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7891) in GitLab 15.11 [with a flag](../feature_flags.md) named `gitaly_pack_objects_limiting_remote_ip`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5772) in GitLab 16.0. Feature flag `gitaly_pack_objects_limiting_remote_ip` removed.
 
 Gitaly triggers `git-pack-objects` processes when handling both SSH and HTTPS traffic to clone or pull repositories. These processes generate a `pack-file` and can

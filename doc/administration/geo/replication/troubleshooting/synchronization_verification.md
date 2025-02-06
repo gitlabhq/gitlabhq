@@ -96,7 +96,7 @@ depending on the object type.
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-[Start a Rails console session](../../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+[Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
 on a **secondary site**.
 
 Using the `Packages::PackageFile` component as an example:
@@ -148,7 +148,7 @@ Using the `Packages::PackageFile` component as an example:
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-[Start a Rails console session](../../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+[Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
 on a **secondary site**.
 
 Using the `SnippetRepository` component as an example:
@@ -190,7 +190,7 @@ Using the `SnippetRepository` component as an example:
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-The following sections describe how to use internal application commands in the [Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+The following sections describe how to use internal application commands in the [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session)
 to cause bulk replication or verification.
 
 #### Reverify all components (or any SSF data type which supports verification)
@@ -200,7 +200,7 @@ You can reverify any [data type](#geo-data-type-classes) that supports verificat
 For example, to reverify the `Upload` class:
 
 1. SSH into a GitLab Rails node in the primary Geo site.
-1. Open the [Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Open the [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session).
 1. Mark all uploads as `pending verification`:
 
    ```ruby
@@ -302,7 +302,7 @@ delete_orphaned_uploads(dry_run: false)
 
 If you encounter these errors in your primary site `geo.log`, they're also reflected in the UI under **Admin > Geo > Sites**. To remove those errors, you can identify the particular blob that generates the message so that you can inspect it.
 
-1. In a Puma or Sidekiq node in the primary site, [open a Rails console](../../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. In a Puma or Sidekiq node in the primary site, [open a Rails console](../../../operations/rails_console.md#starting-a-rails-console-session).
 1. Run the following snippet to find the affected artifacts containing the `File is not checksummable` message:
 
 NOTE:
@@ -659,7 +659,7 @@ from the UI:
 1. Under **Replication details**, select the desired object.
 1. Select **Resync all** or **Reverify all**.
 
-Alternatively, [start a Rails console session](../../../../administration/operations/rails_console.md#starting-a-rails-console-session)
+Alternatively, [start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
 **on the secondary Geo site** to gather more information, or execute these operations manually using the snippets below.
 
 WARNING:

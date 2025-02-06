@@ -186,7 +186,7 @@ Geo::ContainerRepositoryRegistry.replication_enabled?
 
 ### Missing container registry notification event
 
-1. When an image is pushed to the primary site's container registry, it should trigger a [Container Registry notification](../../../administration/packages/container_registry.md#configure-container-registry-notifications)
+1. When an image is pushed to the primary site's container registry, it should trigger a [Container Registry notification](../../packages/container_registry.md#configure-container-registry-notifications)
 1. The primary site's container registry calls the primary site's API on `https://<example.com>/api/v4/container_registry_event/events`
 1. The primary site inserts a record to the `geo_events` table with `replicable_name: 'container_repository', model_record_id: <ID of the container repository>`.
 1. The record gets replicated by PostgreSQL to the secondary site's database.
@@ -208,9 +208,9 @@ To fix this, make sure that the authorization headers being sent with the regist
 
 #### Registry error: `token from untrusted issuer: "<token>"`
 
-To replicate a container image, Sidekiq uses JWT to authenticate itself towards the container registry. Geo replication takes it as a prerequisite that the [container registry configuration](../../../administration/packages/container_registry.md) has been done correctly.
+To replicate a container image, Sidekiq uses JWT to authenticate itself towards the container registry. Geo replication takes it as a prerequisite that the [container registry configuration](../../packages/container_registry.md) has been done correctly.
 
-Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../../administration/packages/container_registry.md#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations).
+Make sure that both sites share a single signing key pair, as instructed under [Configure secondary site](#configure-secondary-site), and that both container registries, plus primary and secondary sites are [all configured to use the same token issuer](../../packages/container_registry.md#configure-gitlab-and-registry-to-run-on-separate-nodes-linux-package-installations).
 
 On multinode deployments, make sure that the issuer configured on the Sidekiq node matches the value configured on the registries.
 

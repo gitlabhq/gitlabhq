@@ -12,7 +12,7 @@ DETAILS:
 
 Users with auditor access have read-only access to all groups, projects, and other resources except:
 
-- The [**Admin** area](../administration/admin_area.md).
+- The [**Admin** area](admin_area.md).
 - Project and group settings.
 
 For more information, see [Auditor user permissions and restrictions](#auditor-user-permissions-and-restrictions)

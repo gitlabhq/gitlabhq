@@ -40,7 +40,7 @@ You can also disable new sign ups with the [Rails console](../operations/rails_c
 
 This setting is enabled by default for new GitLab instances.
 When this setting is enabled, any user visiting your GitLab domain and signing up for a new account using the registration form
-must be explicitly [approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up) by an
+must be explicitly [approved](../moderate_users.md#approve-or-reject-a-user-sign-up) by an
 administrator before they can start using their account. It is only applicable if sign ups are enabled.
 
 To require administrator approval for new sign ups:
@@ -126,7 +126,7 @@ you will be charged overages for the five additional users.
 
 The user cap is the maximum number of billable users who can sign up or be added to a subscription
 without administrator approval. After the user cap is reached, users who sign up or are
-added must be [approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up)
+added must be [approved](../moderate_users.md#approve-or-reject-a-user-sign-up)
 by an administrator. Users can use their account only after they have been approved by an administrator.
 
 If an administrator increases or removes the user cap, users pending approval are automatically approved.

@@ -20,29 +20,29 @@ Administer and manage users in GitLab Self-Managed.
 - [Locked user accounts](../security/unlock_user.md)
 - [User file uploads](../security/user_file_uploads.md)
 - [Delete users](../user/profile/account/delete_account.md)
-- [Configure the Libravatar service](../administration/libravatar.md)
+- [Configure the Libravatar service](libravatar.md)
 
 ## User types
 
-- [Auditor users](../administration/auditor_users.md)
-- [External users](../administration/external_users.md)
-- [Guest users](../administration/guest_users.md)
-- [Internal users](../administration/internal_users.md)
+- [Auditor users](auditor_users.md)
+- [External users](external_users.md)
+- [Guest users](guest_users.md)
+- [Internal users](internal_users.md)
 
 ## User management
 
-- [Modify global user settings](../administration/user_settings.md)
-- [Moderate users](../administration/moderate_users.md)
-- [Review abuse reports](../administration/review_abuse_reports.md)
-- [Review spam logs](../administration/review_spam_logs.md)
-- [User cohorts](../administration/user_cohorts.md)
-- [Broadcast messages](../administration/broadcast_messages.md)
-- [Email from GitLab](../administration/email_from_gitlab.md)
+- [Modify global user settings](user_settings.md)
+- [Moderate users](moderate_users.md)
+- [Review abuse reports](review_abuse_reports.md)
+- [Review spam logs](review_spam_logs.md)
+- [User cohorts](user_cohorts.md)
+- [Broadcast messages](broadcast_messages.md)
+- [Email from GitLab](email_from_gitlab.md)
 - [User management Rake tasks](../raketasks/user_management.md)
 
 ## Security and authentication
 
 - [Password storage](../security/password_storage.md)
-- [Credentials inventory](../administration/credentials_inventory.md)
+- [Credentials inventory](credentials_inventory.md)
 - [Custom password length limits](../security/password_length_limits.md)
 - [Generated passwords and integrated authentication](../security/passwords_for_integrated_authentication_methods.md)

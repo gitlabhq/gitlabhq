@@ -132,6 +132,7 @@ export default defineConfig({
     'process.env.PDF_JS_CMAPS_UBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
   },
   server: {
+    cors: true,
     warmup: {
       clientFiles: ['javascripts/entrypoints/main.js', 'javascripts/entrypoints/super_sidebar.js'],
     },

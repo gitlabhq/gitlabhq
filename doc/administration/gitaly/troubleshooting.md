@@ -408,7 +408,7 @@ Building your merge request... This page will update when the build is complete
 Gitaly must be able to connect to itself to complete some operations. If the Gitaly certificate is not trusted by the Gitaly server,
 merge request diffs can't be generated.
 
-If Gitaly can't connect to itself, you see messages in the [Gitaly logs](../../administration/logs/index.md#gitaly-logs) like the following messages:
+If Gitaly can't connect to itself, you see messages in the [Gitaly logs](../logs/index.md#gitaly-logs) like the following messages:
 
 ```json
 {
@@ -517,10 +517,10 @@ go tool trace heap.bin
 
 ### Profile Git operations
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5700) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `log_git_traces`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5700) in GitLab 16.9 [with a flag](../feature_flags.md) named `log_git_traces`. Disabled by default.
 
 FLAG:
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md)
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md)
 named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. On GitLab Dedicated, this feature is not available.
 
 You can profile Git operations that Gitaly performs by sending additional information about Git operations to Gitaly logs. With this information, users have more insight

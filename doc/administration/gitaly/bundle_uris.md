@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `gitaly_bundle_uri`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a flag](../feature_flags.md) named `gitaly_bundle_uri`. Disabled by default.
 
 FLAG:
 On GitLab Self-Managed, by default this feature is not available.

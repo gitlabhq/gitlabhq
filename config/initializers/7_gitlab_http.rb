@@ -22,6 +22,9 @@ Gitlab::HTTP_V2.configure do |config|
   config.silent_mode_log_info_proc = ->(message, http_method) do
     Gitlab::SilentMode.log_info(message: message, outbound_http_request_method: http_method)
   end
+  config.log_with_level_proc = ->(log_level, message_params) do
+    Gitlab::AppJsonLogger.public_send(log_level, message_params)
+  end
 end
 
 if Gitlab.config.gitlab['http_client'].present?

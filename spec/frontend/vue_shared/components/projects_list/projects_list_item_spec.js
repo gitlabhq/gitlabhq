@@ -395,6 +395,7 @@ describe('ProjectsListItem', () => {
         expect(wrapper.findComponent(DeleteModal).props()).toMatchObject({
           visible: true,
           confirmPhrase: project.name,
+          nameWithNamespace: project.nameWithNamespace,
           isFork: true,
           issuesCount: '0',
           forksCount: '0',

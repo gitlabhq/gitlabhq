@@ -520,7 +520,7 @@ cluster to be used with GitLab.
 
 ### Provide your own PostgreSQL instance
 
-You can optionally use a [third party external service for PostgreSQL](../../administration/postgresql/external.md).
+You can optionally use a [third party external service for PostgreSQL](../postgresql/external.md).
 
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
@@ -708,7 +708,7 @@ SSH in to any of the Patroni nodes on the **primary site**:
    ```
 
 If the 'State' column for any node doesn't say "running", check the
-[PostgreSQL replication and failover troubleshooting section](../../administration/postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+[PostgreSQL replication and failover troubleshooting section](../postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 before proceeding.
 
 <div align="right">

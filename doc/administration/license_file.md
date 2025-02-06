@@ -128,7 +128,7 @@ You can also [export](../subscriptions/self_managed/index.md) your license usage
 
 ## License commands in the Rails console
 
-The following commands can be run in the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
+The following commands can be run in the [Rails console](operations/rails_console.md#starting-a-rails-console-session).
 
 WARNING:
 Any command that changes data directly could be damaging if not run correctly, or under the right conditions.
@@ -217,11 +217,11 @@ These snippets can be saved to a file and executed [using the Rails Runner](oper
 license can be applied through shell automation scripts.
 
 This is needed for example in a known edge-case with
-[expired license and multiple LDAP servers](../administration/auth/ldap/ldap-troubleshooting.md#expired-license-causes-errors-with-multiple-ldap-servers).
+[expired license and multiple LDAP servers](auth/ldap/ldap-troubleshooting.md#expired-license-causes-errors-with-multiple-ldap-servers).
 
 ### Remove licenses
 
-To clean up the [License History table](../administration/license_file.md#view-license-details-and-history):
+To clean up the [License History table](license_file.md#view-license-details-and-history):
 
 ```ruby
 TYPE = :trial?
@@ -267,4 +267,4 @@ the license.
 
 ### `Start GitLab Ultimate trial` still displays after adding license
 
-To fix this issue, restart [Puma or your entire GitLab instance](../administration/restart_gitlab.md).
+To fix this issue, restart [Puma or your entire GitLab instance](restart_gitlab.md).

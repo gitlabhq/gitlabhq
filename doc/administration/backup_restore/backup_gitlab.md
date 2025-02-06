@@ -148,7 +148,7 @@ You may also want to back up any TLS keys and certificates (`/etc/gitlab/ssl`, `
 to avoid man-in-the-middle attack warnings if you have to perform a full machine restore.
 
 In the unlikely event that the secrets file is lost, see
-[When the secrets file is lost](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
+[When the secrets file is lost](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost).
 
 ### Other data
 
@@ -621,7 +621,7 @@ toolbox:
 
 #### Incremental repository backups
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `incremental_repository_backup`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) in GitLab 14.10 [with a flag](../feature_flags.md) named `incremental_repository_backup`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 15.3. Feature flag `incremental_repository_backup` removed.
 > - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5461) in GitLab 16.6.
 

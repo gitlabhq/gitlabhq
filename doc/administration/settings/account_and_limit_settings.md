@@ -198,7 +198,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9 with a [flag](../../administration/feature_flags.md) named `two_factor_for_cli`. Disabled by default. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9 with a [flag](../feature_flags.md) named `two_factor_for_cli`. Disabled by default. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -274,7 +274,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 FLAG:
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
@@ -318,7 +318,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 FLAG:
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
@@ -413,7 +413,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-To maintain integrity of user details in [audit events](../../administration/audit_event_reports.md),
+To maintain integrity of user details in [audit events](../audit_event_reports.md),
 GitLab administrators can prevent users from changing their profile name.
 
 To do this:
@@ -424,7 +424,7 @@ To do this:
 1. Select **Prevent users from changing their profile name**.
 
 When selected, GitLab administrators can still update usernames in the
-[**Admin** area](../../administration/admin_area.md#administering-users) or the
+[**Admin** area](../admin_area.md#administering-users) or the
 [API](../../api/users.md#modify-a-user).
 
 ## Prevent users from creating organizations
@@ -455,7 +455,7 @@ By default, new users can create top-level groups. GitLab administrators can pre
 - In GitLab 15.5 and later, use either:
   - The GitLab UI with the steps in this section.
   - The [Application settings API](../../api/settings.md#update-application-settings).
-- In GitLab 15.4 and earlier, modify a [configuration file](../../administration/user_settings.md#prevent-users-from-creating-top-level-groups).
+- In GitLab 15.4 and earlier, modify a [configuration file](../user_settings.md#prevent-users-from-creating-top-level-groups).
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -482,7 +482,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421310) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `disallow_private_profiles`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421310) in GitLab 17.1 [with a flag](../feature_flags.md) named `disallow_private_profiles`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427400) in GitLab 17.9. Feature flag `disallow_private_profiles` removed.
 
 FLAG:
@@ -532,7 +532,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `deleting_account_disabled_for_users`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a flag](../feature_flags.md) named `deleting_account_disabled_for_users`. Enabled by default.
 
 By default, users can delete their own accounts. GitLab administrators can prevent
 users from deleting their own accounts:
@@ -562,13 +562,13 @@ To increase the max attachment size to 200 MB in a
 
 ### This repository has exceeded its size limit
 
-If you receive intermittent push errors in your [Rails exceptions log](../../administration/logs/index.md#exceptions_jsonlog), like this:
+If you receive intermittent push errors in your [Rails exceptions log](../logs/index.md#exceptions_jsonlog), like this:
 
 ```plaintext
 Your push has been rejected, because this repository has exceeded its size limit.
 ```
 
-[Housekeeping](../../administration/housekeeping.md) tasks may be causing your repository size to grow.
+[Housekeeping](../housekeeping.md) tasks may be causing your repository size to grow.
 To resolve this problem, either of these options helps in the short- to middle-term:
 
 - Increase the [repository size limit](#repository-size-limit).

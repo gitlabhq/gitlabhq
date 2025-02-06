@@ -62,7 +62,7 @@ For more information, see [Bitmask Searches in LDAP](https://ctovswild.com/2009/
 The process also updates the following user information:
 
 - Name. Because of a [sync issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342598), `name` is not synchronized if
-  [**Prevent users from changing their profile name**](../../../administration/settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
+  [**Prevent users from changing their profile name**](../../settings/account_and_limit_settings.md#disable-user-profile-name-changes) is enabled or `sync_name` is set to `false`.
 - Email address.
 - SSH public keys if `sync_ssh_keys` is set.
 - Kerberos identity if Kerberos is enabled.
@@ -463,7 +463,7 @@ When **Allow group owners to manage LDAP-related settings** is disabled:
 ### External groups
 
 Using the `external_groups` setting allows you to mark all users belonging
-to these groups as [external users](../../../administration/external_users.md).
+to these groups as [external users](../../external_users.md).
 Group membership is checked periodically through the `LdapGroupSync` background
 task.
 
@@ -561,7 +561,7 @@ task.
 
 ### GitLab Duo add-on for groups
 
-The `duo_add_on_groups` setting automatically [manages Duo add-on seats](../../../administration/duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
+The `duo_add_on_groups` setting automatically [manages Duo add-on seats](../../duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
 
 To enable add-on seat management for groups, you must configure the `duo_add_on_groups` setting in your GitLab instance:
 

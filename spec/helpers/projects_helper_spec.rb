@@ -2034,6 +2034,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       {
         form_path: project_path(project, permanently_delete: true),
         confirm_phrase: project.path_with_namespace,
+        name_with_namespace: project.name_with_namespace,
         is_fork: 'false',
         issues_count: '0',
         merge_requests_count: '0',

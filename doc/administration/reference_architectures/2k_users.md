@@ -268,7 +268,7 @@ to be used with GitLab.
 
 ### Provide your own PostgreSQL instance
 
-You can optionally use a [third party external service for PostgreSQL](../../administration/postgresql/external.md).
+You can optionally use a [third party external service for PostgreSQL](../postgresql/external.md).
 
 A reputable provider or solution should be used for this. [Google Cloud SQL](https://cloud.google.com/sql/docs/postgres/high-availability#normal)
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from

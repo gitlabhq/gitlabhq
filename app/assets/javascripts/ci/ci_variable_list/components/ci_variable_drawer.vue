@@ -16,6 +16,7 @@ import {
   GlSprintf,
   GlFormRadio,
   GlFormRadioGroup,
+  GlPopover,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
@@ -29,10 +30,8 @@ import {
   ADD_VARIABLE_ACTION,
   DRAWER_EVENT_LABEL,
   EDIT_VARIABLE_ACTION,
-  ENVIRONMENT_SCOPE_LINK_TITLE,
   EVENT_ACTION,
   EXPANDED_VARIABLES_NOTE,
-  FLAG_LINK_TITLE,
   MASKED_VALUE_MIN_LENGTH,
   VARIABLE_ACTIONS,
   VISIBILITY_HIDDEN,
@@ -57,12 +56,10 @@ export const i18n = {
   editVariable: s__('CiVariables|Edit variable'),
   saveVariable: __('Save changes'),
   environments: __('Environments'),
-  environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   expandedField: s__('CiVariables|Expand variable reference'),
   expandedDescription: EXPANDED_VARIABLES_NOTE,
   flags: __('Flags'),
   visibility: __('Visibility'),
-  flagsLinkTitle: FLAG_LINK_TITLE,
   key: __('Key'),
   keyFeedback: s__("CiVariables|A variable key can only contain letters, numbers, and '_'."),
   keyHelpText: s__(
@@ -103,6 +100,15 @@ export const i18n = {
   whitespaceCharsValidationText: s__(
     'CiVariables|This value cannot be masked because it contains the following characters: whitespace characters.',
   ),
+  environmentsLabelHelpText: s__(
+    'CiVariables|You can use a specific environment name like %{codeStart}production%{codeEnd}, or include a wildcard (%{codeStart}*%{codeEnd}) to match multiple environments, like %{codeStart}review*%{codeEnd}.',
+  ),
+  environmentsLabelLinkText: s__(
+    'CiVariables|Learn how to %{linkStart}restrict CI/CD variables to specific environments%{linkEnd} for better security.',
+  ),
+  visibilityLabelHelpText: s__(
+    "CiVariables|Set the visibility level for the variable's value. The %{linkStart}Masked and hidden%{linkEnd} option is only available for new variables. You cannot update an existing variable to be hidden.",
+  ),
   type: __('Type'),
   value: __('Value'),
 };
@@ -127,13 +133,14 @@ export default {
     GlSprintf,
     GlFormRadio,
     GlFormRadioGroup,
+    GlPopover,
     HelpIcon,
   },
   directives: {
     GlModalDirective,
   },
   mixins: [trackingMixin],
-  inject: ['environmentScopeLink', 'isProtectedByDefault', 'maskableRawRegex', 'maskableRegex'],
+  inject: ['isProtectedByDefault', 'maskableRawRegex', 'maskableRegex'],
   props: {
     areEnvironmentsLoading: {
       type: Boolean,
@@ -413,12 +420,19 @@ export default {
     },
   },
   awsTokenList,
-  flagLink: helpPagePath('ci/variables/index', {
-    anchor: 'define-a-cicd-variable-in-the-ui',
-  }),
   variablesPrecedenceLink: helpPagePath('ci/variables/index', {
     anchor: 'cicd-variable-precedence',
   }),
+  environmentsLabelHelpLink: helpPagePath('ci/environments/index', {
+    anchor: 'limit-the-environment-scope-of-a-cicd-variable',
+  }),
+  visibilityLabelHelpLink: helpPagePath('ci/variables/index', {
+    anchor: 'hide-a-cicd-variable',
+  }),
+  environmentsPopoverContainerId: 'environments-popover-container',
+  environmentsPopoverTargetId: 'environments-popover-target',
+  visibilityPopoverContainerId: 'visibility-popover-container',
+  visibilityPopoverTargetId: 'visibility-popover-target',
   i18n,
   variableOptions,
   deleteModal: {
@@ -489,15 +503,28 @@ export default {
             <span class="gl-mr-2">
               {{ $options.i18n.environments }}
             </span>
-            <gl-link
-              class="gl-flex"
-              :title="$options.i18n.environmentScopeLinkTitle"
-              :href="environmentScopeLink"
-              target="_blank"
-              data-testid="environment-scope-link"
+            <span
+              :id="$options.environmentsPopoverContainerId"
+              :data-testid="$options.environmentsPopoverContainerId"
             >
-              <help-icon />
-            </gl-link>
+              <help-icon :id="$options.environmentsPopoverTargetId" />
+              <gl-popover
+                :target="$options.environmentsPopoverTargetId"
+                :container="$options.environmentsPopoverContainerId"
+              >
+                <gl-sprintf :message="$options.i18n.environmentsLabelHelpText">
+                  <template #code="{ content }">
+                    <code>{{ content }}</code>
+                  </template>
+                </gl-sprintf>
+                <br /><br />
+                <gl-sprintf :message="$options.i18n.environmentsLabelLinkText">
+                  <template #link="{ content }">
+                    <gl-link :href="$options.environmentsLabelHelpLink">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </gl-popover>
+            </span>
           </div>
         </template>
         <ci-environments-dropdown
@@ -520,6 +547,22 @@ export default {
         <template #label>
           <div class="-gl-mb-3">
             {{ $options.i18n.visibility }}
+            <span
+              :id="$options.visibilityPopoverContainerId"
+              :data-testid="$options.visibilityPopoverContainerId"
+            >
+              <help-icon :id="$options.visibilityPopoverTargetId" />
+              <gl-popover
+                :target="$options.visibilityPopoverTargetId"
+                :container="$options.visibilityPopoverContainerId"
+              >
+                <gl-sprintf :message="$options.i18n.visibilityLabelHelpText">
+                  <template #link="{ content }">
+                    <gl-link :href="$options.visibilityLabelHelpLink">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </gl-popover>
+            </span>
           </div>
         </template>
         <gl-form-radio-group
@@ -533,11 +576,11 @@ export default {
             data-testid="ci-variable-visible-radio"
           >
             {{ $options.i18n.visibleField }}
-            <template #help> {{ $options.i18n.visibleDescription }} </template>
+            <template #help>{{ $options.i18n.visibleDescription }}</template>
           </gl-form-radio>
           <gl-form-radio :value="$options.VISIBILITY_MASKED" data-testid="ci-variable-masked-radio">
             {{ $options.i18n.maskedField }}
-            <template #help> {{ $options.i18n.maskedDescription }} </template>
+            <template #help>{{ $options.i18n.maskedDescription }}</template>
           </gl-form-radio>
           <gl-form-radio
             v-if="areHiddenVariablesAvailable"
@@ -554,18 +597,7 @@ export default {
       <gl-form-group class="-gl-mb-8 gl-border-none">
         <template #label>
           <div class="-gl-mb-3 gl-flex gl-items-center">
-            <span class="gl-mr-2">
-              {{ $options.i18n.flags }}
-            </span>
-            <gl-link
-              class="gl-flex"
-              :title="$options.i18n.flagsLinkTitle"
-              :href="$options.flagLink"
-              data-testid="ci-variable-flags-docs-link"
-              target="_blank"
-            >
-              <help-icon />
-            </gl-link>
+            {{ $options.i18n.flags }}
           </div>
         </template>
         <gl-form-checkbox v-model="variable.protected" data-testid="ci-variable-protected-checkbox">
@@ -619,12 +651,13 @@ export default {
       </p>
       <p class="gl-mb-0 gl-border-none !gl-pb-0 !gl-pt-3 gl-text-subtle">
         <gl-sprintf :message="$options.i18n.keyHelpText">
-          <template #link="{ content }"
-            ><gl-link
+          <template #link="{ content }">
+            <gl-link
               :href="$options.variablesPrecedenceLink"
               data-testid="ci-variable-precedence-docs-link"
-              >{{ content }}</gl-link
             >
+              {{ content }}
+            </gl-link>
           </template>
         </gl-sprintf>
       </p>
@@ -682,8 +715,9 @@ export default {
           variant="danger"
           category="secondary"
           data-testid="ci-variable-delete-button"
-          >{{ $options.i18n.deleteVariable }}</gl-button
         >
+          {{ $options.i18n.deleteVariable }}
+        </gl-button>
         <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
           >{{ $options.i18n.cancel }}
         </gl-button>

@@ -48,7 +48,7 @@ export default {
     :svg-height="null"
   >
     <template #description>
-      <p>
+      <p data-testid="project-empty-state-intro">
         <gl-sprintf :message="$options.i18n.introText">
           <template #docLink="{ content }">
             <gl-link :href="$options.containerRegistryHelpUrl" target="_blank">{{
@@ -58,7 +58,7 @@ export default {
         </gl-sprintf>
       </p>
       <h5>{{ $options.i18n.quickStart }}</h5>
-      <p>
+      <p data-testid="project-empty-state-authentication">
         <gl-sprintf :message="$options.i18n.notLoggedInMessage">
           <template #twofaDocLink="{ content }">
             <gl-link :href="$options.twoFactorAuthHelpUrl" target="_blank">{{ content }}</gl-link>

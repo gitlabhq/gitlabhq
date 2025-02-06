@@ -12,7 +12,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 > - Feature flag `ai_custom_model` removed in GitLab 17.8
@@ -91,7 +91,7 @@ Logging in the `application.json`, `production_json.log`, and `production.log` f
 
 ### The `llm.log` file
 
-When the `:expanded_ai_logging` feature flag is enabled, the [`llm.log` file](../../administration/logs/index.md#llmlog) in your GitLab instance captures code generation and Chat events that occur through your instance. The log file does not capture anything when the feature flag is not enabled. Code completion logs are captured directly in the AI gateway.
+When the `:expanded_ai_logging` feature flag is enabled, the [`llm.log` file](../logs/index.md#llmlog) in your GitLab instance captures code generation and Chat events that occur through your instance. The log file does not capture anything when the feature flag is not enabled. Code completion logs are captured directly in the AI gateway.
 
 For more information on:
 

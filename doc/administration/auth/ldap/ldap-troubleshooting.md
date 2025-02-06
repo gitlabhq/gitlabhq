@@ -793,7 +793,7 @@ To resolve this error, you must apply a new license to the GitLab instance witho
 
 1. Remove or comment out the GitLab configuration lines for all non-primary LDAP servers.
 1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so that it temporarily uses only one LDAP server.
-1. Enter the [Rails console and add the license key](../../../administration/license_file.md#add-a-license-through-the-console).
+1. Enter the [Rails console and add the license key](../../license_file.md#add-a-license-through-the-console).
 1. Re-enable the additional LDAP servers in the GitLab configuration and reconfigure GitLab again.
 
 ## Users are being removed from group and re-added again

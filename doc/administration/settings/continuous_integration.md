@@ -153,7 +153,7 @@ you can allow runner registration tokens. This setting and support for runner re
 ### Maximum artifacts size
 
 An administrator can set the maximum size of the
-[job artifacts](../../administration/cicd/job_artifacts.md) for:
+[job artifacts](../cicd/job_artifacts.md) for:
 
 - The entire instance
 - Each project
@@ -184,7 +184,7 @@ The value is in MB, and the default value is 100 MB per job. An administrator ca
 
 ### Default artifacts expiration
 
-The default expiration time of the [job artifacts](../../administration/cicd/job_artifacts.md)
+The default expiration time of the [job artifacts](../cicd/job_artifacts.md)
 can be set in the **Admin** area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
@@ -202,7 +202,7 @@ NOTE:
 Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
+artifacts, as described in the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
 
 ### Keep the latest artifacts for all jobs in the latest successful pipelines
 
@@ -228,7 +228,7 @@ When you disable the feature, the latest artifacts do not immediately expire.
 A new pipeline must run before the latest artifacts can expire and be deleted.
 
 NOTE:
-All application settings have a [customizable cache expiry interval](../../administration/application_settings_cache.md) which can delay the settings affect.
+All application settings have a [customizable cache expiry interval](../application_settings_cache.md) which can delay the settings affect.
 
 ### Disable the external redirect page for job artifacts
 
@@ -318,7 +318,7 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 > - **Maximum number of variables in a dotenv artifact** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
 > - **Maximum number of jobs in a single pipeline** setting [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/287669) from GitLab Enterprise Edition to GitLab Community Edition in 17.6.
 
-You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
+You can configure some [CI/CD limits](../instance_limits.md#cicd-limits)
 from the **Admin** area:
 
 1. On the left sidebar, at the bottom, select **Admin**.

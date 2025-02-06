@@ -166,7 +166,7 @@ To extract the HTML files of the documentation site:
 ## Redirect the `/help` links to the new Docs site
 
 After your local product documentation site is running,
-[redirect the help links](../administration/settings/help_page.md#redirect-help-pages)
+[redirect the help links](settings/help_page.md#redirect-help-pages)
 in the GitLab application to your local site, by using the fully qualified domain
 name as the documentation URL. For example, if you used the
 [Docker method](#self-host-the-product-documentation-with-docker), enter `http://0.0.0.0:4000`.

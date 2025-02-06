@@ -12,7 +12,7 @@ DETAILS:
 
 NOTE:
 The recommended method to place GitLab in a read-only state is to enable
-[maintenance mode](../administration/maintenance_mode/index.md).
+[maintenance mode](maintenance_mode/index.md).
 
 In some cases, you might want to place GitLab under a read-only state.
 The configuration for doing so depends on your desired outcome.
@@ -84,7 +84,7 @@ sudo gitlab-ctl start puma
 If you want to allow users to use the GitLab UI, ensure that
 the database is read-only:
 
-1. Take a [GitLab backup](../administration/backup_restore/index.md)
+1. Take a [GitLab backup](backup_restore/index.md)
    in case things don't go as expected.
 1. Enter PostgreSQL on the console as an administrator user:
 

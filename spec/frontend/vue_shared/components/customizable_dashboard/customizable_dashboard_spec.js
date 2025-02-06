@@ -332,14 +332,14 @@ describe('CustomizableDashboard', () => {
     });
 
     it('shows an input element with the title as value', () => {
-      expect(findTitleInput().attributes()).toMatchObject({
+      expect(findTitleInput().props()).toMatchObject({
         value: 'Analytics Overview',
-        required: '',
+        required: true,
       });
     });
 
     it('shows an input element with the description as value', () => {
-      expect(findDescriptionInput().attributes('value')).toBe('This is a dashboard');
+      expect(findDescriptionInput().props('value')).toBe('This is a dashboard');
     });
 
     it('emits an event when title is edited', async () => {

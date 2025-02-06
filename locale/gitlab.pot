@@ -12274,21 +12274,6 @@ msgid_plural "CiVariables|%d values found"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "CiVariables|%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable."
-msgstr ""
-
-msgid "CiVariables|%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
-msgstr ""
-
-msgid "CiVariables|%{code_open}Protected:%{code_close} Only exposed to protected branches or protected tags."
-msgstr ""
-
-msgid "CiVariables|%{strong_start}Flags%{strong_end}"
-msgstr ""
-
-msgid "CiVariables|%{strong_start}Visibility:%{strong_end} Set the visibility level for the value. Can be visible, masked, or masked and hidden."
-msgstr ""
-
 msgid "CiVariables|A variable key can only contain letters, numbers, and '_'."
 msgstr ""
 
@@ -12343,6 +12328,9 @@ msgstr ""
 msgid "CiVariables|Key"
 msgstr ""
 
+msgid "CiVariables|Learn how to %{linkStart}restrict CI/CD variables to specific environments%{linkEnd} for better security."
+msgstr ""
+
 msgid "CiVariables|Masked"
 msgstr ""
 
@@ -12386,6 +12374,9 @@ msgid "CiVariables|Scope"
 msgstr ""
 
 msgid "CiVariables|Search values"
+msgstr ""
+
+msgid "CiVariables|Set the visibility level for the variable's value. The %{linkStart}Masked and hidden%{linkEnd} option is only available for new variables. You cannot update an existing variable to be hidden."
 msgstr ""
 
 msgid "CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default."
@@ -12439,9 +12430,6 @@ msgstr ""
 msgid "CiVariables|Variables can be accidentally exposed in a job log, or maliciously sent to a third party server. The masked variable feature can help reduce the risk of accidentally exposing variable values, but is not a guaranteed method to prevent malicious users from accessing variables."
 msgstr ""
 
-msgid "CiVariables|Variables can have several attributes."
-msgstr ""
-
 msgid "CiVariables|Variables specified here are %{boldStart}expanded%{boldEnd} and not %{boldStart}masked.%{boldEnd}"
 msgstr ""
 
@@ -12457,6 +12445,9 @@ msgstr ""
 msgid "CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}"
 msgstr ""
 
+msgid "CiVariables|You can use a specific environment name like %{codeStart}production%{codeEnd}, or include a wildcard (%{codeStart}*%{codeEnd}) to match multiple environments, like %{codeStart}review*%{codeEnd}."
+msgstr ""
+
 msgid "CiVariables|You have reached the maximum number of variables available. To add new variables, you must reduce the number of defined variables."
 msgstr ""
 
@@ -12464,9 +12455,6 @@ msgid "CiVariable|All environments"
 msgstr ""
 
 msgid "CiVariable|Create wildcard"
-msgstr ""
-
-msgid "CiVariable|Define a CI/CD variable in the UI"
 msgstr ""
 
 msgid "CiVariable|Enter a search query to find more environments, or use * to create a wildcard."
@@ -45905,6 +45893,9 @@ msgid "Projects|An error occurred deleting the project. Please refresh the page 
 msgstr ""
 
 msgid "Projects|An error occurred restoring the project. Please refresh the page to try again."
+msgstr ""
+
+msgid "Projects|Delete %{nameWithNamespace}"
 msgstr ""
 
 msgid "Projects|Projects are where you can store your code, access issues, wiki, and other features of GitLab."

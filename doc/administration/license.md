@@ -70,7 +70,7 @@ To activate your instance for an offline environment:
 If you have questions or need assistance activating your instance,
 [contact GitLab Support](https://about.gitlab.com/support/#contact-support).
 
-When [the license expires](../administration/license_file.md#what-happens-when-your-license-expires),
+When [the license expires](license_file.md#what-happens-when-your-license-expires),
 some functionality is locked.
 
 ## Verify your GitLab edition
@@ -107,7 +107,7 @@ To find more details about the error, you can use your browser's developer tools
 
 To resolve the issue:
 
-- If the GraphQL response includes `only get, head, options, and trace methods are allowed in silent mode`, disable [silent mode](../administration/silent_mode/index.md#disable-silent-mode) for your instance.
+- If the GraphQL response includes `only get, head, options, and trace methods are allowed in silent mode`, disable [silent mode](silent_mode/index.md#disable-silent-mode) for your instance.
 
 If you are unable to determine the issue, contact [GitLab Support](https://about.gitlab.com/support/portal/) and provide the GraphQL response in your description of the issue.
 

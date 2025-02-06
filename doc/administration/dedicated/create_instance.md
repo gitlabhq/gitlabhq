@@ -179,7 +179,7 @@ information required to create your GitLab Dedicated instance.
      This can be the same as the primary or secondary region, or different.
    - Desired maintenance window: A weekly four-hour time slot that GitLab uses to perform routine
      maintenance and upgrade operations on all tenant instances. For more information, see
-     [maintenance windows](../../administration/dedicated/maintenance.md#maintenance-windows).
+     [maintenance windows](../dedicated/maintenance.md#maintenance-windows).
 1. Optional. Security: You can provide your own [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
    for encrypted AWS services. If you choose not to provide KMS keys, encryption keys are generated
    for your instance when it is created. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
@@ -204,18 +204,18 @@ To access and configure your GitLab Dedicated instance:
 
 1. Go to the tenant URL for your GitLab Dedicated instance and sign in with your temporary root credentials.
 1. [Change your temporary root password](../../user/profile/user_passwords.md#change-your-password) to a new secure password.
-1. Go to the Admin area and [add the license key](../../administration/license_file.md#add-license-in-the-admin-area) for your GitLab Dedicated subscription.
-1. Return to Switchboard and [add users](../../administration/dedicated/configure_instance/users_notifications.md#add-switchboard-users), if needed.
-1. Review the [release rollout schedule](../../administration/dedicated/maintenance.md#release-rollout-schedule) for upgrades and maintenance.
+1. Go to the Admin area and [add the license key](../license_file.md#add-license-in-the-admin-area) for your GitLab Dedicated subscription.
+1. Return to Switchboard and [add users](../dedicated/configure_instance/users_notifications.md#add-switchboard-users), if needed.
+1. Review the [release rollout schedule](../dedicated/maintenance.md#release-rollout-schedule) for upgrades and maintenance.
 
 Also plan ahead if you need the following GitLab Dedicated features:
 
-- [Inbound Private Link](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link)
-- [Outbound Private Link](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link)
-- [SAML SSO](../../administration/dedicated/configure_instance/saml.md)
-- [Bring your own domain](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod)
+- [Inbound Private Link](../dedicated/configure_instance/network_security.md#inbound-private-link)
+- [Outbound Private Link](../dedicated/configure_instance/network_security.md#outbound-private-link)
+- [SAML SSO](../dedicated/configure_instance/saml.md)
+- [Bring your own domain](../dedicated/configure_instance/network_security.md#bring-your-own-domain-byod)
 
-To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../../administration/dedicated/configure_instance.md).
+To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../dedicated/configure_instance.md).
 
 NOTE:
-New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../administration/admin_area.md).
+New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../admin_area.md).

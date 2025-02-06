@@ -1,7 +1,7 @@
 <script>
 import { GlModal, GlAlert, GlSprintf, GlFormInput } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
-import { __ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 
 export default {
   i18n: {
@@ -29,6 +29,10 @@ export default {
       required: true,
     },
     confirmPhrase: {
+      type: String,
+      required: true,
+    },
+    nameWithNamespace: {
       type: String,
       required: true,
     },
@@ -88,6 +92,11 @@ export default {
         },
       };
     },
+    ariaLabel() {
+      return sprintf(s__('Projects|Delete %{nameWithNamespace}'), {
+        nameWithNamespace: this.nameWithNamespace,
+      });
+    },
   },
   watch: {
     confirmLoading(isLoading, wasLoading) {
@@ -109,6 +118,7 @@ export default {
     title-class="gl-text-red-500"
     :action-primary="modalActionProps.primary"
     :action-cancel="modalActionProps.cancel"
+    :aria-label="ariaLabel"
     @primary.prevent="$emit('primary')"
     @change="$emit('change', $event)"
   >

@@ -73,7 +73,7 @@ automatically. Thus, only the following providers can be used:
 
 The consolidated form configuration can't be used for backups or
 Mattermost. Backups can be configured with
-[server side encryption](../administration/backup_restore/backup_gitlab.md#s3-encrypted-buckets)
+[server side encryption](backup_restore/backup_gitlab.md#s3-encrypted-buckets)
 separately. See the
 [table for a complete list](#configure-each-object-type-to-define-its-own-storage-connection-storage-specific-form)
 of supported object storage types.
@@ -167,7 +167,7 @@ supported by the consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|
-| [Backups](../administration/backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
+| [Backups](backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
 | [Container registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
@@ -850,7 +850,7 @@ See the following additional guides:
 
 ### Objects are not included in GitLab backups
 
-As noted in [the backup documentation](../administration/backup_restore/backup_gitlab.md#object-storage),
+As noted in [the backup documentation](backup_restore/backup_gitlab.md#object-storage),
 objects are not included in GitLab backups. You can enable backups with
 your object storage provider instead.
 
@@ -873,7 +873,7 @@ Helm-based installs require separate buckets to
 
 ### S3 API compatibility issues
 
-Not all S3 providers [are fully compatible](../administration/backup_restore/backup_gitlab.md#other-s3-providers)
+Not all S3 providers [are fully compatible](backup_restore/backup_gitlab.md#other-s3-providers)
 with the Fog library that GitLab uses. Symptoms include an error in `production.log`:
 
 ```plaintext

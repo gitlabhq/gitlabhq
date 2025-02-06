@@ -12,7 +12,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 > - Feature flag `ai_custom_model` removed in GitLab 17.8
@@ -21,7 +21,7 @@ When working with GitLab Duo Self-Hosted, you might encounter issues.
 
 Before you begin troubleshooting, you should:
 
-- Be able to access open the [`gitlab-rails` console](../../administration/operations/rails_console.md).
+- Be able to access open the [`gitlab-rails` console](../operations/rails_console.md).
 - Open a shell in the AI gateway Docker image.
 - Know the endpoint where your:
   - AI gateway is hosted.

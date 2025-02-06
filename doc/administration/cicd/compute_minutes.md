@@ -33,7 +33,7 @@ to wait for the [downstream pipeline](../../ci/pipelines/downstream_pipelines.md
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
 
 GitLab.com administrators can add a namespace to the [reduced cost factor](../../ci/pipelines/compute_minutes.md#reduce-compute-quota-usage)
-with the `ci_minimal_cost_factor_for_gitlab_namespaces` [feature flag](../../administration/feature_flags.md).
+with the `ci_minimal_cost_factor_for_gitlab_namespaces` [feature flag](../feature_flags.md).
 
 ## Set the compute quota for all namespaces
 

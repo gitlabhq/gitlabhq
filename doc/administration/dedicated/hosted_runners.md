@@ -65,7 +65,7 @@ As runners on Linux are using the [Docker Autoscaler](https://docs.gitlab.com/ru
 
 If no image is set, the default is `ruby:3.1`.
 
-If you use images from the Docker Hub container registry, you might run into [rate limits](../../administration/settings/user_and_ip_rate_limits.md). This is because GitLab Dedicated uses a single Network Address Translation (NAT) IP address.
+If you use images from the Docker Hub container registry, you might run into [rate limits](../settings/user_and_ip_rate_limits.md). This is because GitLab Dedicated uses a single Network Address Translation (NAT) IP address.
 
 To avoid rate limits, instead use:
 
@@ -110,7 +110,7 @@ To view hosted runners:
 
 ### View and configure hosted runners in GitLab
 
-GitLab administrators can manage hosted runners for their GitLab Dedicated instance from the [**Admin** area](../../administration/admin_area.md#administering-runners).
+GitLab administrators can manage hosted runners for their GitLab Dedicated instance from the [**Admin** area](../admin_area.md#administering-runners).
 
 #### View hosted runners in GitLab
 

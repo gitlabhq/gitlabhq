@@ -151,7 +151,7 @@ See "Phase 3: uploading" in [Data flow](#data-flow) to learn about the process.
 
 The job log file size limit in GitLab is 100 megabytes by default.
 Any job that exceeds the limit is marked as failed, and dropped by the runner.
-For more details, see [Maximum file size for job logs](../../administration/instance_limits.md#maximum-file-size-for-job-logs).
+For more details, see [Maximum file size for job logs](../instance_limits.md#maximum-file-size-for-job-logs).
 
 ## Prevent local disk usage
 

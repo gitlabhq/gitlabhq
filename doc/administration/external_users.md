@@ -47,7 +47,7 @@ An administrator can flag a user as external by either of the following methods:
 Additionally, users can be set as external users using:
 
 - [SAML groups](../integration/saml.md#external-groups).
-- [LDAP groups](../administration/auth/ldap/ldap_synchronization.md#external-groups).
+- [LDAP groups](auth/ldap/ldap_synchronization.md#external-groups).
 - the [External providers list](../integration/omniauth.md#create-an-external-providers-list).
 
 ## Set a new user to external

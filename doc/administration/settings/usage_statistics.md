@@ -57,22 +57,22 @@ In the following table, you can see:
 | Feature | Available in |
 | ------ | ------ |
 | [Email from GitLab](../email_from_gitlab.md)       |   GitLab 14.1 and later     |
-| [Repository size limit](../../administration/settings/account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
+| [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
 | [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) | GitLab 14.4 and later |
 | [View description change history](../../user/discussions/index.md#view-description-change-history) | GitLab 16.0 and later |
 | [Maintenance mode](../maintenance_mode/index.md) | GitLab 16.0 and later |
 | [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
 | [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md) | GitLab 16.0 and later |
-| [Password complexity requirements](../../administration/settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
+| [Password complexity requirements](../settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
 | [Issue analytics](../../user/group/issues_analytics/index.md) | GitLab 16.5 and later |
-| [Custom Text in Emails](../../administration/settings/email.md#custom-additional-text) | GitLab 16.5 and later |
+| [Custom Text in Emails](../settings/email.md#custom-additional-text) | GitLab 16.5 and later |
 | [Contribution analytics](../../user/group/contribution_analytics/index.md) | GitLab 16.5 and later |
 | [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
 | [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
 | [Service Level Agreement countdown timer](../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) | GitLab 16.6 and later |
 | [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | GitLab 16.6 and later |
-| [Users and permissions report](../../administration/admin_area.md#user-permission-export) | GitLab 16.6 and later |
+| [Users and permissions report](../admin_area.md#user-permission-export) | GitLab 16.6 and later |
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
 | [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
 | [Сross-project pipelines with artifacts dependencies](../../ci/yaml/index.md#needsproject) | GitLab 16.7 and later |

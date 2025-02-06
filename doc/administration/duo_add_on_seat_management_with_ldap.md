@@ -52,7 +52,7 @@ sequenceDiagram
 
 To turn on add-on seat management with LDAP:
 
-1. Open the GitLab configuration file you have edited for the [installation](../administration/auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups).
+1. Open the GitLab configuration file you have edited for the [installation](auth/ldap/ldap_synchronization.md#gitlab-duo-add-on-for-groups).
 1. Add the `duo_add_on_groups` setting to your LDAP server configuration.
 1. Specify an array of LDAP group names that should have Duo Add-on seats.
 
@@ -69,4 +69,4 @@ gitlab_rails['ldap_servers'] = {
 
 ## Troubleshooting
 
-See [LDAP troubleshooting](../administration/auth/ldap/ldap-troubleshooting.md).
+See [LDAP troubleshooting](auth/ldap/ldap-troubleshooting.md).

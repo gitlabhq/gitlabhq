@@ -72,14 +72,22 @@ module Gitlab
         def async_perform_request(http_method, path, options, options_with_timeouts, log_info, &block)
           start_time = nil
           read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
+          byte_size = 0
+          already_logged = false
 
           promise = Concurrent::Promise.new do
             Gitlab::Utils.restrict_within_concurrent_ruby do
               httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
                 start_time ||= system_monotonic_time
                 elapsed = system_monotonic_time - start_time
+                byte_size += fragment.bytesize if should_log_response_size?
 
                 raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
+
+                if should_log_response_size? && byte_size > expected_max_response_size && !already_logged
+                  configuration.log_with_level(:debug, message: 'gitlab/http: response size', size: byte_size)
+                  already_logged = true
+                end
 
                 yield fragment if block
               end
@@ -92,10 +100,18 @@ module Gitlab
         def sync_perform_request(http_method, path, options, options_with_timeouts, log_info, &block)
           start_time = nil
           read_total_timeout = options.fetch(:timeout, DEFAULT_READ_TOTAL_TIMEOUT)
+          byte_size = 0
+          already_logged = false
 
           httparty_perform_request(http_method, path, options_with_timeouts) do |fragment|
             start_time ||= system_monotonic_time
             elapsed = system_monotonic_time - start_time
+            byte_size += fragment.bytesize if should_log_response_size?
+
+            if should_log_response_size? && byte_size > expected_max_response_size && !already_logged
+              configuration.log_with_level(:debug, message: 'gitlab/http: response size', size: byte_size)
+              already_logged = true
+            end
 
             raise ReadTotalTimeout, "Request timed out after #{elapsed} seconds" if elapsed > read_total_timeout
 
@@ -127,6 +143,16 @@ module Gitlab
 
         def system_monotonic_time
           Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
+        end
+
+        def should_log_response_size?
+          return @should_log_response_size if instance_variable_defined?(:@should_log_response_size)
+
+          @should_log_response_size = ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i.positive?
+        end
+
+        def expected_max_response_size
+          ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i
         end
       end
     end

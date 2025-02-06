@@ -308,6 +308,7 @@ export default {
         v-if="hasActionDelete"
         v-model="isDeleteModalVisible"
         :confirm-phrase="project.name"
+        :name-with-namespace="project.nameWithNamespace"
         :is-fork="project.isForked"
         :confirm-loading="isDeleteLoading"
         :merge-requests-count="openMergeRequestsCount"

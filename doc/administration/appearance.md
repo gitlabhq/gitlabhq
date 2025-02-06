@@ -173,7 +173,7 @@ Add guidelines for profile images.
 
 ## Libravatar
 
-GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, but you must manually enable Libravatar support on the GitLab instance. For more information, see [Libravatar](../administration/libravatar.md) to use the service.
+GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, but you must manually enable Libravatar support on the GitLab instance. For more information, see [Libravatar](libravatar.md) to use the service.
 
 <!-- ## Troubleshooting
 

@@ -91,7 +91,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 Do not backup or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
 
-[Read more about this and how to reconfigure backups](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
+[Read more about this and how to reconfigure backups](../backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
 
 ## Enable Monitoring
 
@@ -179,7 +179,7 @@ ote_pid | tls
 
 Some database changes have to be done directly, and not through PgBouncer.
 
-The main affected tasks are [database restores](../../administration/backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer)
+The main affected tasks are [database restores](../backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer)
 and [GitLab upgrades with database migrations](../../update/zero_downtime.md).
 
 1. To find the primary node, run the following on a database node:

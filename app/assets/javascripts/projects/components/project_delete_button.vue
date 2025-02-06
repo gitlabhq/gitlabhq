@@ -10,6 +10,10 @@ export default {
       type: String,
       required: true,
     },
+    nameWithNamespace: {
+      type: String,
+      required: true,
+    },
     disabled: {
       type: Boolean,
       required: false,
@@ -50,6 +54,7 @@ export default {
 <template>
   <shared-delete-button
     :confirm-phrase="confirmPhrase"
+    :name-with-namespace="nameWithNamespace"
     :disabled="disabled"
     :form-path="formPath"
     :is-fork="isFork"

@@ -46,12 +46,12 @@ Get started:
 - [Add members](../user/group/index.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
 - [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
-- Enable [external authorization control](../administration/settings/external_authorization.md#configuration).
+- Enable [external authorization control](settings/external_authorization.md#configuration).
 
 **More resources**
 
 - [Run multiple Agile teams](https://www.youtube.com/watch?v=VR2r1TJCDew).
-- [Sync group memberships by using LDAP](../administration/auth/ldap/ldap_synchronization.md#group-sync).
+- [Sync group memberships by using LDAP](auth/ldap/ldap_synchronization.md#group-sync).
 - Manage user access with inherited permissions. Use up to 20 levels of subgroups to organize both teams and projects.
   - [Inherited membership](../user/project/members/index.md#membership-types).
   - [Example](../user/group/subgroups/index.md).
@@ -99,21 +99,21 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 After you've established your basic setup, you're ready to review the GitLab monitoring services. Prometheus is our core performance monitoring tool.
 Unlike other monitoring solutions (for example, Zabbix or New Relic), Prometheus is tightly integrated with GitLab and has extensive community support.
 
-- [Prometheus](../administration/monitoring/prometheus/index.md) captures
-  [these GitLab metrics](../administration/monitoring/prometheus/gitlab_metrics.md#metrics-available).
-- Learn more about GitLab [bundled software metrics](../administration/monitoring/prometheus/index.md#bundled-software-metrics).
-- Prometheus and its exporters are on by default. However, you need to [configure the service](../administration/monitoring/prometheus/index.md#configuring-prometheus).
+- [Prometheus](monitoring/prometheus/index.md) captures
+  [these GitLab metrics](monitoring/prometheus/gitlab_metrics.md#metrics-available).
+- Learn more about GitLab [bundled software metrics](monitoring/prometheus/index.md#bundled-software-metrics).
+- Prometheus and its exporters are on by default. However, you need to [configure the service](monitoring/prometheus/index.md#configuring-prometheus).
 - Learn more about [GitLab architecture](../development/architecture.md).
 - Find out why [application performance metrics](https://about.gitlab.com/blog/2020/05/07/working-with-performance-metrics/) matter.
 - Integrate Grafana to [build visual dashboards](https://youtu.be/f4R7s0An1qE) based on performance metrics.
 
 ### Components of monitoring
 
-- [Web servers](../administration/monitoring/prometheus/gitlab_metrics.md#puma-metrics): Handles server requests and facilitates other back-end service transactions.
+- [Web servers](monitoring/prometheus/gitlab_metrics.md#puma-metrics): Handles server requests and facilitates other back-end service transactions.
   Monitor CPU, memory, and network IO traffic to track the health of this node.
-- [Workhorse](../administration/monitoring/prometheus/gitlab_metrics.md#metrics-available): Alleviates web traffic congestion from the main server.
+- [Workhorse](monitoring/prometheus/gitlab_metrics.md#metrics-available): Alleviates web traffic congestion from the main server.
   Monitor latency spikes to track the health of this node.
-- [Sidekiq](../administration/monitoring/prometheus/gitlab_metrics.md#sidekiq-metrics): Handles background operations that allow GitLab to run smoothly.
+- [Sidekiq](monitoring/prometheus/gitlab_metrics.md#sidekiq-metrics): Handles background operations that allow GitLab to run smoothly.
   Monitor for long, unprocessed task queues to track the health of this node.
 
 ## Back up your GitLab data
@@ -135,7 +135,7 @@ The routine differs, depending on whether you deployed with the Linux package or
 
 When backing up (single node) GitLab server installed using the Linux package, you can use a single Rake task.
 
-Learn about [backing up Linux package or Helm variations](../administration/backup_restore/index.md).
+Learn about [backing up Linux package or Helm variations](backup_restore/index.md).
 This process backs up your entire instance, but does not back up the configuration files. Ensure those are backed up separately.
 Keep your configuration files and backup archives in a separate location to ensure the encryption keys are not kept with the encrypted data.
 
@@ -174,7 +174,7 @@ For more information about GitLab SaaS backups, see our [Backup FAQ page](https:
 ### Alternative backup strategies
 
 In some situations the Rake task for backups may not be the most optimal solution. Here are some
-[alternatives](../administration/backup_restore/index.md) to consider if the Rake task does not work for you.
+[alternatives](backup_restore/index.md) to consider if the Rake task does not work for you.
 
 #### Option 1: File system snapshot
 
@@ -200,10 +200,10 @@ DETAILS:
 Geo provides local, read-only instances of your GitLab instances.
 
 While GitLab Geo helps remote teams work more efficiently by using a local GitLab node, it can also be used as a disaster recovery solution.
-Learn more about using [Geo as a disaster recovery solution](../administration/geo/disaster_recovery/index.md).
+Learn more about using [Geo as a disaster recovery solution](geo/disaster_recovery/index.md).
 
 Geo replicates your database, your Git repositories, and a few other assets.
-Learn more about the [data types Geo replicates](../administration/geo/replication/datatypes.md#replicated-data-types).
+Learn more about the [data types Geo replicates](geo/replication/datatypes.md#replicated-data-types).
 
 ## Support for GitLab Self-Managed
 

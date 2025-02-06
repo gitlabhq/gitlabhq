@@ -43,7 +43,6 @@ ee/spec/frontend/dependencies/components/dependency_path_viewer_spec.js
 ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_spec.js
 ee/spec/frontend/geo_sites/components/details/secondary_site/geo_site_replication_details_responsive_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
-ee/spec/frontend/groups/components/invite_members_spec.js
 ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_spec.js
 ee/spec/frontend/integrations/edit/components/jira_issue_creation_vulnerabilities_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
@@ -234,7 +233,6 @@ spec/frontend/projects/settings_service_desk/components/service_desk_setting_spe
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/app_edit_new_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
-spec/frontend/releases/components/tag_field_exsting_spec.js
 spec/frontend/repository/components/header_area/blob_controls_spec.js
 spec/frontend/repository/components/header_area/blob_overflow_menu_spec.js
 spec/frontend/repository/components/table/index_spec.js

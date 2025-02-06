@@ -12,7 +12,6 @@ const mountCiVariableListApp = (containerEl) => {
   const {
     containsVariableReferenceLink,
     endpoint,
-    environmentScopeLink,
     groupId,
     groupPath,
     isGroup,
@@ -55,7 +54,6 @@ const mountCiVariableListApp = (containerEl) => {
     provide: {
       containsVariableReferenceLink,
       endpoint,
-      environmentScopeLink,
       groupId,
       groupPath,
       isGroup: parsedIsGroup,

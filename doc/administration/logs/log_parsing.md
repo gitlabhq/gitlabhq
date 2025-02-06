@@ -197,14 +197,14 @@ You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract per
 
 ### Parsing `gitlab-rails/importer.log`
 
-To troubleshoot [project imports](../../administration/raketasks/project_import_export.md) or
+To troubleshoot [project imports](../raketasks/project_import_export.md) or
 [migrations](../../user/project/import/index.md), run this command:
 
 ```shell
 jq 'select(.project_path == "<namespace>/<project>").error_messages' importer.log
 ```
 
-For common issues, see [troubleshooting](../../administration/raketasks/import_export_rake_tasks_troubleshooting.md).
+For common issues, see [troubleshooting](../raketasks/import_export_rake_tasks_troubleshooting.md).
 
 ### Parsing `gitlab-workhorse/current`
 

@@ -45,7 +45,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.7:
 
-  1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+  1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
   1. Execute `ApplicationSetting.current_without_cache.update(jira_connect_proxy_url: nil)`.
 
 - In GitLab 15.8 and later:
@@ -147,7 +147,7 @@ If you're using GitLab 15.8 and earlier and have previously enabled both the `ji
 and the `jira_connect_oauth` feature flags, you must disable the `jira_connect_oauth_self_managed` flag
 due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To check for these flags:
 
-1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 1. Execute the following code:
 
    ```ruby
@@ -163,7 +163,7 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
 ### Error: `Invalid audience`
 
 If you're using a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy),
-[`exceptions_json.log`](../../administration/logs/index.md#exceptions_jsonlog) might contain a message like:
+[`exceptions_json.log`](../logs/index.md#exceptions_jsonlog) might contain a message like:
 
 ```plaintext
 Invalid audience. Expected https://proxy.example.com/-/jira_connect, received https://gitlab.example.com/-/jira_connect

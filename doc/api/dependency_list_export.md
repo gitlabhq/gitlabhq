@@ -31,6 +31,7 @@ POST /pipelines/:id/dependency_list_exports
 | ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
 | `id`                | integer           | yes        | The ID of the pipeline which the authenticated user has access to. |
 | `export_type`       | string            | yes        | This must be set to `sbom`. |
+| `send_email`        | boolean           | no         | When set to `true`, sends an email notification to the user who requested the export when the export completes. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <private_token>" "https://gitlab.example.com/api/v4/pipelines/1/dependency_list_exports" --data "export_type=sbom"
@@ -44,6 +45,8 @@ Example response:
 {
   "id": 2,
   "has_finished": false,
+  "export_type": "sbom",
+  "send_email": false,
   "self": "http://gitlab.example.com/api/v4/dependency_list_exports/2",
   "download": "http://gitlab.example.com/api/v4/dependency_list_exports/2/download"
 }

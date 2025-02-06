@@ -168,8 +168,8 @@ describe('ForkForm component', () => {
   it('pre-populate form from project props', () => {
     createComponent();
 
-    expect(findForkNameInput().attributes('value')).toBe(DEFAULT_PROVIDE.projectName);
-    expect(findForkSlugInput().attributes('value')).toBe(DEFAULT_PROVIDE.projectPath);
+    expect(findForkNameInput().props('value')).toBe(DEFAULT_PROVIDE.projectName);
+    expect(findForkSlugInput().props('value')).toBe(DEFAULT_PROVIDE.projectPath);
     expect(findForkDescriptionTextarea().attributes('value')).toBe(
       DEFAULT_PROVIDE.projectDescription,
     );
@@ -178,8 +178,8 @@ describe('ForkForm component', () => {
   it('will have required attribute for required fields', () => {
     createComponent();
 
-    expect(findForkNameInput().attributes('required')).not.toBeUndefined();
-    expect(findForkSlugInput().attributes('required')).not.toBeUndefined();
+    expect(findForkNameInput().props('required')).not.toBeUndefined();
+    expect(findForkSlugInput().props('required')).not.toBeUndefined();
     expect(findVisibilityRadioGroup().attributes('required')).not.toBeUndefined();
     expect(findForkDescriptionTextarea().attributes('required')).toBeUndefined();
   });
@@ -194,7 +194,7 @@ describe('ForkForm component', () => {
     });
 
     it('initially loads slug without kebab-case transformation', () => {
-      expect(findForkSlugInput().attributes('value')).toBe(projectPath);
+      expect(findForkSlugInput().props('value')).toBe(projectPath);
     });
 
     it('changes to kebab case when project name changes', async () => {
@@ -202,7 +202,7 @@ describe('ForkForm component', () => {
       findForkNameInput().vm.$emit('input', newInput);
       await nextTick();
 
-      expect(findForkSlugInput().attributes('value')).toBe(kebabCase(newInput));
+      expect(findForkSlugInput().props('value')).toBe(kebabCase(newInput));
     });
 
     it('does not change to kebab case when project slug is changed manually', async () => {
@@ -210,7 +210,7 @@ describe('ForkForm component', () => {
       findForkSlugInput().vm.$emit('input', newInput);
       await nextTick();
 
-      expect(findForkSlugInput().attributes('value')).toBe(newInput);
+      expect(findForkSlugInput().props('value')).toBe(newInput);
     });
   });
 

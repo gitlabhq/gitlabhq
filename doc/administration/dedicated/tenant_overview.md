@@ -49,8 +49,8 @@ The **Maintenance windows** section displays the:
 - Upcoming GitLab version upgrade
 
 NOTE:
-Each Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](../../administration/dedicated/maintenance.md#maintenance-windows).
+Each Sunday night in UTC, Switchboard updates to display the planned GitLab version upgrades for the upcoming week's maintenance windows. For more information, see [Maintenance windows](../dedicated/maintenance.md#maintenance-windows).
 
 ## Hosted runners
 
-The **Hosted runners** section shows the [hosted runners](../../administration/dedicated/hosted_runners.md) associated with your instance.
+The **Hosted runners** section shows the [hosted runners](../dedicated/hosted_runners.md) associated with your instance.

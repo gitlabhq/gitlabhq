@@ -99,7 +99,7 @@ This section is for links to information elsewhere in the GitLab documentation.
 - Managing PostgreSQL versions on Linux package installations [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
-  - Including [troubleshooting](../../administration/postgresql/replication_and_failover_troubleshooting.md)
+  - Including [troubleshooting](../postgresql/replication_and_failover_troubleshooting.md)
     `gitlab-ctl patroni check-leader` and PgBouncer errors.
 
 - [Developer database documentation](../../development/feature_development.md#database-guides),
@@ -202,7 +202,7 @@ without having to [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-
 which in this case would restart Puma and Sidekiq.
 
 For example, a backup may fail with the following errors in the output of the
-[backup command](../../administration/backup_restore/index.md#back-up-gitlab)
+[backup command](../backup_restore/index.md#back-up-gitlab)
 because the statement timeout was too short:
 
 ```plaintext

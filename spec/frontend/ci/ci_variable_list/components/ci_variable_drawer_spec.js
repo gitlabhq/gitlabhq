@@ -10,6 +10,7 @@ import {
   GlSprintf,
   GlFormRadio,
   GlFormRadioGroup,
+  GlPopover,
 } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -28,6 +29,7 @@ import {
   projectString,
   variableTypes,
 } from '~/ci/ci_variable_list/constants';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { mockTracking } from 'helpers/tracking_helper';
 import { mockVariablesWithScopes } from '../mocks';
 
@@ -93,7 +95,6 @@ describe('CI Variable Drawer', () => {
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findEnvironmentScopeDropdown = () => wrapper.findComponent(CiEnvironmentsDropdown);
   const findExpandedCheckbox = () => wrapper.findByTestId('ci-variable-expanded-checkbox');
-  const findFlagsDocsLink = () => wrapper.findByTestId('ci-variable-flags-docs-link');
   const findKeyField = () => wrapper.findComponent(GlFormCombobox);
   const findVisibilityRadioButtons = () => wrapper.findAllComponents(GlFormRadio);
   const findVisibilityRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
@@ -105,6 +106,14 @@ describe('CI Variable Drawer', () => {
   const findTypeDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findVariablesPrecedenceDocsLink = () =>
     wrapper.findByTestId('ci-variable-precedence-docs-link');
+  const findVisibilityLabelHelpContainer = () =>
+    wrapper.findByTestId('visibility-popover-container');
+  const findVisibilityLabelHelpPopover = () =>
+    findVisibilityLabelHelpContainer().findComponent(GlPopover);
+  const findEnvironmentsLabelHelpContainer = () =>
+    wrapper.findByTestId('environments-popover-container');
+  const findEnvironmentsLabelHelpPopover = () =>
+    findEnvironmentsLabelHelpContainer().findComponent(GlPopover);
 
   describe('template', () => {
     beforeEach(() => {
@@ -117,14 +126,84 @@ describe('CI Variable Drawer', () => {
       );
     });
 
-    it('renders docs link for flags', () => {
-      expect(findFlagsDocsLink().attributes('href')).toBe(
-        helpPagePath('ci/variables/index', { anchor: 'define-a-cicd-variable-in-the-ui' }),
-      );
-    });
-
     it('value field is resizable', () => {
       expect(findValueField().props('noResize')).toBe(false);
+    });
+
+    describe('environments label', () => {
+      it('has a help icon', () => {
+        const helpIcon = findEnvironmentsLabelHelpContainer().findComponent(HelpIcon);
+
+        expect(helpIcon.exists()).toBe(true);
+      });
+
+      it('has a popover', () => {
+        const popover = findEnvironmentsLabelHelpPopover();
+
+        expect(popover.exists()).toBe(true);
+        expect(popover.props()).toMatchObject({
+          target: 'environments-popover-target',
+          container: 'environments-popover-container',
+        });
+      });
+
+      describe('popover', () => {
+        it('renders the correct content', () => {
+          const popover = findEnvironmentsLabelHelpPopover();
+
+          expect(popover.text()).toContain(
+            'You can use a specific environment name like production, or include a wildcard (*) to match multiple environments, like review*.  Learn how to restrict CI/CD variables to specific environments for better security.',
+          );
+        });
+
+        it('renders the documentation link', () => {
+          const popover = findEnvironmentsLabelHelpPopover();
+          const link = popover.findComponent(GlLink);
+          const documentationLink = helpPagePath('ci/environments/index', {
+            anchor: 'limit-the-environment-scope-of-a-cicd-variable',
+          });
+
+          expect(link.attributes('href')).toBe(documentationLink);
+        });
+      });
+    });
+
+    describe('visibility label', () => {
+      it('has a help icon', () => {
+        const helpIcon = findVisibilityLabelHelpContainer().findComponent(HelpIcon);
+
+        expect(helpIcon.exists()).toBe(true);
+      });
+
+      it('has a popover', () => {
+        const popover = findVisibilityLabelHelpPopover();
+
+        expect(popover.exists()).toBe(true);
+        expect(popover.props()).toMatchObject({
+          target: 'visibility-popover-target',
+          container: 'visibility-popover-container',
+        });
+      });
+
+      describe('popover', () => {
+        it('renders the correct content', () => {
+          const popover = findVisibilityLabelHelpPopover();
+
+          expect(popover.text()).toContain(
+            "Set the visibility level for the variable's value. The Masked and hidden option is only available for new variables. You cannot update an existing variable to be hidden.",
+          );
+        });
+
+        it('renders the documentation link', () => {
+          const popover = findVisibilityLabelHelpPopover();
+          const link = popover.findComponent(GlLink);
+          const documentationLink = helpPagePath('ci/variables/index', {
+            anchor: 'hide-a-cicd-variable',
+          });
+
+          expect(link.attributes('href')).toBe(documentationLink);
+        });
+      });
     });
   });
 

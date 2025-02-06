@@ -234,7 +234,7 @@ the other way around.
 1. For existing installations,
    [migrate the data](#migrate-existing-installations-manual-procedure) first.
 
-1. [Back up GitLab](../../administration/backup_restore/index.md)
+1. [Back up GitLab](../backup_restore/index.md)
    in case of unforeseen issues.
 
 1. Stop GitLab:
@@ -290,7 +290,7 @@ the other way around.
 1. For existing installations,
    [migrate the data](#migrate-existing-installations-manual-procedure) first.
 
-1. [Back up GitLab](../../administration/backup_restore/index.md)
+1. [Back up GitLab](../backup_restore/index.md)
    in case of unforeseen issues.
 
 1. Stop GitLab:

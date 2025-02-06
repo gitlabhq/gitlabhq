@@ -11091,6 +11091,22 @@ CREATE SEQUENCE cloud_connector_access_id_seq
 
 ALTER SEQUENCE cloud_connector_access_id_seq OWNED BY cloud_connector_access.id;
 
+CREATE TABLE cloud_connector_keys (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    secret_key jsonb
+);
+
+CREATE SEQUENCE cloud_connector_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cloud_connector_keys_id_seq OWNED BY cloud_connector_keys.id;
+
 CREATE TABLE cluster_agent_migrations (
     id bigint NOT NULL,
     cluster_id bigint NOT NULL,
@@ -12212,6 +12228,7 @@ CREATE TABLE dependency_list_exports (
     export_type smallint DEFAULT 0 NOT NULL,
     organization_id bigint,
     expires_at timestamp with time zone,
+    send_email boolean DEFAULT false NOT NULL,
     CONSTRAINT check_67a9c23e79 CHECK ((num_nonnulls(group_id, organization_id, project_id) > 0)),
     CONSTRAINT check_fff6fc9b2f CHECK ((char_length(file) <= 255))
 );
@@ -24739,6 +24756,8 @@ ALTER TABLE ONLY ci_variables ALTER COLUMN id SET DEFAULT nextval('ci_variables_
 
 ALTER TABLE ONLY cloud_connector_access ALTER COLUMN id SET DEFAULT nextval('cloud_connector_access_id_seq'::regclass);
 
+ALTER TABLE ONLY cloud_connector_keys ALTER COLUMN id SET DEFAULT nextval('cloud_connector_keys_id_seq'::regclass);
+
 ALTER TABLE ONLY cluster_agent_migrations ALTER COLUMN id SET DEFAULT nextval('cluster_agent_migrations_id_seq'::regclass);
 
 ALTER TABLE ONLY cluster_agent_tokens ALTER COLUMN id SET DEFAULT nextval('cluster_agent_tokens_id_seq'::regclass);
@@ -26983,6 +27002,9 @@ ALTER TABLE ONLY ci_variables
 
 ALTER TABLE ONLY cloud_connector_access
     ADD CONSTRAINT cloud_connector_access_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cloud_connector_keys
+    ADD CONSTRAINT cloud_connector_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY cluster_agent_migrations
     ADD CONSTRAINT cluster_agent_migrations_pkey PRIMARY KEY (id);
