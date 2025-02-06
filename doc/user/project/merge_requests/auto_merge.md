@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Set auto-merge on a merge request when you have reviewed its content, so it can merge without intervention when all merge checks pass."
+title: Auto-merge
 ---
-
-# Auto-merge
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

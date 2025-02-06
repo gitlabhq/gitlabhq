@@ -4,9 +4,8 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 remove_date: '2025-01-29'
 redirect_to: 'omniauth.md#supported-providers'
+title: Use Facebook as an OAuth 2.0 authentication provider (removed)
 ---
-
-# Use Facebook as an OAuth 2.0 authentication provider (removed)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

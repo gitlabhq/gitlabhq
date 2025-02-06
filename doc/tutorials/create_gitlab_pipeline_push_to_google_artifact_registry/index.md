@@ -2,9 +2,8 @@
 stage: Verify
 group: tutorials
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Create a GitLab pipeline to push to Google Artifact Registry'
 ---
-
-# Tutorial: Create a GitLab pipeline to push to Google Artifact Registry
 
 Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using runners on Compute Engine to push images to Artifact Registry.
 

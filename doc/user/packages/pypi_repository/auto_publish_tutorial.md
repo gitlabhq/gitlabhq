@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Automatically build and publish packages with CI/CD'
 ---
-
-# Tutorial: Automatically build and publish packages with CI/CD
 
 You can use CI/CD to build and publish your PyPI packages. Automatic builds can help you keep your packages
 up to date and available to others.

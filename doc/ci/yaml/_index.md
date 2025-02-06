@@ -918,9 +918,8 @@ spec:
       default: 'test-user'
     flags:
       default: ''
+title: The pipeline configuration would follow...
 ---
-
-# The pipeline configuration would follow...
 ```
 
 In this example:
@@ -957,9 +956,8 @@ spec:
   inputs:
     flags:
       description: 'Sample description of the `flags` input details.'
+title: The pipeline configuration would follow...
 ---
-
-# The pipeline configuration would follow...
 ```
 
 ##### `spec:inputs:options`
@@ -984,9 +982,8 @@ spec:
         - development
         - staging
         - production
+title: The pipeline configuration would follow...
 ---
-
-# The pipeline configuration would follow...
 ```
 
 In this example:
@@ -1019,9 +1016,8 @@ spec:
   inputs:
     version:
       regex: ^v\d\.\d+(\.\d+)$
+title: The pipeline configuration would follow...
 ---
-
-# The pipeline configuration would follow...
 ```
 
 In this example, inputs of `v1.0` or `v1.2.3` match the regular expression and pass validation.
@@ -1064,9 +1060,8 @@ spec:
       type: boolean
     array_input:
       type: array
+title: The pipeline configuration would follow...
 ---
-
-# The pipeline configuration would follow...
 ```
 
 ## Job keywords

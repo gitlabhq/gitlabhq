@@ -3,9 +3,8 @@ stage: Application Security Testing
 group: Static Analysis
 description: Container, dependency, and vulnerability scans.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Secure your application
 ---
-
-# Secure your application
 
 GitLab can check your applications for security vulnerabilities.
 

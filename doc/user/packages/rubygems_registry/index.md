@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Ruby gems in the package registry
 ---
-
-# Ruby gems in the package registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -29,7 +28,7 @@ Before you can interact with the package registry, you must authenticate to it.
 
 To do this, you can use:
 
-- A [personal access token](../../../user/profile/personal_access_tokens.md)
+- A [personal access token](../../profile/personal_access_tokens.md)
   with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.

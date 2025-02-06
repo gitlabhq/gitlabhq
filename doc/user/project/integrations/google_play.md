@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+title: Google Play
 ---
-
-# Google Play
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

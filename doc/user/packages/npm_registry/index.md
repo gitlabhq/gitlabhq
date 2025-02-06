@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: npm packages in the package registry
 ---
-
-# npm packages in the package registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -27,7 +26,7 @@ An anonymous user cannot pull packages from an internal project.
 
 To authenticate, you can use:
 
-- A [personal access token](../../../user/profile/personal_access_tokens.md)
+- A [personal access token](../../profile/personal_access_tokens.md)
   with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
@@ -35,7 +34,7 @@ To authenticate, you can use:
 
 If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
 If you want to publish a package with a CI/CD pipeline, you must use a CI/CD job token.
-For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
+For more information, review the [guidance on tokens](../package_registry/index.md#authenticate-with-the-registry).
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 

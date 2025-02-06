@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Use Git LFS to manage binary assets, like images and video, without bloating your Git repository's size."
+title: Git Large File Storage (LFS)
 ---
-
-# Git Large File Storage (LFS)
 
 Git Large File Storage (LFS) is an open source Git extension that helps Git repositories
 manage large binary files efficiently. Git can't track changes to binary files

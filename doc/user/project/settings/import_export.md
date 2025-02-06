@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Migrate projects and groups by using file exports
 ---
-
-# Migrate projects and groups by using file exports
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -380,7 +379,7 @@ Group items that are exported include:
 - Epics
   - Epic resource state events. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4.
 - Events
-- [Wikis](../../project/wiki/group.md)
+- [Wikis](../wiki/group.md)
 - Iterations cadences. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95372) in GitLab 15.4.
 
 ### Group items that are not exported

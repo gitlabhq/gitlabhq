@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "To ensure all changes are reviewed, configure optional or required approvals for merge requests in your project."
+title: Merge request approvals
 ---
-
-# Merge request approvals
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -131,7 +130,7 @@ To [re-request a review](../reviews/index.md#re-request-a-review), select the **
 Eligible approvers can approve merge requests in two ways:
 
 1. Select **Approve** in the merge request widget.
-1. Use the `/approve` [quick action](../../../project/quick_actions.md) in a comment.
+1. Use the `/approve` [quick action](../../quick_actions.md) in a comment.
 
 Approved merge requests display a green check mark (**{check-circle-filled}**) next to the user's name in the reviewer list.
 After a merge request receives the required approvals, it is ready to merge, unless it's blocked due to:

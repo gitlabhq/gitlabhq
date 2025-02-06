@@ -12,3 +12,5 @@ module AuditEvents
     scope :by_username, ->(username) { where(user_id: find_user_id(username)) }
   end
 end
+
+AuditEvents::UserAuditEvent.prepend_mod

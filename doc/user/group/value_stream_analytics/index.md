@@ -356,7 +356,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355304) time to restore service tile in GitLab 15.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357071) change failure rate tile in GitLab 15.0.
 
-Value stream analytics includes the following [DORA](../../../user/analytics/dora_metrics.md) metrics:
+Value stream analytics includes the following [DORA](../../analytics/dora_metrics.md) metrics:
 
 - Deployment frequency
 - Lead time for changes

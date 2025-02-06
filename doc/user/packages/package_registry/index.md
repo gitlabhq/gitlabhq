@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Package registry
 ---
-
-# Package registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -47,7 +46,7 @@ For information on how to create and upload a package, view the GitLab documenta
 
 ## Authenticate with the registry
 
-Authentication depends on the package manager being used. To learn what authentication protocols are supported for a specific package type, see [Authentication protocols](../../packages/package_registry/supported_functionality.md#authentication-protocols).
+Authentication depends on the package manager being used. To learn what authentication protocols are supported for a specific package type, see [Authentication protocols](supported_functionality.md#authentication-protocols).
 
 For most package types, the following credential types are valid:
 

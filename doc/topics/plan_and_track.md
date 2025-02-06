@@ -3,9 +3,8 @@ stage: Plan
 group: Project Management
 description: Epics, issues, milestones, labels.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Plan and track work
 ---
-
-# Plan and track work
 
 Plan your work by creating requirements, issues, and epics. Schedule work
 with milestones and track your team's time. Learn how to save time with

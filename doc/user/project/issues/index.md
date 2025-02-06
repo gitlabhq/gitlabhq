@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Issues
 ---
-
-# Issues
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -41,7 +40,7 @@ To learn how the GitLab Strategic Marketing department uses GitLab issues with [
 ## Related topics
 
 - [Create issues](create_issues.md)
-- [Create an issue from a template](../../project/description_templates.md#use-the-templates)
+- [Create an issue from a template](../description_templates.md#use-the-templates)
 - [Edit issues](managing_issues.md#edit-an-issue)
 - [Move issues](managing_issues.md#move-an-issue)
 - [Close issues](managing_issues.md#close-an-issue)

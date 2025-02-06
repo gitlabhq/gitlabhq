@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab generic packages repository
 ---
-
-# GitLab generic packages repository
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -23,8 +22,8 @@ The generic packages repository provides:
 
 To interact with the package registry, you must authenticate with one of the following methods:
 
-- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
-- A [project access token](../../../user/project/settings/project_access_tokens.md) with the scope set to `api` and at least the Developer role.
+- A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.
+- A [project access token](../../project/settings/project_access_tokens.md) with the scope set to `api` and at least the Developer role.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 - A [deploy token](../../project/deploy_tokens/index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 

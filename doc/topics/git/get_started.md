@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started with Git
 ---
-
-# Get started with Git
 
 Git is a version control system you use to track changes to your code and collaborate with others.
 GitLab is a web-based Git repository manager that provides CI/CD and other features to help you

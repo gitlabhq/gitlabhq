@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Create a pull mirror to pull changes from a remote repository into GitLab, and keep your copy of it up-to-date."
+title: Pull from a remote repository
 ---
-
-# Pull from a remote repository
 
 DETAILS:
 **Tier:** Premium, Ultimate

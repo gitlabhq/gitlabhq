@@ -59,6 +59,7 @@ export const handleIssuablePopoverMount = ({
   innerText,
   referenceType,
   target,
+  placement,
 }) => {
   // Add listener to actually remove it again
   target.addEventListener('mouseleave', handleIssuablePopoverMouseOut);
@@ -74,6 +75,7 @@ export const handleIssuablePopoverMount = ({
           target,
           namespacePath,
           iid,
+          placement,
           milestoneId: milestone,
           cachedTitle: title || innerText,
         },
@@ -95,7 +97,7 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
     const listenerAddedAttr = 'data-popover-listener-added';
 
     elements.forEach((el) => {
-      const { projectPath, groupPath, iid, referenceType, milestone } = el.dataset;
+      const { projectPath, groupPath, iid, referenceType, milestone, placement } = el.dataset;
       let { namespacePath } = el.dataset;
       const title = el.dataset.mrTitle || el.title;
       const { innerText } = el;
@@ -115,6 +117,7 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
               innerText,
               referenceType,
               target,
+              placement,
             });
           }
         });

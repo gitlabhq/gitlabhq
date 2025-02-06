@@ -73,7 +73,7 @@ A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability Report](../application_security/vulnerability_report/index.md),
 [compliance center](../compliance/compliance_center/index.md), and
-[value stream analytics](../group/value_stream_analytics/index.md).
+[value stream analytics](value_stream_analytics/index.md).
 
 ## Group visibility
 
@@ -195,7 +195,7 @@ To edit group details:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
-1. In the **Group name** text box, enter your group name. See the [limitations on group names](../../user/reserved_names.md).
+1. In the **Group name** text box, enter your group name. See the [limitations on group names](../reserved_names.md).
 1. Optional. In the **Group description (optional)** text box, enter your group description.
    The description is limited to 500 characters.
 1. Optional. Under **Group avatar**, select **Choose file**, then select an image. The ideal image size is 192 x 192 pixels, and the maximum file size allowed is 200 KB.
@@ -465,7 +465,7 @@ GitLab administrators can also [ensure removed users cannot invite themselves ba
 
 You can add a new project to a group in two ways:
 
-- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md).
+- Select a group, and then select **New project**. You can then continue [creating your project](../project/index.md).
 - While you are creating a project, select a group from the dropdown list.
 
   ![Select group](img/select_group_dropdown_v13_10.png)

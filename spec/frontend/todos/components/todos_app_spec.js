@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlTabs } from '@gitlab/ui';
+import { GlLoadingIcon, GlTabs, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ignoreConsoleMessages } from 'helpers/console_watcher';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -10,6 +10,7 @@ import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
+import TodosBulkBar from '~/todos/components/todos_bulk_bar.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
@@ -28,6 +29,7 @@ describe('TodosApp', () => {
   const createComponent = ({
     todosQueryHandler = todosQuerySuccessHandler,
     todosCountsQueryHandler = todosCountsQuerySuccessHandler,
+    featureFlags = { todosBulkActions: false },
   } = {}) => {
     const mockApollo = createMockApollo();
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
@@ -35,6 +37,9 @@ describe('TodosApp', () => {
 
     wrapper = shallowMountExtended(TodosApp, {
       apolloProvider: mockApollo,
+      provide: {
+        glFeatures: featureFlags,
+      },
     });
   };
 
@@ -287,6 +292,142 @@ describe('TodosApp', () => {
     it('activates correct tab', () => {
       createComponent();
       expect(findGlTabs().props('value')).toBe(2);
+    });
+  });
+
+  describe('bulk selection', () => {
+    beforeEach(async () => {
+      createComponent({
+        featureFlags: { todosBulkActions: true },
+      });
+      await waitForPromises();
+    });
+
+    const findSelectedTodoItems = () => findTodoItems().filter((item) => item.props('selected'));
+    const findSelectAllCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+    const findBulkBar = () => wrapper.findComponent(TodosBulkBar);
+
+    describe('select all checkbox', () => {
+      it('is not visible when bulk actions feature flag is disabled', async () => {
+        createComponent({
+          featureFlags: { todosBulkActions: false },
+        });
+        await waitForPromises();
+
+        expect(findSelectAllCheckbox().exists()).toBe(false);
+      });
+
+      it('is not visible on "All" tab', async () => {
+        findGlTabs().vm.$emit('input', 3); // All tab
+        await nextTick();
+
+        expect(findSelectAllCheckbox().exists()).toBe(false);
+      });
+
+      it('is visible on other tabs', () => {
+        expect(findSelectAllCheckbox().exists()).toBe(true);
+      });
+
+      it('becomes indeterminate when some but not all items are selected', async () => {
+        findFirstTodoItem().vm.$emit(
+          'select-change',
+          todosResponse.data.currentUser.todos.nodes[0].id,
+          true,
+        );
+        await nextTick();
+
+        expect(findSelectAllCheckbox().attributes()).toMatchObject({
+          indeterminate: 'true',
+        });
+      });
+    });
+
+    describe('selection state', () => {
+      it('clears selection when changing tabs', async () => {
+        // Select an item
+        findFirstTodoItem().vm.$emit(
+          'select-change',
+          todosResponse.data.currentUser.todos.nodes[0].id,
+          true,
+        );
+        await nextTick();
+        expect(findSelectedTodoItems()).toHaveLength(1);
+
+        // Change tab
+        findGlTabs().vm.$emit('input', 2);
+        await nextTick();
+
+        expect(findSelectedTodoItems()).toHaveLength(0);
+      });
+
+      it('updates selected prop when selecting items', async () => {
+        const todoId = todosResponse.data.currentUser.todos.nodes[0].id;
+        findFirstTodoItem().vm.$emit('select-change', todoId, true);
+        await nextTick();
+
+        // Check that exactly one item is selected
+        expect(findSelectedTodoItems()).toHaveLength(1);
+
+        // Check that the correct item is selected
+        const selectedItem = findTodoItems().at(0); // Since we selected the first item
+        expect(selectedItem.props('selected')).toBe(true);
+      });
+
+      it('enables "select all" state when all items are selected indivudually', async () => {
+        // Select todo items one by one
+        const allTodoIds = todosResponse.data.currentUser.todos.nodes.map((todo) => todo.id);
+        allTodoIds.forEach((id) => {
+          findFirstTodoItem().vm.$emit('select-change', id, true);
+        });
+        await nextTick();
+
+        expect(findSelectAllCheckbox().attributes('checked')).toBe('true');
+      });
+
+      it('clears "select all" state when last item is deselected', async () => {
+        // First select all
+        findSelectAllCheckbox().vm.$emit('change', true);
+        await nextTick();
+        expect(findSelectAllCheckbox().attributes('checked')).toBe('true');
+
+        // Then deselect one by one
+        for (const todo of todosResponse.data.currentUser.todos.nodes) {
+          findFirstTodoItem().vm.$emit('select-change', todo.id, false);
+        }
+        await nextTick();
+
+        expect(findSelectAllCheckbox().attributes('checked')).toBeUndefined();
+      });
+    });
+
+    describe('bulk actions', () => {
+      it('shows bulk bar when items are selected', async () => {
+        expect(findBulkBar().isVisible()).toBe(false);
+
+        findFirstTodoItem().vm.$emit(
+          'select-change',
+          todosResponse.data.currentUser.todos.nodes[0].id,
+          true,
+        );
+        await nextTick();
+
+        expect(findBulkBar().isVisible()).toBe(true);
+      });
+
+      it('clears selection and refreshes after bulk action', async () => {
+        findFirstTodoItem().vm.$emit(
+          'select-change',
+          todosResponse.data.currentUser.todos.nodes[0].id,
+          true,
+        );
+        await nextTick();
+
+        findBulkBar().vm.$emit('change');
+        await nextTick();
+
+        expect(findSelectedTodoItems()).toHaveLength(0);
+        expect(todosQuerySuccessHandler).toHaveBeenCalled();
+      });
     });
   });
 });

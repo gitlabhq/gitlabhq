@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Understand how to read the display of commits in a merge request."
+title: Commits
 ---
-
-# Commits
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -43,12 +42,12 @@ You can add multiple commits before pushing your changes.
 
 - **Cherry-pick a commit:**
 
-  In GitLab, you can [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)
+  In GitLab, you can [cherry-pick a commit](cherry_pick_changes.md#cherry-pick-a-single-commit)
   from the UI.
 
 - **Revert a commit:**
 
-  [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
+  [Revert a commit](revert_changes.md#revert-a-commit)
   from the UI to a selected branch.
 
 - **Sign a commit:**

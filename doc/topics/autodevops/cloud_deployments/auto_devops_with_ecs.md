@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Auto DevOps to deploy to Amazon ECS
 ---
-
-# Use Auto DevOps to deploy to Amazon ECS
 
 You can choose to target AWS ECS as a deployment platform instead of using Kubernetes.
 

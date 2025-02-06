@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Metrics for measuring monorepo performance
 ---
-
-# Metrics for measuring monorepo performance
 
 The following metrics can be used to measure server side performance of your
 monorepo. These metrics are not limited to monorepo performance and are more

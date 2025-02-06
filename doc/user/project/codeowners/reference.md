@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Syntax of `CODEOWNERS` file
 ---
-
-# `CODEOWNERS` syntax
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -242,7 +241,7 @@ role as Code Owners for `file.md`:
 ## Add a group as a Code Owner
 
 You can set **direct members** of a group or subgroup as a Code Owner.
-For more information about group membership, see [Membership types](../../project/members/index.md#membership-types).
+For more information about group membership, see [Membership types](../members/index.md#membership-types).
 
 To set direct members of a group or subgroup as a Code Owner:
 
@@ -358,6 +357,72 @@ Use `**` to match zero or more directories recursively:
 # Matches /docs/index.md, /docs/api/index.md, and /docs/api/graphql/index.md.
 /docs/**/index.md
 ```
+
+### Exclusion patterns
+
+Prefix files or paths with `!` to exempt or exclude them from requiring code owner approval.
+Exclusions apply in their section. In the following example:
+
+- The `pom.xml` exclusion applies to the default section.
+- The `/config/**/*.rb` exclusion only affects Ruby files in the Ruby section.
+
+```plaintext
+# All files require approval from @username
+* @username
+
+# Except pom.xml which needs no approval
+!pom.xml
+
+[Ruby]
+# All ruby files require approval from @ruby-team
+*.rb @ruby-team
+
+# Except Ruby files in the config directory
+!/config/**/*.rb
+```
+
+The following guidelines explain how exclusion patterns behave:
+
+- Exclusions are evaluated in order in their section. For example:
+
+  ```plaintext
+  * @default-owner
+  !*.rb                      # Excludes all Ruby files.
+  /special/*.rb @ruby-owner  # This won't take effect as *.rb is already excluded.
+  ```
+
+- After a pattern is excluded, it cannot be included again in the same section:
+
+  ```plaintext
+  [Ruby]
+  *.rb @ruby-team           # All Ruby files need Ruby team approval.
+  !/config/**/*.rb          # Ruby files in config don't need Ruby team approval.
+  /config/routes.rb @ops    # This won't take effect as config Ruby files are excluded.
+  ```
+
+- Files matching an exclusion pattern do not require code owner approval for that section.
+  If you need different exclusions for different owners, use multiple sections:
+
+  ```plaintext
+  [Ruby]
+  *.rb @ruby-team
+  !/config/**/*.rb        # Config Ruby files don't need Ruby team approval.
+
+  [Config]
+  /config/**/* @ops-team  # Config files still require ops-team approval.
+  ```
+
+- Use exclusions for files that are automatically updated:
+
+  ```plaintext
+  * @default-owner
+
+  # Files updated by automation don't need approval.
+  !package-lock.json
+  !yarn.lock
+  !**/generated/**/*      # Any files in generated directories.
+  !.gitlab-ci.yml
+  ```
 
 ## Entry owners
 

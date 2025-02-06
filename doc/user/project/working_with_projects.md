@@ -2,15 +2,14 @@
 stage: Tenant Scale
 group: Organizations
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Manage projects
 ---
-
-# Manage projects
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Most work in GitLab is done in a [project](../../user/project/index.md). Files and
+Most work in GitLab is done in a [project](index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
 
 ## Project overview
@@ -156,7 +155,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
-1. In the **Project name** text box, enter your project name. See the [limitations on project names](../../user/reserved_names.md).
+1. In the **Project name** text box, enter your project name. See the [limitations on project names](../reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
 Components published in the CI/CD catalog require a project description.
 1. Select **Save changes**.
@@ -480,7 +479,7 @@ Prerequisites:
 
 NOTE:
 When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
-[redirects when renaming repositories](../project/repository/index.md#repository-path-changes).
+[redirects when renaming repositories](repository/index.md#repository-path-changes).
 
 To rename a repository:
 
@@ -557,8 +556,8 @@ repository. For example, if an administrator creates the alias `gitlab` for the 
 
 ## Related topics
 
-- [Import a project](../../user/project/import/index.md).
+- [Import a project](import/index.md).
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/index.md).
 - [Fork a project](repository/forking_workflow.md#create-a-fork).
-- Adjust [project visibility](../../user/public_access.md#change-project-visibility) and [permissions](settings/index.md#configure-project-features-and-permissions).
-- [Rules for project and group names](../../user/reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)
+- Adjust [project visibility](../public_access.md#change-project-visibility) and [permissions](settings/index.md#configure-project-features-and-permissions).
+- [Rules for project and group names](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)

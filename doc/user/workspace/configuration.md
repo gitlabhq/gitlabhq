@@ -3,9 +3,8 @@ stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Configure your GitLab workspaces to manage your GitLab development environments."
+title: Configure workspaces
 ---
-
-# Configure workspaces
 
 DETAILS:
 **Tier:** Premium, Ultimate

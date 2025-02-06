@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Dependency Scanning compared to Container Scanning
 ---
-
-# Dependency Scanning compared to Container Scanning
 
 GitLab offers both [Dependency Scanning](dependency_scanning/index.md) and
 [Container Scanning](container_scanning/index.md) to ensure coverage for all of these

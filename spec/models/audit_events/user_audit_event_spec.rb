@@ -27,10 +27,14 @@ RSpec.describe ::AuditEvents::UserAuditEvent, feature_category: :audit_events do
     let_it_be(:user_audit_event_1) { create(:audit_events_user_audit_event) }
     let_it_be(:user_audit_event_2) { create(:audit_events_user_audit_event) }
 
-    subject(:event) { described_class.by_username(user_audit_event_1.user.name) }
+    subject(:event) { described_class.by_username(user_audit_event_1.user.username) }
 
     before do
-      allow(User).to receive(:find_by_username).and_return(user_audit_event_1.user)
+      fake_user = build_stubbed(:user, id: user_audit_event_1.user_id)
+
+      allow(User).to receive(:find_by_username)
+                    .with(user_audit_event_1.user.username)
+                    .and_return(fake_user)
     end
 
     it 'returns the correct audit event' do

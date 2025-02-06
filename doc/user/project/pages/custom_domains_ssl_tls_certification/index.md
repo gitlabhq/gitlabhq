@@ -2,9 +2,8 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Pages custom domains
 ---
-
-# GitLab Pages custom domains
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -24,7 +23,7 @@ To use one or more custom domain names:
 - Add [SSL/TLS certification](#adding-an-ssltls-certificate-to-pages).
 
 WARNING:
-You cannot verify the [most popular public email domains](../../../../user/group/access_and_permissions.md#restrict-group-access-by-domain).
+You cannot verify the [most popular public email domains](../../../group/access_and_permissions.md#restrict-group-access-by-domain).
 
 ## Set up a custom domain
 

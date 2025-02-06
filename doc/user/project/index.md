@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Create a project
 ---
-
-# Create a project
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -21,7 +20,7 @@ To create a blank project:
 1. Select **Create blank project**.
 1. Enter the project details:
    1. **Project name**: Enter the name of your project.
-   For more information, see [naming rules](../../user/reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs).
+   For more information, see [naming rules](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs).
    1. **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.
    1. **Project deployment target (optional)**: If you want to deploy your project to specific environment,
    select the relevant deployment target.
@@ -90,7 +89,7 @@ To create a project from the HIPAA Audit Protocol template:
 ## Create a project from a custom template
 
 Custom project templates are available for your [instance](../../administration/custom_project_templates.md)
-and [group](../../user/group/custom_project_templates.md).
+and [group](../group/custom_project_templates.md).
 
 To create a project from a custom template:
 
@@ -156,6 +155,6 @@ encourage agencies to move away from SHA-1 earlier, if possible.
 ## Related topics
 
 - [Create a project with `git push`](../../topics/git/project.md)
-- [Reserved project and group names](../../user/reserved_names.md)
-- [Rules for project and group names](../../user/reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)
+- [Reserved project and group names](../reserved_names.md)
+- [Rules for project and group names](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)
 - [Manage projects](working_with_projects.md)

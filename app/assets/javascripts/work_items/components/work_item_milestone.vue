@@ -3,6 +3,7 @@ import { GlLink } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { newWorkItemId } from '~/work_items/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__, __ } from '~/locale';
 import { MILESTONE_STATE } from '~/sidebar/constants';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -100,6 +101,9 @@ export default {
     },
     localMilestoneId() {
       return this.localMilestone?.id;
+    },
+    localMilestoneNumericId() {
+      return this.localMilestoneId ? getIdFromGraphQLId(this.localMilestoneId) : '';
     },
   },
   watch: {
@@ -241,7 +245,13 @@ export default {
       <div v-if="item.title">{{ item.title }}</div>
     </template>
     <template #readonly>
-      <gl-link class="!gl-text-default" :href="localMilestone.webPath">
+      <gl-link
+        class="has-popover !gl-text-default"
+        :data-milestone="localMilestoneNumericId"
+        data-reference-type="milestone"
+        data-placement="left"
+        :href="localMilestone.webPath"
+      >
         {{ localMilestone.title }}{{ expired }}
       </gl-link>
     </template>

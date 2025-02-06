@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Transfer projects
 ---
-
-# Transfer projects
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -49,12 +48,12 @@ Prerequisites:
   - On GitLab Self-Managed: The project must not contain [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
 - The project must not have a security policy.
   If a security policy is assigned to the project, it is automatically unassigned during the transfer.
-- If the root namespace changes, you must remove npm packages that follow the [naming convention](../../../user/packages/npm_registry/index.md#naming-convention) from the project.
+- If the root namespace changes, you must remove npm packages that follow the [naming convention](../../packages/npm_registry/index.md#naming-convention) from the project.
   After you transfer the project you can either:
 
   - Update the package scope with the new root namespace path, and publish it again to the project.
   - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention.
-    If you republish the package without updating the root namespace path, it will not be available for the [instance endpoint](../../../user/packages/npm_registry/index.md#install-from-an-instance).
+    If you republish the package without updating the root namespace path, it will not be available for the [instance endpoint](../../packages/npm_registry/index.md#install-from-an-instance).
 
 To transfer a project:
 
@@ -75,7 +74,7 @@ to move any project to any namespace.
 
 When you transfer a project from a namespace licensed for GitLab.com Premium or Ultimate to GitLab Free:
 
-- [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked.
+- [Project access tokens](../settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
   and [test cases](../../../ci/test_cases/index.md) are deleted.
 

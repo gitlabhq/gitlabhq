@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 description: Common Git commands and workflows.
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Basic Git operations
 ---
-
-# Basic Git operations
 
 Basic Git operations help you to manage your Git repositories and to make changes to your code.
 They provide you with the following benefits:

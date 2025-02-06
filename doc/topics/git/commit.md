@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 description: Common commands and workflows.
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Stage, commit, and push changes
 ---
-
-# Stage, commit, and push changes
 
 When you make changes to files in a repository, Git tracks the changes
 against the most recent version of the checked out branch. You can use

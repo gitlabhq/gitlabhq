@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Description templates
 ---
-
-# Description templates
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -136,7 +135,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 - The project must be a direct child of the group.
 
-To re-use templates [you've created](../project/description_templates.md#create-an-issue-template):
+To re-use templates [you've created](description_templates.md#create-an-issue-template):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.

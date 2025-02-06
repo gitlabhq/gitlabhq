@@ -3,9 +3,8 @@ stage: Deploy
 group: Environments
 description: Terraform and Kubernetes deployments.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Manage your infrastructure
 ---
-
-# Manage your infrastructure
 
 Use GitLab to speed up and simplify your infrastructure management practices.
 

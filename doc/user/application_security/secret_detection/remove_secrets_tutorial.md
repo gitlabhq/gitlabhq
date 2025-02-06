@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Tutorial: Remove a secret from your commits
+title: 'Tutorial: Remove a secret from your commits'
 ---
 
 If your application uses external resources, you usually need to authenticate your

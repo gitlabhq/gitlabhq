@@ -101,7 +101,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
       it 'returns work item type information' do
         expect(work_item_data['workItemType']).to match(
-          expected_work_item_type_response(work_item.resource_parent, work_item.work_item_type).first
+          expected_work_item_type_response(work_item.resource_parent, current_user, work_item.work_item_type).first
         )
       end
     end

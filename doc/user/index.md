@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use GitLab
 ---
-
-# Use GitLab
 
 Get to know the GitLab end-to-end workflow. Configure permissions,
 organize your work, create and secure your application, and analyze its performance. Report on team productivity throughout the process.

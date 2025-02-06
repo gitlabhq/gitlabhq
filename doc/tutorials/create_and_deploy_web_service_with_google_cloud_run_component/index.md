@@ -2,9 +2,8 @@
 stage: Verify
 group: tutorials
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Create and deploy a web service with the Google Cloud Run component'
 ---
-
-# Tutorial: Create and deploy a web service with the Google Cloud Run component
 
 Learn how to use the [Google Cloud Run component](https://gitlab.com/google-gitlab-components/cloud-run) to deploy a web service from a container image stored in Artifact Registry.
 

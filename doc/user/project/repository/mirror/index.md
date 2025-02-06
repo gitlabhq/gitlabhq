@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Use repository mirroring to push or pull the contents of a Git repository into another repository."
+title: Repository mirroring
 ---
-
-# Repository mirroring
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -191,7 +190,7 @@ needs this key to establish trust with your GitLab repository. To copy your SSH 
 1. Identify the correct repository, and select **Copy SSH public key** (**{copy-to-clipboard}**).
 1. Add the public SSH key to the other repository's configuration:
    - If the other repository is hosted on GitLab, add the public SSH key
-     as a [deploy key](../../../project/deploy_keys/index.md).
+     as a [deploy key](../../deploy_keys/index.md).
    - If the other repository is hosted elsewhere, add the key to
      your user's `authorized_keys` file. Paste the entire public SSH key into the
      file on its own line and save it.

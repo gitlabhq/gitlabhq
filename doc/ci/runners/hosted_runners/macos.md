@@ -2,9 +2,8 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Hosted runners on macOS
 ---
-
-# Hosted runners on macOS
 
 DETAILS:
 **Tier:** Premium, Ultimate

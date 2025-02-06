@@ -3,7 +3,7 @@ stage: AI-Powered
 group: Custom Models
 description: Self-Hosted AI Models Licensing and Offerings
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Self-Hosted AI Models: Licensing and Offerings
+title: 'Self-Hosted AI Models: Licensing and Offerings'
 ---
 
 DETAILS:

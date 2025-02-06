@@ -513,6 +513,11 @@ export const config = {
       WorkItemType: {
         // this prevents child and parent work item types from overriding each other
         fields: {
+          supportedConversionTypes: {
+            merge(__, incoming) {
+              return incoming;
+            },
+          },
           widgetDefinitions: {
             merge(existing = [], incoming) {
               if (existing.length === 0) {

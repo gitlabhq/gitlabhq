@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Build packages
 ---
-
-# Build packages
 
 Learn how to install and build packages different package formats.
 
@@ -27,7 +26,7 @@ Learn how to install and build packages different package formats.
 
 1. Run [`composer init`](https://getcomposer.org/doc/03-cli.md#init) and answer the prompts.
 
-   For namespace, enter your unique [namespace](../../../user/namespace/index.md), like your GitLab username or group name.
+   For namespace, enter your unique [namespace](../../namespace/index.md), like your GitLab username or group name.
 
    A file called `composer.json` is created:
 

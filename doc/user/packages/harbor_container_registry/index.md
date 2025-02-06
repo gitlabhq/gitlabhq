@@ -2,9 +2,8 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Harbor registry
 ---
-
-# Harbor registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -12,7 +11,7 @@ DETAILS:
 
 > - **Harbor Registry** [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/439494) from the **Operate** menu section to **Deploy** in GitLab 17.0.
 
-You can integrate the [Harbor container registry](../../../user/project/integrations/harbor.md) into GitLab and use Harbor as the container registry for your GitLab project to store images.
+You can integrate the [Harbor container registry](../../project/integrations/harbor.md) into GitLab and use Harbor as the container registry for your GitLab project to store images.
 
 ## View the Harbor registry
 

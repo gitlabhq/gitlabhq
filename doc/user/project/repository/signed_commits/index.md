@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Why you should sign your GitLab commits cryptographically, and how to verify signed commits."
+title: Signed commits
 ---
-
-# Signed commits
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

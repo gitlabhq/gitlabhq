@@ -5,9 +5,8 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: >-
   How to configure the Diffblue Cover GitLab integration - Cover Pipeline for
   GitLab
+title: Diffblue Cover
 ---
-
-# Diffblue Cover
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

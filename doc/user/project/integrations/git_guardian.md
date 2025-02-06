@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Integrate GitLab with GitGuardian to get alerts for policy violations and security issues before they can be exploited."
+title: GitGuardian
 ---
-
-# GitGuardian
 
 DETAILS:
 **Tier:** Premium, Ultimate

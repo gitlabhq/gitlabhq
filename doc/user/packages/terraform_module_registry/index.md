@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Terraform Module Registry
 ---
-
-# Terraform Module Registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -225,7 +224,7 @@ module "<module>" {
 }
 ```
 
-Where `<namespace>` is the [namespace](../../../user/namespace/index.md) of the Terraform Module Registry.
+Where `<namespace>` is the [namespace](../../namespace/index.md) of the Terraform Module Registry.
 
 ### From a project
 

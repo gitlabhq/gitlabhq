@@ -2,9 +2,8 @@
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Group wikis
 ---
-
-# Group wikis
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -37,7 +36,7 @@ To access a group wiki:
 ## Export a group wiki
 
 Users with the Owner role in a group can
-[import or export a group wiki](../../project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated) when they
+[import or export a group wiki](../settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated) when they
 import or export a group.
 
 Content created in a group wiki is not deleted when an account is downgraded or a
@@ -47,7 +46,7 @@ the wiki is exported.
 To access the group wiki data from the export file if the feature is no longer
 available, you have to:
 
-1. Extract the [export file tarball](../../project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated)
+1. Extract the [export file tarball](../settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated)
    with this command, replacing `FILENAME` with your file's name:
    `tar -xvzf FILENAME.tar.gz`
 1. Browse to the `repositories` directory. This directory contains a

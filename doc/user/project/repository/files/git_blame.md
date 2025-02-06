@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Documentation on Git file blame."
+title: Git file blame
 ---
-
-# Git file blame
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

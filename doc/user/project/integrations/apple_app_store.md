@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+title: Apple App Store Connect
 ---
-
-# Apple App Store Connect
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

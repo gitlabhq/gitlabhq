@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Webhook events
 ---
-
-# Webhook events
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -218,7 +217,7 @@ Work item events are triggered when a work item is created, edited, closed, or r
 The supported work item types are:
 
 - [Epics](../../group/epics/index.md)
-- [Issue](../../project/issues/index.md)
+- [Issue](../issues/index.md)
 - [Tasks](../../tasks.md)
 - [Incidents](../../../operations/incident_management/incidents.md)
 - [Test cases](../../../ci/test_cases/index.md)

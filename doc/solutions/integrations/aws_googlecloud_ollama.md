@@ -2,9 +2,8 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+title: 'Self-Hosted Model: Complete AWS/Google Cloud Deployment Guide with Ollama Integration'
 ---
-
-# Self-Hosted Model: Complete AWS/Google Cloud Deployment Guide with Ollama Integration
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Pro or Enterprise

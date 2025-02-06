@@ -248,7 +248,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 1. For groups on GitLab.com: in the **Default membership role** field, select:
    1. The role to assign to new users.
    1. The role to assign to
-      [users who are not members of a mapped SAML group](../saml_sso/group_sync.md#automatic-member-removal)
+      [users who are not members of a mapped SAML group](group_sync.md#automatic-member-removal)
       when SAML Group Links is configured for the group.
 1. For groups on self-managed instances: in the **Default membership role** field,
    select the role to assign to new users.
@@ -431,7 +431,7 @@ Prerequisites:
 You can disable password authentication for all [enterprise users](../../enterprise_user/index.md) in a group. This also applies to enterprise users who are administrators of the group. Configuring this setting stops enterprise users from changing, resetting, or authenticating with their password. Instead, these users can authenticate with:
 
 - The group SAML IdP for the GitLab web UI.
-- A personal access token for the GitLab API and Git with HTTP Basic Authentication unless the group has [disabled personal access tokens for enterprise users](../../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
+- A personal access token for the GitLab API and Git with HTTP Basic Authentication unless the group has [disabled personal access tokens for enterprise users](../../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
 
 To disable password authentication for enterprise users:
 

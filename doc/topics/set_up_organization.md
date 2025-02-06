@@ -3,9 +3,8 @@ stage: none
 group: unassigned
 description: Users, groups, namespaces, SSH keys.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Manage your organization
 ---
-
-# Manage your organization
 
 Configure your organization and its users. Determine user roles
 and give everyone access to the projects they need.

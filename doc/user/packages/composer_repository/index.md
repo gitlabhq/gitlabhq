@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Composer packages in the package registry
 ---
-
-# Composer packages in the package registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -42,7 +41,7 @@ Prerequisites:
 - The Packages feature is enabled in a GitLab repository.
 - The project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - One of the following token types:
-  - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
+  - A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.
   - A [deploy token](../../project/deploy_tokens/index.md)
     with the scope set to `write_package_registry`.
 
@@ -129,7 +128,7 @@ Prerequisites:
 - The package registry is enabled in the project responsible for publishing the package.
 - The group ID, which is on the group's home page.
 - One of the following token types:
-  - A [personal access token](../../../user/profile/personal_access_tokens.md)
+  - A [personal access token](../../profile/personal_access_tokens.md)
     with the scope set to, at minimum, `api`.
   - A [deploy token](../../project/deploy_tokens/index.md)
     with the scope set to `read_package_registry`, `write_package_registry`, or both.

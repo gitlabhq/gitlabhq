@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Use GitLab Observability with a .NET application'
 ---
-
-# Tutorial: Use GitLab Observability with a .NET application
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

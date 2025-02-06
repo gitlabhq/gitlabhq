@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Monorepo package management workflows
 ---
-
-# Monorepo package management workflows
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -14,13 +13,13 @@ Use a monorepo project as a package registry to publish packages to multiple pro
 
 ## Publish packages to a project and its child projects
 
-To publish packages to a project and its child projects, you must add configuration files for each package. To learn how to configure packages for a specific package manager, see [Supported package managers](../../packages/package_registry/supported_package_managers.md).
+To publish packages to a project and its child projects, you must add configuration files for each package. To learn how to configure packages for a specific package manager, see [Supported package managers](../package_registry/supported_package_managers.md).
 
 The following example shows you how to publish packages for a project and its child project with [npm](../npm_registry/index.md).
 
 Prerequisites:
 
-- A [personal access token](../../../user/profile/personal_access_tokens.md)
+- A [personal access token](../../profile/personal_access_tokens.md)
   with the scope set to `api`.
 - A test project.
 

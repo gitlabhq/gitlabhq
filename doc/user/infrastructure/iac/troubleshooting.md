@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting the Terraform integration with GitLab
 ---
-
-# Troubleshooting the Terraform integration with GitLab
 
 When you are using the integration with Terraform and GitLab, you might experience issues you need to troubleshoot.
 

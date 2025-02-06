@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Vulnerability risk assessment data
 ---
-
-# Vulnerability risk assessment data
 
 Use vulnerability risk data to help assess the potential impact to your environment.
 

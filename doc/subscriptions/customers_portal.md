@@ -3,9 +3,8 @@ stage: Fulfillment
 group: Subscription Management
 description: Payment and company details.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: The Customers Portal
 ---
-
-# The Customers Portal
 
 For some management tasks for your subscription and account, such as purchasing additional seats or storage and viewing invoices, you use the Customers Portal. See the following pages for specific instructions on managing your subscription:
 

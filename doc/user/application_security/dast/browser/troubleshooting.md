@@ -3,9 +3,8 @@ stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
+title: Troubleshooting
 ---
-
-# Troubleshooting
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, create a

@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Suggest improvements to the code in a merge request, and commit those improvements to the merge request directly from your browser."
+title: Suggest changes
 ---
-
-# Suggest changes
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

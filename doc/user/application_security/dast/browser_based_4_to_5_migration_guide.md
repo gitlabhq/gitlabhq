@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrating from the DAST version 4 browser-based analyzer to DAST version 5
 ---
-
-# Migrating from the DAST version 4 browser-based analyzer to DAST version 5
 
 > - The [DAST proxy-based analyzer](proxy-based.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
 

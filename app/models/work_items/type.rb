@@ -174,8 +174,8 @@ module WorkItems
       }
     end
 
-    def supported_conversion_types(resource_parent)
-      type_names = supported_conversion_base_types(resource_parent) - [base_type]
+    def supported_conversion_types(resource_parent, user)
+      type_names = supported_conversion_base_types(resource_parent, user) - [base_type]
       WorkItems::Type.by_type(type_names).order_by_name_asc
     end
 
@@ -225,7 +225,7 @@ module WorkItems
     end
 
     # resource_parent is used in EE
-    def supported_conversion_base_types(_resource_parent)
+    def supported_conversion_base_types(_resource_parent, _user)
       WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
     end
 

@@ -3,9 +3,8 @@ description: 'Learn how to use GitLab Pages to deploy a static website at no add
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Pages
 ---
-
-# GitLab Pages
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

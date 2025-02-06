@@ -3,9 +3,8 @@ stage: Foundations
 group: Import and Integrate
 description: Custom HTTP callbacks, used to send events.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Webhooks
 ---
-
-# Webhooks
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -34,7 +33,7 @@ For a complete list of events and the JSON data sent in the webhook payload, see
 
 ## Webhook limits
 
-GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks), including:
+GitLab.com enforces [webhook limits](../../gitlab_com/index.md#webhooks), including:
 
 - Maximum number of webhooks per project or group.
 - Number of webhook calls per minute.
@@ -423,7 +422,7 @@ To optimize your webhook receivers:
 1. Respond quickly with a `200` or `201` status:
    - Avoid processing webhooks in the same request.
    - Use a queue to handle webhooks after receiving them.
-   - Respond before the [timeout limit](../../../user/gitlab_com/index.md#other-limits) to prevent automatic disabling on GitLab.com.
+   - Respond before the [timeout limit](../../gitlab_com/index.md#other-limits) to prevent automatic disabling on GitLab.com.
 1. Handle potential duplicate events:
    - Prepare for duplicate events if a webhook times out.
    - Ensure your endpoint is consistently fast and stable.
@@ -465,7 +464,7 @@ In the webhook list, auto-disabled webhooks display as:
 Webhooks are temporarily disabled if they:
 
 - Return response codes in the `5xx` range.
-- Experience a [timeout](../../../user/gitlab_com/index.md#webhooks).
+- Experience a [timeout](../../gitlab_com/index.md#webhooks).
 - Encounter other HTTP errors.
 
 These webhooks are initially disabled for one minute, with the duration extending on subsequent failures up to 24 hours.

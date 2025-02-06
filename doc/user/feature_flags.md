@@ -4,9 +4,8 @@ group: unassigned
 description: Complete list of flags.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 layout: 'feature_flags'
+title: All feature flags in GitLab
 ---
-
-# All feature flags in GitLab
 
 The following feature flags exist in GitLab. These flags determine the availability of each feature.
 

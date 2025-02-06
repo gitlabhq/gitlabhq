@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Shibboleth as an authentication provider
 ---
-
-# Use Shibboleth as an authentication provider
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

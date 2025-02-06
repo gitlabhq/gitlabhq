@@ -212,7 +212,7 @@ You can use one of the following to troubleshoot SAML:
 
 ## Verify configuration
 
-For convenience, we've included some [example resources](../../../user/group/saml_sso/example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
+For convenience, we've included some [example resources](example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
 
 ### Calculate the fingerprint
 
@@ -412,7 +412,7 @@ DETAILS:
 
 If the user receives a `404` after signing in successfully, check if you have IP restrictions configured. IP restriction settings are configured:
 
-- On GitLab.com, [at the group level](../../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address).
+- On GitLab.com, [at the group level](../access_and_permissions.md#restrict-group-access-by-ip-address).
 - For GitLab Self-Managed, [at the instance level](../../../administration/reporting/ip_addr_restrictions.md).
 
 Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.

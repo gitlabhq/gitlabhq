@@ -2,9 +2,8 @@
 stage: Verify
 group: Tutorials
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Set up the Google Cloud integration'
 ---
-
-# Tutorial: Set up the Google Cloud integration
 
 This tutorial shows you how to integrate Google Cloud with GitLab,
 so that you can deploy directly to Google Cloud.

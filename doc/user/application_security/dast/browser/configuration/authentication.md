@@ -3,9 +3,8 @@ stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
+title: Authentication
 ---
-
-# Authentication
 
 For complete coverage, the DAST analyzer must authenticate with the application being tested. This
 requires configuring the authentication credentials and authentication method in the DAST CI/CD job.

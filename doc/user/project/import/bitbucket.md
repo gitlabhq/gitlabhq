@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Import your project from Bitbucket Cloud
 ---
-
-# Import your project from Bitbucket Cloud
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -166,5 +165,5 @@ current Bitbucket public name, and reconnect if there's a mismatch:
 1. Following reconnection, the user should use the API again to verify that their `extern_uid` in
    the GitLab database now matches their current Bitbucket public name.
 
-The importer must then [delete the imported project](../../project/working_with_projects.md#delete-a-project)
+The importer must then [delete the imported project](../working_with_projects.md#delete-a-project)
 and import again.

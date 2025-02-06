@@ -1561,6 +1561,9 @@ msgstr ""
 msgid "%{user_name} (%{user_username}) was removed from the following escalation policies in %{project}:"
 msgstr ""
 
+msgid "%{user_name} changed the severity from %{original_severity} to %{new_severity} %{changed_at}."
+msgstr ""
+
 msgid "%{username} has asked for a GitLab account on your instance %{host}:"
 msgstr ""
 
@@ -25835,9 +25838,6 @@ msgid "Get started!"
 msgstr ""
 
 msgid "GiB"
-msgstr ""
-
-msgid "Git"
 msgstr ""
 
 msgid "Git HTTP rate limits"
@@ -59608,6 +59608,11 @@ msgstr ""
 msgid "Todos| What actions create to-do items?"
 msgstr ""
 
+msgid "Todos|%{count} selected"
+msgid_plural "Todos|%{count} selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Todos|%{day}, %{time}"
 msgstr ""
 
@@ -59636,6 +59641,9 @@ msgid "Todos|Build failed"
 msgstr ""
 
 msgid "Todos|Category"
+msgstr ""
+
+msgid "Todos|Clear all"
 msgstr ""
 
 msgid "Todos|Could not merge"
@@ -59722,6 +59730,12 @@ msgstr ""
 msgid "Todos|Mark as done failed. Try again later."
 msgstr ""
 
+msgid "Todos|Mark selected items as done"
+msgstr ""
+
+msgid "Todos|Mark selected items as pending"
+msgstr ""
+
 msgid "Todos|Marked"
 msgstr ""
 
@@ -59763,6 +59777,9 @@ msgstr ""
 msgid "Todos|Remove snooze"
 msgstr ""
 
+msgid "Todos|Remove snooze for selected items"
+msgstr ""
+
 msgid "Todos|Removed from Merge Train"
 msgstr ""
 
@@ -59786,6 +59803,9 @@ msgstr ""
 msgid "Todos|SSH key expiring soon"
 msgstr ""
 
+msgid "Todos|Select all"
+msgstr ""
+
 msgid "Todos|Select this item to sign in with SAML and view it."
 msgstr ""
 
@@ -59793,6 +59813,9 @@ msgid "Todos|Snooze"
 msgstr ""
 
 msgid "Todos|Snooze date can't be in the past."
+msgstr ""
+
+msgid "Todos|Snooze selected items"
 msgstr ""
 
 msgid "Todos|Snooze until"

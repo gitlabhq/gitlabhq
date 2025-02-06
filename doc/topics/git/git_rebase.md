@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line."
+title: Rebase and resolve merge conflicts
 ---
-
-# Rebase and resolve merge conflicts
 
 In Git, a rebase updates your branch with the contents of another branch.
 A rebase confirms that changes in your branch don't conflict with

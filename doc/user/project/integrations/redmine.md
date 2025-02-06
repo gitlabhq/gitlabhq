@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Redmine
 ---
-
-# Redmine
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -13,7 +12,7 @@ DETAILS:
 Prerequisites:
 
 - You must disable [GitLab internal issue tracking](../issues/index.md) in the project. For more information about the steps and consequences of disabling
-  GitLab issues, see [Change project visibility](../../../user/public_access.md#change-project-visibility), and also
+  GitLab issues, see [Change project visibility](../../public_access.md#change-project-visibility), and also
   [Configure project features and permissions](../settings/index.md#configure-project-features-and-permissions).
 
 You can use [Redmine](https://www.redmine.org/) as an external issue tracker.

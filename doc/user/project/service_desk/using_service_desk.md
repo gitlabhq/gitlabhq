@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Service Desk
 ---
-
-# Use Service Desk
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

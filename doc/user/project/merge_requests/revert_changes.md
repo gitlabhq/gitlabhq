@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "How to revert commits or merge requests in a GitLab project."
+title: Revert changes
 ---
-
-# Revert changes
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -124,7 +123,7 @@ Be aware of the following impacts when redacting text from your repository:
 - Commit signatures are dropped during the rewrite process.
 
 Alternatively, to completely delete specific files from a repository, see
-[Remove blobs](../../../user/project/repository/repository_size.md#remove-blobs).
+[Remove blobs](../repository/repository_size.md#remove-blobs).
 
 Prerequisites:
 

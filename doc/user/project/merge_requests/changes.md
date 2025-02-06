@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Understand how to read the changes proposed in a merge request."
+title: Changes in merge requests
 ---
-
-# Changes in merge requests
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -234,7 +233,7 @@ you can ask GitLab Duo to explain the code to you.
 Prerequisites:
 
 - You must belong to at least one group with the
-  [experiment and beta features setting](../../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+  [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
 - You must have access to view the project.
 
 To explain the code in a merge request:
@@ -259,8 +258,8 @@ We cannot guarantee that the large language model produces results that are corr
 
 You can also explain code in:
 
-- A [file](../../../user/project/repository/code_explain.md).
-- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-selected-code).
+- A [file](../repository/code_explain.md).
+- The [IDE](../../gitlab_duo_chat/examples.md#explain-selected-code).
 
 ## Expand or collapse comments
 

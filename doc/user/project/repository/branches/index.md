@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Understand how to name, manage, and protect Git branches."
+title: Branches
 ---
-
-# Branches
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -28,9 +27,9 @@ The development workflow for branches is:
    [branch naming patterns](#prefix-branch-names-with-issue-numbers).
 1. When the work is ready for review, create a [merge request](../../merge_requests/index.md) to propose merging the changes in your branch.
 1. Preview the changes with a [review app](../../../../ci/review_apps/index.md).
-1. [Request a review](../../../project/merge_requests/reviews/index.md#request-a-review).
+1. [Request a review](../../merge_requests/reviews/index.md#request-a-review).
 1. After your merge request is approved, merge your branch to the origin branch.
-   The [merge method](../../../project/merge_requests/methods/index.md) determines how merge requests
+   The [merge method](../../merge_requests/methods/index.md) determines how merge requests
    are handled in your project.
 1. After the contents of your branch are merged, [delete the merged branch](#delete-merged-branches).
 
@@ -149,7 +148,7 @@ Branch names with specific formatting offer extra benefits:
 
 - Streamline your merge request workflow by
   [prefixing branch names with issue numbers](#prefix-branch-names-with-issue-numbers).
-- Automate [branch protections](../../repository/branches/protected.md) based on branch name.
+- Automate [branch protections](protected.md) based on branch name.
 - Test branch names with [push rules](../push_rules.md) before branches are pushed up to GitLab.
 - Define which [CI/CD jobs](../../../../ci/jobs/index.md) to run on merge requests.
 
@@ -232,7 +231,7 @@ To compare branches in a repository:
 
 Merged branches can be deleted in bulk if they meet all of these criteria:
 
-- They are not [protected branches](../../repository/branches/protected.md).
+- They are not [protected branches](protected.md).
 - They have been merged into the project's default branch.
 
 Prerequisites:
@@ -323,7 +322,7 @@ To do this:
 
 ## Related topics
 
-- [Protected branches](../../repository/branches/protected.md)
+- [Protected branches](protected.md)
 - [Branches API](../../../../api/branches.md)
 - [Protected Branches API](../../../../api/protected_branches.md)
 - [Getting started with Git](../../../../topics/git/index.md)

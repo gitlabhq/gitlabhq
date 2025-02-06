@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Auto DevOps to deploy to EC2
 ---
-
-# Use Auto DevOps to deploy to EC2
 
 To use [Auto DevOps](../index.md) to deploy to EC2:
 

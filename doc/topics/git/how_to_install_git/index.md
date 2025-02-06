@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "How to install Git on your local machine."
+title: Install Git
 ---
-
-# Install Git
 
 To contribute to GitLab projects, you must download and install the Git client on your local machine.
 This page explains how to install and configure Git on macOS and Ubuntu Linux.

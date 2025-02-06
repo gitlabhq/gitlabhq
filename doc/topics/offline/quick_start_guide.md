@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install an offline GitLab Self-Managed instance
 ---
-
-# Install an offline GitLab Self-Managed instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

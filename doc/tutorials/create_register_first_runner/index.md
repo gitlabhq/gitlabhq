@@ -2,9 +2,8 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Create, register, and run your own project runner'
 ---
-
-# Tutorial: Create, register, and run your own project runner
 
 This tutorial shows you how to configure and run your first runner in GitLab.
 

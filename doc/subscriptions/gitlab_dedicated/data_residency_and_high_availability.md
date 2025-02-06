@@ -3,9 +3,8 @@ stage: GitLab Dedicated
 group: Environment Automation
 description: Data residency, isolation, availability, and scalability.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Data residency and high availability
 ---
-
-# Data residency and high availability
 
 DETAILS:
 **Tier:** Ultimate

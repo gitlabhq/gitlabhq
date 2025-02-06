@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Use commit message templates to ensure commits to your GitLab project contain all necessary information and are formatted correctly."
+title: Commit message templates
 ---
-
-# Commit message templates
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

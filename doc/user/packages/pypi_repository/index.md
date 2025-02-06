@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: PyPI packages in the package registry
 ---
-
-# PyPI packages in the package registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -31,7 +30,7 @@ Before you interact with the GitLab package registry, you must authenticate with
 
 You can authenticate with:
 
-- A [personal access token](../../../user/profile/personal_access_tokens.md)
+- A [personal access token](../../profile/personal_access_tokens.md)
   with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
@@ -162,7 +161,7 @@ python3 -m twine upload --repository-url https://gitlab.example.com/api/v4/proje
 ### Publishing packages with the same name and version
 
 You cannot publish a package if a package of the same name and version already exists.
-You must [delete the existing package](../../packages/package_registry/reduce_package_registry_storage.md#delete-a-package) first.
+You must [delete the existing package](../package_registry/reduce_package_registry_storage.md#delete-a-package) first.
 If you attempt to publish the same package
 more than once, a `400 Bad Request` error occurs.
 

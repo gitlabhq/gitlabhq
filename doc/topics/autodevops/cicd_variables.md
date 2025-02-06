@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: CI/CD variables
 ---
-
-# CI/CD variables
 
 Use CI/CD variables to set up the Auto DevOps domain, provide a custom
 Helm chart, or scale your application.

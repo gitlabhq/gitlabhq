@@ -2,9 +2,8 @@
 stage: DevSecOps
 group: Technical writing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started securing your application
 ---
-
-# Get started securing your application
 
 Identify and remediate vulnerabilities in your application's source code.
 Integrate security testing into the software development lifecycle

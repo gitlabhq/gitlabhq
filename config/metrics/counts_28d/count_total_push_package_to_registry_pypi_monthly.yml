@@ -2,7 +2,8 @@
 key_path: counts.count_total_push_package_to_registry_pypi_monthly
 description: Monthly count of Pypi packages pushed to the package registry.
 product_group: package_registry
-performance_indicator_type: []
+performance_indicator_type:
+- leading_indicator
 value_type: number
 status: active
 milestone: '17.4'

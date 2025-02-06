@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Fork a Git repository when you want to contribute changes back to an upstream repository you don't have permission to contribute to directly."
+title: Forks
 ---
-
-# Forks
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -76,7 +75,7 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 Prerequisites:
 
-- You must create your fork from an [unprotected branch](../repository/branches/protected.md) in upstream repository.
+- You must create your fork from an [unprotected branch](branches/protected.md) in upstream repository.
 
 To update your fork from the GitLab UI:
 

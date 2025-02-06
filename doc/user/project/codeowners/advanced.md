@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Use Code Owners to define experts for your code base, and set review requirements based on file type or location."
+title: Advanced `CODEOWNERS` configuration
 ---
-
-# Advanced `CODEOWNERS` configuration
 
 This page describes advanced configuration options for Code Owners in GitLab.
 

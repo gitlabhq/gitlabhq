@@ -3,9 +3,8 @@ stage: none
 group: unassigned
 description: Runners, jobs, pipelines, variables.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use CI/CD to build your application
 ---
-
-# Use CI/CD to build your application
 
 Use CI/CD to generate your application.
 

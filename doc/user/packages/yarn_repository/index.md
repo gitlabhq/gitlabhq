@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Publish packages with Yarn
 ---
-
-# Publish packages with Yarn
 
 You can publish packages with [Yarn 1 (Classic)](https://classic.yarnpkg.com) and [Yarn 2+](https://yarnpkg.com).
 
@@ -24,7 +23,7 @@ You can use Yarn to publish to the GitLab package registry.
 ### Authentication to the package registry
 
 You need a token to publish a package. Different tokens are available depending on what you're trying to
-achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
+achieve. For more information, review the [guidance on tokens](../package_registry/index.md#authenticate-with-the-registry).
 
 - If your organization uses two-factor authentication (2FA), you must use a
   personal access token with the scope set to `api`.

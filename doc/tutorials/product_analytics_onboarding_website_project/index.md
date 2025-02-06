@@ -2,9 +2,8 @@
 stage: Monitor
 group: Platform Insights
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: 'Tutorial: Set up product analytics in a GitLab Pages website project'
 ---
-
-# Tutorial: Set up product analytics in a GitLab Pages website project
 
 DETAILS:
 **Tier:** Ultimate

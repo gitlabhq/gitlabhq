@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Namespaces
 ---
-
-# Namespaces
 
 Namespaces organize projects in GitLab. Because each namespace is separate,
 you can use the same project name in multiple namespaces.

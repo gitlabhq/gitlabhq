@@ -2,9 +2,8 @@
 stage: Verify
 group: Pipeline Authoring
 info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
+title: CI/CD component examples
 ---
-
-# CI/CD component examples
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

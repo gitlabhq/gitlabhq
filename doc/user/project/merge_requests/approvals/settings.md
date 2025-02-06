@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Define approval rules and limits in GitLab with merge request approval settings. Options include preventing author approval, requiring re-authentication, and removing approvals on new commits."
+title: Merge request approval settings
 ---
-
-# Merge request approval settings
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -144,7 +143,7 @@ Prerequisites:
    - Password authentication, see
      [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
    - SAML authentication for GitLab.com groups, see
-     [SAML SSO for GitLab.com groups documentation](../../../../user/group/saml_sso/index.md).
+     [SAML SSO for GitLab.com groups documentation](../../../group/saml_sso/index.md).
    - SAML authentication for GitLab Self-Managed instances, see
      [SAML SSO for GitLab Self-Managed](../../../../integration/saml.md).
 1. On the left sidebar, select **Settings > Merge requests**.

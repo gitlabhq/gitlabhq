@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Managing monorepos
 ---
-
-# Managing monorepos
 
 Monorepos have become a regular part of development team workflows. While they have many advantages, monorepos can present performance challenges
 when using them in GitLab. Therefore, you should know:

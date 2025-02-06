@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Use merge request reviews to discuss and improve code before it is merged into your project."
+title: Merge request reviews
 ---
-
-# Merge request reviews
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

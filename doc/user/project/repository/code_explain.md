@@ -2,9 +2,8 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Explain code in a file
 ---
-
-# Explain code in a file
 
 DETAILS:
 **Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -22,7 +21,7 @@ you can ask GitLab Duo to explain the code to you.
 Prerequisites:
 
 - You must belong to at least one group with the
-  [experiment and beta features setting](../../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+  [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
 - You must have access to view the project.
 
 To explain the code in a file:
@@ -43,5 +42,5 @@ We cannot guarantee that the large language model produces results that are corr
 
 You can also explain code in:
 
-- A [merge request](../../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
-- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-selected-code).
+- A [merge request](../merge_requests/changes.md#explain-code-in-a-merge-request).
+- The [IDE](../../gitlab_duo_chat/examples.md#explain-selected-code).

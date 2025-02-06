@@ -92,8 +92,8 @@ describe('Topic Badges', () => {
     });
   });
 
-  describe('when topic has a name longer than 15 characters', () => {
-    it('truncates name and shows tooltip with full name', () => {
+  describe('truncation', () => {
+    it('truncates long name and shows tooltip with full name', () => {
       const topicWithLongName = 'topic with very very very long name';
 
       createComponent({
@@ -106,6 +106,15 @@ describe('Topic Badges', () => {
 
       expect(findFirstBadge().text()).toBe('topic with ver…');
       expect(tooltip.value).toBe(topicWithLongName);
+    });
+
+    it('does not show tooltip if topic is not truncated', () => {
+      createComponent();
+
+      const tooltip = getBinding(findFirstBadge().element, 'gl-tooltip');
+
+      expect(findFirstBadge().text()).toBe('Vue.js');
+      expect(tooltip.value).toBe(null);
     });
   });
 

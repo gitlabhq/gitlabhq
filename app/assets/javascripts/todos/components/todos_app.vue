@@ -8,6 +8,7 @@ import {
   GlTab,
   GlTabs,
   GlTooltipDirective,
+  GlFormCheckbox,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
@@ -28,6 +29,7 @@ import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
 import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
+import TodosBulkBar from './todos_bulk_bar.vue';
 import TodosPagination from './todos_pagination.vue';
 
 export default {
@@ -38,10 +40,12 @@ export default {
     GlBadge,
     GlTabs,
     GlTab,
+    GlFormCheckbox,
     TodosEmptyState,
     TodosFilterBar,
     TodoItem,
     TodosMarkAllDoneButton,
+    TodosBulkBar,
     TodosPagination,
   },
   directives: {
@@ -81,6 +85,8 @@ export default {
       showSpinnerWhileLoading: true,
       currentTime: new Date(),
       currentTimeInterval: null,
+      multiselectState: {},
+      selectAllChecked: false,
     };
   },
   apollo: {
@@ -127,13 +133,22 @@ export default {
     isLoading() {
       return this.$apollo.queries.todos.loading;
     },
+    isLoadingWithSpinner() {
+      return this.isLoading && this.showSpinnerWhileLoading;
+    },
     isFiltered() {
       // Ignore sort value. It is always present and not really a filter.
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
     },
+    isOnDoneTab() {
+      return this.currentTab === TABS_INDICES.done;
+    },
     isOnSnoozedTab() {
       return this.currentTab === TABS_INDICES.snoozed;
+    },
+    isOnAllTab() {
+      return this.currentTab === TABS_INDICES.all;
     },
     showEmptyState() {
       return !this.isLoading && this.todos.length === 0;
@@ -142,6 +157,24 @@ export default {
       if (this.glFeatures.todosBulkActions) return false;
 
       return this.currentTab === TABS_INDICES.pending && !this.showEmptyState;
+    },
+    showSelectAll() {
+      if (!this.glFeatures.todosBulkActions) return false;
+      if (this.isOnAllTab) return false;
+
+      return !(this.showEmptyState || this.isLoadingWithSpinner);
+    },
+    selectedIds() {
+      return this.todos.filter((todo) => this.multiselectState[todo.id]).map((todo) => todo.id);
+    },
+    hasIndeterminateSelectAll() {
+      return this.selectedIds.length > 0 && this.selectedIds.length < this.todos.length;
+    },
+  },
+  watch: {
+    selectedIds(ids) {
+      if (!ids.length) this.selectAllChecked = false;
+      else if (ids.length === this.todos.length) this.selectAllChecked = true;
     },
   },
   created() {
@@ -179,6 +212,8 @@ export default {
       if (tabIndex === this.currentTab) {
         return;
       }
+
+      this.unselectAll();
 
       this.track(INSTRUMENT_TODO_FILTER_CHANGE, {
         label: INSTRUMENT_TAB_LABELS[tabIndex],
@@ -223,6 +258,16 @@ export default {
 
       await this.updateCounts();
     },
+    handleSelectionChanged(id, isSelected) {
+      this.multiselectState = {
+        ...this.multiselectState,
+        [id]: isSelected,
+      };
+    },
+    handleBulkAction() {
+      this.unselectAll();
+      this.updateAllQueries(false);
+    },
     updateCounts() {
       return this.$apollo.queries.pendingTodosCount.refetch();
     },
@@ -256,6 +301,17 @@ export default {
         }
         this.updateTimeoutId = null;
       }, TODO_WAIT_BEFORE_RELOAD);
+    },
+    selectAll() {
+      this.multiselectState = Object.fromEntries(this.todos.map((todo) => [todo.id, true]));
+    },
+    unselectAll() {
+      this.multiselectState = {};
+      this.selectAllChecked = false;
+    },
+    handleSelectAllChange(checked) {
+      if (checked) this.selectAll();
+      else this.unselectAll();
     },
   },
 };
@@ -321,6 +377,26 @@ export default {
 
     <div>
       <div class="gl-flex gl-flex-col">
+        <div v-if="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
+          <gl-form-checkbox
+            v-model="selectAllChecked"
+            data-testid="todos-select-all"
+            class="gl-mb-2 gl-mt-3"
+            :indeterminate="hasIndeterminateSelectAll"
+            @change="handleSelectAllChange"
+            >{{
+              selectAllChecked ? s__('Todos|Clear all') : s__('Todos|Select all')
+            }}</gl-form-checkbox
+          >
+          <span v-show="selectedIds.length">|</span>
+          <todos-bulk-bar
+            v-show="selectedIds.length"
+            :ids="selectedIds"
+            :tab="currentTab"
+            @change="handleBulkAction"
+          />
+        </div>
+
         <gl-loading-icon v-if="isLoading && showSpinnerWhileLoading" size="lg" class="gl-mt-5" />
         <div
           v-else
@@ -339,7 +415,9 @@ export default {
               :key="todo.id"
               :todo="todo"
               :current-user-id="currentUserId"
+              :selected="selectedIds.includes(todo.id)"
               @change="handleItemChanged"
+              @select-change="handleSelectionChanged"
             />
           </transition-group>
         </div>

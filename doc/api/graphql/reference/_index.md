@@ -4821,6 +4821,29 @@ Input type: `DeleteContainerProtectionTagRuleInput`
 | <a id="mutationdeletecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` **{warning-solid}** | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationdeletecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.deleteConversationThread`
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `DeleteConversationThreadInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeleteconversationthreadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeleteconversationthreadthreadid"></a>`threadId` | [`AiConversationThreadID!`](#aiconversationthreadid) | Global ID of the thread to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeleteconversationthreadclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeleteconversationthreaderrors"></a>`errors` | [`[String!]!`](#string) | List of errors that occurred whilst trying to delete the thread. |
+| <a id="mutationdeleteconversationthreadsuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if thread was successfully deleted. |
+
 ### `Mutation.deletePackagesProtectionRule`
 
 Deletes a protection rule for packages.

@@ -2,9 +2,8 @@
 stage: none
 group: Tutorials
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: 'Tutorial: Automate runner creation and registration'
 ---
-
-# Tutorial: Automate runner creation and registration
 
 This tutorial describes how to automate runner creation and registration.
 

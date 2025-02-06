@@ -3,9 +3,8 @@ stage: Foundations
 group: Import and Integrate
 description: Projects, issues, authentication, security providers.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Integrate with GitLab
 ---
-
-# Integrate with GitLab
 
 You can integrate GitLab with external applications for enhanced functionality.
 

@@ -39,7 +39,7 @@ For Hugo, move the title into the page's front matter:
 stage: Systems
 group: Cloud Connector
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-title: Cloud Connector: Configuration
+title: 'Cloud Connector: Configuration'
 ---
 
 A GitLab Rails instance accesses...

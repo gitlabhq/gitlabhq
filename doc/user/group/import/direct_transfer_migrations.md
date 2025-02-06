@@ -51,7 +51,7 @@ GitLab 16.8.
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
 - You must have a
-  [personal access token](../../../user/profile/personal_access_tokens.md) for
+  [personal access token](../../profile/personal_access_tokens.md) for
   the source GitLab instance:
   - For GitLab 15.1 and later source instances, the personal access token must
     have the `api` scope.
@@ -59,7 +59,7 @@ GitLab 16.8.
     have both the `api` and `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
 - You must have a role in the destination namespace that enables you to
-  [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
+  [create a subgroup](../subgroups/index.md#create-a-subgroup) in that
   namespace.
 - To import project snippets, ensure snippets are
   [enabled in the source project](../../snippets.md#change-default-visibility-of-snippets).
@@ -90,7 +90,7 @@ see [user contribution and membership mapping](../../project/import/index.md#use
 
 Users are never created during a migration. Instead, contributions and membership of users on the source instance are
 mapped to users on the destination instance. The type of mapping of a user's membership depends on the
-[membership type](../../../user/project/members/index.md#membership-types) on source instance:
+[membership type](../../project/members/index.md#membership-types) on source instance:
 
 - Direct memberships are mapped as direct memberships on the destination instance.
 - Inherited memberships are mapped as inherited memberships on the destination instance.
@@ -98,8 +98,8 @@ mapped to users on the destination instance. The type of mapping of a user's mem
   membership. Full support for mapping shared memberships is proposed in
   [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
 
-When mapping [inherited and shared](../../../user/project/members/index.md#membership-types) memberships, if the user
-has an existing membership in the destination namespace with a [higher role](../../../user/permissions.md#roles) than
+When mapping [inherited and shared](../../project/members/index.md#membership-types) memberships, if the user
+has an existing membership in the destination namespace with a [higher role](../../permissions.md#roles) than
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
 elevated permissions.
 
@@ -114,12 +114,12 @@ To ensure GitLab maps users and their contributions correctly between the source
    administrator access. When migrating to GitLab.com or GitLab Self-Managed you can:
    - Create users manually.
    - Set up or use your existing [SAML SSO provider](../saml_sso/index.md) and leverage user synchronization of SAML SSO groups supported through
-     [SCIM](../../group/saml_sso/scim_setup.md). You can
+     [SCIM](../saml_sso/scim_setup.md). You can
      [bypass the GitLab user account verification with verified email domains](../saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 1. Ensure that users have a [public email](../../profile/index.md#set-your-public-email) on the source GitLab instance that matches any confirmed email address on the destination GitLab instance. Most
    users receive an email asking them to confirm their email address.
-1. If users already exist on the destination instance and you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), all users must
-   [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
+1. If users already exist on the destination instance and you use [SAML SSO for GitLab.com groups](../saml_sso/index.md), all users must
+   [link their SAML identity to their GitLab.com account](../saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
 
 There is no way in the GitLab UI or API to automatically set public email addresses for users. If you need to set
 a lot of user accounts to have public email addresses, see
@@ -135,7 +135,7 @@ On the destination GitLab instance, create the group you want to import to and c
      - Select **New subgroup**.
      - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the base URL of a GitLab instance.
-1. Enter the [personal access token](../../../user/profile/personal_access_tokens.md) for your source GitLab instance.
+1. Enter the [personal access token](../../profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
 ## Select the groups and projects to import

@@ -3,9 +3,8 @@ stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
+title: DAST browser-based analyzer
 ---
-
-# DAST browser-based analyzer
 
 DETAILS:
 **Tier:** Ultimate

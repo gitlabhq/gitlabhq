@@ -61,8 +61,8 @@ export default {
       return truncate(topic, MAX_TOPIC_TITLE_LENGTH);
     },
     topicTooltipTitle(topic) {
-      // Matches conditional in app/assets/javascripts/lib/utils/text_utility.js#L88
-      if (topic.length - 1 > MAX_TOPIC_TITLE_LENGTH) {
+      const wasTruncated = topic !== this.topicTitle(topic);
+      if (wasTruncated) {
         return topic;
       }
 

@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create a Civo Kubernetes cluster
 ---
-
-# Create a Civo Kubernetes cluster
 
 Every new Civo account receives [$250 in credit](https://dashboard.civo.com/signup) to get started with the GitLab integration with Civo Kubernetes. You can also use a marketplace app to install GitLab on your Civo Kubernetes cluster.
 

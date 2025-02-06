@@ -3,9 +3,8 @@ description: "Automatic Let's Encrypt SSL certificates for GitLab Pages."
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Pages Let's Encrypt certificates
 ---
-
-# GitLab Pages Let's Encrypt certificates
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

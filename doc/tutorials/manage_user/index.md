@@ -2,9 +2,8 @@
 stage: none
 group: Tutorials
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: 'Tutorial: Set up your organization'
 ---
-
-# Tutorial: Set up your organization
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

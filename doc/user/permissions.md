@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Roles and permissions
 ---
-
-# Roles and permissions
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -36,7 +35,7 @@ You can assign users a default role or a [custom role](custom_roles.md).
 
 The available default roles are:
 
-- Guest (This role applies to [private and internal projects](../user/public_access.md) only.)
+- Guest (This role applies to [private and internal projects](public_access.md) only.)
 - Planner
 - Reporter
 - Developer
@@ -71,7 +70,7 @@ The following tables list the project permissions available for each role.
 
 ### Analytics
 
-Project permissions for [analytics](../user/analytics/_index.md) features including value streams, usage trends, product analytics, and insights.
+Project permissions for [analytics](analytics/_index.md) features including value streams, usage trends, product analytics, and insights.
 
 | Action                                                                                     | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -286,7 +285,7 @@ Project permissions for [wikis](project/wiki/index.md):
 
 ### Packages and registry
 
-Project permissions for [container registry](../user/packages/index.md):
+Project permissions for [container registry](packages/index.md):
 
 | Action                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ----------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -295,7 +294,7 @@ Project permissions for [container registry](../user/packages/index.md):
 | Delete a container registry image         |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Manage cleanup policies                   |       |         |          |           |     ✓      |   ✓   |       |
 
-Project permissions for [package registry](../user/packages/index.md):
+Project permissions for [package registry](packages/index.md):
 
 | Action                                  | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -416,7 +415,7 @@ The following table lists group permissions available for each role:
 
 ### Analytics group permissions
 
-Group permission for [analytics](../user/analytics/_index.md) features including value streams, product analytics, and insights:
+Group permission for [analytics](analytics/_index.md) features including value streams, product analytics, and insights:
 
 | Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -469,7 +468,7 @@ Group permissions for [compliance](compliance/index.md) features including compl
 
 ### GitLab Duo group permissions
 
-Group permissions for [GitLab Duo](../user/gitlab_duo/index.md):
+Group permissions for [GitLab Duo](gitlab_duo/index.md):
 
 | Action                                                                                                    | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -481,7 +480,7 @@ Group permissions for [GitLab Duo](../user/gitlab_duo/index.md):
 
 ### Groups group permissions
 
-Group permissions for [group features](../user/group/index.md):
+Group permissions for [group features](group/index.md):
 
 | Action                                                                                     | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -538,7 +537,7 @@ Group permissions for [wikis](project/wiki/group.md):
 
 ### Packages and registries group permissions
 
-Group permissions for [container registry](../user/packages/index.md):
+Group permissions for [container registry](packages/index.md):
 
 | Action                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -546,7 +545,7 @@ Group permissions for [container registry](../user/packages/index.md):
 | Pull a container image using the dependency proxy |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Delete a container registry image                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
 
-Group permissions for [package registry](../user/packages/index.md):
+Group permissions for [package registry](packages/index.md):
 
 | Action                                   | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ---------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -643,9 +642,9 @@ To work around the issue, give these users the Guest role or higher to any proje
 - Customize permissions on [protected branches](project/repository/branches/protected.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-with-ldap)
 - [Value stream analytics permissions](group/value_stream_analytics/index.md#access-permissions-for-value-stream-analytics)
-- [Project aliases](../user/project/working_with_projects.md#project-aliases)
+- [Project aliases](project/working_with_projects.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)
 - [Container registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
 - [Release permissions](project/releases/index.md#release-permissions)
-- [Read-only namespaces](../user/read_only_namespaces.md)
+- [Read-only namespaces](read_only_namespaces.md)

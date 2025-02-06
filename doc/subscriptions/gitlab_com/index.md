@@ -3,9 +3,8 @@ stage: Fulfillment
 group: Subscription Management
 description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab.com subscription
 ---
-
-# GitLab.com subscription
 
 DETAILS:
 **Tier:** Premium, Ultimate

@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Members of a project
 ---
-
-# Members of a project
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -301,7 +300,7 @@ Prerequisites:
 
 ## Membership and visibility rights
 
-Depending on their membership type, members of groups or projects are granted different [visibility levels](../../../user/public_access.md)
+Depending on their membership type, members of groups or projects are granted different [visibility levels](../../public_access.md)
 and rights into the group or project.
 
 The following table lists the membership and visibility rights of project members.

@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Release CI/CD examples
 ---
-
-# Release CI/CD examples
 
 GitLab release functionality is flexible, able to be configured to match your workflow. This page
 features example CI/CD release jobs. Each example demonstrates a method of creating a release in a

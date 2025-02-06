@@ -28,6 +28,7 @@ import initPersistentUserCallouts from './persistent_user_callouts';
 import { initUserTracking, initDefaultTrackers } from './tracking';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
+import initWorkItemAttributePopovers from './work_item_attribute_popovers';
 import initBroadcastNotifications from './broadcast_notification';
 import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
@@ -85,6 +86,7 @@ function deferredInitialisation() {
   initLogoAnimation();
   initPortraitLogoDetection();
   initUserPopovers();
+  initWorkItemAttributePopovers();
   initBroadcastNotifications();
   initPersistentUserCallouts();
   initDefaultTrackers();

@@ -2,9 +2,8 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Set up an issue board for a team stand-up'
 ---
-
-# Tutorial: Set up an issue board for a team stand-up
 
 DETAILS:
 **Tier:** Premium, Ultimate

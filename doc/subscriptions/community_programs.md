@@ -3,9 +3,8 @@ stage: none
 group: unassigned
 description: Education, Open Source, Startups.
 info: For help with this Community Programs page, see https://handbook.gitlab.com/handbook/marketing/developer-relations/community-programs/
+title: Community programs
 ---
-
-# Community programs
 
 GitLab provides the following community program subscriptions.
 

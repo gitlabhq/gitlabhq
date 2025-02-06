@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line."
+title: Advanced Git operations
 ---
-
-# Advanced Git operations
 
 Advanced Git operations help you perform tasks to maintain and manage your code.
 They are more complex actions that go beyond [basic Git operations](basics.md).

@@ -42,7 +42,7 @@ RSpec.shared_context 'with work item types request context' do
     }
   end
 
-  def expected_work_item_type_response(resource_parent, work_item_type = nil)
+  def expected_work_item_type_response(resource_parent, user, work_item_type = nil)
     base_scope = WorkItems::Type.all
     base_scope = base_scope.id_in(work_item_type.id) if work_item_type
 
@@ -52,7 +52,7 @@ RSpec.shared_context 'with work item types request context' do
         'name' => type.name,
         'iconName' => type.icon_name,
         'widgetDefinitions' => match_array(widgets_for(type, resource_parent)),
-        'supportedConversionTypes' => type.supported_conversion_types(resource_parent).map do |conversion_type|
+        'supportedConversionTypes' => type.supported_conversion_types(resource_parent, user).map do |conversion_type|
           {
             'id' => conversion_type.to_global_id.to_s,
             'name' => conversion_type.name

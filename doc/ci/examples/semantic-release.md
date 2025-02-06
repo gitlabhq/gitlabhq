@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Publish npm packages to the GitLab package registry using semantic-release
 ---
-
-# Publish npm packages to the GitLab package registry using semantic-release
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

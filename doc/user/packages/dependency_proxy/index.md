@@ -2,9 +2,8 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Dependency proxy for container images
 ---
-
-# Dependency proxy for container images
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -88,9 +87,9 @@ echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com --username
 You can authenticate using:
 
 - Your GitLab username and password.
-- A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`, or to `api`.
-- A [group deploy token](../../../user/project/deploy_tokens/index.md) with the scope set to `read_registry` and `write_registry`.
-- A [group access token](../../../user/group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`, or to `api`.
+- A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`, or to `api`.
+- A [group deploy token](../../project/deploy_tokens/index.md) with the scope set to `read_registry` and `write_registry`.
+- A [group access token](../../group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`, or to `api`.
 
 Users accessing the dependency proxy for container images with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.

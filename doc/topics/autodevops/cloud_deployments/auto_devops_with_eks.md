@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Use Auto DevOps to deploy an application to Amazon Elastic Kubernetes Service (EKS)
 ---
-
-# Use Auto DevOps to deploy an application to Amazon Elastic Kubernetes Service (EKS)
 
 In this tutorial, we'll help you to get started with [Auto DevOps](../index.md)
 through an example of how to deploy an application to Amazon Elastic Kubernetes Service (EKS).

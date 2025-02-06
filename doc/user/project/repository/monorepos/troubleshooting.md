@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting monorepo performance
 ---
-
-# Troubleshooting monorepo performance
 
 Review these suggestions for performance problems with monorepos.
 
@@ -15,7 +14,7 @@ There are a few key causes of slowness with clones and fetches.
 ### High CPU utilization
 
 If the CPU utilization on your Gitaly nodes is high, you can also check
-how much CPU is taken up from clones by [filtering on certain values](../../../../user/project/repository/monorepos/observability.md#cpu-and-memory).
+how much CPU is taken up from clones by [filtering on certain values](observability.md#cpu-and-memory).
 
 In particular, the `command.cpu_time_ms` field can indicate how
 much CPU is being taken up by clones and fetches.
@@ -44,11 +43,11 @@ such as:
 
 - Turn on [pack-objects-cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
   to reduce the work that `git-pack-objects` has to do.
-- Change [Git strategy](../../../../user/project/repository/monorepos/index.md#git-strategy)
+- Change [Git strategy](index.md#git-strategy)
   in CI/CD settings from `clone` to `fetch` or `none`.
-- [Stop fetching tags](../../../../user/project/repository/monorepos/index.md#git-fetch-extra-flags),
+- [Stop fetching tags](index.md#git-fetch-extra-flags),
   unless your tests require them.
-- [Use shallow clones](../../../../user/project/repository/monorepos/index.md#shallow-cloning)
+- [Use shallow clones](index.md#shallow-cloning)
   whenever possible.
 
 The other option is to increase CPU capacity on Gitaly servers.

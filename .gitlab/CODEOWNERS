@@ -13,7 +13,7 @@
 /GITLAB_KAS_VERSION @project_278964_bot_77e28085fcec07f14dfd31c689824b5b @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Allows automated updates to E2E test knapsack reports
-/qa/knapsack/**/*.json @project_278964_bot_f559eb4d5c7c39b8a5e0b3ca0fe68d9e @gl-dx
+/qa/knapsack/**/*.json @project_278964_bot_bd38289efeb650826d995b5f830ca9cb @gl-dx
 
 ## Files that are excluded from required approval
 ## These rules override the * rule above, so that changes to docs and templates

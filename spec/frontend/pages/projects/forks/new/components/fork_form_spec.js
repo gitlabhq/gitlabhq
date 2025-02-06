@@ -178,8 +178,8 @@ describe('ForkForm component', () => {
   it('will have required attribute for required fields', () => {
     createComponent();
 
-    expect(findForkNameInput().props('required')).not.toBeUndefined();
-    expect(findForkSlugInput().props('required')).not.toBeUndefined();
+    expect(findForkNameInput().props('required')).toBe(true);
+    expect(findForkSlugInput().props('required')).toBe(true);
     expect(findVisibilityRadioGroup().attributes('required')).not.toBeUndefined();
     expect(findForkDescriptionTextarea().attributes('required')).toBeUndefined();
   });

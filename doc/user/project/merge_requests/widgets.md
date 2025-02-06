@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Merge requests show the results of CI/CD pipelines and mergeability tests in a reports area."
+title: Merge request widgets
 ---
-
-# Merge request widgets
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

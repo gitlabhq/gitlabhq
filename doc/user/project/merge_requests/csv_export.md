@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Export merge requests to CSV
 ---
-
-# Export merge requests to CSV
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

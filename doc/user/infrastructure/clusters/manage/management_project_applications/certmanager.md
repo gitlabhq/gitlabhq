@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Install cert-manager with a cluster management project
 ---
-
-# Install cert-manager with a cluster management project
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

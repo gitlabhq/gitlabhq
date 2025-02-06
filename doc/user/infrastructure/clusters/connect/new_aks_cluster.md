@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create an Azure AKS cluster
 ---
-
-# Create an Azure AKS cluster
 
 You can create a cluster on Azure Kubernetes Service (AKS) through
 [Infrastructure as Code (IaC)](../../index.md). This process uses the Azure and

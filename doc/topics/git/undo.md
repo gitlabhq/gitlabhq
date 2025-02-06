@@ -2,9 +2,8 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Revert and undo changes
 ---
-
-# Revert and undo changes
 
 Git provides options for undoing changes at any point in the
 [Git workflow](get_started.md#understand-the-git-workflow).

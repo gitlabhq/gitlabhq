@@ -182,11 +182,10 @@ RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
   describe '#author_name' do
     context 'when user exists' do
       let(:user) { create(:user, name: 'John Doe') }
-
-      subject(:event) { audit_event_class.new(user: user) }
+      let(:event) { build(:audit_events_user_audit_event, user: user) }
 
       it 'returns user name' do
-        expect(event.author_name).to eq 'John Doe'
+        expect(event.author_name).to eq('John Doe')
       end
     end
 

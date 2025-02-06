@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Deploy keys
 ---
-
-# Deploy keys
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -196,7 +195,7 @@ There are a few scenarios where a deploy key fails to push to a
 [protected branch](../repository/branches/protected.md).
 
 - The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
-- The owner associated to a deploy key has [project membership permissions](../../../user/permissions.md#project-members-permissions) lower than required to **View project code**.
+- The owner associated to a deploy key has [project membership permissions](../../permissions.md#project-members-permissions) lower than required to **View project code**.
 - The deploy key does not have [read-write permissions for the project](#edit-project-access-permissions-of-a-deploy-key).
 - The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).
 - **No one** is selected in [the **Allowed to push and merge** section](../repository/branches/protected.md#add-protection-to-existing-branches) of the protected branch.

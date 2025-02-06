@@ -2,9 +2,8 @@
 stage: ModelOps
 group: MLOps
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: MLflow client compatibility
 ---
-
-# MLflow client compatibility
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -23,7 +22,7 @@ GitLab plays the role of a MLflow server. Running `mlflow server` is not necessa
 
 Prerequisites:
 
-- A [personal](../../../../user/profile/personal_access_tokens.md), [project](../../../../user/project/settings/project_access_tokens.md), or [group](../../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
+- A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
 - The project ID. To find the project ID:
   1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Settings > General**.

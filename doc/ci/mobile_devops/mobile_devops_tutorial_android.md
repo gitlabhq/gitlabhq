@@ -2,9 +2,8 @@
 stage: Mobile
 group: Mobile Devops
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: 'Tutorial: Build Android apps with GitLab Mobile DevOps'
 ---
-
-# Tutorial: Build Android apps with GitLab Mobile DevOps
 
 In this tutorial, you'll create a pipeline by using GitLab CI/CD that builds your Android mobile app,
 signs it with your credentials, and distributes it to app stores.

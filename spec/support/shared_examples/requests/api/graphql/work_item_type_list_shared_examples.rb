@@ -29,7 +29,7 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
       post_graphql(query, current_user: current_user)
 
       expect(graphql_data_at(parent_key, :workItemTypes, :nodes)).to match_array(
-        expected_work_item_type_response(parent)
+        expected_work_item_type_response(parent, current_user)
       )
     end
 

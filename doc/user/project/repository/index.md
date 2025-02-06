@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "How to create, clone, and use GitLab repositories."
+title: Repository
 ---
-
-# Repository
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -19,14 +18,14 @@ Each [project](../index.md) contains a repository and a repository cannot exist 
 
 To create a repository:
 
-- [Create a project](../../../user/project/index.md) or
+- [Create a project](../index.md) or
 - [Fork an existing project](forking_workflow.md).
 
 ## Add files to a repository
 
 You can add files to a repository:
 
-- When you [create a project](../../../user/project/index.md), or
+- When you [create a project](../index.md), or
 - After you create a project, using the following options:
   - [Web editor](web_editor.md#upload-a-file).
   - [User Interface (UI)](#add-a-file-from-the-ui).
@@ -54,7 +53,7 @@ You can commit your changes to a branch in the repository. When you use the comm
 use [`git commit`](../../../topics/git/commands.md#git-commit).
 
 For information about how to use commits to improve communication and collaboration,
-trigger or skip pipelines, and reverting changes, see [commits](../../project/merge_requests/commits.md).
+trigger or skip pipelines, and reverting changes, see [commits](../merge_requests/commits.md).
 
 ## Clone a repository
 
@@ -143,7 +142,7 @@ When a repository path changes, GitLab handles the transition from the
 old location to the new one with a redirect.
 
 When you [rename a user](../../profile/index.md#change-your-username),
-[change a group path](../../group/manage.md#change-a-groups-path), or [rename a repository](../../project/working_with_projects.md#rename-a-repository):
+[change a group path](../../group/manage.md#change-a-groups-path), or [rename a repository](../working_with_projects.md#rename-a-repository):
 
 - URLs for the namespace and everything under it, like projects, are
   redirected to the new URLs.

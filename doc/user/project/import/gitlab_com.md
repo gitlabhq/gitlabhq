@@ -4,9 +4,8 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 remove_date: '2025-01-25'
 redirect_to: '../../group/import/index.md'
+title: Import a project from GitLab.com to GitLab Self-Managed (removed)
 ---
-
-# Import a project from GitLab.com to GitLab Self-Managed (removed)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

@@ -3,9 +3,8 @@ stage: none
 group: Tutorials
 description: GitOps, Kubernetes deployments.
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: 'Tutorials: Manage your infrastructure'
 ---
-
-# Tutorials: Manage your infrastructure
 
 Use GitLab configuration features to reduce the effort needed to
 configure the infrastructure for your application.

@@ -2,9 +2,8 @@
 stage: none
 group: Tutorials
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Learn GitLab with tutorials
 ---
-
-# Learn GitLab with tutorials
 
 These tutorials can help you learn how to use GitLab.
 

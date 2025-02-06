@@ -2,9 +2,8 @@
 stage: Fulfillment
 group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Features available to Starter and Bronze subscribers
 ---
-
-# Features available to Starter and Bronze subscribers
 
 Although GitLab has discontinued selling the Bronze and Starter tiers, GitLab
 continues to honor the entitlements of existing Bronze and Starter tier GitLab

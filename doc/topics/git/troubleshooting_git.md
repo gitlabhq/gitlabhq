@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Debugging tips for fixing problems in Git."
+title: Troubleshooting Git
 ---
-
-# Troubleshooting Git
 
 Sometimes things don't work the way they should or as you might expect when
 you're using Git. Here are some tips on troubleshooting and resolving issues

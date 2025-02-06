@@ -183,7 +183,7 @@ are not accepted as a source of groups.
 
 For more information on configuring the
 required group attribute name in the SAML identity provider's settings, see
-example configurations for [Azure AD](../../../user/group/saml_sso/example_saml_config.md#group-sync) and [Okta](../../../user/group/saml_sso/example_saml_config.md#group-sync-1).
+example configurations for [Azure AD](example_saml_config.md#group-sync) and [Okta](example_saml_config.md#group-sync-1).
 
 ## Microsoft Azure Active Directory integration
 
@@ -198,7 +198,7 @@ group overage claim attribute in the SAML response. Then group memberships must 
 The [Graph API endpoint](https://learn.microsoft.com/en-us/graph/api/user-list-transitivememberof?view=graph-rest-1.0&tabs=http#http-request) supports only a
 [user object ID](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-user-object-id) or
 [userPrincipalName](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-userprincipalname#what-is-userprincipalname)
-as the [configured](../../../user/group/saml_sso/index.md#azure) Unique User Identifier (Name identifier) attribute.
+as the [configured](index.md#azure) Unique User Identifier (Name identifier) attribute.
 
 When the integration processes Group Sync, only Group Links configured with
 group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`) are supported.
@@ -243,7 +243,7 @@ To configure for a GitLab.com group:
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
 1. Select **Settings > SAML SSO**.
-1. Configure [SAML SSO for the group](../../../user/group/saml_sso/index.md).
+1. Configure [SAML SSO for the group](index.md).
 1. In the **Microsoft Azure integration** section, select the **Enable Microsoft Azure integration for this group** checkbox.
    This section is only visible if SAML SSO is configured and enabled for the group.
 1. Enter the **Tenant ID**, **Client ID**, and **Client secret** obtained earlier when configuring Azure Active Directory in the Azure Portal.

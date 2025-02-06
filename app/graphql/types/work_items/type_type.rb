@@ -32,7 +32,7 @@ module Types
       end
 
       def supported_conversion_types
-        object.supported_conversion_types(context[:resource_parent])
+        object.supported_conversion_types(context[:resource_parent], current_user)
       end
     end
   end

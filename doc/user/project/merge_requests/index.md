@@ -3,9 +3,8 @@ stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Propose, review, and collaborate on changes to a project."
+title: Merge requests
 ---
-
-# Merge requests
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -259,7 +258,7 @@ For a software developer working in a team:
 1. You gather feedback from your team.
 1. You work on the implementation optimizing code with [Code Quality reports](../../../ci/testing/code_quality.md).
 1. You verify your changes with [Unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
-1. You avoid using dependencies whose license is not compatible with your project with [License approval policies](../../../user/compliance/license_approval_policies.md).
+1. You avoid using dependencies whose license is not compatible with your project with [License approval policies](../../compliance/license_approval_policies.md).
 1. You request the [approval](approvals/index.md) from your manager.
 1. Your manager:
    1. Pushes a commit with their final review.

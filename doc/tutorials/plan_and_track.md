@@ -3,9 +3,8 @@ stage: none
 group: Tutorials
 description: Planning, agile, issue boards.
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: 'Tutorials: Plan and track your work'
 ---
-
-# Tutorials: Plan and track your work
 
 Create a project to host your code, and plan your work using
 issues, epics, and more.

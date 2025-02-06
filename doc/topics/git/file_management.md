@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 description: Common commands and workflows.
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: File management
 ---
-
-# File management
 
 Git provides file management capabilities that help you to track changes,
 collaborate with others, and manage large files efficiently.
