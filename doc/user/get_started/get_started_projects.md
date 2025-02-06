@@ -2,9 +2,8 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started organizing work with projects
 ---
-
-# Get started organizing work with projects
 
 Projects in GitLab organize all the data for a specific development project.
 A project is where you work with your team, store your files, and manage your tasks.

@@ -2,9 +2,8 @@
 stage: Monitor
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Usage statistics
 ---
-
-# Usage statistics
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -19,7 +18,7 @@ For information about other tiers, see [Customer Product Usage Information](http
 ## Service Ping
 
 Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
-For more information, see the [Service Ping guide](../../development/internal_analytics/service_ping/_index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/index.md)
+For more information, see the [Service Ping guide](../../development/internal_analytics/service_ping/_index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/_index.md)
 that are dependent on Service Ping.
 
 ### Why enable Service Ping?

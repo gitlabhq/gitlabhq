@@ -13,7 +13,7 @@ DETAILS:
 When you work on a complex project (for example, a website), you likely collaborate with other people to build and maintain it.
 The way you collaborate and communicate in your team can make or break the project, so you want processes in place that help team members follow and achieve the common goal.
 Analytics metrics help you understand how the team is doing, and if you need to adjust processes so you can work better together.
-GitLab provides different types of [analytics](../../user/analytics/index.md) insights at the instance, group, and project level.
+GitLab provides different types of [analytics](../../user/analytics/_index.md) insights at the instance, group, and project level.
 If this list seems long and you're not sure where to start, then this tutorial is for you.
 
 Follow along to learn how to set up an example website project, collaborate with other GitLab users,

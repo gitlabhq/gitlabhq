@@ -49,6 +49,10 @@ The following tools are used:
 
 ## Preparing a page for translation
 
+You must mark strings as translatable with the following available helpers. Keep in mind that
+strings are translated in tools where their context of use might not be obvious. Consider
+[namespacing](#namespaces) domain-specific strings to provide more context to the translators.
+
 There are four file types:
 
 - Ruby files: models and controllers.
@@ -212,7 +216,44 @@ expect(findText()).toBe('Lorem ipsum dolor sit');
 
 #### Recommendations
 
-If strings are reused throughout a component, it can be useful to define these strings as variables. We recommend defining an `i18n` property on the component's `$options` object. If there is a mixture of many-use and single-use strings in the component, consider using this approach to create a local [Single Source of Truth](https://handbook.gitlab.com/handbook/values/#single-source-of-truth) for externalized strings.
+Put translations as close as possible to where they are used.
+Preferably, use inline translations over variables with translations.
+The best description for a translation is its key.
+This improves code readability and helps with the cognitive load of preserving code context.
+Also, it makes refactoring easier as we do not have to maintain variables in addition to the translations.
+
+```javascript
+// Bad. A variable is defined far from where it is used
+const TITLE = __('Organisations');
+
+function transform() {
+  return TITLE;
+}
+
+// Good.
+function transform() {
+  return __('Organisations');
+}
+```
+
+##### Shared translations
+
+Sometimes a translation can be used in several places in a file or a module. In this case, we can use variables that share translations, but with the following considerations:
+
+- Inline translations have better code clarity. Do not use the DRY principle as the only driver for putting translations into variables.
+- Be cautious when inserting or joining translations. For more information, see
+  [using variables to insert text dynamically](#using-variables-to-insert-text-dynamically).
+- If two translations share the same English key, it doesn't mean those two places have the same translation in other languages. Consider using [namespaces](#namespaces) where appropriate.
+
+If using variables with translations is preferred in a particular case, follow these guidelines on how to declare and place them.
+
+In JavaScript files, declare a constant with the translation:
+
+```javascript
+const ORGANISATIONS_TITLE = __('Organisations');
+```
+
+In Vue Single-File Components, you can define an `i18n` property in the component's `$options` object.
 
 ```javascript
 <script>
@@ -230,10 +271,7 @@ If strings are reused throughout a component, it can be useful to define these s
 </template>
 ```
 
-If we are reusing the same translated string in multiple components, it is tempting to add them to a `constants.js` file instead and import them across our components. However, there are multiple pitfalls to this approach:
-
-- It creates distance between the HTML template and the copy, adding an additional level of complexity while navigating our codebase.
-- The benefit of having a reusable variable is to have one easy place to go to update a value, but for copy it is quite common to have similar strings that aren't quite the same.
+In modules, if we reuse the same translation in multiple files, we can add them to a `constants.js` or a `i18n.js` file and import those translations across the module. However, this adds yet another level of complexity to our codebase and thus should be used with caution.
 
 Another practice to avoid when exporting copy strings is to import them in specs. While it might seem like a much more efficient test (if we change the copy, the test will still pass!) it creates additional problems:
 

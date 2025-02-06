@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Gitaly Cluster recovery options and tools
 ---
-
-# Gitaly Cluster recovery options and tools
 
 Gitaly Cluster can recover from primary-node failure and unavailable repositories. Gitaly Cluster can perform data
 recovery and has Praefect tracking database tools.

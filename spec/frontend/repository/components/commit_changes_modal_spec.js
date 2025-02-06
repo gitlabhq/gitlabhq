@@ -69,6 +69,7 @@ describe('CommitChangesModal', () => {
   const findBranchNameInput = () => findForm().findComponent(GlFormInput);
   const findBranchNameLabel = () => findForm().find(`label[for=branchNameInput]`);
   const findCommitHint = () => wrapper.find('[data-testid="hint"]');
+  const findError = () => wrapper.findByTestId('error');
   const findBranchInForkMessage = () =>
     wrapper.findByText('GitLab will create a branch in your fork and start a merge request.');
 
@@ -382,6 +383,21 @@ describe('CommitChangesModal', () => {
           original_branch: 'main',
         });
       });
+    });
+  });
+
+  describe('error handling', () => {
+    const error = 'Test error message';
+    beforeEach(() => createComponent({ props: { error } }));
+
+    it('displays error message when error prop is provided', () => {
+      expect(findError().text()).toBe(error);
+    });
+
+    it('does not display error message when error prop is null', () => {
+      createComponent({ props: { error: null } });
+
+      expect(findError().exists()).toBe(false);
     });
   });
 });

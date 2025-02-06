@@ -166,7 +166,7 @@ sufficient or if an additional tool must be used to answer the question.
 
 [Zero-shot agent in action](https://gitlab.com/gitlab-org/gitlab/-/issues/427979).
 
-## Duo Workflow terminology
+## GitLab Duo Workflow terminology
 
 ### Agent
 

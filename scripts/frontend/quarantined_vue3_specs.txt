@@ -200,7 +200,6 @@ spec/frontend/notebook/cells/markdown_spec.js
 spec/frontend/notebook/cells/output/html_spec.js
 spec/frontend/notes/components/discussion_notes_spec.js
 spec/frontend/notes/components/notes_app_spec.js
-spec/frontend/organizations/groups_and_projects/components/app_spec.js
 spec/frontend/organizations/shared/components/new_edit_form_spec.js
 spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js

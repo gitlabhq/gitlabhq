@@ -193,7 +193,7 @@ and recursively analyze all subgroups and projects. You can also analyze differe
 
 Here's an example of an algorithm to analyze multiple subgroups and projects:
 
-1. Fetch the top-level namespace ID. You can copy the ID value from the [namespace/group overview](../user/namespace/index.md#types-of-namespaces).
+1. Fetch the top-level namespace ID. You can copy the ID value from the [namespace/group overview](namespace/index.md#types-of-namespaces).
 1. Fetch all [subgroups](../api/groups.md#list-subgroups) from the top-level group, and save the IDs in a list.
 1. Loop over all groups and fetch all [projects from each group](../api/groups.md#list-projects) and save the IDs in a list.
 1. Identify the storage type to analyze, and collect the information from project attributes, like project statistics, and job artifacts.

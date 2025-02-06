@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillOperationsScopesProjectId
+description: Backfills sharding key `operations_scopes.project_id` from `operations_strategies`.
+feature_category: feature_flags
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180223
+milestone: '17.9'
+queued_migration_version: 20250204151548
+finalized_by: # version of the migration that finalized this BBM

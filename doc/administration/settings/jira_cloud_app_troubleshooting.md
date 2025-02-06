@@ -2,9 +2,8 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting GitLab for Jira Cloud app administration
 ---
-
-# Troubleshooting GitLab for Jira Cloud app administration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

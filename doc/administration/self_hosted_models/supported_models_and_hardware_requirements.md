@@ -3,9 +3,8 @@ stage: AI-Powered
 group: Custom Models
 description: Supported Models and Hardware Requirements.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Supported GitLab Duo Self-Hosted models and hardware requirements
 ---
-
-# Supported GitLab Duo Self-Hosted models and hardware requirements
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)

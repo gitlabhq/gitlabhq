@@ -3,9 +3,8 @@ stage: AI-powered
 group: AI Framework
 description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo
 ---
-
-# GitLab Duo
 
 > - [First GitLab Duo features introduced](https://about.gitlab.com/blog/2023/05/03/gitlab-ai-assisted-features/) in GitLab 16.0.
 > - [Removed third-party AI setting](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136144) in GitLab 16.6.
@@ -56,8 +55,8 @@ To improve your workflow while authoring code, try these features:
 - Code Explanation: Have code explained. View docs for explaining code in:
 
   - [The IDE](../gitlab_duo_chat/examples.md#explain-selected-code).
-  - [A file](../../user/project/repository/code_explain.md).
-  - [A merge request](../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
+  - [A file](../project/repository/code_explain.md).
+  - [A merge request](../project/merge_requests/changes.md#explain-code-in-a-merge-request).
   - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/1izKaLmmaCA?si=O2HDokLLujRro_3O)
     <!-- Video published on 2023-11-18 -->
 - [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide): Test your code by generating tests.
@@ -106,7 +105,7 @@ To improve your security, try these features:
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Discussion Summary](../discussions/index.md#summarize-issue-discussions-with-duo-chat) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Code Suggestions](../project/repository/code_suggestions/index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Code Explanation](../../user/project/repository/code_explain.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [Code Explanation](../project/repository/code_explain.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |

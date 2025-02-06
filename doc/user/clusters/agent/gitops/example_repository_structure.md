@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Tutorial: Deploy a Git repository using Flux
 ---
-
-# Tutorial: Deploy a Git repository using Flux
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -77,13 +76,13 @@ To create a deployment branch:
 
 1. In `web-app-manifests`, create a branch named `_gitlab/deploy/example` from the default branch. The branch name in this example is chosen to
    differentiate the deployment branch from feature branches, but this is not required. You can name the deployment branch whatever you like.
-1. Create a [project](../../../../user/project/settings/project_access_tokens.md),
-   [group](../../../../user/group/settings/group_access_tokens.md) or
-   [personal access token](../../../../user/profile/personal_access_tokens.md) with the `write_repository` scope.
+1. Create a [project](../../../project/settings/project_access_tokens.md),
+   [group](../../../group/settings/group_access_tokens.md) or
+   [personal access token](../../../profile/personal_access_tokens.md) with the `write_repository` scope.
 1. Create a [CI/CD variable](../../../../ci/variables/_index.md) with a token value named `DEPLOYMENT_TOKEN`.
    Remember to [mask](../../../../ci/variables/_index.md#mask-a-cicd-variable) the value so that it won't show in
    job logs.
-1. Add a rule to [protect](../../../../user/project/repository/branches/protected.md)
+1. Add a rule to [protect](../../../project/repository/branches/protected.md)
    your deployment branch with the following values:
 
    - Allowed to merge: No one.

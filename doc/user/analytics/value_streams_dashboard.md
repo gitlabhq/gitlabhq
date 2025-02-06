@@ -2,9 +2,8 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Value Streams Dashboard
 ---
-
-# Value Streams Dashboard
 
 DETAILS:
 **Tier:** Ultimate
@@ -24,7 +23,7 @@ The Value Streams Dashboard includes [panels](#value-streams-dashboard-panels) t
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
 - [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics
-- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md)
+- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md)
 
 With the Value Streams Dashboard, you can:
 
@@ -246,7 +245,7 @@ This tool saves time and effort by eliminating the need to manually search for t
 By scheduling reports, you can ensure that the decision-makers in your organization receive proactive, timely, and relevant information.
 
 The Scheduled Reports tool collects metrics from projects or groups through the public GitLab GraphQL API,
-then builds a report using [GitLab Flavored Markdown](../../user/markdown.md),
+then builds a report using [GitLab Flavored Markdown](../markdown.md),
 and opens an issue in a specified project.
 The issue includes a comparison metrics table in Markdown format.
 
@@ -409,8 +408,8 @@ Filters for the `usage_overview` visualization.
 | Change failure rate | Percentage of deployments that cause an incident in production. | [Change failure rate tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=change-failure-rate) | [Change failure rate](dora_metrics.md#change-failure-rate) | `change_failure_rate` |
 | Lead time | Median time from issue created to issue closed. | [Value Stream Analytics](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/index.md#lifecycle-metrics) | `lead_time` |
 | Cycle time | Median time from the earliest commit of a linked issue's merge request to when that issue is closed. | [VSA overview](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/index.md#lifecycle-metrics) | `cycle_time` |
-| Issues created | Number of new issues created. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | [Issue Analytics](../../user/group/issues_analytics/index.md) | `issues` |
-| Issues closed | Number of issues closed by month. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | [Issue Analytics](../../user/group/issues_analytics/index.md) | `issues_completed` |
+| Issues created | Number of new issues created. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | [Issue Analytics](../group/issues_analytics/index.md) | `issues` |
+| Issues closed | Number of issues closed by month. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | [Issue Analytics](../group/issues_analytics/index.md) | `issues_completed` |
 | Number of deploys | Total number of deploys to production. | [Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics) | [Merge request analytics](merge_request_analytics.md) | `deploys` |
 | Merge request throughput | The number of merge requests merged by month. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics)  | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) | `merge_request_throughput` |
 | Median time to merge | Median time between merge request created and merge request merged. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics)  | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) | `median_time_to_merge` |

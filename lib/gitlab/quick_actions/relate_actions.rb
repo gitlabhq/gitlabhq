@@ -48,7 +48,9 @@ module Gitlab
           link = IssueLink.for_items(quick_action_target, issue).first
 
           if link
-            call_link_service(IssueLinks::DestroyService.new(link, current_user))
+            user = current_user
+
+            call_link_service(proc { IssueLinks::DestroyService.new(link, user).execute })
           else
             @execution_message[:unlink] = _('No linked issue matches the provided parameter.')
           end
@@ -61,21 +63,24 @@ module Gitlab
         end
 
         def create_links(references, type: 'relates_to')
-          create_service_instance = IssueLinks::CreateService.new(
-            quick_action_target,
-            current_user, { issuable_references: references, link_type: type }
-          )
+          target = quick_action_target
+          user = current_user
 
-          call_link_service(create_service_instance)
+          link_service = proc do
+            ::WorkItems::RelatedWorkItemLinks::CreateService.new(
+              WorkItem.find(target.id),
+              user, { issuable_references: references, link_type: type }
+            ).execute
+          end
+
+          call_link_service(link_service)
         end
 
-        def call_link_service(service_instance)
-          execute_service = proc { service_instance.execute }
-
+        def call_link_service(link_service)
           if quick_action_target.persisted?
-            execute_service.call
+            link_service.call
           else
-            quick_action_target.run_after_commit(&execute_service)
+            quick_action_target.run_after_commit(&link_service)
           end
         end
 

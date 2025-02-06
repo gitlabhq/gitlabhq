@@ -94,7 +94,7 @@ to remove a member, select **Remove user**.
 If you have multiple groups in your organization, they might have a
 combination of paid (Premium or Ultimate tier) and Free tier subscriptions.
 When a group with a Free tier subscription exceeds the user limit, their
-namespace becomes [read-only](../user/read_only_namespaces.md).
+namespace becomes [read-only](read_only_namespaces.md).
 
 To remove user limits on groups with Free tier subscriptions, include those groups
 in your organization's subscription:
@@ -106,7 +106,7 @@ in your organization's subscription:
    subscription.
 
 1. To include a group in your paid Premium or Ultimate tier subscription,
-   [transfer that group](../user/group/manage.md#transfer-a-group) to your
+   [transfer that group](group/manage.md#transfer-a-group) to your
    organization's top-level namespace.
 
 If the five-user limit has been applied to your group even though you have

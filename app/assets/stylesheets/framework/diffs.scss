@@ -150,7 +150,7 @@ $diff-file-header: 41px;
     .image-info {
       font-size: 12px;
       margin: 5px 0 0;
-      color: $diff-image-info-color;
+      @apply gl-text-subtle;
     }
 
     .view.swipe {
@@ -318,8 +318,7 @@ $diff-file-header: 41px;
     }
 
     li {
-      color: $diff-view-modes-color;
-      border-left: 1px solid $diff-view-modes-border;
+      @apply gl-text-subtle gl-border-l;
       padding: 0 12px 0 16px;
       cursor: pointer;
 

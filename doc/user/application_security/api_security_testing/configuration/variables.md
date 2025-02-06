@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Available CI/CD variables and configuration files
 ---
-
-# Available CI/CD variables and configuration files
 
 > - [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/450445) Changed template name from `DAST-API.gitlab-ci.yml` to `API-Security.gitlab-ci.yml` and variable prefixed from `DAST_API_` to `APISEC_` in GitLab 17.1.
 

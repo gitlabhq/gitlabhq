@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Concurrency limiting
 ---
-
-# Concurrency limiting
 
 To avoid overwhelming the servers running Gitaly, you can limit concurrency of:
 

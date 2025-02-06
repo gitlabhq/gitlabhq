@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Upgrading operating systems for PostgreSQL
 ---
-
-# Upgrading operating systems for PostgreSQL
 
 WARNING:
 [Geo](../geo/index.md) cannot be used to migrate a PostgreSQL database from one operating system to another. If you attempt to do so, the secondary site may appear to be 100% replicated when in fact some data is not replicated, leading to data loss. This is because Geo depends on PostgreSQL streaming replication, which suffers from the limitations described in this document. Also see [Geo Troubleshooting - Check OS locale data compatibility](../geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility).

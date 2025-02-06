@@ -3,9 +3,8 @@ stage: GitLab Dedicated
 group: Switchboard
 description: Access application logs and S3 bucket data to monitor your GitLab Dedicated instance.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Monitor your GitLab Dedicated instance
 ---
-
-# Monitor your GitLab Dedicated instance
 
 GitLab delivers [application logs](../logs/index.md) to an Amazon S3 bucket in the GitLab tenant account, which can be shared with you.
 

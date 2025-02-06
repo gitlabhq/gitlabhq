@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Detect
 ---
-
-# Detect
 
 Detect vulnerabilities in your project's repository and your application's behavior. Enable GitLab
 security tools for your project's entire lifecycle, starting before the first commit.

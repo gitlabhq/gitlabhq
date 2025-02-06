@@ -3,9 +3,8 @@ stage: AI-powered
 group: AI Model Validation
 description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo data usage
 ---
-
-# GitLab Duo data usage
 
 GitLab Duo uses generative AI to help increase your velocity and make you more productive. Each AI-powered feature operates independently and is not required for other features to function.
 

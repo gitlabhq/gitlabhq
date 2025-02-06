@@ -2,9 +2,8 @@
 stage: Mobile
 group: Mobile DevOps
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Secure Files administration
 ---
-
-# Secure Files administration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

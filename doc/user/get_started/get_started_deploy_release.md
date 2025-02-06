@@ -2,9 +2,8 @@
 stage: none
 group: none
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started deploying and releasing your application
 ---
-
-# Get started deploying and releasing your application
 
 Start with previewing your application, and end with deploying
 it to production in front of your users. Manage containers and packages, use

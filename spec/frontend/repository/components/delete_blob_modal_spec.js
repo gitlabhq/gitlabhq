@@ -65,6 +65,7 @@ describe('DeleteBlobModal', () => {
       canPushToBranch: true,
       commitMessage: 'Delete File',
       emptyRepo: false,
+      error: null,
       isUsingLfs: false,
       loading: false,
       modalId: 'Delete-blob',

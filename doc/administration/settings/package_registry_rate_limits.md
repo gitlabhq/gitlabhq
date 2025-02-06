@@ -2,9 +2,8 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Package registry rate limits
 ---
-
-# Package registry rate limits
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

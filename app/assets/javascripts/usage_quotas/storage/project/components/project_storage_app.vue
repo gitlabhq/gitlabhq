@@ -8,11 +8,8 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/project/queries/project_storage.query.graphql';
 import getCostFactoredProjectStorageStatistics from 'ee_else_ce/usage_quotas/storage/project/queries/cost_factored_project_storage.query.graphql';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
-import {
-  PROJECT_STORAGE_TYPES,
-  NAMESPACE_STORAGE_TYPES,
-  storageTypeHelpPaths,
-} from '../../constants';
+import { PROJECT_STORAGE_TYPES, NAMESPACE_STORAGE_TYPES } from '../constants';
+import { storageTypeHelpPaths } from '../../constants';
 import { getStorageTypesFromProjectStatistics, descendingStorageUsageSort } from '../utils';
 import ProjectStorageDetail from './project_storage_detail.vue';
 

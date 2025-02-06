@@ -2,9 +2,8 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Value stream analytics
 ---
-
-# Value stream analytics
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

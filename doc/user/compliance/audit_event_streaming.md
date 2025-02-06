@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Audit event streaming for top-level groups
 ---
-
-# Audit event streaming for top-level groups
 
 DETAILS:
 **Tier:** Ultimate

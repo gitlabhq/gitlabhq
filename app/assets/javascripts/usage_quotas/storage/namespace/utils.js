@@ -1,7 +1,7 @@
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
-import { storageTypeHelpPaths } from './constants';
+import { storageTypeHelpPaths } from '../constants';
 
 /**
  * This method parses the results from `getNamespaceStorageStatistics`

@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Configure a collection of file templates available for all projects on GitLab Self-Managed."
+title: Instance template repository
 ---
-
-# Instance template repository
 
 DETAILS:
 **Tier:** Premium, Ultimate

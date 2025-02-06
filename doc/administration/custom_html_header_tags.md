@@ -3,9 +3,8 @@ stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn how to modify the HTML header tags of your GitLab instance.
+title: Custom HTML header tags
 ---
-
-# Custom HTML header tags
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

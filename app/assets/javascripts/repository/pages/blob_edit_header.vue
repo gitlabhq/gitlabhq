@@ -5,7 +5,6 @@ import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { getParameterByName, visitUrl } from '~/lib/utils/url_utility';
-import { createAlert } from '~/alert';
 import getRefMixin from '../mixins/get_ref';
 
 export default {
@@ -33,6 +32,8 @@ export default {
       isCommitChangeModalOpen: false,
       fileContent: null,
       filePath: null,
+      isLoading: false,
+      error: null,
     };
   },
   computed: {
@@ -64,11 +65,18 @@ export default {
       window.onbeforeunload = null;
     },
     openModal() {
+      this.error = null;
       this.fileContent = this.editor.getFileContent();
       this.filePath = this.editor.filepathFormMediator?.$filenameInput?.val();
       this.$refs[this.updateModalId].show();
     },
+    handleError(message) {
+      if (!message) return;
+      this.error = message;
+    },
     handleFormSubmit(formData) {
+      this.error = null;
+      this.isLoading = true;
       if (this.isEditBlob) {
         formData.append('file', this.fileContent);
         formData.append('file_path', this.filePath);
@@ -90,16 +98,22 @@ export default {
         url: this.updatePath,
         data,
       })
-        .then((response) => {
-          if (response.data.filePath) {
-            visitUrl(response.data.filePath);
-          } else {
-            this.$ref.commitChangesModal.hide();
-            createAlert({ message: this.errorMessage, captureError: true });
+        .then(({ data: responseData }) => {
+          if (responseData.error) {
+            this.handleError(responseData.error);
+            return;
           }
+
+          if (responseData.filePath) {
+            visitUrl(responseData.filePath);
+            return;
+          }
+
+          this.handleError(this.errorMessage);
         })
-        .catch(() => {
-          createAlert({ message: this.errorMessage, captureError: true });
+        .catch(({ response }) => this.handleError(response?.data?.error))
+        .finally(() => {
+          this.isLoading = false;
         });
     },
   },
@@ -139,6 +153,8 @@ export default {
       :empty-repo="emptyRepo"
       :can-push-to-branch="canPushToBranch"
       :branch-allows-collaboration="branchAllowsCollaboration"
+      :loading="isLoading"
+      :error="error"
       @submit-form="handleFormSubmit"
     />
   </div>

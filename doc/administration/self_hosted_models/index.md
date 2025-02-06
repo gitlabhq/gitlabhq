@@ -3,9 +3,8 @@ stage: AI-Powered
 group: Custom Models
 description: Get started with GitLab Duo Self-Hosted.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo Self-Hosted
 ---
-
-# GitLab Duo Self-Hosted
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)

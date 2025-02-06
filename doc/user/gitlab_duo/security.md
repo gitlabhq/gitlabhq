@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo authentication and authorization
 ---
-
-# GitLab Duo authentication and authorization
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/506641) in GitLab 17.9.
 

@@ -23,7 +23,7 @@ avoid this security risk, GitLab recommends using your own HashiCorp Vault to le
 [external secrets with CI](../../../../../ci/secrets/index.md).
 
 Assuming you already have a project created from a
-[management project template](../../../../../user/clusters/management_project_template.md), to install Vault you should
+[management project template](../../../../clusters/management_project_template.md), to install Vault you should
 uncomment this line from your `helmfile.yaml`:
 
 ```yaml

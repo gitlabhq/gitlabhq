@@ -71,7 +71,7 @@ The following tables list the project permissions available for each role.
 
 ### Analytics
 
-Project permissions for [analytics](../user/analytics/index.md) features including value streams, usage trends, product analytics, and insights.
+Project permissions for [analytics](../user/analytics/_index.md) features including value streams, usage trends, product analytics, and insights.
 
 | Action                                                                                     | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -416,7 +416,7 @@ The following table lists group permissions available for each role:
 
 ### Analytics group permissions
 
-Group permission for [analytics](../user/analytics/index.md) features including value streams, product analytics, and insights:
+Group permission for [analytics](../user/analytics/_index.md) features including value streams, product analytics, and insights:
 
 | Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |

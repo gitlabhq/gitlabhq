@@ -226,7 +226,7 @@ $ide-commit-header-height: 48px;
 
     .file-info {
       font-size: $label-font-size;
-      color: var(--ide-text-color, $diff-image-info-color);
+      color: var(--ide-text-color, var(--gl-text-color-subtle));
     }
   }
 }

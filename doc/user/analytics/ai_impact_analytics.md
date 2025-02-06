@@ -2,9 +2,8 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: AI impact analytics
 ---
-
-# AI impact analytics
 
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
@@ -33,7 +32,7 @@ AI impact analytics displays key metrics and metric trends for a project or grou
 
 ### Key metrics
 
-- **Code Suggestions: Unique users**: Percentage of users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
+- **Code Suggestions: Unique users**: Percentage of users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
 - **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
 - **Duo Chat: Unique users**: Percentage of users that engage with GitLab Duo Chat every month. It is calculated as the number of monthly unique GitLab Duo Chat users divided by the total GitLab Duo assigned users.
 
@@ -65,8 +64,8 @@ For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/ep
 
 Prerequisites:
 
-- [Code Suggestions](../../user/project/repository/code_suggestions/index.md) must be enabled.
-- [ClickHouse for contribution analytics](../../user/group/contribution_analytics/index.md#contribution-analytics-with-clickhouse) must be configured.
+- [Code Suggestions](../project/repository/code_suggestions/index.md) must be enabled.
+- [ClickHouse for contribution analytics](../group/contribution_analytics/index.md#contribution-analytics-with-clickhouse) must be configured.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Analytics Dashboards**.

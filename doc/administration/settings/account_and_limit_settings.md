@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Configure the maximum number of projects users can create on GitLab Self-Managed. Configure size limits for attachments, pushes, and repository size."
+title: Account and limit settings
 ---
-
-# Account and limit settings
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

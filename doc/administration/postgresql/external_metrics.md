@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Monitoring and logging setup for external databases
 ---
-
-# Monitoring and logging setup for external databases
 
 External PostgreSQL database systems have different logging options for monitoring performance and troubleshooting, however they are not enabled by default. In this section we provide the recommendations for self-managed PostgreSQL, and recommendations for some major providers of PostgreSQL managed services.
 

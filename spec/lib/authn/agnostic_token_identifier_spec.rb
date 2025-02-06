@@ -24,6 +24,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
   let_it_be(:ci_trigger_token) { create(:ci_trigger).token }
   let_it_be(:feature_flags_client_token) { create(:operations_feature_flags_client).token }
   let_it_be(:gitlab_session) { '_gitlab_session=session_id' }
+  let_it_be(:incoming_email_token) { user.incoming_email_token }
 
   subject(:token) { described_class.token_for(plaintext, :group_token_revocation_service) }
 
@@ -39,6 +40,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
       ref(:ci_trigger_token) | ::Authn::Tokens::CiTriggerToken
       ref(:feature_flags_client_token) | ::Authn::Tokens::FeatureFlagsClientToken
       ref(:gitlab_session) | ::Authn::Tokens::GitlabSession
+      ref(:incoming_email_token) | ::Authn::Tokens::IncomingEmailToken
       'unsupported' | NilClass
     end
 

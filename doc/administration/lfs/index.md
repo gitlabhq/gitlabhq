@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 description: "Configure Git LFS for GitLab Self-Managed."
+title: GitLab Git Large File Storage (LFS) Administration
 ---
-
-# GitLab Git Large File Storage (LFS) Administration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using NFS with GitLab
 ---
-
-# Using NFS with GitLab
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

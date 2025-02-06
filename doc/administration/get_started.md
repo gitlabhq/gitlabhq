@@ -3,9 +3,8 @@ stage: none
 group: Tutorials
 description: Administration overview.
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Get started administering GitLab
 ---
-
-# Get started administering GitLab
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

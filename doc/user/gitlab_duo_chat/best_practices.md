@@ -2,9 +2,8 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo Chat best practices
 ---
-
-# GitLab Duo Chat best practices
 
 When prompting GitLab Duo Chat with questions, keep the following best practices in mind.
 

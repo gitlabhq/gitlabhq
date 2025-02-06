@@ -373,6 +373,13 @@ mapping:
   - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller\.rb'
     test: 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/*_spec.rb'
 
+  # trial status widget
+  - source:
+    - 'ee/app/presenters/gitlab_subscriptions/trials/status_widget_presenter\.rb'
+    test:
+    - ee/spec/helpers/sidebars_helper_spec.rb
+    - ee/app/presenters/gitlab_subscriptions/trials/status_widget_presenter.rb
+
   # Import/Export checks
   - source:
       - 'spec/lib/gitlab/import_export/all_models\.yml'

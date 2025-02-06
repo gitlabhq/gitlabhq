@@ -14,34 +14,34 @@ This guide describes how to set up the local development environment for the var
 - Docker
   - See which Docker tooling is approved for GitLab team members in the [handbook](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop).
 
-## Set up local development for GitLab Duo Workflow
+## Set up local development for Workflow
 
-Duo Workflow consists of four separate services:
+Workflow consists of four separate services:
 
 1. [GitLab instance](https://gitlab.com/gitlab-org/gitlab/)
-1. [Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
-1. [Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/)
-1. [Duo Workflow UI within the Language server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md)
+1. [GitLab Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service)
+1. [GitLab Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/)
+1. [GitLab Duo Workflow Webview](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md)
 
 ### GDK Setup
 
-We recommend [setting up Duo Workflow directly with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads)
-for setting up local versions of GitLab, the Duo Workflow Service and Executor.
+We recommend [setting up GitLab Duo Workflow directly with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads)
+for setting up local versions of GitLab, the GitLab Duo Workflow Service and Executor.
 
 This setup can be used with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-Follow [these instructions](#duo-workflow-ui-in-visual-studio-code-vs-code) to see Duo Workflow UI local build in VS Code if you want to actively need to develop it or use an unreleased version.
+Follow [these instructions](#gitlab-duo-workflow-ui-in-visual-studio-code-vs-code) to see the GitLab Duo Workflow UI local build in VS Code if you want to actively need to develop it or use an unreleased version.
 
 ### Manual Setup
 
-#### Duo Workflow UI in Visual Studio Code (VS Code)
+#### GitLab Duo Workflow UI in Visual Studio Code (VS Code)
 
-There is no need for the GDK, Duo Workflow service or Duo Workflow executor local build to test Duo Workflow UI.
-Only set these up if you are making changes to one of these packages and need to test their integration with the Duo Workflow UI in VS Code.
-Please refer to the [Duo Workflow README.md](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of Duo Workflow UI.
+There is no need for the GDK, Workflow service or Workflow executor local build to test the GitLab Duo Workflow UI.
+Only set these up if you are making changes to one of these packages and need to test their integration with the GitLab Duo Workflow UI in VS Code.
+Please refer to the [GitLab Duo Workflow README.md](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Workflow UI.
 
 #### Set up your local GitLab instance
 
-1. Configure the Duo Workflow Service URL in your local GitLab instance by updating the `config/gitlab.yml` file:
+1. Configure the GitLab Duo Workflow Service URL in your local GitLab instance by updating the `config/gitlab.yml` file:
 
    ```dotenv
    development:
@@ -78,15 +78,15 @@ Please refer to the [Duo Workflow README.md](https://gitlab.com/gitlab-org/edito
      $YOUR_GDK_ROOT_URL/api/v4/ai/duo_workflows/workflows
    ```
 
-#### Set up the Duo Workflow Service and Executor
+#### Set up the GitLab Duo Workflow Service and Executor
 
-Refer to the readme of [Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service) and [Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/) to set them up individually.
+Refer to the readme of [GitLab Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service) and [GitLab Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/) to set them up individually.
 
 ## Troubleshooting
 
 ### Issues connecting to 50052 port
 
-JAMF may be listening on the `50052` port which will conflict with Duo Workflow Service.
+JAMF may be listening on the `50052` port which will conflict with GitLab Duo Workflow Service.
 
 ```shell
 $ sudo lsof -i -P | grep LISTEN | grep :50052

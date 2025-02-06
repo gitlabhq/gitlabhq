@@ -158,7 +158,7 @@ To promote a task to an issue:
 1. In the issue description, in the **Child items** section, select the task you want to edit.
    The task window opens.
 1. Unlink the parent issue and promote the task: In the task window, use these two
-   [quick actions](../user/project/quick_actions.md) in separate comments:
+   [quick actions](project/quick_actions.md) in separate comments:
 
    ```plaintext
    /remove_parent

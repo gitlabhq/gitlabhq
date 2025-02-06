@@ -3,9 +3,8 @@ description: "Learn how long your open merge requests have spent in code review,
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Code review analytics
 ---
-
-# Code review analytics
 
 DETAILS:
 **Tier:** Premium, Ultimate

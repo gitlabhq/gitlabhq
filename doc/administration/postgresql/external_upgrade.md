@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Upgrading external PostgreSQL databases
 ---
-
-# Upgrading external PostgreSQL databases
 
 When upgrading your PostgreSQL database engine, it is important to follow all steps
 recommended by the PostgreSQL community and your cloud provider. Two

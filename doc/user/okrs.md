@@ -241,7 +241,7 @@ To promote a key result:
 1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
 1. Select **Promote to objective**.
 
-Alternatively, use the `/promote_to objective` [quick action](../user/project/quick_actions.md).
+Alternatively, use the `/promote_to objective` [quick action](project/quick_actions.md).
 
 ## Convert an OKR to another item type
 

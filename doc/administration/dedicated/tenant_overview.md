@@ -3,9 +3,8 @@ stage: GitLab Dedicated
 group: Switchboard
 description: View information about your GitLab Dedicated instance with Switchboard.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: View GitLab Dedicated instance details
 ---
-
-# View GitLab Dedicated instance details
 
 DETAILS:
 **Tier:** Ultimate

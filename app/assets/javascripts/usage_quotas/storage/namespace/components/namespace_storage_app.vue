@@ -6,7 +6,7 @@ import NamespaceStorageQuery from 'ee_else_ce/usage_quotas/storage/namespace/que
 import ProjectListStorageQuery from 'ee_else_ce/usage_quotas/storage/namespace/queries/project_list_storage.query.graphql';
 import StorageUsageStatistics from 'ee_else_ce/usage_quotas/storage/namespace/components/storage_usage_statistics.vue';
 import SearchAndSortBar from '~/usage_quotas/components/search_and_sort_bar/search_and_sort_bar.vue';
-import { parseGetStorageResults } from '../../utils';
+import { parseGetStorageResults } from '../utils';
 import DependencyProxyUsage from './dependency_proxy_usage.vue';
 import ContainerRegistryUsage from './container_registry_usage.vue';
 import ProjectList from './project_list.vue';

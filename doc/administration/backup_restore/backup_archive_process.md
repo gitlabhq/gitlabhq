@@ -2,9 +2,8 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Backup archive process
 ---
-
-# Backup archive process
 
 When you run the [backup command](backup_gitlab.md#backup-command), a backup script creates a backup archive file to store your GitLab data.
 

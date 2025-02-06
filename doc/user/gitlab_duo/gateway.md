@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Model Validation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: AI gateway
 ---
-
-# AI gateway
 
 The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) is a standalone service that gives access to AI-powered GitLab Duo features.
 

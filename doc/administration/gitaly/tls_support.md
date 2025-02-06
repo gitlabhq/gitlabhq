@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Gitaly TLS support
 ---
-
-# Gitaly TLS support
 
 Gitaly supports TLS encryption. To communicate with a Gitaly instance that listens for secure
 connections, use the `tls://` URL scheme in the `gitaly_address` of the corresponding

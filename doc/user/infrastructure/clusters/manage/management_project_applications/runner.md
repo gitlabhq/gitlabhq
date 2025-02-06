@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Assuming you already have a project created from a
-[management project template](../../../../../user/clusters/management_project_template.md), to install GitLab Runner you should
+[management project template](../../../../clusters/management_project_template.md), to install GitLab Runner you should
 uncomment this line from your `helmfile.yaml`:
 
 ```yaml

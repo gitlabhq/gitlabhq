@@ -3,9 +3,8 @@ stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Get Started monitoring your application"
+title: Get started with monitoring your application in GitLab
 ---
-
-# Get started with monitoring your application in GitLab
 
 Monitoring is a crucial part of maintaining and optimizing your applications.
 GitLab observability features help you track errors, analyze application performance, and respond to incidents.

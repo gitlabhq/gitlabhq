@@ -142,7 +142,7 @@ You can change the main content on your group overview page. Your group overview
 - Details Dashboard (default), which includes an overview of group activities and projects.
 - Security Dashboard, which might include group security policies and other security topics.
 
-For more information, view [Groups](../../user/group/index.md).
+For more information, view [Groups](../group/index.md).
 
 To change the default content on your group overview page:
 
@@ -350,7 +350,7 @@ Prerequisites:
 - For [GitLab Self-Managed](../../subscriptions/self_managed/index.md), an administrator must
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
-To disable [exact code search](../../user/search/exact_code_search.md) in user preferences:
+To disable [exact code search](../search/exact_code_search.md) in user preferences:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.

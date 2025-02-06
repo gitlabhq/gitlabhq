@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: For assistance with this What's new page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: What's new
 ---
-
-# What's new
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

@@ -3,9 +3,8 @@ stage: AI-powered
 group: AI Model Validation
 description: AI-powered features and functionality.
 info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
+title: GitLab Duo use cases
 ---
-
-# GitLab Duo use cases
 
 The following use cases provide practical examples, exercises, and workflows with GitLab Duo.
 Learn how to:

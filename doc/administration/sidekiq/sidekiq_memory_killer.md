@@ -2,9 +2,8 @@
 stage: Systems
 group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Reducing memory use
 ---
-
-# Reducing memory use
 
 The GitLab Rails application code suffers from memory leaks. For web requests
 this problem is made manageable using a [supervision thread](../operations/puma.md#reducing-memory-use)

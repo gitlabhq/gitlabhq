@@ -3,9 +3,8 @@ stage: AI-powered
 group: AI Framework
 description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started with GitLab Duo
 ---
-
-# Get started with GitLab Duo
 
 GitLab Duo is your AI-powered assistant. It can help you write, review, and edit code,
 along with a variety of other tasks throughout your GitLab workflow.

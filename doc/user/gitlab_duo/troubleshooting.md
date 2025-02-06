@@ -2,9 +2,8 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting GitLab Duo
 ---
-
-# Troubleshooting GitLab Duo
 
 When working with GitLab Duo, you might encounter issues.
 
@@ -91,6 +90,6 @@ you can also do the following:
 
 1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
 1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
-1. For IDE users with the [GitLab Duo extension](../../user/project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
+1. For IDE users with the [GitLab Duo extension](../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
    - Verify that the extension is up-to-date.
    - Run extension setting health checks, and test the authentication.

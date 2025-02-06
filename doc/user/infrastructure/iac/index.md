@@ -29,7 +29,7 @@ Most features are fully compatible, including:
 
 - [GitLab-managed Terraform/OpenTofu state](terraform_state.md)
 - [Terraform/OpenTofu integration in merge requests](mr_integration.md)
-- [Terraform/OpenTofu Module Registry](../../../user/packages/terraform_module_registry/index.md)
+- [Terraform/OpenTofu Module Registry](../../packages/terraform_module_registry/index.md)
 
 For simplicity, the GitLab documentation refers primarily to OpenTofu.
 However, differences between the Terraform and OpenTofu integration

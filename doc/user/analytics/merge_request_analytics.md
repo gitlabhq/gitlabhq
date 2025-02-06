@@ -3,9 +3,8 @@ description: "Merge request analytics help you understand the efficiency of your
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Merge request analytics
 ---
-
-# Merge request analytics
 
 DETAILS:
 **Tier:** Premium, Ultimate

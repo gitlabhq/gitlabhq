@@ -4,9 +4,8 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 remove_date: '2025-01-25'
 redirect_to: '../../user/project/import/github.md'
+title: GitHub import Rake task (removed)
 ---
-
-# GitHub import Rake task (removed)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

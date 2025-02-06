@@ -3,9 +3,8 @@ stage: Software Supply Chain Security
 group: Authentication
 description: Third-party authentication providers.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab authentication and authorization
 ---
-
-# GitLab authentication and authorization
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

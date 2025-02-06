@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Reference architecture: Up to 100 RPS or 5,000 users
 ---
-
-# Reference architecture: Up to 100 RPS or 5,000 users
 
 DETAILS:
 **Tier:** Premium, Ultimate

@@ -3,9 +3,8 @@ stage: SaaS Platforms
 group: GitLab Dedicated
 description: Get to know the GitLab Dedicated architecture through a series of diagrams.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Dedicated architecture
 ---
-
-# GitLab Dedicated architecture
 
 DETAILS:
 **Tier:** Ultimate

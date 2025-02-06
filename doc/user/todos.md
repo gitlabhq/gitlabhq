@@ -81,7 +81,7 @@ You can manually add an item to your To-Do List.
    - [Epic](group/epics/index.md)
    - [Design](project/issues/design_management.md)
    - [Incident](../operations/incident_management/incidents.md)
-   - [Objective or key result](../user/okrs.md)
+   - [Objective or key result](okrs.md)
    - [Task](tasks.md)
 
 1. In the upper-right corner, select **Add a to-do item** (**{todo-add}**).

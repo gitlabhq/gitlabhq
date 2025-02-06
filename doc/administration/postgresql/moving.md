@@ -2,9 +2,8 @@
 stage: Data Access
 group: Database Operations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Moving GitLab databases to a different PostgreSQL instance
 ---
-
-# Moving GitLab databases to a different PostgreSQL instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

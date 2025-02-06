@@ -1,5 +1,7 @@
 import { generateEntries } from '../webpack.helpers';
 
+const entrypointsDir = '/javascripts/entrypoints/';
+
 /**
  * This Plugin provides virtual entrypoints for our automatic
  * rails-route to entrypoint mapping during development
@@ -17,20 +19,18 @@ import { generateEntries } from '../webpack.helpers';
  */
 export function PageEntrypointsPlugin() {
   const comment = '/* this is a virtual module used by Vite, it exists only in dev mode */\n';
-  const virtualEntrypoints = Object.entries(generateEntries()).reduce(
-    (acc, [entryName, imports]) => {
-      const modulePath = imports[imports.length - 1];
-      const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
-      acc[`${entryName}.js`] = `${comment}/* ${modulePath} */ import '${importPath}';\n`;
-      return acc;
-    },
-    {},
-  );
+  const entrypoints = Object.entries(generateEntries()).reduce((acc, [entryName, imports]) => {
+    const modulePath = imports[imports.length - 1];
+    const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
+    acc[`${entryName}.js`] = {
+      virtual: `${comment}/* ${modulePath} */ import '${importPath}';\n`,
+      actual: `${importPath.replace('~/', './app/assets/javascripts/')}`,
+    };
+    return acc;
+  }, {});
 
-  const entrypointsDir = '/javascripts/entrypoints/';
-
-  const inputOptions = Object.keys(virtualEntrypoints).reduce((acc, value) => {
-    acc[value] = value;
+  const inputOptions = Object.keys(entrypoints).reduce((acc, key) => {
+    acc[key.replace('.js', '')] = entrypoints[key].actual;
     return acc;
   }, {});
 
@@ -49,7 +49,7 @@ export function PageEntrypointsPlugin() {
       if (!id.startsWith('pages.')) {
         return undefined;
       }
-      return virtualEntrypoints[id] ?? `/* doesn't exist */`;
+      return entrypoints[id]?.virtual ?? `/* doesn't exist */`;
     },
     resolveId(source) {
       if (!source.startsWith(`${entrypointsDir}pages.`)) {

@@ -418,7 +418,7 @@ Your existing SSH keys are listed at the bottom of the page. The information inc
 
 You can revoke or delete your SSH key to permanently remove it from your account.
 
-Removing your SSH key has additional implications if you sign your commits with the key. For more information, see [Signed commits with removed SSH keys](../user/project/repository/signed_commits/ssh.md#signed-commits-with-removed-ssh-keys).
+Removing your SSH key has additional implications if you sign your commits with the key. For more information, see [Signed commits with removed SSH keys](project/repository/signed_commits/ssh.md#signed-commits-with-removed-ssh-keys).
 
 ### Revoke an SSH key
 

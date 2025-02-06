@@ -2,9 +2,8 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Audit events
 ---
-
-# Audit events
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -23,7 +22,7 @@ For example, you can use audit events to track:
 - Who added a new user or removed a user, and when.
 
 These events can be used to in an audit to assess risk, strengthen security measures, respond to incidents, and adhere to compliance. For a complete list the audit
-events GitLab provides, see [Audit event types](../../user/compliance/audit_event_types.md). For example:
+events GitLab provides, see [Audit event types](audit_event_types.md). For example:
 
 - Generate a report of audit events to provide to an external auditor requesting proof of certain logging capabilities.
 - Provide a report of all users showing their group and project memberships for a quarterly access review so the auditor can verify compliance with an organization's access management policy.

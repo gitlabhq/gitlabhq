@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Redis replication and failover with the Linux package
 ---
-
-# Redis replication and failover with the Linux package
 
 DETAILS:
 **Tier:** Premium, Ultimate

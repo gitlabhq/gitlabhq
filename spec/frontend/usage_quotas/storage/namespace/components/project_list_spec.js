@@ -5,7 +5,12 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import StorageTypeHelpLink from '~/usage_quotas/storage/components/storage_type_help_link.vue';
 import StorageTypeWarning from '~/usage_quotas/storage/components/storage_type_warning.vue';
 import { storageTypeHelpPaths } from '~/usage_quotas/storage/constants';
-import { defaultNamespaceProvideValues, projectList, storageTypes } from '../../mock_data';
+import {
+  mockGetNamespaceStorageGraphQLResponse,
+  defaultNamespaceProvideValues,
+  projectList,
+  storageTypes,
+} from '../../mock_data';
 
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
@@ -17,6 +22,7 @@ const createComponent = ({ provide = {}, props = {} } = {}) => {
       ...provide,
     },
     propsData: {
+      namespace: mockGetNamespaceStorageGraphQLResponse.data.namespace,
       projects: projectList,
       helpLinks: storageTypeHelpPaths,
       isLoading: false,

@@ -753,7 +753,8 @@
   }
 }
 
-.container-fluid:not(.container-limited) {
+.container-fluid:not(.container-limited),
+.container-fluid.rd-page-container {
   .detail-page-header,
   .detail-page-description,
   .merge-request-tabs-container {

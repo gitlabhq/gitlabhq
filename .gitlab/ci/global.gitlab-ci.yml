@@ -269,7 +269,7 @@
 
 .redis-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-${REDIS_CLUSTER_VERSION}
       alias: rediscluster  # configure connections in config/redis.yml
     - name: redis:${REDIS_VERSION}-alpine
 
@@ -367,7 +367,8 @@
     - !reference [.db-services, services]
   variables:
     PG_VERSION: "13"
-    REDIS_VERSION: "6.2"
+    REDIS_VERSION: "6.0"
+    REDIS_CLUSTER_VERSION: "6.0"
 
 .use-pg14:
   extends:
@@ -376,7 +377,8 @@
     - !reference [.db-services-with-auto-explain, services]
   variables:
     PG_VERSION: "14"
-    REDIS_VERSION: "6.2"
+    REDIS_VERSION: "6.0"
+    REDIS_CLUSTER_VERSION: "6.0"
 
 .use-pg15:
   extends:
@@ -386,6 +388,7 @@
   variables:
     PG_VERSION: "15"
     REDIS_VERSION: "7.0"
+    REDIS_CLUSTER_VERSION: "7.0.11"
 
 .use-pg16:
   extends:
@@ -395,6 +398,7 @@
   variables:
     PG_VERSION: "16"
     REDIS_VERSION: "7.0"
+    REDIS_CLUSTER_VERSION: "7.0.11"
 
 .es7-services:
   services:

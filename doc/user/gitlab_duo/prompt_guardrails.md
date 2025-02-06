@@ -3,9 +3,8 @@ stage: AI-powered
 group: AI Model Validation
 description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab Duo prompt guardrails
 ---
-
-# GitLab Duo prompt guardrails
 
 GitLab Duo has foundational prompt guardrails. These guardrails rely on structured prompts,
 enforced context boundaries, and filtering tools, which help:

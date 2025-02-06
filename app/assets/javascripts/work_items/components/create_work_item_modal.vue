@@ -11,6 +11,7 @@ import {
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
@@ -119,6 +120,11 @@ export default {
         convertTypeEnumToName(this.selectedWorkItemTypeName)
       ];
     },
+    newWorkItemButtonText() {
+      return this.alwaysShowWorkItemTypeSelect && this.workItemTypeName
+        ? sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, '')
+        : this.newWorkItemText;
+    },
     newWorkItemText() {
       return sprintfWorkItem(I18N_NEW_WORK_ITEM_BUTTON_LABEL, this.selectedWorkItemTypeLowercase);
     },
@@ -138,6 +144,7 @@ export default {
     hideCreateModal() {
       this.$emit('hideModal');
       this.isCreateModalVisible = false;
+      this.selectedWorkItemTypeName = this.workItemTypeName;
     },
     showCreateModal(event) {
       if (Boolean(event) && isMetaClick(event)) {
@@ -194,7 +201,11 @@ export default {
         action: {
           text: __('View details'),
           onClick: () => {
-            if (this.useVueRouter) {
+            // Take incidents to the legacy detail view with a full page load
+            if (
+              this.useVueRouter &&
+              this.selectedWorkItemTypeName !== WORK_ITEM_TYPE_ENUM_INCIDENT
+            ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
             } else {
               visitUrl(workItem.webUrl);
@@ -248,7 +259,7 @@ export default {
         data-testid="new-epic-button"
         :href="newWorkItemPath"
         @click="showCreateModal"
-        >{{ newWorkItemText }}
+        >{{ newWorkItemButtonText }}
       </gl-button>
     </template>
     <gl-modal

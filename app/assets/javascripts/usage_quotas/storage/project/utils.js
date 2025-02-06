@@ -1,4 +1,18 @@
 /**
+ * Parses project data injected via a DOM element
+ *
+ * @param {HTMLElement} el - DOM element
+ * @returns parsed data
+ */
+export const parseProjectProvideData = (el) => {
+  const { projectPath } = el.dataset;
+
+  return {
+    projectPath,
+  };
+};
+
+/**
  * Populates an array of storage types with usage value and other details
  *
  * @param {Array} selectedStorageTypes selected storage types that will be populated

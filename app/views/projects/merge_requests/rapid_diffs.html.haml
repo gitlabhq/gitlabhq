@@ -1,5 +1,6 @@
 - add_page_specific_style 'page_bundles/merge_request'
 - add_page_specific_style 'page_bundles/merge_request_rapid_diffs'
+- @content_class = 'rd-page-container diffs-container-limited'
 
 = render 'page'
 - args = { diffs_slice: @diffs_slice, reload_stream_url: @reload_stream_url, stream_url: @stream_url, show_whitespace: @show_whitespace_default, diff_view: @diff_view, update_user_endpoint: @update_current_user_path }

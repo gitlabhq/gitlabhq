@@ -2055,6 +2055,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_5cf44cd40f22() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "operations_strategies"
+  WHERE "operations_strategies"."id" = NEW."strategy_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_5f6432d2dccc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -17039,7 +17055,8 @@ ALTER SEQUENCE operations_feature_flags_issues_id_seq OWNED BY operations_featur
 CREATE TABLE operations_scopes (
     id bigint NOT NULL,
     strategy_id bigint NOT NULL,
-    environment_scope character varying(255) NOT NULL
+    environment_scope character varying(255) NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE operations_scopes_id_seq
@@ -20586,7 +20603,8 @@ CREATE TABLE sbom_occurrences_vulnerabilities (
     vulnerability_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_a02e48df9c CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE sbom_occurrences_vulnerabilities_id_seq
@@ -26793,9 +26811,6 @@ ALTER TABLE terraform_state_versions
 
 ALTER TABLE approval_merge_request_rules
     ADD CONSTRAINT check_90caab37e0 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE sbom_occurrences_vulnerabilities
-    ADD CONSTRAINT check_a02e48df9c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE issue_links
     ADD CONSTRAINT check_c32f659c75 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
@@ -33514,6 +33529,8 @@ CREATE UNIQUE INDEX index_operations_feature_flags_on_project_id_and_iid ON oper
 
 CREATE UNIQUE INDEX index_operations_feature_flags_on_project_id_and_name ON operations_feature_flags USING btree (project_id, name);
 
+CREATE INDEX index_operations_scopes_on_project_id ON operations_scopes USING btree (project_id);
+
 CREATE UNIQUE INDEX index_operations_scopes_on_strategy_id_and_environment_scope ON operations_scopes USING btree (strategy_id, environment_scope);
 
 CREATE INDEX index_operations_strategies_on_feature_flag_id ON operations_strategies USING btree (feature_flag_id);
@@ -37798,6 +37815,8 @@ CREATE TRIGGER trigger_589db52d2d69 BEFORE INSERT OR UPDATE ON sentry_issues FOR
 
 CREATE TRIGGER trigger_5ca97b87ee30 BEFORE INSERT OR UPDATE ON merge_request_context_commits FOR EACH ROW EXECUTE FUNCTION trigger_5ca97b87ee30();
 
+CREATE TRIGGER trigger_5cf44cd40f22 BEFORE INSERT OR UPDATE ON operations_scopes FOR EACH ROW EXECUTE FUNCTION trigger_5cf44cd40f22();
+
 CREATE TRIGGER trigger_5f6432d2dccc BEFORE INSERT OR UPDATE ON operations_strategies_user_lists FOR EACH ROW EXECUTE FUNCTION trigger_5f6432d2dccc();
 
 CREATE TRIGGER trigger_627949f72f05 BEFORE INSERT OR UPDATE ON packages_rpm_metadata FOR EACH ROW EXECUTE FUNCTION trigger_627949f72f05();
@@ -38572,6 +38591,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 
 ALTER TABLE ONLY releases
     ADD CONSTRAINT fk_47fe2a0596 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY operations_scopes
+    ADD CONSTRAINT fk_4913f5d6a2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_492a40969e FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;

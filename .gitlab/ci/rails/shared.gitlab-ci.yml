@@ -184,7 +184,7 @@ include:
       fi
       section_end "knapsack-report-issues"
     - tooling/bin/push_job_metrics || true
-    - scripts/compress-simplecov.rb
+    - scripts/minify-simplecov-resultsets.rb
 
 .base-artifacts:
   artifacts:

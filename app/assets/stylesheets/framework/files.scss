@@ -271,7 +271,7 @@ span.idiff {
 
     .file-info {
       font-size: $label-font-size;
-      color: $diff-image-info-color;
+      @apply gl-text-subtle;
     }
   }
 

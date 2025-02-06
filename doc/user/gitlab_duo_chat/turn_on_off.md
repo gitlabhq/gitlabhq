@@ -2,9 +2,8 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Control GitLab Duo Chat availability
 ---
-
-# Control GitLab Duo Chat availability
 
 GitLab Duo Chat can be turned on and off, and availability changed.
 
@@ -74,7 +73,7 @@ In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is availab
 ## Disable GitLab Duo Chat
 
 To limit the data that GitLab Duo Chat has access to, follow the instructions for
-[disabling GitLab Duo features](../../user/gitlab_duo/turn_on_off.md#turn-off-gitlab-duo-features).
+[disabling GitLab Duo features](../gitlab_duo/turn_on_off.md#turn-off-gitlab-duo-features).
 
 ## Disable Chat in VS Code
 

@@ -3,9 +3,8 @@ stage: Deploy
 group: Environments
 description: Terraform and Kubernetes deployments.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started managing your infrastructure
 ---
-
-# Get started managing your infrastructure
 
 With the rise of DevOps and SRE approaches, infrastructure management has become
 codified and automatable. You can now employ software development best practices

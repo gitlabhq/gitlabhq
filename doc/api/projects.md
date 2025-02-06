@@ -1460,7 +1460,7 @@ settings with access control options can be one of:
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/index.md). |
+| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
 | `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
 | `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
@@ -1583,7 +1583,7 @@ settings with access control options can be one of:
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/index.md). |
+| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
 | `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
 | `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
@@ -1721,7 +1721,7 @@ Supported project visibility attributes:
 
 | Attribute                              | Type   | Required | Description |
 |:---------------------------------------|:-------|:---------|:------------|
-| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/index.md). |
+| `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
 | `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
 | `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |

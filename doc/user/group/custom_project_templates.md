@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "To speed up project creation in your group, build custom project templates and share them with your group."
+title: Custom group-level project templates
 ---
-
-# Custom group-level project templates
 
 DETAILS:
 **Tier:** Premium, Ultimate

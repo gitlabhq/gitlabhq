@@ -53,6 +53,34 @@ module WorkItems
         description: 'Filter work items by the given work item types.',
         required: false
 
+      argument :created_before, ::Types::TimeType,
+        required: false,
+        description: 'Work items created before the timestamp.'
+      argument :created_after, ::Types::TimeType,
+        required: false,
+        description: 'Work items created after the timestamp.'
+
+      argument :updated_before, ::Types::TimeType,
+        required: false,
+        description: 'Work items updated before the timestamp.'
+      argument :updated_after, ::Types::TimeType,
+        required: false,
+        description: 'Work items updated after the timestamp.'
+
+      argument :due_before, ::Types::TimeType,
+        required: false,
+        description: 'Work items due before the timestamp.'
+      argument :due_after, ::Types::TimeType,
+        required: false,
+        description: 'Work items due after the timestamp.'
+
+      argument :closed_before, ::Types::TimeType,
+        required: false,
+        description: 'Work items closed before the date.'
+      argument :closed_after, ::Types::TimeType,
+        required: false,
+        description: 'Work items closed after the date.'
+
       argument :subscribed, ::Types::Issuables::SubscriptionStatusEnum,
         description: 'Work items the current user is subscribed to.',
         required: false

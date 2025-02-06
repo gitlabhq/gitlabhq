@@ -392,8 +392,12 @@ New scopes must be added to the following constants:
 - `search_tab_ability_map` method in `Search::Navigation`. Override in the EE version if needed
 
 NOTE:
-Global search can be disabled for a scope. Create an ops feature flag named `global_search_SCOPE_tab` that defaults to `true`
-and add it to the `global_search_enabled_for_scope?` method in [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb).
+Global search can be disabled for a scope. You can do the following changes for disabling global search:
+
+1. Add an application setting named `global_search_SCOPE_enabled` that defaults to `true` under the `search` jsonb accessor in [`app/models/application_setting.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/application_setting.rb).
+1. Add an entry in JSON schema validator file [`app/validators/json_schemas/application_setting_search.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schemas/application_setting_search.json)
+1. Add the setting checkbox in the Admin UI by creating an entry in `global_search_settings_checkboxes` method in [`ApplicationSettingsHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/application_settings_helper.rb`).
+1. Add it to the `global_search_enabled_for_scope?` method in [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb).
 
 #### Results classes
 

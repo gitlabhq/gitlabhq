@@ -116,7 +116,7 @@ The `remote_development` clusters manage user credentials (such as personal acce
 Any misconfiguration in `user_access` might cause this private data to be accessible over the Kubernetes API.
 
 For more information about configuring `user_access`, see
-[Configure Kubernetes access](../../user/clusters/agent/user_access.md#configure-kubernetes-access).
+[Configure Kubernetes access](../clusters/agent/user_access.md#configure-kubernetes-access).
 
 ## Related topics
 

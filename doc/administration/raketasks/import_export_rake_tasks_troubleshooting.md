@@ -2,9 +2,8 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Troubleshooting project import and export
 ---
-
-# Troubleshooting project import and export
 
 If you are having trouble with import or export, use a Rake task to enable debug mode:
 

@@ -2,9 +2,8 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: GitLab.com settings
 ---
-
-# GitLab.com settings
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -124,7 +123,7 @@ Groups are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
 
-You can [view and restore groups marked for deletion](../../user/group/index.md#restore-a-group).
+You can [view and restore groups marked for deletion](../group/index.md#restore-a-group).
 
 ## Delayed project deletion
 
@@ -138,7 +137,7 @@ Projects are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your projects are immediately deleted, and you will not be able to restore them.
 
-You can [view and restore projects marked for deletion](../../user/project/working_with_projects.md#restore-a-project).
+You can [view and restore projects marked for deletion](../project/working_with_projects.md#restore-a-project).
 
 ## Inactive project deletion
 
@@ -228,7 +227,7 @@ the related documentation.
 ## Package registry limits
 
 The [maximum file size](../../administration/instance_limits.md#file-size-limits)
-for a package uploaded to the [GitLab package registry](../../user/packages/package_registry/index.md)
+for a package uploaded to the [GitLab package registry](../packages/package_registry/index.md)
 varies by format:
 
 | Package type              | GitLab.com |
@@ -280,9 +279,9 @@ which GitLab you use:
 
 ## Import placeholder user limits
 
-The number of [placeholder users](../../user/project/import/index.md#placeholder-users) created during an import on GitLab.com is limited per top-level namespace. The limits
+The number of [placeholder users](../project/import/index.md#placeholder-users) created during an import on GitLab.com is limited per top-level namespace. The limits
 differ depending on your plan and seat count.
-For more information, see the [table of placeholder user limits for GitLab.com](../../user/project/import/index.md#placeholder-user-limits).
+For more information, see the [table of placeholder user limits for GitLab.com](../project/import/index.md#placeholder-user-limits).
 
 ## IP range
 
@@ -508,8 +507,8 @@ To help avoid abuse, the following are rate limited:
 
 For more information, see:
 
-- [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits).
-- [Group import/export rate limits](../../user/project/settings/import_export.md#rate-limits-1).
+- [Project import/export rate limits](../project/settings/import_export.md#rate-limits).
+- [Group import/export rate limits](../project/settings/import_export.md#rate-limits-1).
 
 ### Non-configurable limits
 

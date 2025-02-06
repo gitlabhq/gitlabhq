@@ -2,23 +2,11 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { __ } from '~/locale';
 import createDefaultClient from '~/lib/graphql';
-import { parseNamespaceProvideData } from 'ee_else_ce/usage_quotas/storage/utils';
-import {
-  GROUP_VIEW_TYPE,
-  PROJECT_VIEW_TYPE,
-  PROFILE_VIEW_TYPE,
-  STORAGE_TAB_METADATA_EL_SELECTOR,
-} from '../constants';
+import { parseNamespaceProvideData } from 'ee_else_ce/usage_quotas/storage/namespace/utils';
+import { GROUP_VIEW_TYPE, PROJECT_VIEW_TYPE, PROFILE_VIEW_TYPE } from '../constants';
 import NamespaceStorageApp from './namespace/components/namespace_storage_app.vue';
 import ProjectStorageApp from './project/components/project_storage_app.vue';
-
-const parseProjectProvideData = (el) => {
-  const { projectPath } = el.dataset;
-
-  return {
-    projectPath,
-  };
-};
+import { parseProjectProvideData } from './project/utils';
 
 const getViewSpecificOptions = (viewType) => {
   if (viewType === GROUP_VIEW_TYPE || viewType === PROFILE_VIEW_TYPE) {
@@ -44,7 +32,7 @@ export const getStorageTabMetadata = ({
   customApolloProvider = null,
 } = {}) => {
   let apolloProvider;
-  const el = document.querySelector(STORAGE_TAB_METADATA_EL_SELECTOR);
+  const el = document.querySelector('#js-storage-usage-app');
   const { vueComponent, parseProvideData } = getViewSpecificOptions(viewType);
 
   if (!el) return false;

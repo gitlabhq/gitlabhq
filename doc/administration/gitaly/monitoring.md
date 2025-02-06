@@ -2,9 +2,8 @@
 stage: Systems
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Monitoring Gitaly and Gitaly Cluster
 ---
-
-# Monitoring Gitaly and Gitaly Cluster
 
 You can use the available logs and [Prometheus metrics](../monitoring/prometheus/index.md) to
 monitor Gitaly and Gitaly Cluster (Praefect).

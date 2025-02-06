@@ -113,14 +113,19 @@ module API
       end
 
       def create_temp_package_and_enqueue_worker(file_params, symbol_package)
-        package = ::Packages::CreateTemporaryPackageService.new(
-          project_or_group, current_user, declared_params.merge(build: current_authenticated_job)
-        ).execute(:nuget, name: temp_file_name(symbol_package))
+        response = ::Packages::Nuget::CreateTemporaryPackageService.new(
+          project: project_or_group,
+          user: current_user,
+          params: {
+            package_params: declared_params.merge(
+              build: current_authenticated_job,
+              name: temp_file_name(symbol_package)
+            ),
+            package_file_params: file_params
+          }
+        ).execute
 
-        package_file = ::Packages::CreatePackageFileService.new(package, file_params)
-                                                            .execute
-
-        ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker -- not newly introduced
+        bad_request!(response.message) if response.error?
       end
 
       def extracted_metadata

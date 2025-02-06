@@ -2,9 +2,8 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Location-aware Git remote URL with AWS Route53
 ---
-
-# Location-aware Git remote URL with AWS Route53
 
 DETAILS:
 **Tier:** Premium, Ultimate

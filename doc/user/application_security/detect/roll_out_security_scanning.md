@@ -2,9 +2,8 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Roll out security scanning
 ---
-
-# Roll out security scanning
 
 You can roll out security scanning to individual projects, subgroups, and groups. You should start
 with individual projects, then increase the scope in increments. An incremental roll out allows you

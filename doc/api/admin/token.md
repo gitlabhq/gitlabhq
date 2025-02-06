@@ -33,6 +33,7 @@ Prerequisites:
 > - [CI/CD Job Tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175234) in GitLab 17.9.
 > - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431) in GitLab 17.9.
 > - [GitLab session cookies added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178022) in GitLab 17.9.
+> - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177077) in GitLab 17.9.
 
 Gets information for a given token. This endpoint supports the following tokens:
 
@@ -47,6 +48,7 @@ Gets information for a given token. This endpoint supports the following tokens:
 - [CI/CD Job Tokens](../../security/tokens/_index.md#cicd-job-tokens)
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 - [GitLab session cookies](../../user/profile/active_sessions.md)
+- [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)
 
 ```plaintext
 POST /api/v4/admin/token

@@ -29,6 +29,7 @@ describe('CreateWorkItemModal', () => {
     hideButton = false,
     workItemTypeName = 'EPIC',
     relatedItem = null,
+    alwaysShowWorkItemTypeSelect = false,
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
@@ -36,6 +37,7 @@ describe('CreateWorkItemModal', () => {
         asDropdownItem,
         hideButton,
         relatedItem,
+        alwaysShowWorkItemTypeSelect,
       },
       provide: {
         fullPath: 'full-path',
@@ -93,6 +95,12 @@ describe('CreateWorkItemModal', () => {
       createComponent({ hideButton: true });
 
       expect(findTrigger().exists()).toBe(false);
+    });
+
+    it('has text of "New item" when the `alwaysShowWorkItemTypeSelect` prop is `true` and we also have a `workItemTypeName`', () => {
+      createComponent({ alwaysShowWorkItemTypeSelect: true, workItemTypeName: 'ISSUE' });
+
+      expect(findTrigger().text()).toBe('New item');
     });
   });
 

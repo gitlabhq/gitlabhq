@@ -3,9 +3,8 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: "Configure a faster SSH authorization method for GitLab instances with many users."
+title: Fast lookup of SSH keys
 ---
-
-# Fast lookup of SSH keys
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

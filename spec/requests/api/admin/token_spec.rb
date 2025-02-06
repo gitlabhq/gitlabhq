@@ -70,6 +70,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
             [ref(:group_deploy_token), lazy { group_deploy_token.token }],
             [ref(:project_deploy_token), lazy { project_deploy_token.token }],
             [ref(:user), lazy { user.feed_token }],
+            [ref(:user), lazy { user.incoming_email_token }],
             [ref(:oauth_application), lazy { oauth_application.plaintext_secret }],
             [ref(:cluster_agent_token), lazy { cluster_agent_token.token }],
             [ref(:runner_authentication_token), lazy { runner_authentication_token.token }],
