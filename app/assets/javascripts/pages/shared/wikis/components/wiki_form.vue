@@ -439,11 +439,6 @@ export default {
 
       <div class="col-12">
         <gl-form-group :label="$options.i18n.path.label" label-for="wiki_path">
-          <template #description>
-            <gl-form-checkbox v-model="generatePathFromTitle" class="gl-pt-2">{{
-              __('Generate page path from title')
-            }}</gl-form-checkbox>
-          </template>
           <gl-form-input
             id="wiki_path"
             v-model="path"
@@ -455,6 +450,9 @@ export default {
             :readonly="generatePathFromTitle"
             :placeholder="$options.i18n.path.placeholder"
           />
+          <gl-form-checkbox v-model="generatePathFromTitle" class="gl-mt-3 gl-pt-2">{{
+            __('Generate page path from title')
+          }}</gl-form-checkbox>
         </gl-form-group>
       </div>
     </div>

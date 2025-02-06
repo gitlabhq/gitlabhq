@@ -36,7 +36,7 @@ describe('Global Search Results Utils', () => {
       highlight.mockClear();
 
       const result = await initLineHighlight({
-        line: { text: 'const test = true;', highlights: [[6, 9]] },
+        line: { text: 'const test = true;', highlights: [[6, 8]] },
         language: 'txt',
         fileUrl: 'test.txt',
       });
@@ -64,7 +64,7 @@ describe('Global Search Results Utils', () => {
 
       it('calls highlight with correct parameters', async () => {
         const result = await initLineHighlight({
-          line: { text: 'const test = true;', highlights: [[6, 10]] },
+          line: { text: 'const test = true;', highlights: [[6, 9]] },
           language: 'javascript',
           fileUrl: 'test.js',
         });
@@ -98,8 +98,8 @@ describe('Global Search Results Utils', () => {
     it('adds highlight marks at correct positions', () => {
       const text = 'foobar test foobar test';
       const highlights = [
-        [7, 11],
-        [19, 23],
+        [7, 10],
+        [19, 22],
       ];
 
       const result = cleanLineAndMark({ text, highlights });
@@ -111,11 +111,11 @@ describe('Global Search Results Utils', () => {
     });
 
     it('adds single highlight mark at correct position', () => {
-      const text = 'const testValue = true;\n';
-      const highlights = [[6, 15]];
+      const text = '        return false unless licensed_and_indexing_enabled?\\n';
+      const highlights = [[28, 57]];
 
       const result = cleanLineAndMark({ text, highlights });
-      const expected = `const ${HIGHLIGHT_MARK}testValue${HIGHLIGHT_MARK} = true;`;
+      const expected = `        return false unless ${HIGHLIGHT_MARK}licensed_and_indexing_enabled?${HIGHLIGHT_MARK}\\n`;
 
       expect([...result].map((c) => c.charCodeAt(0))).toEqual(
         [...expected].map((c) => c.charCodeAt(0)),

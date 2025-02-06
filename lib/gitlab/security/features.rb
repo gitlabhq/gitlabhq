@@ -87,14 +87,14 @@ module Gitlab
               'user/application_security/container_scanning/index.md', anchor: 'container-scanning-for-registry'),
             type: 'container_scanning_for_registry'
           },
-          pre_receive_secret_detection: {
+          secret_push_protection: {
             name: _('Secret push protection'),
             description: _('Block secrets such as keys and API tokens from being pushed to your repositories. ' \
                            'Secret push protection is triggered when commits are pushed to a repository. ' \
                            'If any secrets are detected, the push is blocked.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
               'user/application_security/secret_detection/secret_push_protection/index.md'),
-            type: 'pre_receive_secret_detection'
+            type: 'secret_push_protection'
           },
           secret_detection: {
             name: _('Pipeline Secret Detection'),

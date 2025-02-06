@@ -193,7 +193,7 @@ class ApplicationSettingsAnalysis
       pipeline_limit_per_project_user_sha
       plantuml_enabled
       plantuml_url
-      pre_receive_secret_detection_enabled
+      secret_push_protection_available
       product_analytics_data_collector_host
       product_analytics_enabled
       productivity_analytics_start_date

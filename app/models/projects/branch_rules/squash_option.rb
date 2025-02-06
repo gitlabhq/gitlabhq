@@ -11,7 +11,7 @@ module Projects
       validates :protected_branch, uniqueness: true
 
       validate :validate_protected_branch_not_wildcard
-      validate :validate_protected_branch_belongs_to_project
+      validate :validate_protected_branch_belongs_to_project, if: -> { protected_branch_changed? || project_changed? }
 
       def branch_rule
         ::Projects::BranchRule.new(project, protected_branch)

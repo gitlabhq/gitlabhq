@@ -3,11 +3,11 @@ import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import PreReceiveSecretDetectionFeatureCard from '~/security_configuration/components/pre_receive_secret_detection_feature_card.vue';
+import SecretPushProtectionFeatureCard from '~/security_configuration/components/secret_push_protection_feature_card.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import ProjectSetPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
+import ProjectPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import { preReceiveSecretDetectionMock } from '../mock_data';
+import { secretPushProtectionMock } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -19,17 +19,17 @@ const setMockResponse = {
     },
   },
 };
-const feature = preReceiveSecretDetectionMock;
+const feature = secretPushProtectionMock;
 
 const defaultProvide = {
-  preReceiveSecretDetectionAvailable: true,
-  preReceiveSecretDetectionEnabled: false,
+  secretPushProtectionAvailable: true,
+  secretPushProtectionEnabled: false,
   userIsProjectAdmin: true,
   projectFullPath: 'flightjs/flight',
   secretDetectionConfigurationPath: 'flightjs/Flight/-/security/configuration/secret_detection',
 };
 
-describe('PreReceiveSecretDetectionFeatureCard component', () => {
+describe('SecretPushProtectionFeatureCard component', () => {
   let wrapper;
   let apolloProvider;
   let requestHandlers;
@@ -39,7 +39,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
       setMutationHandler: jest.fn().mockResolvedValue(setMockResponse),
     };
     return createMockApollo([
-      [ProjectSetPreReceiveSecretDetection, requestHandlers.setMutationHandler],
+      [ProjectPreReceiveSecretDetection, requestHandlers.setMutationHandler],
     ]);
   };
 
@@ -47,7 +47,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
     apolloProvider = createMockApolloProvider();
 
     wrapper = extendedWrapper(
-      shallowMount(PreReceiveSecretDetectionFeatureCard, {
+      shallowMount(SecretPushProtectionFeatureCard, {
         propsData: {
           feature,
           ...props,
@@ -134,7 +134,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
       beforeEach(() => {
         createComponent({
           provide: {
-            preReceiveSecretDetectionAvailable: false,
+            secretPushProtectionAvailable: false,
           },
         });
       });
@@ -165,7 +165,7 @@ describe('PreReceiveSecretDetectionFeatureCard component', () => {
         createComponent({
           props: {
             feature: {
-              ...preReceiveSecretDetectionMock,
+              ...secretPushProtectionMock,
               available: false,
             },
           },

@@ -403,6 +403,74 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION function_for_trigger_1baf8c8e1f66() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pre_receive_secret_detection_enabled" := NEW."secret_push_protection_available";
+  RETURN NEW;
+END
+$$;
+
+CREATE FUNCTION function_for_trigger_7f41427eda69() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."secret_push_protection_available" := NEW."pre_receive_secret_detection_enabled";
+  RETURN NEW;
+END
+$$;
+
+CREATE FUNCTION function_for_trigger_7fbecfcdf89a() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."pre_receive_secret_detection_enabled" := NEW."secret_push_protection_enabled";
+  RETURN NEW;
+END
+$$;
+
+CREATE FUNCTION function_for_trigger_897f35481f9a() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."secret_push_protection_enabled" := NEW."pre_receive_secret_detection_enabled";
+  RETURN NEW;
+END
+$$;
+
+CREATE FUNCTION function_for_trigger_b9839c6d713f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW."pre_receive_secret_detection_enabled" IS NOT DISTINCT FROM 'false' AND NEW."secret_push_protection_available" IS DISTINCT FROM 'false' THEN
+    NEW."pre_receive_secret_detection_enabled" = NEW."secret_push_protection_available";
+  END IF;
+
+  IF NEW."secret_push_protection_available" IS NOT DISTINCT FROM 'false' AND NEW."pre_receive_secret_detection_enabled" IS DISTINCT FROM 'false' THEN
+    NEW."secret_push_protection_available" = NEW."pre_receive_secret_detection_enabled";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
+CREATE FUNCTION function_for_trigger_cbecfadbc3e8() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW."pre_receive_secret_detection_enabled" IS NOT DISTINCT FROM 'false' AND NEW."secret_push_protection_enabled" IS DISTINCT FROM 'false' THEN
+    NEW."pre_receive_secret_detection_enabled" = NEW."secret_push_protection_enabled";
+  END IF;
+
+  IF NEW."secret_push_protection_enabled" IS NOT DISTINCT FROM 'false' AND NEW."pre_receive_secret_detection_enabled" IS DISTINCT FROM 'false' THEN
+    NEW."secret_push_protection_enabled" = NEW."pre_receive_secret_detection_enabled";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION gitlab_schema_prevent_write() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8037,6 +8105,7 @@ CREATE TABLE application_settings (
     observability_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     search jsonb DEFAULT '{}'::jsonb NOT NULL,
     anti_abuse_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    secret_push_protection_available boolean DEFAULT false,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -8104,6 +8173,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_transactional_emails_is_hash CHECK ((jsonb_typeof(transactional_emails) = 'object'::text)),
     CONSTRAINT check_b8c74ea5b3 CHECK ((char_length(deactivation_email_additional_text) <= 1000)),
     CONSTRAINT check_babd774f3c CHECK ((char_length(secret_detection_service_url) <= 255)),
+    CONSTRAINT check_be6ab41dcc CHECK ((secret_push_protection_available IS NOT NULL)),
     CONSTRAINT check_bf5157a366 CHECK ((char_length(required_instance_ci_template) <= 1024)),
     CONSTRAINT check_cdfbd99405 CHECK ((char_length(security_txt_content) <= 2048)),
     CONSTRAINT check_d03919528d CHECK ((char_length(container_registry_vendor) <= 255)),
@@ -15972,6 +16042,30 @@ CREATE TABLE merge_requests (
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 
+CREATE TABLE merge_requests_approval_rules (
+    id bigint NOT NULL,
+    name text NOT NULL,
+    approvals_required integer DEFAULT 0 NOT NULL,
+    rule_type smallint DEFAULT 0 NOT NULL,
+    origin smallint DEFAULT 0 NOT NULL,
+    project_id bigint,
+    group_id bigint,
+    source_rule_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_ba7b03c61a CHECK ((num_nonnulls(group_id, project_id) = 1)),
+    CONSTRAINT check_c7c36145b7 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE merge_requests_approval_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_requests_approval_rules_id_seq OWNED BY merge_requests_approval_rules.id;
+
 CREATE TABLE merge_requests_closing_issues (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
@@ -19539,7 +19633,9 @@ CREATE TABLE project_security_settings (
     auto_fix_sast boolean DEFAULT true NOT NULL,
     continuous_vulnerability_scans_enabled boolean DEFAULT false NOT NULL,
     container_scanning_for_registry_enabled boolean DEFAULT false NOT NULL,
-    pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL
+    pre_receive_secret_detection_enabled boolean DEFAULT false NOT NULL,
+    secret_push_protection_enabled boolean DEFAULT false,
+    CONSTRAINT check_20a23efdb6 CHECK ((secret_push_protection_enabled IS NOT NULL))
 );
 
 CREATE SEQUENCE project_security_settings_project_id_seq
@@ -25202,6 +25298,8 @@ ALTER TABLE ONLY merge_request_user_mentions ALTER COLUMN id SET DEFAULT nextval
 
 ALTER TABLE ONLY merge_requests ALTER COLUMN id SET DEFAULT nextval('merge_requests_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_requests_approval_rules ALTER COLUMN id SET DEFAULT nextval('merge_requests_approval_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_requests_closing_issues ALTER COLUMN id SET DEFAULT nextval('merge_requests_closing_issues_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_requests_compliance_violations ALTER COLUMN id SET DEFAULT nextval('merge_requests_compliance_violations_id_seq'::regclass);
@@ -27759,6 +27857,9 @@ ALTER TABLE ONLY merge_request_reviewers
 
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT merge_request_user_mentions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_requests_approval_rules
+    ADD CONSTRAINT merge_requests_approval_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT merge_requests_closing_issues_pkey PRIMARY KEY (id);
@@ -33143,6 +33244,12 @@ CREATE INDEX index_merge_request_reviewers_on_user_id ON merge_request_reviewers
 
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
+CREATE INDEX index_merge_requests_approval_rules_on_group_id ON merge_requests_approval_rules USING btree (group_id);
+
+CREATE INDEX index_merge_requests_approval_rules_on_project_id ON merge_requests_approval_rules USING btree (project_id);
+
+CREATE INDEX index_merge_requests_approval_rules_on_source_rule_id ON merge_requests_approval_rules USING btree (source_rule_id);
+
 CREATE INDEX index_merge_requests_closing_issues_on_issue_id ON merge_requests_closing_issues USING btree (issue_id);
 
 CREATE INDEX index_merge_requests_closing_issues_on_merge_request_id ON merge_requests_closing_issues USING btree (merge_request_id);
@@ -37729,6 +37836,8 @@ CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_
 
 CREATE TRIGGER trigger_18bc439a6741 BEFORE INSERT OR UPDATE ON packages_conan_metadata FOR EACH ROW EXECUTE FUNCTION trigger_18bc439a6741();
 
+CREATE TRIGGER trigger_1baf8c8e1f66 BEFORE UPDATE OF secret_push_protection_available ON application_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_1baf8c8e1f66();
+
 CREATE TRIGGER trigger_1c0f1ca199a3 BEFORE INSERT OR UPDATE ON ci_resources FOR EACH ROW EXECUTE FUNCTION trigger_1c0f1ca199a3();
 
 CREATE TRIGGER trigger_1ed40f4d5f4e BEFORE INSERT OR UPDATE ON packages_maven_metadata FOR EACH ROW EXECUTE FUNCTION trigger_1ed40f4d5f4e();
@@ -37853,6 +37962,10 @@ CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validat
 
 CREATE TRIGGER trigger_7e2eed79e46e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_7e2eed79e46e();
 
+CREATE TRIGGER trigger_7f41427eda69 BEFORE UPDATE OF pre_receive_secret_detection_enabled ON application_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_7f41427eda69();
+
+CREATE TRIGGER trigger_7fbecfcdf89a BEFORE UPDATE OF secret_push_protection_enabled ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_7fbecfcdf89a();
+
 CREATE TRIGGER trigger_81b4c93e7133 BEFORE INSERT OR UPDATE ON pages_deployment_states FOR EACH ROW EXECUTE FUNCTION trigger_81b4c93e7133();
 
 CREATE TRIGGER trigger_8204480b3a2e BEFORE INSERT OR UPDATE ON incident_management_escalation_rules FOR EACH ROW EXECUTE FUNCTION trigger_8204480b3a2e();
@@ -37860,6 +37973,8 @@ CREATE TRIGGER trigger_8204480b3a2e BEFORE INSERT OR UPDATE ON incident_manageme
 CREATE TRIGGER trigger_84d67ad63e93 BEFORE INSERT OR UPDATE ON wiki_page_slugs FOR EACH ROW EXECUTE FUNCTION trigger_84d67ad63e93();
 
 CREATE TRIGGER trigger_85d89f0f11db BEFORE INSERT OR UPDATE ON issue_metrics FOR EACH ROW EXECUTE FUNCTION trigger_85d89f0f11db();
+
+CREATE TRIGGER trigger_897f35481f9a BEFORE UPDATE OF pre_receive_secret_detection_enabled ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_897f35481f9a();
 
 CREATE TRIGGER trigger_8a38ce2327de BEFORE INSERT OR UPDATE ON boards_epic_user_preferences FOR EACH ROW EXECUTE FUNCTION trigger_8a38ce2327de();
 
@@ -37923,6 +38038,8 @@ CREATE TRIGGER trigger_b7abb8fc4cf0 BEFORE INSERT OR UPDATE ON work_item_progres
 
 CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_manifest_states FOR EACH ROW EXECUTE FUNCTION trigger_b8eecea7f351();
 
+CREATE TRIGGER trigger_b9839c6d713f BEFORE INSERT ON application_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_b9839c6d713f();
+
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
 
 CREATE TRIGGER trigger_c59fe6f31e71 BEFORE INSERT OR UPDATE ON security_orchestration_policy_rule_schedules FOR EACH ROW EXECUTE FUNCTION trigger_c59fe6f31e71();
@@ -37936,6 +38053,8 @@ CREATE TRIGGER trigger_c9090feed334 BEFORE INSERT OR UPDATE ON boards_epic_lists
 CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EACH ROW EXECUTE FUNCTION trigger_cac7c0698291();
 
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
+
+CREATE TRIGGER trigger_cbecfadbc3e8 BEFORE INSERT ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_cbecfadbc3e8();
 
 CREATE TRIGGER trigger_cd50823537a3 BEFORE INSERT OR UPDATE ON issuable_slas FOR EACH ROW EXECUTE FUNCTION trigger_cd50823537a3();
 
@@ -38069,6 +38188,9 @@ ALTER TABLE ONLY cluster_agent_url_configurations
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_0314ee86eb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_requests_approval_rules
+    ADD CONSTRAINT fk_03983bf729 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations
     ADD CONSTRAINT fk_03a15ca4fa FOREIGN KEY (stream_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE SET NULL;
@@ -38942,6 +39064,9 @@ ALTER TABLE ONLY scan_result_policies
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT fk_7ad8849db4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_requests_approval_rules
+    ADD CONSTRAINT fk_7af76dbd21 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_7b92f835bb FOREIGN KEY (contact_id) REFERENCES customer_relations_contacts(id) ON DELETE CASCADE;
@@ -39896,6 +40021,9 @@ ALTER TABLE ONLY application_settings
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT fk_f9df19ecb6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_requests_approval_rules
+    ADD CONSTRAINT fk_fa5b38e373 FOREIGN KEY (source_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY clusters_managed_resources
     ADD CONSTRAINT fk_fad3c3b2e2 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;

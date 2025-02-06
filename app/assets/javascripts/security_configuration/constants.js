@@ -48,9 +48,9 @@ export const API_FUZZING_NAME = __('API Fuzzing');
 
 export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning');
 
-export const PRE_RECEIVE_SECRET_DETECTION = 'pre_receive_secret_detection';
+export const SECRET_PUSH_PROTECTION = 'secret_push_protection';
 
-export const PRE_RECEIVE_SECRET_DETECTION_NAME = __('Secret push protection');
+export const SECRET_PUSH_PROTECTION_NAME = __('Secret push protection');
 
 export const SCANNER_NAMES_MAP = {
   SAST: SAST_SHORT_NAME,
@@ -64,7 +64,7 @@ export const SCANNER_NAMES_MAP = {
   SECRET_DETECTION: SECRET_DETECTION_NAME,
   DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
   CLUSTER_IMAGE_SCANNING: CLUSTER_IMAGE_SCANNING_NAME,
-  PRE_RECEIVE_SECRET_DETECTION: PRE_RECEIVE_SECRET_DETECTION_NAME,
+  SECRET_PUSH_PROTECTION: SECRET_PUSH_PROTECTION_NAME,
   GENERIC: s__('ciReport|Manually added'),
 };
 

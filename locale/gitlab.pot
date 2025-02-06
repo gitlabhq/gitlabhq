@@ -379,16 +379,6 @@ msgid_plural "%d lines removed"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d matching branch"
-msgid_plural "%d matching branches"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d matching environment"
-msgid_plural "%d matching environments"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d merge request"
 msgid_plural "%d merge requests"
 msgstr[0] ""
@@ -1066,9 +1056,6 @@ msgstr ""
 msgid "%{label_name} was removed"
 msgstr ""
 
-msgid "%{lastUsed} by"
-msgstr ""
-
 msgid "%{lessThan} 1 hour"
 msgstr ""
 
@@ -1269,9 +1256,6 @@ msgid "%{reviewer_names} was removed from reviewers."
 msgid_plural "%{reviewer_names} were removed from reviewers."
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "%{rotationDate} (%{rotationPeriod})"
-msgstr ""
 
 msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation_link}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
@@ -48579,9 +48563,6 @@ msgstr ""
 msgid "Rollback"
 msgstr ""
 
-msgid "Rotation reminder"
-msgstr ""
-
 msgid "Ruby"
 msgstr ""
 
@@ -61862,6 +61843,9 @@ msgstr ""
 msgid "Use %{code_start}::%{code_end} to create a %{link_start}scoped label set%{link_end} (eg. %{code_start}priority::1%{code_end})"
 msgstr ""
 
+msgid "Use %{code_start}authorized_keys%{code_end} file to authenticate SSH keys"
+msgstr ""
+
 msgid "Use .gitlab-ci.yml"
 msgstr ""
 
@@ -61878,9 +61862,6 @@ msgid "Use a one-time password authenticator on your mobile device or computer t
 msgstr ""
 
 msgid "Use an existing commit message"
-msgstr ""
-
-msgid "Use authorized_keys file to authenticate SSH keys"
 msgstr ""
 
 msgid "Use banners and notifications to notify your users about scheduled maintenance, recent upgrades, and more."

@@ -22,7 +22,7 @@ export const markSearchTerm = (str = '', highlights = []) => {
   const chars = str.split('');
   [...highlights].reverse().forEach((highligh) => {
     const [start, end] = highligh;
-    chars.splice(end, 0, HIGHLIGHT_MARK);
+    chars.splice(end + 1, 0, HIGHLIGHT_MARK);
     chars.splice(start, 0, HIGHLIGHT_MARK);
   });
 

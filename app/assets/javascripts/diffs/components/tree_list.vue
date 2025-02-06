@@ -12,6 +12,7 @@ import micromatch from 'micromatch';
 import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
+import { isElementClipped } from '~/lib/utils/common_utils';
 import DiffFileRow from './diff_file_row.vue';
 import TreeListHeight from './tree_list_height.vue';
 
@@ -152,6 +153,8 @@ export default {
     ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList', 'setTreeOpen']),
 
     scrollVirtualScrollerToFileHash(hash) {
+      const item = document.querySelector(`[data-file-row="${hash}"]`);
+      if (item && !isElementClipped(item, this.$refs.scroller.$el)) return;
       const index = this.treeList.findIndex((f) => f.fileHash === hash);
       if (index !== -1) {
         this.$refs.scroller.scrollToItem?.(index);
@@ -234,6 +237,7 @@ export default {
                 :class="{ 'tree-list-parent': item.level > 0 }"
                 :tabindex="0"
                 class="gl-relative !gl-m-1"
+                :data-file-row="item.fileHash"
                 @toggleTreeOpen="toggleTreeOpen"
                 @clickFile="(path) => goToFile({ path })"
               />

@@ -19,6 +19,8 @@ class ApplicationSetting < ApplicationRecord
     encrypted_vertex_ai_access_token_iv
   ], remove_with: '17.10', remove_after: '2025-02-15'
 
+  ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
+
   ignore_columns %i[
     elasticsearch_aws
     elasticsearch_search

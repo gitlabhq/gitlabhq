@@ -106,7 +106,7 @@ the command line, see [Revert and undo changes with Git](../../../topics/git/und
 > - Enabled on GitLab.com in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.2.
 > - Enabled on GitLab Self-Managed and GitLab Dedicated in confidential issue `https://gitlab.com/gitlab-org/gitlab/-/issues/462999` in GitLab 17.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472018) in GitLab 17.9. Feature flag `rewrite_history_ui` removed.
->
+
 Permanently delete sensitive or confidential information that was accidentally committed, ensuring
 it's no longer accessible in your repository's history.
 Replaces a list of strings with `***REMOVED***`.

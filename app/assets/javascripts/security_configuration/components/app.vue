@@ -12,12 +12,12 @@ import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
   i18n,
-  PRE_RECEIVE_SECRET_DETECTION,
+  SECRET_PUSH_PROTECTION,
 } from '../constants';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import FeatureCard from './feature_card.vue';
-import PreReceiveSecretDetectionFeatureCard from './pre_receive_secret_detection_feature_card.vue';
+import SecretPushProtectionFeatureCard from './secret_push_protection_feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
 
 export default {
@@ -26,7 +26,7 @@ export default {
     AutoDevOpsAlert,
     AutoDevOpsEnabledAlert,
     FeatureCard,
-    PreReceiveSecretDetectionFeatureCard,
+    SecretPushProtectionFeatureCard,
     GlAlert,
     GlLink,
     GlSprintf,
@@ -106,8 +106,8 @@ export default {
   },
   methods: {
     getComponentName(feature) {
-      if (feature.type === PRE_RECEIVE_SECRET_DETECTION) {
-        return 'pre-receive-secret-detection-feature-card';
+      if (feature.type === SECRET_PUSH_PROTECTION) {
+        return 'secret-push-protection-feature-card';
       }
       if (feature.type === REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY) {
         return 'container-scanning-for-registry-feature-card';

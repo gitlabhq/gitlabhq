@@ -3056,6 +3056,56 @@ Input type: `BranchRuleExternalStatusCheckUpdateInput`
 | <a id="mutationbranchruleexternalstatuscheckupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationbranchruleexternalstatuscheckupdateexternalstatuscheck"></a>`externalStatusCheck` | [`ExternalStatusCheck`](#externalstatuscheck) | Updated external status check after mutation. |
 
+### `Mutation.branchRuleSquashOptionDelete`
+
+Delete a squash option for a branch rule.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `BranchRuleSquashOptionDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchrulesquashoptiondeletebranchruleid"></a>`branchRuleId` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule. |
+| <a id="mutationbranchrulesquashoptiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchrulesquashoptiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchrulesquashoptiondeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.branchRuleSquashOptionUpdate`
+
+Update a squash option for a branch rule.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Input type: `BranchRuleSquashOptionUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchrulesquashoptionupdatebranchruleid"></a>`branchRuleId` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule. |
+| <a id="mutationbranchrulesquashoptionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchrulesquashoptionupdatesquashoption"></a>`squashOption` | [`SquashOptionSetting!`](#squashoptionsetting) | Squash option after mutation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchrulesquashoptionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchrulesquashoptionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationbranchrulesquashoptionupdatesquashoption"></a>`squashOption` | [`SquashOption`](#squashoption) | Updated squash option after mutation. |
+
 ### `Mutation.branchRuleUpdate`
 
 DETAILS:
@@ -10056,6 +10106,30 @@ Input type: `SetPreReceiveSecretDetectionInput`
 | <a id="mutationsetprereceivesecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsetprereceivesecretdetectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsetprereceivesecretdetectionprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
+| <a id="mutationsetprereceivesecretdetectionsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
+
+### `Mutation.setSecretPushProtection`
+
+Enable/disable secret push protection for the given project.
+
+Input type: `SetSecretPushProtectionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetsecretpushprotectionenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for secret push protection feature. |
+| <a id="mutationsetsecretpushprotectionnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace (project). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetsecretpushprotectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationsetsecretpushprotectionprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
+| <a id="mutationsetsecretpushprotectionsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
 
 ### `Mutation.starProject`
 
@@ -32736,6 +32810,7 @@ Project-level settings for product analytics provider.
 | <a id="projectrequirementstatescount"></a>`requirementStatesCount` | [`RequirementStatesCount`](#requirementstatescount) | Number of requirements for the project by their state. |
 | <a id="projectsastciconfiguration"></a>`sastCiConfiguration` | [`SastCiConfiguration`](#sastciconfiguration) | SAST CI configuration for the project. |
 | <a id="projectsavedreplies"></a>`savedReplies` | [`ProjectSavedReplyConnection`](#projectsavedreplyconnection) | Saved replies available to the project. (see [Connections](#connections)) |
+| <a id="projectsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Indicates whether Secret Push Protection is on or not for the project. |
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the project, absent if assigned to a parent group. |
 | <a id="projectsecuritypolicyprojectlinkednamespaces"></a>`securityPolicyProjectLinkedNamespaces` **{warning-solid}** | [`NamespaceConnection`](#namespaceconnection) | **Deprecated** in GitLab 17.4. This was renamed. Use: `security_policy_project_linked_groups`. |
@@ -42416,6 +42491,17 @@ Values for sorting the mapping of users on source instance to users on destinati
 | <a id="sourceusersortsource_name_desc"></a>`SOURCE_NAME_DESC` | Instance source name by descending order. |
 | <a id="sourceusersortstatus_asc"></a>`STATUS_ASC` | Status of the mapping by ascending order. |
 | <a id="sourceusersortstatus_desc"></a>`STATUS_DESC` | Status of the mapping by descending order. |
+
+### `SquashOptionSetting`
+
+Options for default squash behaviour for merge requests.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="squashoptionsettingallowed"></a>`ALLOWED` | Allow. |
+| <a id="squashoptionsettingalways"></a>`ALWAYS` | Require. |
+| <a id="squashoptionsettingencouraged"></a>`ENCOURAGED` | Encourage. |
+| <a id="squashoptionsettingnever"></a>`NEVER` | Do not allow. |
 
 ### `SubscriptionHistoryChangeType`
 

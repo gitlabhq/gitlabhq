@@ -34,4 +34,4 @@ GitLab Instances and Runner have been validated on Amazon Linux 2 and 2023 - thi
 
 GitLab is a marketplace seller and you can purchase and deploy it through AWS marketplace [AWS Program Information](https://aws.amazon.com/marketplace/partners/management-tour)
 
-![AWS Partner Designations Logo](img/all-aws-partner-designations_v16_6.png){: .right}
+![AWS Partner Designations Logo](img/all-aws-partner-designations_v16_6.png)

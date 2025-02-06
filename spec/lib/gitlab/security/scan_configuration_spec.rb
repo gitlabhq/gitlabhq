@@ -137,13 +137,13 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         help_path: "/help/user/application_security/container_scanning/index.md",
         configuration_help_path: "/help/user/application_security/container_scanning/index.md#configuration",
         type: "container_scanning" }
-      :pre_receive_secret_detection | { name: _("Secret push protection"),
+      :secret_push_protection | { name: _("Secret push protection"),
         description: "Block secrets such as keys and API tokens from being pushed to your repositories. " \
                      "Secret push protection is triggered when commits are pushed to a repository. " \
                      "If any secrets are detected, the push is blocked.",
         help_path: Gitlab::Routing.url_helpers.help_page_path(
           "user/application_security/secret_detection/secret_push_protection/index.md"),
-        type: "pre_receive_secret_detection" }
+        type: "secret_push_protection" }
       :secret_detection | { name: "Pipeline Secret Detection",
         description: "Analyze your source code and Git history for secrets by using CI/CD pipelines.",
         help_path: "/help/user/application_security/secret_detection/pipeline/index.md",

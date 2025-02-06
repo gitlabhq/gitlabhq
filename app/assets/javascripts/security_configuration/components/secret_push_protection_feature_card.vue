@@ -9,11 +9,11 @@ import {
   GlButton,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import ProjectSetPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
+import ProjectPreReceiveSecretDetection from '~/security_configuration/graphql/set_pre_receive_secret_detection.graphql';
 import { __, s__ } from '~/locale';
 
 export default {
-  name: 'PreReceiveSecretDetectionFeatureCard',
+  name: 'SecretPushProtectionFeatureCard',
   components: {
     GlCard,
     GlIcon,
@@ -27,8 +27,8 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: [
-    'preReceiveSecretDetectionAvailable',
-    'preReceiveSecretDetectionEnabled',
+    'secretPushProtectionAvailable',
+    'secretPushProtectionEnabled',
     'userIsProjectAdmin',
     'projectFullPath',
     'secretDetectionConfigurationPath',
@@ -41,7 +41,7 @@ export default {
   },
   data() {
     return {
-      toggleValue: this.preReceiveSecretDetectionEnabled,
+      toggleValue: this.secretPushProtectionEnabled,
       errorMessage: '',
       isAlertDismissed: false,
     };
@@ -73,13 +73,13 @@ export default {
       };
     },
     isToggleDisabled() {
-      return !this.preReceiveSecretDetectionAvailable || !this.userIsProjectAdmin;
+      return !this.secretPushProtectionAvailable || !this.userIsProjectAdmin;
     },
     showLock() {
       return this.isToggleDisabled && this.available;
     },
     featureLockDescription() {
-      if (!this.preReceiveSecretDetectionAvailable) {
+      if (!this.secretPushProtectionAvailable) {
         return this.$options.i18n.tooltipDescription;
       }
       if (!this.userIsProjectAdmin) {
@@ -96,10 +96,10 @@ export default {
       this.errorMessage = error;
       this.isAlertDismissed = false;
     },
-    async togglePreReceiveSecretDetection(checked) {
+    async toggleSecretPushProtection(checked) {
       try {
         const { data } = await this.$apollo.mutate({
-          mutation: ProjectSetPreReceiveSecretDetection,
+          mutation: ProjectPreReceiveSecretDetection,
           variables: {
             input: {
               namespacePath: this.projectFullPath,
@@ -203,7 +203,7 @@ export default {
           :value="toggleValue"
           :label="s__('SecurityConfiguration|Toggle secret push protection')"
           label-position="hidden"
-          @change="togglePreReceiveSecretDetection"
+          @change="toggleSecretPushProtection"
         />
         <gl-button
           v-gl-tooltip.left.viewport="$options.i18n.settingsButtonTooltip"

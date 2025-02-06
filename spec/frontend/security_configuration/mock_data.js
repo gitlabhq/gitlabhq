@@ -3,7 +3,7 @@ import {
   SAST_SHORT_NAME,
   SAST_IAC_NAME,
   SAST_IAC_SHORT_NAME,
-  PRE_RECEIVE_SECRET_DETECTION,
+  SECRET_PUSH_PROTECTION,
 } from '~/security_configuration/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -149,7 +149,7 @@ export const securityFeaturesMock = [
   },
 ];
 
-export const preReceiveSecretDetectionMock = {
+export const secretPushProtectionMock = {
   name: 'Secret push protection',
   description: `Block secrets such as keys and API tokens from being pushed to your repositories.
   'Secret push protection is triggered when commits are pushed to a repository. ' \
@@ -158,7 +158,7 @@ export const preReceiveSecretDetectionMock = {
   configurationHelpPath: helpPagePath(
     'user/application_security/secret_detection/secret_push_protection/index',
   ),
-  type: PRE_RECEIVE_SECRET_DETECTION,
+  type: SECRET_PUSH_PROTECTION,
   available: true,
 };
 

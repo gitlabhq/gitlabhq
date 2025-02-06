@@ -9,6 +9,9 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { SET_LINKED_FILE_HASH, SET_TREE_DATA, SET_DIFF_FILES } from '~/diffs/store/mutation_types';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
+import { isElementClipped } from '~/lib/utils/common_utils';
+
+jest.mock('~/lib/utils/common_utils');
 
 describe('Diffs tree list component', () => {
   let wrapper;
@@ -313,6 +316,8 @@ describe('Diffs tree list component', () => {
     });
 
     it('auto scroll', async () => {
+      wrapper.element.insertAdjacentHTML('afterbegin', `<div data-file-row="05.txt"><div>`);
+      isElementClipped.mockReturnValueOnce(true);
       wrapper.vm.$refs.scroller.scrollToItem = jest.fn();
       store.state.diffs.currentDiffFileId = '05.txt';
       await nextTick();

@@ -1,0 +1,13 @@
+---
+table_name: merge_requests_approval_rules
+classes:
+  - MergeRequests::ApprovalRule
+feature_categories:
+  - code_review_workflow
+description: Main table that stores information about approval rules v2.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179839
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+  project_id: projects

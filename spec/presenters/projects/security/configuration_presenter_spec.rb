@@ -12,7 +12,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
   before do
     stub_licensed_features(licensed_scan_types.index_with { true })
-    stub_licensed_features(pre_receive_secret_detection: true)
+    stub_licensed_features(secret_push_protection: true)
   end
 
   describe '#to_html_data_attribute' do
@@ -305,14 +305,14 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
     end
 
-    describe 'pre_receive_secret_detection' do
+    describe 'secret_push_protection' do
       let_it_be(:project) { create(:project, :repository) }
       let(:features) { Gitlab::Json.parse(html_data[:features]) }
 
-      it 'feature includes pre_receive_secret_detection' do
+      it 'feature includes secret_push_protection' do
         skip unless Gitlab.ee?
 
-        feature = features.find { |scan| scan["type"] == 'pre_receive_secret_detection' }
+        feature = features.find { |scan| scan["type"] == 'secret_push_protection' }
         expect(feature).not_to be_nil
       end
     end

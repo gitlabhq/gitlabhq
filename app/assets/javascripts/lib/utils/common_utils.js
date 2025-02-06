@@ -149,6 +149,18 @@ export const isInViewport = (el, offset = {}) => {
   );
 };
 
+export const isElementClipped = (element, scrollContainer) => {
+  const elementRect = element.getBoundingClientRect();
+  const containerRect = scrollContainer.getBoundingClientRect();
+
+  return (
+    elementRect.top < containerRect.top ||
+    elementRect.bottom > containerRect.bottom ||
+    elementRect.left < containerRect.left ||
+    elementRect.right > containerRect.right
+  );
+};
+
 export const isModifierKey = (e) => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
 export const isMetaKey = (e) => e.metaKey || e.ctrlKey;

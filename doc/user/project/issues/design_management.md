@@ -235,7 +235,7 @@ so that everyone involved can participate in the discussion.
 ## Delete a comment from a design
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385100) in GitLab 15.9.
-> Minimum role to delete comment from a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+> - Minimum role to delete comment from a design [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 Prerequisites:
 
