@@ -6,6 +6,10 @@ export const PROJECT_HANDLE = ':';
 export const ISSUE_HANDLE = '#';
 export const PATH_HANDLE = '~';
 
+export const COMMANDS_TOGGLE_KEYBINDING = 'mod+k';
+export const COMMANDS_SKIP_NEXT_KEYBINDING = ['ctrl+n', 'command+n', 'alt+mod+n'];
+export const COMMANDS_SKIP_PREV_KEYBINDING = ['ctrl+p', 'command+p', 'alt+mod+p'];
+
 export const TRACKING_ACTIVATE_COMMAND_PALETTE = 'activate_command_palette';
 export const TRACKING_CLICK_COMMAND_PALETTE_ITEM = 'click_command_palette_item';
 export const TRACKING_HANDLE_LABEL_MAP = {
