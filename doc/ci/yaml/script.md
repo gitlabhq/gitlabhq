@@ -236,7 +236,7 @@ job:
     - echo -e "\e[31mThis text is red,\e[0m but this text isn't\e[31m however this text is red again."
 ```
 
-You can define the color codes in Shell environment variables, or even [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
+You can define the color codes in Shell environment variables, or even [CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
 which makes the commands easier to read and reusable.
 
 For example, using the same example as above and environment variables defined in a `before_script`:
@@ -381,7 +381,7 @@ GitLab Runner runs the container's shell in non-interactive mode, so the shell's
 environment variable is set to `dumb`. To fix the formatting for these tools, you can:
 
 - Add an additional script line to set `TERM=ansi` in the shell's environment before running the command.
-- Add a `TERM` [CI/CD variable](../variables/index.md) with a value of `ansi`.
+- Add a `TERM` [CI/CD variable](../variables/_index.md) with a value of `ansi`.
 
 ### `after_script` section execution stops early and incorrect `$CI_JOB_STATUS` values
 

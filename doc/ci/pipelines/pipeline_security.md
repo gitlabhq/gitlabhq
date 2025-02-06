@@ -35,13 +35,13 @@ You can use the GitLab native integrations for certain [external secret manageme
 
 ### CI/CD variables
 
-[CI/CD Variables](../variables/index.md) are a convenient way to store and reuse data
+[CI/CD Variables](../variables/_index.md) are a convenient way to store and reuse data
 in a CI/CD pipeline, but variables are less secure than secrets management providers.
 Variable values:
 
 - Are stored in the GitLab project, group, or instance settings. Users with access
-  to the settings have access to variables values that are not [hidden](../variables/index.md#hide-a-cicd-variable).
-- Can be [overridden](../variables/index.md#use-pipeline-variables),
+  to the settings have access to variables values that are not [hidden](../variables/_index.md#hide-a-cicd-variable).
+- Can be [overridden](../variables/_index.md#use-pipeline-variables),
   making it hard to determine which value was used.
 - Can be exposed by accidental pipeline misconfiguration.
 
@@ -50,7 +50,7 @@ Information suitable for storage in a variable should be data that can be expose
 Sensitive data should be stored in a secrets management solution. If there is low
 sensitivity data that you want to store in a CI/CD variable, be sure to always:
 
-- [Mask the variables](../variables/index.md#mask-a-cicd-variable)
-  or [Mask and hide the variable](../variables/index.md#hide-a-cicd-variable).
-- [Protect the variables](../variables/index.md#protect-a-cicd-variable) when possible.
-- [Hide the variables](../variables/index.md#hide-a-cicd-variable) when possible.
+- [Mask the variables](../variables/_index.md#mask-a-cicd-variable)
+  or [Mask and hide the variable](../variables/_index.md#hide-a-cicd-variable).
+- [Protect the variables](../variables/_index.md#protect-a-cicd-variable) when possible.
+- [Hide the variables](../variables/_index.md#hide-a-cicd-variable) when possible.

@@ -408,7 +408,7 @@ To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/
 in your CI/CD configuration file after you include the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
 
 Only set this variable within a specific job.
-If you set it [at the top level](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
+If you set it [at the top level](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file), the version you set is used for other SAST analyzers.
 
 You can set the tag to:
 
@@ -591,7 +591,7 @@ variables:
       -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/_index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
 #### Docker images
 
@@ -866,7 +866,7 @@ flags are added to the scanner's CLI options.
 #### Custom CI/CD variables
 
 In addition to the aforementioned SAST configuration CI/CD variables,
-all [custom variables](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui) are propagated
+all [custom variables](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui) are propagated
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 

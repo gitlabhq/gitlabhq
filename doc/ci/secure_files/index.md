@@ -47,7 +47,7 @@ with your other script commands.
 Add a command in the `script` section of your job to download the `download-secure-files` tool
 and execute it. The files download into a `.secure_files` directory in the root of the project.
 To change the download location for the secure files, set the path in the `SECURE_FILES_DOWNLOAD_PATH`
-[CI/CD variable](../variables/index.md).
+[CI/CD variable](../variables/_index.md).
 
 For example:
 
@@ -60,7 +60,7 @@ test:
 ```
 
 WARNING:
-The content of files loaded with the `download-secure-files` tool are not [masked](../variables/index.md#mask-a-cicd-variable)
+The content of files loaded with the `download-secure-files` tool are not [masked](../variables/_index.md#mask-a-cicd-variable)
 in the job log output. Make sure to avoid outputting secure file contents in the job log,
 especially when logging output that could contain sensitive information.
 

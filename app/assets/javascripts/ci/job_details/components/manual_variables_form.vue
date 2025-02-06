@@ -139,7 +139,7 @@ export default {
         : this.$options.i18n.runButtonText;
     },
     variableSettings() {
-      return helpPagePath('ci/variables/index', { anchor: 'for-a-project' });
+      return helpPagePath('ci/variables/_index', { anchor: 'for-a-project' });
     },
   },
   methods: {

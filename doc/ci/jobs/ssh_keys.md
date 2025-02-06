@@ -33,7 +33,7 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 To create and use an SSH key in GitLab CI/CD:
 
 1. [Create a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair) locally with `ssh-keygen`.
-1. Add the private key as a [file type CI/CD variable](../variables/index.md#for-a-project) to
+1. Add the private key as a [file type CI/CD variable](../variables/_index.md#for-a-project) to
    your project. The variable value must end in a newline (`LF` character). To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
    at the end of the last line of the SSH key before saving it in the CI/CD settings.
 1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) in the job, which loads
@@ -44,7 +44,7 @@ To create and use an SSH key in GitLab CI/CD:
 
 In the following example, the `ssh-add -` command does not display the value of
 `$SSH_PRIVATE_KEY` in the job log, though it could be exposed if you enable
-[debug logging](../variables/index.md#enable-debug-logging). You might also want to
+[debug logging](../variables/_index.md#enable-debug-logging). You might also want to
 check the [visibility of your pipelines](../pipelines/settings.md#change-which-users-can-view-your-pipelines).
 
 ## SSH keys when using the Docker executor
@@ -58,7 +58,7 @@ to access it. In this case, you can use an SSH key pair.
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
-1. Create a new [file type CI/CD variable](../variables/index.md#for-a-project).
+1. Create a new [file type CI/CD variable](../variables/_index.md#for-a-project).
    - In the **Key** field, enter `SSH_PRIVATE_KEY`.
    - In the **Value** field, paste the content of your _private_ key from the key pair that you created earlier.
      Make sure the file ends with a newline. To add a newline, press
@@ -167,7 +167,7 @@ ssh-keyscan example.com
 ssh-keyscan 10.0.2.2
 ```
 
-Create a new [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
+Create a new [file type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables)
 with `SSH_KNOWN_HOSTS` as "Key", and as a "Value" add the output of `ssh-keyscan`.
 Make sure the file ends with a newline. To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
 at the end of the last line of the SSH key before saving your changes.
@@ -225,7 +225,7 @@ the file type variable recommended above.
 
 This message can be returned if there is a formatting error with the SSH key.
 
-When saving the SSH key as a [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables),
+When saving the SSH key as a [file type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables),
 the value must end with a newline (`LF` character). To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd>
 at the end of the `-----END OPENSSH PRIVATE KEY-----` line of the SSH key before saving
 the variable.

@@ -593,13 +593,13 @@ but not from [merged results pipelines](merged_results_pipelines.md).
 
 ## Pass CI/CD variables to a downstream pipeline
 
-You can pass [CI/CD variables](../variables/index.md) to a downstream pipeline with
+You can pass [CI/CD variables](../variables/_index.md) to a downstream pipeline with
 a few different methods, based on where the variable is created or defined.
 
 ### Pass YAML-defined CI/CD variables
 
 You can use the `variables` keyword to pass CI/CD variables to a downstream pipeline.
-These variables are "trigger variables" for [variable precedence](../variables/index.md#cicd-variable-precedence).
+These variables are "trigger variables" for [variable precedence](../variables/_index.md#cicd-variable-precedence).
 
 For example:
 
@@ -717,7 +717,7 @@ trigger-job:
 The `UPSTREAM_BRANCH` variable, which contains the value of the upstream pipeline's `$CI_COMMIT_REF_NAME`
 predefined CI/CD variable, is available in the downstream pipeline.
 
-Do not use this method to pass [masked variables](../variables/index.md#mask-a-cicd-variable)
+Do not use this method to pass [masked variables](../variables/_index.md#mask-a-cicd-variable)
 to a multi-project pipeline. The CI/CD masking configuration is not passed to the
 downstream pipeline and the variable could be unmasked in job logs in the downstream project.
 
@@ -734,7 +734,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job).
+You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/_index.md#pass-an-environment-variable-to-another-job).
 
 For example, in a [multi-project pipeline](#multi-project-pipelines):
 
@@ -776,7 +776,7 @@ For example, in a [multi-project pipeline](#multi-project-pipelines):
 
 Use the [`trigger:forward` keyword](../yaml/_index.md#triggerforward) to specify
 what type of variables to forward to the downstream pipeline. Forwarded variables
-are considered trigger variables, which have the [highest precedence](../variables/index.md#cicd-variable-precedence).
+are considered trigger variables, which have the [highest precedence](../variables/_index.md#cicd-variable-precedence).
 
 ## Downstream pipelines for deployments
 
@@ -795,7 +795,7 @@ deploy:
 A downstream pipeline can provision infrastructure, deploy to a designated environment, and return the deployment status
 to the upstream project.
 
-You can [view the environment and deployment](../environments/index.md#view-environments-and-deployments)
+You can [view the environment and deployment](../environments/_index.md#view-environments-and-deployments)
 from the upstream project.
 
 ### Advanced example

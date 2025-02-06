@@ -61,7 +61,7 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 ## Prerequisites
 
 - The basic knowledge of the [GitLab CI/CD pipelines](../pipelines/index.md)
-- The basic knowledge of the [GitLab Environments and Deployments](../environments/index.md)
+- The basic knowledge of the [GitLab Environments and Deployments](../environments/_index.md)
 - At least the Developer role for the project to configure CI/CD pipelines.
 
 ## Process modes

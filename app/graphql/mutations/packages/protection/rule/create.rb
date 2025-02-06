@@ -20,14 +20,12 @@ module Mutations
           argument :package_name_pattern,
             GraphQL::Types::String,
             required: true,
-            description:
-              'Package name protected by the protection rule. For example `@my-scope/my-package-*`. ' \
-              'Wildcard character `*` allowed.'
+            description: copy_field_description(Types::Packages::Protection::RuleType, :package_name_pattern)
 
           argument :package_type,
             Types::Packages::Protection::RulePackageTypeEnum,
             required: true,
-            description: 'Package type protected by the protection rule. For example `NPM`.'
+            description: copy_field_description(Types::Packages::Protection::RuleType, :package_type)
 
           argument :minimum_access_level_for_push,
             Types::Packages::Protection::RuleAccessLevelEnum,
@@ -37,7 +35,6 @@ module Mutations
           field :package_protection_rule,
             Types::Packages::Protection::RuleType,
             null: true,
-            experiment: { milestone: '16.5' },
             description: 'Packages protection rule after mutation.'
 
           def resolve(project_path:, **kwargs)

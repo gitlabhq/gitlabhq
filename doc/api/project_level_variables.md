@@ -115,7 +115,7 @@ POST /projects/:id/variables
 | `masked`            | boolean        | No       | Whether the variable is masked. Default: `false` |
 | `masked_and_hidden` | boolean        | No       | Whether the variable is masked and hidden. Default: `false` |
 | `protected`         | boolean        | No       | Whether the variable is protected. Default: `false` |
-| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/_index.md#prevent-cicd-variable-expansion). |
 | `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 Example request:
@@ -160,7 +160,7 @@ PUT /projects/:id/variables/:key
 | `filter`            | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 | `masked`            | boolean        | No       | Whether the variable is masked |
 | `protected`         | boolean        | No       | Whether the variable is protected |
-| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `raw`               | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/_index.md#prevent-cicd-variable-expansion). |
 | `variable_type`     | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 Example request:

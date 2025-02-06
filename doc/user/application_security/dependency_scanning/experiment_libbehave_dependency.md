@@ -90,7 +90,7 @@ Prerequisites:
 - Project is adding new dependencies to the source or feature branch.
 - For merge request (MR) comments, ensure a Guest level [project access token](../../project/settings/project_access_tokens.md),
   and the source branch is either a protected branch or the **Protect variable** CI/CD variable
-  [option is unchecked](../../../ci/variables/index.md#for-a-project).
+  [option is unchecked](../../../ci/variables/_index.md#for-a-project).
 
 Libbehave is exposed through [CI/CD components](../../../ci/components/index.md). To enable it, configure your project's
 `.gitlab-ci.yml` file as follows:
@@ -114,7 +114,7 @@ To configure MR comments for Libbehave:
      - Select the scope `api`.
 
    Copy the project access token to your clipboard. It's required in the next step.
-1. Add the token as a [project CI/CD variable](../../../ci/variables/index.md):
+1. Add the token as a [project CI/CD variable](../../../ci/variables/_index.md):
    - Set **Visibility** to "Masked".
    - Uncheck the "Protect variable" option under **Flags**, to allow access from non-protected branches.
    - Set the key variable name to `BEHAVE_TOKEN`.
@@ -264,7 +264,7 @@ The https://mvnrepository.com/artifact/org.jmockit/jmockit package was found to 
 
 The MR Comment Summary output requires an access token with Guest level access be created for the
 project that the Libbehave component has been configured for. The access token should then be
-[configured for the project](../../../ci/variables/index.md#for-a-project). Because feature branches
+[configured for the project](../../../ci/variables/_index.md#for-a-project). Because feature branches
 are not protected by default, ensure the **Protect variable** setting is unchecked, otherwise the
 Libbehave job will not be able to read the access token's value.
 

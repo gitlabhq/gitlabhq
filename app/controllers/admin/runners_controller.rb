@@ -63,7 +63,6 @@ class Admin::RunnersController < Admin::ApplicationController
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def assign_projects
     @projects =
       if params[:search].present?
@@ -72,12 +71,11 @@ class Admin::RunnersController < Admin::ApplicationController
         Project.all
       end
 
-    runner_projects_ids = runner.runner_projects.pluck(:project_id)
-    @projects = @projects.where.not(id: runner_projects_ids) if runner_projects_ids.any?
+    runner_projects_ids = runner.project_ids
+    @projects = @projects.id_not_in(runner_projects_ids) if runner_projects_ids.any?
     @projects = @projects.inc_routes
     @projects = @projects.page(params[:page]).per(30).without_count
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
 
 Admin::RunnersController.prepend_mod

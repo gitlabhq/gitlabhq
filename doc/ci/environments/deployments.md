@@ -59,7 +59,7 @@ or view it at a post-merge pipeline in [merge request pages](../../user/project/
 To enable tracking configure your environment so either:
 
 - The [environment name](../yaml/_index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
-- The [environment tier](index.md#deployment-tier-of-environments) is either `production` or `staging`.
+- The [environment tier](_index.md#deployment-tier-of-environments) is either `production` or `staging`.
 
   Here are some example configurations using the [`environment` keyword](../yaml/_index.md#environment) in `.gitlab-ci.yml`:
 
@@ -141,7 +141,7 @@ In this case, see [job retries for rollback deployments](deployment_safety.md#jo
 
 ## Related topics
 
-- [Environments](index.md)
+- [Environments](_index.md)
 - [Downstream pipelines for deployments](../pipelines/downstream_pipelines.md#downstream-pipelines-for-deployments)
 - [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
 - [Review apps](../review_apps/index.md)

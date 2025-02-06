@@ -40,20 +40,6 @@ module API
           container.lfs_http_url_to_repo
         end
 
-        def gitaly_context(params)
-          return unless params[:gitaly_client_context_bin].present?
-
-          raw_context = Base64.decode64(params[:gitaly_client_context_bin])
-          context = Gitlab::Json.parse(raw_context)
-
-          raise bad_request!('gitaly_client_context_bin is not a Hash') unless context.is_a?(Hash)
-
-          context
-        rescue JSON::ParserError => e
-          Gitlab::ErrorTracking.log_exception(e, gitaly_context: params[:gitaly_client_context_bin])
-          bad_request!('malformed gitaly_client_context_bin')
-        end
-
         def link_scoped_user(params)
           context = gitaly_context(params)
 
@@ -160,6 +146,7 @@ module API
         #   relative_path - relative path of repository having access checks performed.
         #   action - git action (git-upload-pack or git-receive-pack)
         #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
+        #   gitaly_client_context_bin - context provided by Gitaly client (base64 encoded JSON string)
         #   check_ip - optional, only in EE version, may limit access to
         #     group resources based on its IP restrictions
         #

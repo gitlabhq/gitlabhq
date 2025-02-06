@@ -150,8 +150,8 @@ To add or update variables in the project settings:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
-   - **Environment scope**: Optional. **All (default)** (`*`), a specific [environment](../environments/index.md#types-of-environments),
-     or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+   - **Environment scope**: Optional. **All (default)** (`*`), a specific [environment](../environments/_index.md#types-of-environments),
+     or a wildcard [environment scope](../environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** Optional. If selected, the variable is only available in pipelines
      that run on [protected branches](../../user/project/repository/branches/protected.md)
      or [protected tags](../../user/project/protected_tags.md).
@@ -202,8 +202,8 @@ To set a group CI/CD variable to only be available for certain environments:
 1. Select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. To the right of the variable, select **Edit** (**{pencil}**).
-1. For **Environment scope**, select **All (default)** (`*`), a specific [environment](../environments/index.md#types-of-environments),
-   or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+1. For **Environment scope**, select **All (default)** (`*`), a specific [environment](../environments/_index.md#types-of-environments),
+   or a wildcard [environment scope](../environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ### For an instance
 

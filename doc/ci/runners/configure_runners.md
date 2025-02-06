@@ -432,7 +432,7 @@ osx job:
 
 ### Use CI/CD variables in tags
 
-In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
+In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/_index.md) with `tags` for dynamic runner selection:
 
 ```yaml
 variables:
@@ -448,7 +448,7 @@ variables:
 
 ## Configure runner behavior with variables
 
-You can use [CI/CD variables](../variables/index.md) to configure runner Git behavior
+You can use [CI/CD variables](../variables/_index.md) to configure runner Git behavior
 globally or for individual jobs:
 
 - [`GIT_STRATEGY`](#git-strategy)

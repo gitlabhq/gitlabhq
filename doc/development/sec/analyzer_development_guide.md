@@ -212,11 +212,11 @@ can't decide, then ask for other's input.
 
 The following must be performed before the automatic release process can be used:
 
-1. Configure `CREATE_GIT_TAG: true` as a [`CI/CD` environment variable](../../ci/variables/index.md).
+1. Configure `CREATE_GIT_TAG: true` as a [`CI/CD` environment variable](../../ci/variables/_index.md).
 1. Check the `Variables` in the CI/CD project settings:
 
    - If the project is located under the `gitlab-org/security-products/analyzers` namespace, then it automatically inherits the `GITLAB_TOKEN` environment variable and nothing else needs to be done.
-   - If the project is _not_ located under the `gitlab-org/security-products/analyzers` namespace, then you'll need to create a new [masked and hidden](../../ci/variables/index.md#hide-a-cicd-variable) `GITLAB_TOKEN` [`CI/CD` environment variable](../../ci/variables/index.md) and set its value to the Personal Access Token for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) account described in the [Service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) section below.
+   - If the project is _not_ located under the `gitlab-org/security-products/analyzers` namespace, then you'll need to create a new [masked and hidden](../../ci/variables/_index.md#hide-a-cicd-variable) `GITLAB_TOKEN` [`CI/CD` environment variable](../../ci/variables/_index.md) and set its value to the Personal Access Token for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) account described in the [Service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) section below.
 
 After the above steps have been completed, the automatic release process executes as follows:
 
@@ -253,7 +253,7 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
 1. Set the following variables to the new Personal Access Token created in step 2 above:
 
    NOTE:
-   It's crucial to [mask and hide](../../ci/variables/index.md#hide-a-cicd-variable) the following variables.
+   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the following variables.
 
    1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/security-products/analyzers`](https://gitlab.com/groups/gitlab-org/security-products/analyzers/-/settings/ci_cd#js-cicd-variables-settings) group.
 
@@ -432,10 +432,10 @@ In order to push images to this location:
          - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
             - `Disabled`
 
-1. Configure the following [`CI/CD` environment variables](../../ci/variables/index.md) for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
+1. Configure the following [`CI/CD` environment variables](../../ci/variables/_index.md) for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
 
    NOTE:
-   It's crucial to [mask and hide](../../ci/variables/index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
+   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
 
    | Key                     | Value                                                                       |
    |-------------------------|-----------------------------------------------------------------------------|

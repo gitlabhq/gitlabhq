@@ -25,7 +25,7 @@ for that feature:
 - [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
 - [Docker](docker/using_docker_build.md#troubleshooting).
 - [Downstream pipelines](pipelines/downstream_pipelines_troubleshooting.md).
-- [Environments](environments/index.md#troubleshooting).
+- [Environments](environments/_index.md#troubleshooting).
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/).
 - [ID tokens](secrets/id_token_authentication.md#troubleshooting).
 - [Jobs](jobs/job_troubleshooting.md).
@@ -34,7 +34,7 @@ for that feature:
   [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
   and [merge trains](pipelines/merge_trains.md#troubleshooting).
 - [Pipeline editor](pipeline_editor/index.md#troubleshooting).
-- [Variables](variables/index.md#troubleshooting).
+- [Variables](variables/_index.md#troubleshooting).
 - [YAML `includes` keyword](yaml/includes.md#troubleshooting).
 - [YAML `script` keyword](yaml/script.md#troubleshooting).
 
@@ -119,7 +119,7 @@ pipeline, and what their values are. A lot of pipeline configuration is dependen
 on variables, and verifying them is one of the fastest ways to find the source of
 a problem.
 
-[Export the full list of variables](variables/index.md#list-all-variables)
+[Export the full list of variables](variables/_index.md#list-all-variables)
 available in each problematic job. Check if the variables you expect are present,
 and check if their values are what you expect.
 

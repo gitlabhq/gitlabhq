@@ -48,7 +48,7 @@ In the following example, kaniko is used to:
 
 The job runs only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab container registry credentials taken from the
-[predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
+[predefined CI/CD variables](../variables/_index.md#predefined-cicd-variables)
 GitLab CI/CD provides. These are automatically read by the Kaniko tool.
 
 In the last step, kaniko uses the `Dockerfile` under the

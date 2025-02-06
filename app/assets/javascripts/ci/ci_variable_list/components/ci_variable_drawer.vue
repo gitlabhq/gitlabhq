@@ -420,13 +420,13 @@ export default {
     },
   },
   awsTokenList,
-  variablesPrecedenceLink: helpPagePath('ci/variables/index', {
+  variablesPrecedenceLink: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
   }),
-  environmentsLabelHelpLink: helpPagePath('ci/environments/index', {
+  environmentsLabelHelpLink: helpPagePath('ci/environments/_index', {
     anchor: 'limit-the-environment-scope-of-a-cicd-variable',
   }),
-  visibilityLabelHelpLink: helpPagePath('ci/variables/index', {
+  visibilityLabelHelpLink: helpPagePath('ci/variables/_index', {
     anchor: 'hide-a-cicd-variable',
   }),
   environmentsPopoverContainerId: 'environments-popover-container',

@@ -34,8 +34,9 @@
           - approximate_projects_count = approximate_count_with_delimiters(@counts, Project)
           = s_('AdminArea|Projects')
           = render Pajamas::BadgeComponent.new(approximate_projects_count, variant: :muted)
-        = render Pajamas::ButtonComponent.new(href: new_project_path, size: :small) do
-          = s_('AdminArea|New project')
+        - if current_user.can_admin_all_resources?
+          = render Pajamas::ButtonComponent.new(href: new_project_path, size: :small) do
+            = s_('AdminArea|New project')
       - c.with_body do
         .gl-flex.gl-flex-col.gl-h-full
           - @projects.each do |project|

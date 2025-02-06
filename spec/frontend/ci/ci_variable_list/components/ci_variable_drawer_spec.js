@@ -122,7 +122,7 @@ describe('CI Variable Drawer', () => {
 
     it('renders docs link for variables precendece', () => {
       expect(findVariablesPrecedenceDocsLink().attributes('href')).toBe(
-        helpPagePath('ci/variables/index', { anchor: 'cicd-variable-precedence' }),
+        helpPagePath('ci/variables/_index', { anchor: 'cicd-variable-precedence' }),
       );
     });
 
@@ -159,7 +159,7 @@ describe('CI Variable Drawer', () => {
         it('renders the documentation link', () => {
           const popover = findEnvironmentsLabelHelpPopover();
           const link = popover.findComponent(GlLink);
-          const documentationLink = helpPagePath('ci/environments/index', {
+          const documentationLink = helpPagePath('ci/environments/_index', {
             anchor: 'limit-the-environment-scope-of-a-cicd-variable',
           });
 
@@ -197,7 +197,7 @@ describe('CI Variable Drawer', () => {
         it('renders the documentation link', () => {
           const popover = findVisibilityLabelHelpPopover();
           const link = popover.findComponent(GlLink);
-          const documentationLink = helpPagePath('ci/variables/index', {
+          const documentationLink = helpPagePath('ci/variables/_index', {
             anchor: 'hide-a-cicd-variable',
           });
 

@@ -180,7 +180,7 @@ repository or by specifying a project CI/CD variable:
 - **Bundled chart** - If your project has a `./chart` directory with a `Chart.yaml`
   file in it, Auto DevOps detects the chart and uses it instead of the
   [default chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app).
-- **Project variable** - Create a [project CI/CD variable](../../ci/variables/index.md)
+- **Project variable** - Create a [project CI/CD variable](../../ci/variables/_index.md)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart. You can also create five project
   variables:
 
@@ -219,7 +219,7 @@ For a full list of options, see [the official `helm upgrade` documentation](http
 ### Limit a Helm chart to one environment
 
 To limit a custom chart to one environment, add the environment scope to your CI/CD variables.
-For more information, see [Limit the environment scope of CI/CD variables](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+For more information, see [Limit the environment scope of CI/CD variables](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Customize `.gitlab-ci.yml`
 
@@ -277,7 +277,7 @@ However, this feature was [deprecated](https://gitlab.com/groups/gitlab-org/conf
 along with certificate-based integration.
 
 You should now use the `KUBE_NAMESPACE` environment variable and
-[limit its environment scope](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+[limit its environment scope](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Use images hosted in a local Docker registry
 
@@ -352,7 +352,7 @@ external managed provider like AWS Relational Database Service.
 To use an external managed provider:
 
 1. Disable the built-in PostgreSQL installation for the required environments with
-   environment-scoped [CI/CD variables](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+   environment-scoped [CI/CD variables](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
    Because the built-in PostgreSQL setup for review apps and staging is sufficient, you might only need to
    disable the installation for `production`.
 

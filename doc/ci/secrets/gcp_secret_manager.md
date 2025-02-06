@@ -77,7 +77,7 @@ After setting up WIF, you must grant the WIF principal access to the secrets in 
 
 ## Configure GitLab CI/CD to use GCP Secret Manager secrets
 
-You must [add these CI/CD variables](../variables/index.md#for-a-project) to provide details about
+You must [add these CI/CD variables](../variables/_index.md#for-a-project) to provide details about
 your GCP Secret Manager:
 
 - `GCP_PROJECT_NUMBER`: The GCP [Project Number](https://cloud.google.com/resource-manager/docs/creating-managing-projects).

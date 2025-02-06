@@ -16,6 +16,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
   let(:auth_result_type) { nil }
+  let(:gitaly_context) { { 'key' => 'value' } }
   let(:changes) { Gitlab::GitAccess::ANY }
   let(:push_access_check) { access.check('git-receive-pack', changes) }
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
@@ -1412,14 +1413,14 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     access_class.new(actor, project, protocol,
       authentication_abilities: authentication_abilities,
       repository_path: repository_path,
-      redirected_path: redirected_path, auth_result_type: auth_result_type)
+      redirected_path: redirected_path, auth_result_type: auth_result_type, gitaly_context: gitaly_context)
   end
 
   def push_access_check_build(access_project, changes)
     access_class.new(actor, access_project, protocol,
       authentication_abilities: build_authentication_abilities_allowed_push,
       repository_path: "#{access_project.full_path}.git",
-      redirected_path: redirected_path, auth_result_type: auth_result_type)
+      redirected_path: redirected_path, auth_result_type: auth_result_type, gitaly_context: gitaly_context)
     .check('git-receive-pack', changes)
   end
 

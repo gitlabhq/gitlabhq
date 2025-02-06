@@ -26,7 +26,7 @@ of the job's execution, including keywords that:
 - Control [how](job_control.md) and [when](job_rules.md) jobs run.
 - Group jobs together in collections called [stages](../yaml/_index.md#stages).
   Stages run in sequence, while all jobs in a stage can run in parallel.
-- Define [CI/CD variables](../variables/index.md) for flexible configuration.
+- Define [CI/CD variables](../variables/_index.md) for flexible configuration.
 - Define [caches](../caching/index.md) to speed up job execution.
 - Save files as [artifacts](job_artifacts.md) which can be used by other jobs.
 
@@ -306,7 +306,7 @@ You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot f
 
 ## Deployment jobs
 
-Deployment jobs are CI/CD jobs that use [environments](../environments/index.md).
+Deployment jobs are CI/CD jobs that use [environments](../environments/_index.md).
 A deployment job is any job that uses the `environment` keyword and the [`start` environment `action`](../yaml/_index.md#environmentaction).
 Deployment jobs do not need to be in the `deploy` stage. The following `deploy me`
 job is an example of a deployment job. `action: start` is the default behavior and

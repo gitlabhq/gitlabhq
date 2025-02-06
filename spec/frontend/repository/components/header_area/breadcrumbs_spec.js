@@ -11,6 +11,7 @@ import permissionsQuery from 'shared_queries/repository/permissions.query.graphq
 import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 
 import createApolloProvider from 'helpers/mock_apollo_helper';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 const defaultMockRoute = {
   name: 'blobPath',
@@ -43,7 +44,12 @@ describe('Repository breadcrumbs component', () => {
     },
   });
 
-  const factory = (currentPath, extraProps = {}, mockRoute = {}) => {
+  const factory = ({
+    currentPath,
+    extraProps = {},
+    mockRoute = {},
+    glFeatures = { blobOverflowMenu: false },
+  } = {}) => {
     const apolloProvider = createApolloProvider([[permissionsQuery, permissionsQuerySpy]]);
 
     apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -58,6 +64,7 @@ describe('Repository breadcrumbs component', () => {
       provide: {
         projectRootPath: TEST_PROJECT_PATH,
         isBlobView: extraProps.isBlobView,
+        glFeatures,
       },
       propsData: {
         currentPath,
@@ -87,7 +94,7 @@ describe('Repository breadcrumbs component', () => {
   });
 
   it('queries for permissions', async () => {
-    factory('/');
+    factory({ currentPath: '/' });
 
     // We need to wait for the projectPath query to resolve
     await waitForPromises();
@@ -104,7 +111,7 @@ describe('Repository breadcrumbs component', () => {
     ${'app/assets'}             | ${3}
     ${'app/assets/javascripts'} | ${4}
   `('renders $linkCount links for path $path', ({ path, linkCount }) => {
-    factory(path);
+    factory({ currentPath: path });
 
     expect(findRouterLinks().length).toEqual(linkCount);
   });
@@ -118,25 +125,35 @@ describe('Repository breadcrumbs component', () => {
   `(
     'links to the correct router path when routeName is $routeName',
     ({ routeName, path, linkTo }) => {
-      factory(path, {}, { name: routeName });
+      factory({
+        currentPath: path,
+        mockRoute: {
+          name: routeName,
+        },
+      });
       expect(findRouterLinks().at(3).attributes('to')).toEqual(linkTo);
     },
   );
 
   it('escapes hash in directory path', () => {
-    factory('app/assets/javascripts#');
+    factory({ currentPath: 'app/assets/javascripts#' });
 
     expect(findRouterLinks().at(3).attributes('to')).toEqual('/-/tree/app/assets/javascripts%23');
   });
 
   it('renders last link as active', () => {
-    factory('app/assets');
+    factory({ currentPath: 'app/assets' });
 
     expect(findRouterLinks().at(2).attributes('aria-current')).toEqual('page');
   });
 
   it('does not render add to tree dropdown when permissions are false', async () => {
-    factory('/', { canCollaborate: false }, {});
+    factory({
+      currentPath: '/',
+      extraProps: {
+        canCollaborate: false,
+      },
+    });
     await nextTick();
 
     expect(findDropdown().exists()).toBe(false);
@@ -152,11 +169,16 @@ describe('Repository breadcrumbs component', () => {
   `(
     'does render add to tree dropdown $isRendered when route is $routeName',
     ({ routeName, isRendered }) => {
-      factory(
-        'app/assets/javascripts.js',
-        { canCollaborate: true, canEditTree: true },
-        { name: routeName },
-      );
+      factory({
+        currentPath: 'app/assets/javascripts.js',
+        extraProps: {
+          canCollaborate: true,
+          canEditTree: true,
+        },
+        mockRoute: {
+          name: routeName,
+        },
+      });
       expect(findDropdown().exists()).toBe(isRendered);
     },
   );
@@ -169,7 +191,12 @@ describe('Repository breadcrumbs component', () => {
   `(
     'sets data-current-path to $expectedPath when path is $currentPath and routeName is $routeName',
     ({ currentPath, expectedPath, routeName }) => {
-      factory(currentPath, {}, { name: routeName });
+      factory({
+        currentPath,
+        mockRoute: {
+          name: routeName,
+        },
+      });
 
       expect(wrapper.attributes('data-current-path')).toBe(expectedPath);
     },
@@ -180,15 +207,50 @@ describe('Repository breadcrumbs component', () => {
       createPermissionsQueryResponse({ forkProject: true, createMergeRequestIn: true }),
     );
 
-    factory('/', { canCollaborate: true, canEditTree: true });
+    factory({
+      currentPath: '/',
+      extraProps: {
+        canCollaborate: true,
+        canEditTree: true,
+      },
+    });
     await nextTick();
 
     expect(findDropdown().exists()).toBe(true);
   });
 
+  describe('copy-to-clipboard icon button', () => {
+    it.each`
+      description                                  | flagValue | currentPath        | expected
+      ${'does not render button '}                 | ${false}  | ${'/path/to/file'} | ${false}
+      ${'does not render button '}                 | ${true}   | ${''}              | ${false}
+      ${'renders button that copies current path'} | ${true}   | ${'/path/to/file'} | ${true}
+    `(
+      'when flag is $flagValue and currentPath is "$currentPath", $description',
+      ({ flagValue, currentPath, expected }) => {
+        factory({
+          currentPath,
+          glFeatures: {
+            blobOverflowMenu: flagValue,
+          },
+        });
+        const btn = wrapper.findComponent(ClipboardButton);
+        expect(btn.exists()).toBe(expected);
+        if (expected) {
+          expect(btn.vm.text).toBe(currentPath);
+        }
+      },
+    );
+  });
+
   describe('renders the upload blob modal', () => {
     beforeEach(() => {
-      factory('/', { canEditTree: true });
+      factory({
+        currentPath: '/',
+        extraProps: {
+          canEditTree: true,
+        },
+      });
     });
 
     it('does not render the modal while loading', () => {
@@ -215,7 +277,13 @@ describe('Repository breadcrumbs component', () => {
 
   describe('renders the new directory modal', () => {
     beforeEach(() => {
-      factory('some_dir', { canEditTree: true, newDirPath: 'root/master' });
+      factory({
+        currentPath: 'some_dir',
+        extraProps: {
+          canEditTree: true,
+          newDirPath: 'root/master',
+        },
+      });
     });
     it('does not render the modal while loading', () => {
       expect(findNewDirectoryModal().exists()).toBe(false);
@@ -237,7 +305,12 @@ describe('Repository breadcrumbs component', () => {
         }),
       );
 
-      factory('/', { canCollaborate: true });
+      factory({
+        currentPath: '/',
+        extraProps: {
+          canCollaborate: true,
+        },
+      });
       await waitForPromises();
 
       expect(findDropdownGroup().props('group').name).toBe('This repository');
@@ -250,7 +323,12 @@ describe('Repository breadcrumbs component', () => {
         }),
       );
 
-      factory('/', { canCollaborate: true });
+      factory({
+        currentPath: '/',
+        extraProps: {
+          canCollaborate: true,
+        },
+      });
       await waitForPromises();
 
       expect(findDropdownGroup().exists()).toBe(false);
@@ -259,13 +337,23 @@ describe('Repository breadcrumbs component', () => {
 
   describe('link rendering', () => {
     it('passes `href` to GlLink when isBlobView is true', () => {
-      factory('/', { isBlobView: true });
+      factory({
+        currentPath: '/',
+        extraProps: {
+          isBlobView: true,
+        },
+      });
 
       expect(findRouterLinks().at(0).attributes('href')).toBe('/test-project/path/-/tree');
     });
 
     it('passes `to` to GlLink when isBlobView is false', () => {
-      factory('/', { isBlobView: false });
+      factory({
+        currentPath: '/',
+        extraProps: {
+          isBlobView: false,
+        },
+      });
 
       expect(findRouterLinks().at(0).attributes('to')).toBe('/-/tree');
     });

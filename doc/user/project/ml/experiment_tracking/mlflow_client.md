@@ -142,7 +142,7 @@ with mlflow.start_run():
 If your training code is being run from a CI/CD job, GitLab can use that information to enhance
 run metadata. To associate a run to a CI/CD job:
 
-1. In the [Project CI variables](../../../../ci/variables/index.md), include the following variables:
+1. In the [Project CI variables](../../../../ci/variables/_index.md), include the following variables:
    - `MLFLOW_TRACKING_URI`: `"<your gitlab endpoint>/api/v4/projects/<your project id>/ml/mlflow"`
    - `MLFLOW_TRACKING_TOKEN`: `<your_access_token>`
 

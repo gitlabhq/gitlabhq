@@ -23,7 +23,7 @@ Prerequisites:
     for the **resource group** assigned to the Key Vault. Otherwise, you can't create secrets inside the Key Vault.
 - [Configure OpenID Connect in Azure to retrieve temporary credentials](../cloud_services/azure/index.md). These
   steps include instructions on how to create an Azure AD application for Key Vault access.
-- Add [CI/CD variables to your project](../variables/index.md#for-a-project) to provide details about your Vault server:
+- Add [CI/CD variables to your project](../variables/_index.md#for-a-project) to provide details about your Vault server:
   - `AZURE_KEY_VAULT_SERVER_URL`: The URL of your Azure Key Vault server, such as `https://vault.example.com`.
   - `AZURE_CLIENT_ID`: The client ID of the Azure application.
   - `AZURE_TENANT_ID`: The tenant ID of the Azure application.
@@ -54,7 +54,7 @@ In this example:
   GUID without dashes, which can be found on the Azure Key Vault secrets page.
 - GitLab fetches the secret from Azure Key Vault and stores the value in a temporary file.
   The path to this file is stored in a `DATABASE_PASSWORD` CI/CD variable, similar to
-  [file type CI/CD variables](../variables/index.md#use-file-type-cicd-variables).
+  [file type CI/CD variables](../variables/_index.md#use-file-type-cicd-variables).
 
 ## Troubleshooting
 

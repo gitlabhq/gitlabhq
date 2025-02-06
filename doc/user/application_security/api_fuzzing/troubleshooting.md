@@ -323,7 +323,7 @@ The following example uses the [statically defined credentials](../../../ci/dock
    }
    ```
 
-1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file you should create a project [CI/CD variable](../../../ci/variables/index.md#for-a-project).
+1. Add the `DOCKER_AUTH_CONFIG` as a CI/CD variable. Instead of adding the configuration variable directly in your `.gitlab-ci.yml` file you should create a project [CI/CD variable](../../../ci/variables/_index.md#for-a-project).
 1. Rerun your job, and the statically-defined credentials are now used to sign in to the private container registry `registry.example.com`, and let you pull the image `my-target-app:latest`. If succeeded the job console shows an output like:
 
    ```log

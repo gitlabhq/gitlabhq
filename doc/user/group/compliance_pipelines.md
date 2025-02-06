@@ -220,7 +220,7 @@ With projects that use externally hosted configuration, you can try the this wor
         - if: $PROTECTED_PIPELINE_CI_PROJECT_PATH == null || $PROTECTED_PIPELINE_CI_CONFIG_PATH == null || $PROTECTED_PIPELINE_CI_REF == null
   ```
 
-- [CI/CD variables](../../ci/variables/index.md) must be added to projects with external
+- [CI/CD variables](../../ci/variables/_index.md) must be added to projects with external
   pipeline configuration. In this example:
 
   - `PROTECTED_PIPELINE_CI_PROJECT_PATH`: The path to the project hosting the configuration file, for example `group/subgroup/project`.

@@ -21,7 +21,7 @@ This example shows you how to set a username and password that GitLab uses to ac
 
 NOTE:
 Variables set in the GitLab UI are not passed down to the service containers.
-For more information, see [GitLab CI/CD variables](../variables/index.md).
+For more information, see [GitLab CI/CD variables](../variables/_index.md).
 
 1. To specify a MySQL image, add the following to your `.gitlab-ci.yml` file:
 

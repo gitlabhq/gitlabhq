@@ -139,4 +139,4 @@ or `%` (for Windows Batch runners):
 - `$VARIABLE`: Use for non-Windows runners
 - `%VARIABLE%`: Use for Windows Batch runners
 
-Read more about [CI/CD variables](../../variables/index.md).
+Read more about [CI/CD variables](../../variables/_index.md).

@@ -29,7 +29,7 @@ tests access to the GitLab API.
 
 NOTE:
 Variables set in the GitLab UI are not passed down to the service containers.
-For more information, see [GitLab CI/CD variables](../variables/index.md).
+For more information, see [GitLab CI/CD variables](../variables/_index.md).
 
 Then, commands in `script` sections in your `.gitlab-ci.yml` file can access the API at `http://gitlab/api/v4`.
 

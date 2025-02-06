@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-[Environments](../environments/index.md) can be used for both testing and
+[Environments](_index.md) can be used for both testing and
 production reasons.
 
 Because deploy jobs can be raised by different users with different roles, it's
@@ -145,9 +145,9 @@ access to a protected environment through any of these methods:
 If the user also has push or merge access to the branch deployed on production,
 they have the following privileges:
 
-- [Stop an environment](index.md#stopping-an-environment).
-- [Delete an environment](index.md#delete-an-environment).
-- [Create an environment terminal](index.md#web-terminals-deprecated).
+- [Stop an environment](_index.md#stopping-an-environment).
+- [Delete an environment](_index.md#delete-an-environment).
+- [Create an environment terminal](_index.md#web-terminals-deprecated).
 
 ## Deployment-only access to protected environments
 
@@ -203,7 +203,7 @@ _(Reference: [Deployment environments on Wikipedia](https://en.wikipedia.org/wik
 ### Group-level protected environments names
 
 Contrary to project-level protected environments, group-level protected
-environments use the [deployment tier](index.md#deployment-tier-of-environments)
+environments use the [deployment tier](_index.md#deployment-tier-of-environments)
 as their name.
 
 A group may consist of many project environments that have unique names.
@@ -257,7 +257,7 @@ Having this configuration in place:
 ### Protect critical environments under a group
 
 To protect a group-level environment, make sure your environments have the correct
-[`deployment_tier`](index.md#deployment-tier-of-environments) defined in `.gitlab-ci.yml`.
+[`deployment_tier`](_index.md#deployment-tier-of-environments) defined in `.gitlab-ci.yml`.
 
 #### Using the UI
 
@@ -266,7 +266,7 @@ To protect a group-level environment, make sure your environments have the corre
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
-1. From the **Environment** list, select the [deployment tier of environments](index.md#deployment-tier-of-environments) you want to protect.
+1. From the **Environment** list, select the [deployment tier of environments](_index.md#deployment-tier-of-environments) you want to protect.
 1. In the **Allowed to deploy** list, select the [subgroups](../../user/group/subgroups/index.md) you want to give deploy access to.
 1. Select **Protect**.
 

@@ -91,7 +91,7 @@ to the GitLab server and visible in job logs.
 This message is often followed by the [error `No files to upload`](../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload),
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Check
 the entire job log for such messages. If you don't find these messages, retry the failed job after
-setting `SECURE_LOG_LEVEL: "debug"` as a [custom CI/CD variable](../../ci/variables/index.md#for-a-project).
+setting `SECURE_LOG_LEVEL: "debug"` as a [custom CI/CD variable](../../ci/variables/_index.md#for-a-project).
 This provides extra information to investigate further.
 
 ## Getting error message `sast job: config key may not be used with 'rules': only/except`

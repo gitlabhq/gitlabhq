@@ -63,11 +63,11 @@ mitigates this attack vector by allowing access only to trusted actors.
 
 The `code_quality` job doesn't run if the `$CODE_QUALITY_DISABLED` CI/CD variable
 is present. For more information about how to define a variable, see
-[GitLab CI/CD variables](../variables/index.md).
+[GitLab CI/CD variables](../variables/_index.md).
 
 To disable Code Quality, create a custom CI/CD variable named `CODE_QUALITY_DISABLED`, for either:
 
-- [The whole project](../variables/index.md#for-a-project).
+- [The whole project](../variables/_index.md#for-a-project).
 - [A single pipeline](../pipelines/index.md#run-a-pipeline-manually).
 
 ## Configure CodeClimate analysis plugins
@@ -250,7 +250,7 @@ You can use Docker Hub as an alternate source of the Code Quality images.
 
 Prerequisites:
 
-- Add the username and password as [protected CI/CD variables](../variables/index.md#for-a-project) in the project.
+- Add the username and password as [protected CI/CD variables](../variables/_index.md#for-a-project) in the project.
 
 To use DockerHub, configure the following variables in the `.gitlab-ci.yml` file:
 

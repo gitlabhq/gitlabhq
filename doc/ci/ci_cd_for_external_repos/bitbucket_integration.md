@@ -63,7 +63,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 1. In GitLab, from **Settings > CI/CD > Variables**, add variables to allow
    communication with Bitbucket through the Bitbucket API:
 
-   - `BITBUCKET_ACCESS_TOKEN`: The Bitbucket app password created above. This variable should be [masked](../variables/index.md#mask-a-cicd-variable).
+   - `BITBUCKET_ACCESS_TOKEN`: The Bitbucket app password created above. This variable should be [masked](../variables/_index.md#mask-a-cicd-variable).
    - `BITBUCKET_USERNAME`: The username of the Bitbucket account.
    - `BITBUCKET_NAMESPACE`: Set this variable if your GitLab and Bitbucket namespaces differ.
    - `BITBUCKET_REPOSITORY`: Set this variable if your GitLab and Bitbucket project names differ.

@@ -149,7 +149,7 @@ Variable expansion is supported for:
 
 Instead of using shell, GitLab Runner uses its
 [internal variable expansion mechanism](../variables/where_variables_can_be_used.md#gitlab-runner-internal-variable-expansion-mechanism).
-Only [CI/CD variables](../variables/index.md) are supported in this context.
+Only [CI/CD variables](../variables/_index.md) are supported in this context.
 
 For example, to create an archive using the current branch or tag name
 including only files from a directory named after the current project:

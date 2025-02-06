@@ -4196,30 +4196,40 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#has_ci_enabled?' do
-    subject { build(:merge_request, source_project: project) }
-
-    let(:project) { build(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
+  describe '#has_ci_enabled?', :clean_gitlab_redis_shared_state do
+    let_it_be(:mr) { create(:merge_request, source_project: project) }
+    let_it_be(:project) { create(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
     let(:mr_ci) { true }
-    let(:project_ci) { true }
 
     before do
-      allow(subject).to receive(:has_ci?).and_return(mr_ci)
-      allow(project).to receive(:has_ci?).and_return(project_ci)
+      allow(mr).to receive(:has_ci?).and_return(mr_ci)
     end
 
     context 'when MR has_ci? is true' do
-      context 'when project has_ci? is true' do
+      context 'when pipeline has a creation request' do
+        before do
+          Ci::PipelineCreation::Requests.start_for_merge_request(mr)
+        end
+
         it 'returns true' do
-          expect(subject.has_ci_enabled?).to eq(true)
+          expect(mr.has_ci_enabled?).to eq(true)
         end
       end
 
-      context 'when project has_ci? is false' do
-        let(:project_ci) { false }
+      context 'when pipeline has no creation request' do
+        it 'returns true' do
+          expect(mr.has_ci_enabled?).to eq(true)
+        end
+      end
 
-        it 'returns false' do
-          expect(subject.has_ci_enabled?).to eq(true)
+      context 'when change_ci_enabled_hurestic is disabled and project does not have ci' do
+        before do
+          stub_feature_flags(change_ci_enabled_hurestic: false)
+          allow(mr.project).to receive(:has_ci?).and_return(false)
+        end
+
+        it 'returns true' do
+          expect(mr.has_ci_enabled?).to eq(true)
         end
       end
     end
@@ -4227,18 +4237,73 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when MR has_ci? is false' do
       let(:mr_ci) { false }
 
-      context 'when project has_ci? is true' do
+      context 'when pipeline has a creation request' do
+        before do
+          Ci::PipelineCreation::Requests.start_for_merge_request(mr)
+        end
+
         it 'returns true' do
-          expect(subject.has_ci_enabled?).to eq(true)
+          expect(mr.has_ci_enabled?).to eq(true)
         end
       end
 
-      context 'when project has_ci? is false' do
-        let(:project_ci) { false }
-
+      context 'when pipeline has no creation request' do
         it 'returns false' do
-          expect(subject.has_ci_enabled?).to eq(false)
+          expect(mr.has_ci_enabled?).to eq(false)
         end
+      end
+
+      context 'when change_ci_enabled_hurestic is disabled' do
+        before do
+          stub_feature_flags(change_ci_enabled_hurestic: false)
+        end
+
+        context 'when the project has ci enabled' do
+          before do
+            allow(mr.project).to receive(:has_ci?).and_return(true)
+          end
+
+          it 'returns true' do
+            expect(mr.has_ci_enabled?).to eq(true)
+          end
+        end
+
+        context 'when the project does not have ci enabled' do
+          before do
+            allow(mr.project).to receive(:has_ci?).and_return(false)
+          end
+
+          it 'returns false' do
+            expect(mr.has_ci_enabled?).to eq(false)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#pipeline_creating?' do
+    let(:pipeline_creating) { subject.pipeline_creating? }
+
+    before do
+      allow(Ci::PipelineCreation::Requests)
+        .to receive(:pipeline_creating_for_merge_request?)
+        .with(subject)
+        .and_return(creating)
+    end
+
+    context 'when pipeline creating request is true' do
+      let(:creating) { true }
+
+      it 'is true' do
+        expect(pipeline_creating).to eq true
+      end
+    end
+
+    context 'when pipeline creating request is false' do
+      let(:creating) { false }
+
+      it 'is false' do
+        expect(pipeline_creating).to eq false
       end
     end
   end

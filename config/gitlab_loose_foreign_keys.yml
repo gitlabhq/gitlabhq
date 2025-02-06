@@ -202,6 +202,9 @@ ci_variables:
     column: project_id
     on_delete: async_delete
 clusters_managed_resources:
+  - table: p_ci_builds
+    column: build_id
+    on_delete: async_delete  
   - table: ci_builds
     column: build_id
     on_delete: async_delete

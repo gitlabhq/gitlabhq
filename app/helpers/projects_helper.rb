@@ -472,7 +472,7 @@ module ProjectsHelper
       pagesHelpPath: help_page_path('user/project/pages/pages_access_control.md'),
       issuesHelpPath: help_page_path('user/project/issues/index.md'),
       membersPagePath: project_project_members_path(project),
-      environmentsHelpPath: help_page_path('ci/environments/index.md'),
+      environmentsHelpPath: help_page_path('ci/environments/_index.md'),
       featureFlagsHelpPath: help_page_path('operations/feature_flags.md'),
       releasesHelpPath: help_page_path('user/project/releases/index.md'),
       infrastructureHelpPath: help_page_path('user/infrastructure/index.md')

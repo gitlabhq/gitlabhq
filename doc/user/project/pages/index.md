@@ -321,7 +321,7 @@ To prevent deployments from automatically expiring, set `pages.expire_in` to
 
 ### Path clash
 
-`pages.path_prefix` can take dynamic values from [CI/CD variables](../../../ci/variables/index.md)
+`pages.path_prefix` can take dynamic values from [CI/CD variables](../../../ci/variables/_index.md)
 that can create pages deployments which could clash with existing paths in your site.
 For example, given an existing GitLab Pages site with the following paths:
 
@@ -335,7 +335,7 @@ In other words, `https://namespace.gitlab.io/project/documents/index.html` will 
 `/index.html` on the `documents` deployment of the site, instead of `documents/index.html` of the
 `main` deployment of the site.
 
-Mixing [CI/CD variables](../../../ci/variables/index.md) with other strings can reduce the path clash
+Mixing [CI/CD variables](../../../ci/variables/_index.md) with other strings can reduce the path clash
 possibility. For example:
 
 ```yaml
@@ -361,7 +361,7 @@ deploy-pages:
         PAGES_PREFIX: 'mr-$CI_MERGE_REQUEST_IID' # Prefix with the mr-<iid>, like `mr-123`
 ```
 
-Some other examples of mixing [variables](../../../ci/variables/index.md) with strings for dynamic prefixes:
+Some other examples of mixing [variables](../../../ci/variables/_index.md) with strings for dynamic prefixes:
 
 - `pages.path_prefix: 'mr-$CI_COMMIT_REF_SLUG'`: Branch or tag name prefixed with `mr-`, like `mr-branch-name`.
 - `pages.path_prefix: '_${CI_MERGE_REQUEST_IID}_'`: Merge request number
@@ -371,7 +371,7 @@ The previous YAML example uses [user-defined job names](#user-defined-job-names)
 
 ### Use parallel deployments to create Pages environments
 
-You can use parallel GitLab Pages deployments to create a new [environment](../../../ci/environments/index.md).
+You can use parallel GitLab Pages deployments to create a new [environment](../../../ci/environments/_index.md).
 For example:
 
 ```yaml
@@ -400,10 +400,10 @@ deploy-pages:
 ```
 
 With this configuration, users will have the access to each GitLab Pages deployment through the UI.
-When using [environments](../../../ci/environments/index.md) for pages, all pages environments are
+When using [environments](../../../ci/environments/_index.md) for pages, all pages environments are
 listed on the project environment list.
 
-You can also [group similar environments](../../../ci/environments/index.md#group-similar-environments) together.
+You can also [group similar environments](../../../ci/environments/_index.md#group-similar-environments) together.
 
 The previous YAML example uses [user-defined job names](#user-defined-job-names).
 

@@ -505,7 +505,7 @@ might require commands to be wrapped as follows:
 Some of the reasons you may need to wrap commands:
 
 - Attaching using `kubectl exec`.
-- Using the GitLab [Web Terminal](../../ci/environments/index.md#web-terminals-deprecated).
+- Using the GitLab [Web Terminal](../../ci/environments/_index.md#web-terminals-deprecated).
 
 For example, to start a Rails console from the application root directory, run:
 

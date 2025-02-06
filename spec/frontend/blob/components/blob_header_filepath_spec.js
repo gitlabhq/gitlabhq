@@ -36,11 +36,19 @@ describe('Blob Header Filepath', () => {
       expect(wrapper.find('.js-blob-header-filepath').exists()).toBe(false);
     });
 
-    it('renders copy-to-clipboard icon that copies path of the Blob', () => {
-      createComponent();
-      const btn = wrapper.findComponent(ClipboardButton);
-      expect(btn.exists()).toBe(true);
-      expect(btn.vm.text).toBe(MockBlob.path);
+    describe('copy-to-clipboard icon button', () => {
+      it.each`
+        description                                      | flagValue
+        ${'renders button that copies path of the blob'} | ${false}
+        ${'does not render button'}                      | ${true}
+      `('when flag is $flagValue, $description', ({ flagValue }) => {
+        createComponent({}, { provide: { glFeatures: { blobOverflowMenu: flagValue } } });
+        const btn = wrapper.findComponent(ClipboardButton);
+        expect(btn.exists()).toBe(!flagValue);
+        if (!flagValue) {
+          expect(btn.vm.text).toBe(MockBlob.path);
+        }
+      });
     });
 
     it('renders filesize in a human-friendly format', () => {

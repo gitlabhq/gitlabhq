@@ -36,14 +36,14 @@ only the specified job. If you set `when: manual`, ChatOps creates the
 pipeline, but the job doesn't start automatically.
 
 A job run with ChatOps has the same functionality as a job run from
-GitLab. The job can use existing [CI/CD variables](../variables/index.md#predefined-cicd-variables) like
+GitLab. The job can use existing [CI/CD variables](../variables/_index.md#predefined-cicd-variables) like
 `GITLAB_USER_ID` to perform additional rights validation, but these
-variables can be [overridden](../variables/index.md#cicd-variable-precedence).
+variables can be [overridden](../variables/_index.md#cicd-variable-precedence).
 
 You should set [`rules`](../yaml/_index.md#rules) so the job does not
 run as part of the standard CI/CD pipeline.
 
-ChatOps passes the following [CI/CD variables](../variables/index.md#predefined-cicd-variables)
+ChatOps passes the following [CI/CD variables](../variables/_index.md#predefined-cicd-variables)
 to the job:
 
 - `CHAT_INPUT` - The arguments passed to the `run` slash command.

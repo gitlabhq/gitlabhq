@@ -335,7 +335,7 @@ This step introduces:
   [scheduled pipelines](../pipelines/schedules.md), or other specific situations.
   Rules are evaluated from top to bottom, and if a rule matches, the job is
   added to the pipeline.
-- [CI/CD variables](../variables/index.md): use these environment variables
+- [CI/CD variables](../variables/_index.md): use these environment variables
   to configure job behavior in the configuration file and in script commands.
   [Predefined CI/CD variables](../variables/predefined_variables.md) are variables
   that you do not need to manually define. They are automatically injected into pipelines

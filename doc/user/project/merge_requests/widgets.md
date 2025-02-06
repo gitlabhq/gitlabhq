@@ -26,7 +26,7 @@ of the **Overview** tab:
 - Which deployments are in progress.
 
 If an application is successfully deployed to an
-[environment](../../../ci/environments/index.md), the deployed environment and the link to the
+[environment](../../../ci/environments/_index.md), the deployed environment and the link to the
 [review app](../../../ci/review_apps/index.md) are both shown.
 
 NOTE:

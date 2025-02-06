@@ -103,11 +103,11 @@ POST /groups/:id/variables
 | `key`                                 | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
 | `value`                               | string         | Yes      | The `value` of a variable. |
 | `description`                         | string         | No       | The `description` of the variable; must have no more than 255 characters. Default: `null`. |
-| `environment_scope`                   | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable. Premium and Ultimate only. |
+| `environment_scope`                   | string         | No       | The [environment scope](../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable. Premium and Ultimate only. |
 | `masked`                              | boolean        | No       | Whether the variable is masked. |
 | `masked_and_hidden`                   | boolean        | No       | Whether the variable is masked and hidden. Default: `false` |
 | `protected`                           | boolean        | No       | Whether the variable is protected. |
-| `raw`                                 | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `raw`                                 | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/_index.md#prevent-cicd-variable-expansion). |
 | `variable_type`                       | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
@@ -146,11 +146,11 @@ PUT /groups/:id/variables/:key
 | `key`                                 | string         | Yes      | The `key` of a variable |
 | `value`                               | string         | Yes      | The `value` of a variable |
 | `description`                         | string         | No       | The description of the variable. Default: `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409641) in GitLab 16.2. |
-| `environment_scope`                   | string         | No       | The [environment scope](../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable. Premium and Ultimate only. |
+| `environment_scope`                   | string         | No       | The [environment scope](../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable) of a variable. Premium and Ultimate only. |
 | `filter`                              | hash           | No       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter). |
 | `masked`                              | boolean        | No       | Whether the variable is masked |
 | `protected`                           | boolean        | No       | Whether the variable is protected |
-| `raw`                                 | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/index.md#prevent-cicd-variable-expansion). |
+| `raw`                                 | boolean        | No       | Whether the variable is treated as a raw string. Default: `false`. When `true`, variables in the value are not [expanded](../ci/variables/_index.md#prevent-cicd-variable-expansion). |
 | `variable_type`                       | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
 
 ```shell

@@ -9,7 +9,7 @@ export default {
   environmentOnStopLink: helpPagePath('ci/yaml/_index.html', {
     anchor: 'environmenton_stop',
   }),
-  stoppingEnvironmentDocsLink: helpPagePath('ci/environments/index', {
+  stoppingEnvironmentDocsLink: helpPagePath('ci/environments/_index', {
     anchor: 'stopping-an-environment',
   }),
 

@@ -19,7 +19,7 @@ module FeatureFlagsHelper
       environments_endpoint: search_project_environments_path(@project, format: :json),
       strategy_type_docs_page_path: help_page_path('operations/feature_flags.md', anchor: 'feature-flag-strategies'),
       environments_scope_docs_path: help_page_path(
-        'ci/environments/index.md',
+        'ci/environments/_index.md',
         anchor: 'limit-the-environment-scope-of-a-cicd-variable'
       )
     }

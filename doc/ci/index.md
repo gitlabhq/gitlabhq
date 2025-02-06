@@ -100,7 +100,7 @@ Variables can be marked as "protected" or "masked" for added security.
 
 For more information, see:
 
-- [CI/CD variables](variables/index.md)
+- [CI/CD variables](variables/_index.md)
 - [Dynamically generated predefined variables](variables/predefined_variables.md)
 
 ## Step 5: Use CI/CD components

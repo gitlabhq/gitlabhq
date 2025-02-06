@@ -4138,10 +4138,6 @@ Input type: `CreateNoteInput`
 
 Creates a protection rule to restrict access to project packages.
 
-DETAILS:
-**Introduced** in GitLab 16.5.
-**Status**: Experiment.
-
 Input type: `CreatePackagesProtectionRuleInput`
 
 #### Arguments
@@ -4149,9 +4145,9 @@ Input type: `CreatePackagesProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. Introduced in GitLab 16.5: **Status**: Experiment. |
-| <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
-| <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
+| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
 | <a id="mutationcreatepackagesprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
 
 #### Fields
@@ -4160,7 +4156,7 @@ Input type: `CreatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` **{warning-solid}** | [`PackagesProtectionRule`](#packagesprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.5. |
+| <a id="mutationcreatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule after mutation. |
 
 ### `Mutation.createRequirement`
 
@@ -4829,10 +4825,6 @@ Input type: `DeleteContainerProtectionTagRuleInput`
 
 Deletes a protection rule for packages.
 
-DETAILS:
-**Introduced** in GitLab 16.6.
-**Status**: Experiment.
-
 Input type: `DeletePackagesProtectionRuleInput`
 
 #### Arguments
@@ -4848,7 +4840,7 @@ Input type: `DeletePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdeletepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeletepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdeletepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` **{warning-solid}** | [`PackagesProtectionRule`](#packagesprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="mutationdeletepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule that was deleted successfully. |
 
 ### `Mutation.deletePagesDeployment`
 
@@ -11055,10 +11047,6 @@ Input type: `UpdatePackagesCleanupPolicyInput`
 
 Updates a package protection rule to restrict access to project packages. You can prevent users without certain permissions from altering packages.
 
-DETAILS:
-**Introduced** in GitLab 16.6.
-**Status**: Experiment.
-
 Input type: `UpdatePackagesProtectionRuleInput`
 
 #### Arguments
@@ -11067,9 +11055,9 @@ Input type: `UpdatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
-| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
-| <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
-| <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` **{warning-solid}** | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
 
 #### Fields
 
@@ -11077,7 +11065,7 @@ Input type: `UpdatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` **{warning-solid}** | [`PackagesProtectionRule`](#packagesprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="mutationupdatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule after mutation. |
 
 ### `Mutation.updateRequirement`
 
@@ -17692,6 +17680,29 @@ The edge type for [`Service`](#service).
 | ---- | ---- | ----------- |
 | <a id="serviceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="serviceedgenode"></a>`node` | [`Service`](#service) | The item at the end of the edge. |
+
+#### `SeverityOverrideConnection`
+
+The connection type for [`SeverityOverride`](#severityoverride).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="severityoverrideconnectionedges"></a>`edges` | [`[SeverityOverrideEdge]`](#severityoverrideedge) | A list of edges. |
+| <a id="severityoverrideconnectionnodes"></a>`nodes` | [`[SeverityOverride]`](#severityoverride) | A list of nodes. |
+| <a id="severityoverrideconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `SeverityOverrideEdge`
+
+The edge type for [`SeverityOverride`](#severityoverride).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="severityoverrideedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="severityoverrideedgenode"></a>`node` | [`SeverityOverride`](#severityoverride) | The item at the end of the edge. |
 
 #### `SnippetBlobConnection`
 
@@ -31799,10 +31810,10 @@ A packages protection rule designed to protect packages from being pushed by use
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="packagesprotectionruleid"></a>`id` **{warning-solid}** | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | **Introduced** in GitLab 16.5. **Status**: Experiment. ID of the package protection rule. |
-| <a id="packagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | **Introduced** in GitLab 16.5. **Status**: Experiment. Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
-| <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.5. **Status**: Experiment. Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
-| <a id="packagesprotectionrulepackagetype"></a>`packageType` **{warning-solid}** | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | **Introduced** in GitLab 16.5. **Status**: Experiment. Package type protected by the protection rule. For example `NPM`. |
+| <a id="packagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule. |
+| <a id="packagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
+| <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="packagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
 
 ### `PageInfo`
 
@@ -36219,6 +36230,19 @@ State of a Sentry error.
 | <a id="sentryerrortagslevel"></a>`level` | [`String`](#string) | Severity level of the Sentry Error. |
 | <a id="sentryerrortagslogger"></a>`logger` | [`String`](#string) | Logger of the Sentry Error. |
 
+### `SeverityOverride`
+
+Represents a vulnerability severity override.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="severityoverrideauthor"></a>`author` | [`UserCore!`](#usercore) | User who changed the severity. |
+| <a id="severityoverridecreatedat"></a>`createdAt` | [`Time`](#time) | Time of severity change. |
+| <a id="severityoverridenewseverity"></a>`newSeverity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | New severity of the vulnerability. |
+| <a id="severityoverrideoriginalseverity"></a>`originalSeverity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | Original severity of the vulnerability. |
+
 ### `SlashCommand`
 
 Duo Chat slash command.
@@ -37788,6 +37812,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
 | <a id="vulnerabilityscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="vulnerabilityseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
+| <a id="vulnerabilityseverityoverrides"></a>`severityOverrides` | [`SeverityOverrideConnection`](#severityoverrideconnection) | All the severity changes for this vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilitysolution"></a>`solution` | [`String`](#string) | Recommended solution for the vulnerability. |
 | <a id="vulnerabilitystate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED). |
 | <a id="vulnerabilitystatecomment"></a>`stateComment` | [`String`](#string) | Comment given for the vulnerability state change. |
@@ -41765,9 +41790,9 @@ Access level of a package protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="packagesprotectionruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Admin access. |
-| <a id="packagesprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Maintainer access. |
-| <a id="packagesprotectionruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Owner access. |
+| <a id="packagesprotectionruleaccessleveladmin"></a>`ADMIN` | Admin access. |
+| <a id="packagesprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
+| <a id="packagesprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
 
 ### `PackagesProtectionRulePackageType`
 

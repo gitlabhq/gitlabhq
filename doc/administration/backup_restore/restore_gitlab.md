@@ -40,7 +40,7 @@ before restoring the backup.
 ### GitLab secrets must be restored
 
 To restore a backup, **you must also restore the GitLab secrets**.
-These include the database encryption key, [CI/CD variables](../../ci/variables/index.md), and
+These include the database encryption key, [CI/CD variables](../../ci/variables/_index.md), and
 variables used for [two-factor authentication](../../user/profile/account/two_factor_authentication.md).
 Without the keys, [multiple issues occur](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost), including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
 and GitLab Runners cannot sign in.

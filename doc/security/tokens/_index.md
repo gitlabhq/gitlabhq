@@ -33,8 +33,8 @@ Do not:
 - Store tokens in plaintext in your projects. If the token is an external secret for GitLab CI/CD,
   review how to [use external secrets in CI/CD](../../ci/secrets/index.md) recommendations.
 - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, comment, or any other free text inputs.
-- Log credentials in the console logs or artifacts. Consider [protecting](../../ci/variables/index.md#protect-a-cicd-variable) and
-  [masking](../../ci/variables/index.md#mask-a-cicd-variable) your credentials.
+- Log credentials in the console logs or artifacts. Consider [protecting](../../ci/variables/_index.md#protect-a-cicd-variable) and
+  [masking](../../ci/variables/_index.md#mask-a-cicd-variable) your credentials.
 
 ### Tokens in CI/CD
 
@@ -45,11 +45,11 @@ If access to other resources is required from a CI/CD job, use one of the follow
 1. Project tokens
 1. Group tokens
 
-Additional recommendations for [CI/CD variable security](../../ci/variables/index.md#cicd-variable-security) include:
+Additional recommendations for [CI/CD variable security](../../ci/variables/_index.md#cicd-variable-security) include:
 
 - Use [secrets storage](../../ci/pipelines/pipeline_security.md#secrets-storage) for any credentials.
-- CI/CD variable containing sensitive information should be [protected](../../ci/variables/index.md#protect-a-cicd-variable),
-  [masked](../../ci/variables/index.md#mask-a-cicd-variable), and [hidden](../../ci/variables/index.md#hide-a-cicd-variable).
+- CI/CD variable containing sensitive information should be [protected](../../ci/variables/_index.md#protect-a-cicd-variable),
+  [masked](../../ci/variables/_index.md#mask-a-cicd-variable), and [hidden](../../ci/variables/_index.md#hide-a-cicd-variable).
 
 ## Personal access tokens
 

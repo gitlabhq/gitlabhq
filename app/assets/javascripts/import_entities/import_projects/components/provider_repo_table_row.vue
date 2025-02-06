@@ -164,7 +164,11 @@ export default {
     <td>
       <gl-link :href="repo.importSource.providerLink" target="_blank" data-testid="provider-link"
         >{{ repo.importSource.fullName }}
-        <gl-icon v-if="repo.importSource.providerLink" name="external-link" />
+        <gl-icon
+          v-if="repo.importSource.providerLink"
+          name="external-link"
+          class="gl-fill-icon-link"
+        />
       </gl-link>
       <div v-if="isFinished" class="gl-mt-2 gl-text-sm">
         <gl-sprintf :message="s__('BulkImport|Last imported to %{link}')">
@@ -192,14 +196,14 @@ export default {
               @select="onSelect"
             />
             <div
-              class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-t-1 gl-border-solid gl-border-gray-400 gl-px-3"
+              class="gl-flex gl-items-center gl-border-0 gl-border-b-1 gl-border-t-1 gl-border-solid gl-border-strong gl-px-3"
             >
               /
             </div>
             <gl-form-input
               ref="newNameInput"
               v-model="newNameInput"
-              class="gl-rounded-bl-none gl-rounded-tl-none"
+              class="gl-rounded-bl-none gl-rounded-tl-none !gl-shadow-inner-1-border-strong"
               data-testid="project-path-field"
             />
           </div>

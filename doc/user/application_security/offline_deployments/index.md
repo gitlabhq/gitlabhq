@@ -157,7 +157,7 @@ GitLab.com. To do so, set the CI/CD variable `SECURE_ANALYZERS_PREFIX` with the 
 project [container registry](../../packages/container_registry/index.md).
 
 You can set this variable in the projects' `.gitlab-ci.yml`, or
-in the GitLab UI in the project or group. See the [GitLab CI/CD variables page](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui)
+in the GitLab UI in the project or group. See the [GitLab CI/CD variables page](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui)
 for more information.
 
 #### Variables

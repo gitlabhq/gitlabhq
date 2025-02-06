@@ -413,7 +413,7 @@ gem 'thrift', '>= 0.16.0', feature_category: :shared
 # I18n
 gem 'rails-i18n', '~> 7.0', '>= 7.0.9', feature_category: :internationalization
 gem 'gettext_i18n_rails', '~> 1.13.0', feature_category: :internationalization
-gem 'gettext', '~> 3.4', '>= 3.4.9',
+gem 'gettext', '~> 3.5', '>= 3.5.1',
   require: false,
   group: [:development, :test],
   feature_category: :internationalization
@@ -593,7 +593,7 @@ group :test do
   gem 'graphlyte', '~> 1.0.0', feature_category: :shared
 
   gem 'shoulda-matchers', '~> 5.1.0', require: false, feature_category: :shared
-  gem 'email_spec', '~> 2.2.0', feature_category: :shared
+  gem 'email_spec', '~> 2.3.0', feature_category: :shared
   gem 'webmock', '~> 3.24.0', feature_category: :shared
   gem 'rails-controller-testing', feature_category: :shared
   gem 'concurrent-ruby', '~> 1.1', feature_category: :shared

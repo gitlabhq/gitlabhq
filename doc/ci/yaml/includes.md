@@ -403,9 +403,9 @@ does not affect the final configuration
 
 In `include` sections in your `.gitlab-ci.yml` file, you can use:
 
-- [Project variables](../variables/index.md#for-a-project).
-- [Group variables](../variables/index.md#for-a-group).
-- [Instance variables](../variables/index.md#for-an-instance).
+- [Project variables](../variables/_index.md#for-a-project).
+- [Group variables](../variables/_index.md#for-a-group).
+- [Instance variables](../variables/_index.md#for-an-instance).
 - Project [predefined variables](../variables/predefined_variables.md) (`CI_PROJECT_*`).
 - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).

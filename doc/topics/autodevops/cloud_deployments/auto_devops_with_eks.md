@@ -208,12 +208,12 @@ you to common environment tasks:
   about the Kubernetes cluster and how the application
   affects it in terms of memory usage, CPU usage, and latency
 - **Deploy to** (**{play}** **{chevron-lg-down}**) - Displays a list of environments you can deploy to
-- **Terminal** (**{terminal}**) - Opens a [web terminal](../../../ci/environments/index.md#web-terminals-deprecated)
+- **Terminal** (**{terminal}**) - Opens a [web terminal](../../../ci/environments/_index.md#web-terminals-deprecated)
   session inside the container where the application is running
 - **Re-deploy to environment** (**{repeat}**) - For more information, see
   [Retrying and rolling back](../../../ci/environments/deployments.md#retry-or-roll-back-a-deployment)
 - **Stop environment** (**{stop}**) - For more information, see
-  [Stopping an environment](../../../ci/environments/index.md#stopping-an-environment)
+  [Stopping an environment](../../../ci/environments/_index.md#stopping-an-environment)
 
 GitLab displays the [deploy board](../../../user/project/deploy_boards.md) below the
 environment's information, with squares representing pods in your

@@ -129,7 +129,7 @@ When running in this method, you provide a container image that has the required
    has read access to the GitLab API and registry using the `API_DISCOVERY_PACKAGE_TOKEN` variable.
    This is not required if you are using `gitlab.com` and have not customized the `API_DISCOVERY_PACKAGES`
    variable. The following example uses a
-   [custom CI/CD variable](../../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui) named
+   [custom CI/CD variable](../../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui) named
    `GITLAB_READ_TOKEN` to store the token.
 
    ```yaml

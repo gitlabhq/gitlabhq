@@ -10,12 +10,15 @@ import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 import projectShortPathQuery from '~/repository/queries/project_short_path.query.graphql';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const UPLOAD_BLOB_MODAL_ID = 'modal-upload-blob';
 const NEW_DIRECTORY_MODAL_ID = 'modal-new-directory';
 
 export default {
   components: {
+    ClipboardButton,
     GlDisclosureDropdown,
     UploadBlobModal,
     NewDirectoryModal,
@@ -44,7 +47,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, featureFlagMixin()],
   inject: {
     projectRootPath: {
       default: '',
@@ -297,6 +300,12 @@ export default {
     newDirectoryPath() {
       return joinPaths(this.newDirPath, this.currentPath);
     },
+    gfmCopyText() {
+      return `\`${this.currentPath}\``;
+    },
+    showCopyButton() {
+      return this.glFeatures.blobOverflowMenu && this.currentPath?.trim().length;
+    },
   },
   methods: {
     isLast(i) {
@@ -310,7 +319,7 @@ export default {
   <nav
     :aria-label="__('Files breadcrumb')"
     :data-current-path="currentDirectoryPath"
-    class="js-repo-breadcrumbs"
+    class="js-repo-breadcrumbs gl-flex"
   >
     <ol class="breadcrumb repo-breadcrumb">
       <li v-for="(link, i) in pathLinks" :key="i" class="breadcrumb-item">
@@ -330,6 +339,14 @@ export default {
         />
       </li>
     </ol>
+    <clipboard-button
+      v-if="showCopyButton"
+      :text="currentPath"
+      :gfm="gfmCopyText"
+      :title="__('Copy file path')"
+      category="tertiary"
+      css-class="gl-mx-2"
+    />
     <upload-blob-modal
       v-if="showUploadModal"
       :modal-id="$options.uploadBlobModalId"

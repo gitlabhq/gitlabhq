@@ -110,7 +110,7 @@ If you don't set `TF_STATE_NAME` or `TF_ADDRESS` in your job, the job fails with
 To resolve this, ensure that either `TF_ADDRESS` or `TF_STATE_NAME` is accessible in the
 job that returned the error:
 
-1. Configure the [CI/CD environment scope](../../../ci/variables/index.md#for-a-project) for the job.
+1. Configure the [CI/CD environment scope](../../../ci/variables/_index.md#for-a-project) for the job.
 1. Set the job's [environment](../../../ci/yaml/_index.md#environment), matching the environment scope from the previous step.
 
 ### Error refreshing state: HTTP remote state endpoint requires auth

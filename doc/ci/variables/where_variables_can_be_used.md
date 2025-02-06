@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-As it's described in the [CI/CD variables](index.md) documentation, you can
+As it's described in the [CI/CD variables](_index.md) documentation, you can
 define many different variables. Some of them can be used for all GitLab CI/CD
 features, but some of them are more or less limited.
 

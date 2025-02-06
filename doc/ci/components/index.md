@@ -547,7 +547,7 @@ In other cases, CI/CD variables might still be preferred. For example:
 
 - Use [predefined variables](../variables/predefined_variables.md) to automatically configure
   a component to match a user's project.
-- Ask users to store sensitive values as [masked or protected CI/CD variables in project settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+- Ask users to store sensitive values as [masked or protected CI/CD variables in project settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 
 ## CI/CD Catalog
 

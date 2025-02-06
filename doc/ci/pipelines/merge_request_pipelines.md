@@ -22,7 +22,7 @@ This type of pipeline, called a merge request pipeline, runs when you:
 In addition, merge request pipelines:
 
 - Have access to [more predefined variables](merge_request_pipelines.md#available-predefined-variables).
-- Do not have access to [protected variables](../variables/index.md#protect-a-cicd-variable) or
+- Do not have access to [protected variables](../variables/_index.md#protect-a-cicd-variable) or
   [protected runners](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 
 These pipelines display a `merge request` label in pipeline lists.

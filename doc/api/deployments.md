@@ -28,7 +28,7 @@ GET /projects/:id/deployments
 | `updated_before`  | datetime       | no       | Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `finished_after`  | datetime       | no       | Return deployments finished after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `finished_before` | datetime       | no       | Return deployments finished before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `environment`     | string         | no       | The [name of the environment](../ci/environments/index.md) to filter deployments by.       |
+| `environment`     | string         | no       | The [name of the environment](../ci/environments/_index.md) to filter deployments by.       |
 | `status`          | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`. |
 
 ```shell
@@ -334,7 +334,7 @@ POST /projects/:id/deployments
 | Attribute     | Type           | Required | Description                                                                                                     |
 |---------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------|
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).|
-| `environment` | string         | yes      | The [name of the environment](../ci/environments/index.md) to create the deployment for.                        |
+| `environment` | string         | yes      | The [name of the environment](../ci/environments/_index.md) to create the deployment for.                        |
 | `sha`         | string         | yes      | The SHA of the commit that is deployed.                                                                         |
 | `ref`         | string         | yes      | The name of the branch or tag that is deployed.                                                                 |
 | `tag`         | boolean        | yes      | A boolean that indicates if the deployed ref is a tag (`true`) or not (`false`).                                |

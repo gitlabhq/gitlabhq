@@ -47,7 +47,7 @@ After you enable the integration, the global variables `$SUPPLY_PACKAGE_NAME` an
 
 ### CI/CD variable security
 
-Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables, including `$SUPPLY_JSON_KEY_DATA`, and send them to a third-party server. For more information, see [CI/CD variable security](../../../ci/variables/index.md#cicd-variable-security).
+Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables, including `$SUPPLY_JSON_KEY_DATA`, and send them to a third-party server. For more information, see [CI/CD variable security](../../../ci/variables/_index.md#cicd-variable-security).
 
 ## Enable the integration in fastlane
 

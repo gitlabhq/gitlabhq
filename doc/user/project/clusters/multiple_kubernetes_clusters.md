@@ -25,8 +25,8 @@ differentiates the new cluster from the rest.
 ## Setting the environment scope
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
-them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/index.md) similar to how the
-[environment-specific CI/CD variables](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable) work.
+them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments/_index.md) similar to how the
+[environment-specific CI/CD variables](../../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, use that cluster. Each scope can be used only by a single cluster

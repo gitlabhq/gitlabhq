@@ -402,7 +402,7 @@ export default {
       return `${this.$options.i18n.pipelineAriaLabel} ${index + 1}`;
     },
   },
-  learnMorePath: helpPagePath('ci/variables/index', {
+  learnMorePath: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
   }),
 };

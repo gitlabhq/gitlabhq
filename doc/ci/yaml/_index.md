@@ -663,7 +663,7 @@ workflow:
   of only CI/CD variables could evaluate to an empty string if all the variables are also empty.
 - `workflow:rules:variables` become [default variables](#default-variables) available in all jobs,
   including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
-  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
+  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/_index.md#cicd-variable-precedence)
   by the upstream variable value. Be sure to either:
   - Use a unique variable name in every project's pipeline configuration, like `PROJECT1_PIPELINE_NAME`.
   - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
@@ -784,7 +784,7 @@ When the branch is something else:
 
 - `workflow:rules:variables` become [default variables](#variables) available in all jobs,
   including [`trigger`](#trigger) jobs which forward variables to downstream pipelines by default.
-  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/index.md#cicd-variable-precedence)
+  If the downstream pipeline uses the same variable, the [variable is overwritten](../variables/_index.md#cicd-variable-precedence)
   by the upstream variable value. Be sure to either:
   - Use unique variable names in every project's pipeline configuration, like `PROJECT1_VARIABLE_NAME`.
   - Use [`inherit:variables`](#inheritvariables) in the trigger job and list the
@@ -1410,7 +1410,7 @@ test:
 **Additional details**:
 
 - Artifacts are saved, but do not display in the UI if the `artifacts:paths` values:
-  - Use [CI/CD variables](../variables/index.md).
+  - Use [CI/CD variables](../variables/_index.md).
   - Define a directory, but do not end with `/`. For example, `directory/` works with `artifacts:expose_as`,
     but `directory` does not.
   - Start with `./`. For example, `file` works with `artifacts:expose_as`, but `./file` does not.
@@ -2198,7 +2198,7 @@ the [stage](#stages) precedence.
 
 ### `environment`
 
-Use `environment` to define the [environment](../environments/index.md) that a job deploys to.
+Use `environment` to define the [environment](../environments/_index.md) that a job deploys to.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2225,7 +2225,7 @@ deploy to production:
 
 #### `environment:name`
 
-Set a name for an [environment](../environments/index.md).
+Set a name for an [environment](../environments/_index.md).
 
 Common environment names are `qa`, `staging`, and `production`, but you can use any name.
 
@@ -2251,7 +2251,7 @@ deploy to production:
 
 #### `environment:url`
 
-Set a URL for an [environment](../environments/index.md).
+Set a URL for an [environment](../environments/_index.md).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2301,10 +2301,10 @@ Use the `action` keyword to specify how the job interacts with the environment.
 | **Value** | **Description** |
 |:----------|:----------------|
 | `start`   | Default value. Indicates that the job starts the environment. The deployment is created after the job starts. |
-| `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
-| `stop`    | Indicates that the job stops an environment. [Read more about stopping an environment](../environments/index.md#stopping-an-environment). |
-| `verify`  | Indicates that the job is only verifying the environment. It does not trigger deployments. [Read more about verifying environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
-| `access`  | Indicates that the job is only accessing the environment. It does not trigger deployments. [Read more about accessing environments](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes). |
+| `prepare` | Indicates that the job is only preparing the environment. It does not trigger deployments. [Read more about preparing environments](../environments/_index.md#access-an-environment-for-preparation-or-verification-purposes). |
+| `stop`    | Indicates that the job stops an environment. [Read more about stopping an environment](../environments/_index.md#stopping-an-environment). |
+| `verify`  | Indicates that the job is only verifying the environment. It does not trigger deployments. [Read more about verifying environments](../environments/_index.md#access-an-environment-for-preparation-or-verification-purposes). |
+| `access`  | Indicates that the job is only accessing the environment. It does not trigger deployments. [Read more about accessing environments](../environments/_index.md#access-an-environment-for-preparation-or-verification-purposes). |
 
 **Example of `environment:action`**:
 
@@ -2355,11 +2355,11 @@ Every time the review app is deployed, that lifetime is also reset to `1 day`.
 
 The `auto_stop_in` keyword can be used for all [environment actions](#environmentaction) except `stop`.
 Some actions can be used to reset the scheduled stop time for the environment. For more information, see
-[Access an environment for preparation or verification purposes](../environments/index.md#access-an-environment-for-preparation-or-verification-purposes).
+[Access an environment for preparation or verification purposes](../environments/_index.md#access-an-environment-for-preparation-or-verification-purposes).
 
 **Related topics**:
 
-- [Environments auto-stop documentation](../environments/index.md#stop-an-environment-after-a-certain-time-period).
+- [Environments auto-stop documentation](../environments/_index.md#stop-an-environment-after-a-certain-time-period).
 
 #### `environment:kubernetes`
 
@@ -2433,16 +2433,16 @@ deploy:
 
 **Additional details**:
 
-- Environments created from this job definition are assigned a [tier](../environments/index.md#deployment-tier-of-environments) based on this value.
+- Environments created from this job definition are assigned a [tier](../environments/_index.md#deployment-tier-of-environments) based on this value.
 - Existing environments don't have their tier updated if this value is added later. Existing environments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
 
 **Related topics**:
 
-- [Deployment tier of environments](../environments/index.md#deployment-tier-of-environments).
+- [Deployment tier of environments](../environments/_index.md#deployment-tier-of-environments).
 
 #### Dynamic environments
 
-Use CI/CD [variables](../variables/index.md) to dynamically name environments.
+Use CI/CD [variables](../variables/_index.md) to dynamically name environments.
 
 For example:
 
@@ -2457,7 +2457,7 @@ deploy as review app:
 
 The `deploy as review app` job is marked as a deployment to dynamically
 create the `review/$CI_COMMIT_REF_SLUG` environment. `$CI_COMMIT_REF_SLUG`
-is a [CI/CD variable](../variables/index.md) set by the runner. The
+is a [CI/CD variable](../variables/_index.md) set by the runner. The
 `$CI_ENVIRONMENT_SLUG` variable is based on the environment name, but suitable
 for inclusion in URLs. If the `deploy as review app` job runs in a branch named
 `pow`, this environment would be accessible with a URL like `https://review-pow.example.com/`.
@@ -3209,7 +3209,7 @@ build_job:
   is limited to jobs in the same pipeline. Make sure that the needed job in the other
   pipeline completes before the job that needs it tries to download the artifacts.
 - You can't download artifacts from jobs that run in [`parallel`](#parallel).
-- Support [CI/CD variables](../variables/index.md) in `project`, `job`, and `ref`.
+- Support [CI/CD variables](../variables/_index.md) in `project`, `job`, and `ref`.
 
 **Related topics**:
 
@@ -3632,7 +3632,7 @@ This example creates 5 jobs that run in parallel, named `test 1/5` to `test 5/5`
 **Additional details**:
 
 - Every parallel job has a `CI_NODE_INDEX` and `CI_NODE_TOTAL`
-  [predefined CI/CD variable](../variables/index.md#predefined-cicd-variables) set.
+  [predefined CI/CD variable](../variables/_index.md#predefined-cicd-variables) set.
 - A pipeline with jobs that use `parallel` might:
   - Create more jobs running in parallel than available runners. Excess jobs are queued
     and marked `pending` while waiting for an available runner.
@@ -3912,7 +3912,7 @@ job:
 
 - The `description` is evaluated by the shell that runs `release-cli`.
   You can use CI/CD variables to define the description, but some shells
-  [use different syntax](../variables/index.md#use-cicd-variables-in-job-scripts)
+  [use different syntax](../variables/_index.md#use-cicd-variables-in-job-scripts)
   to reference variables. Similarly, some shells might require special characters
   to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (<code>&#92;</code>).
 
@@ -4196,7 +4196,7 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 
 `if` clauses are evaluated:
 
-- Based on the values of [CI/CD variables](../variables/index.md) or [predefined CI/CD variables](../variables/predefined_variables.md),
+- Based on the values of [CI/CD variables](../variables/_index.md) or [predefined CI/CD variables](../variables/predefined_variables.md),
   with [some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 - In order, following [`rules` execution flow](#rules).
 
@@ -4229,7 +4229,7 @@ job:
   defined for the job, which defaults to `on_success` if not defined.
 - You can [mix `when` at the job-level with `when` in rules](https://gitlab.com/gitlab-org/gitlab/-/issues/219437).
   `when` configuration in `rules` takes precedence over `when` at the job-level.
-- Unlike variables in [`script`](../variables/index.md#use-cicd-variables-in-job-scripts)
+- Unlike variables in [`script`](../variables/_index.md#use-cicd-variables-in-job-scripts)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
 - CI/CD variables on the right side of `=~` and `!~` expressions are [evaluated as regular expressions](../jobs/job_rules.md#store-a-regular-expression-in-a-variable).
@@ -4829,8 +4829,8 @@ DETAILS:
 Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
 - Retrieve from an external secrets provider.
-- Make available in the job as [CI/CD variables](../variables/index.md)
-  ([`file` type](../variables/index.md#use-file-type-cicd-variables) by default).
+- Make available in the job as [CI/CD variables](../variables/_index.md)
+  ([`file` type](../variables/_index.md#use-file-type-cicd-variables) by default).
 
 #### `secrets:vault`
 
@@ -4941,7 +4941,7 @@ job:
 #### `secrets:file`
 
 Use `secrets:file` to configure the secret to be stored as either a
-[`file` or `variable` type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
+[`file` or `variable` type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables)
 
 By default, the secret is passed to the job as a `file` type CI/CD variable. The value
 of the secret is stored in the file and the variable contains the path to the file.
@@ -5378,7 +5378,7 @@ trigger-multi-project-pipeline:
   before running a manual trigger job.
 - [CI/CD variables](#variables) defined in a top-level `variables` section (globally) or in the trigger job are forwarded
   to the downstream pipeline as [trigger variables](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
-- [Pipeline variables](../variables/index.md#cicd-variable-precedence) are not passed
+- [Pipeline variables](../variables/_index.md#cicd-variable-precedence) are not passed
   to downstream pipelines by default. Use [trigger:forward](#triggerforward) to forward
   these variables to downstream pipelines.
 - [Job-only variables](../variables/predefined_variables.md#variable-availability)
@@ -5507,7 +5507,7 @@ unless the nested downstream trigger job also uses `trigger:forward`.
 
 - `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
   in the trigger job are passed to downstream pipelines.
-- `pipeline_variables`: `true` or `false` (default). When `true`, [pipeline variables](../variables/index.md#cicd-variable-precedence)
+- `pipeline_variables`: `true` or `false` (default). When `true`, [pipeline variables](../variables/_index.md#cicd-variable-precedence)
   are passed to the downstream pipeline.
 
 **Example of `trigger:forward`**:
@@ -5547,7 +5547,7 @@ child3:
 
 **Additional details**:
 
-- CI/CD variables forwarded to downstream pipelines with `trigger:forward` are [pipeline variables](../variables/index.md#cicd-variable-precedence),
+- CI/CD variables forwarded to downstream pipelines with `trigger:forward` are [pipeline variables](../variables/_index.md#cicd-variable-precedence),
   which have high precedence. If a variable with the same name is defined in the downstream pipeline,
   that variable is usually overwritten by the forwarded variable.
 
@@ -5655,7 +5655,7 @@ delete_job:
 
 ## `variables`
 
-Use `variables` to define [CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
+Use `variables` to define [CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
 
 Variables can be [defined in a CI/CD job](#job-variables), or as a top-level (global) keyword to define
 [default CI/CD variables](#default-variables) for all jobs.
@@ -5664,8 +5664,8 @@ Variables can be [defined in a CI/CD job](#job-variables), or as a top-level (gl
 
 - All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
-  in [protected variables](../variables/index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
-- [Manual pipeline variables](../variables/index.md#use-pipeline-variables)
+  in [protected variables](../variables/_index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
+- [Manual pipeline variables](../variables/_index.md#use-pipeline-variables)
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
   to forward these variables to downstream pipelines.
@@ -5716,7 +5716,7 @@ for all jobs.
 
 Each default variable is made available to every job in the pipeline, except when
 the job already has a variable defined with the same name. The variable defined in the job
-[takes precedence](../variables/index.md#cicd-variable-precedence), so the value of
+[takes precedence](../variables/_index.md#cicd-variable-precedence), so the value of
 the default variable with the same name cannot be used in the job.
 
 Like job variables, you cannot use default variables as values for other global keywords,
@@ -6018,7 +6018,7 @@ for removal in a future milestone. To use refs, regular expressions, or variable
 to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
 
 You can use the `only:variables` or `except:variables` keywords to control when to add jobs
-to a pipeline, based on the status of [CI/CD variables](../variables/index.md).
+to a pipeline, based on the status of [CI/CD variables](../variables/_index.md).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

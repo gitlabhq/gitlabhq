@@ -86,8 +86,8 @@ export default {
     reset: __('Reset'),
   },
   agentSelectorHelpPagePath: helpPagePath('user/clusters/agent/user_access.md'),
-  environmentsHelpPagePath: helpPagePath('ci/environments/index.md'),
-  renamingDisabledHelpPagePath: helpPagePath('ci/environments/index.md', {
+  environmentsHelpPagePath: helpPagePath('ci/environments/_index.md'),
+  renamingDisabledHelpPagePath: helpPagePath('ci/environments/_index.md', {
     anchor: 'rename-an-environment',
   }),
   markdownDocsPath: helpPagePath('user/markdown'),

@@ -102,8 +102,8 @@ DETAILS:
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
-[environments](../../../ci/environments/index.md) similar to how the
-[environment-specific CI/CD variables](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable)
+[environments](../../../ci/environments/_index.md) similar to how the
+[environment-specific CI/CD variables](../../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable)
 work.
 
 While evaluating which environment matches the environment scope of a
@@ -160,7 +160,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-For a consolidated view of which CI [environments](../../../ci/environments/index.md)
+For a consolidated view of which CI [environments](../../../ci/environments/_index.md)
 are deployed to the Kubernetes cluster, see the documentation for
 [cluster environments](../../clusters/environments.md).
 

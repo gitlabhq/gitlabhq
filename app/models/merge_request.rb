@@ -1721,8 +1721,13 @@ class MergeRequest < ApplicationRecord
     project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
   end
 
+  # We use a heuristic of if there are pipeline created, being created, or a ci integration is setup
   def has_ci_enabled?
-    has_ci? || project.has_ci?
+    has_ci? || (Feature.enabled?(:change_ci_enabled_hurestic, self.project) ? pipeline_creating? : project.has_ci?)
+  end
+
+  def pipeline_creating?
+    Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(self)
   end
 
   def environments_in_head_pipeline(deployment_status: nil)

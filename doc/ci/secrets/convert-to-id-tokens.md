@@ -231,7 +231,7 @@ job:
       file: false
 ```
 
-Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-ui),
+Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-ui),
 if preferred.
 
 We use [`secrets:file:false`](../yaml/_index.md#secretsfile) because ID tokens place secrets in a file by default, but we need it to work as a regular variable to match the old behavior.

@@ -96,7 +96,7 @@ To control the rollout of rule changes, you can [pin SAST analyzers to a specifi
 
 If you want to make these changes at the same time across multiple projects, consider setting the variables in:
 
-- [Group-level CI/CD variables](../../../ci/variables/index.md#for-a-group).
+- [Group-level CI/CD variables](../../../ci/variables/_index.md#for-a-group).
 - Custom CI/CD variables in a [Scan Execution Policy](../policies/scan_execution_policies.md).
 
 ## Report a problem with a GitLab SAST rule

@@ -35,7 +35,7 @@ View some of the most popular topics:
 |:-------------------------------------------------------------------------------|:------------|
 | [CI/CD YAML syntax reference](ci/yaml/_index.md)                                | Available configuration options for `.gitlab-ci.yml` files. |
 | [REST API](api/rest/_index.md)                                                  | Use the REST API to extend GitLab. |
-| [Environments and deployments](ci/environments/index.md)                       | Deploy your application to different environments. |
+| [Environments and deployments](ci/environments/_index.md)                       | Deploy your application to different environments. |
 | [Configuring runners](ci/runners/configure_runners.md)                         | Get started using runners. |
 | [Two-factor authentication](user/profile/account/two_factor_authentication.md) | Improve the security of your GitLab account. |
 | [Back up and restore GitLab](administration/backup_restore/index.md)           | Back up and restore a GitLab Self-Managed instance. |

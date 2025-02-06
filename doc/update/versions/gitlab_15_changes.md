@@ -401,7 +401,7 @@ DETAILS:
   [Read more about the Sidekiq concurrency setting](../../administration/sidekiq/extra_sidekiq_processes.md#concurrency).
 - GitLab Runner 15.7.0 introduced a breaking change that affects CI/CD jobs: [Correctly handle expansion of job file variables](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3613).
   Previously, job-defined variables that referred to
-  [file type variables](../../ci/variables/index.md#use-file-type-cicd-variables)
+  [file type variables](../../ci/variables/_index.md#use-file-type-cicd-variables)
   were expanded to the value of the file variable (its content). This behavior did not
   respect the typical rules of shell variable expansion. There was also the potential
   that secrets or sensitive information could leak if the file variable and its

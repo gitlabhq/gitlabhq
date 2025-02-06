@@ -380,7 +380,7 @@ The following settings are supported by the `scan_settings` parameter:
 
 ## CI/CD variables
 
-Variables defined in a scan execution policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
+Variables defined in a scan execution policy follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
 
 Preconfigured values are used for the following CI/CD variables in any project on which a scan
 execution policy is enforced. Their values can be overridden, but **only** if they are declared in

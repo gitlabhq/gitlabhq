@@ -230,9 +230,9 @@ For this solution to work, you must use
 
 ## Passing CI/CD variables to services
 
-You can also pass custom CI/CD [variables](../variables/index.md)
+You can also pass custom CI/CD [variables](../variables/_index.md)
 to fine tune your Docker `images` and `services` directly in the `.gitlab-ci.yml` file.
-For more information, read about [`.gitlab-ci.yml` defined variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
+For more information, read about [`.gitlab-ci.yml` defined variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file).
 
 ```yaml
 # The following variables are automatically passed down to the Postgres container
@@ -273,7 +273,7 @@ test:
 | `entrypoint`    | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
 | `command`       | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
 | `alias` (1)     | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services). |
-| `variables` (2) | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/index.md). Service variables cannot reference themselves. |
+| `variables` (2) | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves. |
 
 (1) Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
 
@@ -440,7 +440,7 @@ service container logs and the CI job's logs are streamed to the job's trace log
 service container logs might get inserted into a job's masked log. This would thwart the variable masking mechanism
 and result in the masked variable being revealed.
 
-See [Mask a CI/CD Variable](../variables/index.md#mask-a-cicd-variable)
+See [Mask a CI/CD Variable](../variables/_index.md#mask-a-cicd-variable)
 
 ## Debug a job locally
 

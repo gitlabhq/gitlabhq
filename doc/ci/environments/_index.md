@@ -294,7 +294,7 @@ and define custom CI/CD variables.
 
 ### Limit the environment scope of a CI/CD variable
 
-By default, all [CI/CD variables](../variables/index.md) are available to all jobs in a pipeline.
+By default, all [CI/CD variables](../variables/_index.md) are available to all jobs in a pipeline.
 If a test tool in a job becomes compromised, the tool could attempt to retrieve all
 CI/CD variables available to the job. To help mitigate this kind of supply chain attack,
 you should limit the environment scope of sensitive variables to only the jobs that require them.
@@ -586,7 +586,7 @@ In the following example:
   [manual action](../jobs/job_control.md#create-a-job-that-must-be-run-manually)
   from the GitLab UI to run.
 - The `GIT_STRATEGY` is set to `none`. If the `stop_review_app` job is
-  [automatically triggered](../environments/index.md#stopping-an-environment),
+  [automatically triggered](#stopping-an-environment),
   the runner doesn't try to check out the code after the branch is deleted.
 
 ```yaml

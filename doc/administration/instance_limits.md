@@ -455,7 +455,7 @@ You can change the maximum time a job can run before it times out:
 ### Maximum number of deployment jobs in a pipeline
 
 You can limit the maximum number of deployment jobs in a pipeline. A deployment is
-any job with an [`environment`](../ci/environments/index.md) specified. The number
+any job with an [`environment`](../ci/environments/_index.md) specified. The number
 of deployments in a pipeline is checked at pipeline creation. Pipelines that have
 too many deployments fail with a `deployments_limit_exceeded` error.
 
@@ -586,7 +586,7 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 > - Group and project variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
 
-The number of [CI/CD variables](../ci/variables/index.md) that can be defined in project,
+The number of [CI/CD variables](../ci/variables/_index.md) that can be defined in project,
 group, and instance settings are all limited for the entire instance. These limits are checked
 each time a new variable is created. If a new variable would cause the total number of variables
 to exceed the respective limit, the new variable is not created.
@@ -594,19 +594,19 @@ to exceed the respective limit, the new variable is not created.
 To update the `default` plan of one of these limits on a GitLab Self-Managed instance, in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session) run the following command:
 
-- [Instance-level CI/CD variable](../ci/variables/index.md#for-an-instance) limit (default: `25`):
+- [Instance-level CI/CD variable](../ci/variables/_index.md#for-an-instance) limit (default: `25`):
 
   ```ruby
   Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
   ```
 
-- [Group-level CI/CD variable](../ci/variables/index.md#for-a-group) limit per group (default: `30000`):
+- [Group-level CI/CD variable](../ci/variables/_index.md#for-a-group) limit per group (default: `30000`):
 
   ```ruby
   Plan.default.actual_limits.update!(group_ci_variables: 40000)
   ```
 
-- [Project-level CI/CD variable](../ci/variables/index.md#for-a-project) limit per project (default: `8000`):
+- [Project-level CI/CD variable](../ci/variables/_index.md#for-a-project) limit per project (default: `8000`):
 
   ```ruby
   Plan.default.actual_limits.update!(project_ci_variables: 10000)

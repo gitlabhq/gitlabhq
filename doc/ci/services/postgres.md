@@ -16,7 +16,7 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use PostgreSQL with the Docker executor
 
-To pass variables set in the GitLab UI to service containers, you must [define the variables](../variables/index.md#define-a-cicd-variable-in-the-ui).
+To pass variables set in the GitLab UI to service containers, you must [define the variables](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 You must define your variables as either Group or Project, then call the variables in your job as shown in the following workaround.
 
 In Postgres 15.4 and later, Postgres does not substitute a schema or owner name into an extension script if the name contains a quote, backslash, or dollar sign.
@@ -27,9 +27,9 @@ If the CI variables are not configured, the value uses the environment variable 
 Fatal: invalid character in extension
 ```
 
-The workaround is to set your variables in [GitLab CI/CD variables](../variables/index.md) or set variables in string form:
+The workaround is to set your variables in [GitLab CI/CD variables](../variables/_index.md) or set variables in string form:
 
-1. [Set Postgres variables in GitLab](../variables/index.md#for-a-project). Variables set in the GitLab UI are not passed down to the service containers.
+1. [Set Postgres variables in GitLab](../variables/_index.md#for-a-project). Variables set in the GitLab UI are not passed down to the service containers.
 
 1. In the `.gitlab-ci.yml` file, specify a Postgres image:
 

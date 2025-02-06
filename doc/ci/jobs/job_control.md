@@ -68,12 +68,12 @@ additional variables. To access this page, select the **name** of the manual job
 the pipeline view, *not* **Run** (**{play}**).
 
 Define CI/CD variables here when you want to alter the execution of a job that uses
-[CI/CD variables](../variables/index.md).
+[CI/CD variables](../variables/_index.md).
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
-the [variable is overridden](../variables/index.md#use-pipeline-variables) with the new value.
-Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
-and not [masked](../variables/index.md#mask-a-cicd-variable).
+the [variable is overridden](../variables/_index.md#use-pipeline-variables) with the new value.
+Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
+and not [masked](../variables/_index.md#mask-a-cicd-variable).
 
 ![The run manual job page with fields for specifying CI/CD variables.](img/manual_job_variables_v13_10.png)
 

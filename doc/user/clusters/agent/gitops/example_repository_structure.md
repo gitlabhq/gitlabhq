@@ -80,8 +80,8 @@ To create a deployment branch:
 1. Create a [project](../../../../user/project/settings/project_access_tokens.md),
    [group](../../../../user/group/settings/group_access_tokens.md) or
    [personal access token](../../../../user/profile/personal_access_tokens.md) with the `write_repository` scope.
-1. Create a [CI/CD variable](../../../../ci/variables/index.md) with a token value named `DEPLOYMENT_TOKEN`.
-   Remember to [mask](../../../../ci/variables/index.md#mask-a-cicd-variable) the value so that it won't show in
+1. Create a [CI/CD variable](../../../../ci/variables/_index.md) with a token value named `DEPLOYMENT_TOKEN`.
+   Remember to [mask](../../../../ci/variables/_index.md#mask-a-cicd-variable) the value so that it won't show in
    job logs.
 1. Add a rule to [protect](../../../../user/project/repository/branches/protected.md)
    your deployment branch with the following values:

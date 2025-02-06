@@ -65,7 +65,7 @@ To define the base domain, either:
 - In the instance level: go to the **Admin** area, then **Settings > CI/CD > Continuous Integration and Delivery** and add it there.
 
 The base domain variable `KUBE_INGRESS_BASE_DOMAIN` follows the same order of
-[precedence as other environment variables](../../ci/variables/index.md#cicd-variable-precedence).
+[precedence as other environment variables](../../ci/variables/_index.md#cicd-variable-precedence).
 
 If you don't specify the base domain in your projects and groups, Auto DevOps uses the instance-wide **Auto DevOps domain**.
 

@@ -772,7 +772,7 @@ build:
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
     # GitLab container registry credentials taken from the
-    # [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
+    # [predefined CI/CD variables](../variables/_index.md#predefined-cicd-variables)
     # to authenticate to the registry.
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:

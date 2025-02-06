@@ -35,7 +35,7 @@ To add a pipeline schedule:
      but scheduled pipelines cannot run more frequently than the instance's
      [maximum scheduled pipeline frequency](../../administration/cicd/index.md#change-maximum-scheduled-pipeline-frequency).
    - **Target branch or tag**: Select the branch or tag for the pipeline.
-   - **Variables**: Add any number of [CI/CD variables](../variables/index.md) to the schedule.
+   - **Variables**: Add any number of [CI/CD variables](../variables/_index.md) to the schedule.
      These variables are available only when the scheduled pipeline runs,
      and not in any other pipeline run.
 

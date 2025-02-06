@@ -342,7 +342,7 @@ You can access variables in Bamboo using the format `${system.variableName}` for
 and `${bamboo.variableName}` for other types of variables. When using a variable in a script task,
 the full stops, are converted to underscores, `${bamboo.variableName}` becomes `$bamboo_variableName`.
 
-In GitLab, you can define [CI/CD variables](../variables/index.md) at these levels:
+In GitLab, you can define [CI/CD variables](../variables/_index.md) at these levels:
 
 - Instance
 - Group
@@ -645,7 +645,7 @@ Production:
 ```
 
 In GitLab CI/CD, You can create a [deployment job](../jobs/index.md#deployment-jobs)
-that deploys to an [environment](../environments/index.md) or creates a [release](../../user/project/releases/index.md).
+that deploys to an [environment](../environments/_index.md) or creates a [release](../../user/project/releases/index.md).
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 
@@ -716,15 +716,15 @@ for other third party services that support OIDC.
 
 Additionally, you can make credentials available to jobs by storing them in CI/CD variables, though secrets
 stored in plain text are susceptible to accidental exposure, [the same as in Bamboo](https://confluence.atlassian.com/bamboo/bamboo-specs-encryption-970268127.html).
-You should always store sensitive information in [masked](../variables/index.md#mask-a-cicd-variable)
-and [protected](../variables/index.md#protect-a-cicd-variable) variables, which mitigates
+You should always store sensitive information in [masked](../variables/_index.md#mask-a-cicd-variable)
+and [protected](../variables/_index.md#protect-a-cicd-variable) variables, which mitigates
 some of the risk.
 
 Also, never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
 users with access to the project. Storing sensitive information in variables should
-only be done in [the project, group, or instance settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+only be done in [the project, group, or instance settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 
-Review the [security guidelines](../variables/index.md#cicd-variable-security) to improve
+Review the [security guidelines](../variables/_index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
 ### Migration Plan
@@ -772,7 +772,7 @@ Before doing any migration work, you should first:
 1. Export your Bamboo Projects/Plans as YAML Spec
 1. Migrate Bamboo YAML Spec configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)

@@ -32,7 +32,7 @@ This scenario refers to security events where sensitive authentication or author
 This scenario might also include the exposure of sensitive information about third-party credentials through GitLab services. The exposure could occur through, for example, accidental commits to public GitLab projects, or misconfiguration of CI/CD settings. For more information, see:
 
 - [Overview of GitLab tokens](tokens/_index.md)
-- [GitLab CI/CD variable security](../ci/variables/index.md#cicd-variable-security)
+- [GitLab CI/CD variable security](../ci/variables/_index.md#cicd-variable-security)
 
 #### Response
 
@@ -66,7 +66,7 @@ Security incidents related to credentials exposure can vary in severity from low
 If you suspect that a user account or bot account has been compromised, you should:
 
 - [Block the user](../administration/moderate_users.md#block-a-user) to mitigate any current risk.
-- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-deprecated).
+- Reset any credentials the user might have had access to. For example, users with at least the Maintainer role can view protected [CI/CD variables](../ci/variables/_index.md) and [runner registration tokens](tokens/_index.md#runner-registration-tokens-deprecated).
 - [Reset user passwords](reset_user_password.md).
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA for an instance or group](two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
@@ -115,7 +115,7 @@ In such instances, you should:
 
 ##### Secrets exposed through misconfigured GitLab CI/CD
 
-When secrets stored as CI variables are not [masked](../ci/variables/index.md#mask-a-cicd-variable), they might be exposed in the job logs. For example, echoing environment variables or encountering a verbose error message. Depending on the project visibility, the job logs might be accessible within your company or over the Internet if your project is public. To mitigate this type of security incident, you should:
+When secrets stored as CI variables are not [masked](../ci/variables/_index.md#mask-a-cicd-variable), they might be exposed in the job logs. For example, echoing environment variables or encountering a verbose error message. Depending on the project visibility, the job logs might be accessible within your company or over the Internet if your project is public. To mitigate this type of security incident, you should:
 
 - Revoke exposed secrets by following the [exposed secrets guide](#credential-exposure-to-public-internet).
 - Consider masking the variables. This will prevent them from being directly reflected within the job logs. However, masking is not full-proof. For example, a masked variable may still be written to an artifact file or sent to a remote system.

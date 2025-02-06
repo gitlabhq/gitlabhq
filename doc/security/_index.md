@@ -63,7 +63,7 @@ You can find all those directories listed in the [Linux package configuration do
 - [How to filter outbound webhook requests](webhooks.md).
 - [How to configure import and export limits and timeouts](../administration/settings/import_and_export_settings.md).
 - [Review Runner security considerations and recommendations](https://docs.gitlab.com/runner/security/).
-- [Review CI/CD variables security considerations](../ci/variables/index.md#cicd-variable-security).
+- [Review CI/CD variables security considerations](../ci/variables/_index.md#cicd-variable-security).
 - [Review pipeline security for usage and protection of secrets in CI/CD Pipelines](../ci/pipelines/pipeline_security.md).
 
 ### Patching

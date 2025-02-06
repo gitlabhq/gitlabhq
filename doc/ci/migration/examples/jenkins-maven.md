@@ -137,7 +137,7 @@ In this example:
 
 - `stages` defines three stages that run in order. Like the Jenkins examples above,
   the test job runs first, followed by the build job, and finally the install job.
-- `variables` defines [CI/CD variables](../../variables/index.md) that can be used by all jobs:
+- `variables` defines [CI/CD variables](../../variables/_index.md) that can be used by all jobs:
   - `MAVEN_OPTS` are Maven environment variables needed whenever Maven is executed:
     - `-Dhttps.protocols=TLSv1.2` sets the TLS protocol to version 1.2 for any HTTP requests in the pipeline.
     - `-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository` sets the location of the
@@ -218,7 +218,7 @@ In this example:
       Any job that runs for the same commit ref reuses the same cache.
     - `paths` are the directories or files to include in the cache. In this example,
       we cache the `.m2/` directory to avoid re-installing dependencies between job runs.
-- `variables` defines [CI/CD variables](../../variables/index.md) that can be used by all jobs:
+- `variables` defines [CI/CD variables](../../variables/_index.md) that can be used by all jobs:
   - `MAVEN_OPTS` are Maven environment variables needed whenever Maven is executed:
     - `-Dhttps.protocols=TLSv1.2` sets the TLS protocol to version 1.2 for any HTTP requests in the pipeline.
     - `-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository` sets the location of the

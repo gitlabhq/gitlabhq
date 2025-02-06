@@ -33,7 +33,7 @@ GitLab tries to match clusters in the following order:
 - Instance clusters.
 
 To be selected, the cluster must be enabled and
-match the [environment selector](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+match the [environment selector](../../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ## Cluster environments
 
@@ -41,7 +41,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-For a consolidated view of which CI [environments](../../../ci/environments/index.md)
+For a consolidated view of which CI [environments](../../../ci/environments/_index.md)
 are deployed to the Kubernetes cluster, see the documentation for
 [cluster environments](../../clusters/environments.md).
 

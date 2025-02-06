@@ -78,7 +78,7 @@ To create the ruleset configuration file:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in 16.1.
 
-You can set a [CI/CD variable](../../../ci/variables/index.md) to use a ruleset configuration file that's stored outside of the current repository.
+You can set a [CI/CD variable](../../../ci/variables/_index.md) to use a ruleset configuration file that's stored outside of the current repository.
 This can help you apply the same rules across multiple projects.
 
 The `SAST_RULESET_GIT_REFERENCE` variable uses a format similar to
@@ -111,7 +111,7 @@ If remote configuration file doesn't seem to be applying customizations correctl
 
 1. Your repository has a local `.gitlab/sast-ruleset.toml` file.
    - By default, a local file is used if it's present, even if a remote configuration is set as a variable.
-   - You can set the [SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD variable](../../../ci/variables/index.md) to `false` to ignore the local configuration file.
+   - You can set the [SECURE_ENABLE_LOCAL_CONFIGURATION CI/CD variable](../../../ci/variables/_index.md) to `false` to ignore the local configuration file.
 1. There is a problem with authentication.
    - To check whether this is the cause of the problem, try referencing a configuration file from a repository location that doesn't require authentication.
 

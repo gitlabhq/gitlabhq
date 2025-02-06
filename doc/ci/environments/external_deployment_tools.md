@@ -10,14 +10,14 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-While GitLab offers a [built-in deployment solution](index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
+While GitLab offers a [built-in deployment solution](_index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
 GitLab can receive deployment events from these external tools and allows you to track the deployments within GitLab.
 For example, the following features are available by setting up tracking:
 
 - [See when an merge request has been deployed, and to which environment](../../user/project/merge_requests/widgets.md#post-merge-pipeline-status).
 - [Filter merge requests by environment or deployment date](../../user/project/merge_requests/index.md#by-environment-or-deployment-date).
 - [DevOps Research and Assessment (DORA) metrics](../../user/analytics/dora_metrics.md).
-- [View environments and deployments](index.md#view-environments-and-deployments).
+- [View environments and deployments](_index.md#view-environments-and-deployments).
 - [Track newly included merge requests per deployment](deployments.md#track-newly-included-merge-requests-per-deployment).
 
 NOTE:

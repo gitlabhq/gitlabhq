@@ -128,7 +128,7 @@ build:
     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
-You can use [CI/CD variables](../../../ci/variables/index.md) in your `.gitlab-ci.yml` file. For example:
+You can use [CI/CD variables](../../../ci/variables/_index.md) in your `.gitlab-ci.yml` file. For example:
 
 ```yaml
 build:

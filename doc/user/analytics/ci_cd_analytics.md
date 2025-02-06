@@ -41,7 +41,7 @@ You can view CI/CD analytics for a group or project.
 
 Prerequisites:
 
-- To view DORA metrics, the group or project must have an environment in the [production deployment tier](../../ci/environments/index.md#deployment-tier-of-environments).
+- To view DORA metrics, the group or project must have an environment in the [production deployment tier](../../ci/environments/_index.md#deployment-tier-of-environments).
 
 ### For a group
 

@@ -125,7 +125,7 @@ dast:
 ```
 
 Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CD variables](../../../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for a single-step login form
 
@@ -148,7 +148,7 @@ dast:
 ```
 
 Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CD variables](../../../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for a multi-step login form
 
@@ -182,7 +182,7 @@ dast:
 ```
 
 Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
-See [Custom CI/CD variables](../../../../../ci/variables/index.md#for-a-project) for more information.
+See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for Single Sign-On (SSO)
 

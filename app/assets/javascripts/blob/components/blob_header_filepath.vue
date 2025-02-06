@@ -3,6 +3,7 @@ import { GlBadge, GlLink } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
@@ -11,6 +12,7 @@ export default {
     GlBadge,
     GlLink,
   },
+  mixins: [featureFlagMixin()],
   props: {
     blob: {
       type: Object,
@@ -72,6 +74,7 @@ export default {
     </template>
 
     <clipboard-button
+      v-if="!glFeatures.blobOverflowMenu"
       :text="blob.path"
       :gfm="gfmCopyText"
       :title="__('Copy file path')"

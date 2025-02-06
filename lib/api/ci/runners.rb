@@ -77,7 +77,7 @@ module API
         def authenticate_delete_runner!(runner)
           return if current_user.can_admin_all_resources?
 
-          forbidden!("Runner associated with more than one project") if runner.runner_projects.count > 1
+          forbidden!("Runner associated with more than one project") if runner.belongs_to_more_than_one_project?
           forbidden!("No access granted") unless can?(current_user, :delete_runner, runner)
         end
 
@@ -363,7 +363,9 @@ module API
           not_found!('Runner') unless runner_project
 
           runner = runner_project.runner
-          forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.runner_projects.count == 1
+          if runner.belongs_to_one_project?
+            forbidden!("Only one project associated with the runner. Please remove the runner instead")
+          end
 
           destroy_conditionally!(runner_project)
         end

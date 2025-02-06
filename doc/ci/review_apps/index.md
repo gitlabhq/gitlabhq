@@ -34,7 +34,7 @@ In the previous example:
 
 ## How review apps work
 
-A review app is a mapping of a branch with an [environment](../environments/index.md).
+A review app is a mapping of a branch with an [environment](../environments/_index.md).
 Access to the review app is made available as a link on the [merge request](../../user/project/merge_requests/index.md) relevant to the branch.
 
 The following is an example of a merge request with an environment set dynamically.
@@ -54,16 +54,16 @@ After adding review apps to your workflow, you follow the branched Git flow. Tha
 
 ## Configuring review apps
 
-Review apps are built on [dynamic environments](../environments/index.md#create-a-dynamic-environment), which allow you to dynamically create a new environment for each branch.
+Review apps are built on [dynamic environments](../environments/_index.md#create-a-dynamic-environment), which allow you to dynamically create a new environment for each branch.
 
 The process of configuring review apps is as follows:
 
 1. Set up the infrastructure to host and deploy the review apps (check the [examples](#review-apps-examples) below).
 1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
-1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/index.md) `${CI_COMMIT_REF_SLUG}`
+1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/_index.md) `${CI_COMMIT_REF_SLUG}`
    to create dynamic environments and restrict it to run only on branches.
    Alternatively, you can get a YAML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
-1. Optionally, set a job that [manually stops](../environments/index.md#stopping-an-environment) the review apps.
+1. Optionally, set a job that [manually stops](../environments/_index.md#stopping-an-environment) the review apps.
 
 ### Enable review apps button
 
@@ -87,7 +87,7 @@ To use the review apps template:
 
 ## Review apps auto-stop
 
-See how to [configure review apps environments to expire and auto-stop](../environments/index.md#stop-an-environment-after-a-certain-time-period)
+See how to [configure review apps environments to expire and auto-stop](../environments/_index.md#stop-an-environment-after-a-certain-time-period)
 after a given period of time.
 
 ## Review apps examples
@@ -112,7 +112,7 @@ Other examples of review apps:
 ## Route Maps
 
 Route Maps allows you to go directly from source files
-to public pages on the [environment](../environments/index.md) defined for
+to public pages on the [environment](../environments/_index.md) defined for
 review apps.
 
 Once set up, the review app link in the merge request

@@ -151,7 +151,7 @@ If [GitLab Pages](../../user/project/pages/index.md) is enabled, you can view th
 
 The CI/CD YAML configuration example above works for testing against static environments,
 but it can be extended to work with [review apps](../review_apps/index.md) or
-[dynamic environments](../environments/index.md) with a few extra steps.
+[dynamic environments](../environments/_index.md) with a few extra steps.
 
 The best approach is to capture the dynamic URL in a [`.env` file](https://docs.docker.com/compose/environment-variables/env-file/)
 as a job artifact to be shared, then use a custom CI/CD variable we've provided named `K6_DOCKER_OPTIONS`

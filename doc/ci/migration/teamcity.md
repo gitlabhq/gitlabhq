@@ -149,7 +149,7 @@ In GitLab CI/CD, pipelines can be triggered automatically for various events, li
 In TeamCity, you [define build parameters and environment variables](https://www.jetbrains.com/help/teamcity/using-build-parameters.html)
 in the build configuration settings.
 
-In GitLab, use the `variables` keyword to define [CI/CD variables](../variables/index.md).
+In GitLab, use the `variables` keyword to define [CI/CD variables](../variables/_index.md).
 Use variables to reuse configuration data, have more dynamic configuration, or store important values.
 Variables can be defined either globally or per job.
 
@@ -281,7 +281,7 @@ Before doing any migration work, you should first:
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Migrate TeamCity configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share [CI/CD templates](../examples/index.md#cicd-templates) or [CI/CD components](../components/index.md).
 1. See [pipeline efficiency](../pipelines/pipeline_efficiency.md)

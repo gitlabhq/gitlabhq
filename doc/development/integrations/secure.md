@@ -193,7 +193,7 @@ It also generates text output on the standard output and standard error streams,
 ### Variables
 
 All CI/CD variables are passed to the scanner as environment variables.
-The scanned project is described by the [predefined CI/CD variables](../../ci/variables/index.md).
+The scanned project is described by the [predefined CI/CD variables](../../ci/variables/_index.md).
 
 #### SAST and Dependency Scanning
 

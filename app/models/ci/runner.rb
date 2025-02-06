@@ -415,11 +415,11 @@ module Ci
     strong_memoize_attr :owner
 
     def belongs_to_one_project?
-      runner_projects.limit(2).count(:all) == 1
+      runner_projects.one?
     end
 
     def belongs_to_more_than_one_project?
-      runner_projects.limit(2).count(:all) > 1
+      runner_projects.many?
     end
 
     def match_build_if_online?(build)
@@ -427,7 +427,7 @@ module Ci
     end
 
     def only_for?(project)
-      !runner_projects.where.not(project_id: project.id).exists?
+      runner_projects.where.not(project_id: project.id).empty?
     end
 
     def short_sha

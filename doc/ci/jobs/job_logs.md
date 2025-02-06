@@ -182,7 +182,7 @@ Prerequisites:
 To enable timestamps in job logs, add a `FF_TIMESTAMPS` [CI/CD variable](../runners/configure_runners.md#configure-runner-behavior-with-variables)
 to your pipeline and set it to `true`.
 
-For example, [add the variable to your `.gitlab-ci.yml` file](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file):
+For example, [add the variable to your `.gitlab-ci.yml` file](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file):
 
 ```yaml
 variables:

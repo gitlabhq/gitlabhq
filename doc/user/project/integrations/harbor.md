@@ -59,7 +59,7 @@ the `username:password` combination. The following are suggestions for safe use:
 
 Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables, including
 `$HARBOR_PASSWORD`, and send them to a third-party server. For more details, see
-[CI/CD variable security](../../../ci/variables/index.md#cicd-variable-security).
+[CI/CD variable security](../../../ci/variables/_index.md#cicd-variable-security).
 
 ## Examples of Harbor variables in CI/CD
 

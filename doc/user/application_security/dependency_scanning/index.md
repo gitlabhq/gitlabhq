@@ -881,7 +881,7 @@ The following variables configure the behavior of specific dependency scanning a
 The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they do work. This is a large list, many of which we may be unaware of, and as such is not documented.
 
 For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
-set it as a [CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
+set it as a [CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 file like this:
 
 ```yaml
@@ -945,7 +945,7 @@ a CI/CD variable and reference them in your Maven settings file. Do not add the 
 To authenticate with a private Maven repository:
 
 1. Add the `MAVEN_CLI_OPTS` CI/CD variable to your
-   [project's settings](../../../ci/variables/index.md#for-a-project), setting the value to include
+   [project's settings](../../../ci/variables/_index.md#for-a-project), setting the value to include
    your credentials.
 
    For example, if your username is `myuser` and the password is `verysecret`:

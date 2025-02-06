@@ -113,7 +113,7 @@ see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|
 | `ci.skip`                      | Do not create a CI/CD pipeline for the latest push. Skips only branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI/CD integrations, such as Jenkins. | `git push -o ci.skip` |
-| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to the CI/CD pipeline, if one is created due to the push. Passes variables only to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
+| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/_index.md) to the CI/CD pipeline, if one is created due to the push. Passes variables only to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
 
 ### Push options for Integrations
 

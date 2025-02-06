@@ -81,8 +81,9 @@ RSpec.shared_context 'ProjectPolicy context' do
       admin_project admin_project_member admin_push_rules admin_runner admin_snippet admin_terraform_state
       admin_wiki create_deploy_token destroy_deploy_token manage_deploy_tokens
       push_to_delete_protected_branch read_deploy_token update_snippet
-      admin_upload destroy_upload admin_member_access_request rename_project manage_merge_request_settings
-      admin_integrations create_protected_branch admin_protected_branch manage_protected_tags
+      admin_upload destroy_upload admin_member_access_request read_member_access_request rename_project
+      manage_merge_request_settings admin_integrations create_protected_branch admin_protected_branch
+      manage_protected_tags
     ]
   end
 

@@ -266,7 +266,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `ci_delete_old_pipelines`. Disabled by default.
 > - [Feature flag `ci_delete_old_pipelines`](https://gitlab.com/gitlab-org/gitlab/-/issues/503153) removed in GitLab 17.9.
 
-You can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
+Users with the Owner role can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
 The system automatically deletes pipelines that were created before the configured value.
 
 1. On the left sidebar, select **Search or go to** and find your project.

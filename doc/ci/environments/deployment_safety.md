@@ -132,14 +132,14 @@ During a deploy freeze period, no deployment can be executed. This is helpful to
 ensure that deployments do not happen unexpectedly.
 
 The next configured deploy freeze is displayed at the top of the
-[environment deployments list](index.md#view-environments-and-deployments)
+[environment deployments list](_index.md#view-environments-and-deployments)
 page.
 
 ## Protect production secrets
 
 Production secrets are needed to deploy successfully. For example, when deploying to the cloud,
 cloud providers require these secrets to connect to their services. In the project settings, you can
-define and protect CI/CD variables for these secrets. [Protected variables](../variables/index.md#protect-a-cicd-variable)
+define and protect CI/CD variables for these secrets. [Protected variables](../variables/_index.md#protect-a-cicd-variable)
 are only passed to pipelines running on [protected branches](../../user/project/repository/branches/protected.md)
 or [protected tags](../../user/project/protected_tags.md).
 The other pipelines don't get the protected variable. You can also

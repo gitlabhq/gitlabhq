@@ -268,7 +268,7 @@ end
 
 ### How value stream analytics identifies the production environment
 
-Value stream analytics identifies [production environments](../../../ci/environments/index.md#deployment-tier-of-environments) by looking for project
+Value stream analytics identifies [production environments](../../../ci/environments/_index.md#deployment-tier-of-environments) by looking for project
 [environments](../../../ci/yaml/_index.md#environment) with a name matching any of these patterns:
 
 - `prod` or `prod/*`

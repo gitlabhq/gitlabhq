@@ -17,7 +17,7 @@ Apart from this introduction, you are advised to read through the following
 documents to understand and properly configure GitLab Performance Monitoring:
 
 - [Prometheus documentation](../prometheus/index.md)
-- [Grafana Install/Configuration](grafana_configuration.md)
+- [Grafana configuration](grafana_configuration.md)
 - [Performance bar](performance_bar.md)
 
 ## Introduction to GitLab Performance Monitoring

@@ -59491,12 +59491,6 @@ msgstr ""
 msgid "To manage seats for all members associated with this group and its subgroups and projects, visit the %{link_start}usage quotas page%{link_end}."
 msgstr ""
 
-msgid "To manage your usage and prevent your project from being placed in a read-only state, %{support_link_start}contact support%{link_end} immediately."
-msgstr ""
-
-msgid "To manage your usage and prevent your project from being placed in a read-only state, contact support immediately: %{support_link}."
-msgstr ""
-
 msgid "To merge, either the title or description must reference a Jira issue."
 msgstr ""
 
@@ -59513,6 +59507,12 @@ msgid "To personalize your GitLab experience, we'd like to know a bit more about
 msgstr ""
 
 msgid "To prepare for this removal, see %{linkStart}deprecations and removals%{linkEnd}."
+msgstr ""
+
+msgid "To prevent your project from being placed in a read-only state, %{manage_storage_link_start}manage your storage use%{storage_link_end} or %{support_link_start}contact support%{link_end} immediately."
+msgstr ""
+
+msgid "To prevent your project from being placed in a read-only state, manage your storage use: %{manage_storage_link} or contact support immediately: %{support_link}."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, %{linkStart}fork this project%{linkEnd} and set the fork's visibility to private."

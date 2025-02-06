@@ -152,7 +152,7 @@ bin/rake 'gitlab:seed:vulnerabilities[group-path/project-path]'
 
 #### Seed a project with environments
 
-You can seed a project with [environments](../ci/environments/index.md).
+You can seed a project with [environments](../ci/environments/_index.md).
 
 By default, this creates 10 environments, each with the prefix `ENV_`.
 Only `project_path` is required to run this command.
@@ -173,7 +173,7 @@ bundle exec rake gitlab:seed:dependencies
 
 #### Seed CI variables
 
-You can seed a project, group, or instance with [CI variables](../ci/variables/index.md).
+You can seed a project, group, or instance with [CI variables](../ci/variables/_index.md).
 
 By default, each command creates 10 CI variables. Variable names are prepended with its own
 default prefix (`VAR_` for project-level variables, `GROUP_VAR_` for group-level variables,

@@ -48,7 +48,7 @@ WARNING:
 It is a security risk to save tokens in plain text in public projects, or store them
 in a way that malicious users could access them. A leaked trigger token could be
 used to force an unscheduled deployment, attempt to access CI/CD variables,
-or other malicious uses. [Masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
+or other malicious uses. [Masked CI/CD variables](../variables/_index.md#mask-a-cicd-variable)
 help improve the security of trigger tokens. For more information about keeping tokens secure,
 see the [security considerations](../../security/tokens/_index.md#security-considerations).
 
@@ -109,7 +109,7 @@ In this example:
 - `1234` is the project ID for `project-B`. The project ID is displayed on the
   [project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - The [`rules`](../yaml/_index.md#rules) cause the job to run every time a tag is added to `project-A`.
-- `MY_TRIGGER_TOKEN` is a [masked CI/CD variable](../variables/index.md#mask-a-cicd-variable)
+- `MY_TRIGGER_TOKEN` is a [masked CI/CD variable](../variables/_index.md#mask-a-cicd-variable)
   that contains the trigger token.
 
 ### Use a webhook
@@ -135,13 +135,13 @@ Replace:
 
 If you trigger a pipeline by using a webhook, you can access the webhook payload with
 the `TRIGGER_PAYLOAD` [predefined CI/CD variable](../variables/predefined_variables.md).
-The payload is exposed as a [file-type variable](../variables/index.md#use-file-type-cicd-variables),
+The payload is exposed as a [file-type variable](../variables/_index.md#use-file-type-cicd-variables),
 so you can access the data with `cat $TRIGGER_PAYLOAD` or a similar command.
 
 ### Pass CI/CD variables in the API call
 
-You can pass any number of [CI/CD variables](../variables/index.md) in the trigger API call.
-These variables have the [highest precedence](../variables/index.md#cicd-variable-precedence),
+You can pass any number of [CI/CD variables](../variables/_index.md) in the trigger API call.
+These variables have the [highest precedence](../variables/_index.md#cicd-variable-precedence),
 and override all variables with the same name.
 
 The parameter is of the form `variables[key]=value`, for example:

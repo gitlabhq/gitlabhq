@@ -45,7 +45,7 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
       # rubocop:enable Layout/LineLength
 
       with_them do
-        it 'returns matching packages' do
+        it 'returns matching packages', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/516148' do
           expect(search_result.status).to eq :success
           expect(search_result.payload[:results]).to match_array(expected_packages.map(&:conan_recipe))
         end

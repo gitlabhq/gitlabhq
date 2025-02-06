@@ -21,7 +21,7 @@ FLAG:
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
 
 GitLab deploy boards offer a consolidated view of the current health and
-status of each CI [environment](../../ci/environments/index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
+status of each CI [environment](../../ci/environments/_index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
 of the pods in the deployment. Developers and other teammates can view the
 progress and status of a rollout, pod by pod, in the workflow they already use
 without any need to access Kubernetes.
@@ -79,9 +79,9 @@ specific environment, there are a lot of use cases. To name a few:
 
 ## Enabling deploy boards
 
-To display the deploy boards for a specific [environment](../../ci/environments/index.md) you should:
+To display the deploy boards for a specific [environment](../../ci/environments/_index.md) you should:
 
-1. Have [defined an environment](../../ci/environments/index.md) with a deploy stage.
+1. Have [defined an environment](../../ci/environments/_index.md) with a deploy stage.
 
 1. Have a Kubernetes cluster up and running.
 
@@ -162,6 +162,6 @@ version of your application.
 ## Further reading
 
 - [GitLab Auto deploy](../../topics/autodevops/stages.md#auto-deploy)
-- [GitLab CI/CD variables](../../ci/variables/index.md)
-- [Environments and deployments](../../ci/environments/index.md)
+- [GitLab CI/CD variables](../../ci/variables/_index.md)
+- [Environments and deployments](../../ci/environments/_index.md)
 - [Kubernetes deploy example](https://gitlab.com/gitlab-examples/kubernetes-deploy)

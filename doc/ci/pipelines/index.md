@@ -69,7 +69,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI:
 
 - [Pipeline settings](settings.md) for each project.
 - [Pipeline schedules](schedules.md).
-- [Custom CI/CD variables](../variables/index.md#for-a-project).
+- [Custom CI/CD variables](../variables/_index.md#for-a-project).
 
 If you use VS Code to edit your GitLab CI/CD configuration, the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md)
 helps you [validate your configuration](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#validate-gitlab-ci-configuration)
@@ -79,7 +79,7 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 
 > - **Run pipeline** name [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
 
-Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/index.md).
+Pipelines can be manually executed, with predefined or manually-specified [variables](../variables/_index.md).
 
 You might do this if the results of a pipeline (for example, a code build) are required outside the standard
 operation of the pipeline.
@@ -90,7 +90,7 @@ To execute a pipeline manually:
 1. Select **Build > Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
-1. Enter any [CI/CD variables](../variables/index.md) required for the pipeline to run.
+1. Enter any [CI/CD variables](../variables/_index.md) required for the pipeline to run.
    You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
 1. Select **New pipeline**.
 
@@ -99,7 +99,7 @@ The pipeline now executes the jobs as configured.
 #### Prefill variables in manual pipelines
 
 You can use the [`description` and `value`](../yaml/_index.md#variablesdescription)
-keywords to [define pipeline-level (global) variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
+keywords to [define pipeline-level (global) variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually. Use the description to explain
 information such as what the variable is used for, and what the acceptable values are.
 
@@ -109,9 +109,9 @@ In manually-triggered pipelines, the **New pipeline** page displays all pipeline
 that have a `description` defined in the `.gitlab-ci.yml` file. The description displays
 below the variable.
 
-You can change the prefilled value, which [overrides the value](../variables/index.md#use-pipeline-variables) for that single pipeline run.
-Any variables overridden by using this process are [expanded](../variables/index.md#prevent-cicd-variable-expansion)
-and not [masked](../variables/index.md#mask-a-cicd-variable).
+You can change the prefilled value, which [overrides the value](../variables/_index.md#use-pipeline-variables) for that single pipeline run.
+Any variables overridden by using this process are [expanded](../variables/_index.md#prevent-cicd-variable-expansion)
+and not [masked](../variables/_index.md#mask-a-cicd-variable).
 If you do not define a `value` for the variable in the configuration file, the variable name is still listed,
 but the value field is blank.
 
@@ -487,7 +487,7 @@ This table lists the refspecs injected for each pipeline type:
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
-deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/index.md#stopping-an-environment),
+deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
 and [merge trains](../pipelines/merge_trains.md) that might run pipelines after branch deletion.
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->

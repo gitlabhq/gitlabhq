@@ -53,7 +53,7 @@ the main branch. These temporary environments are called review apps.
 
 For more information, see:
 
-- [Environments](../../ci/environments/index.md)
+- [Environments](../../ci/environments/_index.md)
 - [Deploy to AWS](../../ci/cloud_deployment/index.md)
 - [Deploy to Kubernetes](../clusters/agent/index.md)
 - [Dashboard for Kubernetes](../../ci/environments/kubernetes_dashboard.md)

@@ -311,7 +311,7 @@ curl --request DELETE \
 ## Delete multiple stopped review apps
 
 It schedules for deletion multiple environments that have already been
-[stopped](../ci/environments/index.md#stopping-an-environment) and
+[stopped](../ci/environments/_index.md#stopping-an-environment) and
 are [in the review app folder](../ci/review_apps/index.md).
 The actual deletion is performed after 1 week from the time of execution.
 By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.
@@ -394,7 +394,7 @@ Example response:
 
 ## Stop stale environments
 
-Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/index.md#stopping-an-environment).
+Issue stop request to all environments that were last modified or deployed to before a specified date. Excludes protected environments. Returns `200` if stop request was successful and `400` if the before date is invalid. For details of exactly when the environment is stopped, see [Stop an environment](../ci/environments/_index.md#stopping-an-environment).
 
 ```plaintext
 POST /projects/:id/environments/stop_stale

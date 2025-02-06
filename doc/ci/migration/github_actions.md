@@ -74,7 +74,7 @@ GitLab CI/CD has similar functionality, also usually configured with YAML keywor
 
 | GitHub    | GitLab         | Explanation |
 |-----------|----------------|-------------|
-| `env`     | `variables`    | `env` defines the variables set in a workflow, job, or step. GitLab uses `variables` to define [CI/CD variables](../variables/index.md) at the global or job level. Variables can also be added in the UI. |
+| `env`     | `variables`    | `env` defines the variables set in a workflow, job, or step. GitLab uses `variables` to define [CI/CD variables](../variables/_index.md) at the global or job level. Variables can also be added in the UI. |
 | `jobs`    | `stages`       | `jobs` groups together all the jobs that run in the workflow. GitLab uses `stages` to group jobs together. |
 | `on`      | Not applicable | `on` defines when a workflow is triggered. GitLab is integrated tightly with Git, so SCM polling options for triggers are not needed, but can be configured per job if required. |
 | `run`     | Not applicable | The command to execute in the job. GitLab uses a YAML array under the `script` keyword, one entry for each command to execute. |
@@ -354,7 +354,7 @@ build-image:
 
 #### Variables
 
-In GitLab, we use the `variables` keyword to define different [CI/CD variables](../variables/index.md) at runtime.
+In GitLab, we use the `variables` keyword to define different [CI/CD variables](../variables/_index.md) at runtime.
 Use variables when you need to reuse configuration data in a pipeline. You can define
 variables globally or per job.
 
@@ -404,7 +404,7 @@ spanish:
 ```
 
 Variables can also be set up through the GitLab UI, under CI/CD settings, where you can
-[protect](../variables/index.md#protect-a-cicd-variable) or [mask](../variables/index.md#mask-a-cicd-variable)
+[protect](../variables/_index.md#protect-a-cicd-variable) or [mask](../variables/_index.md#mask-a-cicd-variable)
 the variables. Masked variables are hidden in job logs, while protected variables
 can only be accessed in pipelines for protected branches or tags.
 
@@ -651,14 +651,14 @@ for other third party services that support OIDC.
 
 Additionally, you can make credentials available to jobs by storing them in CI/CD variables, though secrets
 stored in plain text are susceptible to accidental exposure. You should always store sensitive information
-in [masked](../variables/index.md#mask-a-cicd-variable) and [protected](../variables/index.md#protect-a-cicd-variable)
+in [masked](../variables/_index.md#mask-a-cicd-variable) and [protected](../variables/_index.md#protect-a-cicd-variable)
 variables, which mitigates some of the risk.
 
 Also, never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
 users with access to the project. Storing sensitive information in variables should
-only be done in [the project, group, or instance settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+only be done in [the project, group, or instance settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 
-Review the [security guidelines](../variables/index.md#cicd-variable-security) to improve
+Review the [security guidelines](../variables/_index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
 ## Planning and Performing a Migration
@@ -691,7 +691,7 @@ Before doing any migration work, you should first:
 1. Create a `.gitlab-ci.yml` in each project.
 1. Migrate GitHub Actions jobs to GitLab CI/CD jobs and configure them to show results directly in merge requests.
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share [CI/CD templates](../../development/cicd/templates.md)
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)

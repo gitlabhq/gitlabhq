@@ -345,7 +345,7 @@ version-job:
 
 #### Variables
 
-In GitLab, use the `variables` keyword to define [CI/CD variables](../variables/index.md).
+In GitLab, use the `variables` keyword to define [CI/CD variables](../variables/_index.md).
 Use variables to reuse configuration data, have more dynamic configuration, or store important values.
 Variables can be defined either globally or per job.
 
@@ -407,9 +407,9 @@ spanish:
     - echo "$GREETING $NAME"
 ```
 
-Variables can also be [set in the GitLab UI, in the CI/CD settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
-In some cases, you can use [protected](../variables/index.md#protect-a-cicd-variable)
-and [masked](../variables/index.md#mask-a-cicd-variable) variables for secret values.
+Variables can also be [set in the GitLab UI, in the CI/CD settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
+In some cases, you can use [protected](../variables/_index.md#protect-a-cicd-variable)
+and [masked](../variables/_index.md#mask-a-cicd-variable) variables for secret values.
 These variables can be accessed in pipeline jobs the same as variables defined in the
 configuration file.
 
@@ -670,15 +670,15 @@ for other third party services that support OIDC.
 
 Additionally, you can make credentials available to jobs by storing them in CI/CD variables, though secrets
 stored in plain text are susceptible to accidental exposure, [the same as in Jenkins](https://www.jenkins.io/doc/developer/security/secrets/#storing-secrets).
-You should always store sensitive information in [masked](../variables/index.md#mask-a-cicd-variable)
-and [protected](../variables/index.md#protect-a-cicd-variable) variables, which mitigates
+You should always store sensitive information in [masked](../variables/_index.md#mask-a-cicd-variable)
+and [protected](../variables/_index.md#protect-a-cicd-variable) variables, which mitigates
 some of the risk.
 
 Also, never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
 users with access to the project. Storing sensitive information in variables should
-only be done in [the project, group, or instance settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+only be done in [the project, group, or instance settings](../variables/_index.md#define-a-cicd-variable-in-the-ui).
 
-Review the [security guidelines](../variables/index.md#cicd-variable-security) to improve
+Review the [security guidelines](../variables/_index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
 ## Planning and Performing a Migration
@@ -721,7 +721,7 @@ Before doing any migration work, you should first:
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Migrate Jenkins configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)

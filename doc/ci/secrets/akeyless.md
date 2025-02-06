@@ -21,7 +21,7 @@ You can use the `secrets:akeyless` keyword to authenticate and retrieve Akeyless
 
 Prerequisites:
 
-- Save your Akeyless access ID as a [CI/CD variable in your GitLab project](../variables/index.md#for-a-project)
+- Save your Akeyless access ID as a [CI/CD variable in your GitLab project](../variables/_index.md#for-a-project)
   named `AKEYLESS_ACCESS_ID`.
 - This integration only supports [static secrets](https://docs.akeyless.io/docs/static-secrets).
 

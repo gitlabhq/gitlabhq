@@ -13,27 +13,23 @@ module Types
         field :id,
           ::Types::GlobalIDType[::Packages::Protection::Rule],
           null: false,
-          experiment: { milestone: '16.5' },
-          description: 'ID of the package protection rule.'
+          description: 'Global ID of the package protection rule.'
 
         field :package_name_pattern,
           GraphQL::Types::String,
           null: false,
-          experiment: { milestone: '16.5' },
           description:
-            'Package name protected by the protection rule. For example `@my-scope/my-package-*`. ' \
+            'Package name protected by the protection rule. For example, `@my-scope/my-package-*`. ' \
             'Wildcard character `*` allowed.'
 
         field :package_type,
           Types::Packages::Protection::RulePackageTypeEnum,
           null: false,
-          experiment: { milestone: '16.5' },
-          description: 'Package type protected by the protection rule. For example `NPM`.'
+          description: 'Package type protected by the protection rule. For example, `NPM`, `PYPI`.'
 
         field :minimum_access_level_for_push,
           Types::Packages::Protection::RuleAccessLevelEnum,
           null: false,
-          experiment: { milestone: '16.5' },
           description:
             'Minimum GitLab access required to push packages to the package registry. ' \
             'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \

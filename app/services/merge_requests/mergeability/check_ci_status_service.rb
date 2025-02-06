@@ -30,14 +30,10 @@ module MergeRequests
       def mergeable_ci_state?
         return true unless pipeline_must_succeed?
         return false unless merge_request.diff_head_pipeline
-        return false if pipeline_creating?
+        return false if merge_request.pipeline_creating?
         return true if can_skip_diff_head_pipeline?
 
         merge_request.diff_head_pipeline.success?
-      end
-
-      def pipeline_creating?
-        Ci::PipelineCreation::Requests.pipeline_creating_for_merge_request?(merge_request)
       end
 
       def pipeline_must_succeed?

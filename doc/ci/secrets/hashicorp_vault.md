@@ -68,8 +68,8 @@ The following fields are included in the JWT:
 | `environment`           | Job specifies an environment               | Environment this job specifies |
 | `groups_direct`         | User is a direct member of 0 to 200 groups | The paths of the user's direct membership groups. Omitted if the user is a direct member of more than 200 groups. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435848) in GitLab 16.11). |
 | `environment_protected` | Job specifies an environment               | `true` if specified environment is protected, `false` otherwise |
-| `deployment_tier`       | Job specifies an environment               | [Deployment tier](../environments/index.md#deployment-tier-of-environments) of environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2) |
-| `environment_action`    | Job specifies an environment               | [Environment action (`environment:action`)](../environments/index.md) specified in the job. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/) in GitLab 16.5) |
+| `deployment_tier`       | Job specifies an environment               | [Deployment tier](../environments/_index.md#deployment-tier-of-environments) of environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2) |
+| `environment_action`    | Job specifies an environment               | [Environment action (`environment:action`)](../environments/_index.md) specified in the job. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/) in GitLab 16.5) |
 
 Example JWT payload:
 
@@ -298,7 +298,7 @@ should be used to validate the token.
 
 For the full list of available configuration options, see Vault's [API documentation](https://developer.hashicorp.com/vault/api-docs/auth/jwt#configure).
 
-In GitLab, create the following [CI/CD variables](../variables/index.md#for-a-project)
+In GitLab, create the following [CI/CD variables](../variables/_index.md#for-a-project)
 to provide details about your Vault server:
 
 - `VAULT_SERVER_URL` - The URL of your Vault server, for example `https://vault.example.com:8200`.

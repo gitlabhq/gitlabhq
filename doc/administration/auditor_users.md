@@ -62,7 +62,7 @@ If you are signed in with auditor access, you:
   you can push commits or comment on issues.
 - Can access the same resources using the GitLab UI or API.
 - Can't view the **Admin** area, or perform any administration actions.
-- Can't view job logs when [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled.
+- Can't view job logs when [debug logging](../ci/variables/_index.md#enable-debug-logging) is enabled.
 
 ## Maintain auditor users using API
 

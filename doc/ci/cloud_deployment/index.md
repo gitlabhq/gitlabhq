@@ -32,7 +32,7 @@ After you set up authentication, you can configure CI/CD to deploy.
 1. Select your user to access its details. Go to **Security credentials > Create a new access key**.
 1. Note the **Access key ID** and **Secret access key**.
 1. In your GitLab project, go to **Settings > CI/CD**. Set the following
-   [CI/CD variables](../variables/index.md):
+   [CI/CD variables](../variables/_index.md):
 
    | Environment variable name      | Value                   |
    |:-------------------------------|:------------------------|
@@ -40,7 +40,7 @@ After you set up authentication, you can configure CI/CD to deploy.
    | `AWS_SECRET_ACCESS_KEY`        | Your secret access key. |
    | `AWS_DEFAULT_REGION`           | Your region code. You might want to confirm that the AWS service you intend to use is [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/). |
 
-1. Variables are [protected by default](../variables/index.md#protect-a-cicd-variable).
+1. Variables are [protected by default](../variables/_index.md#protect-a-cicd-variable).
    To use GitLab CI/CD with branches or tags that are not protected,
    clear the **Protect variable** checkbox.
 
@@ -93,7 +93,7 @@ Prerequisites:
 To deploy to your ECS cluster:
 
 1. In your GitLab project, go to **Settings > CI/CD**. Set the following
-   [CI/CD variables](../variables/index.md). You can find these names by
+   [CI/CD variables](../variables/_index.md). You can find these names by
    selecting the targeted cluster on your [Amazon ECS dashboard](https://console.aws.amazon.com/ecs/home).
 
    | Environment variable name      | Value                   |
@@ -181,7 +181,7 @@ To deploy to EC2, complete the following steps.
    - If you want these JSON objects saved in your repository, save the objects as three
      separate files.
 
-     In your `.gitlab-ci.yml` file, add [CI/CD variables](../variables/index.md)
+     In your `.gitlab-ci.yml` file, add [CI/CD variables](../variables/_index.md)
      that point to the file paths relative to the project root. For example,
      if your JSON files are in a `<project_root>/aws` folder:
 
@@ -193,7 +193,7 @@ To deploy to EC2, complete the following steps.
      ```
 
    - If you do not want these JSON objects saved in your repository, add each object
-     as a separate [file type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
+     as a separate [file type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables)
      in the project settings. Use the same variable names as above.
 
 1. In your `.gitlab-ci.yml` file, create a CI/CD variable for the name of the stack. For example:

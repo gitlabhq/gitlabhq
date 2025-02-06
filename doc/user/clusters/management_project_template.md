@@ -25,7 +25,7 @@ If you **have not yet** used the agent to connect your cluster with GitLab:
 1. [Create a project from the cluster management project template](#create-a-project-based-on-the-cluster-management-project-template).
 1. [Configure the project for the agent](agent/install/index.md).
 1. In your project's settings, create an
-   [environment variable](../../ci/variables/index.md#for-a-project) named `$KUBE_CONTEXT`
+   [environment variable](../../ci/variables/_index.md#for-a-project) named `$KUBE_CONTEXT`
    and set the value to `path/to/agent-configuration-project:your-agent-name`.
 1. [Configure the files](#configure-the-project) as needed.
 
@@ -37,7 +37,7 @@ If you have already configured the agent and connected a cluster with GitLab:
 1. In the project where you configured your agent,
    [grant the agent access to the new project](agent/ci_cd_workflow.md#authorize-the-agent).
 1. In the new project, create an
-   [environment variable](../../ci/variables/index.md#for-a-project) named `$KUBE_CONTEXT`
+   [environment variable](../../ci/variables/_index.md#for-a-project) named `$KUBE_CONTEXT`
    and set the value to `path/to/agent-configuration-project:your-agent-name`.
 1. In the new project, [configure the files](#configure-the-project) as needed.
 

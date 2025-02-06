@@ -224,7 +224,7 @@ To access private container registries, the GitLab Runner process can use:
 
 To define which option should be used, the runner process reads the configuration in this order:
 
-- A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/index.md).
+- A `DOCKER_AUTH_CONFIG` [CI/CD variable](../variables/_index.md).
 - A `DOCKER_AUTH_CONFIG` environment variable set in the runner's `config.toml` file.
 - A `config.json` file in `$HOME/.docker` directory of the user running the process.
   If the `--user` flag is provided to run the child processes as unprivileged user,
@@ -245,7 +245,7 @@ You can access a private registry using two approaches. Both require setting the
 `DOCKER_AUTH_CONFIG` with appropriate authentication information.
 
 1. Per-job: To configure one job to access a private registry, add
-   `DOCKER_AUTH_CONFIG` as a [CI/CD variable](../variables/index.md).
+   `DOCKER_AUTH_CONFIG` as a [CI/CD variable](../variables/_index.md).
 1. Per-runner: To configure a runner so all its jobs can access a
    private registry, add `DOCKER_AUTH_CONFIG` as an environment variable in the
    runner's configuration.
@@ -317,7 +317,7 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
 To configure a single job with access for `registry.example.com:5000`,
 follow these steps:
 
-1. Create a [CI/CD variable](../variables/index.md) `DOCKER_AUTH_CONFIG` with the content of the
+1. Create a [CI/CD variable](../variables/_index.md) `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
    ```json
@@ -390,7 +390,7 @@ To configure a Credentials Store:
 1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
 
    - Create a
-     [CI/CD variable](../variables/index.md)
+     [CI/CD variable](../variables/_index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 
@@ -422,7 +422,7 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
    Make sure that GitLab Runner can access the credentials.
 1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
 
-   - Create a [CI/CD variable](../variables/index.md)
+   - Create a [CI/CD variable](../variables/_index.md)
      `DOCKER_AUTH_CONFIG` with the content of the
      Docker configuration file as the value:
 

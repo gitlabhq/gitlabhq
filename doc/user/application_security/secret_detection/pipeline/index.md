@@ -398,7 +398,7 @@ In the following `secret-detection-ruleset.toml` file, rules are matched by the 
 
 A **remote ruleset is a configuration file stored outside the current repository**. It can be used to modify rules across multiple projects.
 
-To modify a predefined rule with a remote ruleset, you can use the `SECRET_DETECTION_RULESET_GIT_REFERENCE` [CI/CD variable](../../../../ci/variables/index.md):
+To modify a predefined rule with a remote ruleset, you can use the `SECRET_DETECTION_RULESET_GIT_REFERENCE` [CI/CD variable](../../../../ci/variables/_index.md):
 
 ```yaml
 include:

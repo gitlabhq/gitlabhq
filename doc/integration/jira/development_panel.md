@@ -114,7 +114,7 @@ GitLab sends information about your environments and deployments to Jira if:
 - Your project's `.gitlab-ci.yml` file contains the [`environment`](../../ci/yaml/_index.md#environment) keyword.
 - A Jira issue ID is [mentioned in certain parts of GitLab](#information-displayed-in-the-development-panel) and a pipeline is triggered.
 
-For more information, see [environments and deployments](../../ci/environments/index.md).
+For more information, see [environments and deployments](../../ci/environments/_index.md).
 
 ## Related topics
 

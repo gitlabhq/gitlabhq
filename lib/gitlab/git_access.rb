@@ -47,7 +47,7 @@ module Gitlab
 
     attr_reader :actor, :protocol, :authentication_abilities,
       :repository_path, :redirected_path, :auth_result_type,
-      :cmd, :changes, :push_options
+      :cmd, :changes, :push_options, :gitaly_context
     attr_accessor :container
 
     def self.error_message(key)
@@ -60,7 +60,7 @@ module Gitlab
       raise ArgumentError, "No error message defined for #{key}"
     end
 
-    def initialize(actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil, auth_result_type: nil, push_options: nil)
+    def initialize(actor, container, protocol, authentication_abilities:, repository_path: nil, redirected_path: nil, auth_result_type: nil, push_options: nil, gitaly_context: nil) # rubocop:disable Metrics/ParameterLists -- it needs a refactoring to resolve
       @actor     = actor
       @container = container
       @protocol  = protocol
@@ -69,6 +69,7 @@ module Gitlab
       @redirected_path = redirected_path
       @auth_result_type = auth_result_type
       @push_options = Gitlab::PushOptions.new(push_options)
+      @gitaly_context = gitaly_context
     end
 
     def check(cmd, changes)
@@ -386,7 +387,8 @@ module Gitlab
         project: project,
         protocol: protocol,
         logger: logger,
-        push_options: push_options
+        push_options: push_options,
+        gitaly_context: gitaly_context
       ).validate!
     rescue Checks::TimedLogger::TimeoutError
       raise TimeoutError, logger.full_message

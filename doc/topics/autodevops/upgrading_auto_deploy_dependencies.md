@@ -117,7 +117,7 @@ If your Auto DevOps project has an active environment that was deployed with the
 1. Deploy your environment as usual. This deployment uses Helm v3.
 1. If the deployment succeeds, you can safely run `<environment-name>:helm-2to3:cleanup`.
    This deletes all Helm v2 release data from the namespace.
-1. Remove the `MIGRATE_HELM_2TO3` CI/CD variable or set it to `false`. You can do this one environment at a time using [environment scopes](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
+1. Remove the `MIGRATE_HELM_2TO3` CI/CD variable or set it to `false`. You can do this one environment at a time using [environment scopes](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 #### In-Cluster PostgreSQL Channel 2
 
