@@ -709,8 +709,8 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `id`          | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).          |
 | `sha`         | string         | Yes | Hash of the commit.                                                                      |
 | `ref`         | string         | No  | Name of the branch or tag. Default is the default branch.          |
-| `stage`       | string         | No  | Filter statuses by [build stage](../ci/yaml/index.md#stages). For example, `test`.             |
-| `name`        | string         | No  | Filter statuses by [job name](../ci/yaml/index.md#job-keywords). For example, `bundler:audit`. |
+| `stage`       | string         | No  | Filter statuses by [build stage](../ci/yaml/_index.md#stages). For example, `test`.             |
+| `name`        | string         | No  | Filter statuses by [job name](../ci/yaml/_index.md#job-keywords). For example, `bundler:audit`. |
 | `pipeline_id` | integer        | No  | Filter statuses by pipeline ID. For example, `1234`.                                            |
 | `order_by`    | string         | No  | Values for sorting statuses. Valid values are `id` and `pipeline_id`. Default is `id`.                    |
 | `sort`        | string         | No  | Sort statuses in ascending or descending order. Valid values are `asc` and `desc`. Default is `asc`.                  |

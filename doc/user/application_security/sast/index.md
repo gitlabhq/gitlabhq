@@ -299,7 +299,7 @@ You can [change configuration variables](index.md#available-cicd-variables) or [
 
 ### Configure SAST in your CI/CD YAML
 
-To enable SAST, you [include](../../../ci/yaml/index.md#includetemplate)
+To enable SAST, you [include](../../../ci/yaml/_index.md#includetemplate)
 the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
 The template is provided as a part of your GitLab installation.
 
@@ -383,7 +383,7 @@ Pipelines now include a SAST job.
 
 ### Overriding SAST jobs
 
-To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../ci/yaml/index.md#rules)),
+To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../ci/yaml/_index.md#rules)),
 declare a job with the same name as the SAST job to override. Place this new job after the template
 inclusion and specify any additional keys under it. For example, this enables `FAIL_NEVER` for the
 `spotbugs` analyzer:
@@ -509,7 +509,7 @@ This strategy is called _pre-compilation_.
 
 To use pre-compilation:
 
-1. Output your project's dependencies to a directory in the project's working directory, then save that directory as an artifact by [setting the `artifacts: paths` configuration](../../../ci/yaml/index.md#artifactspaths).
+1. Output your project's dependencies to a directory in the project's working directory, then save that directory as an artifact by [setting the `artifacts: paths` configuration](../../../ci/yaml/_index.md#artifactspaths).
 1. Provide the `COMPILE: "false"` CI/CD variable to the analyzer job to disable automatic compilation.
 1. Add your compilation stage as a dependency for the analyzer job.
 
@@ -556,7 +556,7 @@ See [Use security scanning tools with merge request pipelines](../detect/roll_ou
 
 ### Available CI/CD variables
 
-SAST can be configured using the [`variables`](../../../ci/yaml/index.md#variables) parameter in
+SAST can be configured using the [`variables`](../../../ci/yaml/_index.md#variables) parameter in
 `.gitlab-ci.yml`.
 
 WARNING:
@@ -565,7 +565,7 @@ merging these changes to the default branch. Failure to do so can give unexpecte
 including a large number of false positives.
 
 The following example includes the SAST template to override the `SEARCH_MAX_DEPTH`
-variable to `10` in all jobs. The template is [evaluated before](../../../ci/yaml/index.md#include) the pipeline
+variable to `10` in all jobs. The template is [evaluated before](../../../ci/yaml/_index.md#include) the pipeline
 configuration, so the last mention of the variable takes precedence.
 
 ```yaml

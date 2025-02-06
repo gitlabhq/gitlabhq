@@ -50,4 +50,5 @@
     - c.with_body do
       = render 'groups/settings/ci_cd/auto_devops_form', group: @group
 
+- if can?(current_user, :admin_protected_environments, @group)
   = render_if_exists 'groups/settings/ci_cd/protected_environments', expanded: expanded

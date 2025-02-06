@@ -46,7 +46,7 @@ Deployments show up in this list only after a deployment job has created them.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
 
-The [environment URL](../yaml/index.md#environmenturl) is displayed in a few
+The [environment URL](../yaml/_index.md#environmenturl) is displayed in a few
 places in GitLab:
 
 - In a merge request as a link:
@@ -86,7 +86,7 @@ Dynamic environments:
 - Have dynamic names, usually based on the value of a CI/CD variable.
 - Are a feature of [review apps](../review_apps/index.md).
 
-An environment has one of three states, depending on whether its [stop job](../yaml/index.md#environmenton_stop) has run:
+An environment has one of three states, depending on whether its [stop job](../yaml/_index.md#environmenton_stop) has run:
 
 - `available`: The environment exists. There might be a deployment.
 - `stopping`: The _on stop job_ has started. This state does not apply when there is no on stop job defined.
@@ -124,7 +124,7 @@ To create a static environment, in your `.gitlab-ci.yml` file:
 
 NOTE:
 Some characters cannot be used in environment names. For more information about the
-`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
+`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
 
 For example, to create an environment named `staging`, with URL `https://staging.example.com`:
 
@@ -158,7 +158,7 @@ To create a dynamic environment, in your `.gitlab-ci.yml` file:
 
 NOTE:
 Some characters cannot be used in environment names. For more information about the
-`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/index.md#environment).
+`environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
 
 In the following example, every time the `deploy_review_app` job runs the environment's name and
 URL are defined using unique values.
@@ -269,9 +269,9 @@ you can use tiers:
 | `development`    | Dev, [Review apps](../review_apps/index.md), Trunk |
 | `other`          |                                                    |
 
-By default, GitLab assumes a tier based on [the environment name](../yaml/index.md#environmentname).
+By default, GitLab assumes a tier based on [the environment name](../yaml/_index.md#environmentname).
 You cannot set an environment tier using the UI.
-Instead, you can use the [`deployment_tier` keyword](../yaml/index.md#environmentdeployment_tier) to specify a tier.
+Instead, you can use the [`deployment_tier` keyword](../yaml/_index.md#environmentdeployment_tier) to specify a tier.
 
 ### Rename an environment
 
@@ -304,7 +304,7 @@ can be available for. The default environment scope is the `*` wildcard, so any 
 can access the variable.
 
 You can use specific matching to select a particular environment. For example, set
-the variable's environment scope to `production` to only allow jobs with an [environment](../yaml/index.md#environment)
+the variable's environment scope to `production` to only allow jobs with an [environment](../yaml/_index.md#environment)
 of `production` to access the variable.
 
 You can also use wildcard matching (`*`) to select a particular environment group,
@@ -327,8 +327,8 @@ These environment scopes match as follows:
 | `review/*`              |              |           | Match              | Match              |
 | `review/feature-1`      |              |           | Match              |                    |
 
-You should not use environment-scoped variables with [`rules`](../yaml/index.md#rules)
-or [`include`](../yaml/index.md#include). The variables might not be defined when
+You should not use environment-scoped variables with [`rules`](../yaml/_index.md#rules)
+or [`include`](../yaml/_index.md#include). The variables might not be defined when
 GitLab validates the pipeline configuration at pipeline creation.
 
 ## Search environments
@@ -380,7 +380,7 @@ an environment before it can be deleted.
 NOTE:
 To trigger an `on_stop` action and manually stop an environment from the
 Environments view, the stop and deploy jobs must be in the same
-[`resource_group`](../yaml/index.md#resource_group).
+[`resource_group`](../yaml/_index.md#resource_group).
 
 To stop an environment in the GitLab UI:
 
@@ -396,8 +396,8 @@ You can configure environments to stop when a branch is deleted.
 In the following example, a `deploy_review` job calls a `stop_review` job to clean up and stop the
 environment.
 
-- Both jobs must have the same [`rules`](../yaml/index.md#rules)
-  or [`only/except`](../yaml/index.md#only--except) configuration. Otherwise,
+- Both jobs must have the same [`rules`](../yaml/_index.md#rules)
+  or [`only/except`](../yaml/_index.md#only--except) configuration. Otherwise,
   the `stop_review` job might not be included in all pipelines that include the
   `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
 - The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)
@@ -467,7 +467,7 @@ Due to resource limitations, a background worker for stopping environments runs 
 hour. This means that environments may not be stopped after the exact time period specified, but are
 instead stopped when the background worker detects expired environments.
 
-In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/index.md#environmentauto_stop_in)
+In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 keyword. Specify the time period in natural language, such as `1 hour and 30 minutes` or `1 day`.
 After the time period passes, GitLab automatically triggers a job to stop the environment.
 
@@ -498,7 +498,7 @@ stop_review_app:
       when: manual
 ```
 
-The [`environment:action`](../yaml/index.md#environmentaction) keyword can be used to reset the time
+The [`environment:action`](../yaml/_index.md#environmentaction) keyword can be used to reset the time
 that an environment is scheduled to stop. For more information, see
 [Access an environment for preparation or verification purposes](#access-an-environment-for-preparation-or-verification-purposes).
 
@@ -562,7 +562,7 @@ Protected environments are ignored and not stopped.
 > - Feature flag `environment_stop_actions_include_all_finished_deployments` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435128) in GitLab 16.9. Disabled by default.
 > - Feature flag `environment_stop_actions_include_all_finished_deployments` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150932) in GitLab 17.0.
 
-You can define a stop job for the environment with an [`on_stop` action](../yaml/index.md#environmenton_stop) in the environment's deploy job.
+You can define a stop job for the environment with an [`on_stop` action](../yaml/_index.md#environmenton_stop) in the environment's deploy job.
 
 The stop jobs of finished deployments in the latest finished pipeline are run when an environment is stopped. A deployment or pipeline is _finished_ if it has the successful, canceled, or failed status.
 
@@ -571,9 +571,9 @@ Prerequisites:
 - Both the deploy and stop jobs must have the same rules or only/except configuration.
 - The stop job must have the following keywords defined:
   - `when`, defined at either:
-    - [The job level](../yaml/index.md#when).
-    - [In a rules clause](../yaml/index.md#rules). If you use `rules` and `when: manual`, you should
-      also set [`allow_failure: true`](../yaml/index.md#allow_failure) so the pipeline can complete
+    - [The job level](../yaml/_index.md#when).
+    - [In a rules clause](../yaml/_index.md#rules). If you use `rules` and `when: manual`, you should
+      also set [`allow_failure: true`](../yaml/_index.md#allow_failure) so the pipeline can complete
       even if the job doesn't run.
   - `environment:name`
   - `environment:action`
@@ -614,7 +614,7 @@ stop_review_app:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
 
 To configure multiple **parallel** stop actions on an environment, specify the
-[`on_stop`](../yaml/index.md#environmenton_stop) keyword across multiple
+[`on_stop`](../yaml/_index.md#environmenton_stop) keyword across multiple
 [deployment jobs](../jobs/index.md#deployment-jobs) for the same `environment`, as defined in the
 `.gitlab-ci.yml` file.
 
@@ -664,7 +664,7 @@ teardown-cloud-b:
 ### Stop an environment without running the `on_stop` action
 
 There may be times when you want to stop an environment without running the defined
-[`on_stop`](../yaml/index.md#environmenton_stop) action. For example, you want to delete many
+[`on_stop`](../yaml/_index.md#environmenton_stop) action. For example, you want to delete many
 environments without using [compute quota](../pipelines/compute_minutes.md).
 
 To stop an environment without running the defined `on_stop` action, execute the
@@ -712,7 +712,7 @@ This gives you access to environment-scoped variables, and can be used to protec
 it's effective to avoid the [prevent outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) feature.
 
 If an environment is configured to stop after a certain time period, jobs with the `access` or `prepare`
-action will reset the scheduled stop time. The [`environment:auto_stop_in`](../yaml/index.md#environmentauto_stop_in)
+action will reset the scheduled stop time. The [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 from the most recent successful deployment job to the environment is used when resetting the scheduled time.
 For example, if the most recent deployment used `auto_stop_in: 1 week` and is later accessed by a job with
 `action: access`, the environment will be rescheduled to stop one week from the completion of the accessing job.
@@ -905,7 +905,7 @@ To ensure the `action: stop` can always run when needed, you can:
     when: manual
   ```
 
-- Add a [`needs`](../yaml/index.md#needs) entry to the `action: stop` job so the
+- Add a [`needs`](../yaml/_index.md#needs) entry to the `action: stop` job so the
   job can start out of stage order:
 
   ```yaml
@@ -953,7 +953,7 @@ deploy:
 
 Since `$ENVIRONMENT` variable does not exist in the pipeline, GitLab tries to
 create an environment with a name `production/`, which is invalid in
-[the environment name constraint](../yaml/index.md#environmentname).
+[the environment name constraint](../yaml/_index.md#environmentname).
 
 To fix this, use one of the following solutions:
 

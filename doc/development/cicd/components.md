@@ -102,7 +102,7 @@ The responsibilities for this group of maintainers:
 
 Requirements for becoming a maintainer:
 
-- Have a an in-depth understanding of the [CI/CD YAML syntax](../../ci/yaml/index.md) and features.
+- Have a an in-depth understanding of the [CI/CD YAML syntax](../../ci/yaml/_index.md) and features.
 - Understand how CI components work and demonstrate experience developing them.
 - Have a solid understanding of how to [write a component](../../ci/components/index.md#write-a-component).
 

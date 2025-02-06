@@ -16,7 +16,7 @@ This makes it easier to identify test failures without searching through job log
 Unit test reports:
 
 - Require the JUnit report format.
-- Do not affect the job status. To make a job fail when unit tests fail, your job's [script](../yaml/index.md#script) must exit with a non-zero status.
+- Do not affect the job status. To make a job fail when unit tests fail, your job's [script](../yaml/_index.md#script) must exit with a non-zero status.
 
 Consider the following workflow:
 
@@ -115,13 +115,13 @@ ruby:
 ```
 
 To make the Unit test report output files browsable, include them with the
-[`artifacts:paths`](../yaml/index.md#artifactspaths) keyword as well, as shown in the example.
+[`artifacts:paths`](../yaml/_index.md#artifactspaths) keyword as well, as shown in the example.
 To upload the report even if the job fails (for example if the tests do not pass),
-use the [`artifacts:when:always`](../yaml/index.md#artifactswhen) keyword.
+use the [`artifacts:when:always`](../yaml/_index.md#artifactswhen) keyword.
 
 You cannot have multiple tests with the same name and class in your JUnit report format XML file.
 
-In GitLab 15.0 and earlier, test reports from [parallel:matrix](../yaml/index.md#parallelmatrix)
+In GitLab 15.0 and earlier, test reports from [parallel:matrix](../yaml/_index.md#parallelmatrix)
 jobs are aggregated together, which can cause some report information to not be displayed.
 In GitLab 15.1 and later, [this bug is fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/296814),
 and all report information is displayed.
@@ -165,7 +165,7 @@ When uploading screenshot artifacts:
   ```
 
 - You should set the job that uploads the screenshot to
-  [`artifacts:when: always`](../yaml/index.md#artifactswhen) so that it still uploads a screenshot
+  [`artifacts:when: always`](../yaml/_index.md#artifactswhen) so that it still uploads a screenshot
   when a test fails.
 
 After the attachment is uploaded, [the pipeline test report](#view-unit-test-reports-on-gitlab)
@@ -180,7 +180,7 @@ contains a link to the screenshot, for example:
 When you view a unit test report in a merge request, it might appear empty for these reasons:
 
 1. The artifact containing the report has expired. To resolve this issue, you can either:
-   - Set a longer [`expire_in`](../yaml/index.md#artifactsexpire_in) value for the report artifact.
+   - Set a longer [`expire_in`](../yaml/_index.md#artifactsexpire_in) value for the report artifact.
    - Run a new pipeline to generate a new report.
 
 1. The JUnit files exceed size limits. To resolve this issue:

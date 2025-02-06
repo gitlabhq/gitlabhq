@@ -52,7 +52,7 @@ The script in this example outputs `The job's stage is 'test'`.
 ## Define a CI/CD variable in the `.gitlab-ci.yml` file
 
 To create a CI/CD variable in the `.gitlab-ci.yml` file, define the variable and
-value with the [`variables`](../yaml/index.md#variables) keyword.
+value with the [`variables`](../yaml/_index.md#variables) keyword.
 
 Variables saved in the `.gitlab-ci.yml` file are visible to all users with access to
 the repository, and should store only non-sensitive project configuration. For example,
@@ -61,10 +61,10 @@ like secrets or keys should be [added in the UI](#define-a-cicd-variable-in-the-
 
 You can define `variables` in:
 
-- A job: The variable is only available in that job's `script`, `before_script`, or `after_script` sections, and with some [job keywords](../yaml/index.md#job-keywords).
+- A job: The variable is only available in that job's `script`, `before_script`, or `after_script` sections, and with some [job keywords](../yaml/_index.md#job-keywords).
 - The top-level of the `.gitlab-ci.yml` file: The variable is available as a default for all jobs in a pipeline, unless a job defines a variable with the same name. The job's variable takes precedence.
 
-In both cases, you cannot use these variables with [global keywords](../yaml/index.md#global-keywords).
+In both cases, you cannot use these variables with [global keywords](../yaml/_index.md#global-keywords).
 
 For example:
 
@@ -91,7 +91,7 @@ In this example:
 - `job1` outputs: `Variables are 'A default variable' and 'Job 1 variable'`
 - `job2` outputs: `Variables are 'Different value than default', 'Job 2 variable', and ''`
 
-Use the [`value` and `description`](../yaml/index.md#variablesdescription) keywords
+Use the [`value` and `description`](../yaml/_index.md#variablesdescription) keywords
 to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
 
@@ -516,7 +516,7 @@ The re-assigned variable cannot have the same name as the original variable. Oth
 
 You can create a new environment variable in a job, and pass it to another job
 in a later stage. These variables cannot be used as CI/CD variables to configure a pipeline
-(for example with the [`rules` keyword](../yaml/index.md#rules)), but they can be used in job scripts.
+(for example with the [`rules` keyword](../yaml/_index.md#rules)), but they can be used in job scripts.
 
 To pass a job-created environment variable to other jobs:
 
@@ -553,13 +553,13 @@ You can also [pass `dotenv` variables to downstream pipelines](../pipelines/down
 
 #### Control which jobs receive `dotenv` variables
 
-You can use the [`dependencies`](../yaml/index.md#dependencies) or [`needs`](../yaml/index.md#needs)
+You can use the [`dependencies`](../yaml/_index.md#dependencies) or [`needs`](../yaml/_index.md#needs)
 keywords to control which jobs receive the `dotenv` artifacts.
 
 To have no environment variables from a `dotenv` artifact:
 
 - Pass an empty `dependencies` or `needs` array.
-- Pass [`needs:artifacts`](../yaml/index.md#needsartifacts) as `false`.
+- Pass [`needs:artifacts`](../yaml/_index.md#needsartifacts) as `false`.
 - Set `needs` to only list jobs that do not have a `dotenv` artifact.
 
 For example:
@@ -807,7 +807,7 @@ You can specify a pipeline variable when you:
 - Create a pipeline by using [the `triggers` API endpoint](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - Use [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 - Pass variables to a downstream pipeline by using either the [`variables` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline),
-  [`trigger:forward` keyword](../yaml/index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
+  [`trigger:forward` keyword](../yaml/_index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 - Specify variables when creating a [pipeline schedule](../pipelines/schedules.md#add-a-pipeline-schedule).
 - Specify variables when [running a manual job](../pipelines/index.md#run-a-pipeline-manually).
 
@@ -931,7 +931,7 @@ When the runner executes the job:
   on what other GitLab CI patterns are demonstrated are available at the project page.
 
 - You can [pass CI/CD variables to downstream pipelines](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
-  Use [`trigger:forward` keyword](../yaml/index.md#triggerforward) to specify what type of variables
+  Use [`trigger:forward` keyword](../yaml/_index.md#triggerforward) to specify what type of variables
   to pass to the downstream pipeline.
 
 ## Troubleshooting

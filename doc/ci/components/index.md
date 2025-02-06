@@ -131,7 +131,7 @@ For example:
 
 ## Use a component
 
-To add a component to a project's CI/CD configuration, use the [`include: component`](../yaml/index.md#includecomponent)
+To add a component to a project's CI/CD configuration, use the [`include: component`](../yaml/_index.md#includecomponent)
 keyword. The component reference is formatted as `<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`,
 for example:
 
@@ -248,7 +248,7 @@ This section describes some best practices for creating high quality component p
 While it's possible for a component to use other components in turn, make sure to carefully select the dependencies. To manage dependencies, you should:
 
 - Keep dependencies to a minimum. A small amount of duplication is usually better than having dependencies.
-- Rely on local dependencies whenever possible. For example, using [`include:local`](../yaml/index.md#includelocal) is a good way
+- Rely on local dependencies whenever possible. For example, using [`include:local`](../yaml/_index.md#includelocal) is a good way
   to ensure the same Git SHA is used across multiple files.
 - When depending on components from other projects, pin their version to a release from the catalog rather than using moving target
   versions such as `~latest` or a Git reference. Using a release or Git SHA guarantees that you are fetching the same revision
@@ -377,7 +377,7 @@ authenticate requests on GitLab Self-Managed instances.
 
 ### Avoid using global keywords
 
-Avoid using [global keywords](../yaml/index.md#global-keywords) in a component.
+Avoid using [global keywords](../yaml/_index.md#global-keywords) in a component.
 Using these keywords in a component affects all jobs in a pipeline, including jobs
 directly defined in the main `.gitlab-ci.yml` or in other included components.
 
@@ -385,7 +385,7 @@ As an alternative to global keywords:
 
 - Add the configuration directly to each job, even if it creates some duplication
   in the component configuration.
-- Use the [`extends`](../yaml/index.md#extends) keyword in the component, but use
+- Use the [`extends`](../yaml/_index.md#extends) keyword in the component, but use
   unique names that reduce the risk of naming conflicts when the component is merged
   into the configuration.
 
@@ -629,7 +629,7 @@ Prerequisites:
   - Have a `README.md` file in the root directory for the commit SHA of the tag being released.
   - Have at least one [CI/CD component in the `templates/` directory](#directory-structure)
     for the commit SHA of the tag being released.
-- You must use the [`release` keyword](../yaml/index.md#release) in a CI/CD job to create the release,
+- You must use the [`release` keyword](../yaml/_index.md#release) in a CI/CD job to create the release,
   not the [Releases API](../../api/releases/_index.md#create-a-release).
 
 To publish a new version of the component to the catalog:

@@ -197,7 +197,7 @@ As pipelines grow more complex, a few related problems start to emerge:
   job in next stage begins, causes waits that slow things down.
 - Configuration for the single global pipeline becomes
   hard to manage.
-- Imports with [`include`](../yaml/index.md#include) increase the complexity of the configuration, and can cause
+- Imports with [`include`](../yaml/_index.md#include) increase the complexity of the configuration, and can cause
   namespace collisions where jobs are unintentionally duplicated.
 - Pipeline UX has too many jobs and stages to work with.
 
@@ -211,9 +211,9 @@ These cases are ideal for using [parent-child pipelines](downstream_pipelines.md
 It separates out the configuration into multiple files, keeping things simpler.
 You can combine parent-child pipelines with:
 
-- The [`rules` keyword](../yaml/index.md#rules): For example, have the child pipelines triggered only
+- The [`rules` keyword](../yaml/_index.md#rules): For example, have the child pipelines triggered only
   when there are changes to that area.
-- The [`include` keyword](../yaml/index.md#include): Bring in common behaviors, ensuring
+- The [`include` keyword](../yaml/_index.md#include): Bring in common behaviors, ensuring
   you are not repeating yourself.
 - The [`needs` keyword](#pipelines-with-the-needs-keyword) inside of child pipelines, achieving the benefits of both.
 

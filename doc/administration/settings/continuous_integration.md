@@ -186,7 +186,7 @@ The value is in MB, and the default value is 100 MB per job. An administrator ca
 
 The default expiration time of the [job artifacts](../cicd/job_artifacts.md)
 can be set in the **Admin** area of your GitLab instance. The syntax of duration is
-described in [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in)
+described in [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in)
 and the default value is `30 days`.
 
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -195,7 +195,7 @@ and the default value is `30 days`.
 1. Select **Save changes** for the changes to take effect.
 
 This setting is set per job and can be overridden in
-[`.gitlab-ci.yml`](../../ci/yaml/index.md#artifactsexpire_in).
+[`.gitlab-ci.yml`](../../ci/yaml/_index.md#artifactsexpire_in).
 To disable the expiration, set it to `0`. The default unit is in seconds.
 
 NOTE:
@@ -406,13 +406,13 @@ use a template from:
 
   NOTE:
   When you use a configuration defined in an instance template repository,
-  nested [`include:`](../../ci/yaml/index.md#include) keywords
+  nested [`include:`](../../ci/yaml/_index.md#include) keywords
   (including `include:file`, `include:local`, `include:remote`, and `include:template`)
   [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
 
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration
-added the project configuration with the [`include` keyword](../../ci/yaml/index.md#include).
+added the project configuration with the [`include` keyword](../../ci/yaml/_index.md#include).
 To view a project's full merged configuration, [View full configuration](../../ci/pipeline_editor/index.md#view-full-configuration)
 in the pipeline editor.
 

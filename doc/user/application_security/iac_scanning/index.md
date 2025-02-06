@@ -318,7 +318,7 @@ The JSON report file can be downloaded from:
 
 - The CI pipelines page.
 - The pipelines tab on merge requests by
-  [setting `artifacts: paths`](../../../ci/yaml/index.md#artifactspaths) to `gl-sast-report.json`.
+  [setting `artifacts: paths`](../../../ci/yaml/_index.md#artifactspaths) to `gl-sast-report.json`.
 
 For more information see [Downloading artifacts](../../../ci/jobs/job_artifacts.md).
 

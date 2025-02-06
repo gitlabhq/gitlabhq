@@ -200,8 +200,8 @@ but be unable to merge a merge request with no failed pipelines. The setting req
 the existence of a successful pipeline, not the absence of failed pipelines. A merge request
 with no pipelines at all is not considered to have a successful pipeline, and cannot merge.
 
-When you enable this setting, use [`rules`](../../../ci/yaml/index.md#rules)
-or [`workflow:rules`](../../../ci/yaml/index.md#workflowrules) to ensure pipelines
+When you enable this setting, use [`rules`](../../../ci/yaml/_index.md#rules)
+or [`workflow:rules`](../../../ci/yaml/_index.md#workflowrules) to ensure pipelines
 run for every merge request.
 
 ### Merge request can still be merged despite a failed pipeline
@@ -215,7 +215,7 @@ merge request pipelines for success.
 
 Merge requests can have multiple pipelines if:
 
-- A [`rules`](../../../ci/yaml/index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines):
+- A [`rules`](../../../ci/yaml/_index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines):
   one merge request pipeline and one branch pipeline. In this case, the status of the
   latest _merge request_ pipeline determines if a merge request can merge, not the branch pipeline.
 - Pipelines triggered by external tools that target the same branch as the merge request.

@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-4 sm:gl-ml-auto">
+  <div class="sm:gl-ml-auto">
     <gl-button
       v-gl-tooltip.hover
       :title="

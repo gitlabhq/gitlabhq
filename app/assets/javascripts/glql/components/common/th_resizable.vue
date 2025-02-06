@@ -64,9 +64,9 @@ export default {
   <th :style="headerStyle" class="gl-relative">
     <slot></slot>
     <div
-      class="gl-absolute gl-right-0 gl-top-0 gl-z-1 gl-w-2 gl-cursor-col-resize gl-select-none hover:gl-bg-gray-50"
+      class="gl-absolute gl-right-0 gl-top-0 gl-z-1 gl-w-2 gl-cursor-col-resize gl-select-none hover:gl-bg-strong"
       data-testid="resize-handle"
-      :class="{ 'gl-bg-gray-50': isResizing }"
+      :class="{ 'gl-bg-strong': isResizing }"
       :style="{ height: `${tableHeight}px` }"
       @mouseover="updateTableHeight"
       @mousedown="onMouseDown"

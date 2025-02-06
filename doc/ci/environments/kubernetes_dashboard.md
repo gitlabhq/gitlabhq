@@ -84,7 +84,7 @@ deploy_review_app:
       agent: path/to/agent/project:agent-name
 ```
 
-For more information, see the [CI/CD YAML syntax reference](../yaml/index.md#environmentkubernetes).
+For more information, see the [CI/CD YAML syntax reference](../yaml/_index.md#environmentkubernetes).
 
 ## View a dashboard
 

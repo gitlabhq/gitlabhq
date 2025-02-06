@@ -29,7 +29,7 @@ only the deployment to Kubernetes runs.
 WARNING:
 Setting the `AUTO_DEVOPS_PLATFORM_TARGET` variable to `ECS` triggers jobs
 defined in the [`Jobs/Deploy/ECS.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml).
-However, it's not recommended to [include](../../../ci/yaml/index.md#includetemplate)
+However, it's not recommended to [include](../../../ci/yaml/_index.md#includetemplate)
 it on its own. This template is designed to be used with Auto DevOps only. It may change
 unexpectedly causing your pipeline to fail if included on its own. Also, the job
 names within this template may also change. Do not override these jobs' names in your

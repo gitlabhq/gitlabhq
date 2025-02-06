@@ -75,7 +75,6 @@ module Gitlab
             :notes,
             :notifications,
             :participants,
-            :start_and_due_date,
             :time_tracking
           ],
           test_case: [

@@ -75,14 +75,14 @@ To enable coverage-guided fuzz testing, edit `.gitlab-ci.yml`:
 
 1. Add the `fuzz` stage to the list of stages.
 
-1. If your application is not written in Go, [provide a Docker image](../../../ci/yaml/index.md#image) using the matching fuzzing
+1. If your application is not written in Go, [provide a Docker image](../../../ci/yaml/_index.md#image) using the matching fuzzing
    engine. For example:
 
    ```yaml
    image: python:latest
    ```
 
-1. [Include](../../../ci/yaml/index.md#includetemplate) the
+1. [Include](../../../ci/yaml/_index.md#includetemplate) the
    [`Coverage-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
    provided as part of your GitLab installation.
 
@@ -106,7 +106,7 @@ my_fuzz_target:
 ```
 
 The `Coverage-Fuzzing` template includes the [hidden job](../../../ci/jobs/index.md#hide-a-job)
-`.fuzz_base`, which you must [extend](../../../ci/yaml/index.md#extends) for each of your fuzzing
+`.fuzz_base`, which you must [extend](../../../ci/yaml/_index.md#extends) for each of your fuzzing
 targets. Each fuzzing target **must** have a separate job. For example, the
 [go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)
 contains one job that extends `.fuzz_base` for its single fuzzing target.

@@ -37,7 +37,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
         "initial-branch-name" => nil,
         "includes-help-page-path" => help_page_path('ci/yaml/includes.md'),
         "lint-help-page-path" => help_page_path('ci/yaml/lint.md', anchor: 'check-cicd-syntax'),
-        "needs-help-page-path" => help_page_path('ci/yaml/index.md', anchor: 'needs'),
+        "needs-help-page-path" => help_page_path('ci/yaml/_index.md', anchor: 'needs'),
         "new-merge-request-path" => '/mock/project/-/merge_requests/new',
         "pipeline-page-path" => project_pipelines_path(project),
         "project-path" => project.path,
@@ -46,7 +46,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
         "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/index.md', anchor: 'simulate-a-cicd-pipeline'),
         "uses-external-config" => 'false',
         "validate-tab-illustration-path" => 'illustrations/validate.svg',
-        "yml-help-page-path" => help_page_path('ci/yaml/index.md')
+        "yml-help-page-path" => help_page_path('ci/yaml/_index.md')
       }
     end
 

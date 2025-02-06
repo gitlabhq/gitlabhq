@@ -114,7 +114,7 @@ export default {
       class="board is-expandable gl-relative gl-inline-block gl-h-full gl-whitespace-normal gl-px-3 gl-align-top"
     >
       <div
-        class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-base gl-bg-gray-50"
+        class="gl-relative gl-flex gl-h-full gl-flex-col gl-rounded-base gl-bg-strong dark:gl-bg-subtle"
         :class="{ 'board-column-highlighted': highlighted }"
       >
         <board-list-header

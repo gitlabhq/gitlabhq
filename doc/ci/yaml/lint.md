@@ -24,7 +24,7 @@ If you use VS Code, you can validate your CI/CD configuration with the
 ## Check CI/CD syntax
 
 The CI lint tool checks the syntax of GitLab CI/CD configuration, including
-configuration added with the [`includes` keyword](index.md#include).
+configuration added with the [`includes` keyword](_index.md#include).
 
 To check CI/CD configuration with the CI lint tool:
 
@@ -38,7 +38,7 @@ To check CI/CD configuration with the CI lint tool:
 ## Simulate a pipeline
 
 You can simulate the creation of a GitLab CI/CD pipeline to find more complicated issues,
-including problems with [`needs`](index.md#needs) and [`rules`](index.md#rules)
+including problems with [`needs`](_index.md#needs) and [`rules`](_index.md#rules)
 configuration. A simulation runs as a Git `push` event on the default branch.
 
 Prerequisites:

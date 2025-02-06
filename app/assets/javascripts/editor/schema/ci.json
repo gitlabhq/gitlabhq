@@ -433,7 +433,7 @@
           "additionalProperties": false,
           "properties": {
             "project": {
-              "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project` [Learn more](https://docs.gitlab.com/ee/ci/yaml/index.html#includefile).",
+              "description": "Path to the project, e.g. `group/project`, or `group/sub-group/project` [Learn more](https://docs.gitlab.com/ee/ci/yaml/#includefile).",
               "type": "string",
               "pattern": "(?:\\S/\\S|\\$\\S+)"
             },
@@ -1174,7 +1174,7 @@
       }
     },
     "rulesVariables": {
-      "markdownDescription": "Defines variables for a rule result. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#rulesvariables).",
+      "markdownDescription": "Defines variables for a rule result. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesvariables).",
       "type": "object",
       "patternProperties": {
         ".*": {
@@ -1279,7 +1279,7 @@
     },
     "timeout": {
       "type": "string",
-      "markdownDescription": "Allows you to configure a timeout for a specific job (e.g. `1 minute`, `1h 30m 12s`). [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#timeout).",
+      "markdownDescription": "Allows you to configure a timeout for a specific job (e.g. `1 minute`, `1h 30m 12s`). [Learn More](https://docs.gitlab.com/ee/ci/yaml/#timeout).",
       "minLength": 1
     },
     "start_in": {
@@ -1288,7 +1288,7 @@
       "minLength": 1
     },
     "rulesNeeds": {
-      "markdownDescription": "Use needs in rules to update job needs for specific conditions. When a condition matches a rule, the job's needs configuration is completely replaced with the needs in the rule. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#rulesneeds).",
+      "markdownDescription": "Use needs in rules to update job needs for specific conditions. When a condition matches a rule, the job's needs configuration is completely replaced with the needs in the rule. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesneeds).",
       "type": "array",
       "items": {
         "oneOf": [
@@ -2152,7 +2152,7 @@
           "description": "Limit job concurrency. Can be used to ensure that the Runner will not run certain jobs simultaneously."
         },
         "trigger": {
-          "markdownDescription": "Trigger allows you to define downstream pipeline trigger. When a job created from trigger definition is started by GitLab, a downstream pipeline gets created. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#trigger).",
+          "markdownDescription": "Trigger allows you to define downstream pipeline trigger. When a job created from trigger definition is started by GitLab, a downstream pipeline gets created. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#trigger).",
           "oneOf": [
             {
               "type": "object",
@@ -2376,7 +2376,7 @@
               }
             },
             {
-              "markdownDescription": "Path to the project, e.g. `group/project`, or `group/sub-group/project`. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#trigger).",
+              "markdownDescription": "Path to the project, e.g. `group/project`, or `group/sub-group/project`. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#trigger).",
               "type": "string",
               "pattern": "(?:\\S/\\S|\\$\\S+)"
             }

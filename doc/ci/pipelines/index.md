@@ -11,14 +11,14 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 CI/CD pipelines are the fundamental component of GitLab CI/CD. Pipelines are configured
-in a `.gitlab-ci.yml` file by using [YAML keywords](../yaml/index.md).
+in a `.gitlab-ci.yml` file by using [YAML keywords](../yaml/_index.md).
 
 Pipelines can run automatically for specific events, like when pushing to a branch,
 creating a merge request, or on a schedule. When needed, you can also run pipelines manually.
 
 Pipelines are composed of:
 
-- [Global YAML keywords](../yaml/index.md#global-keywords) that control the overall
+- [Global YAML keywords](../yaml/_index.md#global-keywords) that control the overall
   behavior of the project's pipelines.
 - [Jobs](../jobs/index.md) that execute commands to accomplish a task. For example,
   a job could compile, test, or deploy code. Jobs run independently from each other,
@@ -61,7 +61,7 @@ Pipelines can be configured in many different ways:
 
 ## Configure a pipeline
 
-Pipelines and their component jobs and stages are defined with [YAML keywords](../yaml/index.md)
+Pipelines and their component jobs and stages are defined with [YAML keywords](../yaml/_index.md)
 in the CI/CD pipeline configuration file for each project. When editing CI/CD configuration
 in GitLab, you should use the [pipeline editor](../pipeline_editor/index.md).
 
@@ -98,7 +98,7 @@ The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
 
-You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
+You can use the [`description` and `value`](../yaml/_index.md#variablesdescription)
 keywords to [define pipeline-level (global) variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually. Use the description to explain
 information such as what the variable is used for, and what the acceptable values are.
@@ -259,7 +259,7 @@ to that specific branch:
 branches, preventing untrusted code from executing on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
-runners do not use regular runners, they must be [tagged](../yaml/index.md#tags) accordingly.
+runners do not use regular runners, they must be [tagged](../yaml/_index.md#tags) accordingly.
 
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
@@ -397,13 +397,13 @@ You can use a standard URL to access the details for specific pipelines:
 
 #### Group jobs by stage or `needs` configuration
 
-When you configure jobs with the [`needs`](../yaml/index.md#needs) keyword, you have
+When you configure jobs with the [`needs`](../yaml/_index.md#needs) keyword, you have
 two options for how to group the jobs in the pipeline details page. To group the jobs
 by stage configuration, select **stage** in the **Group jobs by** section:
 
 ![jobs grouped by stage](img/pipeline_stage_view_v17_9.png)
 
-To group the jobs by [`needs`](../yaml/index.md#needs) configuration, select **Job dependencies**.
+To group the jobs by [`needs`](../yaml/_index.md#needs) configuration, select **Job dependencies**.
 You can optionally select **Show dependencies** to render lines between dependent jobs.
 
 ![jobs grouped by job dependencies](img/pipeline_dependency_view_v17_9.png)

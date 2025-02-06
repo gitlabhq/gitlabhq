@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use the [`workflow`](index.md#workflow) keyword to control when pipelines are created.
+Use the [`workflow`](_index.md#workflow) keyword to control when pipelines are created.
 
 The `workflow` keyword is evaluated before jobs. For example, if a job is configured to run
 for tags, but the workflow prevents tag pipelines, the job never runs.
@@ -179,7 +179,7 @@ as a source. However, this pipeline type does not support any features offered b
 or [merge trains](../pipelines/merge_trains.md).
 This template intentionally avoids those features.
 
-To [include](index.md#include) it:
+To [include](_index.md#include) it:
 
 ```yaml
 include:
@@ -191,7 +191,7 @@ makes your pipelines run for the default branch, tags, and
 all types of merge request pipelines. Use this template if you use any of the
 [merge request pipelines features](../pipelines/merge_request_pipelines.md).
 
-To [include](index.md#include) it:
+To [include](_index.md#include) it:
 
 ```yaml
 include:

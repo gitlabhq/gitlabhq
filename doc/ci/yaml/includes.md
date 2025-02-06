@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can use [`include`](index.md#include) to include external YAML files in your CI/CD jobs.
+You can use [`include`](_index.md#include) to include external YAML files in your CI/CD jobs.
 
 ## Include a single configuration file
 
@@ -30,15 +30,15 @@ with either of these syntax options:
     - 'my-config.yml'
   ```
 
-If the file is a local file, the behavior is the same as [`include:local`](index.md#includelocal).
-If the file is a remote file, it is the same as [`include:remote`](index.md#includeremote).
+If the file is a local file, the behavior is the same as [`include:local`](_index.md#includelocal).
+If the file is a remote file, it is the same as [`include:remote`](_index.md#includeremote).
 
 ## Include an array of configuration files
 
 You can include an array of configuration files:
 
-- If you do not specify an `include` type, each array item defaults to [`include:local`](index.md#includelocal)
-  or [`include:remote`](index.md#includeremote), as needed:
+- If you do not specify an `include` type, each array item defaults to [`include:local`](_index.md#includelocal)
+  or [`include:remote`](_index.md#includeremote), as needed:
 
   ```yaml
   include:
@@ -76,11 +76,11 @@ You can include an array of configuration files:
 
 ## Use `default` configuration from an included configuration file
 
-You can define a [`default`](index.md#default) section in a
+You can define a [`default`](_index.md#default) section in a
 configuration file. When you use a `default` section with the `include` keyword, the defaults apply to
 all jobs in the pipeline.
 
-For example, you can use a `default` section with [`before_script`](index.md#before_script).
+For example, you can use a `default` section with [`before_script`](_index.md#before_script).
 
 Content of a custom configuration file named `/templates/.before-script-template.yml`:
 
@@ -421,7 +421,7 @@ include:
   file: '.compliance-gitlab-ci.yml'
 ```
 
-You cannot use variables defined in jobs, or in a global [`variables`](../yaml/index.md#variables)
+You cannot use variables defined in jobs, or in a global [`variables`](_index.md#variables)
 section which defines the default variables for all jobs. Includes are evaluated before jobs,
 so these variables cannot be used with `include`.
 
@@ -436,21 +436,21 @@ this issue.
 
 > - Support for `needs` job dependency [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345377) in GitLab 15.11.
 
-You can use [`rules`](index.md#rules) with `include` to conditionally include other configuration files.
+You can use [`rules`](_index.md#rules) with `include` to conditionally include other configuration files.
 
 You can only use `rules` with [certain variables](#use-variables-with-include), and
 these keywords:
 
-- [`rules:if`](index.md#rulesif).
-- [`rules:exists`](index.md#rulesexists).
-- [`rules:changes`](index.md#ruleschanges).
+- [`rules:if`](_index.md#rulesif).
+- [`rules:exists`](_index.md#rulesexists).
+- [`rules:changes`](_index.md#ruleschanges).
 
 ### `include` with `rules:if`
 
 > - Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
 > - Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
 
-Use [`rules:if`](index.md#rulesif) to conditionally include other configuration files
+Use [`rules:if`](_index.md#rulesif) to conditionally include other configuration files
 based on the status of CI/CD variables. For example:
 
 ```yaml
@@ -480,7 +480,7 @@ test:
 > - Support for `when: never` and `when:always` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348146) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_when_never`. Disabled by default.
 > - Support for `when: never` and `when:always` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414517) in GitLab 16.2. Feature flag `ci_support_include_rules_when_never` removed.
 
-Use [`rules:exists`](index.md#rulesexists) to conditionally include other configuration files
+Use [`rules:exists`](_index.md#rulesexists) to conditionally include other configuration files
 based on the existence of files. For example:
 
 ```yaml
@@ -534,8 +534,8 @@ include:
 In this example, GitLab searches for the existence of `file.md` in `my-group/other-project`
 on commit ref `other_branch`, not the project/ref in which the pipeline runs.
 
-To change the search context you can use [`rules:exists:paths`](index.md#rulesexistspaths)
-with [`rules:exists:project`](index.md#rulesexistsproject).
+To change the search context you can use [`rules:exists:paths`](_index.md#rulesexistspaths)
+with [`rules:exists:project`](_index.md#rulesexistsproject).
 For example:
 
 ```yaml
@@ -555,7 +555,7 @@ include:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4.
 
-Use [`rules:changes`](index.md#ruleschanges) to conditionally include other configuration files
+Use [`rules:changes`](_index.md#ruleschanges) to conditionally include other configuration files
 based on changed files. For example:
 
 ```yaml
@@ -635,7 +635,7 @@ change the [maximum includes](../../administration/settings/continuous_integrati
 
 ### `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello` and other network failures
 
-When using [`include:remote`](index.md#includeremote), GitLab tries to fetch the remote file
+When using [`include:remote`](_index.md#includeremote), GitLab tries to fetch the remote file
 through HTTP(S). This process can fail because of a variety of connectivity issues.
 
 The `SSL_connect SYSCALL returned=5 errno=0 state=SSLv3/TLS write client hello` error
@@ -648,5 +648,5 @@ is rate limited. Repeated attempts to fetch CI/CD configuration files hosted on 
 can cause the rate limit to be reached and cause the error. You should avoid hosting
 CI/CD configuration files on a GitLab Pages site.
 
-When possible, use [`include:project`](index.md#includeproject) to fetch configuration
+When possible, use [`include:project`](_index.md#includeproject) to fetch configuration
 files from other projects within the GitLab instance without making external HTTP(S) requests.

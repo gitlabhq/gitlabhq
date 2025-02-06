@@ -83,7 +83,7 @@ It does deeper verification of the configuration syntax.
 
 ### Use pipeline names
 
-Use [`workflow:name`](yaml/index.md#workflowname) to give names to all your pipeline types,
+Use [`workflow:name`](yaml/_index.md#workflowname) to give names to all your pipeline types,
 which makes it easier to identify pipelines in the pipelines list. For example:
 
 ```yaml
@@ -205,7 +205,7 @@ job1:
 
 Some tools might generate files that are only needed while the job is running,
 but the content of these files could be used for debugging. You can save them for
-later analysis with [`artifacts`](yaml/index.md#artifacts):
+later analysis with [`artifacts`](yaml/_index.md#artifacts):
 
 ```yaml
 job1:
@@ -267,7 +267,7 @@ If a pipeline does not seem to run at all, with no error message, it may also be
 due to `rules` or `only/except` configuration, or the `workflow: rules` keyword.
 
 If you are converting from `only/except` to the `rules` keyword, you should check
-the [`rules` configuration details](yaml/index.md#rules) carefully. The behavior
+the [`rules` configuration details](yaml/_index.md#rules) carefully. The behavior
 of `only/except` and `rules` is different and can cause unexpected behavior when migrating
 between the two.
 
@@ -296,8 +296,8 @@ A common reason a job is added to a pipeline unexpectedly is because the `change
 keyword always evaluates to true in certain cases. For example, `changes` is always
 true in certain pipeline types, including scheduled pipelines and pipelines for tags.
 
-The `changes` keyword is used in combination with [`only/except`](yaml/index.md#onlychanges--exceptchanges)
-or [`rules`](yaml/index.md#ruleschanges). It's recommended to only use `changes` with
+The `changes` keyword is used in combination with [`only/except`](yaml/_index.md#onlychanges--exceptchanges)
+or [`rules`](yaml/_index.md#ruleschanges). It's recommended to only use `changes` with
 `if` sections in `rules` or `only/except` configuration that ensures the job is only added to
 branch pipelines or merge request pipelines.
 
@@ -324,7 +324,7 @@ be checked to make sure the jobs are added to the correct pipeline type. For
 example, if a merge request pipeline did not run, the jobs may have been added to
 a branch pipeline instead.
 
-It's also possible that your [`workflow: rules`](yaml/index.md#workflow) configuration
+It's also possible that your [`workflow: rules`](yaml/_index.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
 ### Pipeline with many jobs fails to start
@@ -344,12 +344,12 @@ Pipeline configuration warnings are shown when you:
 
 ### `Job may allow multiple pipelines to run for a single action` warning
 
-When you use [`rules`](yaml/index.md#rules) with a `when` clause without an `if`
+When you use [`rules`](yaml/_index.md#rules) with a `when` clause without an `if`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
 To [prevent duplicate pipelines](jobs/job_rules.md#avoid-duplicate-pipelines), use
-[`workflow: rules`](yaml/index.md#workflow) or rewrite your rules to control
+[`workflow: rules`](yaml/_index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ## Pipeline errors
@@ -398,7 +398,7 @@ for more details.
 
 ### `Project <group/project> not found or access denied` message
 
-This message is shown if configuration is added with [`include`](yaml/index.md#include) and either:
+This message is shown if configuration is added with [`include`](yaml/_index.md#include) and either:
 
 - The configuration refers to a project that can't be found.
 - The user that is running the pipeline is unable to access any included projects.
@@ -444,7 +444,7 @@ A runner might return a `Failed to pull image` message when trying to pull a con
 in a CI/CD job.
 
 The runner authenticates with a [CI/CD job token](jobs/ci_job_token.md)
-when fetching a container image defined with [`image`](yaml/index.md#image)
+when fetching a container image defined with [`image`](yaml/_index.md#image)
 from another project's container registry.
 
 If the job token settings prevent access to the other project's container registry,
@@ -489,7 +489,7 @@ To resolve this, see the [workaround in issue 352382](https://gitlab.com/gitlab-
 ### `config should be an array of hashes` error message
 
 You might see an error similar to the following when using [`!reference` tags](yaml/yaml_optimization.md#reference-tags)
-with the [`parallel:matrix` keyword](yaml/index.md#parallelmatrix):
+with the [`parallel:matrix` keyword](yaml/_index.md#parallelmatrix):
 
 ```plaintext
 This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config should be an array of hashes.

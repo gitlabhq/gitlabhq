@@ -26,7 +26,7 @@ GitLab supports two coverage report formats:
 ## How test coverage visualization works
 
 Collecting the coverage information is done by using the GitLab CI/CD
-[artifacts reports feature](../../yaml/index.md#artifactsreports).
+[artifacts reports feature](../../yaml/_index.md#artifactsreports).
 You can specify one or more coverage reports to collect, including wildcard paths.
 GitLab then takes the coverage information in all the files and combines it
 together. Coverage files are parsed in a background job so there can be a delay

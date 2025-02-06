@@ -135,7 +135,7 @@ they are included in a tag pipeline for any newly created tag.
 In your `.gitlab-ci.yml` file for the CI/CD pipeline configuration of your project,
 you can use the `CI_COMMIT_TAG` variable to control pipelines for new tags:
 
-- At the job level with [`rules:if`](../../../../ci/yaml/index.md#rulesif).
+- At the job level with [`rules:if`](../../../../ci/yaml/_index.md#rulesif).
 - At the pipeline level with the [`workflow`](../../../../ci/yaml/workflow.md) keyword.
 
 ## Related topics

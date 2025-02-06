@@ -25,7 +25,7 @@ module Ci
         "initial-branch-name" => initial_branch,
         "includes-help-page-path" => help_page_path('ci/yaml/includes.md'),
         "lint-help-page-path" => help_page_path('ci/yaml/lint.md', anchor: 'check-cicd-syntax'),
-        "needs-help-page-path" => help_page_path('ci/yaml/index.md', anchor: 'needs'),
+        "needs-help-page-path" => help_page_path('ci/yaml/_index.md', anchor: 'needs'),
         "new-merge-request-path" => namespace_project_new_merge_request_path,
         "pipeline_etag" => latest_commit ? graphql_etag_pipeline_sha_path(latest_commit.sha) : '',
         "pipeline-page-path" => project_pipelines_path(project),
@@ -36,7 +36,7 @@ module Ci
         "total-branches" => total_branches,
         "uses-external-config" => uses_external_config?(project) ? 'true' : 'false',
         "validate-tab-illustration-path" => image_path('illustrations/empty-state/empty-devops-md.svg'),
-        "yml-help-page-path" => help_page_path('ci/yaml/index.md')
+        "yml-help-page-path" => help_page_path('ci/yaml/_index.md')
       }
     end
 

@@ -483,7 +483,7 @@ Retrieve the job that generated a job token.
 GET /job
 ```
 
-Examples (must run as part of the [`script`](../ci/yaml/index.md#script) section of a [CI/CD job](../ci/jobs/index.md)):
+Examples (must run as part of the [`script`](../ci/yaml/_index.md#script) section of a [CI/CD job](../ci/jobs/index.md)):
 
 ```shell
 curl --header "Authorization: Bearer $CI_JOB_TOKEN" "${CI_API_V4_URL}/job"

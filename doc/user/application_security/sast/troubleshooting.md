@@ -92,7 +92,7 @@ uses the `rules:exists` parameter. For performance reasons, a maximum number of 
 made against the given glob pattern. If the number of matches exceeds the maximum, the `rules:exists`
 parameter returns `true`. Depending on the number of files in your repository, a SAST job might be
 triggered even if the scanner doesn't support your project. For more details about this limitation,
-see the [`rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
+see the [`rules:exists` documentation](../../../ci/yaml/_index.md#rulesexists).
 
 ## SpotBugs errors
 
@@ -152,7 +152,7 @@ If, on the other hand, the class being analyzed is part of your project, conside
 
 ## Flawfinder encoding error
 
-This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, apply [their documented advice](https://github.com/david-a-wheeler/flawfinder#character-encoding-errors) to your entire repository, or only per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
+This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, apply [their documented advice](https://github.com/david-a-wheeler/flawfinder#character-encoding-errors) to your entire repository, or only per job using the [`before_script`](../../../ci/yaml/_index.md#before_script) feature.
 
 You can configure the `before_script` section in each `.gitlab-ci.yml` file, or use a [pipeline execution policy](../policies/pipeline_execution_policies.md) to install the encoder and run the converter command. For example, you can add a `before_script` section to the `flawfinder-sast` job generated from the security scanner template to convert all files with a `.cpp` extension.
 

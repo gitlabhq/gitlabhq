@@ -36,7 +36,7 @@ You can run Pa11y with GitLab CI/CD using the
 
 To define the `a11y` job:
 
-1. [Include](../yaml/index.md#includetemplate) the
+1. [Include](../yaml/_index.md#includetemplate) the
    [`Accessibility.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Accessibility.gitlab-ci.yml)
    from your GitLab installation.
 1. Add the following configuration to your `.gitlab-ci.yml` file.

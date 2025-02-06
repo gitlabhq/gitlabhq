@@ -185,13 +185,13 @@ To store a Docker image in dependency proxy storage:
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
 1. You can also pull images by digest to specify exactly which version of an image to pull.
 
-   - Pull an image by tag by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/index.md#image) file:
+   - Pull an image by tag by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/_index.md#image) file:
 
      ```shell
      image: gitlab.example.com/groupname/dependency_proxy/containers/alpine:latest
      ```
 
-   - Pull an image by digest by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/index.md#image) file:
+   - Pull an image by digest by adding the image to your [`.gitlab-ci.yml`](../../../ci/yaml/_index.md#image) file:
 
      ```shell
      image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine@sha256:c9375e662992791e3f39e919b26f510e5254b42792519c180aad254e6b38f4dc

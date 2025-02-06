@@ -205,7 +205,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162826) in GitLab 17.4.
 
 You can configure your Pages deployments to be automatically deleted after
-a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/index.md#pagespagesexpire_in):
+a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/_index.md#pagespagesexpire_in):
 
 ```yaml
 deploy-pages:
@@ -262,13 +262,9 @@ DETAILS:
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/502219) to remove the project setting in GitLab 17.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in `path_prefix` in GitLab 17.8.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/487161) in GitLab 17.9. Feature flag `pages_multiple_versions_setting` removed.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-Use the [`pages.path_prefix`](../../../ci/yaml/index.md#pagespagespath_prefix) CI/CD option to configure a prefix for the GitLab Pages URL.
+Use the [`pages.path_prefix`](../../../ci/yaml/_index.md#pagespagespath_prefix) CI/CD option to configure a prefix for the GitLab Pages URL.
 A prefix allows you to differentiate between multiple GitLab Pages deployments:
 
 - Main deployment: a Pages deployment created with a blank `path_prefix`.

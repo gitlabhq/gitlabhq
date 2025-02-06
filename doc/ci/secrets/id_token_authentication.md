@@ -13,12 +13,12 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
 You can authenticate with third party services using GitLab CI/CD's
-[ID tokens](../yaml/index.md#id_tokens).
+[ID tokens](../yaml/_index.md#id_tokens).
 
 ## ID Tokens
 
-[ID tokens](../yaml/index.md#id_tokens) are JSON Web Tokens (JWTs) that can be added to a GitLab CI/CD job. They can be used for OIDC
-authentication with third-party services, and are used by the [`secrets`](../yaml/index.md#secrets) keyword to authenticate with HashiCorp Vault.
+[ID tokens](../yaml/_index.md#id_tokens) are JSON Web Tokens (JWTs) that can be added to a GitLab CI/CD job. They can be used for OIDC
+authentication with third-party services, and are used by the [`secrets`](../yaml/_index.md#secrets) keyword to authenticate with HashiCorp Vault.
 
 ID tokens are configured in the `.gitlab-ci.yml`. For example:
 
@@ -46,7 +46,7 @@ The following standard claims are included in each ID token:
 |--------------------------------------------------------------------|-------------|
 | [`iss`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1) | Issuer of the token, which is the domain of the GitLab instance ("issuer" claim). |
 | [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}` ("subject" claim). |
-| [`aud`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3) | Intended audience for the token ("audience" claim). Specified in the [ID tokens](../yaml/index.md#id_tokens) configuration. The domain of the GitLab instance by default. |
+| [`aud`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3) | Intended audience for the token ("audience" claim). Specified in the [ID tokens](../yaml/_index.md#id_tokens) configuration. The domain of the GitLab instance by default. |
 | [`exp`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4) | The expiration time ("expiration time" claim). |
 | [`nbf`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.5) | The time after which the token becomes valid ("not before" claim). |
 | [`iat`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.6) | The time the JWT was issued ("issued at" claim). |

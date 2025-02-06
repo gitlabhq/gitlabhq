@@ -197,8 +197,8 @@ Check the [Which Version is my Vault KV Mount?](https://support.hashicorp.com/hc
 
 Also, if needed you can review the CI/CD documentation for:
 
-- [`secrets:`](../yaml/index.md#secrets)
-- [`id_tokens:`](../yaml/index.md#id_tokens)
+- [`secrets:`](../yaml/_index.md#secrets)
+- [`id_tokens:`](../yaml/_index.md#id_tokens)
 
 The following examples show how to obtain the staging database password written to the `password` field in `secret/myproject/staging/db`.
 
@@ -209,7 +209,7 @@ The value for the `VAULT_AUTH_PATH` variable depends on the migration method you
 
 ### KV Secrets Engine v1
 
-The [`secrets:vault`](../yaml/index.md#secretsvault) keyword defaults to v2 of the KV Mount, so you need to explicitly configure the job to use the v1 engine:
+The [`secrets:vault`](../yaml/_index.md#secretsvault) keyword defaults to v2 of the KV Mount, so you need to explicitly configure the job to use the v1 engine:
 
 ```yaml
 job:
@@ -234,7 +234,7 @@ job:
 Both `VAULT_SERVER_URL` and `VAULT_AUTH_PATH` can be [defined as project or group CI/CD variables](../variables/index.md#define-a-cicd-variable-in-the-ui),
 if preferred.
 
-We use [`secrets:file:false`](../yaml/index.md#secretsfile) because ID tokens place secrets in a file by default, but we need it to work as a regular variable to match the old behavior.
+We use [`secrets:file:false`](../yaml/_index.md#secretsfile) because ID tokens place secrets in a file by default, but we need it to work as a regular variable to match the old behavior.
 
 ### KV Secrets Engine v2
 

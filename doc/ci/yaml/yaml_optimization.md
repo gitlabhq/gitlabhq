@@ -39,7 +39,7 @@ job1:
     - ./job-script.sh
 ```
 
-You can't use YAML anchors across multiple files when using the [`include`](index.md#include)
+You can't use YAML anchors across multiple files when using the [`include`](_index.md#include)
 keyword. Anchors are only valid in the file they were defined in. To reuse configuration
 from different YAML files, use [`!reference` tags](#reference-tags) or the
 [`extends` keyword](#use-extends-to-reuse-configuration-sections).
@@ -169,10 +169,10 @@ You can see that the hidden jobs are conveniently used as templates, and
 
 ### YAML anchors for scripts
 
-> - Support for anchors with the [`stages`](../yaml/index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+> - Support for anchors with the [`stages`](../yaml/_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
 
-You can use [YAML anchors](#anchors) with [script](index.md#script), [`before_script`](index.md#before_script),
-and [`after_script`](index.md#after_script) to use predefined commands in multiple jobs:
+You can use [YAML anchors](#anchors) with [script](_index.md#script), [`before_script`](_index.md#before_script),
+and [`after_script`](_index.md#after_script) to use predefined commands in multiple jobs:
 
 ```yaml
 .some-script-before: &some-script-before
@@ -204,7 +204,7 @@ job2:
 
 ## Use `extends` to reuse configuration sections
 
-You can use the [`extends` keyword](index.md#extends) to reuse configuration in
+You can use the [`extends` keyword](_index.md#extends) to reuse configuration in
 multiple jobs. It is similar to [YAML anchors](#anchors), but simpler and you can
 [use `extends` with `includes`](#use-extends-and-include-together).
 
@@ -293,7 +293,7 @@ test4:
 ### Use `extends` and `include` together
 
 To reuse configuration from different configuration files,
-combine `extends` and [`include`](index.md#include).
+combine `extends` and [`include`](_index.md#include).
 
 In the following example, a `script` is defined in the `included.yml` file.
 Then, in the `.gitlab-ci.yml` file, `extends` refers
@@ -384,7 +384,7 @@ In this example:
 
 Use the `!reference` custom YAML tag to select keyword configuration from other job
 sections and reuse it in the current section. Unlike [YAML anchors](#anchors), you can
-use `!reference` tags to reuse configuration from [included](index.md#include) configuration
+use `!reference` tags to reuse configuration from [included](_index.md#include) configuration
 files as well.
 
 In the following example, a `script` and an `after_script` from two different locations are
@@ -437,11 +437,11 @@ test-vars-2:
     - printenv
 ```
 
-There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using `!reference` tags with the [`parallel:matrix` keyword](../yaml/index.md#parallelmatrix).
+There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using `!reference` tags with the [`parallel:matrix` keyword](_index.md#parallelmatrix).
 
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
 
-> - Support for `!reference` with the [`stages`](../yaml/index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+> - Support for `!reference` with the [`stages`](_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
 
 You can nest `!reference` tags up to 10 levels deep in `script`, `before_script`, and `after_script` sections. Use nested tags to define reusable sections when building more complex scripts. For example:
 

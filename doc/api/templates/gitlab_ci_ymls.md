@@ -11,7 +11,7 @@ DETAILS:
 
 In GitLab, there is an API endpoint available to work with GitLab CI/CD YAML. For more
 information on CI/CD pipeline configuration in GitLab, see the
-[CI/CD YAML syntax reference](../../ci/yaml/index.md).
+[CI/CD YAML syntax reference](../../ci/yaml/_index.md).
 
 Users with the Guest role can't access the GitLab CI YAML templates. For more information, see [Project and group visibility](../../user/public_access.md).
 

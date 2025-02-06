@@ -1,9 +1,0 @@
----
-name: web_ide_settings_context_hash
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501286
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175031
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501286
-milestone: '17.8'
-group: group::remote development
-type: beta
-default_enabled: false

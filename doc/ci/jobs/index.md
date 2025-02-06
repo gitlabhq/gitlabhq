@@ -20,11 +20,11 @@ Jobs:
 - Run independently from other jobs.
 - Have a [job log](job_logs.md) with the full execution log for the job.
 
-Jobs are defined with [YAML keywords](../yaml/index.md) that define all aspects
+Jobs are defined with [YAML keywords](../yaml/_index.md) that define all aspects
 of the job's execution, including keywords that:
 
 - Control [how](job_control.md) and [when](job_rules.md) jobs run.
-- Group jobs together in collections called [stages](../yaml/index.md#stages).
+- Group jobs together in collections called [stages](../yaml/_index.md#stages).
   Stages run in sequence, while all jobs in a stage can run in parallel.
 - Define [CI/CD variables](../variables/index.md) for flexible configuration.
 - Define [caches](../caching/index.md) to speed up job execution.
@@ -36,8 +36,8 @@ To add a job to a pipeline, add it into your `.gitlab-ci.yml` file. The job must
 
 - Be defined at the top-level of the YAML configuration.
 - Have a unique [job name](#job-names).
-- Have either a [`script`](../yaml/index.md#script) section defining commands to run,
-  or a [`trigger`](../yaml/index.md#trigger) section to trigger a [downstream pipeline](../pipelines/downstream_pipelines.md)
+- Have either a [`script`](../yaml/_index.md#script) section defining commands to run,
+  or a [`trigger`](../yaml/_index.md#trigger) section to trigger a [downstream pipeline](../pipelines/downstream_pipelines.md)
   to run.
 
 For example:
@@ -132,8 +132,8 @@ rspec-job:
 
 You can control the inheritance of:
 
-- [default keywords](../yaml/index.md#default) with [`inherit:default`](../yaml/index.md#inheritdefault).
-- [default variables](../yaml/index.md#default) with [`inherit:variables`](../yaml/index.md#inheritvariables).
+- [default keywords](../yaml/_index.md#default) with [`inherit:default`](../yaml/_index.md#inheritdefault).
+- [default variables](../yaml/_index.md#default) with [`inherit:variables`](../yaml/_index.md#inheritvariables).
 
 For example:
 
@@ -307,7 +307,7 @@ You can use GitLab Duo Root Cause Analysis in GitLab Duo Chat to [troubleshoot f
 ## Deployment jobs
 
 Deployment jobs are CI/CD jobs that use [environments](../environments/index.md).
-A deployment job is any job that uses the `environment` keyword and the [`start` environment `action`](../yaml/index.md#environmentaction).
+A deployment job is any job that uses the `environment` keyword and the [`start` environment `action`](../yaml/_index.md#environmentaction).
 Deployment jobs do not need to be in the `deploy` stage. The following `deploy me`
 job is an example of a deployment job. `action: start` is the default behavior and
 is defined here for clarity, but you can omit it:

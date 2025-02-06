@@ -49,7 +49,7 @@ The environment variables `APISEC_OPENAPI_ALL_MEDIA_TYPES` and `APISEC_OPENAPI_M
 
 To configure API security testing scanning with an OpenAPI Specification:
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
@@ -112,7 +112,7 @@ cookies. We recommend that you review the HAR file contents before adding them t
 
 To configure API security testing to use a HAR file that provides information about the target API to test:
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
@@ -178,7 +178,7 @@ The GraphQL endpoint must support introspection queries for this method to work 
 
 To configure API security testing to use a GraphQL endpoint URL that provides information about the target API to test:
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. Provide the path to the GraphQL endpoint, for example `/api/graphql`. Specify the location by adding the `APISEC_GRAPHQL` variable.
@@ -216,7 +216,7 @@ API security testing can use a GraphQL schema file to understand and test a Grap
 
 To configure API security testing to use a GraphQL schema file that provides information about the target API to test:
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `APISEC_GRAPHQL` variable.
@@ -290,7 +290,7 @@ them to a repository.
 To configure API security testing to use a Postman Collection file that provides information about the target
 API to test:
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml).
 
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.

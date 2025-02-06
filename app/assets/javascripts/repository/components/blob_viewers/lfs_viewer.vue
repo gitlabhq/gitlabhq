@@ -28,7 +28,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-bg-gray-50 gl-py-13 gl-text-center" data-type="lfs">
+  <div class="gl-bg-strong gl-py-13 gl-text-center" data-type="lfs">
     <gl-sprintf :message="$options.i18n.lfsText">
       <template #link="{ content }">
         <gl-link :href="filePath" :download="fileName" target="_blank">{{ content }}</gl-link>

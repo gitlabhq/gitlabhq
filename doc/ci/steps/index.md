@@ -37,7 +37,7 @@ Additionally, steps:
 - Are specific to Linux. Follow [epic 15074](https://gitlab.com/groups/gitlab-org/-/epics/15074)
   to track when steps supports multiple operating systems.
 
-For example, this job uses the [`run`](../yaml/index.md#run) CI/CD keyword to run a step:
+For example, this job uses the [`run`](../yaml/_index.md#run) CI/CD keyword to run a step:
 
 ```yaml
 job:
@@ -141,7 +141,7 @@ my-job:
 
 Actions running in GitLab do not support uploading artifacts directly.
 Artifacts must be written to the file system and cache instead, and selected with the
-existing [`artifacts` keyword](../yaml/index.md#artifacts) and [`cache` keyword](../yaml/index.md#cache).
+existing [`artifacts` keyword](../yaml/_index.md#artifacts) and [`cache` keyword](../yaml/_index.md#cache).
 
 ### Step location
 

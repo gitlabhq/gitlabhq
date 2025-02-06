@@ -162,7 +162,7 @@ After you change a path, you must update the existing URL in the following resou
   otherwise pipelines fail with a syntax error. CI/CD component references can follow redirects.
 - Namespaced API calls that use the [encoded path](../../../api/rest/_index.md#namespaced-paths)
   instead of the numeric namespace and project IDs.
-- [Docker image references](../../../ci/yaml/index.md#image).
+- [Docker image references](../../../ci/yaml/_index.md#image).
 - Variables that specify a project or namespace.
 - [CODEOWNERS file](../codeowners/index.md#codeowners-file).
 

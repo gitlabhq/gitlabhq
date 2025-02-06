@@ -33,7 +33,7 @@ GitLab offers the following machine type for hosted runners on Windows.
 ## Supported Windows versions
 
 The Windows runner virtual machine instances do not use the GitLab Docker executor. This means that you can't specify
-[`image`](../../yaml/index.md#image) or [`services`](../../yaml/index.md#services) in your pipeline configuration.
+[`image`](../../yaml/_index.md#image) or [`services`](../../yaml/_index.md#services) in your pipeline configuration.
 
 You can execute your job in one of the following Windows versions:
 

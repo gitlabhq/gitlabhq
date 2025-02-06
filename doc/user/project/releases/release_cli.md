@@ -21,7 +21,7 @@ When you [use a CI/CD job to create a release](index.md#creating-a-release-by-us
 the `release` keyword entries are transformed into Bash commands and sent to the Docker
 container containing the `release-cli` tool. The tool then creates the release.
 
-You can also call the `release-cli` tool directly from a [`script`](../../../ci/yaml/index.md#script).
+You can also call the `release-cli` tool directly from a [`script`](../../../ci/yaml/_index.md#script).
 For example:
 
 ```shell
@@ -42,7 +42,7 @@ The `release-cli` binaries are [available in the package registry](https://gitla
 
 When you use a runner with the Shell executor, you can download and install
 the `release-cli` manually for your [supported OS and architecture](https://gitlab.com/gitlab-org/release-cli/-/packages).
-Once installed, [the `release` keyword](../../../ci/yaml/index.md#release) is available to use in your CI/CD jobs.
+Once installed, [the `release` keyword](../../../ci/yaml/_index.md#release) is available to use in your CI/CD jobs.
 
 ### Install on Unix/Linux
 

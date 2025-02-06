@@ -157,7 +157,7 @@ upload:
 ```
 
 To trigger this upload job, add a Git tag to your commit. Ensure the tag follows the [Semantic versioning specification](https://semver.org/) that Terraform requires. The `rules:if: $CI_COMMIT_TAG` ensures that only tagged commits to your repository trigger the module upload job.
-For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML syntax reference](../../../ci/yaml/index.md).
+For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML syntax reference](../../../ci/yaml/_index.md).
 
 ### Allow duplicate Terraform modules
 

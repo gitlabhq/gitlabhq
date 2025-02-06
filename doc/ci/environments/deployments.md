@@ -58,10 +58,10 @@ or view it at a post-merge pipeline in [merge request pages](../../user/project/
 
 To enable tracking configure your environment so either:
 
-- The [environment name](../yaml/index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
+- The [environment name](../yaml/_index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
 - The [environment tier](index.md#deployment-tier-of-environments) is either `production` or `staging`.
 
-  Here are some example configurations using the [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:
+  Here are some example configurations using the [`environment` keyword](../yaml/_index.md#environment) in `.gitlab-ci.yml`:
 
   ```yaml
   # Trackable

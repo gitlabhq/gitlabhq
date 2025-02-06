@@ -140,6 +140,7 @@ describe('ide/init_gitlab_web_ide', () => {
             },
           ],
         },
+        settingsContextHash: undefined,
         handleTracking,
         telemetryEnabled,
         handleContextUpdate: handleUpdateUrl,
@@ -244,6 +245,10 @@ describe('ide/init_gitlab_web_ide', () => {
     ) {
       findRootElement().dataset.extensionsGallerySettings = JSON.stringify(mockSettings);
 
+      if (mockSettings.enabled) {
+        findRootElement().dataset.settingsContextHash = TEST_SETTINGS_CONTEXT_HASH;
+      }
+
       createSubject();
     }
 
@@ -278,6 +283,18 @@ describe('ide/init_gitlab_web_ide', () => {
       );
     });
 
+    it('calls start with settingsContextHash', () => {
+      setMockExtensionGallerySettingsDataset();
+
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(start).toHaveBeenCalledWith(
+        findRootElement(),
+        expect.objectContaining({
+          settingsContextHash: TEST_SETTINGS_CONTEXT_HASH,
+        }),
+      );
+    });
+
     it.each(['opt_in_unset', 'opt_in_disabled'])(
       'calls start with element and crossOriginExtensionHost flag if extensionsGallerySettings reason is $reason',
       (reason) => {
@@ -300,55 +317,5 @@ describe('ide/init_gitlab_web_ide', () => {
         );
       },
     );
-
-    describe('for settingsContextHash', () => {
-      it('does not include settingsContextHash if webIdeSettingsContextHash feature flag is not enabled', () => {
-        gon.features = { webIdeSettingsContextHash: false };
-        findRootElement().dataset.settingsContextHash = TEST_SETTINGS_CONTEXT_HASH;
-        setMockExtensionGallerySettingsDataset();
-
-        expect(start).toHaveBeenCalledTimes(1);
-        expect(start).toHaveBeenCalledWith(
-          findRootElement(),
-          expect.not.objectContaining({
-            settingsContextHash: TEST_SETTINGS_CONTEXT_HASH,
-          }),
-        );
-      });
-
-      describe('with webIdeSettingsContextHash feature flag enabled', () => {
-        beforeEach(() => {
-          gon.features = { webIdeSettingsContextHash: true };
-        });
-
-        it('includes settingsContextHash if extensionsGallerySettings is enabled', () => {
-          findRootElement().dataset.settingsContextHash = TEST_SETTINGS_CONTEXT_HASH;
-          setMockExtensionGallerySettingsDataset();
-
-          expect(start).toHaveBeenCalledTimes(1);
-          expect(start).toHaveBeenCalledWith(
-            findRootElement(),
-            expect.objectContaining({
-              settingsContextHash: TEST_SETTINGS_CONTEXT_HASH,
-            }),
-          );
-        });
-
-        it('does not include settingsContextHash if extensionsGallerySettings is disabled', () => {
-          const mockExtensionsGalleryDisabledSettings = {
-            enabled: false,
-          };
-          setMockExtensionGallerySettingsDataset(mockExtensionsGalleryDisabledSettings);
-
-          expect(start).toHaveBeenCalledTimes(1);
-          expect(start).toHaveBeenCalledWith(
-            findRootElement(),
-            expect.objectContaining({
-              settingsContextHash: undefined,
-            }),
-          );
-        });
-      });
-    });
   });
 });

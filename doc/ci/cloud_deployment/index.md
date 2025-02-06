@@ -174,7 +174,7 @@ To deploy to EC2, complete the following steps.
    ```
 
    The `source` is the location where a `build` job built your application.
-   The build is saved to [`artifacts:paths`](../yaml/index.md#artifactspaths).
+   The build is saved to [`artifacts:paths`](../yaml/_index.md#artifactspaths).
 
 1. Create JSON to deploy to EC2. Use the [AWS template](https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html).
 1. Make the JSON objects accessible to your pipeline:

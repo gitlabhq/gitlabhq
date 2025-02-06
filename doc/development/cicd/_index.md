@@ -61,7 +61,7 @@ Development guides that are specific to CI/CD are listed here:
   - [The CI schema guide](schema.md)
 
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
-to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/index.md).
+to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/_index.md).
 
 ## Examples of CI/CD usage
 
@@ -88,7 +88,7 @@ On the left side we have the events that can trigger a pipeline based on various
 - When project is [subscribed to an upstream project](../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated).
 - When [Auto DevOps](../../topics/autodevops/index.md) is enabled.
 - When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).
-- When an upstream pipeline contains a [bridge job](../../ci/yaml/index.md#trigger) which triggers a downstream pipeline.
+- When an upstream pipeline contains a [bridge job](../../ci/yaml/_index.md#trigger) which triggers a downstream pipeline.
 
 Triggering any of these events invokes the [`CreatePipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/create_pipeline_service.rb)
 which takes as input event data and the user triggering it, then attempts to create a pipeline.
@@ -97,7 +97,7 @@ The `CreatePipelineService` relies heavily on the [`YAML Processor`](https://git
 component, which is responsible for taking in a YAML blob as input and returns the abstract data structure of a
 pipeline (including stages and all jobs). This component also validates the structure of the YAML while
 processing it, and returns any syntax or semantic errors. The `YAML Processor` component is where we define
-[all the keywords](../../ci/yaml/index.md) available to structure a pipeline.
+[all the keywords](../../ci/yaml/_index.md) available to structure a pipeline.
 
 The `CreatePipelineService` receives the abstract data structure returned by the `YAML Processor`,
 which then converts it to persisted models (like pipeline, stages, and jobs). After that, the pipeline is ready
@@ -139,7 +139,7 @@ specific failed jobs or the entire pipeline. Anything that
 causes a job to change status triggers `ProcessPipelineService`, as it's responsible for
 tracking the status of the entire pipeline.
 
-A special type of job is the [bridge job](../../ci/yaml/index.md#trigger) which is executed server-side
+A special type of job is the [bridge job](../../ci/yaml/_index.md#trigger) which is executed server-side
 when transitioning to the `pending` state. This job is responsible for creating a downstream pipeline, such as
 a multi-project or child pipeline. The workflow loop starts again
 from the `CreatePipelineService` every time a downstream pipeline is triggered.

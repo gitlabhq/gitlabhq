@@ -32,51 +32,51 @@ module Sidebars
         private
 
         def system_info_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('System information'),
             link: admin_system_info_path,
             active_routes: { controller: 'system_info' },
             item_id: :system_info
-          )
+          ) { can?(current_user, :read_admin_system_information) }
         end
 
         def background_migrations_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Background migrations'),
             link: admin_background_migrations_path,
             active_routes: { controller: 'background_migrations' },
             item_id: :background_migrations
-          )
+          ) { can?(current_user, :read_admin_background_migrations) }
         end
 
         def background_jobs_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Background jobs'),
             link: admin_background_jobs_path,
             active_routes: { controller: 'background_jobs' },
             item_id: :background_jobs
-          )
+          ) { can?(current_user, :read_admin_background_jobs) }
         end
 
         def health_check_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Health check'),
             link: admin_health_check_path,
             active_routes: { controller: 'health_check' },
             item_id: :health_check
-          )
+          ) { can?(current_user, :read_admin_health_check) }
         end
 
         def metrics_dashboard_menu_item
-          return ::Sidebars::NilMenuItem.new(item_id: :metrics_dashboard) unless
-            Gitlab::CurrentSettings.current_application_settings.grafana_enabled?
-
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Metrics Dashboard'),
             link: Gitlab::CurrentSettings.current_application_settings.grafana_url,
             active_routes: { path: Gitlab::CurrentSettings.current_application_settings.grafana_url },
             item_id: :metrics_dashboard
-          )
+          ) do
+            Gitlab::CurrentSettings.current_application_settings.grafana_enabled? &&
+              can?(current_user, :read_admin_metrics_dashboard)
+          end
         end
       end
     end

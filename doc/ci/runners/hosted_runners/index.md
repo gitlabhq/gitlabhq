@@ -36,7 +36,7 @@ When you use hosted runners:
 - The virtual machine where your job runs has `sudo` access with no password.
 - The storage is shared by the operating system, the container image with pre-installed software, and a copy of your cloned repository.
   This means that the available free disk space for your jobs to use is reduced.
-- [Untagged](../../yaml/index.md#tags) jobs run on the `small` Linux x86-64 runner.
+- [Untagged](../../yaml/_index.md#tags) jobs run on the `small` Linux x86-64 runner.
 
 NOTE:
 Jobs handled by hosted runners on GitLab.com time out after 3 hours, regardless of the timeout configured in a project.

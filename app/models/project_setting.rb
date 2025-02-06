@@ -81,6 +81,10 @@ class ProjectSetting < ApplicationRecord
     super(value.presence) # Call the default setter to set the value
   end
 
+  def branch_rule
+    ::Projects::AllBranchesRule.new(project)
+  end
+
   private
 
   def validates_mr_default_target_self

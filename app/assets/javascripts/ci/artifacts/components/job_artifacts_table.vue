@@ -537,7 +537,7 @@ export default {
           <gl-link :href="item.pipeline.path" class="gl-mr-2">
             {{ pipelineId(item) }}
           </gl-link>
-          <span class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2">
+          <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="commit" :size="12" class="gl-mr-2" />
             <gl-link :href="item.commitPath" class="gl-text-sm gl-text-default gl-font-monospace">
               {{ item.shortSha }}
@@ -545,7 +545,7 @@ export default {
           </span>
         </div>
         <div>
-          <span class="gl-inline-block gl-rounded-base gl-bg-gray-50 gl-px-2">
+          <span class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2">
             <gl-icon name="branch" :size="12" class="gl-mr-1" />
             <gl-link :href="item.refPath" class="gl-text-sm gl-text-default gl-font-monospace">
               {{ item.refName }}

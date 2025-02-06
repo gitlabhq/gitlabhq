@@ -203,7 +203,7 @@ export default {
           <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2 gl-whitespace-nowrap gl-pl-3">
             <gl-sprintf :message="__('From line %{line1} to %{line2}')">
               <template #line1>
-                <div class="gl-mx-1 gl-flex gl-rounded-base gl-bg-gray-50">
+                <div class="gl-mx-1 gl-flex gl-rounded-base gl-bg-strong">
                   <gl-button
                     size="small"
                     icon="dash"
@@ -230,7 +230,7 @@ export default {
                 </div>
               </template>
               <template #line2>
-                <div class="gl-ml-1 gl-flex gl-rounded-base gl-bg-gray-50">
+                <div class="gl-ml-1 gl-flex gl-rounded-base gl-bg-strong">
                   <gl-button
                     size="small"
                     icon="dash"

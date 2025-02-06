@@ -22,7 +22,7 @@ For administrator information about job artifact storage, see [administering job
 
 ## Create job artifacts
 
-To create job artifacts, use the [`artifacts`](../yaml/index.md#artifacts) keyword in your `.gitlab-ci.yml` file:
+To create job artifacts, use the [`artifacts`](../yaml/_index.md#artifacts) keyword in your `.gitlab-ci.yml` file:
 
 ```yaml
 pdf:
@@ -35,7 +35,7 @@ pdf:
 In this example, a job named `pdf` calls the `xelatex` command to build a PDF file from the
 LaTeX source file, `mycv.tex`.
 
-The [`paths`](../yaml/index.md#artifactspaths) keyword determines which files to add to the job artifacts.
+The [`paths`](../yaml/_index.md#artifactspaths) keyword determines which files to add to the job artifacts.
 All paths to files and directories are relative to the repository where the job was created.
 
 ### With wildcards
@@ -53,7 +53,7 @@ job:
 
 ### With an expiry
 
-The [`expire_in`](../yaml/index.md#artifactsexpire_in) keyword determines how long
+The [`expire_in`](../yaml/_index.md#artifactsexpire_in) keyword determines how long
 GitLab keeps the artifacts defined in `artifacts:paths`. For example:
 
 ```yaml
@@ -75,7 +75,7 @@ By default, the [latest artifacts are always kept](#keep-artifacts-from-most-rec
 
 ### With an explicitly defined artifact name
 
-You can explicitly customize artifact names using the [`artifacts:name`](../yaml/index.md#artifactsname) configuration:
+You can explicitly customize artifact names using the [`artifacts:name`](../yaml/_index.md#artifactsname) configuration:
 
 ```yaml
 job:
@@ -87,7 +87,7 @@ job:
 
 ### Without excluded files
 
-Use [`artifacts:exclude`](../yaml/index.md#artifactsexclude) to prevent files from
+Use [`artifacts:exclude`](../yaml/_index.md#artifactsexclude) to prevent files from
 being added to an artifacts archive.
 
 For example, to store all files in `binaries/`, but not `*.o` files located in
@@ -101,7 +101,7 @@ artifacts:
     - binaries/**/*.o
 ```
 
-Unlike [`artifacts:paths`](../yaml/index.md#artifactspaths), `exclude` paths are not recursive.
+Unlike [`artifacts:paths`](../yaml/_index.md#artifactspaths), `exclude` paths are not recursive.
 To exclude all of the contents of a directory, match them explicitly rather
 than matching the directory itself.
 
@@ -117,8 +117,8 @@ artifacts:
 
 ### With untracked files
 
-Use [`artifacts:untracked`](../yaml/index.md#artifactsuntracked) to add all Git untracked
-files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/index.md#artifactspaths)). Untracked
+Use [`artifacts:untracked`](../yaml/_index.md#artifactsuntracked) to add all Git untracked
+files as artifacts (along with the paths defined in [`artifacts:paths`](../yaml/_index.md#artifactspaths)). Untracked
 files are those that haven't been added to the repository but exist in the repository checkout.
 
 For example, to save all Git untracked files and files in `binaries`:
@@ -130,7 +130,7 @@ artifacts:
     - binaries/
 ```
 
-For example, to save all untracked files but [exclude](../yaml/index.md#artifactsexclude) `*.txt` files:
+For example, to save all untracked files but [exclude](../yaml/_index.md#artifactsexclude) `*.txt` files:
 
 ```yaml
 artifacts:
@@ -143,9 +143,9 @@ artifacts:
 
 Variable expansion is supported for:
 
-- [`artifacts:name`](../yaml/index.md#artifactsname)
-- [`artifacts:paths`](../yaml/index.md#artifactspaths)
-- [`artifacts:exclude`](../yaml/index.md#artifactsexclude)
+- [`artifacts:name`](../yaml/_index.md#artifactsname)
+- [`artifacts:paths`](../yaml/_index.md#artifactspaths)
+- [`artifacts:exclude`](../yaml/_index.md#artifactsexclude)
 
 Instead of using shell, GitLab Runner uses its
 [internal variable expansion mechanism](../variables/where_variables_can_be_used.md#gitlab-runner-internal-variable-expansion-mechanism).
@@ -173,15 +173,15 @@ By default, jobs fetch all artifacts from jobs defined in previous stages. These
 
 You can control which artifacts to download by using these keywords:
 
-- [`dependencies`](../yaml/index.md#dependencies): Specify which jobs to download artifacts from.
-- [`needs`](../yaml/index.md#needs): Define relationships between jobs and specify which artifacts to download.
+- [`dependencies`](../yaml/_index.md#dependencies): Specify which jobs to download artifacts from.
+- [`needs`](../yaml/_index.md#needs): Define relationships between jobs and specify which artifacts to download.
 
 When you use these keywords, the default behavior changes and artifacts are fetched from only the jobs you specify.
 
 ### Prevent a job from fetching artifacts
 
 To prevent a job from downloading any artifacts, set
-[`dependencies`](../yaml/index.md#dependencies) to an empty array
+[`dependencies`](../yaml/_index.md#dependencies) to an empty array
 (`[]`):
 
 ```yaml
@@ -343,7 +343,7 @@ You can delete multiple artifacts at the same time:
 
 ## Link to job artifacts in the merge request UI
 
-Use the [`artifacts:expose_as`](../yaml/index.md#artifactsexpose_as) keyword to display
+Use the [`artifacts:expose_as`](../yaml/_index.md#artifactsexpose_as) keyword to display
 a link to job artifacts in the [merge request](../../user/project/merge_requests/index.md) UI.
 
 For example, for an artifact with a single file:

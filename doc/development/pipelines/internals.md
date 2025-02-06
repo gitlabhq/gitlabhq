@@ -7,7 +7,7 @@ title: CI configuration internals
 
 ## Workflow rules
 
-Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../../ci/yaml/index.md#workflow)
+Pipelines for the GitLab project are created using the [`workflow:rules` keyword](../../ci/yaml/_index.md#workflow)
 feature of the GitLab CI/CD.
 
 Pipelines are always created for the following scenarios:
@@ -158,13 +158,13 @@ variables have higher precedence over `.gitlab-ci.yml` variables.
 
 ## Common job definitions
 
-Most of the jobs [extend from a few CI definitions](../../ci/yaml/index.md#extends)
+Most of the jobs [extend from a few CI definitions](../../ci/yaml/_index.md#extends)
 defined in [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml)
-that are scoped to a single [configuration keyword](../../ci/yaml/index.md#job-keywords).
+that are scoped to a single [configuration keyword](../../ci/yaml/_index.md#job-keywords).
 
 | Job definitions  | Description |
 |------------------|-------------|
-| `.default-retry` | Allows a job to [retry](../../ci/yaml/index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
+| `.default-retry` | Allows a job to [retry](../../ci/yaml/_index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
 | `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (for example, tests). |
 | `.repo-from-artifacts` | Allows a job to fetch the repository from artifacts in `clone-gitlab-repo` instead of cloning. This should reduce GitLab.com Gitaly load and also slightly improve the speed because downloading from artifacts is faster than cloning. Note that this should be avoided to be used with jobs having `needs: []` because otherwise it'll start later and we normally want all jobs to start as soon as possible. Use this only on jobs which has other dependencies so that we don't wait longer than just cloning. Note that this behavior can be controlled via `CI_FETCH_REPO_GIT_STRATEGY`. See [Fetch repository via artifacts instead of cloning/fetching from Gitaly](performance.md#fetch-repository-via-artifacts-instead-of-cloningfetching-from-gitaly) for more details. |
 | `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
@@ -186,11 +186,11 @@ that are scoped to a single [configuration keyword](../../ci/yaml/index.md#job-k
 
 ## `rules`, `if:` conditions and `changes:` patterns
 
-We're using the [`rules` keyword](../../ci/yaml/index.md#rules) extensively.
+We're using the [`rules` keyword](../../ci/yaml/_index.md#rules) extensively.
 
 All `rules` definitions are defined in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml),
-then included in individual jobs via [`extends`](../../ci/yaml/index.md#extends).
+then included in individual jobs via [`extends`](../../ci/yaml/_index.md#extends).
 
 The `rules` definitions are composed of `if:` conditions and `changes:` patterns,
 which are also defined in

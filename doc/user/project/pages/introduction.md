@@ -26,7 +26,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
 
 1. Domain of the instance: domain name that is used for GitLab Pages
    (ask your administrator).
-1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/index.md#pages) in the root directory of your repository.
+1. GitLab CI/CD: a `.gitlab-ci.yml` file with a specific job named [`pages`](../../../ci/yaml/_index.md#pages) in the root directory of your repository.
 1. GitLab Runner enabled for the project.
 
 ## GitLab Pages on GitLab.com
@@ -137,7 +137,7 @@ See this document for a [step-by-step guide](getting_started/pages_from_scratch.
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
-the `pages` job with [`rules:if`](../../../ci/yaml/index.md#rulesif),
+the `pages` job with [`rules:if`](../../../ci/yaml/_index.md#rulesif),
 whenever a new commit is pushed to a branch used specifically for your
 pages.
 

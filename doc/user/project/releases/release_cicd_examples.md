@@ -147,7 +147,7 @@ Creating a release using a CI/CD job could potentially trigger multiple pipeline
   1. A tag is created.
   1. A tag pipeline is triggered. The pipeline also runs `release` job.
 
-In the second workflow, the `release` job runs in multiple pipelines. To prevent this, you can use the [`workflow:rules` keyword](../../../ci/yaml/index.md#workflowrules) to determine if a release job should run in a tag pipeline:
+In the second workflow, the `release` job runs in multiple pipelines. To prevent this, you can use the [`workflow:rules` keyword](../../../ci/yaml/_index.md#workflowrules) to determine if a release job should run in a tag pipeline:
 
 ```yaml
 release_job:

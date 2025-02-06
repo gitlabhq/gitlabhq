@@ -326,7 +326,7 @@ export default {
                 </div>
                 <div
                   v-if="organizationName !== s__('Crm|No organization')"
-                  class="gl-flex gl-flex-col gl-gap-2 gl-rounded-base gl-bg-gray-50 gl-p-3"
+                  class="gl-flex gl-flex-col gl-gap-2 gl-rounded-base gl-bg-strong gl-p-3"
                 >
                   <div class="gl-font-bold">{{ organizationName }}</div>
                   <div

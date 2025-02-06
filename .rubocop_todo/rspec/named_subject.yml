@@ -596,7 +596,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/product_analytics/panel_spec.rb'
     - 'ee/spec/models/product_analytics/visualization_spec.rb'
     - 'ee/spec/models/project_feature_spec.rb'
-    - 'ee/spec/models/projects/all_branches_rule_spec.rb'
     - 'ee/spec/models/projects/all_protected_branches_rule_spec.rb'
     - 'ee/spec/models/projects/target_branch_rule_spec.rb'
     - 'ee/spec/models/protected_environment_spec.rb'

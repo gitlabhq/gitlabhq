@@ -148,7 +148,7 @@ with embedded metric charts and all valuable details to analyze the problem.
 
 Review the storage use of the following to help analyze costs and efficiency:
 
-- [Job artifacts](../jobs/job_artifacts.md) and their [`expire_in`](../yaml/index.md#artifactsexpire_in)
+- [Job artifacts](../jobs/job_artifacts.md) and their [`expire_in`](../yaml/_index.md#artifactsexpire_in)
   configuration. If kept for too long, storage usage grows and could slow pipelines down.
 - [Container registry](../../user/packages/container_registry/index.md) usage.
 - [Package registry](../../user/packages/package_registry/index.md) usage.
@@ -164,9 +164,9 @@ make pipelines run faster and more efficiently.
 Try to find which jobs don't need to run in all situations, and use pipeline configuration
 to stop them from running:
 
-- Use the [`interruptible`](../yaml/index.md#interruptible) keyword to stop old pipelines
+- Use the [`interruptible`](../yaml/_index.md#interruptible) keyword to stop old pipelines
   when they are superseded by a newer pipeline.
-- Use [`rules`](../yaml/index.md#rules) to skip tests that aren't needed. For example,
+- Use [`rules`](../yaml/_index.md#rules) to skip tests that aren't needed. For example,
   skip backend tests when only the frontend code is changed.
 - Run non-essential [scheduled pipelines](schedules.md) less frequently.
 - Distribute [`cron` schedules](schedules.md#view-and-optimize-pipeline-schedules) evenly across time.
@@ -198,7 +198,7 @@ Another optimization method is to [cache](../caching/index.md) dependencies. If 
 dependencies change rarely, like [NodeJS `/node_modules`](../caching/index.md#cache-nodejs-dependencies),
 caching can make pipeline execution much faster.
 
-You can use [`cache:when`](../yaml/index.md#cachewhen) to cache downloaded dependencies
+You can use [`cache:when`](../yaml/_index.md#cachewhen) to cache downloaded dependencies
 even when a job fails.
 
 ### Docker Images

@@ -12,7 +12,7 @@ DETAILS:
 
 WARNING:
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../yaml/index.md#id_tokens) instead.
+and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../yaml/_index.md#id_tokens) instead.
 
 This tutorial demonstrates how to use a JSON web token (JWT) in a GitLab CI/CD job
 to retrieve temporary credentials from Azure without needing to store secrets.
@@ -192,7 +192,7 @@ The CI/CD variables are:
 - `AZURE_CLIENT_ID`: The [application client ID you saved earlier](#create-azure-ad-application-and-service-principal).
 - `AZURE_TENANT_ID`: Your Azure Active Directory. You can
   [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/en-us/entra/fundamentals/how-to-find-tenant).
-- `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/index.md#id_tokens).
+- `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/_index.md#id_tokens).
 
 ## Troubleshooting
 

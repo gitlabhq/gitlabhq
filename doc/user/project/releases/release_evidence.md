@@ -84,14 +84,14 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
+When you create a release, if [job artifacts](../../../ci/yaml/_index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 
 Although job artifacts usually expire, artifacts included in release evidence do not expire.
 
 To enable job artifact collection you must specify both:
 
-1. [`artifacts:paths`](../../../ci/yaml/index.md#artifactspaths)
-1. [`artifacts:reports`](../../../ci/yaml/index.md#artifactsreports)
+1. [`artifacts:paths`](../../../ci/yaml/_index.md#artifactspaths)
+1. [`artifacts:reports`](../../../ci/yaml/_index.md#artifactsreports)
 
 ```yaml
 ruby:
@@ -111,7 +111,7 @@ release evidence.
 
 If you [schedule release evidence collection](#schedule-release-evidence-collection),
 some artifacts may already be expired by the time of evidence collection. To avoid this you can use
-the [`artifacts:expire_in`](../../../ci/yaml/index.md#artifactsexpire_in)
+the [`artifacts:expire_in`](../../../ci/yaml/_index.md#artifactsexpire_in)
 keyword. For more information, see [issue 222351](https://gitlab.com/gitlab-org/gitlab/-/issues/222351).
 
 ## Schedule release evidence collection

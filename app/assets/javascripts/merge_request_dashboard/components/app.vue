@@ -88,7 +88,7 @@ export default {
         <div v-for="(lists, i) in tab.lists" :key="`lists_${i}`">
           <div
             v-if="i === 1"
-            class="gl-mb-5 gl-mt-8 gl-rounded-base gl-bg-gray-50 gl-px-4 gl-py-2 gl-font-bold gl-text-subtle"
+            class="gl-mb-5 gl-mt-8 gl-rounded-base gl-bg-strong gl-px-4 gl-py-2 gl-font-bold gl-text-subtle"
             data-testid="merge-request-count-explanation"
           >
             {{ __('Items below are excluded from the active count') }}

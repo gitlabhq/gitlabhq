@@ -18,7 +18,7 @@ From the pipeline editor page you can:
 - Select the branch to work from.
 - [Validate](#validate-ci-configuration) your configuration syntax while editing the file.
 - Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
-  added with the [`include`](../yaml/index.md#include) keyword.
+  added with the [`include`](../yaml/_index.md#include) keyword.
 - View a [list of the CI/CD configuration added with the `include` keyword](#view-included-cicd-configuration).
 - See a [visualization](#visualize-ci-configuration) of the current configuration.
 - View the [full configuration](#view-full-configuration), which displays the configuration with any configuration from `include` added.
@@ -66,7 +66,7 @@ simulations in the [CI Lint tool](../yaml/lint.md#simulate-a-pipeline).
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
 
-You can review configuration added with the [`include`](../yaml/index.md#include)
+You can review configuration added with the [`include`](../yaml/_index.md#include)
 keyword in the pipeline editor. In the upper-right corner, select the file tree (**{file-tree}**)
 to see a list of all included configuration files. Selected files open in a new tab
 for review.
@@ -75,7 +75,7 @@ for review.
 
 To view a visualization of your `.gitlab-ci.yml` configuration, in your project,
 go to **Build > Pipeline editor**, and then select the **Visualize** tab. The
-visualization shows all stages and jobs. Any [`needs`](../yaml/index.md#needs)
+visualization shows all stages and jobs. Any [`needs`](../yaml/_index.md#needs)
 relationships are displayed as lines connecting jobs together, showing the
 hierarchy of execution.
 
@@ -94,8 +94,8 @@ To view the fully expanded CI/CD configuration as one combined file, go to the
 pipeline editor's **Full configuration** tab. This tab displays an expanded configuration
 where:
 
-- Configuration imported with [`include`](../yaml/index.md#include) is copied into the view.
-- Jobs that use [`extends`](../yaml/index.md#extends) display with the
+- Configuration imported with [`include`](../yaml/_index.md#include) is copied into the view.
+- Jobs that use [`extends`](../yaml/_index.md#extends) display with the
   [extended configuration merged into the job](../yaml/yaml_optimization.md#merge-details).
 - [YAML anchors](../yaml/yaml_optimization.md#anchors) are replaced with the linked configuration.
 - [YAML `!reference` tags](../yaml/yaml_optimization.md#reference-tags) are also replaced
@@ -200,7 +200,7 @@ It can happen when:
   any issues. As soon as the service becomes available again, the syntax validation
   should display immediately.
 
-- Using [`include`](../yaml/index.md#include), but the included configuration files create a loop.
+- Using [`include`](../yaml/_index.md#include), but the included configuration files create a loop.
   For example, `.gitlab-ci.yml` includes `file1.yml`, which includes `file2.yml`,
   which includes `file1.yml`, creating a loop between `file1.yml` and `file2.yml`.
 

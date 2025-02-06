@@ -24,5 +24,9 @@ module Projects
     def squash_readonly?
       %w[always never].include?(squash_option)
     end
+
+    def branch_rule
+      raise NotImplementedError
+    end
   end
 end

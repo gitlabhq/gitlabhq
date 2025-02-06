@@ -10,7 +10,8 @@ module Gitlab
         agent_tracker: Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub,
         configuration_project: Gitlab::Agent::ConfigurationProject::Rpc::ConfigurationProject::Stub,
         autoflow: Gitlab::Agent::AutoFlow::Rpc::AutoFlow::Stub,
-        notifications: Gitlab::Agent::Notifications::Rpc::Notifications::Stub
+        notifications: Gitlab::Agent::Notifications::Rpc::Notifications::Stub,
+        managed_resources: Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub
       }.freeze
 
       AUTOFLOW_CI_VARIABLE_ENV_SCOPE = 'autoflow/internal-use'
@@ -101,6 +102,51 @@ module Gitlab
           .cloud_event(request, metadata: metadata)
       end
 
+      def get_environment_template(environment:, template_name:)
+        project = environment.project
+        return unless project && environment.cluster_agent
+
+        request = Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateRequest.new(
+          template_name: template_name,
+          agent_name: environment.cluster_agent.name,
+          gitaly_info: gitaly_info(project),
+          gitaly_repository: repository(project),
+          default_branch: project.default_branch_or_main
+        )
+
+        stub_for(:managed_resources)
+          .get_environment_template(request, metadata: metadata)
+          .template
+      end
+
+      def get_default_environment_template
+        request = Gitlab::Agent::ManagedResources::Rpc::GetDefaultEnvironmentTemplateRequest.new
+        stub_for(:managed_resources)
+          .get_default_environment_template(request, metadata: metadata)
+          .template
+      end
+
+      def render_environment_template(template:, environment:, build:)
+        request = Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateRequest.new(
+          template: Gitlab::Agent::ManagedResources::EnvironmentTemplate.new(
+            name: template.name,
+            data: template.data),
+          info: templating_info(environment:, build:))
+        stub_for(:managed_resources)
+          .render_environment_template(request, metadata: metadata)
+          .template
+      end
+
+      def ensure_environment(template:, environment:, build:)
+        request = Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentRequest.new(
+          template: Gitlab::Agent::ManagedResources::RenderedEnvironmentTemplate.new(
+            name: template.name,
+            data: template.data),
+          info: templating_info(environment:, build:))
+        stub_for(:managed_resources)
+          .ensure_environment(request, metadata: metadata)
+      end
+
       private
 
       def stub_for(service)
@@ -147,6 +193,42 @@ module Gitlab
 
       def timeout
         Gitlab::Kas.client_timeout_seconds.seconds
+      end
+
+      def templating_info(environment:, build:)
+        agent = environment.cluster_agent
+        project = environment.project
+        return unless agent && project && build && build.user
+
+        Gitlab::Agent::ManagedResources::TemplatingInfo.new(
+          agent: Gitlab::Agent::ManagedResources::Agent.new(
+            id: agent.id,
+            name: agent.name,
+            url: agent_url(project, agent.name)),
+          environment: Gitlab::Agent::ManagedResources::Environment.new(
+            id: environment.id,
+            name: environment.name,
+            slug: environment.slug,
+            page_url: environment_url(project, environment),
+            url: environment.external_url,
+            tier: environment.tier),
+          project: Gitlab::Agent::ManagedResources::Project.new(
+            id: project.id,
+            slug: project.path,
+            path: project.full_path,
+            url: project.web_url),
+          pipeline: Gitlab::Agent::ManagedResources::Pipeline.new(id: build.pipeline_id),
+          job: Gitlab::Agent::ManagedResources::Job.new(id: build.id),
+          user: Gitlab::Agent::ManagedResources::User.new(id: build.user_id, username: build.user.username)
+        )
+      end
+
+      def agent_url(project, agent_name)
+        Gitlab::Routing.url_helpers.project_cluster_agent_url(project, agent_name)
+      end
+
+      def environment_url(project, environment)
+        Gitlab::Routing.url_helpers.project_environment_url(project, environment)
       end
     end
   end

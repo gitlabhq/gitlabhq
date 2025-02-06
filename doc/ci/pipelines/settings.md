@@ -81,7 +81,7 @@ You can set pending or running pipelines to cancel automatically when a pipeline
 1. Select the **Auto-cancel redundant pipelines** checkbox.
 1. Select **Save changes**.
 
-Use the [`interruptible`](../yaml/index.md#interruptible) keyword to indicate if a
+Use the [`interruptible`](../yaml/_index.md#interruptible) keyword to indicate if a
 running job can be canceled before it completes. After a job with
 `interruptible: false` starts, the entire pipeline is no longer considered interruptible.
 

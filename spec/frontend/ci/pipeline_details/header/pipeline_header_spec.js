@@ -268,13 +268,20 @@ describe('Pipeline header', () => {
         ]);
       });
 
-      it('should call retryPipeline Mutation with pipeline id', () => {
+      it('should call retryPipeline Mutation with pipeline id', async () => {
         clickActionButton('retryPipeline', pipelineHeaderFailed.data.project.pipeline.id);
 
+        await nextTick();
+
+        expect(findHeaderActions().props('isRetrying')).toBe(true);
         expect(retryMutationHandlerSuccess).toHaveBeenCalledWith({
           id: pipelineHeaderFailed.data.project.pipeline.id,
         });
         expect(findAlert().exists()).toBe(false);
+
+        await waitForPromises();
+
+        expect(findHeaderActions().props('isRetrying')).toBe(false);
       });
     });
 
@@ -317,10 +324,17 @@ describe('Pipeline header', () => {
 
           clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
+          await nextTick();
+
+          expect(findHeaderActions().props('isCanceling')).toBe(true);
           expect(cancelMutationHandlerSuccess).toHaveBeenCalledWith({
             id: pipelineHeaderRunning.data.project.pipeline.id,
           });
           expect(findAlert().exists()).toBe(false);
+
+          await waitForPromises();
+
+          expect(findHeaderActions().props('isCanceling')).toBe(false);
         });
 
         it('should display error message on failure', async () => {
@@ -347,9 +361,16 @@ describe('Pipeline header', () => {
 
         clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
+        await nextTick();
+
+        expect(findHeaderActions().props('isDeleting')).toBe(true);
         expect(deleteMutationHandlerSuccess).toHaveBeenCalledWith({
           id: pipelineHeaderSuccess.data.project.pipeline.id,
         });
+
+        await waitForPromises();
+
+        expect(findHeaderActions().props('isDeleting')).toBe(false);
       });
 
       it('should display error message on failure', async () => {
@@ -363,6 +384,23 @@ describe('Pipeline header', () => {
         await waitForPromises();
 
         expect(findAlert().exists()).toBe(true);
+      });
+
+      it('delete button loading state should reset on error', async () => {
+        await createComponent([
+          [getPipelineDetailsQuery, successHandler],
+          [deletePipelineMutation, deleteMutationHandlerFailed],
+        ]);
+
+        clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
+
+        await nextTick();
+
+        expect(findHeaderActions().props('isDeleting')).toBe(true);
+
+        await waitForPromises();
+
+        expect(findHeaderActions().props('isDeleting')).toBe(false);
       });
     });
   });

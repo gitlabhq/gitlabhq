@@ -14,7 +14,7 @@ A cache is one or more files a job downloads and saves. Subsequent jobs that use
 the same cache don't have to download the files again, so they execute more quickly.
 
 To learn how to define the cache in your `.gitlab-ci.yml` file,
-see the [`cache` reference](../yaml/index.md#cache).
+see the [`cache` reference](../yaml/_index.md#cache).
 
 ## How cache is different from artifacts
 
@@ -40,9 +40,9 @@ can't link to files outside it.
 
 - Define artifacts per job.
 - Subsequent jobs in later stages of the same pipeline can use artifacts.
-- Artifacts expire after 30 days by default. You can define a custom [expiration time](../yaml/index.md#artifactsexpire_in).
+- Artifacts expire after 30 days by default. You can define a custom [expiration time](../yaml/_index.md#artifactsexpire_in).
 - The latest artifacts do not expire if [keep latest artifacts](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs) is enabled.
-- Use [dependencies](../yaml/index.md#dependencies) to control which jobs fetch the artifacts.
+- Use [dependencies](../yaml/_index.md#dependencies) to control which jobs fetch the artifacts.
 
 ## Good caching practices
 
@@ -51,7 +51,7 @@ To ensure maximum availability of the cache, do one or more of the following:
 - [Tag your runners](../runners/configure_runners.md#control-jobs-that-a-runner-can-run) and use the tag on jobs
   that share the cache.
 - [Use runners that are only available to a particular project](../runners/runners_scope.md#prevent-a-project-runner-from-being-enabled-for-other-projects).
-- [Use a `key`](../yaml/index.md#cachekey) that fits your workflow. For example,
+- [Use a `key`](../yaml/_index.md#cachekey) that fits your workflow. For example,
   you can configure a different cache for each branch.
 
 For runners to work with caches efficiently, you must do one of the following:
@@ -101,7 +101,7 @@ the global fallback cache is fetched every time a cache is not found.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110467) in GitLab 16.0
 
-Each cache entry supports up to five fallback keys with the [`fallback_keys` keyword](../yaml/index.md#cachefallback_keys).
+Each cache entry supports up to five fallback keys with the [`fallback_keys` keyword](../yaml/_index.md#cachefallback_keys).
 When a job does not find a cache key, the job attempts to retrieve a fallback cache instead.
 Fallback keys are searched in order until a cache is found. If no cache is found,
 the job runs without using a cache. For example:
@@ -144,7 +144,7 @@ Fallback keys follow the same processing logic as `cache:key`:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
 
 You can use the `$CI_COMMIT_REF_SLUG` [predefined variable](../variables/predefined_variables.md)
-to specify your [`cache:key`](../yaml/index.md#cachekey). For example, if your
+to specify your [`cache:key`](../yaml/_index.md#cachekey). For example, if your
 `$CI_COMMIT_REF_SLUG` is `test`, you can set a job to download cache that's tagged with `test`.
 
 If a cache with this tag is not found, you can use `CACHE_FALLBACK_KEY` to
@@ -210,7 +210,7 @@ job:
     policy: pull
 ```
 
-For more information, see [`cache: policy`](../yaml/index.md#cachepolicy).
+For more information, see [`cache: policy`](../yaml/_index.md#cachepolicy).
 
 ## Common use cases for caches
 
@@ -301,7 +301,7 @@ In this example, the job's cache policy is:
 If your project uses [npm](https://www.npmjs.com/) to install Node.js
 dependencies, the following example defines a default `cache` so that all jobs inherit it.
 By default, npm stores cache data in the home folder (`~/.npm`). However, you
-[can't cache things outside of the project directory](../yaml/index.md#cachepaths).
+[can't cache things outside of the project directory](../yaml/_index.md#cachepaths).
 Instead, tell npm to use `./.npm`, and cache it per-branch:
 
 ```yaml
@@ -321,7 +321,7 @@ test_async:
 
 #### Compute the cache key from the lock file
 
-You can use [`cache:key:files`](../yaml/index.md#cachekeyfiles) to compute the cache
+You can use [`cache:key:files`](../yaml/_index.md#cachekeyfiles) to compute the cache
 key from a lock file like `package-lock.json` or `yarn.lock`, and reuse it in many jobs.
 
 ```yaml
@@ -490,7 +490,7 @@ test:
 Caching is an optimization, but it isn't guaranteed to always work. You might need
 to regenerate cached files in each job that needs them.
 
-After you define a [cache in `.gitlab-ci.yml`](../yaml/index.md#cache),
+After you define a [cache in `.gitlab-ci.yml`](../yaml/_index.md#cache),
 the availability of the cache depends on:
 
 - The runner's executor type.
@@ -617,7 +617,7 @@ machines, it is a safe default.
 
 ## Clearing the cache
 
-Runners use [cache](../yaml/index.md#cache) to speed up the execution
+Runners use [cache](../yaml/_index.md#cache) to speed up the execution
 of your jobs by reusing existing data. This can sometimes lead to
 inconsistent behavior.
 

@@ -708,7 +708,7 @@ copies the file system on every run. You can avoid this disk-intensive operation
 ### Use the OverlayFS driver per project
 
 You can enable the driver for each project individually by using the `DOCKER_DRIVER`
-[CI/CD variable](../yaml/index.md#variables) in `.gitlab-ci.yml`:
+[CI/CD variable](../yaml/_index.md#variables) in `.gitlab-ci.yml`:
 
 ```yaml
 variables:

@@ -71,7 +71,7 @@ organization, see [Access control with IAM](https://cloud.google.com/docs/gitlab
 After your workload identity pool and provider are set up to map your GitLab
 roles and permissions to IAM roles, you can provision runners
 to deploy workloads from GitLab to Google Cloud by setting the
-[`identity`](../ci/yaml/index.md#identity) keyword to
+[`identity`](../ci/yaml/_index.md#identity) keyword to
 `google_cloud` for authorization on Google Cloud.
 
 For more information on provisioning runners using the GitLab on Google Cloud integration, see the

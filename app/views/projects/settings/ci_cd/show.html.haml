@@ -29,6 +29,7 @@
     - c.with_body do
       = render 'autodevops_form', auto_devops_enabled: @project.auto_devops_enabled?
 
+- if can?(current_user, :admin_protected_environments, @project)
   = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
 - if can?(current_user, :admin_runner, @project)

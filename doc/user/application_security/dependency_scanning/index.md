@@ -320,7 +320,7 @@ analyzers. We recommend not specifying the analyzers so you automatically use th
 best coverage, avoiding the need to make adjustments when there are deprecations or removals.
 However, you can override the selection using the variable `DS_EXCLUDED_ANALYZERS`.
 
-The language detection relies on CI job [`rules`](../../../ci/yaml/index.md#rules) to detect
+The language detection relies on CI job [`rules`](../../../ci/yaml/_index.md#rules) to detect
 [supported dependency file](#how-analyzers-are-triggered)
 
 For Java and Python, when a supported dependency file is detected, Dependency Scanning attempts to
@@ -629,7 +629,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
 
 ### How analyzers are triggered
 
-GitLab relies on [`rules:exists`](../../../ci/yaml/index.md#rulesexists) to start the relevant analyzers for the languages detected by the presence of the
+GitLab relies on [`rules:exists`](../../../ci/yaml/_index.md#rulesexists) to start the relevant analyzers for the languages detected by the presence of the
 `Supported files` in the repository as shown in the [table above](#supported-languages-and-package-managers).
 A maximum of two directory levels from the repository's root is searched. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,

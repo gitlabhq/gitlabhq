@@ -14,7 +14,7 @@ RSpec.describe Sidebars::Admin::Menus::MonitoringMenu, feature_category: :naviga
 
   it_behaves_like 'Admin menu with sub menus'
 
-  describe 'Menu items' do
+  describe 'Menu items', :enable_admin_mode do
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
     describe 'Metrics Dashboard' do

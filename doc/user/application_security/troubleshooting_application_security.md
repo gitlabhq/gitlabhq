@@ -96,7 +96,7 @@ This provides extra information to investigate further.
 
 ## Getting error message `sast job: config key may not be used with 'rules': only/except`
 
-When [including](../../ci/yaml/index.md#includetemplate) a `.gitlab-ci.yml` template
+When [including](../../ci/yaml/_index.md#includetemplate) a `.gitlab-ci.yml` template
 like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml),
 the following error may occur, depending on your GitLab CI/CD configuration:
 
@@ -107,7 +107,7 @@ Unable to create pipeline
 ```
 
 This error appears when the included job's `rules` configuration has been [overridden](sast/index.md#overriding-sast-jobs)
-with [the deprecated `only` or `except` syntax.](../../ci/yaml/index.md#only--except)
+with [the deprecated `only` or `except` syntax.](../../ci/yaml/_index.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
@@ -118,8 +118,8 @@ For more information, see [Overriding SAST jobs](sast/index.md#overriding-sast-j
 ### Transitioning your `only/except` syntax to `rules`
 
 When overriding the template to control job execution, previous instances of
-[`only` or `except`](../../ci/yaml/index.md#only--except) are no longer compatible
-and must be transitioned to [the `rules` syntax](../../ci/yaml/index.md#rules).
+[`only` or `except`](../../ci/yaml/_index.md#only--except) are no longer compatible
+and must be transitioned to [the `rules` syntax](../../ci/yaml/_index.md#rules).
 
 If your override is aimed at limiting jobs to only run on `main`, the previous syntax
 would look similar to:
@@ -175,11 +175,11 @@ spotbugs-sast:
     - if: $CI_COMMIT_TAG == null
 ```
 
-For more information, see [`rules`](../../ci/yaml/index.md#rules).
+For more information, see [`rules`](../../ci/yaml/_index.md#rules).
 
 ### Pin your templates to the deprecated versions
 
-To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/index.md#rules).
+To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/_index.md#rules).
 
 If you're unable to immediately update your CI configuration, there are several workarounds that
 involve pinning to the previous template versions, for example:

@@ -32,6 +32,10 @@ module Projects
       matching_branches = protected_branch.matching(branch_names)
       matching_branches.count
     end
+
+    def squash_option
+      nil
+    end
   end
 end
 

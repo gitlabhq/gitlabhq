@@ -131,11 +131,7 @@ export default {
         />
       </div>
     </div>
-    <div
-      v-if="showCommitBox"
-      class="gl-my-4 gl-rounded-base gl-bg-gray-50"
-      data-testid="commit-box"
-    >
+    <div v-if="showCommitBox" class="gl-my-4 gl-rounded-base gl-bg-strong" data-testid="commit-box">
       <gl-loading-icon v-if="loading" class="gl-py-3" />
       <template v-else>
         <div

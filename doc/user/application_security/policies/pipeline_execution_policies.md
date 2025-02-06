@@ -103,7 +103,7 @@ Example of the resulting jobs:
 
 ### Job stage best practice
 
-Jobs defined in a pipeline execution policy can use any [stage](../../../ci/yaml/index.md#stage)
+Jobs defined in a pipeline execution policy can use any [stage](../../../ci/yaml/_index.md#stage)
 defined in the project's CI/CD configuration, also the reserved stages `.pipeline-policy-pre` and
 `.pipeline-policy-post`.
 

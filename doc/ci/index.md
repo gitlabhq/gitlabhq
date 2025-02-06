@@ -36,7 +36,7 @@ and the product documentation refers to it as the `.gitlab-ci.yml` file or the C
 For more information, see:
 
 - [Tutorial: Create your first `.gitlab-ci.yml` file](quick_start/index.md)
-- [The CI/CD YAML syntax reference](yaml/index.md), which lists all possible keywords
+- [The CI/CD YAML syntax reference](yaml/_index.md), which lists all possible keywords
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Continuous Integration overview](https://www.youtube-nocookie.com/embed/eyr5YnkWq_I)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Continuous Delivery overview](https://www.youtube-nocookie.com/embed/M7rBDZYsx8U)
 - [Basics of CI blog](https://about.gitlab.com/blog/2020/12/10/basics-of-gitlab-ci-updated/)

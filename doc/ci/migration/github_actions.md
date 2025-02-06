@@ -307,7 +307,7 @@ Pipelines can also be [scheduled by using Cron syntax](../pipelines/schedules.md
 #### Container Images
 
 With GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../docker/using_docker_images.md)
-by using the [`image`](../yaml/index.md#image) keyword.
+by using the [`image`](../yaml/_index.md#image) keyword.
 
 For example, in a GitHub Actions `workflow` file:
 
@@ -436,7 +436,7 @@ which contain data relevant to the pipeline and repository.
 #### Conditionals
 
 When a new pipeline starts, GitLab checks the pipeline configuration to determine
-which jobs should run in that pipeline. You can use the [`rules` keyword](../yaml/index.md#rules)
+which jobs should run in that pipeline. You can use the [`rules` keyword](../yaml/_index.md#rules)
 to configure jobs to run depending on conditions like the status of variables, or the pipeline type.
 
 For example, in a GitHub Actions `workflow` file:
@@ -510,7 +510,7 @@ windows_job:
 
 #### Artifacts
 
-In GitLab, any job can use the [artifacts](../yaml/index.md#artifacts) keyword to define a set
+In GitLab, any job can use the [artifacts](../yaml/_index.md#artifacts) keyword to define a set
 of artifacts to be stored when a job completes. [Artifacts](../jobs/job_artifacts.md) are files
 that can be used in later jobs.
 
@@ -677,7 +677,7 @@ Before doing any migration work, you should first:
 1. Get familiar with GitLab.
    - Read about the [key GitLab CI/CD features](../index.md).
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
-   - Review the [CI/CD YAML syntax reference](../yaml/index.md).
+   - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
    - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.

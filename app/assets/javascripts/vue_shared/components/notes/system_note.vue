@@ -106,7 +106,7 @@ export default {
       return this.getNoteableData.noteableType === 'MergeRequest';
     },
     iconBgClass() {
-      return ICON_COLORS[this.note.system_note_icon_name] || 'gl-bg-gray-50 gl-text-subtle';
+      return ICON_COLORS[this.note.system_note_icon_name] || 'gl-bg-strong gl-text-subtle';
     },
     systemNoteIconName() {
       let icon = this.note.system_note_icon_name;

@@ -78,7 +78,7 @@ The security scanning jobs that run in a CI/CD pipeline are determined by the fo
 
 1. Evaluation of rules
 
-   Each template has defined [rules](../../ci/yaml/index.md#rules) which determine if the analyzer
+   Each template has defined [rules](../../ci/yaml/_index.md#rules) which determine if the analyzer
    is run.
 
    For example, the Secret Detection template includes the following rule. This rule states that
@@ -113,7 +113,7 @@ All jobs are permitted to fail by default. This means that if they fail, it does
 
 If you want to prevent vulnerabilities from being merged, you should do this by adding [Security Approvals in Merge Requests](#security-approvals-in-merge-requests) which prevents unknown, high or critical findings from being merged without an approval from a specific group of people that you choose.
 
-We do not recommend changing the job [`allow_failure` setting](../../ci/yaml/index.md#allow_failure) as that fails the entire pipeline.
+We do not recommend changing the job [`allow_failure` setting](../../ci/yaml/_index.md#allow_failure) as that fails the entire pipeline.
 
 #### Job artifacts
 
@@ -167,7 +167,7 @@ also known as a _template_.
 
 When customizing the configuration:
 
-- [Include](../../ci/yaml/index.md#include) the scanning tool's CI/CD template. Don't _copy_ the content
+- [Include](../../ci/yaml/_index.md#include) the scanning tool's CI/CD template. Don't _copy_ the content
   of the template.
 - Use the [stable](../../development/cicd/templates.md#stable-version) version of each template
   for production workflows. The stable version changes less often, and breaking changes are only

@@ -15,7 +15,7 @@ sensitive information can be items like API tokens, database credentials, or pri
 Secrets are sourced from your secrets provider.
 
 Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly
-required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/index.md#secrets)
+required by a job. Read [GitLab CI/CD pipeline configuration reference](../yaml/_index.md#secrets)
 for more information about the syntax.
 
 GitLab provides support for the following secret management providers:
@@ -28,7 +28,7 @@ GitLab has selected [Vault by HashiCorp](https://www.vaultproject.io) as the
 first supported provider, and [KV-V2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)
 as the first supported secrets engine.
 
-Use [ID tokens](../yaml/index.md#id_tokens) to [authenticate with Vault](https://developer.hashicorp.com/vault/docs/auth/jwt#jwt-authentication).
+Use [ID tokens](../yaml/_index.md#id_tokens) to [authenticate with Vault](https://developer.hashicorp.com/vault/docs/auth/jwt#jwt-authentication).
 The [Authenticating and Reading Secrets With HashiCorp Vault](hashicorp_vault.md)
 tutorial has more details about authenticating with ID tokens.
 
@@ -62,7 +62,7 @@ You must replace the `vault.example.com` URL below with the URL of your Vault se
 
 The Vault Secrets Engines supported by GitLab Runner are:
 
-| Secrets engine                                                                                                                                     | [`secrets:engine:name`](../yaml/index.md#secretsvault) value | Runner version | Details |
+| Secrets engine                                                                                                                                     | [`secrets:engine:name`](../yaml/_index.md#secretsvault) value | Runner version | Details |
 |----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|----------------|---------|
 | [KV secrets engine - version 2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)                                                       | `kv-v2`                                                      | 13.4           | `kv-v2` is the default engine GitLab Runner uses when no engine type is explicitly specified. |
 | [KV secrets engine - version 1](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v1)                                                       | `kv-v1` or `generic`                                         | 13.4           | Support for the `generic` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366492) in GitLab 15.11. |
@@ -128,7 +128,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 After [configuring your Vault server](#configure-your-vault-server), you can use
-the secrets stored in Vault by defining them with the [`vault` keyword](../yaml/index.md#secretsvault):
+the secrets stored in Vault by defining them with the [`vault` keyword](../yaml/_index.md#secretsvault):
 
 ```yaml
 job_using_vault:

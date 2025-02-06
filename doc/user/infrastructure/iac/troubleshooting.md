@@ -71,8 +71,8 @@ There are three different causes for the error:
   +   extends: .terraform:apply
   ```
 
-- In GitLab 15.0, templates use [`rules`](../../../ci/yaml/index.md#rules) syntax
-  instead of [`only/except`](../../../ci/yaml/index.md#only--except).
+- In GitLab 15.0, templates use [`rules`](../../../ci/yaml/_index.md#rules) syntax
+  instead of [`only/except`](../../../ci/yaml/_index.md#only--except).
   Ensure the syntax in your `.gitlab-ci.yml` file does not include both.
 
 #### Use an older version of the template
@@ -111,7 +111,7 @@ To resolve this, ensure that either `TF_ADDRESS` or `TF_STATE_NAME` is accessibl
 job that returned the error:
 
 1. Configure the [CI/CD environment scope](../../../ci/variables/index.md#for-a-project) for the job.
-1. Set the job's [environment](../../../ci/yaml/index.md#environment), matching the environment scope from the previous step.
+1. Set the job's [environment](../../../ci/yaml/_index.md#environment), matching the environment scope from the previous step.
 
 ### Error refreshing state: HTTP remote state endpoint requires auth
 

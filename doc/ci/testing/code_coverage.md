@@ -40,7 +40,7 @@ averaged.
 #### Add code coverage results to merge requests
 
 You can display test coverage results in merge requests by adding the
-[`coverage`](../yaml/index.md#coverage) keyword to your project's `.gitlab-ci.yml` file.
+[`coverage`](../yaml/_index.md#coverage) keyword to your project's `.gitlab-ci.yml` file.
 
 To aggregate multiple test coverage values:
 

@@ -33,9 +33,9 @@ export default {
 <template>
   <router-link
     :to="{ name: to }"
-    active-class="gl-font-bold gl-bg-gray-50"
+    active-class="gl-font-bold gl-bg-strong"
     exact
-    class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-gray-50 hover:gl-text-default hover:gl-no-underline"
+    class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-strong hover:gl-text-default hover:gl-no-underline"
   >
     <status-icon :icon-name="statusIcon" :is-loading="isLoading" />
     <slot></slot>

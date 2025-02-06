@@ -665,6 +665,7 @@ class ProjectPolicy < BasePolicy
     enable :change_restrict_user_defined_variables
     enable :create_protected_branch
     enable :admin_protected_branch
+    enable :admin_protected_environments
   end
 
   rule { can?(:manage_protected_tags) }.policy do

@@ -7,7 +7,7 @@ type: reference, howto
 
 # Overriding API security testing jobs
 
-To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../../ci/yaml/index.md#rules)),
+To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../../ci/yaml/_index.md#rules)),
 declare a job with the same name as the DAST job to override. Place this new job after the template
 inclusion and specify any additional keys under it. For example, this sets the target APIs base URL:
 

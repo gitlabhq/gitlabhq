@@ -54,7 +54,7 @@ Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu 
 files include sensitive data like passwords, access tokens, or certificates, you should
 encrypt the plan output or modify the project visibility settings. You should also **disable**
 [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
-and set the [artifact's access flag to 'developer'](../../../ci/yaml/index.md#artifactsaccess) (`access: 'developer'`).
+and set the [artifact's access flag to 'developer'](../../../ci/yaml/_index.md#artifactsaccess) (`access: 'developer'`).
 This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Developer role.
 
 To configure GitLab CI/CD as a backend:

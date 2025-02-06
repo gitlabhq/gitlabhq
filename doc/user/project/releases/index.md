@@ -139,7 +139,7 @@ To create a release in the Releases page:
 ### Creating a release by using a CI/CD job
 
 You can create a release directly as part of the GitLab CI/CD pipeline by using the
-[`release` keyword](../../../ci/yaml/index.md#release) in the job definition.
+[`release` keyword](../../../ci/yaml/_index.md#release) in the job definition.
 You should likely create a release as one of the last steps in your CI/CD pipeline.
 
 The release is created only if the job processes without error. If the API returns an error during
@@ -339,7 +339,7 @@ template in your project's `.gitlab-ci.yml` file:
     - when: on_success
 ```
 
-To prevent the deployment job from executing, use the [`extends`](../../../ci/yaml/index.md#extends) keyword in the `deploy_to_production` job of your `.gitlab-ci.yml` file to inherit the configuration from the `.freezedeployment` template job:
+To prevent the deployment job from executing, use the [`extends`](../../../ci/yaml/_index.md#extends) keyword in the `deploy_to_production` job of your `.gitlab-ci.yml` file to inherit the configuration from the `.freezedeployment` template job:
 
 ```yaml
 deploy_to_production:
@@ -454,7 +454,7 @@ This feature is built on top of Git tags, so virtually no extra data is needed b
 
 ### GitLab CLI version requirement
 
-The way of using the [`release` keyword](../../../ci/yaml/index.md#release) is planned to change.
+The way of using the [`release` keyword](../../../ci/yaml/_index.md#release) is planned to change.
 The `release-cli` tool is [being replaced](https://gitlab.com/groups/gitlab-org/-/epics/15437) by the [GitLab CLI tool](https://gitlab.com/gitlab-org/cli/).
 
 You must use GitLab CLI tool `v1.52.0` or higher, or you could receive one of these error messages:

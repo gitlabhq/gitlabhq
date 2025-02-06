@@ -108,7 +108,7 @@ In this example:
 
 - `1234` is the project ID for `project-B`. The project ID is displayed on the
   [project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
-- The [`rules`](../yaml/index.md#rules) cause the job to run every time a tag is added to `project-A`.
+- The [`rules`](../yaml/_index.md#rules) cause the job to run every time a tag is added to `project-A`.
 - `MY_TRIGGER_TOKEN` is a [masked CI/CD variable](../variables/index.md#mask-a-cicd-variable)
   that contains the trigger token.
 
@@ -174,14 +174,14 @@ A revoked trigger token cannot be added back.
 
 To [configure when to run jobs](../jobs/job_control.md) in triggered pipelines, you can:
 
-- Use [`rules`](../yaml/index.md#rules) with the `$CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md).
-- Use [`only`/`except`](../yaml/index.md#onlyrefs--exceptrefs) keywords, though `rules`
+- Use [`rules`](../yaml/_index.md#rules) with the `$CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md).
+- Use [`only`/`except`](../yaml/_index.md#onlyrefs--exceptrefs) keywords, though `rules`
   is the preferred keyword.
 
 | `$CI_PIPELINE_SOURCE` value | `only`/`except` keywords | Trigger method      |
 |-----------------------------|--------------------------|---------------------|
 | `trigger`                   | `triggers`               | In pipelines triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using a [trigger token](#create-a-pipeline-trigger-token). |
-| `pipeline`                  | `pipelines`              | In [multi-project pipelines](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api) triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using the [`$CI_JOB_TOKEN`](../jobs/ci_job_token.md), or by using the [`trigger`](../yaml/index.md#trigger) keyword in the CI/CD configuration file. |
+| `pipeline`                  | `pipelines`              | In [multi-project pipelines](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api) triggered with the [pipeline triggers API](../../api/pipeline_triggers.md) by using the [`$CI_JOB_TOKEN`](../jobs/ci_job_token.md), or by using the [`trigger`](../yaml/_index.md#trigger) keyword in the CI/CD configuration file. |
 
 Additionally, the `$CI_PIPELINE_TRIGGERED` predefined CI/CD variable is set to `true`
 in pipelines triggered with a pipeline trigger token.
@@ -226,4 +226,4 @@ rules:
     when: never
 ```
 
-Review your [`workflow:rules`](../yaml/index.md#workflowrules) to ensure a pipeline can be created when `CI_PIPELINE_SOURCE` value is `trigger`.
+Review your [`workflow:rules`](../yaml/_index.md#workflowrules) to ensure a pipeline can be created when `CI_PIPELINE_SOURCE` value is `trigger`.

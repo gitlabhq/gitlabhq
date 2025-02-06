@@ -19,7 +19,7 @@ conditions like the value of variables or the pipeline type with [`rules`](job_r
 You can require that a job doesn't run unless a user starts it. This is called a **manual job**.
 You might want to use a manual job for something like deploying to production.
 
-To specify a job as manual, add [`when: manual`](../yaml/index.md#when) to the job
+To specify a job as manual, add [`when: manual`](../yaml/_index.md#when) to the job
 in the `.gitlab-ci.yml` file.
 
 By default, manual jobs display as skipped when the pipeline starts.
@@ -33,7 +33,7 @@ Manual jobs can be either optional or blocking.
 
 In optional manual jobs:
 
-- [`allow_failure`](../yaml/index.md#allow_failure) is `true`, which is the default
+- [`allow_failure`](../yaml/_index.md#allow_failure) is `true`, which is the default
   setting for jobs that have `when: manual` defined outside of `rules`.
 - The status does not contribute to the overall pipeline status. A pipeline can
   succeed even if all of its manual jobs fail.
@@ -41,14 +41,14 @@ In optional manual jobs:
 In blocking manual jobs:
 
 - `allow_failure` is `false`, which is the default setting for jobs that have `when: manual`
-  defined inside [`rules`](../yaml/index.md#rules).
+  defined inside [`rules`](../yaml/_index.md#rules).
 - The pipeline stops at the stage where the job is defined. To let the pipeline
   continue running, [run the manual job](#run-a-manual-job).
 - Merge requests in projects with [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
 
-When using manual jobs in triggered pipelines with [`strategy: depend`](../yaml/index.md#triggerstrategy),
+When using manual jobs in triggered pipelines with [`strategy: depend`](../yaml/_index.md#triggerstrategy),
 the type of manual job can affect the trigger job's status while the pipeline runs.
 
 ### Run a manual job
@@ -79,7 +79,7 @@ and not [masked](../variables/index.md#mask-a-cicd-variable).
 
 ### Add a confirmation dialog for manual jobs
 
-Use [`manual_confirmation`](../yaml/index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs.
+Use [`manual_confirmation`](../yaml/_index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs.
 The confirmation dialog helps to prevent accidental deployments or deletions,
 especially for sensitive jobs like those that deploy to production.
 
@@ -128,7 +128,7 @@ by authorized users.
 
 ## Run a job after a delay
 
-Use [`when: delayed`](../yaml/index.md#when) to execute scripts after a waiting period, or if you want to avoid
+Use [`when: delayed`](../yaml/_index.md#when) to execute scripts after a waiting period, or if you want to avoid
 jobs immediately entering the `pending` state.
 
 You can set the period with `start_in` keyword. The value of `start_in` is an elapsed time
@@ -167,7 +167,7 @@ Soon GitLab Runner starts the job.
 ## Parallelize large jobs
 
 To split a large job into multiple smaller jobs that run in parallel, use the
-[`parallel`](../yaml/index.md#parallel) keyword in your `.gitlab-ci.yml` file.
+[`parallel`](../yaml/_index.md#parallel) keyword in your `.gitlab-ci.yml` file.
 
 Different languages and test suites have different methods to enable parallelization.
 For example, use [Semaphore Test Boosters](https://github.com/renderedtext/test-boosters)
@@ -198,7 +198,7 @@ Test Boosters reports usage statistics to the author.
 ### Run a one-dimensional matrix of parallel jobs
 
 To run a job multiple times in parallel in a single pipeline, but with different variable values for each instance of the job,
-use the [`parallel:matrix`](../yaml/index.md#parallelmatrix) keyword:
+use the [`parallel:matrix`](../yaml/_index.md#parallelmatrix) keyword:
 
 ```yaml
 deploystacks:
@@ -213,7 +213,7 @@ deploystacks:
 
 ### Run a matrix of parallel trigger jobs
 
-You can run a [trigger](../yaml/index.md#trigger) job multiple times in parallel in a single pipeline,
+You can run a [trigger](../yaml/_index.md#trigger) job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
 
 ```yaml
@@ -245,7 +245,7 @@ deploystacks: [vultr, data]
 
 ### Select different runner tags for each parallel matrix job
 
-You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags)
+You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/_index.md#tags)
 keyword for dynamic runner selection:
 
 ```yaml
@@ -266,8 +266,8 @@ deploystacks:
 
 ### Fetch artifacts from a `parallel:matrix` job
 
-You can fetch artifacts from a job created with [`parallel:matrix`](../yaml/index.md#parallelmatrix)
-by using the [`dependencies`](../yaml/index.md#dependencies) keyword. Use the job name
+You can fetch artifacts from a job created with [`parallel:matrix`](../yaml/_index.md#parallelmatrix)
+by using the [`dependencies`](../yaml/_index.md#dependencies) keyword. Use the job name
 as the value for `dependencies` as a string in the form:
 
 ```plaintext
@@ -301,7 +301,7 @@ Quotes around the `dependencies` entry are required.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
 
-You can use variables defined in [`needs:parallel:matrix`](../yaml/index.md#needsparallelmatrix) with multiple parallelized jobs.
+You can use variables defined in [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) with multiple parallelized jobs.
 
 For example:
 

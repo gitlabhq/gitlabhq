@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can use special syntax in [`script`](index.md#script) sections to:
+You can use special syntax in [`script`](_index.md#script) sections to:
 
 - [Split long commands](#split-long-commands) into multiline commands.
 - [Use color codes](#add-color-codes-to-script-output) to make job logs easier to review.
@@ -64,8 +64,8 @@ job:
 
 ## Set a default `before_script` or `after_script` for all jobs
 
-You can use [`before_script`](index.md#before_script) and [`after_script`](index.md#after_script)
-with [`default`](index.md#default):
+You can use [`before_script`](_index.md#before_script) and [`after_script`](_index.md#after_script)
+with [`default`](_index.md#default):
 
 - Use `before_script` with `default` to define a default array of commands that
   should run before the `script` commands in all jobs.
@@ -101,7 +101,7 @@ job2:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
 
-[`after_script`](index.md) commands run if a job is canceled while the `before_script`
+[`after_script`](_index.md) commands run if a job is canceled while the `before_script`
 or `script` section of that job are running.
 
 The job's status in the UI is `canceling` while the `after_script` are executing,

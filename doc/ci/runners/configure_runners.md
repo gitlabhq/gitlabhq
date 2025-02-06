@@ -288,7 +288,7 @@ Prerequisites:
 
 ## Control jobs that a runner can run
 
-You can use [tags](../yaml/index.md#tags) to control the jobs a runner can run.
+You can use [tags](../yaml/_index.md#tags) to control the jobs a runner can run.
 For example, you can specify the `rails` tag for runners that have the dependencies to run
 Rails test suites.
 
@@ -479,7 +479,7 @@ When using the Kubernetes executor, you can use variables to
 
 The `GIT_STRATEGY` variable configures how the build directory is prepared and
 repository content is fetched. You can set this variable globally or per job
-in the [`variables`](../yaml/index.md#variables) section.
+in the [`variables`](../yaml/_index.md#variables) section.
 
 ```yaml
 variables:
@@ -506,7 +506,7 @@ This has limitations when using the [Docker Machine executor](https://docs.gitla
 A Git strategy of `none` also re-uses the local working copy, but skips all Git
 operations usually done by GitLab. GitLab Runner pre-clone scripts are also skipped,
 if present. This strategy could mean you need to add `fetch` and `checkout` commands
-to [your `.gitlab-ci.yml` script](../yaml/index.md#script).
+to [your `.gitlab-ci.yml` script](../yaml/_index.md#script).
 
 It can be used for jobs that operate exclusively on artifacts, like a deployment job.
 Git repository data may be present, but it's likely out of date. You should only
@@ -526,7 +526,7 @@ Use the `empty` Git strategy when:
 
 The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how
 [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) are included when fetching the code before a build. You can set them
-globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 The three possible values are `none`, `normal`, and `recursive`:
 
@@ -565,7 +565,7 @@ You can provide additional flags to control advanced behavior using [`GIT_SUBMOD
 The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
 `clone` or `fetch` to specify whether a `git checkout` should be run. If not
 specified, it defaults to true. You can set them globally or per-job in the
-[`variables`](../yaml/index.md#variables) section.
+[`variables`](../yaml/_index.md#variables) section.
 
 If set to `false`, the runner:
 
@@ -591,7 +591,7 @@ script:
 
 The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
 `git clean` after checking out the sources. You can set it globally or per-job in the
-[`variables`](../yaml/index.md#variables) section.
+[`variables`](../yaml/_index.md#variables) section.
 
 `GIT_CLEAN_FLAGS` accepts all possible options of the [`git clean`](https://git-scm.com/docs/git-clean)
 command.
@@ -615,7 +615,7 @@ script:
 ### Git fetch extra flags
 
 Use the `GIT_FETCH_EXTRA_FLAGS` variable to control the behavior of
-`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+`git fetch`. You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 `GIT_FETCH_EXTRA_FLAGS` accepts all options of the [`git fetch`](https://git-scm.com/docs/git-fetch) command. However, `GIT_FETCH_EXTRA_FLAGS` flags are appended after the default flags that can't be modified.
 
@@ -652,7 +652,7 @@ Where `$REFSPECS` is a value provided to the runner internally by GitLab.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
 
 Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
-You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
 
@@ -680,7 +680,7 @@ to wrap the string in single quotes so the YAML can be parsed successfully.
 
 Use the `GIT_SUBMODULE_UPDATE_FLAGS` variable to control the behavior of `git submodule update`
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
-You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 `GIT_SUBMODULE_UPDATE_FLAGS` accepts all options of the
 [`git submodule update`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-update--init--remote-N--no-fetch--no-recommend-shallow-f--force--checkout--rebase--merge--referenceltrepositorygt--depthltdepthgt--recursive--jobsltngt--no-single-branch--ltpathgt82308203)
@@ -762,7 +762,7 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 ### Git submodule depth
 
@@ -770,7 +770,7 @@ You can set it globally or per-job in the [`variables`](../yaml/index.md#variabl
 
 Use the `GIT_SUBMODULE_DEPTH` variable to specify the depth of fetching and cloning submodules
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
-You can set it globally or for a specific job in the [`variables`](../yaml/index.md#variables) section.
+You can set it globally or for a specific job in the [`variables`](../yaml/_index.md#variables) section.
 
 When you set the `GIT_SUBMODULE_DEPTH` variable, it overwrites the [`GIT_DEPTH`](#shallow-cloning) setting
 for the submodules only.
@@ -866,7 +866,7 @@ because `$CI_BUILDS_DIR` is not expanded.
 
 ### Ignore errors in `after_script`
 
-You can use [`after_script`](../yaml/index.md#after_script) in a job to define an array of commands
+You can use [`after_script`](../yaml/_index.md#after_script) in a job to define an array of commands
 that should run after the job's `before_script` and `script` sections. The `after_script` commands
 run regardless of the script termination status (failure or success).
 
@@ -900,7 +900,7 @@ variables:
   GET_SOURCES_ATTEMPTS: 3
 ```
 
-You can set them globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+You can set them globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
 
 ## System calls not available on GitLab.com instance runners
 

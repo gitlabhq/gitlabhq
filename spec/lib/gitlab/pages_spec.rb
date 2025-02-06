@@ -59,11 +59,9 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
     context 'when a project is given' do
       let_it_be(:project) { create(:project) }
 
-      where(:feature_flag, :license, :result) do
-        false | false | false
-        false | true | false
-        true | false | false
-        true | true | true
+      where(:license, :result) do
+        false | false
+        true  | true
       end
 
       with_them do
@@ -73,7 +71,6 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
 
         before do
           stub_licensed_features(pages_multiple_versions: license)
-          stub_feature_flags(pages_multiple_versions_setting: feature_flag)
         end
 
         # this feature is only available in EE

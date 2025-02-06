@@ -33,7 +33,7 @@ They are available in the [Web Editor](../../user/project/repository/web_editor.
 and through the [API settings](../../api/settings.md).
 
 These templates cannot be used as a value of the
-[`include:template`](../../ci/yaml/index.md#includetemplate) key in `.gitlab-ci.yml`.
+[`include:template`](../../ci/yaml/_index.md#includetemplate) key in `.gitlab-ci.yml`.
 
 ## Supported file types and locations
 

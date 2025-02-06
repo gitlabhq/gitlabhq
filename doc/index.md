@@ -33,7 +33,7 @@ View some of the most popular topics:
 
 | Popular topic                                                                  | Description |
 |:-------------------------------------------------------------------------------|:------------|
-| [CI/CD YAML syntax reference](ci/yaml/index.md)                                | Available configuration options for `.gitlab-ci.yml` files. |
+| [CI/CD YAML syntax reference](ci/yaml/_index.md)                                | Available configuration options for `.gitlab-ci.yml` files. |
 | [REST API](api/rest/_index.md)                                                  | Use the REST API to extend GitLab. |
 | [Environments and deployments](ci/environments/index.md)                       | Deploy your application to different environments. |
 | [Configuring runners](ci/runners/configure_runners.md)                         | Get started using runners. |

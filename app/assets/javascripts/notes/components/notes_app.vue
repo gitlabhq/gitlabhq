@@ -238,8 +238,6 @@ export default {
       });
     }
 
-    scrollToTargetOnResize();
-
     eventHub.$on('noteFormAddToReview', this.handleReviewTracking);
     eventHub.$on('noteFormStartReview', this.handleReviewTracking);
 

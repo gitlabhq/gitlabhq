@@ -31,7 +31,7 @@ Generally, the approach is the following:
 1. Define a dedicated converter job in your `.gitlab-ci.yml` file.
    Use a suitable Docker image, script, or both to facilitate the conversion.
 1. Let that job upload the converted, supported file as an artifact.
-1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/index.md#dependencies)
+1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/_index.md#dependencies)
    to your `dependency_scanning` job to make use of the converted definitions files.
 
 For example, Poetry projects that _only_ have a `pyproject.toml`
@@ -72,10 +72,10 @@ affected. Read more in
 ## Dependency scanning jobs are running unexpectedly
 
 The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
-uses the [`rules:exists`](../../../ci/yaml/index.md#rulesexists)
+uses the [`rules:exists`](../../../ci/yaml/_index.md#rulesexists)
 syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
 number. Because of this, and depending on the number of files in your repository, a dependency
-scanning job might be triggered even if the scanner doesn't support your project. For more details about this limitation, see [the `rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
+scanning job might be triggered even if the scanner doesn't support your project. For more details about this limitation, see [the `rules:exists` documentation](../../../ci/yaml/_index.md#rulesexists).
 
 ## Error: `dependency_scanning is used for configuration only, and its script should not be executed`
 

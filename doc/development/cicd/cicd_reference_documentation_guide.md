@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Documenting the `.gitlab-ci.yml` keywords
 ---
 
-The [CI/CD YAML syntax reference](../../ci/yaml/index.md) uses a standard style to make it easier to use and update.
+The [CI/CD YAML syntax reference](../../ci/yaml/_index.md) uses a standard style to make it easier to use and update.
 
 The reference information should be kept as simple as possible, and expanded details
 and examples should be documented on other pages.

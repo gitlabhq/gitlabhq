@@ -114,7 +114,7 @@ Pipelines might not run for multiple reasons:
   When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md)
   this setting is enabled by default. If repository mirroring is manually reconfigured, triggering pipelines
   is off by default and this could be why pipelines stop running.
-- [`rules`](../../../../ci/yaml/index.md#rules) configuration prevents any jobs from
+- [`rules`](../../../../ci/yaml/_index.md#rules) configuration prevents any jobs from
   being added to the pipeline.
 - Pipelines are triggered using [the account that set up the pull mirror](https://gitlab.com/gitlab-org/gitlab/-/issues/13697).
   If the account is no longer valid, pipelines do not run.

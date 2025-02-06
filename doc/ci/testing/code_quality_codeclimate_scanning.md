@@ -191,7 +191,7 @@ The default Code Quality configuration does not allow the `code_quality` job to 
 [merge request pipelines](../pipelines/merge_request_pipelines.md).
 
 To enable Code Quality to run on merge request pipelines, overwrite the code quality `rules`,
-or [`workflow: rules`](../yaml/index.md#workflow), so that they match your current `rules`.
+or [`workflow: rules`](../yaml/_index.md#workflow), so that they match your current `rules`.
 
 For example:
 

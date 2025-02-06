@@ -43,7 +43,7 @@ To use merge request pipelines:
 
 ## Add jobs to merge request pipelines
 
-Use the [`rules`](../yaml/index.md#rules) keyword to configure jobs to run in
+Use the [`rules`](../yaml/_index.md#rules) keyword to configure jobs to run in
 merge request pipelines. For example:
 
 ```yaml
@@ -54,7 +54,7 @@ job1:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```
 
-You can also use the [`workflow: rules`](../yaml/index.md#workflowrules) keyword
+You can also use the [`workflow: rules`](../yaml/_index.md#workflowrules) keyword
 to configure the entire pipeline to run in merge request pipelines. For example:
 
 ```yaml

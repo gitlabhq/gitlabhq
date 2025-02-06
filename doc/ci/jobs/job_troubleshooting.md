@@ -14,8 +14,8 @@ When working with jobs, you might encounter the following issues.
 
 ## Jobs or pipelines run unexpectedly when using `changes:`
 
-You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/index.md#ruleschanges)
-or [`only: changes`](../yaml/index.md#onlychanges--exceptchanges) without
+You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/_index.md#ruleschanges)
+or [`only: changes`](../yaml/_index.md#onlychanges--exceptchanges) without
 [merge request pipelines](../pipelines/merge_request_pipelines.md).
 
 Pipelines on branches or tags that don't have an explicit association with a merge request
@@ -70,17 +70,17 @@ To run protected manual jobs:
 
 The configuration for a pipeline is only fetched when the pipeline is created.
 When you rerun a job, uses the same configuration each time. If you update configuration files,
-including separate files added with [`include`](../yaml/index.md#include), you must
+including separate files added with [`include`](../yaml/_index.md#include), you must
 start a new pipeline to use the new configuration.
 
 ## `Job may allow multiple pipelines to run for a single action` warning
 
-When you use [`rules`](../yaml/index.md#rules) with a `when` clause without an `if`
+When you use [`rules`](../yaml/_index.md#rules) with a `when` clause without an `if`
 clause, multiple pipelines may run. Usually this occurs when you push a commit to
 a branch that has an open merge request associated with it.
 
 To [prevent duplicate pipelines](job_rules.md#avoid-duplicate-pipelines), use
-[`workflow: rules`](../yaml/index.md#workflow) or rewrite your rules to control
+[`workflow: rules`](../yaml/_index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
 ## `This GitLab CI configuration is invalid` for variable expressions
@@ -143,7 +143,7 @@ You can work around this problem by configuring Git and `libcurl` to
 [use HTTP/1.1](https://git-scm.com/docs/git-config#Documentation/git-config.txt-httpversion).
 The configuration can be added to:
 
-- A job's [`pre_get_sources_script`](../yaml/index.md#hookspre_get_sources_script):
+- A job's [`pre_get_sources_script`](../yaml/_index.md#hookspre_get_sources_script):
 
   ```yaml
   job_name:
@@ -171,7 +171,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-If a job using [`resource_group`](../yaml/index.md#resource_group) gets stuck, a
+If a job using [`resource_group`](../yaml/_index.md#resource_group) gets stuck, a
 GitLab administrator can try run the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby

@@ -335,7 +335,7 @@ export default {
       :title="tooltipText"
       :href="detailsPath"
       :class="jobClasses"
-      class="menu-item gl-w-full gl-rounded-base gl-text-strong hover:gl-bg-gray-50 hover:gl-no-underline focus:gl-bg-gray-50 focus:gl-no-underline active:gl-no-underline dark:hover:gl-bg-gray-200 dark:focus:gl-bg-gray-200"
+      class="menu-item gl-w-full gl-rounded-base gl-text-strong hover:gl-bg-strong hover:gl-no-underline focus:gl-bg-strong focus:gl-no-underline active:gl-no-underline dark:hover:gl-bg-gray-200 dark:focus:gl-bg-gray-200"
       data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"

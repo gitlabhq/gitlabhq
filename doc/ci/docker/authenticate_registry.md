@@ -16,7 +16,7 @@ do not work, because a fresh Docker daemon is started with the service.
 
 ## Option 1: Run `docker login`
 
-In [`before_script`](../yaml/index.md#before_script), run `docker login`:
+In [`before_script`](../yaml/_index.md#before_script), run `docker login`:
 
 ```yaml
 default:
@@ -120,10 +120,10 @@ You can define this authentication in several ways:
 
 - In [`pre_build_script`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
   in the runner configuration file.
-- In [`before_script`](../yaml/index.md#before_script).
-- In [`script`](../yaml/index.md#script).
+- In [`before_script`](../yaml/_index.md#before_script).
+- In [`script`](../yaml/_index.md#script).
 
-The following example shows [`before_script`](../yaml/index.md#before_script).
+The following example shows [`before_script`](../yaml/_index.md#before_script).
 The same commands apply for any solution you implement.
 
 ```yaml

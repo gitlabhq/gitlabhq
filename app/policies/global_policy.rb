@@ -151,7 +151,13 @@ class GlobalPolicy < BasePolicy
     enable :admin_web_hook
 
     # Admin pages
+    enable :read_admin_audit_log
+    enable :read_admin_background_jobs
+    enable :read_admin_background_migrations
     enable :read_admin_cicd
+    enable :read_admin_health_check
+    enable :read_admin_metrics_dashboard
+    enable :read_admin_system_information
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

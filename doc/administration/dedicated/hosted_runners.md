@@ -192,7 +192,7 @@ IP ranges for hosted runners for GitLab Dedicated are available upon request. IP
 
 After you [create hosted runners in Switchboard](#create-hosted-runners-in-switchboard) and the runners are ready, you can use them.
 
-To use runners, adjust the [tags](../../ci/yaml/index.md#tags) in your job configuration in the `.gitlab-ci.yml` file to match the hosted
+To use runners, adjust the [tags](../../ci/yaml/_index.md#tags) in your job configuration in the `.gitlab-ci.yml` file to match the hosted
 runner you want to use.
 
 For the Linux medium x86-64 runner, configure your job like this:

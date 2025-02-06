@@ -25,7 +25,7 @@ Before submitting a merge request with a new or updated CI/CD template, you must
 - Place the template in the correct [directory](#template-directories).
 - Follow the [CI/CD template authoring guidelines](#template-authoring-guidelines).
 - Name the template following the `*.gitlab-ci.yml` format.
-- Use valid [`.gitlab-ci.yml` syntax](../../ci/yaml/index.md). Verify it's valid
+- Use valid [`.gitlab-ci.yml` syntax](../../ci/yaml/_index.md). Verify it's valid
   with the [CI/CD lint tool](../../ci/yaml/lint.md).
 - [Add template metrics](#add-metrics).
 - Include [a changelog](../changelog.md) if the merge request introduces a user-facing change.
@@ -69,8 +69,8 @@ don't have any other `.gitlab-ci.yml` files.
 
 When authoring pipeline templates:
 
-- Place any [global keywords](../../ci/yaml/index.md#global-keywords) like `image`
-  or `before_script` in a [`default`](../../ci/yaml/index.md#default)
+- Place any [global keywords](../../ci/yaml/_index.md#global-keywords) like `image`
+  or `before_script` in a [`default`](../../ci/yaml/_index.md#default)
   section at the top of the template.
 - Note clearly in the [code comments](#explain-the-template-with-comments) if the
   template is designed to be used with the `includes` keyword in an existing
@@ -78,7 +78,7 @@ When authoring pipeline templates:
 
 A **job template** provides specific jobs that can be added to an existing CI/CD
 workflow to accomplish specific tasks. It usually should be used by adding it to
-an existing `.gitlab-ci.yml` file by using the [`includes`](../../ci/yaml/index.md#global-keywords)
+an existing `.gitlab-ci.yml` file by using the [`includes`](../../ci/yaml/_index.md#global-keywords)
 keyword. You can also copy and paste the contents into an existing `.gitlab-ci.yml` file.
 
 Configure job templates so that users can add them to their current pipeline with very
@@ -87,7 +87,7 @@ other pipeline configuration.
 
 When authoring job templates:
 
-- Do not use [global](../../ci/yaml/index.md#global-keywords) or [`default`](../../ci/yaml/index.md#default)
+- Do not use [global](../../ci/yaml/_index.md#global-keywords) or [`default`](../../ci/yaml/_index.md#default)
   keywords. When a root `.gitlab-ci.yml` includes a template, global or default keywords
   might be overridden and cause unexpected behavior. If a job template requires a
   specific stage, explain in the code comments that users must manually add the stage
@@ -139,8 +139,8 @@ job:
 
 #### Use `rules` instead of `only` or `except`
 
-Avoid using [`only` or `except`](../../ci/yaml/index.md#only--except) if possible.
-Only and except is not being developed any more, and [`rules`](../../ci/yaml/index.md#rules)
+Avoid using [`only` or `except`](../../ci/yaml/_index.md#only--except) if possible.
+Only and except is not being developed any more, and [`rules`](../../ci/yaml/_index.md#rules)
 is now the preferred syntax:
 
 ```yaml

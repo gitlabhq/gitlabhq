@@ -87,7 +87,7 @@ export const initGitlabWebIDE = async (el) => {
       },
       editorFont,
       extensionsGallerySettings,
-      ...(gon?.features?.webIdeSettingsContextHash && { settingsContextHash }),
+      settingsContextHash,
       codeSuggestionsEnabled,
       handleContextUpdate: handleUpdateUrl,
       handleTracking,

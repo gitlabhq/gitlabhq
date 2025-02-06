@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use [`rules`](../yaml/index.md#rules) to include or exclude jobs in pipelines.
+Use [`rules`](../yaml/_index.md#rules) to include or exclude jobs in pipelines.
 
 Rules are evaluated in order until the first match. When a match is found, the job
 is either included or excluded from the pipeline, depending on the configuration.
@@ -97,7 +97,7 @@ runs in branch and tag pipelines.
 
 ### Skip jobs if the branch is empty
 
-Use [`rules:changes:compare_to`](../yaml/index.md#ruleschangescompare_to) to
+Use [`rules:changes:compare_to`](../yaml/_index.md#ruleschangescompare_to) to
 skip a job when the branch is empty, which saves CI/CD resources. The configuration compares the
 branch to the default branch, and if the branch:
 
@@ -170,7 +170,7 @@ Other commonly used `if` clauses:
 ### Run jobs only in specific pipeline types
 
 You can use [predefined CI/CD variables](../variables/predefined_variables.md) with
-[`rules`](../yaml/index.md#rules) to choose which pipeline types jobs should run for.
+[`rules`](../yaml/_index.md#rules) to choose which pipeline types jobs should run for.
 
 The following table lists some of the variables that you can use, and the pipeline
 types the variables can control for:
@@ -219,7 +219,7 @@ Use the `CI_PIPELINE_SOURCE` variable to control when to add jobs for these pipe
 | `ondemand_dast_scan`            | For [DAST on-demand scan](../../user/application_security/dast/on-demand_scan.md) pipelines. |
 | `ondemand_dast_validation`      | For [DAST on-demand validation](../../user/application_security/dast/on-demand_scan.md#site-profile-validation) pipelines |
 | `parent_pipeline`               | For pipelines triggered by a [parent/child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines). Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline. |
-| `pipeline`                      | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](../yaml/index.md#trigger) keyword. |
+| `pipeline`                      | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](../yaml/_index.md#trigger) keyword. |
 | `push`                          | For pipelines triggered by a Git push event, including for branches and tags. |
 | `schedule`                      | For [scheduled pipelines](../pipelines/schedules.md). |
 | `security_orchestration_policy` | For [security orchestration policy](../../user/application_security/policies/index.md) pipelines. |
@@ -289,7 +289,7 @@ causes duplicated pipelines.
 
 To avoid duplicate pipelines, you can:
 
-- Use [`workflow`](../yaml/index.md#workflow) to specify which types of pipelines
+- Use [`workflow`](../yaml/_index.md#workflow) to specify which types of pipelines
   can run.
 - Rewrite the rules to run the job only in very specific cases,
   and avoid a final `when` rule:
@@ -345,7 +345,7 @@ job-with-rules:
 For every change pushed to the branch, duplicate pipelines run. One
 branch pipeline runs a single job (`job-with-no-rules`), and one merge request pipeline
 runs the other job (`job-with-rules`). Jobs with no rules default
-to [`except: merge_requests`](../yaml/index.md#only--except), so `job-with-no-rules`
+to [`except: merge_requests`](../yaml/_index.md#only--except), so `job-with-no-rules`
 runs in all cases except merge requests.
 
 ## Reuse rules in different jobs
@@ -377,7 +377,7 @@ job2:
 
 ## CI/CD variable expressions
 
-Use variable expressions with [`rules:if`](../yaml/index.md#rules) to control
+Use variable expressions with [`rules:if`](../yaml/_index.md#rules) to control
 when jobs should be added to a pipeline.
 
 You can use the equality operators `==` and `!=` to compare a variable with a

@@ -31,7 +31,7 @@ Prerequisites:
 ## Use Azure Key Vault secrets in a CI/CD job
 
 You can use a secret stored in your Azure Key Vault in a job by defining it with the
-[`azure_key_vault`](../yaml/index.md#secretsazure_key_vault) keyword:
+[`azure_key_vault`](../yaml/_index.md#secretsazure_key_vault) keyword:
 
 ```yaml
 job:

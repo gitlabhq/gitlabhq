@@ -95,7 +95,7 @@ curl "https://gitlab.example.com/api/v4/projects/:id/ci/lint"
 
 Example responses:
 
-- Valid configuration, with `include.yml` as an [included file](../ci/yaml/index.md#include)
+- Valid configuration, with `include.yml` as an [included file](../ci/yaml/_index.md#include)
   and `include_jobs` set to `true`:
 
   ```json

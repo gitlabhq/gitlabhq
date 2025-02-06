@@ -292,7 +292,7 @@ You can:
 
 - [Add the merge request to the train](#add-a-merge-request-to-a-merge-train) again,
   which triggers a new pipeline.
-- Add the [`retry`](../yaml/index.md#retry) keyword to the job if it fails intermittently.
+- Add the [`retry`](../yaml/_index.md#retry) keyword to the job if it fails intermittently.
   If it succeeds after a retry, the merge request is not removed from the merge train.
 
 ### Cannot add a merge request to the merge train

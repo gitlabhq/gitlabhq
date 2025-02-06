@@ -104,10 +104,10 @@ To disable artifacts site-wide:
 
 GitLab Runner can upload an archive containing the job artifacts to GitLab. By default,
 this is done when the job succeeds, but can also be done on failure, or always, with the
-[`artifacts:when`](../../ci/yaml/index.md#artifactswhen) parameter.
+[`artifacts:when`](../../ci/yaml/_index.md#artifactswhen) parameter.
 
 Most artifacts are compressed by GitLab Runner before being sent to the coordinator. The exception to this is
-[reports artifacts](../../ci/yaml/index.md#artifactsreports), which are compressed after uploading.
+[reports artifacts](../../ci/yaml/_index.md#artifactsreports), which are compressed after uploading.
 
 ### Using local storage
 
@@ -288,7 +288,7 @@ To migrate artifacts back to local storage:
 
 ## Expiring artifacts
 
-If [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in) is used to set
+If [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in) is used to set
 an expiry for the artifacts, they are marked for deletion right after that date passes.
 Otherwise, they expire per the [default artifacts expiration setting](../settings/continuous_integration.md#default-artifacts-expiration).
 

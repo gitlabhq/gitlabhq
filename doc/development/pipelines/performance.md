@@ -7,7 +7,7 @@ title: CI configuration performance
 
 ## Interruptible pipelines
 
-By default, all jobs are [interruptible](../../ci/yaml/index.md#interruptible), except the
+By default, all jobs are [interruptible](../../ci/yaml/_index.md#interruptible), except the
 `dont-interrupt-me` job which runs automatically on `main`, and is `manual`
 otherwise.
 

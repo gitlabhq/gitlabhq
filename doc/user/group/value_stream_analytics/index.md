@@ -176,7 +176,7 @@ In this example, milestones have been created and CI/CD for testing and setting 
 - 14:00: Push branch and create a merge request that contains the
   [issue closing pattern](../../project/issues/managing_issues.md#closing-issues-automatically).
   **Code** stage stops and **Test** and **Review** stages start.
-- GitLab CI/CD takes 5 minutes to run scripts defined in the [`.gitlab-ci.yml` file](../../../ci/yaml/index.md).
+- GitLab CI/CD takes 5 minutes to run scripts defined in the [`.gitlab-ci.yml` file](../../../ci/yaml/_index.md).
 - 19:00: Merge the merge request. **Review** stage stops and **Staging** stage starts.
 - 19:30: Deployment to the `production` environment finishes. **Staging** stops.
 
@@ -269,7 +269,7 @@ end
 ### How value stream analytics identifies the production environment
 
 Value stream analytics identifies [production environments](../../../ci/environments/index.md#deployment-tier-of-environments) by looking for project
-[environments](../../../ci/yaml/index.md#environment) with a name matching any of these patterns:
+[environments](../../../ci/yaml/_index.md#environment) with a name matching any of these patterns:
 
 - `prod` or `prod/*`
 - `production` or `production/*`

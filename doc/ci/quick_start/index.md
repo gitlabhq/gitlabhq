@@ -143,24 +143,24 @@ Now you can get started customizing your `.gitlab-ci.yml` and defining more adva
 
 Here are some tips to get started working with the `.gitlab-ci.yml` file.
 
-For the complete `.gitlab-ci.yml` syntax, see the full [CI/CD YAML syntax reference](../yaml/index.md).
+For the complete `.gitlab-ci.yml` syntax, see the full [CI/CD YAML syntax reference](../yaml/_index.md).
 
 - Use the [pipeline editor](../pipeline_editor/index.md) to edit your `.gitlab-ci.yml` file.
 - Each job contains a script section and belongs to a stage:
-  - [`stage`](../yaml/index.md#stage) describes the sequential execution of jobs.
+  - [`stage`](../yaml/_index.md#stage) describes the sequential execution of jobs.
     If there are runners available, jobs in a single stage run in parallel.
-  - Use the [`needs` keyword](../yaml/index.md#needs) to [run jobs out of stage order](../yaml/needs.md),
+  - Use the [`needs` keyword](../yaml/_index.md#needs) to [run jobs out of stage order](../yaml/needs.md),
     to increase pipeline speed and efficiency.
 - You can set additional configuration to customize how your jobs and stages perform:
-  - Use the [`rules`](../yaml/index.md#rules) keyword to specify when to run or skip jobs.
+  - Use the [`rules`](../yaml/_index.md#rules) keyword to specify when to run or skip jobs.
     The `only` and `except` legacy keywords are still supported, but can't be used
     with `rules` in the same job.
-  - Keep information across jobs and stages persistent in a pipeline with [`cache`](../yaml/index.md#cache)
-    and [`artifacts`](../yaml/index.md#artifacts). These keywords are ways to store
+  - Keep information across jobs and stages persistent in a pipeline with [`cache`](../yaml/_index.md#cache)
+    and [`artifacts`](../yaml/_index.md#artifacts). These keywords are ways to store
     dependencies and job output, even when using ephemeral runners for each job.
-  - Use the [`default`](../yaml/index.md#default) keyword to specify additional
+  - Use the [`default`](../yaml/_index.md#default) keyword to specify additional
     configurations that are applied to all jobs. This keyword is often used to define
-    [`before_script`](../yaml/index.md#before_script) and [`after_script`](../yaml/index.md#after_script)
+    [`before_script`](../yaml/_index.md#before_script) and [`after_script`](../yaml/_index.md#after_script)
     sections that should run on every job.
 
 ## Related topics

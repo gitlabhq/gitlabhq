@@ -27,8 +27,8 @@ On GitLab Self-Managed:
   - `0` for public projects, so they do not consume compute minutes.
   - `1` for internal and private projects.
 
-[Trigger jobs](../../ci/yaml/index.md#trigger) do not execute on runners, so they do not
-consume compute minutes, even when using [`strategy:depend`](../../ci/yaml/index.md#triggerstrategy)
+[Trigger jobs](../../ci/yaml/_index.md#trigger) do not execute on runners, so they do not
+consume compute minutes, even when using [`strategy:depend`](../../ci/yaml/_index.md#triggerstrategy)
 to wait for the [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) status.
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
 

@@ -122,8 +122,8 @@ The compute used by one pipeline is the total compute minutes used by all the jo
 that ran in the pipeline. Jobs can run concurrently, so the total compute usage
 can be higher than the end-to-end duration of a pipeline.
 
-[Trigger jobs](../yaml/index.md#trigger) do not execute on runners, so they do not
-consume compute minutes, even when using [`strategy:depend`](../yaml/index.md#triggerstrategy)
+[Trigger jobs](../yaml/_index.md#trigger) do not execute on runners, so they do not
+consume compute minutes, even when using [`strategy:depend`](../yaml/_index.md#triggerstrategy)
 to wait for the [downstream pipeline](../pipelines/downstream_pipelines.md) status.
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
 
@@ -209,7 +209,7 @@ use to reduce your usage:
   is disabled.
 - Reduce the frequency of [scheduled pipelines](schedules.md).
 - [Skip pipelines](index.md#skip-a-pipeline) when not needed.
-- Use [interruptible](../yaml/index.md#interruptible) jobs which can be auto-canceled
+- Use [interruptible](../yaml/_index.md#interruptible) jobs which can be auto-canceled
   if a new pipeline starts.
 - If a job doesn't have to run in every pipeline, use [`rules`](../jobs/job_control.md)
   to make it only run when it's needed.

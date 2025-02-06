@@ -113,6 +113,7 @@ module Projects
       def authorize_show_cicd_settings!
         return if can_any?(current_user, [
           :admin_cicd_variables,
+          :admin_protected_environments,
           :admin_runner
         ], project)
 

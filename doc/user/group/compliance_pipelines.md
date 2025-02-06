@@ -264,7 +264,7 @@ with no configuration file (and therefore no pipelines by default), the complian
 fails because the file specified in `include:project` is required.
 
 To only include a configuration file if it exists in a target project, use
-[`rules:exists:project`](../../ci/yaml/index.md#rulesexistsproject):
+[`rules:exists:project`](../../ci/yaml/_index.md#rulesexistsproject):
 
 ```yaml
 include:  # Execute individual project's configuration
@@ -307,15 +307,15 @@ The following are a few best practices for ensuring that these jobs are always r
 as you define them and that downstream, project-level pipeline configurations
 cannot change them:
 
-- Add [a `rules:when:always` block](../../ci/yaml/index.md#when) to each of your compliance jobs. This ensures they are
+- Add [a `rules:when:always` block](../../ci/yaml/_index.md#when) to each of your compliance jobs. This ensures they are
   non-modifiable and are always run.
-- Explicitly set any [variables](../../ci/yaml/index.md#variables) the job references. This:
+- Explicitly set any [variables](../../ci/yaml/_index.md#variables) the job references. This:
   - Ensures that project-level pipeline configurations do not set them and alter their
     behavior. For example, see `before_script` and `after_script` configuration in the [example configuration](#example-configuration).
   - Includes any jobs that drive the logic of your job.
-- Explicitly set the [container image](../../ci/yaml/index.md#image) to run the job in. This ensures that your script
+- Explicitly set the [container image](../../ci/yaml/_index.md#image) to run the job in. This ensures that your script
   steps execute in the correct environment.
-- Explicitly set any relevant GitLab pre-defined [job keywords](../../ci/yaml/index.md#job-keywords).
+- Explicitly set any relevant GitLab pre-defined [job keywords](../../ci/yaml/_index.md#job-keywords).
   This ensures that your job uses the settings you intend and that they are not overridden by
   project-level pipelines.
 

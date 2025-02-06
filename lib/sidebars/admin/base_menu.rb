@@ -10,6 +10,18 @@ module Sidebars
         render_with_abilities.any? { |ability| context.current_user.can?(ability) }
       end
 
+      protected
+
+      def build_menu_item(**args)
+        return nil_item(args[:item_id]) if block_given? && !yield
+
+        ::Sidebars::MenuItem.new(**args)
+      end
+
+      def nil_item(id)
+        ::Sidebars::NilMenuItem.new(item_id: id)
+      end
+
       private
 
       def render_with_abilities

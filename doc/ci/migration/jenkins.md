@@ -107,7 +107,7 @@ from Jenkins to GitLab CI/CD.
 
 [Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
 that are triggered when certain event take place, such as a new commit being pushed.
-A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../yaml/index.md).
+A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../yaml/_index.md).
 
 Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored
 in a separate source control repository.
@@ -317,7 +317,7 @@ deploy-job:
 #### Container Images
 
 In GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../docker/using_docker_images.md)
-using the [image](../yaml/index.md#image) keyword.
+using the [image](../yaml/_index.md#image) keyword.
 
 For example, in a `Jenkinsfile`:
 
@@ -541,7 +541,7 @@ windows_job:
 
 #### Artifacts
 
-In GitLab, any job can use the [`artifacts`](../yaml/index.md#artifacts) keyword to define a set of artifacts to
+In GitLab, any job can use the [`artifacts`](../yaml/_index.md#artifacts) keyword to define a set of artifacts to
 be stored when a job completes. [Artifacts](../jobs/job_artifacts.md) are files that can be used in later jobs,
 for example for testing or deployment.
 
@@ -622,13 +622,13 @@ in GitLab with keywords and features that offer similar functionality. For examp
 
 | Jenkins plugin                                                                    | GitLab feature |
 |-----------------------------------------------------------------------------------|----------------|
-| [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/index.md#timeout) |
+| [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/_index.md#timeout) |
 | [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage.md) |
 | [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization/index.md) |
 | [Embeddable Build Status](https://plugins.jenkins.io/embeddable-build-status/)    | [Pipeline status badges](../../user/project/badges.md#pipeline-status-badges) |
 | [JUnit](https://plugins.jenkins.io/junit/)                                        | [JUnit test report artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) and [Unit test reports](../testing/unit_test_reports.md) |
 | [Mailer](https://plugins.jenkins.io/mailer/)                                      | [Notification emails](../../user/profile/notifications.md) |
-| [Parameterized Trigger Plugin](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger` keyword](../yaml/index.md#trigger) and [downstream pipelines](../pipelines/downstream_pipelines.md) |
+| [Parameterized Trigger Plugin](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger` keyword](../yaml/_index.md#trigger) and [downstream pipelines](../pipelines/downstream_pipelines.md) |
 | [Role-based Authorization Strategy](https://plugins.jenkins.io/role-strategy/)    | GitLab [permissions and roles](../../user/permissions.md) |
 | [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/index.md) logs are time stamped by default |
 
@@ -707,7 +707,7 @@ Before doing any migration work, you should first:
 1. Get familiar with GitLab.
    - Read about the [key GitLab CI/CD features](../index.md).
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
-   - Review the [CI/CD YAML syntax reference](../yaml/index.md).
+   - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
    - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.

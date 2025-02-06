@@ -617,7 +617,7 @@ To update the `default` plan of one of these limits on a GitLab Self-Managed ins
 > - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 > - `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
 
-Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
+Job artifacts defined with [`artifacts:reports`](../ci/yaml/_index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
 [maximum artifact size setting](settings/continuous_integration.md#maximum-artifacts-size)
@@ -954,7 +954,7 @@ prevent any more changes from rendering. For more information about these limits
 Reports that go over the 20 MB limit aren't loaded. Affected reports:
 
 - [Merge request security reports](../ci/testing/index.md#security-reports)
-- [CI/CD parameter `artifacts:expose_as`](../ci/yaml/index.md#artifactsexpose_as)
+- [CI/CD parameter `artifacts:expose_as`](../ci/yaml/_index.md#artifactsexpose_as)
 - [Unit test reports](../ci/testing/unit_test_reports.md)
 
 ## Advanced search limits

@@ -63,16 +63,16 @@ With `spec:inputs`:
 
 Additionally, use:
 
-- [`spec:inputs:default`](index.md#specinputsdefault) to define default values for inputs
+- [`spec:inputs:default`](_index.md#specinputsdefault) to define default values for inputs
   when not specified. When you specify a default, the inputs are no longer mandatory.
-- [`spec:inputs:description`](index.md#specinputsdescription) to give a description to
+- [`spec:inputs:description`](_index.md#specinputsdescription) to give a description to
   a specific input. The description does not affect the input, but can help people
   understand the input details or expected values.
-- [`spec:inputs:options`](index.md#specinputsoptions) to specify a list of allowed values
+- [`spec:inputs:options`](_index.md#specinputsoptions) to specify a list of allowed values
   for an input.
-- [`spec:inputs:regex`](index.md#specinputsregex) to specify a regular expression
+- [`spec:inputs:regex`](_index.md#specinputsregex) to specify a regular expression
   that the input must match.
-- [`spec:inputs:type`](index.md#specinputstype) to force a specific input type, which
+- [`spec:inputs:type`](_index.md#specinputstype) to force a specific input type, which
   can be `string` (default when not specified), `array`, `number`, or `boolean`.
 
 ### Define inputs with multiple parameters
@@ -210,7 +210,7 @@ spec:
 
 > - `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
 
-Use [`include:inputs`](index.md#includeinputs) to set the values for the parameters
+Use [`include:inputs`](_index.md#includeinputs) to set the values for the parameters
 when the included configuration is added to the pipeline.
 
 For example, to include the `scan-website-job.yml` in the [example above](#define-inputs-with-multiple-parameters):
@@ -239,7 +239,7 @@ In this example, the inputs for the included configuration are:
 
 ### Use `include:inputs` with multiple files
 
-[`inputs`](index.md#includeinputs) must be specified separately for each included file.
+[`inputs`](_index.md#includeinputs) must be specified separately for each included file.
 For example:
 
 ```yaml
@@ -353,7 +353,7 @@ this functionality.
 
 ### Use `inputs` with `needs`
 
-You can use array type inputs with [`needs`](index.md#needs) for complex job dependencies.
+You can use array type inputs with [`needs`](_index.md#needs) for complex job dependencies.
 
 For example, in a file named `component.yml`:
 
@@ -398,7 +398,7 @@ test_job:
 
 ### Allow `needs` to be expanded when included
 
-You can have [`needs`](index.md#needs) in an included job, but also add additional jobs
+You can have [`needs`](_index.md#needs) in an included job, but also add additional jobs
 to the `needs` array with `spec:inputs`.
 
 For example:
@@ -445,7 +445,7 @@ my-other-job:
 
 ### Add `needs` to an included job that doesn't have `needs`
 
-You can add [`needs`](index.md#needs) to an included job that does not have `needs`
+You can add [`needs`](_index.md#needs) to an included job that does not have `needs`
 already defined. For example, in a CI/CD component's configuration:
 
 ```yaml

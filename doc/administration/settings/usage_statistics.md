@@ -75,7 +75,7 @@ In the following table, you can see:
 | [Users and permissions report](../admin_area.md#user-permission-export) | GitLab 16.6 and later |
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
 | [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
-| [Сross-project pipelines with artifacts dependencies](../../ci/yaml/index.md#needsproject) | GitLab 16.7 and later |
+| [Сross-project pipelines with artifacts dependencies](../../ci/yaml/_index.md#needsproject) | GitLab 16.7 and later |
 | [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues) | GitLab 16.7 and later |
 | [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md) | GitLab 16.7 and later |
 | [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md) | GitLab 16.7 and later |

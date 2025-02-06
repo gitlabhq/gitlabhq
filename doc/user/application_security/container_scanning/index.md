@@ -671,7 +671,7 @@ The results are stored in `gl-container-scanning-report.json`.
 ## Reports JSON format
 
 The container scanning tool emits JSON reports which the [GitLab Runner](https://docs.gitlab.com/runner/)
-recognizes through the [`artifacts:reports`](../../../ci/yaml/index.md#artifactsreports)
+recognizes through the [`artifacts:reports`](../../../ci/yaml/_index.md#artifactsreports)
 keyword in the CI configuration file.
 
 Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in

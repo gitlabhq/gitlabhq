@@ -47,7 +47,7 @@ to the `production` environment. Running multiple deployment scripts to the same
 infrastructure could harm/confuse the instance and leave it in a corrupted state in the worst case.
 
 To ensure that a `deploy` job runs once at a time, you can specify
-[`resource_group` keyword](../yaml/index.md#resource_group) to the concurrency sensitive job:
+[`resource_group` keyword](../yaml/_index.md#resource_group) to the concurrency sensitive job:
 
 ```yaml
 deploy:
@@ -138,8 +138,8 @@ Depending on the process mode of the resource group:
 ## Pipeline-level concurrency control with cross-project/parent-child pipelines
 
 You can define `resource_group` for downstream pipelines that are sensitive to concurrent
-executions. The [`trigger` keyword](../yaml/index.md#trigger) can trigger downstream pipelines and the
-[`resource_group` keyword](../yaml/index.md#resource_group) can co-exist with it. `resource_group` is efficient to control the
+executions. The [`trigger` keyword](../yaml/_index.md#trigger) can trigger downstream pipelines and the
+[`resource_group` keyword](../yaml/_index.md#resource_group) can co-exist with it. `resource_group` is efficient to control the
 concurrency of deployment pipelines, while other jobs can continue to run concurrently.
 
 The following example has two pipeline configurations in a project. When a pipeline starts running,
@@ -184,7 +184,7 @@ deployment:
   environment: production
 ```
 
-You must define [`strategy: depend`](../yaml/index.md#triggerstrategy)
+You must define [`strategy: depend`](../yaml/_index.md#triggerstrategy)
 with the `trigger` keyword. This ensures that the lock isn't released until the downstream pipeline
 finishes.
 
@@ -221,7 +221,7 @@ deploy:
 ```
 
 In a parent pipeline, it runs the `test` job that subsequently runs a child pipeline,
-and the [`strategy: depend` option](../yaml/index.md#triggerstrategy) makes the `test` job wait until the child pipeline has finished.
+and the [`strategy: depend` option](../yaml/_index.md#triggerstrategy) makes the `test` job wait until the child pipeline has finished.
 The parent pipeline runs the `deploy` job in the next stage, that requires a resource from the `production` resource group.
 If the process mode is `oldest_first`, it executes the jobs from the oldest pipelines, meaning the `deploy` job is executed next.
 

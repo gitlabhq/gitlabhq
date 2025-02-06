@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can use the [`needs`](../yaml/index.md#needs) keyword to create dependencies between jobs
+You can use the [`needs`](_index.md#needs) keyword to create dependencies between jobs
 in a pipeline. Jobs run as soon as their dependencies are met, regardless of the pipeline's `stages`
 configuration. You can even configure a pipeline with no stages defined (effectively one large stage)
 and jobs still run in the proper order. This pipeline structure is a kind of
@@ -50,12 +50,12 @@ which could be much faster.
 
 If desired, `c` and `d` jobs can be left to run in stage sequence.
 
-The `needs` keyword also works with the [`parallel`](../yaml/index.md#parallel) keyword,
+The `needs` keyword also works with the [`parallel`](_index.md#parallel) keyword,
 giving you powerful options for parallelization in your pipeline.
 
 ## Use cases
 
-You can use the [`needs`](../yaml/index.md#needs) keyword to define several different kinds of
+You can use the [`needs`](_index.md#needs) keyword to define several different kinds of
 dependencies between jobs in a CI/CD pipeline. You can set dependencies to fan in or out,
 and even merge back together (diamond dependencies). These dependencies could be used for
 pipelines that:

@@ -20,7 +20,7 @@ that it believes to be relevant to the input files.
 
 `tff` is designed for Ruby on Rails projects, so the `Verify/FailFast` template is
 configured to run when changes to Ruby files are detected. By default, it runs in
-the [`.pre` stage](../yaml/index.md#stage-pre) of a GitLab CI/CD pipeline,
+the [`.pre` stage](../yaml/_index.md#stage-pre) of a GitLab CI/CD pipeline,
 before all other stages.
 
 ## Example use case
@@ -63,7 +63,7 @@ rspec-complete:
     - bundle exec rspec
 ```
 
-To run the most relevant specs first instead of the whole suite, [`include`](../yaml/index.md#include)
+To run the most relevant specs first instead of the whole suite, [`include`](../yaml/_index.md#include)
 the template by adding the following to your CI/CD configuration:
 
 ```yaml

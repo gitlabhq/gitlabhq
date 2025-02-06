@@ -964,7 +964,7 @@ export default {
                 @cancelEditing="cancelEditing"
                 @error="updateError = $event"
               />
-              <div class="gl-flex gl-flex-wrap gl-justify-between">
+              <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3">
                 <work-item-award-emoji
                   v-if="workItemAwardEmoji"
                   :work-item-id="workItem.id"
@@ -974,7 +974,7 @@ export default {
                   @error="updateError = $event"
                   @emoji-updated="$emit('work-item-emoji-updated', $event)"
                 />
-                <div class="gl-flex gl-gap-3">
+                <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
                   <gl-intersection-observer
                     v-if="showUploadDesign"
                     @appear="isDesignUploadButtonInViewport = true"

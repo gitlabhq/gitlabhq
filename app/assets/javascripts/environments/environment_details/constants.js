@@ -73,7 +73,7 @@ export const translations = {
 };
 
 export const environmentsLearnMorePath = helpPagePath('ci/environments/index');
-export const environmentsHelpPagePath = helpPagePath('ci/yaml/index', { anchor: 'environment' });
+export const environmentsHelpPagePath = helpPagePath('ci/yaml/_index', { anchor: 'environment' });
 
 export const DEPLOYMENTS_SORT_OPTIONS = [
   {

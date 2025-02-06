@@ -62,7 +62,7 @@ Documentation review apps follow this process:
    The `DOCS_BRANCH` environment variable determines which branch of either the `gitlab-org/gitlab-docs` project or the
    `gitlab-org/technical-writing/docs-gitlab-com` project are used. If not set, the `main` branch is used.
 1. After the documentation preview site is built:
-   - For `nanoc` builds, the HTML files are uploaded as [artifacts](../../ci/yaml/index.md#artifacts) to a GCP bucket.
+   - For `nanoc` builds, the HTML files are uploaded as [artifacts](../../ci/yaml/_index.md#artifacts) to a GCP bucket.
      For implementation details, see
      [issue `gitlab-com/gl-infra/reliability#11021`](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11021).
    - For `hugo` builds, a [parallel deployment](../../user/project/pages/index.md#parallel-deployments) is deployed.

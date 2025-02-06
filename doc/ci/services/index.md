@@ -84,7 +84,7 @@ still succeeds even if that warning was printed. For example:
   because the job is not trying to connect to it, it does not fail.
 
 If the services start successfully, they start before the
-[`before_script`](../yaml/index.md#before_script) runs. This means you can
+[`before_script`](../yaml/_index.md#before_script) runs. This means you can
 write a `before_script` that queries the service.
 
 Services stop at the end of the job, even if the job fails.

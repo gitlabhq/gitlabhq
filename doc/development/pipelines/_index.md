@@ -824,7 +824,7 @@ to detect what types and jobs need to be optimized first.
 An MR that touches multiple areas would be associated with the longest type applicable. For instance, an MR that touches backend
 and frontend would fall into the "Frontend" pipeline type since this type takes longer to finish than the "Backend" pipeline type.
 
-We use the [`rules:`](../../ci/yaml/index.md#rules) and [`needs:`](../../ci/yaml/index.md#needs) keywords extensively
+We use the [`rules:`](../../ci/yaml/_index.md#rules) and [`needs:`](../../ci/yaml/_index.md#needs) keywords extensively
 to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
 have a pipelines that include jobs from multiple types (for example, a combination of docs-only and code-only pipelines).
 

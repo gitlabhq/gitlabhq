@@ -1559,7 +1559,7 @@ has not been retried. `1` means that it's the first retry.
 
 > - `commit.name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107963) in GitLab 15.8.
 
-You can set custom names for pipelines with [`workflow:name`](../../../ci/yaml/index.md#workflowname).
+You can set custom names for pipelines with [`workflow:name`](../../../ci/yaml/_index.md#workflowname).
 If the pipeline has a name, that name is the value of `commit.name`.
 
 ## Deployment events

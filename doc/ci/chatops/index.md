@@ -30,7 +30,7 @@ The following integrations are available:
 ## ChatOps workflow and CI/CD configuration
 
 ChatOps looks for the specified job in the
-[`.gitlab-ci.yml`](../yaml/index.md) on the project's default
+[`.gitlab-ci.yml`](../yaml/_index.md) on the project's default
 branch. If the job is found, ChatOps creates a pipeline that contains
 only the specified job. If you set `when: manual`, ChatOps creates the
 pipeline, but the job doesn't start automatically.
@@ -40,7 +40,7 @@ GitLab. The job can use existing [CI/CD variables](../variables/index.md#predefi
 `GITLAB_USER_ID` to perform additional rights validation, but these
 variables can be [overridden](../variables/index.md#cicd-variable-precedence).
 
-You should set [`rules`](../yaml/index.md#rules) so the job does not
+You should set [`rules`](../yaml/_index.md#rules) so the job does not
 run as part of the standard CI/CD pipeline.
 
 ChatOps passes the following [CI/CD variables](../variables/index.md#predefined-cicd-variables)

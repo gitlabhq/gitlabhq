@@ -747,10 +747,21 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_disallowed(:read_admin_cicd) }
     end
 
-    context 'with an admin', :enable_admin_mode do
+    context 'with an admin', :enable_admin_mode, :aggregate_failures do
       let(:current_user) { admin_user }
+      let(:permissions) do
+        [
+          :read_admin_audit_log,
+          :read_admin_background_jobs,
+          :read_admin_background_migrations,
+          :read_admin_cicd,
+          :read_admin_health_check,
+          :read_admin_metrics_dashboard,
+          :read_admin_system_information
+        ]
+      end
 
-      it { is_expected.to be_allowed(:read_admin_cicd) }
+      it { expect_allowed(*permissions) }
     end
   end
 end

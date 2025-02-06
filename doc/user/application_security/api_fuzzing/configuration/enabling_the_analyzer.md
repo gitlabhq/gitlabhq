@@ -98,7 +98,7 @@ To configure API fuzzing in GitLab with an OpenAPI Specification:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 
@@ -164,7 +164,7 @@ To configure API fuzzing to use a HAR file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 
@@ -235,7 +235,7 @@ The GraphQL endpoint must support introspection queries for this method to work 
 
 To configure API Fuzzing to use an GraphQL endpoint URL that provides information about the target API to test:
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `FUZZAPI_GRAPHQL` variable.
@@ -273,7 +273,7 @@ API Fuzzing can use a GraphQL schema file to understand and test a GraphQL endpo
 
 To configure API Fuzzing to use a GraphQl schema file that provides information about the target API to test:
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `FUZZAPI_GRAPHQL` variable.
@@ -348,7 +348,7 @@ To configure API fuzzing to use a Postman Collection file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
 
-1. [Include](../../../../ci/yaml/index.md#includetemplate)
+1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
 

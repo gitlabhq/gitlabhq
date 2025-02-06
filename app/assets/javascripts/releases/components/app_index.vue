@@ -22,7 +22,7 @@ export default {
   name: 'ReleasesIndexApp',
   i18n,
   links: {
-    alertInfoMessageLink: helpPagePath('ci/yaml/index.html', { anchor: 'release' }),
+    alertInfoMessageLink: helpPagePath('ci/yaml/_index.html', { anchor: 'release' }),
     alertInfoPublishLink: helpPagePath('ci/components/index', { anchor: 'publish-a-new-release' }),
   },
   components: {

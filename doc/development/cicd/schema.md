@@ -29,7 +29,7 @@ a step-by-step introduction on how to work with JSON schemas.
 
 The CI/CD schema is at [`app/assets/javascripts/editor/schema/ci.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/editor/schema/ci.json).
 It contains all the keywords available for authoring CI/CD configuration files.
-Check the [CI/CD YAML syntax reference](../../ci/yaml/index.md) for a comprehensive list of
+Check the [CI/CD YAML syntax reference](../../ci/yaml/_index.md) for a comprehensive list of
 all available keywords.
 
 All keywords are defined under `definitions`. We use these definitions as

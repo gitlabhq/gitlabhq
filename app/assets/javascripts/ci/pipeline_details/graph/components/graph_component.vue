@@ -178,7 +178,7 @@ export default {
       :class="{
         'pipeline-graph-container gl-pipeline-min-h gl-mt-3 gl-items-start gl-overflow-auto gl-bg-subtle gl-pb-8 gl-pt-3':
           !isLinkedPipeline,
-        'gl-bg-gray-50 sm:gl-ml-5': isLinkedPipeline,
+        'gl-bg-strong sm:gl-ml-5': isLinkedPipeline,
       }"
       data-testid="pipeline-container"
     >

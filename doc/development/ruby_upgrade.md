@@ -138,7 +138,7 @@ This is typically necessary, since gems or Ruby applications that we maintain ou
 update these repositories for the GitLab Rails application to work with a new Ruby,
 it is good practice to keep Ruby versions in lock-step across all our repositories. For minor and major
 upgrades, add new CI/CD jobs to these repositories using the new Ruby.
-A [build matrix definition](../ci/yaml/index.md#parallelmatrix) can do this efficiently.
+A [build matrix definition](../ci/yaml/_index.md#parallelmatrix) can do this efficiently.
 
 #### Decide which repositories to update
 

@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showCreateOptions" class="gl-mt-4">
+  <div v-if="showCreateOptions">
     <gl-button-group>
       <gl-button
         :loading="checkingBranchAvailibility"

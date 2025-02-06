@@ -218,7 +218,7 @@ Pipelines now include a pipeline secret detection job.
 ### Customize analyzer settings
 
 The pipeline secret detection scan settings can be changed through [CI/CD variables](#available-cicd-variables)
-by using the [`variables`](../../../../ci/yaml/index.md#variables) parameter in `.gitlab-ci.yml`.
+by using the [`variables`](../../../../ci/yaml/_index.md#variables) parameter in `.gitlab-ci.yml`.
 
 WARNING:
 All configuration of GitLab security scanning tools should be tested in a merge request before
@@ -276,7 +276,7 @@ the template inclusion and specify any additional keys under it.
 
 In the following example _extract_ of a `.gitlab-ci.yml` file:
 
-- The `Jobs/Secret-Detection` CI template is [included](../../../../ci/yaml/index.md#include).
+- The `Jobs/Secret-Detection` CI template is [included](../../../../ci/yaml/_index.md#include).
 - In the `secret_detection` job, the CI/CD variable `SECRET_DETECTION_HISTORIC_SCAN` is set to
   `true`. Because the template is evaluated before the pipeline configuration, the last mention of
   the variable takes precedence, so an historic scan is performed.

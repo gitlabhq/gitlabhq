@@ -22,6 +22,9 @@
     "admin_protected_branch": {
       "type": "boolean"
     },
+    "admin_protected_environments": {
+      "type": "boolean"
+    },
     "admin_push_rules": {
       "type": "boolean"
     },

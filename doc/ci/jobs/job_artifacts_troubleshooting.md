@@ -20,9 +20,9 @@ or `needs` do not fetch artifacts from all jobs by default.
 If you use these keywords, artifacts are fetched from only a subset of jobs. Review
 the keyword reference for information on how to fetch artifacts with these keywords:
 
-- [`dependencies`](../yaml/index.md#dependencies)
-- [`needs`](../yaml/index.md#needs)
-- [`needs:artifacts`](../yaml/index.md#needsartifacts)
+- [`dependencies`](../yaml/_index.md#dependencies)
+- [`needs`](../yaml/_index.md#needs)
+- [`needs:artifacts`](../yaml/_index.md#needsartifacts)
 
 ## Job artifacts use too much disk space
 
@@ -105,12 +105,12 @@ it expects. This error is returned when:
 
 - The job's dependencies are not found. By default, jobs in later stages fetch artifacts
   from jobs in all earlier stages, so the earlier jobs are all considered dependent.
-  If the job uses the [`dependencies`](../yaml/index.md#dependencies) keyword, only
+  If the job uses the [`dependencies`](../yaml/_index.md#dependencies) keyword, only
   the listed jobs are dependent.
-- The artifacts are already expired. You can set a longer expiry with [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in).
+- The artifacts are already expired. You can set a longer expiry with [`artifacts:expire_in`](../yaml/_index.md#artifactsexpire_in).
 - The job cannot access the relevant resources due to insufficient permissions.
 
-See these additional troubleshooting steps if the job uses the [`needs:artifacts`](../yaml/index.md#needsartifacts):
+See these additional troubleshooting steps if the job uses the [`needs:artifacts`](../yaml/_index.md#needsartifacts):
 keyword with:
 
 - [`needs:project`](#for-a-job-configured-with-needsproject)
@@ -122,7 +122,7 @@ keyword with:
 ### For a job configured with `needs:project`
 
 The `could not retrieve the needed artifacts.` error can happen for a job using
-[`needs:project`](../yaml/index.md#needsproject) with a configuration similar to:
+[`needs:project`](../yaml/_index.md#needsproject) with a configuration similar to:
 
 ```yaml
 rspec:
@@ -143,7 +143,7 @@ To troubleshoot this error, verify that:
 ### For a job configured with `needs:pipeline:job`
 
 The `could not retrieve the needed artifacts.` error can happen for a job using
-[`needs:pipeline:job`](../yaml/index.md#needspipelinejob) with a configuration similar to:
+[`needs:pipeline:job`](../yaml/_index.md#needspipelinejob) with a configuration similar to:
 
 ```yaml
 rspec:

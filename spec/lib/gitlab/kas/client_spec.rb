@@ -253,5 +253,125 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
         client.list_agent_config_files(project: project)
       end
     end
+
+    describe '#get_environment_template' do
+      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateResponse, template: template) }
+      let(:template_name) { 'default' }
+
+      subject { client.get_environment_template(environment: environment, template_name: template_name) }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::GetEnvironmentTemplateRequest).to receive(:new)
+          .with(
+            template_name: template_name,
+            agent_name: agent.name,
+            gitaly_info: instance_of(Gitlab::Agent::Entity::GitalyInfo),
+            gitaly_repository: instance_of(Gitlab::Agent::Entity::GitalyRepository),
+            default_branch: project.default_branch_or_main)
+          .and_return(request)
+
+        expect(stub).to receive(:get_environment_template)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(template) }
+    end
+
+    describe '#get_default_environment_template' do
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::GetDefaultEnvironmentTemplateRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::GetDefaultEnvironmentTemplateResponse, template: template) }
+
+      subject { client.get_default_environment_template }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::GetDefaultEnvironmentTemplateRequest).to receive(:new)
+          .and_return(request)
+
+        expect(stub).to receive(:get_default_environment_template)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(template) }
+    end
+
+    describe '#render_environment_template' do
+      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:build) { create(:ci_build, user: user) }
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateResponse, template: template) }
+
+      subject { client.render_environment_template(template: template, environment: environment, build: build) }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::RenderEnvironmentTemplateRequest).to receive(:new)
+          .with(
+            template: Gitlab::Agent::ManagedResources::EnvironmentTemplate.new(
+              name: template.name,
+              data: template.data),
+            info: instance_of(Gitlab::Agent::ManagedResources::TemplatingInfo))
+          .and_return(request)
+
+        expect(stub).to receive(:render_environment_template)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(template) }
+    end
+
+    describe '#ensure_environment' do
+      let_it_be(:environment) { create(:environment, project: project, cluster_agent: agent) }
+      let_it_be(:user) { create(:user) }
+      let_it_be(:build) { create(:ci_build, user: user) }
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentRequest) }
+      let(:template) { double("templates", name: "test-template", data: "{}") }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentResponse) }
+
+      subject { client.ensure_environment(template: template, environment: environment, build: build) }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::EnsureEnvironmentRequest).to receive(:new)
+          .with(
+            template: Gitlab::Agent::ManagedResources::RenderedEnvironmentTemplate.new(
+              name: template.name,
+              data: template.data),
+            info: instance_of(Gitlab::Agent::ManagedResources::TemplatingInfo))
+          .and_return(request)
+
+        expect(stub).to receive(:ensure_environment)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(response) }
+    end
   end
 end

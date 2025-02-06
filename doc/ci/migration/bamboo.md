@@ -18,7 +18,7 @@ exported from the Bamboo UI or stored in Spec repositories.
 
 If you are new to GitLab CI/CD, use the [Getting started guide](../index.md) to learn
 the basic concepts and how to create your first [`.gitlab-ci.yml` file](../quick_start/index.md).
-If you already have some experience using GitLab CI/CD, you can review [CI/CD YAML syntax reference](../yaml/index.md)
+If you already have some experience using GitLab CI/CD, you can review [CI/CD YAML syntax reference](../yaml/_index.md)
 to see the full list of available keywords.
 
 You can also take a look at [Auto DevOps](../../topics/autodevops/index.md), which automatically
@@ -62,7 +62,7 @@ CI and deployments are treated separately in Bamboo. [Deployment project workflo
 is different from the build plans workflow. [Learn more](https://confluence.atlassian.com/bamboo/understanding-the-bamboo-ci-server-289277285.html)
 about Bamboo workflow.
 
-GitLab CI/CD uses a similar workflow. Jobs are organized into [stages](../yaml/index.md#stage),
+GitLab CI/CD uses a similar workflow. Jobs are organized into [stages](../yaml/_index.md#stage),
 and projects have individual `.gitlab-ci.yml` configuration files or include existing templates.
 
 ### Templating & Configuration as Code
@@ -659,7 +659,7 @@ deploy-to-production:
     name: production
 ```
 
-To create release instead, use the [`release`](../yaml/index.md#release)
+To create release instead, use the [`release`](../yaml/_index.md#release)
 keyword with the [release-cli](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs)
 tool to create releases for [Git tags](../../user/project/repository/tags/index.md).
 
@@ -757,7 +757,7 @@ Before doing any migration work, you should first:
    - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md)
      and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploy
      a static site.
-   - Review the [CI/CD YAML syntax reference](../yaml/index.md).
+   - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
    - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
