@@ -1447,6 +1447,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_238f37f25bb2() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "boards_epic_lists"
+  WHERE "boards_epic_lists"."id" = NEW."epic_list_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_243aecba8654() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9251,7 +9267,8 @@ CREATE TABLE boards_epic_list_user_preferences (
     epic_list_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    collapsed boolean DEFAULT false NOT NULL
+    collapsed boolean DEFAULT false NOT NULL,
+    group_id bigint
 );
 
 CREATE SEQUENCE boards_epic_list_user_preferences_id_seq
@@ -26727,6 +26744,9 @@ ALTER TABLE approval_project_rules_users
 ALTER TABLE status_check_responses
     ADD CONSTRAINT check_29114cce9c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE draft_notes
+    ADD CONSTRAINT check_2a752d05fe CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -26738,6 +26758,9 @@ ALTER TABLE vulnerability_scanners
 
 ALTER TABLE vulnerability_finding_links
     ADD CONSTRAINT check_3dd0293472 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE epic_user_mentions
+    ADD CONSTRAINT check_4865a37c73 CHECK ((group_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE vulnerability_findings_remediations
     ADD CONSTRAINT check_65e61a488a CHECK ((project_id IS NOT NULL)) NOT VALID;
@@ -31221,6 +31244,8 @@ CREATE INDEX index_boards_epic_board_recent_visits_on_group_id ON boards_epic_bo
 CREATE INDEX index_boards_epic_boards_on_group_id ON boards_epic_boards USING btree (group_id);
 
 CREATE INDEX index_boards_epic_list_user_preferences_on_epic_list_id ON boards_epic_list_user_preferences USING btree (epic_list_id);
+
+CREATE INDEX index_boards_epic_list_user_preferences_on_group_id ON boards_epic_list_user_preferences USING btree (group_id);
 
 CREATE INDEX index_boards_epic_lists_on_epic_board_id ON boards_epic_lists USING btree (epic_board_id);
 
@@ -37680,6 +37705,8 @@ CREATE TRIGGER trigger_219952df8fc4 BEFORE INSERT OR UPDATE ON merge_request_blo
 
 CREATE TRIGGER trigger_22262f5f16d8 BEFORE INSERT OR UPDATE ON issues FOR EACH ROW EXECUTE FUNCTION trigger_22262f5f16d8();
 
+CREATE TRIGGER trigger_238f37f25bb2 BEFORE INSERT OR UPDATE ON boards_epic_list_user_preferences FOR EACH ROW EXECUTE FUNCTION trigger_238f37f25bb2();
+
 CREATE TRIGGER trigger_243aecba8654 BEFORE INSERT OR UPDATE ON dast_site_profiles_builds FOR EACH ROW EXECUTE FUNCTION trigger_243aecba8654();
 
 CREATE TRIGGER trigger_248cafd363ff BEFORE INSERT OR UPDATE ON packages_npm_metadata FOR EACH ROW EXECUTE FUNCTION trigger_248cafd363ff();
@@ -39433,6 +39460,9 @@ ALTER TABLE ONLY sbom_occurrences_vulnerabilities
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c78fbacd64 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY boards_epic_list_user_preferences
+    ADD CONSTRAINT fk_c7a4729d4e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_broadcast_message_dismissals
     ADD CONSTRAINT fk_c7cbf5566d FOREIGN KEY (broadcast_message_id) REFERENCES broadcast_messages(id) ON DELETE CASCADE;

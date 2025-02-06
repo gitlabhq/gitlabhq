@@ -336,7 +336,7 @@ The `metrics` report collects [Metrics](../testing/metrics_reports.md). The coll
 artifact.
 
 GitLab can display the results of one or more reports in the merge request
-[metrics reports widget](../testing/metrics_reports.md#metrics-reports).
+[metrics reports widget](../testing/metrics_reports.md).
 
 ## `artifacts:reports:requirements`
 

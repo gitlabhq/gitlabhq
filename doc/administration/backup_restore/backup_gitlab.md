@@ -109,7 +109,7 @@ The backup command does not back up registry data when they are stored in Object
 ### Storing configuration files
 
 WARNING:
-The [backup Rake task](#back-up-gitlab) GitLab provides does _not_ store your configuration files. The primary reason for this is that your database contains items including encrypted information for two-factor authentication and the CI/CD _secure variables_. Storing encrypted information in the same location as its key defeats the purpose of using encryption in the first place. For example, the secrets file contains your database encryption key. If you lose it, then the GitLab application will not be able to decrypt any encrypted values in the database.
+The backup Rake task GitLab provides does _not_ store your configuration files. The primary reason for this is that your database contains items including encrypted information for two-factor authentication and the CI/CD _secure variables_. Storing encrypted information in the same location as its key defeats the purpose of using encryption in the first place. For example, the secrets file contains your database encryption key. If you lose it, then the GitLab application will not be able to decrypt any encrypted values in the database.
 
 WARNING:
 The secrets file may change after upgrades.

@@ -212,7 +212,7 @@ If you are not an administrator for the instance or group a service account is a
 - [Associated records](account/delete_account.md#associated-records)
 - [Project access tokens - bot users](../project/settings/project_access_tokens.md#bot-users-for-projects)
 - [Group access tokens - bot users](../group/settings/group_access_tokens.md#bot-users-for-groups)
-- [Internal users](../../administration/internal_users.md#internal-users)
+- [Internal users](../../administration/internal_users.md)
 
 ## Troubleshooting
 

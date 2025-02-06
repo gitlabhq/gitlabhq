@@ -111,7 +111,7 @@ Prerequisites:
 - You must [create a fork](#create-a-fork) of the repository you want to update.
 
 To update your fork from the command line, follow the instruction in
-[use Git to update a fork](../../../topics/git/forks.md#update-a-fork).
+[use Git to update a fork](../../../topics/git/forks.md).
 
 ### With repository mirroring
 

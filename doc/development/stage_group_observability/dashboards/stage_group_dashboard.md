@@ -169,7 +169,7 @@ available on [GitLab Unfiltered](https://youtu.be/shEd_eiUjdI).
 
 For deeper customization and more complicated metrics, see the
 [Grafonnet lib](https://github.com/grafana/grafonnet-lib) project and the
-[GitLab Prometheus Metrics](../../../administration/monitoring/prometheus/gitlab_metrics.md#gitlab-prometheus-metrics)
+[GitLab Prometheus Metrics](../../../administration/monitoring/prometheus/gitlab_metrics.md)
 documentation.
 
 ### Optional graphs

@@ -44,7 +44,7 @@ instance can help reduce race conditions by syncing changes more frequently.
 Prerequisites:
 
 - You have configured the [push](push.md#set-up-a-push-mirror-to-another-gitlab-instance-with-2fa-activated)
-  and [pull](pull.md#pull-from-a-remote-repository) mirrors in the upstream GitLab instance.
+  and [pull](pull.md) mirrors in the upstream GitLab instance.
 
 To create the webhook in the downstream instance:
 

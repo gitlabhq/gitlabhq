@@ -298,4 +298,4 @@ If you're experiencing high volatility, you can explore the following:
 
 ## Related topics
 
-- [Tutorial: Set up an issue board for a team stand-up](../boards_for_standups/index.md#tutorial-set-up-an-issue-board-for-a-team-stand-up)
+- [Tutorial: Set up an issue board for a team stand-up](../boards_for_standups/index.md)

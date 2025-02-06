@@ -194,7 +194,7 @@ and without a default storage class it cannot start.
 To create a default storage class if one doesn't already exist, see [Storage Classes](https://docs.aws.amazon.com/eks/latest/userguide/storage.html#storage-classes).
 
 Alternatively, disable PostgreSQL by setting the project variable
-[`POSTGRES_ENABLED`](../../../topics/autodevops/cicd_variables.md#cicd-variables) to `false`.
+[`POSTGRES_ENABLED`](../../../topics/autodevops/cicd_variables.md) to `false`.
 
 ## Deploy the app to EKS
 

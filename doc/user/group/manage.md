@@ -14,7 +14,7 @@ For more information about efforts to create an organization view of all groups,
 [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
 A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
-[Vulnerability Report](../application_security/vulnerability_report/index.md#vulnerability-report),
+[Vulnerability Report](../application_security/vulnerability_report/index.md),
 [compliance center](../compliance/compliance_center/index.md), and
 [value stream analytics](../group/value_stream_analytics/index.md).
 

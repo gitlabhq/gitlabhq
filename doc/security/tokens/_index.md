@@ -93,7 +93,7 @@ impersonation token.
 
 ## Project access tokens
 
-[Project access tokens](../../user/project/settings/project_access_tokens.md#project-access-tokens)
+[Project access tokens](../../user/project/settings/project_access_tokens.md)
 are scoped to a project. Like personal access tokens, you can use
 them to authenticate with:
 
@@ -116,7 +116,7 @@ when project access tokens are nearly expired.
 
 ## Group access tokens
 
-[Group access tokens](../../user/group/settings/group_access_tokens.md#group-access-tokens)
+[Group access tokens](../../user/group/settings/group_access_tokens.md)
 are scoped to a group. Like personal access tokens, you can use
 them to authenticate with:
 

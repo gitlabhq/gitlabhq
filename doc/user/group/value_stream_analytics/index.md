@@ -365,7 +365,7 @@ Value stream analytics includes the following [DORA](../../../user/analytics/dor
 - Change failure rate
 
 DORA metrics are calculated based on data from the
-[DORA API](../../../api/dora/metrics.md#devops-research-and-assessment-dora-key-metrics-api).
+[DORA API](../../../api/dora/metrics.md).
 
 If you have a GitLab Premium or Ultimate subscription:
 

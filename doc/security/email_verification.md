@@ -28,8 +28,7 @@ On GitLab.com, if you don't receive a verification email, select **Resend Code**
 An account is locked when either:
 
 - There are three or more failed sign-in attempts in 24 hours.
-- A user attempts to sign in from a new IP address and the
-  `check_ip_address_for_email_verification` feature flag is enabled.
+- A user attempts to sign in from a new IP address.
 
 A locked account without 2FA is not unlocked automatically.
 

@@ -600,7 +600,7 @@ For example, if a license has an expiry date of January 1, 2025:
 After your license has expired:
 
 - To resume functionality,
-  [activate a new license](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+  [activate a new license](../../administration/license_file.md).
 - To keep using Free tier features only,
   [delete the expired license](../../administration/license_file.md#remove-a-license).
 

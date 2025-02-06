@@ -296,7 +296,7 @@ project or group from there:
 
 1. [Install a new GitLab](../../install/_index.md) instance at the same version as
    the backed-up instance from which you want to restore.
-1. [Restore the backup](#restore-gitlab) into this new instance, then
+1. Restore the backup into this new instance, then
    export your [project](../../user/project/settings/import_export.md)
    or [group](../../user/project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated). For
    more information about what is and isn't exported, see the export feature's documentation.

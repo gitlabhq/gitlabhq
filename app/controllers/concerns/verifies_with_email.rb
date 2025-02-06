@@ -163,8 +163,6 @@ module VerifiesWithEmail
   end
 
   def trusted_ip_address?(user)
-    return true if Feature.disabled?(:check_ip_address_for_email_verification)
-
     AuthenticationEvent.initial_login_or_known_ip_address?(user, request.ip)
   end
 

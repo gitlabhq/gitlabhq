@@ -91,7 +91,7 @@ For more information about how caching works, see [Architecture diagram of hoste
 ### Pricing of hosted runners for GitLab.com
 
 Jobs that run on hosted runners for GitLab.com consume [compute minutes](../../pipelines/compute_minutes.md) allocated to your namespace.
-The number of minutes you can use on these runners depends on the included compute minutes in your [subscription plan](https://about.gitlab.com/pricing/) or [additionally purchased compute minutes](../../../subscriptions/gitlab_com/compute_minutes.md#purchase-additional-compute-minutes).
+The number of minutes you can use on these runners depends on the included compute minutes in your [subscription plan](https://about.gitlab.com/pricing/) or [additionally purchased compute minutes](../../../subscriptions/gitlab_com/compute_minutes.md).
 
 For more information about the cost factor applied to the machine type based on size, see [cost factor](../../pipelines/compute_minutes.md#gitlab-hosted-runner-cost-factors).
 

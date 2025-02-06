@@ -35,7 +35,7 @@ Before you start using Code Suggestions, decide if you want to use the default G
 
 Prerequisites:
 
-- You must have [set up Code Suggestions](set_up.md#set-up-code-suggestions).
+- You must have [set up Code Suggestions](set_up.md).
 
 To use Code Suggestions:
 

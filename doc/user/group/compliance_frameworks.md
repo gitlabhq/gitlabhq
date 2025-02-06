@@ -78,7 +78,7 @@ A compliance framework that is set to default has a **default** label.
 
 ### Set and remove a default by using the compliance center
 
-To set as default (or remove the default) from [compliance projects report](../compliance/compliance_center/compliance_projects_report.md#compliance-projects-report):
+To set as default (or remove the default) from [compliance projects report](../compliance/compliance_center/compliance_projects_report.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
@@ -87,7 +87,7 @@ To set as default (or remove the default) from [compliance projects report](../c
 1. Select **Set as default**.
 1. Select **Save changes**.
 
-To set as default (or remove the default) from [compliance framework report](../compliance/compliance_center/compliance_frameworks_report.md#compliance-frameworks-report):
+To set as default (or remove the default) from [compliance framework report](../compliance/compliance_center/compliance_frameworks_report.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.

@@ -555,7 +555,7 @@ To restore the database and resume replication, you can do one of the following:
 - [Reset the Geo secondary site replication](synchronization_verification.md#resetting-geo-secondary-site-replication).
 - [Set up a new Geo secondary using the Linux package](../../setup/index.md#using-linux-package-installations).
 
-If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](../remove_geo_site.md#removing-secondary-geo-sites).
+If you set up a new secondary from scratch, you must also [remove the old site from the Geo cluster](../remove_geo_site.md).
 
 ### Geo site does not appear to be replicating the database from the primary site
 

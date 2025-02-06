@@ -69,7 +69,7 @@ Meanwhile:
   - [Custom email address](configure.md#custom-email-address)
   - [Use an additional Service Desk alias email](configure.md#use-an-additional-service-desk-alias-email)
   - [Configure email ingestion in multi-node environments](configure.md#configure-email-ingestion-in-multi-node-environments)
-- [Use Service Desk](using_service_desk.md#use-service-desk)
+- [Use Service Desk](using_service_desk.md)
   - [As an end user (issue creator)](using_service_desk.md#as-an-end-user-issue-creator)
   - [As a responder to the issue](using_service_desk.md#as-a-responder-to-the-issue)
   - [Email contents and formatting](using_service_desk.md#email-contents-and-formatting)

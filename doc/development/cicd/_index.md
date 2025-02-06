@@ -83,7 +83,7 @@ On the left side we have the events that can trigger a pipeline based on various
 - The [Web API](../../api/pipelines.md#create-a-new-pipeline).
 - A user selecting the "Run pipeline" button in the UI.
 - When a [merge request is created or updated](../../ci/pipelines/merge_request_pipelines.md).
-- When an MR is added to a [Merge Train](../../ci/pipelines/merge_trains.md#merge-trains).
+- When an MR is added to a [Merge Train](../../ci/pipelines/merge_trains.md).
 - A [scheduled pipeline](../../ci/pipelines/schedules.md).
 - When project is [subscribed to an upstream project](../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated).
 - When [Auto DevOps](../../topics/autodevops/index.md) is enabled.

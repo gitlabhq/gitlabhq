@@ -193,7 +193,7 @@ This example shows a custom tool or script causing an unexpectedly high number o
 User agents in this situation can be specialized [third-party clients](../../api/rest/third_party_clients.md),
 or general tools like `curl`.
 
-You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract performance statistics for those users or bots.
+You can also use `fast-stats top` (see top of page) to extract performance statistics for those users or bots.
 
 ### Parsing `gitlab-rails/importer.log`
 

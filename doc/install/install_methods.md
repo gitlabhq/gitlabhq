@@ -24,7 +24,7 @@ For more information, see:
 - [Linux package](https://docs.gitlab.com/omnibus/installation/)
 - [Reference architectures](../administration/reference_architectures/index.md)
 - [System requirements](requirements.md)
-- [Supported Linux operating systems](../administration/package_information/supported_os.md#supported-operating-systems)
+- [Supported Linux operating systems](../administration/package_information/supported_os.md)
 
 ## Helm chart
 

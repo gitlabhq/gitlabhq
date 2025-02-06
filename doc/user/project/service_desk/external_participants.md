@@ -81,7 +81,7 @@ To see the email address of an external participant you must have at least the R
 The external participant's email address is obfuscated if both these conditions are true:
 
 - You are not a member of the project or have the Guest role.
-- The issue or ticket is public ([non-confidential](../issues/confidential_issues.md#confidential-issues)).
+- The issue or ticket is public ([non-confidential](../issues/confidential_issues.md)).
 
 The external participant's email address is then obfuscated in:
 

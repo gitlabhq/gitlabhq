@@ -42,7 +42,7 @@ You should only use this solution temporarily, returning to [the standard templa
 GitLab SAST [analyzers](analyzers.md) are released as container images.
 If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](index.md#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](index.md#pinning-to-minor-image-version).
 
-Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
+Each [analyzer project](analyzers.md) has a `CHANGELOG.md` file listing the changes made in each available version.
 
 ## Job log messages
 

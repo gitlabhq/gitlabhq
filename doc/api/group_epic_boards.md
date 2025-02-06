@@ -11,7 +11,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385903) in GitLab 15.9.
 
-Every API call to [group epic boards](../user/group/epics/epic_boards.md#epic-boards) must be authenticated.
+Every API call to [group epic boards](../user/group/epics/epic_boards.md) must be authenticated.
 
 If a user is not a member of a group and the group is private, a `GET`
 request results in `404` status code.

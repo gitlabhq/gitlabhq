@@ -68,7 +68,7 @@ can reserve your catch-all mailbox for other purposes.
 
 To set up this solution, you must create a dedicated email
 address to receive your users' replies to GitLab notifications. However,
-this method only supports replies, and not the other features of [incoming email](#incoming-email).
+this method only supports replies, and not the other features of incoming email.
 
 ## Accepted headers
 

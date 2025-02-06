@@ -111,7 +111,7 @@ GET /users?external=true
 
 GitLab supports bot users such as the [alert bot](../operations/incident_management/integrations.md)
 or the [support bot](../user/project/service_desk/configure.md#support-bot-user).
-You can exclude the following types of [internal users](../administration/internal_users.md#internal-users)
+You can exclude the following types of [internal users](../administration/internal_users.md)
 from the users' list with the `exclude_internal=true` parameter:
 
 - Alert bot

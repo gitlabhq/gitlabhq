@@ -16,7 +16,7 @@ virtual machines and can be easily followed along on AWS or GCP. Of course, the 
 This guide is a comprehensive, end-to-end set of instructions for getting the desired setup working. It calls out references to the many areas of GitLab documentation that were used to support the creation of the final configuration. The referenced docs are important when more background is needed to adjust the implementation to a specific scenario.
 <!-- TOC -->
 
-- [Self-Hosted Model: Complete AWS/Google Cloud Deployment Guide with Ollama Integration](#self-hosted-model-complete-awsgoogle-cloud-deployment-guide-with-ollama-integration)
+- Self-Hosted Model: Complete AWS/Google Cloud Deployment Guide with Ollama Integration
   - [Prerequisites](#prerequisites)
     - [Virtual Machines](#virtual-machines)
       - [Resources & Operating System](#resources--operating-system)
