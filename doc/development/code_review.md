@@ -153,7 +153,7 @@ The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) contains
 - A manual reviewer roulette.
 - Local time information.
 
-For more information, review [the roulette README](https://gitlab.com/gitlab-org/gitlab-roulette).
+For more information, review [the roulette README](https://gitlab.com/gitlab-org/gitlab-roulette/).
 
 ### Approval guidelines
 
@@ -171,7 +171,7 @@ by a reviewer before passing it to a maintainer as described in the
 | `~workhorse` changes | [Workhorse maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_workhorse). |
 | `~frontend` changes <sup>1</sup>       | [Frontend maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend). |
 | `~UX` user-facing changes <sup>3</sup> | [Product Designer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
-| Adding a new JavaScript library <sup>1</sup> | - [Frontend Design System member](https://about.gitlab.com/direction/foundations/design_system/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://handbook.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
+| Adding a new JavaScript library <sup>1</sup> | - [Frontend Design System member](https://about.gitlab.com/direction/foundations/design_system/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/main/doc/report.md).<br/>- A [legal department member](https://handbook.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
 | A new dependency or a file system change | - [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/systems/distribution/#how-to-work-with-distribution) for more details.<br/>- For RubyGems, request an [AppSec review](gemfile.md#request-an-appsec-review). |
 | `~documentation` or `~UI text` changes | [Technical writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages). |
 | Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
@@ -181,8 +181,8 @@ by a reviewer before passing it to a maintainer as described in the
 | Analytics Instrumentation (telemetry or analytics) changes | [Analytics Instrumentation engineer](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/engineers). |
 | An addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests) | [Quality maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa). |
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
-| Changes related to authentication | [Manage:Authentication](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authentication/#code-review) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
-| Changes related to custom roles or policies | [Manage:Authorization Engineer](https://gitlab.com/gitlab-org/govern/authorization/approvers). |
+| Changes related to authentication | [Manage:Authentication](https://about.gitlab.com/company/team/). Check the [code review section on the group page](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authentication/#code-review) for more details. Patterns for files known to require review from the team are listed in the in the `Authentication` section of the [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS) file, and the team will be listed in the approvers section of all merge requests that modify these files. |
+| Changes related to custom roles or policies | [Manage:Authorization Engineer](https://gitlab.com/gitlab-org/software-supply-chain-security/authorization/approvers/). |
 
 1. Specs other than JavaScript specs are considered `~backend` code. Haml markup is considered `~frontend` code. However, Ruby code in Haml templates is considered `~backend` code. When in doubt, request both a frontend and backend review.
 1. We encourage you to seek guidance from a database maintainer if your merge
@@ -658,7 +658,7 @@ has all required approvals and they have merge rights to the repository.
 This is also in line with the GitLab [bias for action](https://handbook.gitlab.com/handbook/values/#bias-for-action) value.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
-[Change Management Controls](https://handbook.gitlab.com/handbook/security/change-management-policy/).
+[Change Management Controls](https://handbook.gitlab.com/handbook/security/security-and-technology-policies/change-management-policy/).
 
 To implement this policy in `gitlab-org/gitlab`, we have enabled the following
 settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:
@@ -865,4 +865,4 @@ A good example of collaboration on an MR touching multiple parts of the codebase
 
 ### Credits
 
-Largely based on the [`thoughtbot` code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
+Largely based on the [`thoughtbot` code review guide](https://github.com/thoughtbot/guides/tree/main/code-review).

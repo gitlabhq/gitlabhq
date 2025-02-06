@@ -806,7 +806,7 @@ export default {
       </gl-empty-state>
       <template v-else>
         <div
-          class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-gray-10 gl-px-4 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
+          class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-subtle gl-px-4 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
         >
           <div class="gl-items-center gl-gap-4 gl-py-3 md:gl-flex">
             <span data-test-id="selection-count">

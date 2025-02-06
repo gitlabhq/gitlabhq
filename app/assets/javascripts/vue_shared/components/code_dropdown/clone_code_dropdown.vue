@@ -2,12 +2,12 @@
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
-import CodeDropdownItem from './code_dropdown_item.vue';
+import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
 
 export default {
   components: {
     GlDisclosureDropdown,
-    CodeDropdownItem,
+    CodeDropdownCloneItem,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -85,14 +85,13 @@ export default {
     block
     :toggle-text="$options.labels.defaultLabel"
   >
-    <code-dropdown-item
+    <code-dropdown-clone-item
       v-for="{ label, link, testId } in sections"
       :key="label"
       :label="label"
       :link="link"
       :test-id="`${testId}-button`"
       :data-testid="testId"
-      label-class="!gl-text-sm !gl-pt-2"
     />
   </gl-disclosure-dropdown>
 </template>

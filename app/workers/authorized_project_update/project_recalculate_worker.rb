@@ -21,17 +21,11 @@ module AuthorizedProjectUpdate
 
       service = AuthorizedProjectUpdate::ProjectRecalculateService.new(project)
 
-      recalculate(project, service)
+      recalculate(service)
     end
 
-    def recalculate(project, service)
-      if Feature.enabled?(:drop_lease_usage_project_recalculate_workers, Feature.current_request)
-        service.execute
-      else
-        in_lock(lock_key(project), ttl: 10.seconds) do
-          service.execute
-        end
-      end
+    def recalculate(service)
+      service.execute
     end
 
     private

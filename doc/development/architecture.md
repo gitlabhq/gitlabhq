@@ -436,7 +436,7 @@ GitLab can be considered to have two layers from a process perspective:
 
 #### Alertmanager
 
-- [Project page](https://github.com/prometheus/alertmanager/blob/master/README.md)
+- [Project page](https://github.com/prometheus/alertmanager/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://github.com/helm/charts/tree/master/stable/prometheus)
@@ -450,18 +450,18 @@ GitLab can be considered to have two layers from a process perspective:
 
 - Project page:
   - [Omnibus](https://github.com/certbot/certbot/blob/master/README.rst)
-  - [Charts](https://github.com/jetstack/cert-manager/blob/master/README.md)
+  - [Charts](https://github.com/cert-manager/cert-manager/blob/master/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
   - [Source](../install/installation.md#using-https)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/https.md)
+  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [Secrets Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management)
 
 #### Consul
 
-- [Project page](https://github.com/hashicorp/consul/blob/master/README.md)
+- [Project page](https://github.com/hashicorp/consul/blob/main/README.md)
 - Configuration:
   - [Omnibus](../administration/consul.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
@@ -602,7 +602,7 @@ GitLab CI/CD is the open-source continuous integration service included with Git
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
 
-[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/development/workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
 
 #### Grafana
 
@@ -617,7 +617,7 @@ Grafana is an open source, feature rich metrics dashboard and graph editor for G
 
 #### Jaeger
 
-- [Project page](https://github.com/jaegertracing/jaeger/blob/master/README.md)
+- [Project page](https://github.com/jaegertracing/jaeger/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4104)
   - [Charts](https://docs.gitlab.com/charts/charts/globals#tracing)
@@ -631,7 +631,7 @@ It can be used for monitoring microservices-based distributed systems.
 
 #### Logrotate
 
-- [Project page](https://github.com/logrotate/logrotate/blob/master/README.md)
+- [Project page](https://github.com/logrotate/logrotate/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate)
 - Layer: Core Service
@@ -642,7 +642,7 @@ to make sure we were logging responsibly. This is just a packaged version of the
 
 #### Mattermost
 
-- [Project page](https://github.com/mattermost/mattermost-server/blob/master/README.md)
+- [Project page](https://github.com/mattermost/mattermost/blob/master/README.md)
 - Configuration:
   - [Omnibus](../integration/mattermost/index.md)
   - [Charts](https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html)
@@ -667,7 +667,7 @@ MinIO is an object storage server released under the GNU AGPL v3.0. It is compat
 
 - Project page:
   - [Omnibus](https://github.com/nginx/nginx)
-  - [Charts](https://github.com/kubernetes/ingress-nginx/blob/master/README.md)
+  - [Charts](https://github.com/kubernetes/ingress-nginx/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/nginx.html)
   - [Charts](https://docs.gitlab.com/charts/charts/nginx/)
@@ -691,7 +691,7 @@ NGINX has an Ingress port for all HTTP requests and routes them to the appropria
 
 #### Patroni
 
-- [Project Page](https://github.com/zalando/patroni)
+- [Project Page](https://github.com/patroni/patroni)
 - Configuration:
   - [Omnibus](../administration/postgresql/replication_and_failover.md#patroni)
 - Layer: Core Service (Data)
@@ -735,7 +735,7 @@ GitLab packages the popular Database to provide storage for Application meta dat
 
 #### PostgreSQL Exporter
 
-- [Project page](https://github.com/wrouesnel/postgres_exporter/blob/master/README.md)
+- [Project page](https://github.com/prometheus-community/postgres_exporter/blob/master/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/postgres_exporter.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
@@ -743,11 +743,11 @@ GitLab packages the popular Database to provide storage for Application meta dat
 - Process: `postgres-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
 
-[`postgres_exporter`](https://github.com/wrouesnel/postgres_exporter) is the community provided Prometheus exporter that delivers data about PostgreSQL to Prometheus for use in Grafana Dashboards.
+[`postgres_exporter`](https://github.com/prometheus-community/postgres_exporter) is the community provided Prometheus exporter that delivers data about PostgreSQL to Prometheus for use in Grafana Dashboards.
 
 #### Prometheus
 
-- [Project page](https://github.com/prometheus/prometheus/blob/master/README.md)
+- [Project page](https://github.com/prometheus/prometheus/blob/main/README.md)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/index.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#prometheus)
@@ -759,7 +759,7 @@ Prometheus is a time-series tool that helps GitLab administrators expose metrics
 
 #### Redis
 
-- [Project page](https://github.com/antirez/redis/blob/unstable/README.md)
+- [Project page](https://github.com/redis/redis/blob/unstable/README.md)
 - Configuration:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/redis.html)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#redis)
@@ -827,7 +827,7 @@ For monitoring deployed apps, see the [Sentry integration docs](../operations/er
 
 #### Sidekiq
 
-- [Project page](https://github.com/mperham/sidekiq/blob/master/README.md)
+- [Project page](https://github.com/sidekiq/sidekiq/blob/main/README.md)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)

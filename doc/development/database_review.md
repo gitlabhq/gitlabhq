@@ -26,7 +26,7 @@ A database review is required for:
   database review.
 - Changes in Service Data metrics that use `count`, `distinct_count`, `estimate_batch_distinct_count` and `sum`.
   These metrics could have complex queries over large tables.
-  See the [Analytics Instrumentation Guide](https://handbook.gitlab.com/handbook/product/analytics-instrumentation-guide/)
+  See the [Analytics Instrumentation Guide](https://handbook.gitlab.com/handbook/product/product-processes/analytics-instrumentation-guide/)
   for implementation details.
 - Changes that use [`update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or `destroy_all`](#preparation-when-using-bulk-update-operations)
   methods on an ActiveRecord object.

@@ -23,11 +23,6 @@ export default {
       type: String,
       required: true,
     },
-    labelClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
     link: {
       type: String,
       required: true,
@@ -54,7 +49,7 @@ export default {
   <gl-disclosure-dropdown-item>
     <gl-form-group
       :label="label"
-      :label-class="labelClass"
+      label-class="!gl-text-sm !gl-pt-2"
       :label-for="inputId"
       class="gl-mb-3 gl-px-3 gl-text-left"
     >

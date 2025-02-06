@@ -71,7 +71,7 @@ export default {
       <div
         class="gl-flex gl-h-7 gl-items-center gl-border-0 gl-border-b-1 gl-border-t-1 gl-border-solid gl-bg-subtle gl-px-3"
         :class="{
-          'gl-border-default gl-text-disabled': !isPathSelectionAvailable,
+          'gl-border-subtle gl-text-disabled': !isPathSelectionAvailable,
           'gl-border-strong': isPathSelectionAvailable,
         }"
       >
@@ -82,8 +82,8 @@ export default {
           ref="newName"
           class="gl-rounded-bl-none gl-rounded-tl-none"
           :class="{
-            '!gl-shadow-inner-1-gray-200': isPathSelectionAvailable,
-            '!gl-shadow-inner-1-gray-100': !isPathSelectionAvailable,
+            '!gl-shadow-inner-1-border-strong': isPathSelectionAvailable,
+            '!gl-shadow-inner-1-border-subtle': !isPathSelectionAvailable,
           }"
           debounce="500"
           data-testid="target-namespace-input"

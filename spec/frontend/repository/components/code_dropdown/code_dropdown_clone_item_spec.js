@@ -1,8 +1,8 @@
 import { GlButton, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import CodeDropdownItem from '~/vue_shared/components/code_dropdown/code_dropdown_item.vue';
+import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
 
-describe('CodeDropdownItem', () => {
+describe('CodeDropdownCloneItem', () => {
   let wrapper;
   const link = 'ssh://foo.bar';
   const label = 'SSH';
@@ -16,7 +16,7 @@ describe('CodeDropdownItem', () => {
   const findCopyButton = () => wrapper.findComponent(GlButton);
 
   const createComponent = (propsData = defaultPropsData) => {
-    wrapper = shallowMount(CodeDropdownItem, {
+    wrapper = shallowMount(CodeDropdownCloneItem, {
       propsData,
       stubs: {
         GlFormInputGroup,

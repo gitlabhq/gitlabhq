@@ -286,6 +286,9 @@ export default {
             :ssh-url="sshUrl"
             :http-url="httpUrl"
             :kerberos-url="kerberosUrl"
+            :xcode-url="xcodeUrl"
+            :current-path="currentPath"
+            :directory-download-links="downloadLinks"
           />
           <template v-else>
             <code-dropdown

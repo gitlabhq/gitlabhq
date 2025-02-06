@@ -257,8 +257,7 @@ module Gitlab
       strong_memoize(:runner_project) do
         next unless runner&.project_type?
 
-        runner_projects = runner.runner_projects.take(2) # rubocop: disable CodeReuse/ActiveRecord
-        runner_projects.first.project if runner_projects.one?
+        runner.owner
       end
     end
 
@@ -266,7 +265,7 @@ module Gitlab
       strong_memoize(:runner_group) do
         next unless runner&.group_type?
 
-        runner.groups.first
+        runner.owner
       end
     end
 

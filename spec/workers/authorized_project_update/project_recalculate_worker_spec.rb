@@ -51,32 +51,5 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculateWorker, feature_catego
 
       worker.perform(project.id)
     end
-
-    context 'exclusive lease' do
-      before do
-        stub_feature_flags(drop_lease_usage_project_recalculate_workers: false)
-      end
-
-      let(:lock_key) { "#{described_class.name.underscore}/projects/#{project.id}" }
-      let(:timeout) { 10.seconds }
-
-      context 'when exclusive lease has not been taken' do
-        it 'obtains a new exclusive lease' do
-          expect_to_obtain_exclusive_lease(lock_key, timeout: timeout)
-
-          worker.perform(project.id)
-        end
-      end
-
-      context 'when exclusive lease has already been taken' do
-        before do
-          stub_exclusive_lease_taken(lock_key, timeout: timeout)
-        end
-
-        it 'raises an error' do
-          expect { worker.perform(project.id) }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
-        end
-      end
-    end
   end
 end

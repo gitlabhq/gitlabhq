@@ -21200,6 +21200,9 @@ msgstr ""
 msgid "Download codes"
 msgstr ""
 
+msgid "Download directory"
+msgstr ""
+
 msgid "Download export"
 msgstr ""
 
@@ -39871,6 +39874,9 @@ msgid "Open new window"
 msgstr ""
 
 msgid "Open raw"
+msgstr ""
+
+msgid "Open with"
 msgstr ""
 
 msgid "Open: %{open}"

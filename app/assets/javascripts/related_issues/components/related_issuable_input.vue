@@ -8,6 +8,7 @@ import {
   inputPlaceholderConfidentialTextMap,
   inputPlaceholderTextMap,
 } from '../constants';
+import { ENTER_KEY, TAB_KEY } from '../../lib/utils/keys';
 import IssueToken from './issue_token.vue';
 
 const SPACE_FACTOR = 1;
@@ -167,6 +168,13 @@ export default {
     onFocus() {
       this.isInputFocused = true;
     },
+    onKeydown(event) {
+      if ([ENTER_KEY, TAB_KEY].includes(event.key)) {
+        const { value } = this.$refs.input;
+
+        this.$emit('addIssuableFinishEntry', { value, event });
+      }
+    },
     setupAutoComplete() {
       const $input = $(this.$refs.input);
 
@@ -231,6 +239,7 @@ export default {
             @input="onInput"
             @focus="onFocus"
             @blur="onBlur"
+            @keydown="onKeydown"
             @keyup.escape.exact="$emit('addIssuableFormCancel')"
           />
         </li>
