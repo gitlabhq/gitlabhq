@@ -114,7 +114,7 @@ It points to the commit you're rolling back to.
 For the rollback to succeed, the deployment process must be defined in
 the job's `script`.
 
-Only the [deployment jobs](../jobs/index.md#deployment-jobs) are run.
+Only the [deployment jobs](../jobs/_index.md#deployment-jobs) are run.
 In cases where a previous job generates artifacts that must be regenerated
 on deploy, you must manually run the necessary jobs from the pipelines page.
 For example, if you use Terraform and your `plan` and `apply` commands are separated
@@ -143,7 +143,7 @@ In this case, see [job retries for rollback deployments](deployment_safety.md#jo
 - [Environments](_index.md)
 - [Downstream pipelines for deployments](../pipelines/downstream_pipelines.md#downstream-pipelines-for-deployments)
 - [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
-- [Review apps](../review_apps/index.md)
+- [Review apps](../review_apps/_index.md)
 - [Track deployments of an external deployment tool](external_deployment_tools.md)
 
 ## Troubleshooting

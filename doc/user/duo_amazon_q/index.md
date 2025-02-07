@@ -60,7 +60,7 @@ Amazon Q can analyze Java 8 or 11 code and determine the necessary Java changes 
 
 Prerequisites:
 
-- You must [have a runner and a CI/CD pipeline configured for your project](../../ci/index.md).
+- You must [have a runner and a CI/CD pipeline configured for your project](../../ci/_index.md).
 
 To upgrade Java:
 

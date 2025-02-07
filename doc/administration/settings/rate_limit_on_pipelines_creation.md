@@ -13,7 +13,7 @@ DETAILS:
 
 You can set a limit so that users and processes can't request more than a certain number of pipelines each minute. This limit can help save resources and improve stability.
 
-For example, if you set a limit of `10`, and `11` requests are sent to the [trigger API](../../ci/triggers/index.md) within one minute,
+For example, if you set a limit of `10`, and `11` requests are sent to the [trigger API](../../ci/triggers/_index.md) within one minute,
 the eleventh request is blocked. Access to the endpoint is allowed again after one minute.
 
 This limit is:

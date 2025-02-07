@@ -64,10 +64,10 @@ Here's an example setup flow from scratch:
    Endpoint assigned above.
 1. Check if [`v2.0.0+` of `auto-deploy-image` is used in your Auto DevOps pipelines](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#verify-dependency-versions).
    If it isn't, follow the documentation to specify the image version.
-1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
+1. [Run a new Auto DevOps pipeline](../../ci/pipelines/_index.md#run-a-pipeline-manually)
    and make sure that the `production` job succeeds and creates a production environment.
 1. Configure a [`canary` deployment job for Auto DevOps pipelines](../../topics/autodevops/cicd_variables.md#deploy-policy-for-canary-environments).
-1. [Run a new Auto DevOps pipeline](../../ci/pipelines/index.md#run-a-pipeline-manually)
+1. [Run a new Auto DevOps pipeline](../../ci/pipelines/_index.md#run-a-pipeline-manually)
    and make sure that the `canary` job succeeds and creates a canary deployment with Canary Ingress.
 
 ### Show Canary Ingress deployments on deploy boards (deprecated)

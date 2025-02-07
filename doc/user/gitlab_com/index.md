@@ -203,7 +203,7 @@ For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
 
 ## GitLab CI/CD
 
-Below are the current settings regarding [GitLab CI/CD](../../ci/index.md).
+Below are the current settings regarding [GitLab CI/CD](../../ci/_index.md).
 Any settings or feature limits not listed here are using the defaults listed in
 the related documentation.
 
@@ -347,7 +347,7 @@ For self-managed instance limits, see:
 
 You can use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to seamlessly build, test, and deploy your application on different environments.
 
-For more information, see [GitLab-hosted runners](../../ci/runners/index.md).
+For more information, see [GitLab-hosted runners](../../ci/runners/_index.md).
 
 ## Puma
 
@@ -542,7 +542,7 @@ You can view more information in our runbooks such as:
 By default, GitLab does not expire job logs. Job logs are retained indefinitely,
 and can't be configured on GitLab.com to expire. You can erase job logs
 [manually with the Jobs API](../../api/jobs.md#erase-a-job) or by
-[deleting a pipeline](../../ci/pipelines/index.md#delete-a-pipeline).
+[deleting a pipeline](../../ci/pipelines/_index.md#delete-a-pipeline).
 
 ## GitLab.com at scale
 

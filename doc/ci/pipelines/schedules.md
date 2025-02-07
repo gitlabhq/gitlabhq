@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular intervals.
+Use scheduled pipelines to run GitLab CI/CD [pipelines](_index.md) at regular intervals.
 
 ## Prerequisites
 

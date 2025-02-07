@@ -12,7 +12,7 @@ The tutorial uses the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the AWS console.
 
 You can also follow this tutorial on a self-managed instance.
-Ensure your own [runners are configured](../../../ci/runners/index.md).
+Ensure your own [runners are configured](../../../ci/runners/_index.md).
 
 To deploy a project to EKS:
 

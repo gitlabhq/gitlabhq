@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../index.md).
+This guide covers the building of dependencies of a PHP project while compiling assets via an npm script using [GitLab CI/CD](../../_index.md).
 
 While it is possible to create your own image with custom PHP and Node.js versions, for brevity we use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and Node.js installed.
 

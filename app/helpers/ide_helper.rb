@@ -100,7 +100,7 @@ module IdeHelper
       'committed-state-svg-path' => image_path('illustrations/rocket-launch-md.svg'),
       'pipelines-empty-state-svg-path': image_path('illustrations/empty-state/empty-pipeline-md.svg'),
       'switch-editor-svg-path': image_path('illustrations/rocket-launch-md.svg'),
-      'ci-help-page-path' => help_page_path('ci/quick_start/index.md'),
+      'ci-help-page-path' => help_page_path('ci/quick_start/_index.md'),
       'web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md'),
       'render-whitespace-in-code': current_user.render_whitespace_in_code.to_s,
       'default-branch' => project && project.default_branch,

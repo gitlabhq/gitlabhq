@@ -406,9 +406,9 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 - [Group variables](../variables/_index.md#for-a-group).
 - [Instance variables](../variables/_index.md#for-an-instance).
 - Project [predefined variables](../variables/predefined_variables.md) (`CI_PROJECT_*`).
-- [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
+- [Trigger variables](../triggers/_index.md#pass-cicd-variables-in-the-api-call).
 - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
-- [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
+- [Manual pipeline run variables](../pipelines/_index.md#run-a-pipeline-manually).
 - The `CI_PIPELINE_SOURCE` and `CI_PIPELINE_TRIGGERED` [predefined variables](../variables/predefined_variables.md).
 - The `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
 
@@ -625,7 +625,7 @@ it's likely that either:
   `include2.yml` which includes `include1.yml`, creating a recursive loop.
 
 To help reduce the risk of this happening, edit the pipeline configuration file
-with the [pipeline editor](../pipeline_editor/index.md), which validates if the
+with the [pipeline editor](../pipeline_editor/_index.md), which validates if the
 limit is reached. You can remove one included file at a time to try to narrow down
 which configuration file is the source of the loop or excessive included files.
 

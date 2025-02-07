@@ -297,7 +297,6 @@ Style/RedundantSelf:
     - 'lib/gitlab/session.rb'
     - 'lib/gitlab/sidekiq_config/cli_methods.rb'
     - 'lib/gitlab/sidekiq_status.rb'
-    - 'lib/gitlab/sourcegraph.rb'
     - 'lib/gitlab/ssh_public_key.rb'
     - 'lib/gitlab/template/base_template.rb'
     - 'lib/gitlab/template/dockerfile_template.rb'

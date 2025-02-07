@@ -107,10 +107,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               let(:runner_type) { 2 }
               let(:runner) { non_partitioned_runner }
 
-              it 'returns unprocessable entity status code', :aggregate_failures do
+              it 'returns forbidden status code', :aggregate_failures do
                 expect { verify }.not_to change { partitioned_runner_exists?(runner) }.from(false)
-                expect(response).to have_gitlab_http_status(:unprocessable_entity)
-                expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+                expect(response).to have_gitlab_http_status(:forbidden)
+                expect(response.body).to eq({ message: '403 Forbidden - Runner is orphaned' }.to_json)
               end
             end
 
@@ -118,10 +118,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               let(:runner_type) { 3 }
               let(:runner) { non_partitioned_runner }
 
-              it 'returns unprocessable entity status code', :aggregate_failures do
+              it 'returns forbidden status code', :aggregate_failures do
                 expect { verify }.not_to change { partitioned_runner_exists?(runner) }.from(false)
-                expect(response).to have_gitlab_http_status(:unprocessable_entity)
-                expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
+                expect(response).to have_gitlab_http_status(:forbidden)
+                expect(response.body).to eq({ message: '403 Forbidden - Runner is orphaned' }.to_json)
               end
 
               # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.

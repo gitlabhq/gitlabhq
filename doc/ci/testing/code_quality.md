@@ -200,7 +200,7 @@ Because the [report format](#code-quality-report-format) has only a few required
 If you already use a tool in your CI/CD pipeline, you should adapt the existing job to add a Code Quality report.
 Adapting the existing job prevents you from running a separate job that may confuse developers and make your pipelines take longer to run.
 
-If you don't already use a tool, you can write a CI/CD job from scratch or adopt the tool by using a component from [the CI/CD Catalog](../components/index.md#cicd-catalog).
+If you don't already use a tool, you can write a CI/CD job from scratch or adopt the tool by using a component from [the CI/CD Catalog](../components/_index.md#cicd-catalog).
 
 ### Code scanning tools
 

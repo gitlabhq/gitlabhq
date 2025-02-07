@@ -303,7 +303,7 @@ WARNING:
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
 consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your access token
 stored in a [GitLab CI/CD variable](../../../ci/variables/_index.md) or in
-[HashiCorp Vault](../../../ci/secrets/index.md).
+[HashiCorp Vault](../../../ci/secrets/_index.md).
 
 ### Install from source
 

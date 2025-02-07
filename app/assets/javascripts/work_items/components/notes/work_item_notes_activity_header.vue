@@ -41,10 +41,15 @@ export default {
       default: false,
       required: false,
     },
+    smallHeaderStyle: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   computed: {
     headerClasses() {
-      return this.useH2 ? 'gl-text-size-h1 gl-m-0' : 'gl-text-base gl-m-0';
+      return this.smallHeaderStyle ? 'gl-text-base gl-m-0' : 'gl-text-size-h1 gl-m-0';
     },
   },
   methods: {

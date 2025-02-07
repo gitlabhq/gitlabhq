@@ -573,7 +573,7 @@ You can use it either for personal or business websites, such as portfolios, doc
   - [Source](https://docs.gitlab.com/runner/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md)
 - Layer: Core Service (Processor)
-- GitLab.com: [Runners](../ci/runners/index.md)
+- GitLab.com: [Runners](../ci/runners/_index.md)
 
 GitLab Runner runs jobs and sends the results to GitLab.
 

@@ -153,7 +153,7 @@ despite a newer but failed branch pipeline.
 ### Allow merge after skipped pipelines
 
 When you set **Pipelines must succeed** for a project,
-[skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent
+[skipped pipelines](../../../ci/pipelines/_index.md#skip-a-pipeline) prevent
 merge requests from merging.
 
 Prerequisites:

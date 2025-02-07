@@ -18978,6 +18978,9 @@ msgstr ""
 msgid "Decrement suggestion line start"
 msgstr ""
 
+msgid "Default"
+msgstr ""
+
 msgid "Default - Never run"
 msgstr ""
 
@@ -50347,6 +50350,9 @@ msgstr ""
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} for approval rules created by this policy."
 msgstr ""
 
+msgid "ScanResultPolicy|Invalid fallback value detected. Please update your selection."
+msgstr ""
+
 msgid "ScanResultPolicy|Is"
 msgstr ""
 
@@ -52235,6 +52241,9 @@ msgstr ""
 msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot edit the rules in rule mode. To resolve the issue, switch to YAML mode and fix the syntax."
 msgstr ""
 
+msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot edit the settings in rule mode. To resolve the issue, switch to YAML mode and fix the syntax."
+msgstr ""
+
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
@@ -53057,6 +53066,9 @@ msgid "See vulnerability %{vulnerability_link} for any Solution details."
 msgstr ""
 
 msgid "Select"
+msgstr ""
+
+msgid "Select %{name}"
 msgstr ""
 
 msgid "Select Git revision"
@@ -55230,9 +55242,6 @@ msgid "SourcegraphAdmin|Sourcegraph URL"
 msgstr ""
 
 msgid "SourcegraphAdmin|https://sourcegraph.example.com"
-msgstr ""
-
-msgid "SourcegraphPreferences|This feature is experimental and currently limited to certain projects."
 msgstr ""
 
 msgid "SourcegraphPreferences|This feature is experimental and limited to public projects."
@@ -65127,6 +65136,9 @@ msgstr ""
 msgid "WorkItem|Edit custom field %{fieldName}"
 msgstr ""
 
+msgid "WorkItem|Edit work item"
+msgstr ""
+
 msgid "WorkItem|Email participants"
 msgstr ""
 
@@ -65694,6 +65706,9 @@ msgstr ""
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr ""
 
+msgid "Workspaces|A devfile is a file that detines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project."
+msgstr ""
+
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr ""
 
@@ -65757,6 +65772,9 @@ msgstr ""
 msgid "Workspaces|Defines the workspace's development environment."
 msgstr ""
 
+msgid "Workspaces|Devfile"
+msgstr ""
+
 msgid "Workspaces|Devfile location"
 msgstr ""
 
@@ -65772,7 +65790,19 @@ msgstr ""
 msgid "Workspaces|Failed to create workspace"
 msgstr ""
 
+msgid "Workspaces|Failed to fetch custom devfiles. %{linkStart}Reload to try again%{linkEnd}."
+msgstr ""
+
 msgid "Workspaces|Failed to update workspace"
+msgstr ""
+
+msgid "Workspaces|From your code"
+msgstr ""
+
+msgid "Workspaces|GitLab default devfile contents"
+msgstr ""
+
+msgid "Workspaces|GitLab devfile"
 msgstr ""
 
 msgid "Workspaces|Group agents"
@@ -65880,7 +65910,16 @@ msgstr ""
 msgid "Workspaces|Unknown state"
 msgstr ""
 
+msgid "Workspaces|Use GitLab default devfile"
+msgstr ""
+
 msgid "Workspaces|What is a devfile?"
+msgstr ""
+
+msgid "Workspaces|What's the %{linkStart}Gitlab default devfile%{linkEnd}?"
+msgstr ""
+
+msgid "Workspaces|When no devfile is provided, the GitLab default devfile will be used."
 msgstr ""
 
 msgid "Workspaces|Workspace automatically terminates after"
@@ -65890,6 +65929,9 @@ msgid "Workspaces|Workspaces"
 msgstr ""
 
 msgid "Workspaces|Workspaces Settings"
+msgstr ""
+
+msgid "Workspaces|Workspaces have built-in support for devfiles. The default location is .devfile.yaml, but you can also use a custom location. The devfile is used to automatically configure the development environment with the defined specifications."
 msgstr ""
 
 msgid "Workspaces|You can open the workspace only once it is ready."

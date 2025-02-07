@@ -1,8 +1,0 @@
----
-name: sourcegraph
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16556
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/292199
-milestone: '12.5'
-type: development
-group: group::source code
-default_enabled: true

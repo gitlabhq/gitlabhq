@@ -20,7 +20,7 @@ If an industry standard *requires* that your application has a certain feature o
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 
 NOTE:
-Requirements and [test cases](../../../ci/test_cases/index.md) are being
+Requirements and [test cases](../../../ci/test_cases/_index.md) are being
 [migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
 [Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
 For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
@@ -217,7 +217,7 @@ requirements_confirmation:
       requirements: tmp/requirements.json
 ```
 
-Because requirements and [test cases](../../../ci/test_cases/index.md) are being
+Because requirements and [test cases](../../../ci/test_cases/_index.md) are being
 [migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171), if you have enabled work items
 in a project, you must replace `requirements` in above configs with `requirements_v2`:
 

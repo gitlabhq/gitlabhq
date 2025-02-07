@@ -25,12 +25,12 @@ You can add multiple commits before pushing your changes.
 
   - **Trigger a GitLab CI/CD pipeline:**
 
-    If the project is configured with [GitLab CI/CD](../../../ci/index.md),
+    If the project is configured with [GitLab CI/CD](../../../ci/_index.md),
     you trigger a pipeline per push, not per commit.
 
   - **Skip pipelines:**
 
-    Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
+    Add the [`ci skip`](../../../ci/pipelines/_index.md#skip-a-pipeline) keyword to
     your commit message to make GitLab CI/CD skip the pipeline.
 
   - **Cross-link issues and merge requests:**

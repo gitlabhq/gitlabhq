@@ -84,5 +84,13 @@ module Ci
         job_token_policies: policies
       )
     end
+
+    def allowlist_group(project, group)
+      create(
+        :ci_job_token_group_scope_link,
+        source_project: project,
+        target_group: group
+      )
+    end
   end
 end

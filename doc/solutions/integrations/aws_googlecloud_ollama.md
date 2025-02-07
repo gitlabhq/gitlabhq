@@ -61,7 +61,7 @@ flowchart LR
 These components work together to realize the Self-Hosted AI functionality. This guide provides detailed instructions for building a complete self-hosted AI environment using Ollama as the LLM server.
 
 NOTE:
-While for a full production environment, the official documentation (../../administration/self_hosted_models/supported_models_and_hardware_requirements.md) recommends more powerful GPU instances such as 1x NVIDIA A100 (40 GB), the g4dn.xlarge instance type should be sufficient for evaluation purposes with a small team of users.
+While for a full production environment, the [official documentation](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) recommends more powerful GPU instances such as 1x NVIDIA A100 (40 GB), the g4dn.xlarge instance type should be sufficient for evaluation purposes with a small team of users.
 
 #### Networking
 
@@ -132,7 +132,7 @@ When you host an AI model yourself, you'll also need to choose a serving platfor
 
 In this analogy, the brain part for ChatGPT is the GPT-4 model, while in the Anthropic ecosystem, it's the Claude 3.5 Sonnet model. The serving platform acts as the vital framework that connects the brain to the world, enabling it to "think" and interact effectively.
 
-For further information about supported serving platforms and models, please refer to the documentation for [LLM Serving Platforms](../../administration/self_hosted_models/supported_llm_serving_platforms.md) and [Models](../../administration/self_hosted_models/supported_models_and_hardware_requirements.md).
+For further information about supported serving platforms and models, please refer to the documentation for [LLM Serving Platforms](../../administration/gitlab_duo_self_hosted/supported_llm_serving_platforms.md) and [Models](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
 
 **What is Ollama?**
 

@@ -128,7 +128,7 @@ You can configure the pipeline with the following variables:
 
 ### Using CI/CD manually
 
-To work with Terraform modules in [GitLab CI/CD](../../../ci/index.md), you can use
+To work with Terraform modules in [GitLab CI/CD](../../../ci/_index.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 For example, this job uploads a new module for the `local` [system provider](https://registry.terraform.io/browse/providers) and uses the module version from the Git commit tag:

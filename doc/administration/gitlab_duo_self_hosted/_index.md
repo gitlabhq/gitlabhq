@@ -48,14 +48,14 @@ You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 - [Fix code in the IDE](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)
 - [Write tests in the IDE](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)
 - [Ask about CI/CD](../../user/gitlab_duo_chat/examples.md#ask-about-cicd)
-- [Use universal and IDE slash commands](../../user/gitlab_duo_chat/examples.md#gitlab-duo-chat-slash-commands) 
+- [Use universal and IDE slash commands](../../user/gitlab_duo_chat/examples.md#gitlab-duo-chat-slash-commands)
 
 ### Prerequisites
 
 Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 
-- A [supported model](../self_hosted_models/supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
-- A [supported serving platform](../self_hosted_models/supported_llm_serving_platforms.md) (either cloud-based or on-premises).
+- A [supported model](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
+- A [supported serving platform](../gitlab_duo_self_hosted/supported_llm_serving_platforms.md) (either cloud-based or on-premises).
 - A [locally hosted AI gateway](../../install/install_ai_gateway.md).
 - [Ultimate with GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
 
@@ -105,20 +105,20 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
 
 1. **Install a Large Language Model (LLM) Serving Infrastructure**
 
-   - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](../self_hosted_models/supported_llm_serving_platforms.md) for more information on each platform's features.
+   - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](../gitlab_duo_self_hosted/supported_llm_serving_platforms.md) for more information on each platform's features.
 
-   - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](../self_hosted_models/supported_models_and_hardware_requirements.md).
+   - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
 
 1. **Install the GitLab AI gateway**
    [Install the AI gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
 
 1. **Configure GitLab Duo features**
-   See the [Configure GitLab Duo features documentation](../self_hosted_models/configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
+   See the [Configure GitLab Duo features documentation](../gitlab_duo_self_hosted/configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
 
 1. **Enable logging**
-   You can find configuration details for enabling logging in your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](../self_hosted_models/logging.md).
+   You can find configuration details for enabling logging in your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](../gitlab_duo_self_hosted/logging.md).
 
 ## Related topics
 
 - [Import custom models into Amazon Bedrock](https://www.youtube.com/watch?v=CA2AXfWWdpA)
-- [Troubleshooting](../self_hosted_models/troubleshooting.md)
+- [Troubleshooting](../gitlab_duo_self_hosted/troubleshooting.md)

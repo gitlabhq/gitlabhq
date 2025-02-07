@@ -26,7 +26,7 @@ The development workflow for branches is:
    To streamline this process, you should follow
    [branch naming patterns](#prefix-branch-names-with-issue-numbers).
 1. When the work is ready for review, create a [merge request](../../merge_requests/_index.md) to propose merging the changes in your branch.
-1. Preview the changes with a [review app](../../../../ci/review_apps/index.md).
+1. Preview the changes with a [review app](../../../../ci/review_apps/_index.md).
 1. [Request a review](../../merge_requests/reviews/_index.md#request-a-review).
 1. After your merge request is approved, merge your branch to the origin branch.
    The [merge method](../../merge_requests/methods/_index.md) determines how merge requests
@@ -150,7 +150,7 @@ Branch names with specific formatting offer extra benefits:
   [prefixing branch names with issue numbers](#prefix-branch-names-with-issue-numbers).
 - Automate [branch protections](protected.md) based on branch name.
 - Test branch names with [push rules](../push_rules.md) before branches are pushed up to GitLab.
-- Define which [CI/CD jobs](../../../../ci/jobs/index.md) to run on merge requests.
+- Define which [CI/CD jobs](../../../../ci/jobs/_index.md) to run on merge requests.
 
 ### Configure default pattern for branch names from issues
 

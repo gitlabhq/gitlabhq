@@ -111,7 +111,7 @@ workflow:
     - ...                # Previously defined workflow rules here
 ```
 
-[Triggered pipelines](../triggers/index.md) that run on a branch have a `$CI_COMMIT_BRANCH`
+[Triggered pipelines](../triggers/_index.md) that run on a branch have a `$CI_COMMIT_BRANCH`
 set and could be blocked by a similar rule. Triggered pipelines have a pipeline source
 of `trigger` or `pipeline`, so `&& $CI_PIPELINE_SOURCE == "push"` ensures the rule
 does not block triggered pipelines.

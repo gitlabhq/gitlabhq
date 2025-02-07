@@ -87,11 +87,6 @@ export default {
 
       return { items, name: __('Branch') };
     },
-    createMergeRequestButtonText() {
-      return this.isConfidentialWorkItem
-        ? __('Create confidential merge request')
-        : this.$options.i18n.createMergeRequest;
-    },
   },
   methods: {
     openModal(createBranch = true, createMergeRequest = false) {
@@ -121,7 +116,7 @@ export default {
         size="medium"
         @click="openModal(false, true)"
       >
-        {{ createMergeRequestButtonText }}
+        {{ $options.i18n.createMergeRequest }}
       </gl-button>
       <gl-disclosure-dropdown
         :toggle-text="__('More options')"

@@ -39,7 +39,7 @@ RSpec.describe 'CiJobTokenScopeRemoveGroup', feature_category: :continuous_integ
             fullPath
           }
           target {
-            ... on Group {
+            ... on CiJobTokenAccessibleGroup {
               fullPath
             }
           }

@@ -85,9 +85,9 @@ On the left side we have the events that can trigger a pipeline based on various
 - When a [merge request is created or updated](../../ci/pipelines/merge_request_pipelines.md).
 - When an MR is added to a [Merge Train](../../ci/pipelines/merge_trains.md).
 - A [scheduled pipeline](../../ci/pipelines/schedules.md).
-- When project is [subscribed to an upstream project](../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated).
+- When project is [subscribed to an upstream project](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated).
 - When [Auto DevOps](../../topics/autodevops/_index.md) is enabled.
-- When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests).
+- When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests).
 - When an upstream pipeline contains a [bridge job](../../ci/yaml/_index.md#trigger) which triggers a downstream pipeline.
 
 Triggering any of these events invokes the [`CreatePipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/create_pipeline_service.rb)
@@ -116,7 +116,7 @@ successfully or fail. Each status transition for job within a pipeline triggers 
 looks for the next jobs to be transitioned towards completion. While doing that, `ProcessPipelineService`
 updates the status of jobs, stages and the overall pipeline.
 
-On the right side of the diagram we have a list of [runners](../../ci/runners/index.md)
+On the right side of the diagram we have a list of [runners](../../ci/runners/_index.md)
 connected to the GitLab instance. These can be instance runners, group runners, or project runners.
 The communication between runners and the Rails server occurs through a set of API endpoints, grouped as
 the `Runner API Gateway`.

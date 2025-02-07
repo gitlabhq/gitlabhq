@@ -289,7 +289,7 @@ running the pipeline.
 
 ## Ensure compliance jobs are always run
 
-Compliance pipelines [use GitLab CI/CD](../../ci/index.md) to give you an incredible amount of flexibility
+Compliance pipelines [use GitLab CI/CD](../../ci/_index.md) to give you an incredible amount of flexibility
 for defining any sort of compliance jobs you like. Depending on your goals, these jobs
 can be configured to be:
 
@@ -375,7 +375,7 @@ This configuration doesn't overwrite the compliance pipeline and you get the fol
 
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857),
 compliance pipelines in GitLab 15.3 and later can prevent
-[prefilled variables](../../ci/pipelines/index.md#prefill-variables-in-manual-pipelines)
+[prefilled variables](../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines)
 from appearing when manually starting a pipeline.
 
 To workaround this issue, use `ref: '$CI_COMMIT_SHA'` instead of `ref: '$CI_COMMIT_REF_NAME'`

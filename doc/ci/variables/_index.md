@@ -11,12 +11,12 @@ DETAILS:
 
 CI/CD variables are a type of environment variable. You can use them to:
 
-- Control the behavior of jobs and [pipelines](../pipelines/index.md).
+- Control the behavior of jobs and [pipelines](../pipelines/_index.md).
 - Store values you want to re-use.
 - Avoid hard-coding values in your `.gitlab-ci.yml` file.
 
-You can [override variable values](#cicd-variable-precedence) for a specific pipeline when you [run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually), [run a manual job](../jobs/job_control.md#specify-variables-when-running-manual-jobs),
-or have them [prefilled in manual pipelines](../pipelines/index.md#prefill-variables-in-manual-pipelines).
+You can [override variable values](#cicd-variable-precedence) for a specific pipeline when you [run a pipeline manually](../pipelines/_index.md#run-a-pipeline-manually), [run a manual job](../jobs/job_control.md#specify-variables-when-running-manual-jobs),
+or have them [prefilled in manual pipelines](../pipelines/_index.md#prefill-variables-in-manual-pipelines).
 
 Variable names are limited by the [shell the runner uses](https://docs.gitlab.com/runner/shells/index.html)
 to execute scripts. Each shell has its own set of reserved variable names.
@@ -91,8 +91,8 @@ In this example:
 - `job2` outputs: `Variables are 'Different value than default', 'Job 2 variable', and ''`
 
 Use the [`value` and `description`](../yaml/_index.md#variablesdescription) keywords
-to define [variables that are prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
-for [manually-triggered pipelines](../pipelines/index.md#run-a-pipeline-manually).
+to define [variables that are prefilled](../pipelines/_index.md#prefill-variables-in-manual-pipelines)
+for [manually-triggered pipelines](../pipelines/_index.md#run-a-pipeline-manually).
 
 ### Skip default variables in a single job
 
@@ -264,7 +264,7 @@ You can also [limit a variable to protected branches and tags only](#protect-a-c
 Alternatively, use one of the native GitLab integrations to connect with third party
 secrets manager providers to store and retrieve secrets:
 
-- [HashiCorp Vault](../secrets/index.md)
+- [HashiCorp Vault](../secrets/_index.md)
 - [Azure Key Vault](../secrets/azure_key_vault.md)
 - [Google Secret Manager](../secrets/gcp_secret_manager.md)
 
@@ -284,7 +284,7 @@ valid [secrets file](../../administration/backup_restore/troubleshooting_backup_
 WARNING:
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
 accessing variable values. To ensure security of sensitive information,
-consider using [external secrets](../secrets/index.md) and [file type variables](#use-file-type-cicd-variables)
+consider using [external secrets](../secrets/_index.md) and [file type variables](#use-file-type-cicd-variables)
 to prevent commands such as `env`/`printenv` from printing secret variables.
 
 You can mask a project, group, or instance CI/CD variable so the value of the variable
@@ -322,13 +322,13 @@ variable has the same value, that value is also masked, including when a variabl
 references a masked variable. The string `[MASKED]` is shown instead of the value,
 possibly with some trailing `x` characters.
 
-Different versions of [GitLab Runner](../runners/index.md) have different masking limitations:
+Different versions of [GitLab Runner](../runners/_index.md) have different masking limitations:
 
 | Version             | Limitations |
 | ------------------- | ----------- |
 | v14.1.0 and earlier | Masking of large secrets (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
 | v14.2.0 to v15.3.0  | The tail of a large secret (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
-| v15.7.0 and later   | Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/index.md#capturing-service-container-logs). |
+| v15.7.0 and later   | Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/_index.md#capturing-service-container-logs). |
 
 ### Hide a CI/CD variable
 
@@ -758,9 +758,9 @@ The order of precedence for variables is (from highest to lowest):
 1. [Scan execution policy variables](../../user/application_security/policies/scan_execution_policies.md).
 1. [Pipeline variables](#use-pipeline-variables). These variables all have the same precedence:
    - [Variables passed to downstream pipelines](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
-   - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
+   - [Trigger variables](../triggers/_index.md#pass-cicd-variables-in-the-api-call).
    - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
-   - [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
+   - [Manual pipeline run variables](../pipelines/_index.md#run-a-pipeline-manually).
    - Variables added when [creating a pipeline with the API](../../api/pipelines.md#create-a-new-pipeline).
    - [Manual job variables](../jobs/job_control.md#specify-variables-when-running-manual-jobs).
 1. Project [variables](#for-a-project).
@@ -801,14 +801,14 @@ Prerequisites:
 
 You can specify a pipeline variable when you:
 
-- [Run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually) in the UI.
+- [Run a pipeline manually](../pipelines/_index.md#run-a-pipeline-manually) in the UI.
 - Create a pipeline by using [the `pipelines` API endpoint](../../api/pipelines.md#create-a-new-pipeline).
-- Create a pipeline by using [the `triggers` API endpoint](../triggers/index.md#pass-cicd-variables-in-the-api-call).
+- Create a pipeline by using [the `triggers` API endpoint](../triggers/_index.md#pass-cicd-variables-in-the-api-call).
 - Use [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 - Pass variables to a downstream pipeline by using either the [`variables` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline),
   [`trigger:forward` keyword](../yaml/_index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 - Specify variables when creating a [pipeline schedule](../pipelines/schedules.md#add-a-pipeline-schedule).
-- Specify variables when [running a manual job](../pipelines/index.md#run-a-pipeline-manually).
+- Specify variables when [running a manual job](../pipelines/_index.md#run-a-pipeline-manually).
 
 These variables have [higher precedence](#cicd-variable-precedence) and can override
 other defined variables, including [predefined variables](predefined_variables.md).
@@ -988,7 +988,7 @@ by the runner and makes job logs more verbose. It also exposes all variables and
 available to the job.
 
 Before you enable debug logging, make sure only team members
-can view job logs. You should also [delete job logs](../jobs/index.md#view-jobs-in-a-pipeline)
+can view job logs. You should also [delete job logs](../jobs/_index.md#view-jobs-in-a-pipeline)
 with debug output before you make logs public again.
 
 To enable debug logging, set the `CI_DEBUG_TRACE` variable to `true`:
@@ -1100,7 +1100,7 @@ For more information, see [issue 392406](https://gitlab.com/gitlab-org/gitlab/-/
 As a workaround you can either:
 
 - Use [File-type](#use-file-type-cicd-variables) CI/CD variables for large environment variables where possible.
-- If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/index.md), or
+- If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/_index.md), or
   bring the file to the job through some other mechanism.
 
 ### Default variable doesn't expand in job variable of the same name

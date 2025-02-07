@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can configure your [CI/CD pipeline](../pipelines/index.md) to display unit test results directly in merge requests and pipeline details.
+You can configure your [CI/CD pipeline](../pipelines/_index.md) to display unit test results directly in merge requests and pipeline details.
 This makes it easier to identify test failures without searching through job logs.
 
 Unit test reports:
@@ -140,7 +140,7 @@ You can also retrieve the reports via the [GitLab API](../../api/pipelines.md#ge
 
 ### Unit test reports parsing errors
 
-If parsing JUnit report XML results in an error, an indicator is shown next to the job name. Hovering over the icon shows the parser error in a tooltip. If multiple parsing errors come from [grouped jobs](../jobs/index.md#group-similar-jobs-together-in-pipeline-views), GitLab shows only the first error from the group.
+If parsing JUnit report XML results in an error, an indicator is shown next to the job name. Hovering over the icon shows the parser error in a tooltip. If multiple parsing errors come from [grouped jobs](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views), GitLab shows only the first error from the group.
 
 ![Test Reports With Errors](img/pipelines_junit_test_report_with_errors_v13_10.png)
 

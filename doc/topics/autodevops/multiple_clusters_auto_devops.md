@@ -46,7 +46,7 @@ NOTE:
 
 | Cluster name | Cluster environment scope | `KUBE_INGRESS_BASE_DOMAIN` value | `KUBE CONTEXT` value               | Variable environment scope | Notes |
 | :------------| :-------------------------| :------------------------------- | :--------------------------------- | :--------------------------|:--|
-| review       | `review/*`                | `review.example.com`             | `path/to/project:review-agent`     | `review/*`                 | A review cluster that runs all [review apps](../../ci/review_apps/index.md).|
+| review       | `review/*`                | `review.example.com`             | `path/to/project:review-agent`     | `review/*`                 | A review cluster that runs all [review apps](../../ci/review_apps/_index.md). |
 | staging      | `staging`                 | `staging.example.com`            | `path/to/project:staging-agent`    | `staging`                  | Optional. A staging cluster that runs the deployments of the staging environments. You must [enable it first](cicd_variables.md#deploy-policy-for-staging-and-production-environments). |
 | production   | `production`              | `example.com`                    | `path/to/project:production-agent` | `production`               | A production cluster that runs the production environment deployments. You can use [incremental rollouts](cicd_variables.md#incremental-rollout-to-production). |
 

@@ -49,7 +49,7 @@ You can configure your `.gitlab-ci.yml` file to build and push container images 
 
 ## Use GitLab CI/CD
 
-You can use [GitLab CI/CD](../../../ci/index.md) to build and push container images to the
+You can use [GitLab CI/CD](../../../ci/_index.md) to build and push container images to the
 Container Registry. You can use CI/CD to test, build, and deploy your project from the container
 image you created.
 
@@ -59,7 +59,7 @@ You can use your own container images for Docker-in-Docker.
 
 1. Set up [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
+1. Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
 
 Your `.gitlab-ci.yml` should look similar to this:
 
@@ -88,7 +88,7 @@ You can use your own container images with Dependency Proxy.
 
 1. Set up [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/services/index.md#available-settings-for-services).
+1. Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
 
 Your `.gitlab-ci.yml` should look similar to this:
 

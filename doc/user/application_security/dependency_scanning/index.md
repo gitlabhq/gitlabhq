@@ -781,7 +781,7 @@ Pipelines now include a Dependency Scanning job.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/development_stages_support.md).
 > - The dependency scanning CI/CD component only supports Android projects.
 
-Use [CI/CD components](../../../ci/components/index.md) to perform Dependency Scanning of your
+Use [CI/CD components](../../../ci/components/_index.md) to perform Dependency Scanning of your
 application. For instructions, see the respective component's README file.
 
 ##### Available CI/CD components

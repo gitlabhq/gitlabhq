@@ -224,7 +224,7 @@ This is an optional step, since many projects don't have a Kubernetes cluster
 available. If the [requirements](requirements.md) are not met, the job is
 silently skipped.
 
-[Review apps](../../ci/review_apps/index.md) are temporary application environments based on the
+[Review apps](../../ci/review_apps/_index.md) are temporary application environments based on the
 branch's code so developers, designers, QA, product managers, and other
 reviewers can actually see and interact with code changes as part of the review
 process. Auto Review Apps create a Review App for each branch.

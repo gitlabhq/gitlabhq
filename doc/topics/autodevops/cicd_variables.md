@@ -270,7 +270,7 @@ DETAILS:
 You can use a [canary environment](../../user/project/canary_deployments.md) before
 deploying any changes to production.
 
-If you set `CANARY_ENABLED`, GitLab creates two [manual jobs](../../ci/pipelines/index.md#add-manual-interaction-to-your-pipeline):
+If you set `CANARY_ENABLED`, GitLab creates two [manual jobs](../../ci/pipelines/_index.md#add-manual-interaction-to-your-pipeline):
 
 - `canary` - Deploys the application to the canary environment.
 - `production_manual` - Deploys the application to production.

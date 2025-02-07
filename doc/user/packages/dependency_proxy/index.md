@@ -225,7 +225,7 @@ Watch how to [use the dependency proxy to help avoid Docker Hub rate limits](htt
 
 In November 2020, Docker introduced
 [rate limits on pull requests from Docker Hub](https://docs.docker.com/docker-hub/download-rate-limit/).
-If your GitLab [CI/CD configuration](../../../ci/index.md) uses
+If your GitLab [CI/CD configuration](../../../ci/_index.md) uses
 an image from Docker Hub, each time a job runs, it may count as a pull request.
 To help get around this limit, you can pull your image from the dependency proxy cache instead.
 

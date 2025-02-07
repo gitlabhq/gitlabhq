@@ -12,14 +12,14 @@ Use CI/CD pipelines to automatically build, test, and deploy your code.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [Create and run your first GitLab CI/CD pipeline](../ci/quick_start/index.md) | Create a `.gitlab-ci.yml` file and start a pipeline. | **{star}** |
+| [Create and run your first GitLab CI/CD pipeline](../ci/quick_start/_index.md) | Create a `.gitlab-ci.yml` file and start a pipeline. | **{star}** |
 | [Create a complex pipeline](../ci/quick_start/tutorial.md) | Learn about the most commonly used GitLab CI/CD keywords by building an increasingly complex pipeline. |  |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Get started: Learn about CI/CD](https://www.youtube.com/watch?v=sIegJaLy2ug) (9m 02s) | Learn about the `.gitlab-ci.yml` file and how it's used. | **{star}** |
 | [GitLab CI Fundamentals](https://university.gitlab.com/learn/learning-path/gitlab-ci-fundamentals) | Learn about GitLab CI/CD and build a pipeline in this self-paced course. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [CI deep dive](https://www.youtube.com/watch?v=ZVUbmVac-m8&list=PL05JrBw4t0KorkxIFgZGnzzxjZRCGROt_&index=27) (22m 51s) | Take a closer look at pipelines and continuous integration concepts. | |
-| [Set up CI/CD in the cloud](../ci/examples/index.md#cicd-in-the-cloud) | Learn how to set up CI/CD in different cloud-based environments. | |
+| [Set up CI/CD in the cloud](../ci/examples/_index.md#cicd-in-the-cloud) | Learn how to set up CI/CD in different cloud-based environments. | |
 | [Create a GitLab pipeline to push to Google Artifact Registry](create_gitlab_pipeline_push_to_google_artifact_registry/_index.md) | Learn how to connect GitLab to Google Cloud and create a pipeline to push images to Artifact Registry. | |
-| [Find CI/CD examples and templates](../ci/examples/index.md#cicd-examples)  | Use these examples and templates to set up CI/CD for your use case. | |
+| [Find CI/CD examples and templates](../ci/examples/_index.md#cicd-examples)  | Use these examples and templates to set up CI/CD for your use case. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Understand CI/CD rules](https://www.youtube.com/watch?v=QjQc-zeL16Q) (8m 56s) |  Learn more about how to use CI/CD rules. | |
 | [Use Auto DevOps to deploy an application](../topics/autodevops/cloud_deployments/auto_devops_with_gke.md)  | Deploy an application to Google Kubernetes Engine (GKE). | |
 | [Using Buildah in a rootless container with GitLab Runner Operator on OpenShift](../ci/docker/buildah_rootless_tutorial.md)  | Learn how to set up GitLab Runner Operator on OpenShift to build Docker images with Buildah in a rootless container | |

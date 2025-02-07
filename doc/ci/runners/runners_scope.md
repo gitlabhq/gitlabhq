@@ -31,7 +31,7 @@ If you are using GitLab Self-Managed, administrators can:
 
 If you are using GitLab.com:
 
-- You can select from a list of [instance runners that GitLab maintains](index.md).
+- You can select from a list of [instance runners that GitLab maintains](_index.md).
 - The instance runners consume the [compute minutes](../pipelines/compute_minutes.md)
   included with your account.
 
@@ -130,7 +130,7 @@ To delete a single or multiple instance runners:
 
 ### Enable instance runners for a project
 
-On GitLab.com, [instance runners](index.md) are enabled in all projects by
+On GitLab.com, [instance runners](_index.md) are enabled in all projects by
 default.
 
 On GitLab Self-Managed, an administrator can

@@ -91,7 +91,7 @@ The Docker image includes all of the `docker` tools and can run
 the job script in context of the image in privileged mode.
 
 You should use Docker-in-Docker with TLS enabled,
-which is supported by [GitLab.com instance runners](../runners/index.md).
+which is supported by [GitLab.com instance runners](../runners/_index.md).
 
 You should always pin a specific version of the image, like `docker:24.0.5`.
 If you use a tag like `docker:latest`, you have no control over which version is used.
@@ -815,7 +815,7 @@ You might get an error that says
 `docker: error during connect: Post https://docker:2376/v1.40/containers/create: dial tcp: lookup docker on x.x.x.x:53: no such host`.
 
 This issue can occur when the service's image name
-[includes a registry hostname](../services/index.md#available-settings-for-services). For example:
+[includes a registry hostname](../services/_index.md#available-settings-for-services). For example:
 
 ```yaml
 default:
@@ -824,7 +824,7 @@ default:
     - registry.hub.docker.com/library/docker:24.0.5-dind
 ```
 
-A service's hostname is [derived from the full image name](../services/index.md#accessing-the-services).
+A service's hostname is [derived from the full image name](../services/_index.md#accessing-the-services).
 However, the shorter service hostname `docker` is expected.
 To allow service resolution and access, add an explicit alias for the service name `docker`:
 

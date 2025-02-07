@@ -29,7 +29,7 @@ the other is a failed merge request pipeline.
 When the configuration syntax is fixed, no further failed pipelines should appear.
 To find and fix the configuration problem, you can use:
 
-- The [pipeline editor](../pipeline_editor/index.md).
+- The [pipeline editor](../pipeline_editor/_index.md).
 - The [CI lint tool](../yaml/lint.md).
 
 ## The merge request's pipeline is marked as failed but the latest pipeline succeeded
@@ -86,7 +86,7 @@ This does not happen when a branch pipeline fails.
 If a merge request pipeline or a merged results pipeline was canceled or failed, you can:
 
 - Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request.
-- [Retry only the jobs that failed](index.md#view-pipelines). If you re-run the entire pipeline, this is not necessary.
+- [Retry only the jobs that failed](_index.md#view-pipelines). If you re-run the entire pipeline, this is not necessary.
 - Push a new commit to fix the failure.
 
 If the merge train pipeline has failed, you can:

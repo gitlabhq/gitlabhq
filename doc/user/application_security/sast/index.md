@@ -46,7 +46,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-If you're using [GitLab CI/CD](../../../ci/index.md), you can use Static Application Security
+If you're using [GitLab CI/CD](../../../ci/_index.md), you can use Static Application Security
 Testing (SAST) to check your source code for known vulnerabilities. You can run SAST analyzers in
 any GitLab tier. The analyzers output JSON-formatted reports as job artifacts.
 

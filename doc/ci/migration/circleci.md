@@ -9,12 +9,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../index.md),
+If you are currently using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../_index.md),
 and start making use of all its powerful features.
 
 We have collected several resources that you may find useful before starting to migrate.
 
-The [Quick Start Guide](../quick_start/index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/_index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
+The [Quick Start Guide](../quick_start/_index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/_index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
 
 For advanced CI/CD teams, [custom project templates](../../administration/custom_project_templates.md) can enable the reuse of pipeline configurations.
 
@@ -26,7 +26,7 @@ CircleCI's `config.yml` configuration file defines scripts, jobs, and workflows 
 
 ### Jobs
 
-In CircleCI, jobs are a collection of steps to perform a specific task. In GitLab, [jobs](../jobs/index.md) are also a fundamental element in the configuration file. The `checkout` keyword is not necessary in GitLab CI/CD as the repository is automatically fetched.
+In CircleCI, jobs are a collection of steps to perform a specific task. In GitLab, [jobs](../jobs/_index.md) are also a fundamental element in the configuration file. The `checkout` keyword is not necessary in GitLab CI/CD as the repository is automatically fetched.
 
 CircleCI example job definition:
 
@@ -228,7 +228,7 @@ deploy:
 
 ### Caching
 
-GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the different between [cache and artifacts](../caching/index.md#how-cache-is-different-from-artifacts) to make the best use of these features.
+GitLab provides a caching mechanism to speed up build times for your jobs by reusing previously downloaded dependencies. It's important to know the different between [cache and artifacts](../caching/_index.md#how-cache-is-different-from-artifacts) to make the best use of these features.
 
 CircleCI example of a job using a cache:
 

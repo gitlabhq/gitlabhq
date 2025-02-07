@@ -83,7 +83,7 @@ set `CI_FETCH_REPO_GIT_STRATEGY` to `none`.
    - `.qa-cache`
    - `.yarn-cache`
    - `.assets-compile-cache` (the key includes `${NODE_ENV}` so it's actually two different caches).
-1. These cache definitions are composed of [multiple atomic caches](../../ci/caching/index.md#use-multiple-caches).
+1. These cache definitions are composed of [multiple atomic caches](../../ci/caching/_index.md#use-multiple-caches).
 1. Only the following jobs, running in 2-hourly `maintenance` scheduled pipelines, are pushing (that is, updating) to the caches:
    - `update-setup-test-env-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).
    - `update-gitaly-binaries-cache`, defined in [`.gitlab/ci/rails.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rails.gitlab-ci.yml).

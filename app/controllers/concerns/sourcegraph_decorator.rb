@@ -32,7 +32,7 @@ module SourcegraphDecorator
   end
 
   def sourcegraph_enabled_for_project?
-    return false unless project && Gitlab::Sourcegraph.feature_enabled?(project)
+    return false unless project
     return project.public? if Gitlab::CurrentSettings.sourcegraph_public_only
 
     true

@@ -26,7 +26,7 @@ For GitLab Runner to function, you _must_ specify the following in your
 
 - `gitlabUrl`: The GitLab server full URL (for example, `https://gitlab.example.com`)
   to register the Runner against.
-- Runner token: This must be [retrieved](../../../../../ci/runners/index.md) from your GitLab instance. You can use
+- Runner token: This must be [retrieved](../../../../../ci/runners/_index.md) from your GitLab instance. You can use
   either of the following tokens:
 
   - `runnerToken`: The runner authentication token for the runner configuration [created in the GitLab UI](../../../../../ci/runners/runners_scope.md).

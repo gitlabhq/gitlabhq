@@ -48,7 +48,7 @@ The workaround is to set your variables in [GitLab CI/CD variables](../variables
      POSTGRES_HOST_AUTH_METHOD: trust
    ```
 
-   For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/index.md#how-services-are-linked-to-the-job).
+   For more information about using `postgres` for the `Host`, see [How services are linked to the job](../services/_index.md#how-services-are-linked-to-the-job).
 
 1. Configure your application to use the database, for example:
 
@@ -143,7 +143,7 @@ Database: nice_marmot
 
 We have set up an [Example PostgreSQL Project](https://gitlab.com/gitlab-examples/postgres) for your
 convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
-available [instance runners](../runners/index.md).
+available [instance runners](../runners/_index.md).
 
 Want to hack on it? Fork it, commit, and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

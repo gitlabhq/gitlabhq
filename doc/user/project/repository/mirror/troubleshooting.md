@@ -53,7 +53,7 @@ This error can occur when a firewall performs a `Deep SSH Inspection` on outgoin
 ## Could not read username: terminal prompts disabled
 
 If you receive this error after creating a new project using
-[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md):
+[GitLab CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/_index.md):
 
 - In Bitbucket Cloud:
 
@@ -110,7 +110,7 @@ Pipelines might not run for multiple reasons:
   [is not displayed](https://gitlab.com/gitlab-org/gitlab/-/issues/346630)
   when checking the project afterwards.
 
-  When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/index.md)
+  When mirroring is set up using [CI/CD for external repositories](../../../../ci/ci_cd_for_external_repos/_index.md)
   this setting is enabled by default. If repository mirroring is manually reconfigured, triggering pipelines
   is off by default and this could be why pipelines stop running.
 - [`rules`](../../../../ci/yaml/_index.md#rules) configuration prevents any jobs from

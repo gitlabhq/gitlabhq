@@ -20,7 +20,7 @@ decrypt those columns, preventing access to the following items:
 - [Kubernetes / GCP integration](../../user/infrastructure/clusters/index.md)
 - [Custom Pages domains](../../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../../operations/error_tracking.md)
-- [Runner authentication](../../ci/runners/index.md)
+- [Runner authentication](../../ci/runners/_index.md)
 - [Project mirroring](../../user/project/repository/mirror/index.md)
 - [Integrations](../../user/project/integrations/index.md)
 - [Web hooks](../../user/project/integrations/webhooks.md)

@@ -2,6 +2,7 @@ import DraggableList from 'vuedraggable';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { visitUrl } from '~/lib/utils/url_utility';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 
@@ -9,6 +10,8 @@ import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
 
 import { mockBlockingLinkedItem } from '../../mock_data';
+
+jest.mock('~/lib/utils/url_utility');
 
 describe('WorkItemRelationshipList', () => {
   let wrapper;
@@ -95,6 +98,37 @@ describe('WorkItemRelationshipList', () => {
       activeChildItemId: mockLinkedItems[0].workItem.id,
     });
     expect(findWorkItemLinkChildContents().attributes('class')).toContain(ACTIVE_DRAWER_CLASS);
+  });
+
+  it('opens the drawer on click when the item is not an incident', () => {
+    createComponent({ linkedItems: mockLinkedItems });
+    findWorkItemLinkChildContents().vm.$emit('click');
+
+    expect(wrapper.emitted('showModal')).toEqual([
+      [expect.objectContaining({ child: mockLinkedItems[0].workItem })],
+    ]);
+  });
+
+  it('redirects to the url of the linked item on click when the item is an incident', () => {
+    const mockLinkedItemsWithIncident = [
+      {
+        ...mockLinkedItems[0],
+        workItem: {
+          ...mockLinkedItems[0].workItem,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Incident',
+            iconName: 'issue-type-incident',
+            __typename: 'WorkItemType',
+          },
+        },
+      },
+    ];
+
+    createComponent({ linkedItems: mockLinkedItemsWithIncident });
+    findWorkItemLinkChildContents().vm.$emit('click');
+
+    expect(visitUrl).toHaveBeenCalledWith(mockLinkedItemsWithIncident[0].workItem.webUrl);
   });
 
   describe('drag start', () => {

@@ -27,7 +27,7 @@ Documentation deployments have dependencies on pipelines and Docker images as fo
 - The Pages deployment pipelines depend on the latest documentation images (which, in turn, depend on the stable
   pipelines and images.)
 
-For general information on using Docker with CI/CD pipelines, see [Docker integration](../../../ci/docker/index.md).
+For general information on using Docker with CI/CD pipelines, see [Docker integration](../../../ci/docker/_index.md).
 
 ## Stable branches
 

@@ -27,7 +27,7 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
                   fullPath
                 }
                 target {
-                  ... on Group {
+                  ... on CiJobTokenAccessibleGroup {
                     fullPath
                   }
                 }

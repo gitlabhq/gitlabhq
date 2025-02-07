@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can read more about [triggering pipelines through the API](../ci/triggers/index.md).
+You can read more about [triggering pipelines through the API](../ci/triggers/_index.md).
 
 ## List project trigger tokens
 
@@ -153,7 +153,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Trigger a pipeline with a token
 
-Trigger a pipeline by using a [pipeline trigger token](../ci/triggers/index.md#create-a-pipeline-trigger-token)
+Trigger a pipeline by using a [pipeline trigger token](../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 or a [CI/CD job token](../ci/jobs/ci_job_token.md) for authentication.
 
 With a CI/CD job token, the [triggered pipeline is a multi-project pipeline](../ci/pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).

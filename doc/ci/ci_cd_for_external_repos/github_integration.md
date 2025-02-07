@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 GitLab CI/CD can be used with **GitHub.com** and **GitHub Enterprise** by
-creating a [CI/CD project](index.md) to connect your GitHub repository to
+creating a [CI/CD project](_index.md) to connect your GitHub repository to
 GitLab.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -42,7 +42,7 @@ repositories:
    1. For **Personal access token**, paste the token.
    1. Select **List Repositories**.
    1. Select **Connect** to select the repository.
-1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/index.md).
+1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/_index.md).
 
 GitLab:
 
@@ -86,6 +86,6 @@ To manually enable GitLab CI/CD for your repository:
    https://gitlab.com/api/v4/projects/<NAMESPACE>%2F<PROJECT>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>
    ```
 
-   Select the **Let me select individual events** option, then check the **Pull requests** and **Pushes** checkboxes. These settings are needed for [pipelines for external pull requests](index.md#pipelines-for-external-pull-requests).
+   Select the **Let me select individual events** option, then check the **Pull requests** and **Pushes** checkboxes. These settings are needed for [pipelines for external pull requests](_index.md#pipelines-for-external-pull-requests).
 
 1. In GitHub, add a `.gitlab-ci.yml` to configure GitLab CI/CD.

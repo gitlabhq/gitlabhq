@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can read more about [controlling the job concurrency with resource groups](../ci/resource_groups/index.md).
+You can read more about [controlling the job concurrency with resource groups](../ci/resource_groups/_index.md).
 
 ## Get all resource groups for a project
 
@@ -175,7 +175,7 @@ PUT /projects/:id/resource_groups/:key
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`            | integer/string | yes                        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)            |
 | `key`           | string  | yes                               | The key of the resource group |
-| `process_mode`  | string  | no                                | The process mode of the resource group. One of `unordered`, `oldest_first` or `newest_first`. Read [process modes](../ci/resource_groups/index.md#process-modes) for more information. |
+| `process_mode`  | string  | no                                | The process mode of the resource group. One of `unordered`, `oldest_first` or `newest_first`. Read [process modes](../ci/resource_groups/_index.md#process-modes) for more information. |
 
 ```shell
 curl --request PUT --data "process_mode=oldest_first" \

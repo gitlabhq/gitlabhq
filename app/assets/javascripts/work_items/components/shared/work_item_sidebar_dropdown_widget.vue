@@ -196,7 +196,7 @@ export default {
         data-testid="edit-button"
         category="tertiary"
         size="small"
-        class="shortcut-sidebar-dropdown-toggle gl-ml-auto"
+        class="shortcut-sidebar-dropdown-toggle gl-ml-auto gl-flex-shrink-0"
         :disabled="updateInProgress"
         @click="isEditing = true"
         >{{ $options.i18n.editButtonLabel }}</gl-button
@@ -209,6 +209,7 @@ export default {
           data-testid="apply-button"
           category="tertiary"
           size="small"
+          class="gl-flex-shrink-0"
           :disabled="updateInProgress"
           @click="isEditing = false"
           >{{ $options.i18n.applyButtonLabel }}</gl-button

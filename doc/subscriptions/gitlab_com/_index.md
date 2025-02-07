@@ -385,7 +385,7 @@ You cannot transfer:
 ## Compute minutes
 
 [Compute minutes](../../ci/pipelines/compute_minutes.md) is the resource consumed when running
-[CI/CD pipelines](../../ci/index.md) on GitLab instance runners. If you run out of compute minutes,
+[CI/CD pipelines](../../ci/_index.md) on GitLab instance runners. If you run out of compute minutes,
 you can [purchase additional compute minutes](compute_minutes.md).
 
 ## Enterprise Agile Planning

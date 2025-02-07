@@ -312,7 +312,7 @@ curl --request DELETE \
 
 It schedules for deletion multiple environments that have already been
 [stopped](../ci/environments/_index.md#stopping-an-environment) and
-are [in the review app folder](../ci/review_apps/index.md).
+are [in the review app folder](../ci/review_apps/_index.md).
 The actual deletion is performed after 1 week from the time of execution.
 By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.
 

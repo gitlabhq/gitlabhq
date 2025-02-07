@@ -42,7 +42,7 @@ best place to integrate your own product and its results into GitLab.
   implications for app security, corporate policy, or compliance. When complete,
   the job reports back on its status and creates a
   [job artifact](../../ci/jobs/job_artifacts.md) as a result.
-- The [Merge Request Security Widget](../../ci/testing/index.md#security-reports)
+- The [Merge Request Security Widget](../../ci/testing/_index.md#security-reports)
   displays the results of the pipeline's security checks and the developer can
   review them. The developer can review both a summary and a detailed version
   of the results.
@@ -93,7 +93,7 @@ and complete an integration with the Secure stage.
      - If you need a new kind of scan or report, [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new#)
        and add the label `devops::secure`.
    - Once the job is completed, the data can be seen:
-      - In the [Merge Request Security Report](../../ci/testing/index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
+      - In the [Merge Request Security Report](../../ci/testing/_index.md#security-reports) ([MR Security Report data flow](https://gitlab.com/snippets/1910005#merge-request-view)).
       - While [browsing a Job Artifact](../../ci/jobs/job_artifacts.md).
       - In the [Security Dashboard](../../user/application_security/security_dashboard/index.md) ([Dashboard data flow](https://gitlab.com/snippets/1910005#project-and-group-dashboards)).
 1. Optional: Provide a way to interact with results as Vulnerabilities:

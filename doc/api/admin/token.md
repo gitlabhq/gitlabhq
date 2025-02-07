@@ -44,7 +44,7 @@ Gets information for a given token. This endpoint supports the following tokens:
 - [OAuth application secrets](../../integration/oauth_provider.md)
 - [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)
 - [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens)
-- [Pipeline trigger tokens](../../ci/triggers/index.md#create-a-pipeline-trigger-token)
+- [Pipeline trigger tokens](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)
 - [CI/CD Job Tokens](../../security/tokens/_index.md#cicd-job-tokens)
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 - [GitLab session cookies](../../user/profile/active_sessions.md)

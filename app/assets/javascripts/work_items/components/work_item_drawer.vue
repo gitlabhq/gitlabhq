@@ -217,6 +217,7 @@ export default {
     '#create-timelog-modal',
     '#set-time-estimate-modal',
     '[id^="insert-comment-template-modal"]',
+    'input[type="file"]',
     '.pika-single',
     '.atwho-container',
     '.item-title',

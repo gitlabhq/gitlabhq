@@ -66,7 +66,7 @@ For example:
 
 #### Go from source files to public pages
 
-With GitLab [Route Maps](../review_apps/index.md#route-maps), you can go directly
+With GitLab [Route Maps](../review_apps/_index.md#route-maps), you can go directly
 from source files to public pages in the environment set for review apps.
 
 ## Types of environments
@@ -83,7 +83,7 @@ Dynamic environments:
 
 - Are usually created in a CI/CD pipeline and are used by only a single deployment, then either stopped or deleted.
 - Have dynamic names, usually based on the value of a CI/CD variable.
-- Are a feature of [review apps](../review_apps/index.md).
+- Are a feature of [review apps](../review_apps/_index.md).
 
 An environment has one of three states, depending on whether its [stop job](../yaml/_index.md#environmenton_stop) has run:
 
@@ -239,7 +239,7 @@ Note the following:
 - If the script that runs in `stop_review` exists only in your repository and therefore can't use
   `GIT_STRATEGY: none` or `GIT_STRATEGY: empty`, configure [merge request pipelines](../pipelines/merge_request_pipelines.md)
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
-  deleted. For more information, see [Ref Specs for Runners](../pipelines/index.md#ref-specs-for-runners).
+  deleted. For more information, see [Ref Specs for Runners](../pipelines/_index.md#ref-specs-for-runners).
 
 NOTE:
 For Windows runners, you should use the PowerShell `Add-Content` command to write to `.env` files.
@@ -265,7 +265,7 @@ you can use tiers:
 | `production`     | Production, Live                                   |
 | `staging`        | Staging, Model, Demo                               |
 | `testing`        | Test, QC                                           |
-| `development`    | Dev, [Review apps](../review_apps/index.md), Trunk |
+| `development`    | Dev, [Review apps](../review_apps/_index.md), Trunk |
 | `other`          |                                                    |
 
 By default, GitLab assumes a tier based on [the environment name](../yaml/_index.md#environmentname).
@@ -307,7 +307,7 @@ the variable's environment scope to `production` to only allow jobs with an [env
 of `production` to access the variable.
 
 You can also use wildcard matching (`*`) to select a particular environment group,
-like all [review apps](../review_apps/index.md) with `review/*`.
+like all [review apps](../review_apps/_index.md) with `review/*`.
 
 For example, with these four environments:
 
@@ -614,7 +614,7 @@ stop_review_app:
 
 To configure multiple **parallel** stop actions on an environment, specify the
 [`on_stop`](../yaml/_index.md#environmenton_stop) keyword across multiple
-[deployment jobs](../jobs/index.md#deployment-jobs) for the same `environment`, as defined in the
+[deployment jobs](../jobs/_index.md#deployment-jobs) for the same `environment`, as defined in the
 `.gitlab-ci.yml` file.
 
 When an environment is stopped, the matching `on_stop` actions from only successful deployment jobs are run in parallel, in no particular order.

@@ -39,7 +39,7 @@ RSpec.shared_examples 'merge request approval policy editor' do
     fill_in _('Name'), with: 'Prevent vulnerabilities'
     click_button _('Select scan type')
     select_listbox_item _('Security Scan')
-    within_testid('actions-section') do
+    within_testid('disabled-actions') do
       click_button _('Remove'), match: :first
     end
     click_button _('Configure with a merge request')
@@ -73,7 +73,7 @@ RSpec.shared_examples 'merge request approval policy invalid policy properties' 
   it "fails to create a policy without rules" do
     fill_in _('Name'), with: 'Missing rules'
 
-    page.within(find_by_testid('actions-section')) do
+    page.within(find_by_testid('disabled-actions')) do
       select_from_listbox 'Roles', from: 'Choose approver type'
       select_from_listbox 'Owner', from: 'Choose specific role'
     end

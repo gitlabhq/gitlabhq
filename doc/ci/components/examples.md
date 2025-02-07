@@ -11,7 +11,7 @@ DETAILS:
 
 ## Test a component
 
-Depending on a component's functionality, [testing the component](index.md#test-the-component) might require additional files in the repository.
+Depending on a component's functionality, [testing the component](_index.md#test-the-component) might require additional files in the repository.
 For example, a component which lints, builds, and tests software in a specific programming language requires actual source code samples.
 You can have source code examples, configuration files, and similar in the same repository.
 
@@ -19,7 +19,7 @@ For example, the Code Quality CI/CD component's has several [code samples for te
 
 ### Example: Test a Rust language CI/CD component
 
-Depending on a component's functionality, [testing the component](index.md#test-the-component) might require additional files in the repository.
+Depending on a component's functionality, [testing the component](_index.md#test-the-component) might require additional files in the repository.
 
 The following "hello world" example for the Rust programming language uses the `cargo` tool chain for simplicity:
 
@@ -248,7 +248,7 @@ and only migrate the `build` CI/CD job in the first iteration.
 The CI/CD template migration involves the following steps:
 
 1. Analyze the CI/CD jobs and dependencies, and define migration actions:
-   - The `image` configuration is global, [needs to be moved into the job definitions](index.md#avoid-using-global-keywords).
+   - The `image` configuration is global, [needs to be moved into the job definitions](_index.md#avoid-using-global-keywords).
    - The `format` job runs multiple `go` commands in one job. The `go test` command should be moved
      into a separate job to increase pipeline efficiency.
    - The `compile` job runs `go build` and should be renamed to `build`.
@@ -259,13 +259,13 @@ The CI/CD template migration involves the following steps:
      the Docker Hub image tag values.
    - The `compile` job builds the binaries into a hard-coded target directory `mybinaries`,
      which can be enhanced with a dynamic [input](../yaml/inputs.md) and default value `mybinaries`.
-1. Create a template [directory structure](index.md#directory-structure) for the new component,
+1. Create a template [directory structure](_index.md#directory-structure) for the new component,
    based on one template for each job.
 
    - The name of the template should follow the `go` command, for example `format.yml`, `build.yml`, and `test.yml`.
    - Create a new project, initialize a Git repository, add/commit all changes, set a remote origin and push.
      Modify the URL for your CI/CD component project path.
-   - Create additional files as outlined in the guidance to [write a component](index.md#write-a-component):
+   - Create additional files as outlined in the guidance to [write a component](_index.md#write-a-component):
      `README.md`, `LICENSE.md`, `.gitlab-ci.yml`, `.gitignore`. The following shell commands
      initialize the Go component structure:
 
@@ -360,7 +360,7 @@ The CI/CD template migration involves the following steps:
      ```
 
 1. In order to test the component, modify the `.gitlab-ci.yml` configuration file,
-   and add [tests](index.md#test-the-component).
+   and add [tests](_index.md#test-the-component).
 
    - Specify a different value for `golang_version` as input for the `build` job.
    - Modify the URL for your CI/CD component path.
@@ -420,12 +420,12 @@ The CI/CD template migration involves the following steps:
          └── test.yml
      ```
 
-Follow the remaining steps in the [converting a CI/CD template into a component](index.md#convert-a-cicd-template-to-a-component)
+Follow the remaining steps in the [converting a CI/CD template into a component](_index.md#convert-a-cicd-template-to-a-component)
 section to complete the migration:
 
 1. Commit and push the changes, and verify the CI/CD pipeline results.
-1. Follow the guidance on [writing a component](index.md#write-a-component) to update the `README.md` and `LICENSE.md` files.
-1. [Release the component](index.md#publish-a-new-release) and verify it in the CI/CD catalog.
+1. Follow the guidance on [writing a component](_index.md#write-a-component) to update the `README.md` and `LICENSE.md` files.
+1. [Release the component](_index.md#publish-a-new-release) and verify it in the CI/CD catalog.
 1. Add the CI/CD component into your staging/production environment.
 
 The [GitLab-maintained Go component](https://gitlab.com/components/go) provides an example

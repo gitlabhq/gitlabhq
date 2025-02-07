@@ -337,3 +337,8 @@ export const createBranchMRApiPathHelper = {
     return `/${fullPath}/refs?search=`;
   },
 };
+
+export const formatSelectOptionForCustomField = ({ id, value }) => ({
+  text: value,
+  value: id,
+});

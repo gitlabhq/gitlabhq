@@ -6,11 +6,12 @@ describe('Work Item title', () => {
   let wrapper;
   const mockTitle = 'Work Item title';
 
-  const createComponent = ({ isEditing = false } = {}) => {
+  const createComponent = ({ isEditing = false, isModal = false } = {}) => {
     wrapper = shallowMountExtended(WorkItemTitle, {
       propsData: {
         title: mockTitle,
         isEditing,
+        isModal,
       },
     });
   };
@@ -27,6 +28,16 @@ describe('Work Item title', () => {
     it('renders title', () => {
       expect(findTitle().exists()).toBe(true);
       expect(findTitle().text()).toBe(mockTitle);
+    });
+
+    it.each`
+      expectedTag | isModal
+      ${'H1'}     | ${undefined}
+      ${'H1'}     | ${false}
+      ${'H2'}     | ${true}
+    `('renders the title as an $expectedTag if isModal is $isModal', ({ expectedTag, isModal }) => {
+      createComponent({ isModal });
+      expect(findTitle().element.tagName).toBe(expectedTag);
     });
 
     it('does not render edit mode', () => {

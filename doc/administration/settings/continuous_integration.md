@@ -396,7 +396,7 @@ This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3894
 and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
 Use [compliance pipelines](../../user/group/compliance_pipelines.md) instead. This change is a breaking change.
 
-You can set a [CI/CD template](../../ci/examples/index.md#cicd-templates)
+You can set a [CI/CD template](../../ci/examples/_index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can
 use a template from:
 
@@ -412,7 +412,7 @@ use a template from:
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration
 added the project configuration with the [`include` keyword](../../ci/yaml/_index.md#include).
-To view a project's full merged configuration, [View full configuration](../../ci/pipeline_editor/index.md#view-full-configuration)
+To view a project's full merged configuration, [View full configuration](../../ci/pipeline_editor/_index.md#view-full-configuration)
 in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:

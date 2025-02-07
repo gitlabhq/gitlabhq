@@ -35,6 +35,7 @@ import {
   makeDrawerItemFullPath,
   getItems,
   canRouterNav,
+  formatSelectOptionForCustomField,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -385,4 +386,19 @@ describe('canRouterNav', () => {
       ).toBe(shouldRouterNav);
     },
   );
+});
+
+describe('formatSelectOptionForCustomField', () => {
+  it('returns object with text and value properties', () => {
+    const data = {
+      id: 1,
+      value: 'test',
+    };
+    const result = {
+      text: 'test',
+      value: 1,
+    };
+
+    expect(formatSelectOptionForCustomField(data)).toEqual(result);
+  });
 });

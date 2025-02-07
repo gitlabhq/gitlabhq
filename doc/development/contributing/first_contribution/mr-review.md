@@ -44,7 +44,7 @@ Someone from GitLab will look at your request and let you know what the next ste
 
 ## Complete the review process
 
-After you create a merge request, GitLab automatically triggers a [CI/CD pipeline](../../../ci/pipelines/index.md)
+After you create a merge request, GitLab automatically triggers a [CI/CD pipeline](../../../ci/pipelines/_index.md)
 that runs tests, linting, security scans, and more.
 
 Your pipeline must be successful for your merge request to be merged.

@@ -271,7 +271,7 @@ For a web developer writing a webpage for your company's website:
 
 1. You check out a new branch and submit a new page through a merge request.
 1. You gather feedback from your reviewers.
-1. You preview your changes with [review apps](../../../ci/review_apps/index.md).
+1. You preview your changes with [review apps](../../../ci/review_apps/_index.md).
 1. You request your web designers for their implementation.
 1. You request the [approval](approvals/_index.md) from your manager.
 1. After approval, GitLab:
@@ -403,9 +403,9 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 - [Create a merge request](creating_merge_requests.md)
 - [Review a merge request](reviews/_index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
-- [Testing and reports](../../../ci/testing/index.md)
+- [Testing and reports](../../../ci/testing/_index.md)
 - [GitLab keyboard shortcuts](../../shortcuts.md)
 - [Comments and threads](../../discussions/_index.md)
 - [Suggest code changes](reviews/suggestions.md)
-- [CI/CD pipelines](../../../ci/index.md)
+- [CI/CD pipelines](../../../ci/_index.md)
 - [Push options](../../../topics/git/commit.md) for merge requests

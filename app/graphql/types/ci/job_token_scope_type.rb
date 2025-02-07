@@ -32,7 +32,7 @@ module Types
         method: :inbound_projects
 
       field :groups_allowlist,
-        Types::GroupType.connection_type,
+        Types::Ci::JobTokenAccessibleGroupType.connection_type,
         null: false,
         description: "Allowlist of groups that can access the current project " \
           "by authenticating with a CI/CD job token.",

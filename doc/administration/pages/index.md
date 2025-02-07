@@ -63,7 +63,7 @@ Before configuring Pages for wildcard domains, you must:
 1. Configure a **wildcard DNS record**.
 1. Optional. Have a **wildcard certificate** for that domain if you decide to
    serve Pages under HTTPS.
-1. Optional but recommended. Enable [instance runners](../../ci/runners/index.md)
+1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
    so that your users don't have to bring their own.
 1. For custom domains, have a **secondary IP**.
 
@@ -81,7 +81,7 @@ Before configuring Pages for single-domain sites, you must:
 
 1. Configure a **DNS record**.
 1. Optional. If you decide to serve Pages under HTTPS, have a **TLS certificate** for that domain.
-1. Optional but recommended. Enable [instance runners](../../ci/runners/index.md)
+1. Optional but recommended. Enable [instance runners](../../ci/runners/_index.md)
    so that your users don't have to bring their own.
 1. For custom domains, have a **secondary IP**.
 

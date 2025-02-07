@@ -194,7 +194,7 @@ conan upload Hello/0.1@mycompany/beta --all
 
 ## Publish a Conan package by using CI/CD
 
-To work with Conan commands in [GitLab CI/CD](../../../ci/index.md), you can
+To work with Conan commands in [GitLab CI/CD](../../../ci/_index.md), you can
 use `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 You can provide the `CONAN_LOGIN_USERNAME` and `CONAN_PASSWORD` with each Conan

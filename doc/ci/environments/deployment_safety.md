@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-[Deployment jobs](../jobs/index.md#deployment-jobs) are a specific kind of CI/CD
+[Deployment jobs](../jobs/_index.md#deployment-jobs) are a specific kind of CI/CD
 job. They can be more sensitive than other jobs in a pipeline,
 and might need to be treated with extra care. GitLab has several features
 that help maintain deployment security and stability.
@@ -68,14 +68,14 @@ The improved pipeline flow **after** using the resource group:
 1. `deploy` job in Pipeline-A finishes.
 1. `deploy` job in Pipeline-B starts running.
 
-For more information, see [Resource Group documentation](../resource_groups/index.md).
+For more information, see [Resource Group documentation](../resource_groups/_index.md).
 
 ## Prevent outdated deployment jobs
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5 to prevent outdated job runs.
 
 The effective execution order of pipeline jobs can vary from run to run, which
-could cause undesired behavior. For example, a [deployment job](../jobs/index.md#deployment-jobs)
+could cause undesired behavior. For example, a [deployment job](../jobs/_index.md#deployment-jobs)
 in a newer pipeline could finish before a deployment job in an older pipeline.
 This creates a race condition where the older deployment finishes later,
 overwriting the "newer" deployment.
@@ -149,7 +149,7 @@ secrets aren't exposed unintentionally. You can also define production secrets o
 This prevents other users with the Maintainer role from reading the secrets and makes sure
 that the runner only runs on protected branches.
 
-For more information, see [pipeline security](../pipelines/index.md#pipeline-security-on-protected-branches).
+For more information, see [pipeline security](../pipelines/_index.md#pipeline-security-on-protected-branches).
 
 ## Separate project for deployments
 

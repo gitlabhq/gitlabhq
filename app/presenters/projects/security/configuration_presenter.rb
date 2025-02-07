@@ -74,7 +74,7 @@ module Projects
       end
 
       def latest_pipeline_path
-        return help_page_path('ci/pipelines/index.md') unless latest_default_branch_pipeline
+        return help_page_path('ci/pipelines/_index.md') unless latest_default_branch_pipeline
 
         project_pipeline_path(self, latest_default_branch_pipeline)
       end

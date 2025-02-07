@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-Use this API to interact with the Google Cloud integration. For more information, see [GitLab and Google Cloud integration](../ci/gitlab_google_cloud_integration/index.md).
+Use this API to interact with the Google Cloud integration. For more information, see [GitLab and Google Cloud integration](../ci/gitlab_google_cloud_integration/_index.md).
 
 ## Project-level Google Cloud integration scripts
 

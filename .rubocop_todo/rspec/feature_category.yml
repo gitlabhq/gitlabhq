@@ -2930,7 +2930,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/slash_commands/presenters/run_spec.rb'
     - 'spec/lib/gitlab/slash_commands/run_spec.rb'
     - 'spec/lib/gitlab/snippet_search_results_spec.rb'
-    - 'spec/lib/gitlab/sourcegraph_spec.rb'
     - 'spec/lib/gitlab/sql/cte_spec.rb'
     - 'spec/lib/gitlab/sql/except_spec.rb'
     - 'spec/lib/gitlab/sql/glob_spec.rb'

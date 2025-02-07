@@ -29,7 +29,7 @@ GitLab administrators configure server hooks using the `gitaly` command, which a
 If you don't have access to the `gitaly` command, alternatives to server hooks include:
 
 - [Webhooks](../user/project/integrations/webhooks.md).
-- [GitLab CI/CD](../ci/index.md).
+- [GitLab CI/CD](../ci/_index.md).
 - [Push rules](../user/project/repository/push_rules.md), for a user-configurable Git hook interface.
 
 [Geo](geo/index.md) doesn't replicate server hooks to secondary nodes.

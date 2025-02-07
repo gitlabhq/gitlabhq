@@ -15,68 +15,26 @@ DETAILS:
 > - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 > - Feature flag `ai_custom_model` removed in GitLab 17.8
+> - Ability to set AI gateway URL using UI [added](https://gitlab.com/gitlab-org/gitlab/-/issues/473143) in GitLab 17.9.
+
+Prerequisites:
+
+- [Upgrade GitLab to version 17.9 or later](../../update/_index.md).
 
 To configure your GitLab instance to access the available self-hosted models in your infrastructure:
 
 1. [Confirm that a fully self-hosted configuration is appropriate for your use case](_index.md#decide-on-your-configuration-type).
-1. Configure your GitLab instance.
+1. Configure your GitLab instance to access the AI gateway.
 1. Configure the self-hosted model.
 1. Configure the GitLab Duo features to use your self-hosted model.
 
-## Configure your GitLab instance
+## Configure your GitLab instance to access the AI gateway
 
-Prerequisites:
-
-- [Upgrade to the latest version of GitLab](../../update/_index.md).
-
-To configure your GitLab instance to access the AI gateway:
-
-::Tabs
-
-:::TabTitle Linux package
-
-1. Where your GitLab instance is installed, update the `/etc/gitlab/gitlab.rb` file:
-
-   ```shell
-   sudo vim /etc/gitlab/gitlab.rb
-   ```
-
-1. Add and save the following environment variables:
-
-   ```ruby
-   gitlab_rails['env'] = {
-     'AI_GATEWAY_URL' => '<path_to_your_ai_gateway>:<port>'
-   }
-   ```
-
-1. Run reconfigure:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-:::TabTitle Helm Chart (Kubernetes)
-
-1. Add the following values to your Helm chart:
-
-   ```yaml
-   gitlab:
-     webservice:
-       extraEnv:
-         AI_GATEWAY_URL: '<path_to_your_ai_gateway>:<port>'
-     sidekiq:
-       extraEnv:
-         AI_GATEWAY_URL: '<path_to_your_ai_gateway>:<port>'
-     toolbox:
-       extraEnv:
-         AI_GATEWAY_URL: '<path_to_your_ai_gateway>:<port>'
-   ```
-
-   - The `AI_GATEWAY_URL` parameter for `webservice` must be externally accessible because it is given to editor extensions
-   for direct connection to the AI gateway.
-   - The `AI_GATEWAY_URL` parameters for `sidekiq` and `toolbox` can be either externally accessible or Kubernetes internal addresses (for example, `ai-gateway.gitlab.svc.cluster.local`). It might be more time and resource efficient to use Kubernetes internal addresses, so the requests do not have to go through the external load balancer and the Ingress controller to re-enter the cluster.
-
-::EndTabs
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+1. In the **GitLab Duo** section, select **Change configuration**.
+1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
+1. Select **Save changes**.
 
 ## Configure the self-hosted model
 

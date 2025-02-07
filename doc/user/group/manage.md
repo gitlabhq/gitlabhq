@@ -437,7 +437,7 @@ To enable this setting:
 
 #### Allow merge after skipped pipelines
 
-You can configure [skipped pipelines](../../ci/pipelines/index.md#skip-a-pipeline) from preventing merge requests from being merged.
+You can configure [skipped pipelines](../../ci/pipelines/_index.md#skip-a-pipeline) from preventing merge requests from being merged.
 
 See also [the project-level setting](../project/merge_requests/auto_merge.md#allow-merge-after-skipped-pipelines).
 

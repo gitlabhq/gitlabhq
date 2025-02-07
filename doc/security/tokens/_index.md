@@ -31,7 +31,7 @@ To keep your tokens secure:
 Do not:
 
 - Store tokens in plaintext in your projects. If the token is an external secret for GitLab CI/CD,
-  review how to [use external secrets in CI/CD](../../ci/secrets/index.md) recommendations.
+  review how to [use external secrets in CI/CD](../../ci/secrets/_index.md) recommendations.
 - Include tokens when pasting code, console commands, or log outputs into an issue, MR description, comment, or any other free text inputs.
 - Log credentials in the console logs or artifacts. Consider [protecting](../../ci/variables/_index.md#protect-a-cicd-variable) and
   [masking](../../ci/variables/_index.md#mask-a-cicd-variable) your credentials.

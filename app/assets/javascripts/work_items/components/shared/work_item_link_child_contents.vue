@@ -166,7 +166,7 @@ export default {
     showScopedLabel(label) {
       return isScopedLabel(label) && this.allowsScopedLabels;
     },
-    handleTitleClick(e) {
+    handleItemClick(e) {
       const workItem = this.childItem;
       if (e.metaKey || e.ctrlKey) {
         return;
@@ -200,6 +200,7 @@ export default {
   <div
     class="item-body work-item-link-child gl-relative gl-flex gl-min-w-0 gl-grow gl-gap-3 gl-hyphens-auto gl-break-words gl-rounded-base gl-p-3"
     data-testid="links-child"
+    @click="handleItemClick"
   >
     <div ref="stateIcon" class="gl-cursor-help">
       <work-item-type-icon
@@ -228,7 +229,6 @@ export default {
             :href="childItemWebUrl"
             :class="{ '!gl-text-subtle': !isChildItemOpen }"
             class="gl-hyphens-auto gl-break-words gl-font-semibold"
-            @click.exact.stop="handleTitleClick"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"
           >

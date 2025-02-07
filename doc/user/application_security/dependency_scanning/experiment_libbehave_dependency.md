@@ -91,7 +91,7 @@ Prerequisites:
   and the source branch is either a protected branch or the **Protect variable** CI/CD variable
   [option is unchecked](../../../ci/variables/_index.md#for-a-project).
 
-Libbehave is exposed through [CI/CD components](../../../ci/components/index.md). To enable it, configure your project's
+Libbehave is exposed through [CI/CD components](../../../ci/components/_index.md). To enable it, configure your project's
 `.gitlab-ci.yml` file as follows:
 
 ```yaml

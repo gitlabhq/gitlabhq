@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If your application offers a web interface, you can use
-[GitLab CI/CD](../index.md) to determine the accessibility
+[GitLab CI/CD](../_index.md) to determine the accessibility
 impact of pending code changes.
 
 [Pa11y](https://pa11y.org/) is a free and open source tool for

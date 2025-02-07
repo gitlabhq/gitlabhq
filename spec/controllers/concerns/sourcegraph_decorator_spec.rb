@@ -9,7 +9,6 @@ RSpec.describe SourcegraphDecorator do
   let_it_be(:internal_project) { create(:project, :internal) }
 
   let(:sourcegraph_url) { 'http://sourcegraph.gitlab.com' }
-  let(:feature_enabled) { true }
   let(:sourcegraph_enabled) { true }
   let(:sourcegraph_public_only) { false }
   let(:format) { :html }
@@ -25,8 +24,6 @@ RSpec.describe SourcegraphDecorator do
   end
 
   before do
-    stub_feature_flags(sourcegraph: feature_enabled)
-
     stub_application_setting(sourcegraph_url: sourcegraph_url, sourcegraph_enabled: sourcegraph_enabled, sourcegraph_public_only: sourcegraph_public_only)
 
     allow(controller).to receive(:project).and_return(project)
@@ -50,26 +47,8 @@ RSpec.describe SourcegraphDecorator do
     it { is_expected.to be_nil }
   end
 
-  context 'with feature enabled, application enabled, and user enabled' do
+  context 'with application enabled, and user enabled' do
     it_behaves_like 'enabled'
-  end
-
-  context 'with feature enabled for specific project' do
-    let(:feature_enabled) { project }
-
-    it_behaves_like 'enabled'
-  end
-
-  context 'with feature enabled for different project' do
-    let(:feature_enabled) { create(:project) }
-
-    it_behaves_like 'disabled'
-  end
-
-  context 'with feature disabled' do
-    let(:feature_enabled) { false }
-
-    it_behaves_like 'disabled'
   end
 
   context 'with admin settings disabled' do

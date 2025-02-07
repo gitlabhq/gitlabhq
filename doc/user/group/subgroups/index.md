@@ -24,7 +24,7 @@ Subgroups can:
 - Belong to one immediate parent group.
 - Have many subgroups.
 - Be nested up to 20 levels.
-- Use [runners](../../../ci/runners/index.md) registered to parent groups:
+- Use [runners](../../../ci/runners/_index.md) registered to parent groups:
   - Secrets configured for the parent group are available to subgroup jobs.
   - Users with at least the Maintainer role in projects that belong to subgroups can see the details of runners registered to
     parent groups.

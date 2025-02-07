@@ -19,7 +19,7 @@ If you are unable to resolve pipeline issues, you can get help from:
 If you are having issues with a specific CI/CD feature, see the related troubleshooting section
 for that feature:
 
-- [Caching](caching/index.md#troubleshooting).
+- [Caching](caching/_index.md#troubleshooting).
 - [CI/CD job tokens](jobs/ci_job_token.md#troubleshooting).
 - [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
 - [Docker](docker/using_docker_build.md#troubleshooting).
@@ -32,7 +32,7 @@ for that feature:
 - [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md),
   [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
   and [merge trains](pipelines/merge_trains.md#troubleshooting).
-- [Pipeline editor](pipeline_editor/index.md#troubleshooting).
+- [Pipeline editor](pipeline_editor/_index.md#troubleshooting).
 - [Variables](variables/_index.md#troubleshooting).
 - [YAML `includes` keyword](yaml/includes.md#troubleshooting).
 - [YAML `script` keyword](yaml/script.md#troubleshooting).
@@ -46,12 +46,12 @@ badge and does not start running if any syntax or formatting problems are found.
 
 #### Edit `.gitlab-ci.yml` with the pipeline editor
 
-The [pipeline editor](pipeline_editor/index.md) is the recommended editing
+The [pipeline editor](pipeline_editor/_index.md) is the recommended editing
 experience (rather than the single file editor or the Web IDE). It includes:
 
 - Code completion suggestions that ensure you are only using accepted keywords.
 - Automatic syntax highlighting and validation.
-- The [CI/CD configuration visualization](pipeline_editor/index.md#visualize-ci-configuration),
+- The [CI/CD configuration visualization](pipeline_editor/_index.md#visualize-ci-configuration),
   a graphical representation of your `.gitlab-ci.yml` file.
 
 #### Edit `.gitlab-ci.yml` locally
@@ -126,7 +126,7 @@ and check if their values are what you expect.
 
 You can define CI/CD variables that are not used in standard pipeline runs, but can
 be used for debugging on demand. If you add a variable like in the following example,
-you can add it during manual runs of the [pipeline](pipelines/index.md#run-a-pipeline-manually)
+you can add it during manual runs of the [pipeline](pipelines/_index.md#run-a-pipeline-manually)
 or [individual job](jobs/job_control.md#run-a-manual-job) to modify the command's behavior.
 For example:
 
@@ -339,7 +339,7 @@ configuration into more independent [parent-child pipelines](pipelines/pipeline_
 Pipeline configuration warnings are shown when you:
 
 - [Validate configuration with the CI Lint tool](yaml/lint.md).
-- [Manually run a pipeline](pipelines/index.md#run-a-pipeline-manually).
+- [Manually run a pipeline](pipelines/_index.md#run-a-pipeline-manually).
 
 ### `Job may allow multiple pipelines to run for a single action` warning
 
@@ -420,7 +420,7 @@ likely to hit the default memory limit.
 To reduce the configuration size, you can:
 
 - Check the length of the expanded CI/CD configuration in the pipeline editor's
-  [Full configuration](pipeline_editor/index.md#view-full-configuration) tab. Look for
+  [Full configuration](pipeline_editor/_index.md#view-full-configuration) tab. Look for
   duplicated configuration that can be removed or simplified.
 - Move long or repeated `script` sections into standalone scripts in the project.
 - Use [parent and child pipelines](pipelines/downstream_pipelines.md#parent-child-pipelines) to move some
@@ -430,7 +430,7 @@ On GitLab Self-Managed, you can [increase the size limits](../administration/ins
 
 ### `500` error when editing the `.gitlab-ci.yml` file
 
-A [loop of included configuration files](pipeline_editor/index.md#configuration-validation-currently-not-available-message)
+A [loop of included configuration files](pipeline_editor/_index.md#configuration-validation-currently-not-available-message)
 can cause a `500` error when editing the `.gitlab-ci.yml` file with the [web editor](../user/project/repository/web_editor.md).
 
 Ensure that included configuration files do not create a loop of references to each other.

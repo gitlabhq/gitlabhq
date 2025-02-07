@@ -93,7 +93,7 @@ are canceled.
 Prerequisites:
 
 - You must have the Maintainer role.
-- Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/index.md).
+- Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/_index.md).
 - Your pipeline must be [configured to use merge request pipelines](merge_request_pipelines.md#prerequisites).
   Otherwise your merge requests may become stuck in an unresolved state or your pipelines
   might be dropped.

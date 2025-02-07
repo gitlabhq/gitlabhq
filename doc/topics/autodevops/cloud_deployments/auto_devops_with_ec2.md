@@ -7,7 +7,7 @@ title: Use Auto DevOps to deploy to EC2
 
 To use [Auto DevOps](../_index.md) to deploy to EC2:
 
-1. Define [your AWS credentials as CI/CD variables](../../../ci/cloud_deployment/index.md#authenticate-gitlab-with-aws).
+1. Define [your AWS credentials as CI/CD variables](../../../ci/cloud_deployment/_index.md#authenticate-gitlab-with-aws).
 1. In your `.gitlab-ci.yml` file, reference the `Auto-Devops.gitlab-ci.yml` template.
 1. Define a job for the `build` stage named `build_artifact`. For example:
 

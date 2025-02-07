@@ -25,7 +25,7 @@ Before you start this tutorial, make sure you have:
 
 ## Set up your build environment
 
-Use [GitLab-hosted runners](../runners/index.md),
+Use [GitLab-hosted runners](../runners/_index.md),
 or set up [self-managed runners](https://docs.gitlab.com/runner/#use-self-managed-runners)
 for complete control over the build environment.
 

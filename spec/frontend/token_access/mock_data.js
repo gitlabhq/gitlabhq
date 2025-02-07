@@ -172,10 +172,10 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
       ciJobTokenScope: {
         __typename: 'CiJobTokenScopeType',
         inboundAllowlist: {
-          __typename: 'ProjectConnection',
+          __typename: 'CiJobTokenAccessibleProjectConnection',
           nodes: [
             {
-              __typename: 'Project',
+              __typename: 'CiJobTokenAccessibleProject',
               fullPath: 'root/ci-project',
               id: 'gid://gitlab/Project/23',
               name: 'ci-project',
@@ -185,10 +185,10 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
           ],
         },
         groupsAllowlist: {
-          __typename: 'GroupConnection',
+          __typename: 'CiJobTokenAccessibleGroupConnection',
           nodes: [
             {
-              __typename: 'Group',
+              __typename: 'CiJobTokenAccessibleGroup',
               fullPath: 'root/ci-group',
               id: 'gid://gitlab/Group/45',
               name: 'ci-group',
@@ -269,7 +269,7 @@ export const mockAuthLogsResponse = (hasNextPage = false) => ({
             __typename: 'CiJobTokenAuthLog',
             lastAuthorizedAt: '2024-10-25',
             originProject: {
-              __typename: 'Project',
+              __typename: 'CiJobTokenAccessibleProject',
               fullPath: 'root/project-that-triggers-external-pipeline',
               path: 'project-that-triggers-external-pipeline',
               avatarUrl: null,

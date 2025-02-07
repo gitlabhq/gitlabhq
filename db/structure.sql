@@ -1449,6 +1449,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_1eda1bc6ef53() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "merge_request_diffs"
+  WHERE "merge_request_diffs"."id" = NEW."merge_request_diff_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_206cbe2dc1a2() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15900,6 +15916,7 @@ CREATE TABLE merge_request_diff_details (
     verification_failure text,
     verification_state smallint DEFAULT 0 NOT NULL,
     verification_started_at timestamp with time zone,
+    project_id bigint,
     CONSTRAINT check_81429e3622 CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -33307,6 +33324,8 @@ CREATE INDEX index_merge_request_diff_details_needs_verification ON merge_reques
 
 CREATE INDEX index_merge_request_diff_details_on_merge_request_diff_id ON merge_request_diff_details USING btree (merge_request_diff_id);
 
+CREATE INDEX index_merge_request_diff_details_on_project_id ON merge_request_diff_details USING btree (project_id);
+
 CREATE INDEX index_merge_request_diff_details_on_verification_state ON merge_request_diff_details USING btree (verification_state);
 
 CREATE INDEX index_merge_request_diff_details_pending_verification ON merge_request_diff_details USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
@@ -37961,6 +37980,8 @@ CREATE TRIGGER trigger_1c0f1ca199a3 BEFORE INSERT OR UPDATE ON ci_resources FOR 
 
 CREATE TRIGGER trigger_1ed40f4d5f4e BEFORE INSERT OR UPDATE ON packages_maven_metadata FOR EACH ROW EXECUTE FUNCTION trigger_1ed40f4d5f4e();
 
+CREATE TRIGGER trigger_1eda1bc6ef53 BEFORE INSERT OR UPDATE ON merge_request_diff_details FOR EACH ROW EXECUTE FUNCTION trigger_1eda1bc6ef53();
+
 CREATE TRIGGER trigger_206cbe2dc1a2 BEFORE INSERT OR UPDATE ON packages_package_files FOR EACH ROW EXECUTE FUNCTION trigger_206cbe2dc1a2();
 
 CREATE TRIGGER trigger_207005e8e995 BEFORE INSERT OR UPDATE ON operations_strategies FOR EACH ROW EXECUTE FUNCTION trigger_207005e8e995();
@@ -39036,6 +39057,9 @@ ALTER TABLE ONLY group_wiki_repository_states
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_62736f638f FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_diff_details
+    ADD CONSTRAINT fk_63097c0adc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY saml_group_links
     ADD CONSTRAINT fk_6336b1d1d0 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;

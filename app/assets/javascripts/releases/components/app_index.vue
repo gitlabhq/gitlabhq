@@ -23,7 +23,7 @@ export default {
   i18n,
   links: {
     alertInfoMessageLink: helpPagePath('ci/yaml/_index.html', { anchor: 'release' }),
-    alertInfoPublishLink: helpPagePath('ci/components/index', { anchor: 'publish-a-new-release' }),
+    alertInfoPublishLink: helpPagePath('ci/components/_index', { anchor: 'publish-a-new-release' }),
   },
   components: {
     CiCdCatalogWrapper,

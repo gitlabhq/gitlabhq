@@ -12,10 +12,10 @@ DETAILS:
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.
 
-- If you are already familiar with [basic CI/CD concepts](../index.md), try creating
-  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [simple](../quick_start/index.md)
+- If you are already familiar with [basic CI/CD concepts](../_index.md), try creating
+  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [simple](../quick_start/_index.md)
   or [complex](../quick_start/tutorial.md) pipeline.
-- For a collection of examples, see [GitLab CI/CD examples](../examples/index.md).
+- For a collection of examples, see [GitLab CI/CD examples](../examples/_index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
@@ -43,7 +43,7 @@ A GitLab CI/CD pipeline configuration includes:
   |-----------------|:------------|
   | [`spec`](#spec) | Define specifications for external configuration files. |
 
-- [Jobs](../jobs/index.md) configured with [job keywords](#job-keywords):
+- [Jobs](../jobs/_index.md) configured with [job keywords](#job-keywords):
 
   | Keyword                                       | Description                                                                                                 |
   |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------|
@@ -203,7 +203,7 @@ And optionally:
 
 #### `include:component`
 
-Use `include:component` to add a [CI/CD component](../components/index.md) to the
+Use `include:component` to add a [CI/CD component](../components/_index.md) to the
 pipeline configuration.
 
 **Keyword type**: Global keyword.
@@ -220,7 +220,7 @@ include:
 
 **Related topics**:
 
-- [Use a CI/CD component](../components/index.md#use-a-component).
+- [Use a CI/CD component](../components/_index.md#use-a-component).
 
 #### `include:local`
 
@@ -361,7 +361,7 @@ Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.co
 
 **Supported values**:
 
-A [CI/CD template](../examples/index.md#cicd-templates):
+A [CI/CD template](../examples/_index.md#cicd-templates):
 
 - All templates can be viewed in [`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
   Not all templates are designed to be used with `include:template`, so check template
@@ -1664,15 +1664,15 @@ Caches are:
 - Shared between pipelines and jobs.
 - By default, not shared between [protected](../../user/project/repository/branches/protected.md) and unprotected branches.
 - Restored before [artifacts](#artifacts).
-- Limited to a maximum of four [different caches](../caching/index.md#use-multiple-caches).
+- Limited to a maximum of four [different caches](../caching/_index.md#use-multiple-caches).
 
-You can [disable caching for specific jobs](../caching/index.md#disable-cache-for-specific-jobs),
+You can [disable caching for specific jobs](../caching/_index.md#disable-cache-for-specific-jobs),
 for example to override:
 
 - A default cache defined with [`default`](#default).
 - The configuration for a job added with [`include`](#include).
 
-For more information about caches, see [Caching in GitLab CI/CD](../caching/index.md).
+For more information about caches, see [Caching in GitLab CI/CD](../caching/_index.md).
 
 #### `cache:paths`
 
@@ -1714,7 +1714,7 @@ rspec:
 
 **Related topics**:
 
-- See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more
+- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
   `cache:paths` examples.
 
 #### `cache:key`
@@ -1763,10 +1763,10 @@ cache-job:
 
 **Related topics**:
 
-- You can specify a [fallback cache key](../caching/index.md#use-a-fallback-cache-key)
+- You can specify a [fallback cache key](../caching/_index.md#use-a-fallback-cache-key)
   to use if the specified `cache:key` is not found.
-- You can [use multiple cache keys](../caching/index.md#use-multiple-caches) in a single job.
-- See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more
+- You can [use multiple cache keys](../caching/_index.md#use-multiple-caches) in a single job.
+- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
   `cache:key` examples.
 
 ##### `cache:key:files`
@@ -2007,7 +2007,7 @@ faster-test-job:
 
 **Related topics**:
 
-- You can [use a variable to control a job's cache policy](../caching/index.md#use-a-variable-to-control-a-jobs-cache-policy).
+- You can [use a variable to control a job's cache policy](../caching/_index.md#use-a-variable-to-control-a-jobs-cache-policy).
 
 #### `cache:fallback_keys`
 
@@ -2515,7 +2515,7 @@ rubocop:
 - You can use multiple parents for `extends`.
 - The `extends` keyword supports up to eleven levels of inheritance, but you should
   avoid using more than three levels.
-- In the example above, `.tests` is a [hidden job](../jobs/index.md#hide-a-job),
+- In the example above, `.tests` is a [hidden job](../jobs/_index.md#hide-a-job),
   but you can extend configuration from regular jobs as well.
 
 **Related topics**:
@@ -2642,7 +2642,7 @@ job_with_id_tokens:
 **Related topics**:
 
 - [ID token authentication](../secrets/id_token_authentication.md).
-- [Connect to cloud services](../cloud_services/index.md).
+- [Connect to cloud services](../cloud_services/_index.md).
 - [Keyless signing with Sigstore](signing_examples.md).
 
 ### `image`
@@ -2820,7 +2820,7 @@ job2:
 
 ### `inherit`
 
-Use `inherit` to [control inheritance of default keywords and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-variables).
+Use `inherit` to [control inheritance of default keywords and variables](../jobs/_index.md#control-the-inheritance-of-default-keywords-and-variables).
 
 #### `inherit:default`
 
@@ -3696,7 +3696,7 @@ deploystacks: [vultr, processing]
 
 - `parallel:matrix` jobs add the variable values to the job names to differentiate
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
-  - [Job names](../jobs/index.md#job-names) must be 255 characters or fewer.
+  - [Job names](../jobs/_index.md#job-names) must be 255 characters or fewer.
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
 - You cannot create multiple matrix configurations with the same variable values but different variable names.
   Job names are generated from the variable values, not the variable names, so matrix entries
@@ -3964,7 +3964,7 @@ assets:
 
 ### `resource_group`
 
-Use `resource_group` to create a [resource group](../resource_groups/index.md) that
+Use `resource_group` to create a [resource group](../resource_groups/_index.md) that
 ensures a job is mutually exclusive across different pipelines for the same project.
 
 For example, if multiple jobs that belong to the same resource group are queued simultaneously,
@@ -3972,7 +3972,7 @@ only one of the jobs starts. The other jobs wait until the `resource_group` is f
 
 Resource groups behave similar to semaphores in other programming languages.
 
-You can choose a [process mode](../resource_groups/index.md#process-modes) to strategically control the job concurrency for your deployment preferences. The default process mode is `unordered`. To change the process mode of a resource group, use the [API](../../api/resource_groups.md#edit-an-existing-resource-group) to send a request to edit an existing resource group.
+You can choose a [process mode](../resource_groups/_index.md#process-modes) to strategically control the job concurrency for your deployment preferences. The default process mode is `unordered`. To change the process mode of a resource group, use the [API](../../api/resource_groups.md#edit-an-existing-resource-group) to send a request to edit an existing resource group.
 
 You can define multiple resource groups per environment. For example,
 when deploying to physical devices, you might have multiple physical devices. Each device
@@ -3998,7 +3998,7 @@ you can ensure that concurrent deployments never happen to the production enviro
 
 **Related topics**:
 
-- [Pipeline-level concurrency control with cross-project/parent-child pipelines](../resource_groups/index.md#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines).
+- [Pipeline-level concurrency control with cross-project/parent-child pipelines](../resource_groups/_index.md#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines).
 
 ### `retry`
 
@@ -4732,7 +4732,7 @@ DETAILS:
 NOTE:
 This feature is available for testing, but not ready for production use.
 
-Use `run` to define a series of [steps](../steps/index.md) to be executed in a job. Each step can be either a script or a predefined step.
+Use `run` to define a series of [steps](../steps/_index.md) to be executed in a job. Each step can be either a script or a predefined step.
 
 You can also provide optional environment variables and inputs.
 
@@ -4821,7 +4821,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
+Use `secrets` to specify [CI/CD secrets](../secrets/_index.md) to:
 
 - Retrieve from an external secrets provider.
 - Make available in the job as [CI/CD variables](../variables/_index.md)
@@ -4999,7 +4999,7 @@ job:
 
 ### `services`
 
-Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/index.md) is linked
+Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/_index.md) is linked
 to the image specified in the [`image`](#image) keyword.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -5043,8 +5043,8 @@ In this example, GitLab launches two containers for the job:
 
 **Related topics**:
 
-- [Available settings for `services`](../services/index.md#available-settings-for-services).
-- [Define `services` in the `.gitlab-ci.yml` file](../services/index.md#define-services-in-the-gitlab-ciyml-file).
+- [Available settings for `services`](../services/_index.md#available-settings-for-services).
+- [Define `services` in the `.gitlab-ci.yml` file](../services/_index.md#define-services-in-the-gitlab-ciyml-file).
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 - [Use Docker to build Docker images](../docker/using_docker_build.md).
 
@@ -5384,7 +5384,7 @@ trigger-multi-project-pipeline:
 **Related topics**:
 
 - [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
-- To run a pipeline for a specific branch, tag, or commit, you can use a [trigger token](../triggers/index.md)
+- To run a pipeline for a specific branch, tag, or commit, you can use a [trigger token](../triggers/_index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
 
@@ -5448,7 +5448,7 @@ trigger-multi-project-pipeline:
 **Related topics**:
 
 - [Multi-project pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
-- To run a pipeline for a specific branch, tag, or commit, you can also use a [trigger token](../triggers/index.md)
+- To run a pipeline for a specific branch, tag, or commit, you can also use a [trigger token](../triggers/_index.md)
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
 
@@ -5507,7 +5507,7 @@ unless the nested downstream trigger job also uses `trigger:forward`.
 
 **Example of `trigger:forward`**:
 
-[Run this pipeline manually](../pipelines/index.md#run-a-pipeline-manually), with
+[Run this pipeline manually](../pipelines/_index.md#run-a-pipeline-manually), with
 the CI/CD variable `MYVAR = my value`:
 
 ```yaml
@@ -5657,9 +5657,9 @@ Variables can be [defined in a CI/CD job](#job-variables), or as a top-level (gl
 
 **Additional details**:
 
-- All YAML-defined variables are also set to any linked [Docker service containers](../services/index.md).
+- All YAML-defined variables are also set to any linked [Docker service containers](../services/_index.md).
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
-  in [protected variables](../variables/_index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/index.md).
+  in [protected variables](../variables/_index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/_index.md).
 - [Manual pipeline variables](../variables/_index.md#use-pipeline-variables)
   and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
@@ -5758,7 +5758,7 @@ In this example:
 #### `variables:description`
 
 Use the `description` keyword to define a description for a default variable.
-The description displays with [the prefilled variable name when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
+The description displays with [the prefilled variable name when running a pipeline manually](../pipelines/_index.md#prefill-variables-in-manual-pipelines).
 
 **Keyword type**: You can only use this keyword with default `variables`, not job `variables`.
 
@@ -5782,7 +5782,7 @@ variables:
 #### `variables:value`
 
 Use the `value` keyword to define a pipeline-level (default) variable's value. When used with
-[`variables: description`](#variablesdescription), the variable value is [prefilled when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
+[`variables: description`](#variablesdescription), the variable value is [prefilled when running a pipeline manually](../pipelines/_index.md#prefill-variables-in-manual-pipelines).
 
 **Keyword type**: You can only use this keyword with default `variables`, not job `variables`.
 
@@ -5808,7 +5808,7 @@ variables:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
 
-Use `variables:options` to define an array of values that are [selectable in the UI when running a pipeline manually](../pipelines/index.md#configure-a-list-of-selectable-prefilled-variable-values).
+Use `variables:options` to define an array of values that are [selectable in the UI when running a pipeline manually](../pipelines/_index.md#configure-a-list-of-selectable-prefilled-variable-values).
 
 Must be used with `variables: value`, and the string defined for `value`:
 
@@ -5937,15 +5937,15 @@ pipeline based on branch names or pipeline types.
   | -------------------------|-----------------|
   | `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline). |
   | `branches`               | When the Git reference for a pipeline is a branch. |
-  | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
+  | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/_index.md) command. |
   | `external`               | When you use CI services other than GitLab. |
-  | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests)). |
+  | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)). |
   | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
   | `pipelines`              | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](#trigger) keyword. |
   | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
   | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
   | `tags`                   | When the Git reference for a pipeline is a tag. |
-  | `triggers`               | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
+  | `triggers`               | For pipelines created by using a [trigger token](../triggers/_index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
   | `web`                    | For pipelines created by selecting **New pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
 
 **Example of `only:refs` and `except:refs`**:

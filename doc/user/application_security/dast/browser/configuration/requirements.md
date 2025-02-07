@@ -6,7 +6,7 @@ type: reference, howto
 title: Requirements
 ---
 
-- [GitLab Runner](../../../../../ci/runners/index.md) available, with the
+- [GitLab Runner](../../../../../ci/runners/_index.md) available, with the
   [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
 - Target application deployed. For more details, read [Deployment options](#application-deployment-options).
 - `dast` stage added to the CI/CD pipeline definition. This should be added after the deploy step, for example:
@@ -53,7 +53,7 @@ on how to configure review apps for DAST.
 
 If your application uses Docker containers you have another option for deploying and scanning with DAST.
 After your Docker build job completes and your image is added to your container registry, you can use the image as a
-[service](../../../../../ci/services/index.md).
+[service](../../../../../ci/services/_index.md).
 
 By using service definitions in your `.gitlab-ci.yml`, you can scan services with the DAST analyzer.
 

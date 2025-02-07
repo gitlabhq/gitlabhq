@@ -59,7 +59,7 @@ Before proceeding with the Pages configuration, make sure that:
   Pages artifacts.
 - Optional. You have a **wildcard certificate** for the Pages domain if you
   decide to serve Pages (`*.example.io`) under HTTPS.
-- Optional but recommended. You have configured and enabled the [instance runners](../../ci/runners/index.md)
+- Optional but recommended. You have configured and enabled the [instance runners](../../ci/runners/_index.md)
   so your users don't have to bring their own.
 
 ### DNS configuration

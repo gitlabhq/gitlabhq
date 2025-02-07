@@ -13,7 +13,7 @@ With multi-project pipelines, the trigger job fails and does not create the down
 - The user that creates the upstream pipeline does not have [permission](../../user/permissions.md)
   to create pipelines in the downstream project.
 - The downstream pipeline targets a protected branch and the user does not have permission
-  to run pipelines against the protected branch. See [pipeline security for protected branches](index.md#pipeline-security-on-protected-branches)
+  to run pipelines against the protected branch. See [pipeline security for protected branches](_index.md#pipeline-security-on-protected-branches)
   for more information.
 
 To identify which user is having permission issues in the downstream project, you can check the trigger job using the following command in the [Rails console](../../administration/operations/rails_console.md) and look at the `user_id` attribute.

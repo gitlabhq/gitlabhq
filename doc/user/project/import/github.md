@@ -281,7 +281,7 @@ your imported repository in sync with its GitHub copy.
 Additionally, you can configure GitLab to send pipeline status updates back to GitHub with the
 [GitHub Project Integration](../integrations/github.md).
 
-If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/index.md), then both
+If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/_index.md), then both
 of the above are automatically configured.
 
 NOTE:

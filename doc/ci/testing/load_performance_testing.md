@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 With Load Performance Testing, you can test the impact of any pending code changes
-to your application's backend in [GitLab CI/CD](../index.md).
+to your application's backend in [GitLab CI/CD](../_index.md).
 
 GitLab uses [k6](https://k6.io/), a free and open source
 tool, for measuring the system performance of applications under
@@ -149,7 +149,7 @@ If [GitLab Pages](../../user/project/pages/index.md) is enabled, you can view th
 ### Load Performance testing in review apps
 
 The CI/CD YAML configuration example above works for testing against static environments,
-but it can be extended to work with [review apps](../review_apps/index.md) or
+but it can be extended to work with [review apps](../review_apps/_index.md) or
 [dynamic environments](../environments/_index.md) with a few extra steps.
 
 The best approach is to capture the dynamic URL in a [`.env` file](https://docs.docker.com/compose/environment-variables/env-file/)

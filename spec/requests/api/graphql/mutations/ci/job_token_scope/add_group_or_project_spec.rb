@@ -45,7 +45,7 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
             ... on CiJobTokenAccessibleProject {
               fullPath
             }
-            ... on Group {
+            ... on CiJobTokenAccessibleGroup {
               fullPath
             }
           }

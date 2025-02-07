@@ -25,7 +25,7 @@ information to help harden the CI/CD process.
   container technology should be used, such as GCP Secret Manager, AWS KMS, or
   HashiCorp Vault. For self-managed and standalone instances, HashiCorp Vault is
   recommended, and many GitLab features can take advantage of Vault and are well
-  documented in the main [Documentation](../index.md). For detailed CI/CD examples, see [using external secrets in CI](../ci/secrets/index.md).
+  documented in the main [Documentation](../index.md). For detailed CI/CD examples, see [using external secrets in CI](../ci/secrets/_index.md).
 - **External Communications**. If your CI/CD process requires connectivity to other
   hosts, ensure that these communication channels are encrypted. You should use TLS 1.2 or 1.3, and where possible implement mutual TLS.
 - **Logging**. Logging can be very important for auditing and troubleshooting, so it
@@ -45,7 +45,7 @@ By default, only the default branch gets a protected pipeline. An owner of a pro
 can ensure that other branches are protected by
 [configuring a protected branch](../user/project/repository/branches/protected.md).
 This allows for more restricted security on pipelines. For more information, see
-[pipeline security on a protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
+[pipeline security on a protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
 
 Deployment is the part of the CI/CD that deploys the results of the pipeline in
 relationship to a given environment. Default settings do not impose many

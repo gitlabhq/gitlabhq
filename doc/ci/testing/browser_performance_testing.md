@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If your application offers a web interface and you're using
-[GitLab CI/CD](../index.md), you can quickly determine the rendering performance
+[GitLab CI/CD](../_index.md), you can quickly determine the rendering performance
 impact of pending code changes in the browser.
 
 NOTE:

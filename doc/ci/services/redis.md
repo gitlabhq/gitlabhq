@@ -15,7 +15,7 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use Redis with the Docker executor
 
-If you are using [GitLab Runner](../runners/index.md) with the Docker executor
+If you are using [GitLab Runner](../runners/_index.md) with the Docker executor
 you basically have everything set up already.
 
 First, in your `.gitlab-ci.yml` add:
@@ -69,7 +69,7 @@ Host: localhost
 
 We have set up an [Example Redis Project](https://gitlab.com/gitlab-examples/redis) for your convenience
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
-[instance runners](../runners/index.md).
+[instance runners](../runners/_index.md).
 
 Want to hack on it? Fork it, commit and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

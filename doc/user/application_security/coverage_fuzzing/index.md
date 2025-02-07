@@ -15,7 +15,7 @@ GitLab allows you to add coverage-guided fuzz testing to your pipelines. This he
 bugs and potential security issues that other QA processes may miss.
 
 We recommend that you use fuzz testing in addition to the other security scanners in [GitLab Secure](../index.md)
-and your own test processes. If you're using [GitLab CI/CD](../../../ci/index.md),
+and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.md),
 you can run your coverage-guided fuzz testing as part your CI/CD workflow.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -104,7 +104,7 @@ my_fuzz_target:
     - ./gitlab-cov-fuzz run --regression=$REGRESSION -- <your fuzz target>
 ```
 
-The `Coverage-Fuzzing` template includes the [hidden job](../../../ci/jobs/index.md#hide-a-job)
+The `Coverage-Fuzzing` template includes the [hidden job](../../../ci/jobs/_index.md#hide-a-job)
 `.fuzz_base`, which you must [extend](../../../ci/yaml/_index.md#extends) for each of your fuzzing
 targets. Each fuzzing target **must** have a separate job. For example, the
 [go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)

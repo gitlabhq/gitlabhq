@@ -17,7 +17,7 @@ export default {
       'ManualVariables|When you %{helpPageUrlStart}run a pipeline manually%{helpPageUrlEnd}, you can specify additional CI/CD variables to use in that pipeline run.',
     ),
   },
-  runPipelineManuallyDocUrl: helpPagePath('ci/pipelines/index', {
+  runPipelineManuallyDocUrl: helpPagePath('ci/pipelines/_index', {
     anchor: 'run-a-pipeline-manually',
   }),
 };

@@ -70,7 +70,7 @@ Accessing the package registry with a deploy token is not available when externa
 
 ## Use GitLab CI/CD
 
-You can use [GitLab CI/CD](../../../ci/index.md) to build or import packages into
+You can use [GitLab CI/CD](../../../ci/_index.md) to build or import packages into
 a package registry.
 
 ### To build packages

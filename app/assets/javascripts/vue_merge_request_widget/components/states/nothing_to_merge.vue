@@ -16,7 +16,7 @@ export default {
       return STATUS_EMPTY;
     },
   },
-  ciHelpPage: helpPagePath('ci/quick_start/index.html'),
+  ciHelpPage: helpPagePath('ci/quick_start/_index.html'),
 };
 </script>
 

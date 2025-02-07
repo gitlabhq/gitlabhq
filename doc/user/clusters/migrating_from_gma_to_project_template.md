@@ -14,7 +14,7 @@ in favor of user-controlled Cluster Management projects.
 Managing your cluster applications through a project enables you a
 lot more flexibility to manage your cluster than through the late GitLab Managed Apps.
 To migrate to the cluster management project you need
-[GitLab Runners](../../ci/runners/index.md)
+[GitLab Runners](../../ci/runners/_index.md)
 available and be familiar with [Helm](https://helm.sh/).
 
 ## Migrate to a Cluster Management Project
@@ -39,7 +39,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
    - If you kept the default name (`gitlab-managed-apps`), then the script is already
      set up.
 
-   Either way, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually) and read the logs of the
+   Either way, [run a pipeline manually](../../ci/pipelines/_index.md#run-a-pipeline-manually) and read the logs of the
    `detect-helm2-releases` job to know if you have any Helm v2 releases and which are they.
 
 1. If you have no Helm v2 releases, skip this step. Otherwise, follow the official Helm documentation on
@@ -110,7 +110,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
        WARNING:
        Cert-manager v0.10 breaks when Kubernetes is upgraded to version 1.20 or later.
 
-1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/index.md#run-a-pipeline-manually)
+1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/_index.md#run-a-pipeline-manually)
    and watch the `apply` job logs to see if any of your applications were successfully detected, installed, and whether they got any
    unexpected updates.
 

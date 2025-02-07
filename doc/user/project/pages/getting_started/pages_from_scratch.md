@@ -13,7 +13,7 @@ This tutorial shows you how to create a Pages site from scratch using
 the [Jekyll](https://jekyllrb.com/) Static Site Generator (SSG). You start with
 a blank project and create your own CI/CD configuration file, which gives
 instructions to a [runner](https://docs.gitlab.com/runner/). When your CI/CD
-[pipeline](../../../../ci/pipelines/index.md) runs, the Pages site is created.
+[pipeline](../../../../ci/pipelines/_index.md) runs, the Pages site is created.
 
 This example uses Jekyll, but other SSGs follow similar steps.
 You do not need to be familiar with Jekyll or SSGs

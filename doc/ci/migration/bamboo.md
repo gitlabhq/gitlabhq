@@ -15,8 +15,8 @@ exported from the Bamboo UI or stored in Spec repositories.
 
 ## GitLab CI/CD Primer
 
-If you are new to GitLab CI/CD, use the [Getting started guide](../index.md) to learn
-the basic concepts and how to create your first [`.gitlab-ci.yml` file](../quick_start/index.md).
+If you are new to GitLab CI/CD, use the [Getting started guide](../_index.md) to learn
+the basic concepts and how to create your first [`.gitlab-ci.yml` file](../quick_start/_index.md).
 If you already have some experience using GitLab CI/CD, you can review [CI/CD YAML syntax reference](../yaml/_index.md)
 to see the full list of available keywords.
 
@@ -45,7 +45,7 @@ remote agents running external to the server.
 GitLab uses a similar concept to agents called [runners](https://docs.gitlab.com/runner/)
 which use [executors](https://docs.gitlab.com/runner/executors/) to run builds.
 
-Examples of executors are shell, Docker, or Kubernetes. You can choose to use [GitLab.com runners](../runners/index.md)
+Examples of executors are shell, Docker, or Kubernetes. You can choose to use [GitLab.com runners](../runners/_index.md)
 or deploy your own [self-managed runners](https://docs.gitlab.com/runner/install/index.html).
 
 ### Workflow
@@ -85,7 +85,7 @@ Alternatively, [Auto DevOps](../../topics/autodevops/_index.md) can automaticall
 test, and deploy your application without a manually configured `.gitlab-ci.yml` file.
 
 GitLab CI/CD configuration can be organized into templates that are reusable across projects.
-GitLab also provides pre-built [templates](../examples/index.md#cicd-templates)
+GitLab also provides pre-built [templates](../examples/_index.md#cicd-templates)
 that help you get started quickly and avoid re-inventing the wheel.
 
 ### Configuration
@@ -389,7 +389,7 @@ In both GitLab and Bamboo, jobs in the same stage run in parallel, except where 
 that needs to be met before a job runs.
 
 The number of jobs that can run in Bamboo depends on availability of Bamboo agents
-and Bamboo license Size. With [GitLab CI/CD](../jobs/index.md), the number of parallel
+and Bamboo license Size. With [GitLab CI/CD](../jobs/_index.md), the number of parallel
 jobs depends on the number of runners integrated with the GitLab instance and the
 concurrency set in the runners.
 
@@ -441,7 +441,7 @@ job2:
 ```
 
 With GitLab, you can use [CI/CD templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates)
-and [CI/CD components](../components/index.md) to compose your pipelines without the need to write
+and [CI/CD components](../components/_index.md) to compose your pipelines without the need to write
 everything yourself.
 
 #### Conditionals
@@ -588,7 +588,7 @@ In Bamboo, [Git caches](https://confluence.atlassian.com/bamkb/how-stored-git-ca
 can be used to speed up builds. Git caches are configured in Bamboo administration settings
 and are stored either on the Bamboo server or remote agents.
 
-GitLab supports both Git Caches and Job cache. [Caches](../caching/index.md) are defined per job
+GitLab supports both Git Caches and Job cache. [Caches](../caching/_index.md) are defined per job
 using the `cache` keyword.
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
@@ -643,7 +643,7 @@ Production:
     - ./.ci/deploy_prod.sh
 ```
 
-In GitLab CI/CD, You can create a [deployment job](../jobs/index.md#deployment-jobs)
+In GitLab CI/CD, You can create a [deployment job](../jobs/_index.md#deployment-jobs)
 that deploys to an [environment](../environments/_index.md) or creates a [release](../../user/project/releases/index.md).
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
@@ -752,14 +752,14 @@ the following questions in preparation:
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../index.md).
-   - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md)
+   - Read about the [key GitLab CI/CD features](../_index.md).
+   - Follow tutorials to create [your first GitLab pipeline](../quick_start/_index.md)
      and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploy
      a static site.
    - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
-   - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
+   - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
 #### Migration Steps
 
@@ -770,7 +770,7 @@ Before doing any migration work, you should first:
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Export your Bamboo Projects/Plans as YAML Spec
 1. Migrate Bamboo YAML Spec configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
-1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
+1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
    [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.

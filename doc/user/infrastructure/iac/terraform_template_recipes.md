@@ -116,7 +116,7 @@ state-list:
 The `gitlab-terraform` command sets up a `terraform` command and runs
 it with the given arguments.
 
-To run this job in the Terraform state-specific [resource group](../../../ci/resource_groups/index.md),
+To run this job in the Terraform state-specific [resource group](../../../ci/resource_groups/_index.md),
 assign the job with `resource_group`:
 
 ```yaml

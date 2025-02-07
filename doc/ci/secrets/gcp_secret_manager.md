@@ -44,7 +44,7 @@ The principal is used to authorize access to the Secret Manager resources:
 1. Under **Attribute Mapping**, create the following mappings, where:
 
    - `attribute.X` is the name of the attribute to include as a claim in the Google token.
-   - `assertion.X` is the value to extract from the [GitLab claim](../cloud_services/index.md#how-it-works).
+   - `assertion.X` is the value to extract from the [GitLab claim](../cloud_services/_index.md#how-it-works).
 
    | Attribute (on Google)         | Assertion (from GitLab) |
    |-------------------------------|-------------------------|

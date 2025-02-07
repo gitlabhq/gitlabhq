@@ -842,7 +842,7 @@ that you can ping and get reports.
 
 ## GitLab Runner
 
-If you want to take advantage of [GitLab CI/CD](../../ci/index.md), you have to
+If you want to take advantage of [GitLab CI/CD](../../ci/_index.md), you have to
 set up at least one [runner](https://docs.gitlab.com/runner/).
 
 Read more on configuring an

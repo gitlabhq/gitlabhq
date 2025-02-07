@@ -147,7 +147,7 @@ Top-level groups on GitLab.com are also known as "Namespaces" and naming one aft
 
 ### Runner workload authentication and authorization integration
 
-- [Runner Job Authentication using Open ID & JWT Authentication](../../../ci/cloud_services/aws/index.md). `[GitLab Built]`
+- [Runner Job Authentication using Open ID & JWT Authentication](../../../ci/cloud_services/aws/_index.md). `[GitLab Built]`
   - [Configure OpenID Connect between GitLab and AWS](https://gitlab.com/guided-explorations/aws/configure-openid-connect-in-aws) `[GitLab Solution]` `[CI Solution]`
   - [OIDC and Multi-Account Deployment with GitLab and ECS](https://gitlab.com/guided-explorations/aws/oidc-and-multi-account-deployment-with-ecs) `[GitLab Solution]` `[CI Solution]`
 

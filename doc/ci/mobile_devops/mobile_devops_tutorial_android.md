@@ -25,7 +25,7 @@ Before you start this tutorial, make sure you have:
 
 ## Set up your build environment
 
-Use [GitLab-hosted runners](../runners/index.md),
+Use [GitLab-hosted runners](../runners/_index.md),
 or set up [self-managed runners](https://docs.gitlab.com/runner/#use-self-managed-runners)
 for complete control over the build environment.
 
@@ -64,7 +64,7 @@ To set up code signing for Android:
       storePassword=password
       ```
 
-   1. Upload both files as [Secure Files](../secure_files/index.md) in your project settings.
+   1. Upload both files as [Secure Files](../secure_files/_index.md) in your project settings.
    1. Add both files to your `.gitignore` file so they aren't committed to version control.
 1. Configure Gradle to use the newly created keystore. In the app's `build.gradle` file:
 

@@ -167,7 +167,7 @@ To toggle feature flags, you must be an administrator.
 
 On GitLab SaaS:
 
-- Run the following [ChatOps](../chatops/index.md) command:
+- Run the following [ChatOps](../chatops/_index.md) command:
 
   ```ruby
   /chatops run feature set ci_unlock_pipelines_extra_low true

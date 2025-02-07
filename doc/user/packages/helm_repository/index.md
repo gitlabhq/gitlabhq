@@ -78,7 +78,7 @@ For example, you can use `stable` and `devel` as channels to allow users to add 
 
 ## Use CI/CD to publish a Helm package
 
-To publish a Helm package automated through [GitLab CI/CD](../../../ci/index.md), you can use
+To publish a Helm package automated through [GitLab CI/CD](../../../ci/_index.md), you can use
 `CI_JOB_TOKEN` in place of the personal access token in your commands.
 
 For example:

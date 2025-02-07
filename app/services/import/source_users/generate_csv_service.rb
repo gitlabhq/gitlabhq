@@ -6,15 +6,20 @@ module Import
     # with a namespace. This spreadsheet is filled in and re-uploaded to
     # facilitate the user mapping flow.
     class GenerateCsvService
-      HEADERS = [
-        'Source host',
-        'Import type',
-        'Source user identifier',
-        'Source user name',
-        'Source username',
-        'GitLab username',
-        'GitLab public email'
-      ].freeze
+      # This is just to prevent any potential abuse. A test file with 20k rows
+      # comes in at 2.3MB. A 10MB file would be several tens of thousands,
+      # whereas we would rarely expect to exceed 10k rows.
+      FILESIZE_LIMIT = 10.megabytes
+
+      COLUMN_MAPPING = {
+        'Source host' => 'source_hostname',
+        'Import type' => 'import_type',
+        'Source user identifier' => 'source_user_identifier',
+        'Source user name' => 'source_name',
+        'Source username' => 'source_username',
+        'GitLab username' => ->(_) { '' },
+        'GitLab public email' => ->(_) { '' }
+      }.freeze
 
       # @param namespace [Namespace, Group] The namespace where the import source users are associated
       # @param current_user [User] The user performing the CSV export
@@ -36,23 +41,7 @@ module Import
       attr_reader :namespace, :current_user
 
       def csv_data
-        CSV.generate do |csv|
-          csv << HEADERS
-
-          import_source_users.each_batch(of: 1000) do |batch|
-            batch.each do |source_user|
-              csv << [
-                source_user.source_hostname,
-                source_user.import_type,
-                source_user.source_user_identifier,
-                source_user.source_name,
-                source_user.source_username,
-                '',
-                ''
-              ]
-            end
-          end
-        end
+        CsvBuilder.new(import_source_users, COLUMN_MAPPING, replace_newlines: true).render(FILESIZE_LIMIT)
       end
 
       def import_source_users

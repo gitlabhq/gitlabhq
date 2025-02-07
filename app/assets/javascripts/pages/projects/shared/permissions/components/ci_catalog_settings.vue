@@ -43,7 +43,7 @@ const i18n = {
   ),
 };
 
-const ciCatalogHelpPath = helpPagePath('ci/components/index', {
+const ciCatalogHelpPath = helpPagePath('ci/components/_index', {
   anchor: 'cicd-catalog',
 });
 

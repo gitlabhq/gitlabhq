@@ -19,7 +19,7 @@ To do so, follow these steps:
    - `ECS` if you're not enforcing any launch type check when deploying to ECS.
 
 When you trigger a pipeline, if you have Auto DevOps enabled and if you have correctly
-[entered AWS credentials as variables](../../../ci/cloud_deployment/index.md#authenticate-gitlab-with-aws),
+[entered AWS credentials as variables](../../../ci/cloud_deployment/_index.md#authenticate-gitlab-with-aws),
 your application is deployed to AWS ECS.
 
 If you have both a valid `AUTO_DEVOPS_PLATFORM_TARGET` variable and a Kubernetes cluster tied to your project,

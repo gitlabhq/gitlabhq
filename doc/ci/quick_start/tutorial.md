@@ -95,8 +95,8 @@ in the project and runners are available to run jobs.
 
 This step introduces:
 
-- [Jobs](../jobs/index.md): These are self-contained parts of a pipeline that run your commands.
-  Jobs run on [runners](../runners/index.md), separate from the GitLab instance.
+- [Jobs](../jobs/_index.md): These are self-contained parts of a pipeline that run your commands.
+  Jobs run on [runners](../runners/_index.md), separate from the GitLab instance.
 - [`script`](../yaml/_index.md#script): This section of a job's configuration is
   where you define the commands for jobs. If there are multiple commands (in an array),
   they run in order. Each command executes as if it was run as a CLI command.
@@ -119,7 +119,7 @@ Commit and push this change to GitLab, then:
    followed by the date.
 
 Now that you have a `.gitlab-ci.yml` file in your project, you can make all future changes
-to pipeline configuration with the [pipeline editor](../pipeline_editor/index.md).
+to pipeline configuration with the [pipeline editor](../pipeline_editor/_index.md).
 
 ## Add a job to build the site
 
@@ -427,7 +427,7 @@ single sources of truth.
 
 This step introduces:
 
-- [Hidden jobs](../jobs/index.md#hide-a-job): Jobs that start with `.` are never
+- [Hidden jobs](../jobs/_index.md#hide-a-job): Jobs that start with `.` are never
   added to a pipeline. Use them to hold configuration you want to reuse.
 - [`extends`](../yaml/_index.md#extends): Use extends to repeat configuration in
   multiple places, often from hidden jobs. If you update the hidden job's configuration,

@@ -2,10 +2,10 @@
 stage: Secure
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Configure CodeClimate-based Code Quality scanning (deprecated)
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-# Configure CodeClimate-based Code Quality scanning (deprecated)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -68,7 +68,7 @@ is present. For more information about how to define a variable, see
 To disable Code Quality, create a custom CI/CD variable named `CODE_QUALITY_DISABLED`, for either:
 
 - [The whole project](../variables/_index.md#for-a-project).
-- [A single pipeline](../pipelines/index.md#run-a-pipeline-manually).
+- [A single pipeline](../pipelines/_index.md#run-a-pipeline-manually).
 
 ## Configure CodeClimate analysis plugins
 

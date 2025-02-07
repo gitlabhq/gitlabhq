@@ -15,7 +15,7 @@ The **Security configuration** page lists the following for the security testing
 - Whether or not it is available.
 - A configuration button or a link to its configuration guide.
 
-To determine the status of each security control, GitLab checks for a [CI/CD pipeline](../../../ci/pipelines/index.md)
+To determine the status of each security control, GitLab checks for a [CI/CD pipeline](../../../ci/pipelines/_index.md)
 in the most recent commit on the default branch.
 
 If GitLab finds a CI/CD pipeline, then it inspects each job in the `.gitlab-ci.yml` file.

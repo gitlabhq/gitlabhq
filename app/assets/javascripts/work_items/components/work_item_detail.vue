@@ -502,6 +502,9 @@ export default {
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
     },
+    isModalOrDrawer() {
+      return this.isModal || this.isDrawer;
+    },
   },
   methods: {
     handleWorkItemCreated() {
@@ -809,6 +812,9 @@ export default {
       @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
     />
     <section class="work-item-view">
+      <component :is="isModalOrDrawer ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">{{
+        s__('WorkItem|Edit work item')
+      }}</component>
       <gl-alert
         v-if="info"
         class="gl-mb-3"
@@ -850,6 +856,7 @@ export default {
                 v-if="workItem.title"
                 ref="title"
                 :is-editing="editMode"
+                :is-modal="isModalOrDrawer"
                 :title="workItem.title"
                 @updateWorkItem="updateWorkItem"
                 @updateDraft="updateDraft('title', $event)"
@@ -900,7 +907,7 @@ export default {
                 :work-item-reference="workItem.reference"
                 :work-item-web-url="workItem.webUrl"
                 :work-item-create-note-email="workItem.createNoteEmail"
-                :is-modal="isModal"
+                :is-modal="isModalOrDrawer"
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
                 :has-parent="shouldShowAncestors"
@@ -936,6 +943,7 @@ export default {
               v-if="workItem.title && shouldShowAncestors"
               ref="title"
               :is-editing="editMode"
+              :is-modal="isModalOrDrawer"
               :class="titleClassComponent"
               :title="workItem.title"
               @error="updateError = $event"
@@ -1099,7 +1107,8 @@ export default {
               :is-work-item-confidential="workItem.confidential"
               :new-comment-template-paths="newCommentTemplatePaths"
               class="gl-pt-5"
-              :use-h2="!isModal"
+              :use-h2="!isModalOrDrawer"
+              :small-header-style="isModal"
               :parent-id="parentWorkItemId"
               @error="updateError = $event"
               @openReportAbuse="openReportAbuseModal"

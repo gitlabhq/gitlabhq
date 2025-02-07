@@ -5538,7 +5538,6 @@
 - './spec/lib/gitlab/slash_commands/presenters/run_spec.rb'
 - './spec/lib/gitlab/slash_commands/run_spec.rb'
 - './spec/lib/gitlab/snippet_search_results_spec.rb'
-- './spec/lib/gitlab/sourcegraph_spec.rb'
 - './spec/lib/gitlab/spamcheck/client_spec.rb'
 - './spec/lib/gitlab_spec.rb'
 - './spec/lib/gitlab/sql/cte_spec.rb'

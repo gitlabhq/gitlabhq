@@ -22,7 +22,7 @@ GitLab CI/CD and TeamCity are CI/CD tools with some similarities. Both GitLab an
 Additionally, there are some important differences between the two:
 
 - GitLab CI/CD pipelines are configured in a YAML format configuration file, which
-  you can edit manually or with the [pipeline editor](../pipeline_editor/index.md).
+  you can edit manually or with the [pipeline editor](../pipeline_editor/_index.md).
   TeamCity pipelines can be configured from the UI or using Kotlin DSL.
 - GitLab is a DevSecOps platform with built-in SCM, container registry, security scanning, and more.
   TeamCity requires separate solutions for these capabilities, usually provided by integrations.
@@ -141,7 +141,7 @@ run_unit_tests:
 [TeamCity Triggers](https://www.jetbrains.com/help/teamcity/configuring-build-triggers.html) define conditions that initiate a build, including VCS changes,
 scheduled triggers, or builds triggered by other builds.
 
-In GitLab CI/CD, pipelines can be triggered automatically for various events, like changes to branches or merge requests and new tags. Pipelines can also be triggered manually, using an [API](../triggers/index.md), or with [scheduled pipelines](../pipelines/schedules.md). For more information, see [CI/CD pipelines](../pipelines/index.md).
+In GitLab CI/CD, pipelines can be triggered automatically for various events, like changes to branches or merge requests and new tags. Pipelines can also be triggered manually, using an [API](../triggers/_index.md), or with [scheduled pipelines](../pipelines/schedules.md). For more information, see [CI/CD pipelines](../pipelines/_index.md).
 
 ### Variables
 
@@ -215,7 +215,7 @@ use_cat:
 The equivalent of [TeamCity agents](https://www.jetbrains.com/help/teamcity/build-agent.html) in GitLab are Runners.
 
 In GitLab CI/CD, runners are the services that execute jobs. If you are using GitLab.com, you can use the
-[instance runner fleet](../runners/index.md) to run jobs without provisioning your own self-managed runners.
+[instance runner fleet](../runners/_index.md) to run jobs without provisioning your own self-managed runners.
 
 Some key details about runners:
 
@@ -264,12 +264,12 @@ For a migration from TeamCity, ask yourself the following questions in preparati
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../index.md).
-   - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
+   - Read about the [key GitLab CI/CD features](../_index.md).
+   - Follow tutorials to create [your first GitLab pipeline](../quick_start/_index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
    - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
-   - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
+   - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
 ### Migration steps
 
@@ -279,10 +279,10 @@ Before doing any migration work, you should first:
    - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Migrate TeamCity configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
-1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
+1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
    [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
-   and share [CI/CD templates](../examples/index.md#cicd-templates) or [CI/CD components](../components/index.md).
+   and share [CI/CD templates](../examples/_index.md#cicd-templates) or [CI/CD components](../components/_index.md).
 1. See [pipeline efficiency](../pipelines/pipeline_efficiency.md)
    to learn how to make your GitLab CI/CD pipelines faster and more efficient.
 

@@ -24,7 +24,7 @@ module API
           # any orphaned runners will be missing
           if Feature.enabled?(:reject_orphaned_runners, Feature.current_request) &&
               current_runner.sharding_key_id.nil? && !current_runner.instance_type?
-            unprocessable_entity!('Runner is orphaned')
+            forbidden!('Runner is orphaned')
           end
 
           current_runner.heartbeat if update_contacted_at

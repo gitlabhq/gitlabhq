@@ -405,7 +405,7 @@ feature flag for you by applying this patch.
 
 ## List all the feature flags
 
-To [use ChatOps](../../ci/chatops/index.md) to output all the feature flags in an environment to Slack, you can use the `run feature list`
+To [use ChatOps](../../ci/chatops/_index.md) to output all the feature flags in an environment to Slack, you can use the `run feature list`
 command. For example:
 
 ```shell

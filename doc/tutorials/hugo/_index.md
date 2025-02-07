@@ -169,4 +169,4 @@ You've built, tested, and deployed your Hugo site with GitLab. Great work!
 
 Every time you change your site and push it to GitLab, your site is built, tested, and deployed automatically.
 
-To learn more about CI/CD pipelines, try [this tutorial on how to create a complex pipeline](../../ci/quick_start/tutorial.md). You can also learn more about the [different types of testing available](../../ci/testing/index.md).
+To learn more about CI/CD pipelines, try [this tutorial on how to create a complex pipeline](../../ci/quick_start/tutorial.md). You can also learn more about the [different types of testing available](../../ci/testing/_index.md).

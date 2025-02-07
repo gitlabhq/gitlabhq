@@ -13267,6 +13267,29 @@ The edge type for [`CiJob`](#cijob).
 | <a id="cijobedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cijobedgenode"></a>`node` | [`CiJob`](#cijob) | The item at the end of the edge. |
 
+#### `CiJobTokenAccessibleGroupConnection`
+
+The connection type for [`CiJobTokenAccessibleGroup`](#cijobtokenaccessiblegroup).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenaccessiblegroupconnectionedges"></a>`edges` | [`[CiJobTokenAccessibleGroupEdge]`](#cijobtokenaccessiblegroupedge) | A list of edges. |
+| <a id="cijobtokenaccessiblegroupconnectionnodes"></a>`nodes` | [`[CiJobTokenAccessibleGroup]`](#cijobtokenaccessiblegroup) | A list of nodes. |
+| <a id="cijobtokenaccessiblegroupconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiJobTokenAccessibleGroupEdge`
+
+The edge type for [`CiJobTokenAccessibleGroup`](#cijobtokenaccessiblegroup).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenaccessiblegroupedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cijobtokenaccessiblegroupedgenode"></a>`node` | [`CiJobTokenAccessibleGroup`](#cijobtokenaccessiblegroup) | The item at the end of the edge. |
+
 #### `CiJobTokenAccessibleProjectConnection`
 
 The connection type for [`CiJobTokenAccessibleProject`](#cijobtokenaccessibleproject).
@@ -21374,6 +21397,21 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobartifactname"></a>`name` | [`String`](#string) | File name of the artifact. |
 | <a id="cijobartifactsize"></a>`size` | [`BigInt!`](#bigint) | Size of the artifact in bytes. |
 
+### `CiJobTokenAccessibleGroup`
+
+Group that can access the current project by authenticating with a CI/CD job token.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobtokenaccessiblegroupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
+| <a id="cijobtokenaccessiblegroupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
+| <a id="cijobtokenaccessiblegroupid"></a>`id` | [`ID!`](#id) | ID of the group. |
+| <a id="cijobtokenaccessiblegroupname"></a>`name` | [`String!`](#string) | Name of the group. |
+| <a id="cijobtokenaccessiblegrouppath"></a>`path` | [`String!`](#string) | Path of the group. |
+| <a id="cijobtokenaccessiblegroupweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
+
 ### `CiJobTokenAccessibleProject`
 
 Project that can access the current project by authenticating with a CI/CD job token.
@@ -21431,7 +21469,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cijobtokenscopetypegroupallowlistautopopulatedids"></a>`groupAllowlistAutopopulatedIds` | [`[GroupID!]!`](#groupid) | List of IDs of groups which have been created by the autopopulation process. |
-| <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`GroupConnection!`](#groupconnection) | Allowlist of groups that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`CiJobTokenAccessibleGroupConnection!`](#cijobtokenaccessiblegroupconnection) | Allowlist of groups that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypegroupsallowlistcount"></a>`groupsAllowlistCount` | [`Int!`](#int) | Count of groups that can access the current project by authenticating with a CI/CD job token. The count does not include subgroups. |
 | <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`CiJobTokenAccessibleProjectConnection!`](#cijobtokenaccessibleprojectconnection) | Allowlist of projects that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeinboundallowlistautopopulatedids"></a>`inboundAllowlistAutopopulatedIds` | [`[ProjectID!]!`](#projectid) | List of IDs of projects which have been created by the autopopulation process. |
@@ -44341,8 +44379,8 @@ Represents an object that is the target of a CI_JOB_TOKEN allowlist entry.
 
 One of:
 
+- [`CiJobTokenAccessibleGroup`](#cijobtokenaccessiblegroup)
 - [`CiJobTokenAccessibleProject`](#cijobtokenaccessibleproject)
-- [`Group`](#group)
 
 #### `CiRunnerCloudProvisioning`
 

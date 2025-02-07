@@ -207,7 +207,7 @@ use to reduce your usage:
 - If you are using project mirrors, ensure that [pipelines for mirror updates](../../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
   is disabled.
 - Reduce the frequency of [scheduled pipelines](schedules.md).
-- [Skip pipelines](index.md#skip-a-pipeline) when not needed.
+- [Skip pipelines](_index.md#skip-a-pipeline) when not needed.
 - Use [interruptible](../yaml/_index.md#interruptible) jobs which can be auto-canceled
   if a new pipeline starts.
 - If a job doesn't have to run in every pipeline, use [`rules`](../jobs/job_control.md)

@@ -477,11 +477,11 @@ deploy_staging:
 #### Runners
 
 Like Jenkins agents, GitLab runners are the hosts that run jobs. If you are using GitLab.com,
-you can use the [instance runner fleet](../runners/index.md) to run jobs without provisioning
+you can use the [instance runner fleet](../runners/_index.md) to run jobs without provisioning
 your own runners.
 
 To convert a Jenkins agent for use with GitLab CI/CD, uninstall the agent and then
-[install and register a runner](../runners/index.md). Runners do not require much overhead,
+[install and register a runner](../runners/_index.md). Runners do not require much overhead,
 so you might be able to use similar provisioning as the Jenkins agents you were using.
 
 Some key details about runners:
@@ -596,7 +596,7 @@ use_cat:
 
 #### Caching
 
-A [cache](../caching/index.md) is created when a job downloads one or more files and
+A [cache](../caching/_index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
 [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
@@ -629,7 +629,7 @@ in GitLab with keywords and features that offer similar functionality. For examp
 | [Mailer](https://plugins.jenkins.io/mailer/)                                      | [Notification emails](../../user/profile/notifications.md) |
 | [Parameterized Trigger Plugin](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger` keyword](../yaml/_index.md#trigger) and [downstream pipelines](../pipelines/downstream_pipelines.md) |
 | [Role-based Authorization Strategy](https://plugins.jenkins.io/role-strategy/)    | GitLab [permissions and roles](../../user/permissions.md) |
-| [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/index.md) logs are time stamped by default |
+| [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [Job](../jobs/_index.md) logs are time stamped by default |
 
 ### Security Scanning features
 
@@ -704,12 +704,12 @@ Before starting a migration you should create a [migration plan](plan_a_migratio
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../index.md).
-   - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
+   - Read about the [key GitLab CI/CD features](../_index.md).
+   - Follow tutorials to create [your first GitLab pipeline](../quick_start/_index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
    - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
-   - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
+   - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
 ### Migration Steps
 
@@ -719,7 +719,7 @@ Before doing any migration work, you should first:
    - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Migrate Jenkins configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
-1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
+1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
    [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.

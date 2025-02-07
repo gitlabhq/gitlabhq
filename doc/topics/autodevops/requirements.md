@@ -31,7 +31,7 @@ To prepare the deployment:
 ## Auto DevOps deployment strategy
 
 When using Auto DevOps to deploy your applications, choose the
-[continuous deployment strategy](../../ci/index.md)
+[continuous deployment strategy](../../ci/_index.md)
 that works best for your needs:
 
 | Deployment strategy | Setup | Methodology |

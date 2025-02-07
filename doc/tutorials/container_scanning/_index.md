@@ -55,7 +55,7 @@ Now you're ready to create pipeline configuration. The pipeline configuration:
 
 1. Builds a Docker image from the `Dockerfile` file, and pushes the Docker image to the container registry. The
    `build-image` job uses [Docker-in-Docker](../../ci/docker/using_docker_build.md) as a
-   [CI/CD service](../../ci/services/index.md) to build the Docker image. You can also
+   [CI/CD service](../../ci/services/_index.md) to build the Docker image. You can also
    [use kaniko](../../ci/docker/using_kaniko.md) to build Docker images in a pipeline.
 1. Includes the `Container-Scanning.gitlab-ci.yml` template, to scan the Docker image stored in the container registry.
 

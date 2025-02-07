@@ -1165,7 +1165,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/signed_commit.rb'
     - 'lib/gitlab/signed_tag.rb'
     - 'lib/gitlab/snippet_search_results.rb'
-    - 'lib/gitlab/sourcegraph.rb'
     - 'lib/gitlab/ssh_public_key.rb'
     - 'lib/gitlab/stack_prof.rb'
     - 'lib/gitlab/string_placeholder_replacer.rb'

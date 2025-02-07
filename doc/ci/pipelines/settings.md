@@ -144,7 +144,7 @@ To customize the path:
 1. Select **Save changes**.
 
 NOTE:
-You cannot use your project's [pipeline editor](../pipeline_editor/index.md) to
+You cannot use your project's [pipeline editor](../pipeline_editor/_index.md) to
 edit CI/CD configuration files in other projects or on an external site.
 
 ### Custom CI/CD configuration file examples

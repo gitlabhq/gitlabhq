@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-Hosted runners on macOS provide an on-demand macOS environment, fully integrated with GitLab [CI/CD](../../index.md).
+Hosted runners on macOS provide an on-demand macOS environment, fully integrated with GitLab [CI/CD](../../_index.md).
 You can use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS).
 Our [Mobile DevOps section](../../mobile_devops/mobile_devops_tutorial_ios.md#set-up-your-build-environment) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
@@ -49,7 +49,7 @@ The images and installed components are updated with each GitLab release, to kee
 Major and minor releases of macOS and Xcode are made available in the milestone subsequent to the Apple release.
 
 A new major release image is initially made available as beta, and becomes generally available with the release of the first minor release.
-Because only two generally available images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](index.md#supported-image-lifecycle).
+Because only two generally available images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](_index.md#supported-image-lifecycle).
 
 When a new major release is generally available, it becomes the default image for all macOS jobs.
 
@@ -129,7 +129,7 @@ source 'https://cdn.cocoapods.org/'
 Use caching in Cocoapods packages in GitLab to only run `pod install`
 when pods change, which can improve build performance.
 
-To [configure caching](../../caching/index.md) for your project:
+To [configure caching](../../caching/_index.md) for your project:
 
 1. Add the `cache` configuration to your `.gitlab-ci.yml` file:
 

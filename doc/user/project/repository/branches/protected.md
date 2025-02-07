@@ -423,7 +423,7 @@ Because [merge request pipelines](../../../../ci/pipelines/merge_request_pipelin
 branch, a pipeline isn't created if the user opening a merge request does not have permission to merge
 or push to the source branch.
 
-See [Security on protected branches](../../../../ci/pipelines/index.md#pipeline-security-on-protected-branches)
+See [Security on protected branches](../../../../ci/pipelines/_index.md#pipeline-security-on-protected-branches)
 for details about the pipelines security model.
 
 ## Create a new branch with protections

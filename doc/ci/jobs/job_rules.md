@@ -211,9 +211,9 @@ Use the `CI_PIPELINE_SOURCE` variable to control when to add jobs for these pipe
 | Value                           | Description |
 |---------------------------------|-------------|
 | `api`                           | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline). |
-| `chat`                          | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
+| `chat`                          | For pipelines created by using a [GitLab ChatOps](../chatops/_index.md) command. |
 | `external`                      | When you use CI services other than GitLab. |
-| `external_pull_request_event`   | When an [external pull request on GitHub](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests) is created or updated. |
+| `external_pull_request_event`   | When an [external pull request on GitHub](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests) is created or updated. |
 | `merge_request_event`           | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
 | `ondemand_dast_scan`            | For [DAST on-demand scan](../../user/application_security/dast/on-demand_scan.md) pipelines. |
 | `ondemand_dast_validation`      | For [DAST on-demand validation](../../user/application_security/dast/on-demand_scan.md#site-profile-validation) pipelines |
@@ -222,7 +222,7 @@ Use the `CI_PIPELINE_SOURCE` variable to control when to add jobs for these pipe
 | `push`                          | For pipelines triggered by a Git push event, including for branches and tags. |
 | `schedule`                      | For [scheduled pipelines](../pipelines/schedules.md). |
 | `security_orchestration_policy` | For [security orchestration policy](../../user/application_security/policies/index.md) pipelines. |
-| `trigger`                       | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
+| `trigger`                       | For pipelines created by using a [trigger token](../triggers/_index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
 | `web`                           | For pipelines created by selecting **New pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
 | `webide`                        | For pipelines created by using the [Web IDE](../../user/project/web_ide/index.md). |
 

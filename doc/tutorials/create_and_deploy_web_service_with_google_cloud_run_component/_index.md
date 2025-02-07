@@ -141,7 +141,7 @@ registry, copies the image to Google Artifact Registry, and uses Cloud Run to de
 Google Cloud infrastructure.
 
 1. In your GitLab project, create a
-   [`.gitlab-ci.yml` file](../../ci/quick_start/index.md#create-a-gitlab-ciyml-file).
+   [`.gitlab-ci.yml` file](../../ci/quick_start/_index.md#create-a-gitlab-ciyml-file).
 
 1. To create a pipeline that builds your image, pushes it to the GitLab container
    registry, copies it to Google Artifact Registry, and uses Cloud Run to deploy,

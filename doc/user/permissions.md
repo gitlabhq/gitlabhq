@@ -107,7 +107,7 @@ Project permissions for [application security](application_security/secure_your_
 
 ### CI/CD
 
-[GitLab CI/CD](../ci/index.md) permissions for some roles can be modified by these settings:
+[GitLab CI/CD](../ci/_index.md) permissions for some roles can be modified by these settings:
 
 - [Public pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
   When set to public, gives access to certain CI/CD features to *Guest* project members.
@@ -136,14 +136,14 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Delete [environments](../ci/environments/_index.md)                                                                             |            |       |         |          |     ✓     |     ✓      |       |
 | Stop [environments](../ci/environments/_index.md)                                                                               |            |       |         |          |     ✓     |     ✓      |       |
 | Run CI/CD pipeline                                                                                                             |            |       |         |          |     ✓     |     ✓      |       |
-| Run CI/CD pipeline for a protected branch                                                                                      |            |       |         |          |     ✓     |     ✓      | Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches). |
+| Run CI/CD pipeline for a protected branch                                                                                      |            |       |         |          |     ✓     |     ✓      | Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches). |
 | Run CI/CD job                                                                                                                  |            |       |         |          |     ✓     |     ✓      |       |
 | Delete job logs or job artifacts                                                                                               |            |       |         |          |     ✓     |     ✓      | Developers: Only if the job was triggered by the user and runs for a non-protected branch. |
-| Enable [review apps](../ci/review_apps/index.md)                                                                               |            |       |         |          |     ✓     |     ✓      |       |
+| Enable [review apps](../ci/review_apps/_index.md)                                                                              |            |       |         |          |     ✓     |     ✓      |       |
 | Cancel jobs                                                                                                                    |            |       |         |          |     ✓     |     ✓      | Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). |
 | Retry jobs                                                                                                                     |            |       |         |          |     ✓     |     ✓      |       |
 | Read [Terraform](infrastructure/index.md) state                                                                                |            |       |         |          |     ✓     |     ✓      |       |
-| Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                       |            |       |         |          |     ✓     |     ✓      |       |
+| Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                                      |            |       |         |          |     ✓     |     ✓      |       |
 | Use pipeline editor                                                                                                            |            |       |         |          |     ✓     |     ✓      |       |
 | Manage [agents for Kubernetes](clusters/agent/_index.md)                                                                        |            |       |         |          |           |     ✓      |       |
 | Manage CI/CD settings                                                                                                          |            |       |         |          |           |     ✓      |       |
@@ -237,10 +237,10 @@ Project permissions for [issues](project/issues/index.md):
 | Archive or reopen [requirements](project/requirements/index.md)       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can archive and reopen issues that they authored or are assigned to. |
 | Create or edit [requirements](project/requirements/index.md)          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
 | Import or export [requirements](project/requirements/index.md)        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Archive [test cases](../ci/test_cases/index.md)                       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create [test cases](../ci/test_cases/index.md)                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Move [test cases](../ci/test_cases/index.md)                          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Reopen [test cases](../ci/test_cases/index.md)                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Archive [test cases](../ci/test_cases/_index.md)                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Create [test cases](../ci/test_cases/_index.md)                       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Move [test cases](../ci/test_cases/_index.md)                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Reopen [test cases](../ci/test_cases/_index.md)                       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | [Import](project/issues/csv_import.md) issues from a CSV file         |       |    ✓    |          |     ✓     |     ✓      |   ✓   |       |
 | [Export](project/issues/csv_export.md) issues to a CSV file           |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Delete issues                                                         |       |    ✓    |          |           |            |   ✓   |       |
@@ -443,7 +443,7 @@ Group permissions for [Application Security](application_security/secure_your_ap
 
 ### CI/CD group permissions
 
-Group permissions for [CI/CD](../ci/index.md) features including runners, variables, and protected environments:
+Group permissions for [CI/CD](../ci/_index.md) features including runners, variables, and protected environments:
 
 | Action                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -474,7 +474,7 @@ Group permissions for [GitLab Duo](gitlab_duo/index.md):
 | --------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | Use Duo features                                                                                          |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). |
 | Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-group)                      |            |       |         |          |           |     ✓      |   ✓   |       |
-| Configure [self-hosted models](../administration/self_hosted_models/configure_duo_features.md)            |            |       |         |          |           |            |   ✓   |       |
+| Configure [self-hosted models](../administration/gitlab_duo_self_hosted/configure_duo_features.md)            |            |       |         |          |           |            |   ✓   |       |
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) |            |       |         |          |           |            |   ✓   |       |
 | Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats)       |            |       |         |          |           |            |   ✓   |       |
 

@@ -17,7 +17,7 @@ and the services you configure for your project.
 
 ## Pipeline information
 
-If you've set up [GitLab CI/CD](../../../ci/index.md) in your project,
+If you've set up [GitLab CI/CD](../../../ci/_index.md) in your project,
 a [merge request](_index.md) displays pipeline information in the widgets area
 of the **Overview** tab:
 
@@ -26,7 +26,7 @@ of the **Overview** tab:
 
 If an application is successfully deployed to an
 [environment](../../../ci/environments/_index.md), the deployed environment and the link to the
-[review app](../../../ci/review_apps/index.md) are both shown.
+[review app](../../../ci/review_apps/_index.md) are both shown.
 
 NOTE:
 When the pipeline fails in a merge request but it can still merge,
@@ -46,7 +46,7 @@ stop button. If the pipeline fails to deploy, GitLab hides the deployment inform
 
 ![Merge request pipeline](img/post_merge_pipeline_v16_0.png)
 
-For more information, [read about pipelines](../../../ci/pipelines/index.md).
+For more information, [read about pipelines](../../../ci/pipelines/_index.md).
 
 ## Set auto-merge
 
@@ -55,16 +55,16 @@ Set a merge request that looks ready to merge to
 
 ## Live preview with review apps
 
-Configure [review apps](../../../ci/review_apps/index.md) for your project
+Configure [review apps](../../../ci/review_apps/_index.md) for your project
 to preview the changes submitted to a feature branch through a merge request
 on a per-branch basis. You don't need to check out the branch, install, and preview locally.
 All your changes are available to preview by anyone with the review apps link.
 
-With GitLab [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the
+With GitLab [Route Maps](../../../ci/review_apps/_index.md#route-maps) set, the
 merge request widget takes you directly to the pages changed, making it easier and
 faster to preview proposed modifications.
 
-[Read more about review apps](../../../ci/review_apps/index.md).
+[Read more about review apps](../../../ci/review_apps/_index.md).
 
 ## License compliance
 

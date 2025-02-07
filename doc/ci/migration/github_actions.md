@@ -463,7 +463,7 @@ deploy_staging:
 #### Runners
 
 Runners are the services that execute jobs. If you are using GitLab.com, you can use the
-[instance runner fleet](../runners/index.md) to run jobs without provisioning your own self-managed runners.
+[instance runner fleet](../runners/_index.md) to run jobs without provisioning your own self-managed runners.
 
 Some key details about runners:
 
@@ -561,7 +561,7 @@ use_cat:
 
 #### Caching
 
-A [cache](../caching/index.md) is created when a job downloads one or more files and
+A [cache](../caching/_index.md) is created when a job downloads one or more files and
 saves them for faster access in the future. Subsequent jobs that use the same cache don't have to download the files again,
 so they execute more quickly. The cache is stored on the runner and uploaded to S3 if
 [distributed cache is enabled](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching).
@@ -674,12 +674,12 @@ Before starting a migration you should create a [migration plan](plan_a_migratio
 Before doing any migration work, you should first:
 
 1. Get familiar with GitLab.
-   - Read about the [key GitLab CI/CD features](../index.md).
-   - Follow tutorials to create [your first GitLab pipeline](../quick_start/index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
+   - Read about the [key GitLab CI/CD features](../_index.md).
+   - Follow tutorials to create [your first GitLab pipeline](../quick_start/_index.md) and [more complex pipelines](../quick_start/tutorial.md) that build, test, and deploys a static site.
    - Review the [CI/CD YAML syntax reference](../yaml/_index.md).
 1. Set up and configure GitLab.
 1. Test your GitLab instance.
-   - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners or installing new runners.
+   - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
 ### Migration Steps
 
@@ -689,7 +689,7 @@ Before doing any migration work, you should first:
    - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` in each project.
 1. Migrate GitHub Actions jobs to GitLab CI/CD jobs and configure them to show results directly in merge requests.
-1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
+1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/_index.md),
    [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share [CI/CD templates](../../development/cicd/templates.md)

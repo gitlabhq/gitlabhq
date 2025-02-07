@@ -6,7 +6,7 @@ description: Learn how documentation review apps work.
 title: Documentation review apps
 ---
 
-GitLab team members can deploy a [review app](../../ci/review_apps/index.md) for merge requests with documentation
+GitLab team members can deploy a [review app](../../ci/review_apps/_index.md) for merge requests with documentation
 changes. The review app helps you preview what the changes would look like if they were deployed to either:
 
 - The [GitLab Docs site](https://docs.gitlab.com).

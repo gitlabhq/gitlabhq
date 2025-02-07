@@ -47,7 +47,7 @@ Prerequisites:
 
 - You must have permission to run an on-demand DAST scan against a protected branch. The default
   branch is automatically protected. For more information, see
-  [Pipeline security on protected branches](../../../ci/pipelines/index.md#pipeline-security-on-protected-branches).
+  [Pipeline security on protected branches](../../../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
 
 To run an existing on-demand scan:
 

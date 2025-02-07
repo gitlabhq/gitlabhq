@@ -3,6 +3,7 @@ import DraggableList from 'vuedraggable';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { ESC_KEY_CODE } from '~/lib/utils/keycodes';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
@@ -189,13 +190,7 @@ export default {
     handleLinkedItemClick(event, linkedItem) {
       // if the linkedItem is incident, redirect to the incident page
       if (linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT) {
-        event.preventDefault();
-        this.$router.push({
-          name: 'workItem',
-          params: {
-            iid: linkedItem?.workItem?.iid,
-          },
-        });
+        visitUrl(linkedItem.workItem.webUrl);
       } else {
         this.$emit('showModal', { event, child: linkedItem.workItem });
       }
@@ -241,8 +236,7 @@ export default {
             'gl-border-default gl-bg-blue-50 hover:gl-bg-blue-50':
               activeChildItemId === linkedItem.workItem.id,
           }"
-          @click="(e) => handleLinkedItemClick(e, linkedItem)"
-          @click.native="(e) => handleLinkedItemClick(e, linkedItem)"
+          @click="handleLinkedItemClick($event, linkedItem)"
           @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
         />
       </li>

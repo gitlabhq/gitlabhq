@@ -22,6 +22,11 @@ export default {
       required: false,
       default: false,
     },
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isValid: {
       type: Boolean,
       required: false,
@@ -56,7 +61,12 @@ export default {
       @input="$emit('updateDraft', $event)"
     />
   </gl-form-group>
-  <h1 v-else data-testid="work-item-title" class="gl-heading-1 !gl-m-0 gl-w-full">
+  <component
+    :is="isModal ? 'h2' : 'h1'"
+    v-else
+    data-testid="work-item-title"
+    class="gl-heading-1 !gl-m-0 gl-w-full"
+  >
     {{ title }}
-  </h1>
+  </component>
 </template>

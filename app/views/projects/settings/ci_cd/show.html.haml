@@ -72,7 +72,7 @@
     expanded: expanded) do |c|
     - c.with_description do
       = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
-      = link_to _('Learn more.'), help_page_path('ci/triggers/index.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('ci/triggers/_index.md'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do
       = render 'projects/triggers/index'
 
@@ -107,6 +107,6 @@
       expanded: expanded) do |c|
       - c.with_description do
         = _("Use secure files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
-        = link_to _('Learn more'), help_page_path('ci/secure_files/index.md'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('ci/secure_files/_index.md'), target: '_blank', rel: 'noopener noreferrer'
       - c.with_body do
         #js-ci-secure-files{ data: { project_id: @project.id, admin: can?(current_user, :admin_secure_files, @project).to_s, file_size_limit: Ci::SecureFile::FILE_SIZE_LIMIT.to_mb } }

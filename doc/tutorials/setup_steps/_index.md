@@ -347,4 +347,4 @@ The echo step takes a single input `echo`, prints it to the logs, and outputs it
    ```
 
 That's it! You've just created and implemented steps in your pipeline.
-For more information about the syntax for steps, see [CI/CD Steps](../../ci/steps/index.md).
+For more information about the syntax for steps, see [CI/CD Steps](../../ci/steps/_index.md).

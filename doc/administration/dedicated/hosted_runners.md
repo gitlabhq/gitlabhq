@@ -14,7 +14,7 @@ DETAILS:
 NOTE:
 To use this feature, you must purchase a subscription for Hosted Runners for GitLab Dedicated. To participate in the limited availability of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
 
-You can run your CI/CD jobs on GitLab-hosted [runners](../../ci/runners/index.md). These runners are managed by GitLab and fully integrated with your GitLab Dedicated instance.
+You can run your CI/CD jobs on GitLab-hosted [runners](../../ci/runners/_index.md). These runners are managed by GitLab and fully integrated with your GitLab Dedicated instance.
 GitLab-hosted runners for Dedicated are autoscaling [instance runners](../../ci/runners/runners_scope.md#instance-runners),
 running on AWS EC2 in the same region as the GitLab Dedicated instance.
 

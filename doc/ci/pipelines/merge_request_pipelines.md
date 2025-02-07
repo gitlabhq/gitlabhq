@@ -38,7 +38,7 @@ To use merge request pipelines:
   [configured with jobs that run in merge request pipelines](#add-jobs-to-merge-request-pipelines).
 - You must have at least the Developer role for the
   source project to run a merge request pipeline.
-- Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/index.md).
+- Your repository must be a GitLab repository, not an [external repository](../ci_cd_for_external_repos/_index.md).
 
 ## Add jobs to merge request pipelines
 

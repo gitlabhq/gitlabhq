@@ -73,7 +73,7 @@ specific environment, there are a lot of use cases. To name a few:
   stuck or failed.
 - You've got an MR that looks good, but you want to run it on staging because
   staging is set up in some way closer to production. You go to the environment
-  list, find the [Review App](../../ci/review_apps/index.md) you're interested in, and select the
+  list, find the [Review App](../../ci/review_apps/_index.md) you're interested in, and select the
   manual action to deploy it to staging.
 
 ## Enabling deploy boards
@@ -91,7 +91,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
    and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
 
-1. [Configure GitLab Runner](../../ci/runners/index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+1. [Configure GitLab Runner](../../ci/runners/_index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
    [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes/index.html) executor.
 1. Configure the [Kubernetes integration](../infrastructure/clusters/index.md) in your project for the
    cluster. The Kubernetes namespace is of particular note as you need it

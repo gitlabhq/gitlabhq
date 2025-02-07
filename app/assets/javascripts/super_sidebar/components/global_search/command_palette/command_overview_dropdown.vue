@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
 import { getModifierKey } from '~/constants';
 import { InternalEvents } from '~/tracking';
 import { s__ } from '~/locale';
@@ -9,7 +9,7 @@ const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'CommandsOverviewDropdown',
-  components: { GlCollapsibleListbox, GlSprintf },
+  components: { GlButton, GlCollapsibleListbox, GlSprintf },
   mixins: [trackingMixin],
   i18n: {
     header: s__("GlobalSearch|I'm looking for"),
@@ -56,7 +56,7 @@ export default {
       @hidden="emitHidden"
     >
       <template #toggle>
-        <button class="gl-rounded-base gl-border-0">
+        <gl-button size="small" category="tertiary">
           <gl-sprintf :message="$options.i18n.button">
             <template #superKey>
               <kbd class="vertical-align-normalization gl-py-2 gl-text-base">{{ modKey }}</kbd>
@@ -65,7 +65,7 @@ export default {
               <kbd class="vertical-align-normalization gl-py-2 gl-text-base">{{ content }}</kbd>
             </template>
           </gl-sprintf>
-        </button>
+        </gl-button>
       </template>
       <template #header>
         <span class="gl-border-b-1 gl-border-dropdown gl-p-4 gl-border-b-solid">

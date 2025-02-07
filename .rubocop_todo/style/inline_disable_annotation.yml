@@ -2031,7 +2031,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/slash_commands/presenters/run.rb'
     - 'lib/gitlab/snippet_search_results.rb'
     - 'lib/gitlab/source.rb'
-    - 'lib/gitlab/sourcegraph.rb'
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/gitlab/template_parser/ast.rb'
     - 'lib/gitlab/terraform/state_migration_helper.rb'

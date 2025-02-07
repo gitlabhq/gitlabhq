@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-[CI/CD Pipelines](index.md) are the fundamental building blocks for [GitLab CI/CD](../index.md).
+[CI/CD Pipelines](_index.md) are the fundamental building blocks for [GitLab CI/CD](../_index.md).
 Making pipelines more efficient helps you save developer time, which:
 
 - Speeds up your DevOps processes
@@ -21,8 +21,8 @@ and improve their configuration over time through trial and error. A better proc
 to use pipeline features that improve efficiency right away, and get a faster software
 development lifecycle earlier.
 
-First ensure you are familiar with [GitLab CI/CD fundamentals](../index.md)
-and understand the [quick start guide](../quick_start/index.md).
+First ensure you are familiar with [GitLab CI/CD fundamentals](../_index.md)
+and understand the [quick start guide](../quick_start/_index.md).
 
 ## Identify bottlenecks and common failures
 
@@ -36,7 +36,7 @@ heavily influenced by the:
 - The ["critical path"](#needs-dependency-visualization), which represents
   the minimum and maximum pipeline duration.
 
-Additional points to pay attention relate to [GitLab Runners](../runners/index.md):
+Additional points to pay attention relate to [GitLab Runners](../runners/_index.md):
 
 - Availability of the runners and the resources they are provisioned with.
 - Build dependencies, their installation time, and storage space requirements.
@@ -65,7 +65,7 @@ It's important to understand and document the pipeline workflows, and discuss po
 actions and changes. Refactoring pipelines may need careful interaction between teams
 in the DevSecOps lifecycle.
 
-Pipeline analysis can help identify issues with cost efficiency. For example, [runners](../runners/index.md)
+Pipeline analysis can help identify issues with cost efficiency. For example, [runners](../runners/_index.md)
 hosted with a paid cloud service may be provisioned with:
 
 - More resources than needed for CI/CD pipelines, wasting money.
@@ -73,7 +73,7 @@ hosted with a paid cloud service may be provisioned with:
 
 ### Pipeline Insights
 
-The [Pipeline success and duration charts](index.md#pipeline-success-and-duration-charts)
+The [Pipeline success and duration charts](_index.md#pipeline-success-and-duration-charts)
 give information about pipeline runtime and failed job counts.
 
 Tests like [unit tests](../testing/unit_test_reports.md), integration tests, end-to-end tests,
@@ -90,13 +90,13 @@ provide an example of a complex testing strategy with many components involved.
 
 ### `needs` dependency visualization
 
-Viewing the `needs` dependencies in the [full pipeline graph](../pipelines/index.md#group-jobs-by-stage-or-needs-configuration)
+Viewing the `needs` dependencies in the [full pipeline graph](../pipelines/_index.md#group-jobs-by-stage-or-needs-configuration)
 can help analyze the critical path in the pipeline and understand possible blockers.
 
 ### Pipeline Monitoring
 
 Global pipeline health is a key indicator to monitor along with job and pipeline duration.
-[CI/CD analytics](index.md#pipeline-success-and-duration-charts) give a visual
+[CI/CD analytics](_index.md#pipeline-success-and-duration-charts) give a visual
 representation of pipeline health.
 
 Instance administrators have access to additional [performance metrics and self-monitoring](../../administration/monitoring/_index.md).
@@ -193,8 +193,8 @@ be more efficient, but can also make pipelines harder to understand and analyze.
 
 ### Caching
 
-Another optimization method is to [cache](../caching/index.md) dependencies. If your
-dependencies change rarely, like [NodeJS `/node_modules`](../caching/index.md#cache-nodejs-dependencies),
+Another optimization method is to [cache](../caching/_index.md) dependencies. If your
+dependencies change rarely, like [NodeJS `/node_modules`](../caching/_index.md#cache-nodejs-dependencies),
 caching can make pipeline execution much faster.
 
 You can use [`cache:when`](../yaml/_index.md#cachewhen) to cache downloaded dependencies
@@ -239,7 +239,7 @@ Methods to reduce Docker image size:
   to analyze and shrink images.
 
 To simplify Docker image management, you can create a dedicated group for managing
-[Docker images](../docker/index.md) and test, build and publish them with CI/CD pipelines.
+[Docker images](../docker/_index.md) and test, build and publish them with CI/CD pipelines.
 
 ## Test, document, and learn
 

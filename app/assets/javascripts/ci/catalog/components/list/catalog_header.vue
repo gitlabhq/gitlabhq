@@ -42,7 +42,7 @@ export default {
     },
     learnMore: __('Learn more'),
   },
-  learnMorePath: helpPagePath('ci/components/index'),
+  learnMorePath: helpPagePath('ci/components/_index'),
   ChatBubbleSvg,
 };
 </script>

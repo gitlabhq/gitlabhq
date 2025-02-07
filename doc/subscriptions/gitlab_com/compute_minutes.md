@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com
 
 [Compute minutes](../../ci/pipelines/compute_minutes.md) is the resource consumed
-when running [CI/CD pipelines](../../ci/index.md) on GitLab instance runners. You can find
+when running [CI/CD pipelines](../../ci/_index.md) on GitLab instance runners. You can find
 pricing for additional compute minutes on the [GitLab Pricing page](https://about.gitlab.com/pricing/#compute-minutes).
 
 Additional compute minutes:

@@ -15,7 +15,7 @@ To run CI/CD jobs in a Docker container, you need to:
 
 1. Register a runner and configure it to use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
 1. Specify the container image where you want to run the CI/CD jobs in the `.gitlab-ci.yml` file.
-1. Optional. Run other services, like MySQL, in containers. Do this by specifying [services](../services/index.md)
+1. Optional. Run other services, like MySQL, in containers. Do this by specifying [services](../services/_index.md)
    in your `.gitlab-ci.yml` file.
 
 ## Register a runner that uses the Docker executor
@@ -202,7 +202,7 @@ In the `config.toml` file, you can define:
 - In the [`[runners.docker]`](https://docs.gitlab.com/runner/configuration/advanced-configuration#the-runnersdocker-section) section,
   the container image used to run CI/CD jobs
 - In the [`[[runners.docker.services]]`](https://docs.gitlab.com/runner/configuration/advanced-configuration#the-runnersdockerservices-section) section,
-  the [services](../services/index.md) container
+  the [services](../services/_index.md) container
 
 ```toml
 [runners.docker]
@@ -494,7 +494,7 @@ secure and streamlined interactions with AWS services, especially for containeri
 to manage, deploy, and update Docker images on Amazon ECR. This setup helps avoid time consuming, error-prone configurations,
 and manual credential management.
 
-1. [Authenticate GitLab with AWS](../cloud_deployment/index.md#authenticate-gitlab-with-aws).
+1. [Authenticate GitLab with AWS](../cloud_deployment/_index.md#authenticate-gitlab-with-aws).
 1. Create a `Dockerfile` with the following content:
 
    ```Dockerfile

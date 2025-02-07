@@ -492,6 +492,9 @@ export default {
       }
     },
     onClick(event, child) {
+      if (event.metaKey || event.ctrlKey) {
+        return;
+      }
       if (this.isTopLevel) {
         this.$emit('show-modal', { event, child: event.childItem || child });
       } else {

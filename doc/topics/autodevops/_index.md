@@ -180,7 +180,7 @@ installation pods at runtime.
 
 ## Related topics
 
-- [Continuous methodologies](../../ci/index.md)
+- [Continuous methodologies](../../ci/_index.md)
 - [Docker](https://docs.docker.com)
 - [GitLab Runner](https://docs.gitlab.com/runner/)
 - [Helm](https://helm.sh/docs/)

@@ -30,7 +30,7 @@ of the GitLab instance. There are a number of providers in this space, including
 [HashiCorp's Vault](https://www.vaultproject.io), [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault),
 and [Google Cloud Secret Manager](https://cloud.google.com/security/products/secret-manager).
 
-You can use the GitLab native integrations for certain [external secret management providers](../secrets/index.md) to retrieve those secrets in CI/CD pipelines when they are needed.
+You can use the GitLab native integrations for certain [external secret management providers](../secrets/_index.md) to retrieve those secrets in CI/CD pipelines when they are needed.
 
 ### CI/CD variables
 

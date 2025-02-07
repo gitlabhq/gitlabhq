@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-A job log displays the full execution history of a [CI/CD job](index.md).
+A job log displays the full execution history of a [CI/CD job](_index.md).
 
 ## View job logs
 

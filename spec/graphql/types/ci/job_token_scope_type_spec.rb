@@ -22,6 +22,9 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
       ).tap(&:save!)
     end
 
+    let_it_be(:accessible_group) { create(:group) }
+    let_it_be(:inaccessible_group) { create(:group) }
+
     let_it_be(:current_user) { create(:user) }
 
     let(:query) do
@@ -44,6 +47,12 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
                   path
                 }
               }
+              groupsAllowlist {
+                nodes {
+                  path
+                  avatarUrl
+                }
+              }
             }
           }
         }
@@ -58,6 +67,9 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
     let(:outbound_allowlist_field) { scope_field&.dig('outboundAllowlist', 'nodes') }
     let(:inbound_allowlist_field) { scope_field&.dig('inboundAllowlist', 'nodes') }
     let(:returned_project_paths) { projects_field.map { |p| p['path'] } }
+    let(:groups_allowlist_field) { scope_field&.dig('groupsAllowlist', 'nodes') }
+    let(:returned_groups_paths) { groups_allowlist_field.map { |p| p['path'] } }
+    let(:returned_groups_avatar_urls) { groups_allowlist_field.map { |p| p['avatarUrl'] } }
     let(:returned_outbound_paths) { outbound_allowlist_field.map { |p| p['path'] } }
     let(:returned_inbound_paths) { inbound_allowlist_field.map { |p| p['path'] } }
 
@@ -123,6 +135,20 @@ RSpec.describe GitlabSchema.types['CiJobTokenScopeType'], feature_category: :con
           it 'returns even non readable projects in inbound allowlist' do
             expect(returned_inbound_paths).to match_array([project.path, inbound_allowlist_project.path,
               both_allowlists_project.path])
+          end
+        end
+
+        context 'when groups are in the allow list' do
+          before do
+            accessible_group.add_member(current_user, :developer)
+            allowlist_group(project, inaccessible_group)
+            allowlist_group(project, accessible_group)
+          end
+
+          it 'returns groups which are accessible and not accessible' do
+            expect(returned_groups_paths).to match_array([accessible_group.path, inaccessible_group.path])
+            expect(returned_groups_avatar_urls).to match_array([accessible_group.avatar_url,
+              inaccessible_group.avatar_url])
           end
         end
 

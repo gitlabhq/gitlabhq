@@ -155,7 +155,7 @@ module PreferencesHelper
         }
       end
 
-      if Gitlab::Sourcegraph.feature_available? && Gitlab::CurrentSettings.sourcegraph_enabled
+      if Gitlab::CurrentSettings.sourcegraph_enabled
         views << {
           name: 'sourcegraph',
           message: sourcegraph_url_message,

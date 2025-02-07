@@ -220,7 +220,7 @@ The supported work item types are:
 - [Issue](../issues/index.md)
 - [Tasks](../../tasks.md)
 - [Incidents](../../../operations/incident_management/incidents.md)
-- [Test cases](../../../ci/test_cases/index.md)
+- [Test cases](../../../ci/test_cases/_index.md)
 - [Requirements](../requirements/index.md)
 - [Objectives and key results (OKRs)](../../okrs.md)
 

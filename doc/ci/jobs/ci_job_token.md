@@ -47,7 +47,7 @@ The CI/CD job token can only access the following features and API endpoints:
 | [Release links API](../../api/releases/links.md)                                                      |         |
 | [Releases API](../../api/releases/_index.md)                                                           | `GET` requests are public by default. |
 | [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Generates changelog data based on commits in a repository. |
-| [Secure files](../secure_files/index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |
+| [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |
 | [Terraform plan](../../user/infrastructure/index.md)                                                  |         |
 
 Other API endpoints are not accessible using a job token. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
@@ -62,7 +62,7 @@ GitLab:
 - Masks the job token in job logs.
 - Grants permissions to the job token only when the job is running.
 
-You should also configure your [runners](../runners/index.md) to be secure:
+You should also configure your [runners](../runners/_index.md) to be secure:
 
 - Avoid using Docker `privileged` mode if the machines are re-used.
 - Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs

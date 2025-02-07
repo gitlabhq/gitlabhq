@@ -15,7 +15,7 @@ requires authentication, usually using static methods like private
 keys and tokens. These methods are called "secrets" because they're
 not meant to be shared with anyone else.
 
-To minimize the risk of exposing your secrets, always [store secrets outside of the repository](../../../ci/secrets/index.md). However, secrets are sometimes accidentally committed to Git
+To minimize the risk of exposing your secrets, always [store secrets outside of the repository](../../../ci/secrets/_index.md). However, secrets are sometimes accidentally committed to Git
 repositories. After a sensitive value is pushed to a remote
 repository, anyone with access to the repository can use the secret to
 impersonate the authorized user.

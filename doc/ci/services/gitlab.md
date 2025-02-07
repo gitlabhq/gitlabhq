@@ -13,7 +13,7 @@ Many applications need to access JSON APIs, so application tests might need acce
 to APIs too. The following example shows how to use GitLab as a microservice to give
 tests access to the GitLab API.
 
-1. Configure a [runner](../runners/index.md) with the Docker or Kubernetes executor.
+1. Configure a [runner](../runners/_index.md) with the Docker or Kubernetes executor.
 1. In your `.gitlab-ci.yml` add:
 
    ```yaml

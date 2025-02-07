@@ -737,7 +737,7 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/ci_resource_group_json.log` on Linux package installations.
 - `/home/git/gitlab/log/ci_resource_group_json.log` on self-compiled installations.
 
-It contains information about [resource group](../../ci/resource_groups/index.md) acquisition. For example:
+It contains information about [resource group](../../ci/resource_groups/_index.md) acquisition. For example:
 
 ```json
 {"severity":"INFO","time":"2023-02-10T23:02:06.095Z","correlation_id":"01GRYS10C2DZQ9J1G12ZVAD4YD","resource_group_id":1,"processable_id":288,"message":"attempted to assign resource to processable","success":true}

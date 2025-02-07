@@ -101,7 +101,7 @@ The following slash commands are available for GitLab:
 | `/gitlab <project> issue close <id>` | Closes the issue with the ID `<id>`. |
 | `/gitlab <project> issue comment <id>` <kbd>Shift</kbd>+<kbd>Enter</kbd> `<comment>` | Adds a comment with the comment body `<comment>` to the issue with the ID `<id>`. |
 | `/gitlab <project> deploy <from> to <to>` | [Deploys](#deploy-command) from the `<from>` environment to the `<to>` environment. |
-| `/gitlab <project> run <job name> <arguments>` | Executes the [ChatOps](../../../ci/chatops/index.md) job `<job name>` on the default branch. |
+| `/gitlab <project> run <job name> <arguments>` | Executes the [ChatOps](../../../ci/chatops/_index.md) job `<job name>` on the default branch. |
 | `/gitlab incident declare` | Opens a dialog to [create an incident from Slack](../../../operations/incident_management/slack.md). |
 
 ### `deploy` command

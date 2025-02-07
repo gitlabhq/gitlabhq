@@ -22,7 +22,7 @@ files by using:
 YAML has a feature called 'anchors' that you can use to duplicate
 content across your document.
 
-Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](../jobs/index.md#hide-a-job)
+Use anchors to duplicate or inherit properties. Use anchors with [hidden jobs](../jobs/_index.md#hide-a-job)
 to provide templates for your jobs. When there are duplicate keys, the latest included key wins, overriding the other keys.
 
 In certain cases (see [YAML anchors for scripts](#yaml-anchors-for-scripts)), you can use YAML anchors to build arrays with multiple components defined elsewhere. For example:
@@ -67,7 +67,7 @@ test2:
 
 `&` sets up the name of the anchor (`job_configuration`), `<<` means "merge the
 given hash into the current one," and `*` includes the named anchor
-(`job_configuration` again). The [expanded](../pipeline_editor/index.md#view-full-configuration) version of this example is:
+(`job_configuration` again). The [expanded](../pipeline_editor/_index.md#view-full-configuration) version of this example is:
 
 ```yaml
 .job_template:
@@ -125,7 +125,7 @@ test:mysql:
   services: *mysql_configuration
 ```
 
-The [expanded](../pipeline_editor/index.md#view-full-configuration) version is:
+The [expanded](../pipeline_editor/_index.md#view-full-configuration) version is:
 
 ```yaml
 .job_template:
@@ -464,7 +464,7 @@ In this example, the `nested-references` job runs all three `echo` commands.
 
 ### Configure your IDE to support `!reference` tags
 
-The [pipeline editor](../pipeline_editor/index.md) supports `!reference` tags. However, the schema rules for custom YAML
+The [pipeline editor](../pipeline_editor/_index.md) supports `!reference` tags. However, the schema rules for custom YAML
 tags like `!reference` might be treated as invalid by your editor by default.
 You can configure some editors to accept `!reference` tags. For example:
 

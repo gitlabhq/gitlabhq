@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Contribute to the CI/CD Schema
 ---
 
-The [pipeline editor](../../ci/pipeline_editor/index.md) uses a CI/CD schema to enhance
+The [pipeline editor](../../ci/pipeline_editor/_index.md) uses a CI/CD schema to enhance
 the authoring experience of our CI/CD configuration files. With the CI/CD schema, the editor can:
 
 - Validate the content of the CI/CD configuration file as it is being written in the editor.

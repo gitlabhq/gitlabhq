@@ -109,7 +109,7 @@ Create a pipeline that builds your Docker image, pushes it to the GitLab contain
 registry, and copies the image to Google Artifact Registry.
 
 1. In your GitLab project, create a
-   [`.gitlab-ci.yml` file](../../ci/quick_start/index.md#create-a-gitlab-ciyml-file).
+   [`.gitlab-ci.yml` file](../../ci/quick_start/_index.md#create-a-gitlab-ciyml-file).
 
 1. To create a pipeline that builds your image, pushes it to the GitLab container
    registry, and copies it to Google Artifact Registry, modify the contents of your

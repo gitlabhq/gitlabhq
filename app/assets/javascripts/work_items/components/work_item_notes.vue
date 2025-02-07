@@ -110,6 +110,11 @@ export default {
       required: false,
       default: () => [],
     },
+    smallHeaderStyle: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   data() {
     return {
@@ -443,6 +448,7 @@ export default {
       :work-item-type="workItemType"
       :discussion-filter="discussionFilter"
       :use-h2="useH2"
+      :small-header-style="smallHeaderStyle"
       @changeSort="changeNotesSortOrder"
       @changeFilter="filterDiscussions"
     />

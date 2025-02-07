@@ -88,7 +88,7 @@ CI/CD variables are available only to immediate child projects of the group.
 GitLab deploy tokens are long-lived, making them attractive for attackers.
 
 To prevent leaking the deploy token, you should also configure your
-[runners](../../../ci/runners/index.md) to be secure:
+[runners](../../../ci/runners/_index.md) to be secure:
 
 - Avoid using Docker `privileged` mode if the machines are re-used.
 - Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs

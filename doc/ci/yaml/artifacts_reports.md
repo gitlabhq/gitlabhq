@@ -121,7 +121,7 @@ GitLab cannot display the combined results of multiple `browser_performance` rep
 
 ## `artifacts:reports:coverage_report`
 
-Use `coverage_report:` to collect [coverage report](../testing/index.md) in Cobertura or JaCoCo formats.
+Use `coverage_report:` to collect [coverage report](../testing/_index.md) in Cobertura or JaCoCo formats.
 
 The `coverage_format:` Can be either [`cobertura`](../testing/test_coverage_visualization/cobertura.md) or
 [`jacoco`](../testing/test_coverage_visualization/jacoco.md).
@@ -144,7 +144,7 @@ job artifact using [wildcards](../jobs/job_artifacts.md#with-wildcards).
 The results of the reports are aggregated in the final coverage report.
 
 GitLab can display the results of coverage report in the merge request
-[diff annotations](../testing/test_coverage_visualization/index.md).
+[diff annotations](../testing/test_coverage_visualization/_index.md).
 
 ## `artifacts:reports:codequality`
 
