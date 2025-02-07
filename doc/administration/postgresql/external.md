@@ -46,7 +46,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
    gitlab_rails['db_password'] = 'DB password'
    ```
 
-   For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/index.md).
+   For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/_index.md).
 
 1. Reconfigure for the changes to take effect:
 

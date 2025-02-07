@@ -418,7 +418,7 @@ For more information, refer to the [Git LFS documentation](../../../../topics/gi
 ### Reference architectures
 
 Large repositories tend to be found in larger organizations with many users. The
-GitLab Test Platform and Support teams provide several [reference architectures](../../../../administration/reference_architectures/index.md) that
+GitLab Test Platform and Support teams provide several [reference architectures](../../../../administration/reference_architectures/_index.md) that
 are the recommended way to deploy GitLab at scale.
 
 In these types of setups, the GitLab environment used should match a reference

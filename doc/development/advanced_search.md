@@ -1261,7 +1261,7 @@ the volume of updates.
 
 All of the indexing happens in Sidekiq, so much of the relevant logs for the
 Elasticsearch integration can be found in
-[`sidekiq.log`](../administration/logs/index.md#sidekiqlog). In particular, all
+[`sidekiq.log`](../administration/logs/_index.md#sidekiqlog). In particular, all
 Sidekiq workers that make requests to Elasticsearch in any way will log the
 number of requests and time taken querying/writing to Elasticsearch. This can
 be useful to understand whether or not your cluster is keeping up with
@@ -1270,12 +1270,12 @@ indexing.
 Searching Elasticsearch is done via ordinary web workers handling requests. Any
 requests to load a page or make an API request, which then make requests to
 Elasticsearch, will log the number of requests and the time taken to
-[`production_json.log`](../administration/logs/index.md#production_jsonlog). These
+[`production_json.log`](../administration/logs/_index.md#production_jsonlog). These
 logs will also include the time spent on Database and Gitaly requests, which
 may help to diagnose which part of the search is performing poorly.
 
 There are additional logs specific to Elasticsearch that are sent to
-[`elasticsearch.log`](../administration/logs/index.md#elasticsearchlog)
+[`elasticsearch.log`](../administration/logs/_index.md#elasticsearchlog)
 that may contain information to help diagnose performance issues.
 
 ### Performance Bar

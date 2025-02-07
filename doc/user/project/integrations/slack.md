@@ -97,13 +97,13 @@ To trigger a [notification event](#triggers-for-slack-notifications) for a group
 ## Troubleshooting
 
 If your Slack integration is not working, start troubleshooting by
-searching through the [Sidekiq logs](../../../administration/logs/index.md#sidekiqlog)
+searching through the [Sidekiq logs](../../../administration/logs/_index.md#sidekiqlog)
 for errors relating to your Slack service.
 
 ### Error: `Something went wrong on our end`
 
 You might get this generic error message in the GitLab UI.
-Review [the logs](../../../administration/logs/index.md#productionlog) to find
+Review [the logs](../../../administration/logs/_index.md#productionlog) to find
 the error message and keep troubleshooting from there.
 
 ### Error: `certificate verify failed`

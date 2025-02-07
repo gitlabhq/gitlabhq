@@ -19,11 +19,11 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-Use functions with [GitLab Query Language (GLQL)](index.md) to create dynamic queries.
+Use functions with [GitLab Query Language (GLQL)](_index.md) to create dynamic queries.
 
 ## Functions inside query
 
-To make a query context-specific, use functions inside a [query](index.md#query-syntax), for example,
+To make a query context-specific, use functions inside a [query](_index.md#query-syntax), for example,
 by filtering by a current user or a date.
 
 ### Current user
@@ -84,7 +84,7 @@ by filtering by a current user or a date.
 
 ## Functions in GLQL views
 
-To derive a new column from an existing field of a [GLQL view](index.md#glql-views), include
+To derive a new column from an existing field of a [GLQL view](_index.md#glql-views), include
 functions in the `fields` parameter.
 
 ### Extract labels into a new column

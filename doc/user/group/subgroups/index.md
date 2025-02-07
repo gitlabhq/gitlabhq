@@ -213,7 +213,7 @@ For example:
 
 ## Mention subgroups
 
-Mentioning subgroups ([`@<subgroup_name>`](../../discussions/index.md#mentions)) in epics, issues, commits, and merge requests
+Mentioning subgroups ([`@<subgroup_name>`](../../discussions/_index.md#mentions)) in epics, issues, commits, and merge requests
 notifies all direct members of that group. Inherited members of a subgroup are not notified by mentions.
 Mentioning works the same as for projects and groups, and you can choose the group of members to be notified.
 

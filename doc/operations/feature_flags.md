@@ -429,5 +429,5 @@ Functionality-wise, there are no differences. Both GitLab.com and GitLab Self-Ma
 
 In terms of scalability, it's up to the spec of the GitLab instance.
 For example, GitLab.com uses HA architecture so it can handle many concurrent requests. However, GitLab Self-Managed instances on underpowered machines won't deliver comparable performance.
-See [Reference architectures](../administration/reference_architectures/index.md)
+See [Reference architectures](../administration/reference_architectures/_index.md)
 for more information.

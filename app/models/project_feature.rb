@@ -154,7 +154,7 @@ class ProjectFeature < ApplicationRecord
   def public_pages?
     return true unless Gitlab.config.pages.access_control
 
-    return false if ::Gitlab::Pages.access_control_is_forced?
+    return false if ::Gitlab::Pages.access_control_is_forced?(project.group)
 
     pages_access_level == PUBLIC || (pages_access_level == ENABLED && project.public?)
   end

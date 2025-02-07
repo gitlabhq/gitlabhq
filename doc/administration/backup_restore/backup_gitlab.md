@@ -1250,7 +1250,7 @@ ActiveRecord::StatementInvalid: PG::UndefinedTable
 ```
 
 Each time the GitLab backup runs, GitLab starts generating 500 errors and errors about missing
-tables will [be logged by PostgreSQL](../logs/index.md#postgresql-logs):
+tables will [be logged by PostgreSQL](../logs/_index.md#postgresql-logs):
 
 ```plaintext
 ERROR: relation "tablename" does not exist at character 123
@@ -1342,7 +1342,7 @@ In the following cases, consider using file system data transfer or snapshots as
 - Your GitLab instance has a problem and using the regular backup and import Rake tasks isn't possible.
 
 WARNING:
-Gitaly Cluster [does not support snapshot backups](../gitaly/index.md#snapshot-backup-and-recovery).
+Gitaly Cluster [does not support snapshot backups](../gitaly/_index.md#snapshot-backup-and-recovery).
 
 When considering using file system data transfer or snapshots:
 

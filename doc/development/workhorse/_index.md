@@ -34,13 +34,13 @@ When required, Workhorse makes modifications to HTTP headers which GitLab Rails 
 - For specific types of requests, especially those that are resource-intensive or require specialized handling
   (for example, large file uploads), Workhorse takes a more active role.
   Upon receiving directives from Rails, Workhorse executes specialized tasks such as directly
-  interacting with [Gitaly](../../administration/gitaly/index.md) or offloading processing file uploads from Rails.
+  interacting with [Gitaly](../../administration/gitaly/_index.md) or offloading processing file uploads from Rails.
 
 ### Specialized task handling
 
 - Workhorse is capable of intercepting certain requests based on Rails' responses and executing
   predefined operations.
-  This includes interacting with [Gitaly](../../administration/gitaly/index.md), managing large data
+  This includes interacting with [Gitaly](../../administration/gitaly/_index.md), managing large data
   blobs, and altering request handling logic as required.
 - A notable functionality is its ability to manage file uploads efficiently.
   Workhorse can hijack the file upload process, perform necessary actions as dictated by Rails

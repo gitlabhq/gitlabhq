@@ -44,7 +44,7 @@ The following methods are available to reduce the size of a repository:
 - [Clean up repository](#clean-up-repository): Remove internal Git references and unreferenced objects.
 - [Remove blobs](#remove-blobs): Permanently delete blobs containing sensitive or confidential information.
 
-Before you reduce your repository size, you should [create a full backup of your repository](../../../administration/backup_restore/index.md).
+Before you reduce your repository size, you should [create a full backup of your repository](../../../administration/backup_restore/_index.md).
 These methods are irreversible and can potentially affect your project's history and data.
 
 When you reduce your repository size with any of the available methods, you don't need to block

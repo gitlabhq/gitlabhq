@@ -190,7 +190,7 @@ finishes.
 ## Related topics
 
 - [API documentation](../../api/resource_groups.md)
-- [Log documentation](../../administration/logs/index.md#ci_resource_groups_jsonlog)
+- [Log documentation](../../administration/logs/_index.md#ci_resource_groups_jsonlog)
 - [GitLab for safe deployments](../environments/deployment_safety.md)
 
 ## Troubleshooting

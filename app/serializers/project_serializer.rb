@@ -6,6 +6,8 @@ class ProjectSerializer < BaseSerializer
       case opts[:serializer]
       when :import
         ProjectImportEntity
+      when :project_details
+        API::Entities::Project
       else
         ProjectEntity
       end

@@ -556,9 +556,9 @@ and [processing specific job classes](../../../administration/sidekiq/processing
 
 If an imported repository does not contain all branches of the source repository:
 
-1. Set the [environment variable](../../../administration/logs/index.md#override-default-log-level) `IMPORT_DEBUG=true`.
+1. Set the [environment variable](../../../administration/logs/_index.md#override-default-log-level) `IMPORT_DEBUG=true`.
 1. Retry the import with a [different group, subgroup, or project name](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#re-import-projects-from-external-providers).
-1. If some branches are still missing, inspect [`importer.log`](../../../administration/logs/index.md#importerlog)
+1. If some branches are still missing, inspect [`importer.log`](../../../administration/logs/_index.md#importerlog)
    (for example, with [`jq`](../../../administration/logs/log_parsing.md#parsing-gitlab-railsimporterlog)).
 
 ### Exception: `Error Importing repository - No such file or directory @ rb_sysopen - (filename)`
@@ -589,7 +589,7 @@ Search logs for relevant information:
 
 For self-managed instances:
 
-1. Check the [Sidekiq logs](../../../administration/logs/index.md#sidekiqlog) and [`exceptions_json` logs](../../../administration/logs/index.md#exceptions_jsonlog).
+1. Check the [Sidekiq logs](../../../administration/logs/_index.md#sidekiqlog) and [`exceptions_json` logs](../../../administration/logs/_index.md#exceptions_jsonlog).
 1. Search for entries related to `RepositoryImportWorker` and the correlation ID from [Check import status](#check-import-status).
 1. Look for fields such as `job_status`, `interrupted_count`, and `exception`.
 

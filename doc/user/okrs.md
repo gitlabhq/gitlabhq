@@ -123,7 +123,7 @@ You can always change the sorting order to **Newest first**, which is remembered
 
 ## Comments and threads
 
-You can add [comments](discussions/index.md) and reply to threads in OKRs.
+You can add [comments](discussions/_index.md) and reply to threads in OKRs.
 
 ## Assign users
 
@@ -306,7 +306,7 @@ You can create a comment in an objective or key result by sending an email.
 Sending an email to this address creates a comment that contains the email body.
 
 For more information about creating comments by sending an email and the necessary configuration, see
-[Reply to a comment by sending email](discussions/index.md#reply-to-a-comment-by-sending-email).
+[Reply to a comment by sending email](discussions/_index.md#reply-to-a-comment-by-sending-email).
 
 To copy the objective's or key result's email address:
 

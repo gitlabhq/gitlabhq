@@ -561,7 +561,7 @@ with little-to-no _work_, for example in most cases; `id` or `title`, can be giv
 
 ### `calls_gitaly`
 
-Fields that have the potential to perform a [Gitaly](../administration/gitaly/index.md) call when resolving _must_ be marked as
+Fields that have the potential to perform a [Gitaly](../administration/gitaly/_index.md) call when resolving _must_ be marked as
 such by passing `calls_gitaly: true` to `field` when defining it.
 
 For example:

@@ -56,7 +56,7 @@ class MergeRequestNoteableEntity < IssuableEntity
   end
 
   expose :locked_discussion_docs_path, if: ->(merge_request) { merge_request.discussion_locked? } do |merge_request|
-    help_page_path('user/discussions/index.md', anchor: 'prevent-comments-by-locking-the-discussion')
+    help_page_path('user/discussions/_index.md', anchor: 'prevent-comments-by-locking-the-discussion')
   end
 
   expose :is_project_archived do |merge_request|

@@ -432,7 +432,7 @@ To delete these references to missing local and/or remote artifacts (`job.log` f
 ### Delete references to missing LFS objects
 
 If `gitlab-rake gitlab:lfs:check VERBOSE=1` detects LFS objects that exist in the database
-but not on disk, [follow the procedure in the LFS documentation](../lfs/index.md#missing-lfs-objects)
+but not on disk, [follow the procedure in the LFS documentation](../lfs/_index.md#missing-lfs-objects)
 to remove the database entries.
 
 ### Update dangling object storage references

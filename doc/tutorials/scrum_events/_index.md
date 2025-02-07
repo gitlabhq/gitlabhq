@@ -500,7 +500,7 @@ Provide all team members the appropriate time to contribute and collaborate.
 
    ![Example threads for planned stories](img/story_threads_v16_10.png)
 
-1. After every story has a thread, edit the issue description and [mention each team member](../../user/discussions/index.md#mentions).
+1. After every story has a thread, edit the issue description and [mention each team member](../../user/discussions/_index.md#mentions).
    Mentioning team members automatically creates a to-do item for them in their respective [to-do lists](../../user/todos.md).
 1. Then, asynchronously, before the start of the upcoming sprint, team members should:
 
@@ -514,7 +514,7 @@ Provide all team members the appropriate time to contribute and collaborate.
    and set the story point value in the **Weight** field.
 1. After the story is updated, add the `status::ready` label to each issue.
 1. Then, to signal the planning for that vertical slice has been completed,
-   [resolve each discussion thread](../../user/discussions/index.md#resolve-a-thread) in the planning issue.
+   [resolve each discussion thread](../../user/discussions/_index.md#resolve-a-thread) in the planning issue.
 
 ## Tracking sprint progress
 

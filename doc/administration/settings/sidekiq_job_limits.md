@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-[Sidekiq](../sidekiq/index.md) jobs get stored in
+[Sidekiq](../sidekiq/_index.md) jobs get stored in
 Redis. To avoid excessive memory for Redis, we:
 
 - Compress job arguments before storing them in Redis.

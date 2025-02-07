@@ -55,6 +55,7 @@ module Groups
         :jobs_to_be_done,
         :crm_enabled,
         :crm_source_group_id,
+        :force_pages_access_control,
         :enable_namespace_descendants_cache
       ] + [group_feature_attributes: group_feature_attributes]
     end

@@ -11,7 +11,7 @@ DETAILS:
 
 This document is relevant if you are using a PostgreSQL instance that is not
 managed by the Linux package. This includes
-[cloud-managed instances](../../reference_architectures/index.md#best-practices-for-the-database-services),
+[cloud-managed instances](../../reference_architectures/_index.md#best-practices-for-the-database-services),
 or manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that
@@ -21,7 +21,7 @@ in case a Geo site has to be rebuilt.
 
 NOTE:
 If you’re using GitLab Geo, we strongly recommend running instances installed by using the Linux package or using
-[validated cloud-managed instances](../../reference_architectures/index.md#recommended-cloud-providers-and-services),
+[validated cloud-managed instances](../../reference_architectures/_index.md#recommended-cloud-providers-and-services),
 as we actively develop and test based on those.
 We cannot guarantee compatibility with other external databases.
 

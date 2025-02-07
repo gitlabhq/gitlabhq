@@ -36,7 +36,7 @@ From left to right, the performance bar displays:
     GitLab features. The name shown is the same name used to configure database
     connections in GitLab.
 - **Gitaly calls**: the time taken (in milliseconds) and the total number of
-  [Gitaly](../../gitaly/index.md) calls. Select to display a modal window with more
+  [Gitaly](../../gitaly/_index.md) calls. Select to display a modal window with more
   details.
 - **Redis calls**: the time taken (in milliseconds) and the total number of
   Redis calls. Select to display a modal window with more details.

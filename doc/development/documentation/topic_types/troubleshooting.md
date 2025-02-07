@@ -21,7 +21,7 @@ This kind of content can be helpful to others, and the benefits outweigh the ris
 If you think you have an exception to this rule, contact the Technical Writing team.
 
 GitLab Support maintains their own
-[troubleshooting content](../../../administration/troubleshooting/index.md).
+[troubleshooting content](../../../administration/troubleshooting/_index.md).
 
 ## Format
 

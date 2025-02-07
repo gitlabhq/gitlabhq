@@ -24,7 +24,7 @@ To access sign-in restriction settings:
 You can restrict the password authentication for web interface and Git over HTTP(S):
 
 - **Web interface**: When this feature is disabled, the **Standard** sign-in tab
-  is removed and an [external authentication provider](../auth/index.md)
+  is removed and an [external authentication provider](../auth/_index.md)
   must be used.
 - **Git over HTTP(S)**: When this feature is disabled, a [personal access token](../../user/profile/personal_access_tokens.md)
   or LDAP password must be used to authenticate.

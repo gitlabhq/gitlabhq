@@ -99,7 +99,7 @@ Global pipeline health is a key indicator to monitor along with job and pipeline
 [CI/CD analytics](index.md#pipeline-success-and-duration-charts) give a visual
 representation of pipeline health.
 
-Instance administrators have access to additional [performance metrics and self-monitoring](../../administration/monitoring/index.md).
+Instance administrators have access to additional [performance metrics and self-monitoring](../../administration/monitoring/_index.md).
 
 You can fetch specific pipeline health metrics from the [API](../../api/rest/_index.md).
 External monitoring tools can poll the API and verify pipeline health or collect

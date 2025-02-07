@@ -29,7 +29,7 @@ For more information, see:
   querying and scheduling snippet repository moves.
 - [The API documentation](../../api/group_repository_storage_moves.md) details the endpoints for
   querying and scheduling group repository moves.
-- [Migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
+- [Migrate to Gitaly Cluster](../gitaly/_index.md#migrate-to-gitaly-cluster).
 
 ### Moving Repositories
 
@@ -181,7 +181,7 @@ Each of the approaches we list can or does overwrite data in the target director
 
 ### Recommended approach in all cases
 
-For either Gitaly or Gitaly Cluster targets, the GitLab [backup and restore capability](../backup_restore/index.md)
+For either Gitaly or Gitaly Cluster targets, the GitLab [backup and restore capability](../backup_restore/_index.md)
 should be used. Git repositories are accessed, managed, and stored on GitLab servers by Gitaly as a database. Data loss
 can result from directly accessing and copying Gitaly files using tools like `rsync`.
 

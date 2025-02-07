@@ -58,7 +58,7 @@ In the following table, you can see:
 | [Email from GitLab](../email_from_gitlab.md)       |   GitLab 14.1 and later     |
 | [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
 | [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) | GitLab 14.4 and later |
-| [View description change history](../../user/discussions/index.md#view-description-change-history) | GitLab 16.0 and later |
+| [View description change history](../../user/discussions/_index.md#view-description-change-history) | GitLab 16.0 and later |
 | [Maintenance mode](../maintenance_mode/index.md) | GitLab 16.0 and later |
 | [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
 | [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md) | GitLab 16.0 and later |

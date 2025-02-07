@@ -130,7 +130,7 @@ component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-
 
 You may also have a look at our troubleshooting guides for:
 
-- [GitLab](../troubleshooting/index.md).
+- [GitLab](../troubleshooting/_index.md).
 - [Linux package installations](https://docs.gitlab.com/omnibus/index.html#troubleshooting).
 
 Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
@@ -202,7 +202,7 @@ Checking GitLab ... Finished
 
 In some cases it is necessary to rebuild the `authorized_keys` file,
 for example, if after an upgrade you receive `Permission denied (publickey)` when pushing [via SSH](../../user/ssh.md)
-and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs/index.md#gitlab-shelllog).
+and find `404 Key Not Found` errors in [the `gitlab-shell.log` file](../logs/_index.md#gitlab-shelllog).
 To rebuild `authorized_keys`, run:
 
 - Linux package installations:

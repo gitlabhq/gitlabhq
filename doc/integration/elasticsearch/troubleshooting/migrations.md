@@ -11,7 +11,7 @@ DETAILS:
 
 When working with Elasticsearch migrations, you might encounter the following issues.
 
-If [`elasticsearch.log`](../../../administration/logs/index.md#elasticsearchlog) contains errors
+If [`elasticsearch.log`](../../../administration/logs/_index.md#elasticsearchlog) contains errors
 and retrying failed migrations does not work, contact GitLab Support.
 For more information, see [advanced search migrations](../../advanced_search/elasticsearch.md#advanced-search-migrations).
 
@@ -80,7 +80,7 @@ In some cases, Elasticsearch cannot connect to GitLab anymore because:
 - The Elasticsearch password has been updated on one side only (`Unauthorized [401] ... unable to authenticate user` errors).
 - A firewall or network issue impairs connectivity (`Failed to open TCP connection to <ip>:9200` errors).
 
-These errors are logged in [`gitlab-rails/elasticsearch.log`](../../../administration/logs/index.md#elasticsearchlog). To retrieve the errors, use [`jq`](../../../administration/logs/log_parsing.md):
+These errors are logged in [`gitlab-rails/elasticsearch.log`](../../../administration/logs/_index.md#elasticsearchlog). To retrieve the errors, use [`jq`](../../../administration/logs/log_parsing.md):
 
 ```shell
 $ jq --raw-output 'select(.severity == "ERROR") | [.error_class, .error_message] | @tsv' \
@@ -91,7 +91,7 @@ $ jq --raw-output 'select(.severity == "ERROR") | [.error_class, .error_message]
 `Elastic` workers and [Sidekiq jobs](../../../administration/admin_area.md#background-jobs) could also appear much more often
 because Elasticsearch frequently attempts to reindex if a previous job fails.
 You can use [`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#usage)
-or `jq` to count workers in the [Sidekiq logs](../../../administration/logs/index.md#sidekiq-logs):
+or `jq` to count workers in the [Sidekiq logs](../../../administration/logs/_index.md#sidekiq-logs):
 
 ```shell
 $ fast-stats --print-fields=count,score sidekiq/current

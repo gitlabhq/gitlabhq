@@ -192,7 +192,7 @@ deactivate B
 ```
 
 In addition to recording to the database, we also write these events to
-[a log file](../../administration/logs/index.md#audit_jsonlog).
+[a log file](../../administration/logs/_index.md#audit_jsonlog).
 
 ## Event type definitions
 

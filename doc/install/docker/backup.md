@@ -15,7 +15,7 @@ You can create a GitLab backup with:
 docker exec -t <container name> gitlab-backup create
 ```
 
-For more information, see [Back up and restore GitLab](../../administration/backup_restore/index.md).
+For more information, see [Back up and restore GitLab](../../administration/backup_restore/_index.md).
 
 NOTE:
 If your GitLab configuration is provided entirely using the `GITLAB_OMNIBUS_CONFIG` environment variable

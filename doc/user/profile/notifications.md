@@ -41,7 +41,7 @@ You might receive notifications for one of the following reasons:
 > - The account is a project bot.
 > - The account is a service account with default email address.
 > - The account is blocked (banned) or deactivated.
-> - [A comment is edited to include a user mention](../discussions/index.md#edit-a-comment-to-add-a-mention).
+> - [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention).
 > - An administrator has blocked notifications.
 
 ## Edit notification settings
@@ -82,7 +82,7 @@ For each project and group you can select one of the following levels:
 | Global      | Your global settings apply.                                 |
 | Watch       | Receive notifications for any activity.                     |
 | Participate | Receive notifications for threads you have participated in. |
-| On mention  | Receive notifications when you are [mentioned](../discussions/index.md#mentions) in a comment. |
+| On mention  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
 | Disabled    | Receive no notifications.                                   |
 | Custom      | Receive notifications for selected events and threads you have participated in.                  |
 
@@ -195,7 +195,7 @@ In issues, merge requests, and epics, for most events, the notification is sent 
 - Participants:
   - The author and assignee.
   - Authors of comments.
-  - Anyone [mentioned](../discussions/index.md#mentions) by username in the title
+  - Anyone [mentioned](../discussions/_index.md#mentions) by username in the title
     or description.
   - Anyone mentioned by username in a comment if their notification level is "Participating" or higher.
 - Watchers: users with notification level "Watch".
@@ -318,7 +318,7 @@ The participants are:
 
 - Authors of the design (can be multiple people if different authors have uploaded different versions of the design).
 - Authors of comments on the design.
-- Anyone that is [mentioned](../discussions/index.md#mentions) in a comment on the design.
+- Anyone that is [mentioned](../discussions/_index.md#mentions) in a comment on the design.
 
 ## Notifications on group or project access expiration
 

@@ -19,11 +19,11 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-In a GitLab Query Language (GLQL) [query](index.md#query-syntax), a field is the leftmost part
+In a GitLab Query Language (GLQL) [query](_index.md#query-syntax), a field is the leftmost part
 of the expression.
 In queries, fields follow the syntax of `<field> <operator> <value> and ...`,
 
-In a [GLQL view](index.md#glql-views), fields are included as a comma-separated list of tokens in
+In a [GLQL view](_index.md#glql-views), fields are included as a comma-separated list of tokens in
 the `fields:` option.
 
 This page lists fields available to use as filters when querying issues or work items.

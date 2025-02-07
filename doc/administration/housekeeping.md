@@ -230,7 +230,7 @@ gitaly['configuration'] = {
 ::EndTabs
 
 When the scheduled housekeeping is executed, you can see the following entries in
-your [Gitaly log](logs/index.md#gitaly-logs):
+your [Gitaly log](logs/_index.md#gitaly-logs):
 
 ```json
 # When the scheduled housekeeping starts

@@ -70,7 +70,7 @@ GitLab enables Git LFS by default for both self-managed instances and GitLab.com
 It offers both server settings and project-specific settings.
 
 - To configure Git LFS on your instance, such as setting up remote object storage, see
-  [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md).
+  [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/_index.md).
 - To configure Git LFS for a specific project:
 
   1. In the root directory of your local copy of the repository, run `git lfs install`. This command
@@ -111,7 +111,7 @@ authentication.
 
 By default, Git LFS operations occur over HTTPS, even when Git communicates with your repository over SSH.
 In GitLab 17.2, [pure SSH support for LFS](https://gitlab.com/groups/gitlab-org/-/epics/11872) was introduced.
-For information on how to enable this feature, see [Pure SSH transfer protocol](../../../administration/lfs/index.md#pure-ssh-transfer-protocol).
+For information on how to enable this feature, see [Pure SSH transfer protocol](../../../administration/lfs/_index.md#pure-ssh-transfer-protocol).
 
 To fetch new LFS objects for a repository you have already cloned, run this command:
 
@@ -152,6 +152,6 @@ the total size of your repository, see
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Git LFS with Git](../../git/file_management.md#git-lfs)
 - [Git LFS developer information](../../../development/lfs.md)
-- [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md) for self-managed instances
+- [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/_index.md) for self-managed instances
 - [Troubleshooting Git LFS](troubleshooting.md)
 - [The `.gitattributes` file](../../../user/project/repository/files/git_attributes.md)

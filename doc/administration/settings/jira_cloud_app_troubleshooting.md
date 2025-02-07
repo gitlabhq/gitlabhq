@@ -162,7 +162,7 @@ due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388943). To
 ### Error: `Invalid audience`
 
 If you're using a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy),
-[`exceptions_json.log`](../logs/index.md#exceptions_jsonlog) might contain a message like:
+[`exceptions_json.log`](../logs/_index.md#exceptions_jsonlog) might contain a message like:
 
 ```plaintext
 Invalid audience. Expected https://proxy.example.com/-/jira_connect, received https://gitlab.example.com/-/jira_connect
@@ -236,10 +236,10 @@ For the second log, you might have one of the following scenarios:
       GitLab Self-Managed instance can connect to both `connect-install-keys.atlassian.com`
       and `gitlab.com`.
     - The GitLab Self-Managed instance is unable to decrypt the JWT token from Jira. [From GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147234),
-      the [`exceptions_json.log`](../logs/index.md#exceptions_jsonlog) contains more information about the error.
+      the [`exceptions_json.log`](../logs/_index.md#exceptions_jsonlog) contains more information about the error.
     - If a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy) is in front of your GitLab Self-Managed instance,
       the `Host` header sent to the GitLab Self-Managed instance might not match the reverse proxy FQDN.
-      Check the [Workhorse logs](../logs/index.md#workhorse-logs) on the GitLab Self-Managed instance:
+      Check the [Workhorse logs](../logs/_index.md#workhorse-logs) on the GitLab Self-Managed instance:
 
       ```shell
       grep /-/jira_connect/events/installed /var/log/gitlab/gitlab-workhorse/current

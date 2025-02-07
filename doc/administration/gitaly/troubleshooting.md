@@ -407,7 +407,7 @@ Building your merge request... This page will update when the build is complete
 Gitaly must be able to connect to itself to complete some operations. If the Gitaly certificate is not trusted by the Gitaly server,
 merge request diffs can't be generated.
 
-If Gitaly can't connect to itself, you see messages in the [Gitaly logs](../logs/index.md#gitaly-logs) like the following messages:
+If Gitaly can't connect to itself, you see messages in the [Gitaly logs](../logs/_index.md#gitaly-logs) like the following messages:
 
 ```json
 {
@@ -458,7 +458,7 @@ This error happens because Gitaly commit signing is headless and not associated 
 ## Gitaly logs show errors in `info` messages
 
 Because of a bug [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6201) in GitLab 16.3, additional entries were written to the
-[Gitaly logs](../logs/index.md#gitaly-logs). These log entries contained `"level":"info"` but the `msg` string appeared to contain an error.
+[Gitaly logs](../logs/_index.md#gitaly-logs). These log entries contained `"level":"info"` but the `msg` string appeared to contain an error.
 
 For example:
 

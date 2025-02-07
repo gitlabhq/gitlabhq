@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab Self-Managed
 
-The settings for package metadata synchronization are located in the [**Admin** area](index.md).
+The settings for package metadata synchronization are located in the [**Admin** area](_index.md).
 
 ## Choose package registry metadata to sync
 

@@ -201,7 +201,7 @@ GitLab instance and GitHub Enterprise.
 
 To check for a connectivity issue:
 
-1. Go to the [`production.log`](../administration/logs/index.md#productionlog)
+1. Go to the [`production.log`](../administration/logs/_index.md#productionlog)
    on your GitLab server and look for the following error:
 
    ``` plaintext

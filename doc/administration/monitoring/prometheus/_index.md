@@ -119,7 +119,7 @@ prometheus['scrape_configs'] = [
 You can use the Linux package to configure a standalone Monitoring node running Prometheus.
 An external [Grafana](../performance/grafana_configuration.md) can be configured to this monitoring node to display dashboards.
 
-A standalone Monitoring node is recommended for [GitLab deployments with multiple nodes](../../reference_architectures/index.md).
+A standalone Monitoring node is recommended for [GitLab deployments with multiple nodes](../../reference_architectures/_index.md).
 
 The steps below are the minimum necessary to configure a Monitoring node running Prometheus with the Linux
 package:
@@ -457,7 +457,7 @@ The GitLab exporter allows you to measure various GitLab metrics, pulled from Re
 
 If you are **not** using Prometheus monitoring:
 
-1. [Disable Prometheus](index.md#configuring-prometheus).
+1. [Disable Prometheus](_index.md#configuring-prometheus).
 1. Delete the data under `/var/opt/gitlab/prometheus`.
 
 If you are using Prometheus monitoring:
@@ -481,7 +481,7 @@ If you are using Prometheus monitoring:
    gitlab-ctl status prometheus
    ```
 
-1. Optional. [Configure the storage retention size](index.md#configure-the-storage-retention-size).
+1. Optional. [Configure the storage retention size](_index.md#configure-the-storage-retention-size).
 
 ### Monitoring node not receiving data
 

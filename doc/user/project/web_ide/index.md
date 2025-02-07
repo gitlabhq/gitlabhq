@@ -239,7 +239,7 @@ Prerequisites:
 - In user preferences, you must
   [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace).
 - In group settings, users with the Owner role must
-  [enable the extension marketplace](../../enterprise_user/index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
+  [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
 
 You can use the extension marketplace to download and run VS Code extensions in the Web IDE.
 

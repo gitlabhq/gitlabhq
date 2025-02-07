@@ -26,9 +26,21 @@ module Gitlab
         Gitlab.config.pages.secret_file
       end
 
-      def access_control_is_forced?
-        ::Gitlab.config.pages.access_control &&
-          ::Gitlab::CurrentSettings.current_application_settings.force_pages_access_control
+      def access_control_is_forced?(group = nil)
+        return false unless ::Gitlab.config.pages.access_control
+
+        instance_level_enforcement = ::Gitlab::CurrentSettings.current_application_settings.force_pages_access_control
+
+        return true if instance_level_enforcement
+
+        group_level_enforcement?(group)
+      end
+
+      def group_level_enforcement?(group)
+        return false unless group
+        return false unless ::Gitlab.config.pages.access_control
+
+        group.self_and_ancestors.any?(&:force_pages_access_control)
       end
 
       def enabled?

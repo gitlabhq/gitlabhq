@@ -451,7 +451,7 @@ a session if the browser is closed or the existing session expires.
 ## Related topics
 
 - [Create users](account/create_accounts.md)
-- [Sign in to your GitLab account](../../administration/auth/index.md)
+- [Sign in to your GitLab account](../../administration/auth/_index.md)
 - [Change your password](user_passwords.md)
 - Receive emails for:
   - [Sign-ins from unknown IP addresses or devices](notifications.md#notifications-for-unknown-sign-ins)

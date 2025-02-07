@@ -17,7 +17,7 @@ Discussions are attached to:
 - Merge requests
 - Commits
 
-This includes [comments, threads](../user/discussions/index.md), and system notes.
+This includes [comments, threads](../user/discussions/_index.md), and system notes.
 System notes are notes about changes to the object (for example, when a milestone changes).
 
 Label notes are not part of this API, but recorded as separate events in
@@ -189,7 +189,7 @@ curl --request POST \
 
 ### Add note to existing issue thread
 
-Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/index.md#create-a-thread-by-replying-to-a-standard-comment).
+Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/_index.md#create-a-thread-by-replying-to-a-standard-comment).
 
 WARNING:
 Notes can be added to other items than comments, such as system notes, making them threads.
@@ -645,7 +645,7 @@ curl --request POST \
 ### Add note to existing epic thread
 
 Adds a new note to the thread. This can also
-[create a thread from a single comment](../user/discussions/index.md#create-a-thread-by-replying-to-a-standard-comment).
+[create a thread from a single comment](../user/discussions/_index.md#create-a-thread-by-replying-to-a-standard-comment).
 
 ```plaintext
 POST /groups/:id/epics/:epic_id/discussions/:discussion_id/notes
@@ -1082,7 +1082,7 @@ curl --request PUT \
 ### Add note to existing merge request thread
 
 Adds a new note to the thread. This can also
-[create a thread from a single comment](../user/discussions/index.md#create-a-thread-by-replying-to-a-standard-comment).
+[create a thread from a single comment](../user/discussions/_index.md#create-a-thread-by-replying-to-a-standard-comment).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes

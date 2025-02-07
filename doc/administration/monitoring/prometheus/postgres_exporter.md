@@ -15,7 +15,7 @@ For self-compiled installations, you must install and configure it yourself.
 
 To enable the PostgreSQL Server Exporter:
 
-1. [Enable Prometheus](index.md#configuring-prometheus).
+1. [Enable Prometheus](_index.md#configuring-prometheus).
 1. Edit `/etc/gitlab/gitlab.rb` and enable `postgres_exporter`:
 
    ```ruby

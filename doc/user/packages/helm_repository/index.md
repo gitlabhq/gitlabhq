@@ -130,7 +130,7 @@ See [Using Helm](https://helm.sh/docs/intro/using_helm/) for more information.
 
 ### The chart is not visible in the package registry after uploading
 
-Check the [Sidekiq log](../../../administration/logs/index.md#sidekiqlog)
+Check the [Sidekiq log](../../../administration/logs/_index.md#sidekiqlog)
 for any related errors. If you see `Validation failed: Version is invalid`, it means that the
 version in your `Chart.yaml` file does not follow [Helm Chart versioning specifications](https://helm.sh/docs/topics/charts/#charts-and-versioning).
 To fix the error, use the correct version syntax and upload the chart again.

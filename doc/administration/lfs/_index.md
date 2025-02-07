@@ -569,7 +569,7 @@ for more details:
 If you are forking a project with multiple LFS files, the operation might get stuck with a `Forking in progress` message.
 If you encounter this, follow these steps to diagnose and resolve the issue:
 
-1. Check your [exceptions_json.log](../logs/index.md#exceptions_jsonlog) file for the following error message:
+1. Check your [exceptions_json.log](../logs/_index.md#exceptions_jsonlog) file for the following error message:
 
    ```plaintext
    "error_message": "Unable to fork project 12345 for repository 

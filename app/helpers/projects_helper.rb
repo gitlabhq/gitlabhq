@@ -468,7 +468,7 @@ module ProjectsHelper
         anchor: 'delete-a-git-lfs-file-from-repository-history'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?,
+      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?(project.group),
       pagesHelpPath: help_page_path('user/project/pages/pages_access_control.md'),
       issuesHelpPath: help_page_path('user/project/issues/index.md'),
       membersPagePath: project_project_members_path(project),

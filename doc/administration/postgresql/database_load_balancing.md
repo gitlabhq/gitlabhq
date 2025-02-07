@@ -190,7 +190,7 @@ gitlab_rails['db_load_balancing'] = {
 ## Logging
 
 The load balancer logs various events in
-[`database_load_balancing.log`](../logs/index.md#database_load_balancinglog), such as
+[`database_load_balancing.log`](../logs/_index.md#database_load_balancinglog), such as
 
 - When a host is marked as offline
 - When a host comes back online

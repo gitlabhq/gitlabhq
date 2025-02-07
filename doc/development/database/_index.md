@@ -98,7 +98,7 @@ title: Database development guidelines
 ## PostgreSQL information for GitLab administrators
 
 - [Configure GitLab using an external PostgreSQL service](../../administration/postgresql/external.md)
-- [Configuring PostgreSQL for scaling](../../administration/postgresql/index.md)
+- [Configuring PostgreSQL for scaling](../../administration/postgresql/_index.md)
 - [Database Load Balancing](../../administration/postgresql/database_load_balancing.md)
 - [Moving GitLab databases to a different PostgreSQL instance](../../administration/postgresql/moving.md)
 - [Replication and failover with Omnibus GitLab](../../administration/postgresql/replication_and_failover.md)
@@ -109,7 +109,7 @@ title: Database development guidelines
 ## User information for scaling
 
 For GitLab administrators, information about
-[configuring PostgreSQL for scaling](../../administration/postgresql/index.md) is available,
+[configuring PostgreSQL for scaling](../../administration/postgresql/_index.md) is available,
 including the major methods:
 
 - [Standalone PostgreSQL](../../administration/postgresql/standalone.md)

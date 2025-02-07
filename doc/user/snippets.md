@@ -256,7 +256,7 @@ GitLab forwards the spam to Akismet.
   than 10 files results in an error.
 - Revisions are not visible to the user on the GitLab UI, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
   for updates.
-- The default [maximum size for a snippet](../administration/snippets/index.md) and current (as of 2024-04-17) is 50 MB.
+- The default [maximum size for a snippet](../administration/snippets/_index.md) and current (as of 2024-04-17) is 50 MB.
 - Git LFS is not supported.
 
 ### Reduce snippets repository size
@@ -282,4 +282,4 @@ creating a new snippet, use this workaround:
 
 ## Related topics
 
-- [Configure snippet settings](../administration/snippets/index.md) on GitLab Self-Managed
+- [Configure snippet settings](../administration/snippets/_index.md) on GitLab Self-Managed

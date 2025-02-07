@@ -78,7 +78,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-You can find detailed information about a SAML sign-in in the [`audit_json.log` file](../../../administration/logs/index.md#audit_jsonlog).
+You can find detailed information about a SAML sign-in in the [`audit_json.log` file](../../../administration/logs/_index.md#audit_jsonlog).
 
 For example, by searching for `system_access`, you can find entries that show when a user signed into GitLab using SAML:
 

@@ -12,8 +12,8 @@ DETAILS:
 GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
 storage is either:
 
-- Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/index.md).
-- [Virtual storage](gitaly/index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
+- Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).
+- [Virtual storage](gitaly/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
 
 WARNING:
 Repository storage could be configured as a `path` that points directly to the directory where the repositories are
@@ -176,7 +176,7 @@ For example:
 
 If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
 differs from the hashed path. For more information, see
-[Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths).
+[Praefect-generated replica paths](gitaly/_index.md#praefect-generated-replica-paths).
 
 ### Object storage support
 
@@ -221,7 +221,7 @@ storage pattern using two characters and two-level folders, following the Git im
 "shared/lfs-objects/89/09/029eb962194cfb326259411b22ae3f4a814b5be4f80651735aeef9f3229c"
 ```
 
-LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
+LFS objects are also [S3-compatible](lfs/_index.md#storing-lfs-objects-in-remote-object-storage).
 
 ## Configure where new repositories are stored
 
@@ -252,4 +252,4 @@ See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) fo
 ## Move repositories
 
 To move a repository to a different repository storage (for example, from `default` to `storage2`), use the
-same process as [migrating to Gitaly Cluster](gitaly/index.md#migrate-to-gitaly-cluster).
+same process as [migrating to Gitaly Cluster](gitaly/_index.md#migrate-to-gitaly-cluster).

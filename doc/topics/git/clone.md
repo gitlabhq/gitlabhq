@@ -234,7 +234,7 @@ Deeper integration between partial clone and sparse checkout is possible through
 
 WARNING:
 Partial clone using `sparse` filters is still experimental. It might be slow and significantly increase
-[Gitaly](../../administration/gitaly/index.md) resource utilization when cloning and fetching.
+[Gitaly](../../administration/gitaly/_index.md) resource utilization when cloning and fetching.
 [Filter all blobs and use sparse-checkout](#filter-by-object-type) instead, because
 [`git-sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) simplifies
 this type of partial clone use and overcomes its limitations.

@@ -83,11 +83,11 @@ All recommendations are for production configurations, including performance tes
 
 ### AWS Gitaly backup
 
-Due to the nature of how Praefect tracks the replication metadata of Gitaly disk information, the best backup method is [the official backup and restore Rake tasks](../../../administration/backup_restore/index.md).
+Due to the nature of how Praefect tracks the replication metadata of Gitaly disk information, the best backup method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
 
 ### AWS Gitaly recovery
 
-Gitaly Cluster does not support snapshot backups as these can cause issues where the Praefect database becomes out of syn with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/index.md).
+Gitaly Cluster does not support snapshot backups as these can cause issues where the Praefect database becomes out of syn with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
 
 ### Gitaly long term management
 

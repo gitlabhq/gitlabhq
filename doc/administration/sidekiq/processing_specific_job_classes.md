@@ -8,7 +8,7 @@ title: Processing specific job classes
 WARNING:
 These are advanced settings. While they are used on GitLab.com, most GitLab
 instances should only add more processes that listen to all queues. This is the
-same approach described in the [Reference Architectures](../reference_architectures/index.md).
+same approach described in the [Reference Architectures](../reference_architectures/_index.md).
 
 Most GitLab instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
 

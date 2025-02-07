@@ -941,6 +941,7 @@ export default {
         <project-feature-setting
           v-model="pagesAccessLevel"
           :label="$options.i18n.pagesLabel"
+          :access-control-forced="pagesAccessControlForced"
           :options="pagesFeatureAccessLevelOptions"
           name="project[project_feature_attributes][pages_access_level]"
         />

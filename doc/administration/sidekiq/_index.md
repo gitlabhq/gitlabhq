@@ -54,7 +54,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
 
 ## Set up Sidekiq instance
 
-Find [your reference architecture](../reference_architectures/index.md#available-reference-architectures) and follow the Sidekiq instance setup details.
+Find [your reference architecture](../reference_architectures/_index.md#available-reference-architectures) and follow the Sidekiq instance setup details.
 
 ## Configure multiple Sidekiq nodes with shared storage
 

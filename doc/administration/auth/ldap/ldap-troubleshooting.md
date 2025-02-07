@@ -196,7 +196,7 @@ The user should now be able to sign in.
 #### Email has already been taken
 
 A user tries to sign in with the correct LDAP credentials, is denied access,
-and the [production.log](../../logs/index.md#productionlog) shows an error that looks like this:
+and the [production.log](../../logs/_index.md#productionlog) shows an error that looks like this:
 
 ```plaintext
 (LDAP) Error saving user <USER DN> (email@example.com): ["Email has already been taken"]
@@ -485,7 +485,7 @@ but there was a typo in the domain. After the domain setting was fixed, the **Sy
 ##### Missing LDAP configuration on Sidekiq nodes
 
 The **Sync now** button becomes stuck when GitLab is scaled over multiple nodes and the LDAP configuration is missing from
-[the `/etc/gitlab/gitlab.rb` on the nodes running Sidekiq](../../sidekiq/index.md#configure-ldap-and-user-or-group-synchronization).
+[the `/etc/gitlab/gitlab.rb` on the nodes running Sidekiq](../../sidekiq/_index.md#configure-ldap-and-user-or-group-synchronization).
 In this case, the Sidekiq jobs seem to disappear.
 
 LDAP is required on the Sidekiq nodes because LDAP has multiple jobs that are
@@ -497,7 +497,7 @@ run asynchronously that require a local LDAP configuration:
 You can test whether missing LDAP configuration is the problem by running [the Rake task to check LDAP](#ldap-check)
 on each node that is running Sidekiq. If LDAP is set up correctly on this node, it connects to the LDAP server and returns users.
 
-To solve this issue, [configure LDAP](../../sidekiq/index.md#configure-ldap-and-user-or-group-synchronization) on the Sidekiq nodes.
+To solve this issue, [configure LDAP](../../sidekiq/_index.md#configure-ldap-and-user-or-group-synchronization) on the Sidekiq nodes.
 When configured, run [the Rake task to check LDAP](#ldap-check) to confirm
 that the GitLab node can connect to LDAP.
 
@@ -826,10 +826,10 @@ users, [see what to do when no users are found](#no-users-are-found).
 ### GitLab logs
 
 If a user account is blocked or unblocked due to the LDAP configuration, a
-message is [logged to `application_json.log`](../../logs/index.md#application_jsonlog).
+message is [logged to `application_json.log`](../../logs/_index.md#application_jsonlog).
 
 If there is an unexpected error during an LDAP lookup (configuration error,
-timeout), the sign-in is rejected and a message is [logged to `production.log`](../../logs/index.md#productionlog).
+timeout), the sign-in is rejected and a message is [logged to `production.log`](../../logs/_index.md#productionlog).
 
 ### ldapsearch
 

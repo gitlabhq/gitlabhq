@@ -350,7 +350,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 In lists of group members, entries can display the following badges:
 
 - **SAML**, to indicate the member has a [SAML account](saml_sso/index.md) connected to them.
-- **Enterprise**, to indicate that the member of the top-level group is an [enterprise user](../enterprise_user/index.md).
+- **Enterprise**, to indicate that the member of the top-level group is an [enterprise user](../enterprise_user/_index.md).
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
@@ -358,7 +358,7 @@ In lists of group members, entries can display the following badges:
    - Direct members of the group, select **Membership = Direct**.
    - Inherited, shared, and inherited shared members of the group, select **Membership = Indirect**.
    - Members with two-factor authentication enabled or disabled, select **2FA = Enabled** or **2FA = Disabled**.
-   - Members of the top-level group who are [enterprise users](../enterprise_user/index.md), select **Enterprise = true**.
+   - Members of the top-level group who are [enterprise users](../enterprise_user/_index.md), select **Enterprise = true**.
 
 ### Search a group
 

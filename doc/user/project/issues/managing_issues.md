@@ -200,7 +200,7 @@ Prerequisites:
 
 To do it:
 
-1. Optional (but recommended). [Create a backup](../../../administration/backup_restore/index.md) before
+1. Optional (but recommended). [Create a backup](../../../administration/backup_restore/_index.md) before
    attempting any changes in the console.
 1. Open the [Rails console](../../../administration/operations/rails_console.md).
 1. Run the following script. Make sure to change `project`, `admin_user`, and `target_project` to
@@ -422,7 +422,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have [administrator access](../../../administration/index.md) to your GitLab instance.
+- You must have [administrator access](../../../administration/_index.md) to your GitLab instance.
 
 Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md)
 of your installation.
@@ -683,7 +683,7 @@ You can create a comment in an issue by sending an email.
 Sending an email to this address creates a comment that contains the email body.
 
 For more information about creating comments by sending an email and the necessary configuration, see
-[Reply to a comment by sending email](../../discussions/index.md#reply-to-a-comment-by-sending-email).
+[Reply to a comment by sending email](../../discussions/_index.md#reply-to-a-comment-by-sending-email).
 
 To copy the issue's email address:
 

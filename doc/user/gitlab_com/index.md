@@ -596,7 +596,7 @@ High Performance TCP/HTTP Load Balancer:
 
 ## Sidekiq
 
-GitLab.com runs [Sidekiq](https://sidekiq.org) as an [external process](../../administration/sidekiq/index.md)
+GitLab.com runs [Sidekiq](https://sidekiq.org) as an [external process](../../administration/sidekiq/_index.md)
 for Ruby job scheduling.
 
 The current settings are in the [GitLab.com Kubernetes pod configuration](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/blob/master/releases/gitlab/values/gprd.yaml.gotmpl).

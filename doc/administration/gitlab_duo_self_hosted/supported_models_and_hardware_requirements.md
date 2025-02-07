@@ -18,9 +18,9 @@ DETAILS:
 
 The following table shows the supported models along with their specific features and hardware requirements to help you select the model that best fits your infrastructure needs for optimal performance.
 
-## Approved LLMs
+## Supported LLMs
 
-Install one of the following GitLab-approved large language models (LLMs):
+Install one of the following GitLab-supported large language models (LLMs):
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -37,11 +37,11 @@ Install one of the following GitLab-approved large language models (LLMs):
 
 Legend:
 
-- 🟢 Green - Strongly recommended. The model can handle the feature without any loss of quality.
-- 🟡 Amber - Recommended. The model supports the feature, but there might be minor compromises or limitations.
-- 🔴 Red - Not recommended. The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
+- 🟢 Green - Fully compatible. The model can likely handle the feature without any loss of quality.
+- 🟡 Amber - Largely compatible. The model supports the feature, but there might be compromises or limitations.
+- 🔴 Red - Not compatible. The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
 
-The following models are under evaluation, and support is limited:
+The following models are configurable for the functionalities marked below, but are currently in experimental or beta status, under evaluation, and are excluded from the "Customer Integrated Models" definition in the [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/):
 
 | Model family   | Model | Supported platforms | Status | Code completion | Code generation | GitLab Duo Chat |
 |--------------- |-------|---------------------|--------|-----------------|-----------------|-----------------|

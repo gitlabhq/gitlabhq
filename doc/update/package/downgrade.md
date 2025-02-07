@@ -17,7 +17,7 @@ Because you must revert the database schema changes (migrations) that were made 
 must have:
 
 - At least a database backup created under the exact same version and edition you are rolling back to.
-- Ideally, a [full backup archive](../../administration/backup_restore/index.md) of that exact same version and edition
+- Ideally, a [full backup archive](../../administration/backup_restore/_index.md) of that exact same version and edition
   you are rolling back to.
 
 When rolling back to an earlier major versions, you must take into account version-specific changes that occurred when

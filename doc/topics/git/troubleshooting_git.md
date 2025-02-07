@@ -357,7 +357,7 @@ could trigger an authentication error. To resolve this, specify a username strin
 ## `401` errors logged during successful `git clone`
 
 When cloning a repository with HTTP, the
-[`production_json.log`](../../administration/logs/index.md#production_jsonlog) file
+[`production_json.log`](../../administration/logs/_index.md#production_jsonlog) file
 may show an initial status of `401` (unauthorized), quickly followed by a `200`.
 
 ```json
@@ -417,7 +417,7 @@ your IP address has been blocked by the failed-authentication ban:
 fatal: unable to access 'https://gitlab.com/group/project.git/': The requested URL returned error: 403
 ```
 
-The `403` can be seen in the [`production_json.log`](../../administration/logs/index.md#production_jsonlog):
+The `403` can be seen in the [`production_json.log`](../../administration/logs/_index.md#production_jsonlog):
 
 ```json
 {
@@ -438,7 +438,7 @@ The `403` can be seen in the [`production_json.log`](../../administration/logs/i
 ```
 
 If your IP address has been blocked, a corresponding log entry exists in the
-[`auth_json.log`](../../administration/logs/index.md#auth_jsonlog):
+[`auth_json.log`](../../administration/logs/_index.md#auth_jsonlog):
 
 ```json
 {

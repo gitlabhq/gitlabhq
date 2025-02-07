@@ -178,6 +178,6 @@ Next, you can:
 
 - Create an [issue template](../../user/project/description_templates.md) to gather all the important
   details from your stakeholders.
-- Use [comments and threads](../../user/discussions/index.md) to gather more information about an idea.
+- Use [comments and threads](../../user/discussions/_index.md) to gather more information about an idea.
 - [Relate](../../user/project/issues/related_issues.md) issues in your team backlog to issues in your
   idea project.

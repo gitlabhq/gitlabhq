@@ -12,14 +12,14 @@ DETAILS:
 This page describes the GitLab reference architecture designed to target a peak load of 40 requests per second (RPS), the typical peak load of up to 2,000 users, both manual and automated, based on real data.
 
 For a full list of reference architectures, see
-[Available reference architectures](index.md#available-reference-architectures).
+[Available reference architectures](_index.md#available-reference-architectures).
 
 > - **Target Load:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Cost calculator template:** [See cost calculator templates section](index.md#cost-calculator-templates)
+> - **Cost calculator template:** [See cost calculator templates section](_index.md#cost-calculator-templates)
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-start-with).
+> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 
 | Service                            | Nodes | Configuration          | GCP             | AWS          | Azure    |
 |------------------------------------|-------|------------------------|-----------------|--------------|----------|
@@ -36,15 +36,15 @@ For a full list of reference architectures, see
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 3. Recommended to be run with a reputable third-party load balancer or service (LB PaaS).
-   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. See [Load Balancers](index.md#load-balancers) for more information.
+   Sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. See [Load Balancers](_index.md#load-balancers) for more information.
 4. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 5. Gitaly specifications are based on the use of normal-sized repositories in good health.
    However, if you have large monorepos (larger than several gigabytes) this can **significantly** impact Git and Gitaly performance and an increase of specifications will likely be required.
-   Refer to [large monorepos](index.md#large-monorepos) for more information.
-6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](index.md#autoscaling-of-stateful-nodes).
+   Refer to [large monorepos](_index.md#large-monorepos) for more information.
+6. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
    such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
@@ -94,12 +94,12 @@ monitor .[#7FFFD4]u-> sidekiq
 
 ## Requirements
 
-Before starting, see the [requirements](index.md#requirements) for reference architectures.
+Before starting, see the [requirements](_index.md#requirements) for reference architectures.
 
 ## Testing methodology
 
 The 2k architecture is designed to cover a large majority of workflows and is regularly
-[smoke and performance tested](index.md#validation-and-test-results) by the Test Platform team
+[smoke and performance tested](_index.md#validation-and-test-results) by the Test Platform team
 against the following endpoint throughput targets:
 
 - API: 40 RPS
@@ -110,12 +110,12 @@ against the following endpoint throughput targets:
 The above targets were selected based on real customer data of total environmental loads corresponding to the user count,
 including CI and other workloads.
 
-If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](index.md#large-monorepos)
-or notable [additional workloads](index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](index.md#scaling-an-environment).
+If you have metrics to suggest that you have regularly higher throughput against the above endpoint targets, [large monorepos](_index.md#large-monorepos)
+or notable [additional workloads](_index.md#additional-workloads) these can notably impact the performance environment and [further adjustments may be required](_index.md#scaling-an-environment).
 If this applies to you, we strongly recommended referring to the linked documentation and reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Testing is done regularly by using our [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) and its dataset, which is available for anyone to use.
-The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](index.md#validation-and-test-results).
+The results of this testing are [available publicly on the GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information on our testing strategy [refer to this section of the documentation](_index.md#validation-and-test-results).
 
 The load balancers used for testing were HAProxy for Linux package environments or equivalent Cloud Provider services with NGINX Ingress for Cloud Native Hybrids. These selections do not represent a specific requirement or recommendation as most [reputable load balancers are expected to work](#configure-the-external-load-balancer).
 
@@ -147,7 +147,7 @@ In a multi-node GitLab configuration, you'll need an external load balancer to r
 traffic to the application servers.
 
 The specifics on which load balancer to use, or its exact configuration
-is beyond the scope of GitLab documentation but refer to [Load Balancers](index.md) for more information around
+is beyond the scope of GitLab documentation but refer to [Load Balancers](_index.md) for more information around
 general requirements. This section will focus on the specifics of
 what to configure for your load balancer of choice.
 
@@ -273,7 +273,7 @@ A reputable provider or solution should be used for this. [Google Cloud SQL](htt
 and [Amazon RDS](https://aws.amazon.com/rds/) are known to work. However, Amazon Aurora is **incompatible** with load balancing enabled by default from
 [14.4.0](https://docs.gitlab.com/17.3/ee/update/versions/gitlab_14_changes.html#1440).
 
-See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 
 If you use a third party external service:
 
@@ -356,7 +356,7 @@ to be used with GitLab.
 
 NOTE:
 Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
-Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 ### Provide your own Redis instance
 
@@ -366,7 +366,7 @@ You can optionally use a [third party external service for the Redis instance](.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
 - You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
-For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
+For more information, see [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services).
 
 ### Standalone Redis using the Linux package
 
@@ -420,12 +420,12 @@ are supported and can be added if needed.
 
 ## Configure Gitaly
 
-[Gitaly](../gitaly/index.md) server node requirements are dependent on data size,
+[Gitaly](../gitaly/_index.md) server node requirements are dependent on data size,
 specifically the number of projects and those projects' sizes.
 
 WARNING:
 **Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
-**However, if you have [large monorepos](index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
+**However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
 If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Due to Gitaly having notable input and output requirements, we strongly
@@ -621,12 +621,12 @@ It also requires a connection to [Object Storage](#configure-the-object-storage)
 
 NOTE:
 If you find that the environment's Sidekiq job processing is slow with long queues
-you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
+you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
 NOTE:
 When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
 update the Sidekiq configuration in addition to the Rails configuration.
-Refer to the [external Sidekiq documentation](../sidekiq/index.md) for more information.
+Refer to the [external Sidekiq documentation](../sidekiq/_index.md) for more information.
 
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
@@ -937,7 +937,7 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 ## Configure Prometheus
 
 The Linux package can be used to configure a standalone Monitoring node
-running [Prometheus](../monitoring/prometheus/index.md):
+running [Prometheus](../monitoring/prometheus/_index.md):
 
 1. SSH in to the Monitoring node.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
@@ -1037,7 +1037,7 @@ running [Prometheus](../monitoring/prometheus/index.md):
 GitLab supports using an [object storage](../object_storage.md) service for holding numerous types of data.
 It's recommended over [NFS](../nfs.md) for data objects and in general it's better
 in larger setups as object storage is typically much more performant, reliable,
-and scalable. See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+and scalable. See [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 
 There are two ways of specifying object storage configuration in GitLab:
 
@@ -1134,7 +1134,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Sidekiq              | 3.6 vCPU<br/>8 GB memory (request)<br/>16 GB memory (limit) | 2 x `n1-standard-4` | 2 x `m5.xlarge`  |
 | Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
-- For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
+- For this setup, we **recommend** and regularly [test](_index.md#validation-and-test-results)
   [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - GCP and AWS examples of how to reach the Target Node Pool Total are given for convenience. These sizes are used in performance testing but following the example is not required. Different node pool designs can be used as desired as long as the targets are met, and all pods can deploy.
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
@@ -1156,8 +1156,8 @@ services where applicable):
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
-2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+1. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
+2. Can be optionally run on reputable third-party external PaaS Redis solutions. See [Provide your own Redis instance](#provide-your-own-redis-instance) and [Recommended cloud providers and services](_index.md#recommended-cloud-providers-and-services) for more information.
 3. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 <!-- markdownlint-enable MD029 -->
 

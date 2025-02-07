@@ -42,7 +42,7 @@ These problems can cause `501` errors:
 
 - Git LFS support is not enabled on the GitLab server. Check with your GitLab
   administrator why Git LFS is not enabled on the server. See
-  [LFS administration documentation](../../../administration/lfs/index.md) for instructions
+  [LFS administration documentation](../../../administration/lfs/_index.md) for instructions
   on how to enable Git LFS support.
 
 - The Git LFS client version is not supported by GitLab server. You should:

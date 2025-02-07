@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-The [**Admin** area](index.md) has the instance settings for CI/CD-related features,
+The [**Admin** area](_index.md) has the instance settings for CI/CD-related features,
 including runners, job artifacts, and the package registry.
 
 ## Auto DevOps

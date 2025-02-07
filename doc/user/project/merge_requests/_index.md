@@ -320,7 +320,7 @@ sort order by clicking the sort button on the right.
 ## Resolve a thread
 
 When you want to finish a conversation in a merge request,
-[resolve a thread](../../discussions/index.md#resolve-a-thread).
+[resolve a thread](../../discussions/_index.md#resolve-a-thread).
 
 GitLab shows the number of unresolved threads in the top right corner of a
 merge request, like this: **7 unresolved threads**.
@@ -405,7 +405,7 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Testing and reports](../../../ci/testing/index.md)
 - [GitLab keyboard shortcuts](../../shortcuts.md)
-- [Comments and threads](../../discussions/index.md)
+- [Comments and threads](../../discussions/_index.md)
 - [Suggest code changes](reviews/suggestions.md)
 - [CI/CD pipelines](../../../ci/index.md)
 - [Push options](../../../topics/git/commit.md) for merge requests

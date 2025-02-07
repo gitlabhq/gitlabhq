@@ -31,7 +31,7 @@ Before you begin troubleshooting, you should:
   Feature.enable(:expanded_ai_logging)
   ```
 
-  Now, requests and responses from GitLab to the AI gateway are logged to [`llm.log`](../logs/index.md#llmlog)
+  Now, requests and responses from GitLab to the AI gateway are logged to [`llm.log`](../logs/_index.md#llmlog)
 
 ## Use debugging scripts
 

@@ -31,7 +31,7 @@ The workload includes your users' activity, use of automation and mirroring, and
 
 For a maximum of 20 requests per second or 1,000 users, you should have 8 vCPU.
 For more users or higher workload,
-see [reference architectures](../administration/reference_architectures/index.md).
+see [reference architectures](../administration/reference_architectures/_index.md).
 
 ## Memory
 
@@ -40,7 +40,7 @@ The workload includes your users' activity, use of automation and mirroring, and
 
 For a maximum of 20 requests per second or 1,000 users, you should have 16 GB of memory.
 For more users or higher workload,
-see [reference architectures](../administration/reference_architectures/index.md).
+see [reference architectures](../administration/reference_architectures/_index.md).
 
 In some cases, GitLab can run with at least 8 GB of memory.
 For more information, see
@@ -52,7 +52,7 @@ For more information, see
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)
 [which must be tuned correctly](#postgresql-tuning).
 
-Depending on the [number of users](../administration/reference_architectures/index.md),
+Depending on the [number of users](../administration/reference_architectures/_index.md),
 the PostgreSQL server should have:
 
 - For most GitLab instances, at least 5 to 10 GB of storage
@@ -81,7 +81,7 @@ For more information, see [managing PostgreSQL extensions](postgresql_extensions
 ### GitLab Geo
 
 For [GitLab Geo](../administration/geo/index.md), you should use the Linux package or
-[validated cloud providers](../administration/reference_architectures/index.md#recommended-cloud-providers-and-services)
+[validated cloud providers](../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services)
 to install GitLab.
 Compatibility with other external databases is not guaranteed.
 
@@ -205,7 +205,7 @@ By default, [Prometheus](https://prometheus.io) and its related exporters are en
 These processes consume approximately 200 MB of memory.
 
 For more information, see
-[monitoring GitLab with Prometheus](../administration/monitoring/prometheus/index.md).
+[monitoring GitLab with Prometheus](../administration/monitoring/prometheus/_index.md).
 
 ## Supported web browsers
 

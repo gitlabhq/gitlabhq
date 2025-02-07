@@ -110,7 +110,7 @@ If the server hook code is properly implemented, it should execute when the Git 
 
 ### Server hooks on a Gitaly Cluster
 
-If you use [Gitaly Cluster](gitaly/index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
+If you use [Gitaly Cluster](gitaly/_index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
 Consequentially, the hook scripts must be copied to every Gitaly node that has a replica of the repository.
 To accomplish this, follow the same steps for setting custom repository hooks for the applicable version and repeat for each storage.
 
@@ -119,7 +119,7 @@ The location to copy the scripts to depends on where repositories are stored:
 - In GitLab 15.2 and earlier, Gitaly Cluster uses the [hashed storage path](repository_storage_paths.md#hashed-storage)
   reported by the GitLab application.
 - In GitLab 15.3 and later, new repositories are created using
-  [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths),
+  [Praefect-generated replica paths](gitaly/_index.md#praefect-generated-replica-paths),
   which are not the hashed storage path. The replica path can be identified by
   [querying the Praefect repository metadata](gitaly/troubleshooting_gitaly_cluster.md#view-repository-metadata)
   using `-relative-path` to specify the expected GitLab hashed storage path.

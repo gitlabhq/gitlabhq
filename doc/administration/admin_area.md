@@ -331,7 +331,7 @@ To merge topics:
 ## Administering Gitaly servers
 
 You can list all Gitaly servers in the GitLab instance from the **Admin** area's **Gitaly servers**
-page. For more details, see [Gitaly](gitaly/index.md).
+page. For more details, see [Gitaly](gitaly/_index.md).
 
 To access the **Gitaly servers** page:
 
@@ -489,7 +489,7 @@ For multi-node systems we recommend ingesting the logs into services like Elasti
 
 The contents of these log files can be useful when troubleshooting a problem.
 
-For details of these log files and their contents, see [Log system](logs/index.md).
+For details of these log files and their contents, see [Log system](logs/_index.md).
 
 The content of each log file is listed in chronological order. To minimize performance issues, a maximum 2000 lines of each log file are shown.
 

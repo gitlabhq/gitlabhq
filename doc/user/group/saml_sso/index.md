@@ -289,7 +289,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 > - **Remember me** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121569) in GitLab 15.7.
 
 NOTE:
-If the user is an [enterprise user](../../enterprise_user/index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#returning-users-automatic-identity-relinking). This allows GitLab to link the SAML account to the existing account.
+If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#returning-users-automatic-identity-relinking). This allows GitLab to link the SAML account to the existing account.
 
 To link SAML to your existing GitLab.com account:
 
@@ -368,7 +368,7 @@ providers, see [set up your identity provider](#set-up-your-identity-provider).
 
 GitLab allows setting certain user attributes based on values from the SAML response.
 An existing user's attributes are updated from the SAML response values if that
-user is an [enterprise user](../../enterprise_user/index.md) of the group.
+user is an [enterprise user](../../enterprise_user/_index.md) of the group.
 
 #### Supported user attributes
 
@@ -412,9 +412,9 @@ convert the information to XML. An example SAML response is shown here.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4.
 
 By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can
-[configure GitLab with a custom domain](../../enterprise_user/index.md#set-up-a-verified-domain) and GitLab
+[configure GitLab with a custom domain](../../enterprise_user/_index.md#set-up-a-verified-domain) and GitLab
 automatically confirms user accounts. Users still receive an
-[enterprise user](../../enterprise_user/index.md) welcome email. Confirmation is bypassed if both of the following are true:
+[enterprise user](../../enterprise_user/_index.md) welcome email. Confirmation is bypassed if both of the following are true:
 
 - The user is provisioned with SAML or SCIM.
 - The user has an email address that belongs to the verified domain.
@@ -428,7 +428,7 @@ Prerequisites:
 - You must have the Owner role for the group that the enterprise user belongs to.
 - Group SSO must be enabled.
 
-You can disable password authentication for all [enterprise users](../../enterprise_user/index.md) in a group. This also applies to enterprise users who are administrators of the group. Configuring this setting stops enterprise users from changing, resetting, or authenticating with their password. Instead, these users can authenticate with:
+You can disable password authentication for all [enterprise users](../../enterprise_user/_index.md) in a group. This also applies to enterprise users who are administrators of the group. Configuring this setting stops enterprise users from changing, resetting, or authenticating with their password. Instead, these users can authenticate with:
 
 - The group SAML IdP for the GitLab web UI.
 - A personal access token for the GitLab API and Git with HTTP Basic Authentication unless the group has [disabled personal access tokens for enterprise users](../../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
@@ -580,7 +580,7 @@ For example:
 - [SAML SSO for GitLab Self-Managed](../../../integration/saml.md)
 - [Glossary](../../../integration/saml.md#glossary)
 - [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/2023/09/14/the-ultimate-guide-to-enabling-saml/)
-- [Authentication comparison between SaaS and self-managed](../../../administration/auth/index.md#gitlabcom-compared-to-gitlab-self-managed)
+- [Authentication comparison between SaaS and self-managed](../../../administration/auth/_index.md#gitlabcom-compared-to-gitlab-self-managed)
 - [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
 - [SAML Group Sync](group_sync.md)
 

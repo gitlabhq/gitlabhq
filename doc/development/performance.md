@@ -30,7 +30,7 @@ This document describes various guidelines to ensure good and consistent perform
   - [GitLab Performance Tool project](https://gitlab.com/gitlab-org/quality/performance)
   - [Review apps performance metrics](testing_guide/review_apps.md#performance-metrics)
 - Monitoring & Overview:
-  - [GitLab performance monitoring](../administration/monitoring/performance/index.md)
+  - [GitLab performance monitoring](../administration/monitoring/performance/_index.md)
   - [Development department performance indicators](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/)
   - [Service measurement](service_measurement.md)
 - Self-managed administration and customer-focused:
@@ -71,7 +71,7 @@ GitLab provides built-in tools to help improve performance and availability:
 
 - [Profiling](profiling.md).
 - [Distributed Tracing](distributed_tracing.md)
-- [GitLab Performance Monitoring](../administration/monitoring/performance/index.md).
+- [GitLab Performance Monitoring](../administration/monitoring/performance/_index.md).
 - [QueryRecoder](database/query_recorder.md) for preventing `N+1` regressions.
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
 - [Service measurement](service_measurement.md) for measuring and logging service execution.

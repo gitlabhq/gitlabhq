@@ -29,7 +29,7 @@ masks the problem by:
 The same approach doesn't fit a container-based lifecycle where a container or pod needs to fully shutdown and start as a new container or pod.
 
 Gitaly Cluster (Praefect) solves the data and service high-availability aspect by replicating data across instances. However, Gitaly Cluster is unsuited to run in Kubernetes
-because of [existing issues and design constraints](index.md#known-issues) that are augmented by a container-based platform.
+because of [existing issues and design constraints](_index.md#known-issues) that are augmented by a container-based platform.
 
 To support a Cloud Native deployment, Gitaly (non-Cluster) is the only option.
 By leveraging the right Kubernetes and Gitaly features and configuration, you can minimize service disruption and provide a good user experience.
@@ -155,7 +155,7 @@ For more information, see [Gitaly configuration documentation](configure_gitaly.
 
 #### Right size Pod resources
 
-Sizing the Gitaly pod is critical and [reference architectures](../reference_architectures/index.md#cloud-native-hybrid) provide some guidance as a starting
+Sizing the Gitaly pod is critical and [reference architectures](../reference_architectures/_index.md#cloud-native-hybrid) provide some guidance as a starting
 point. However, different repositories and usage patterns consume varying degrees of resources.
 You should monitor resource usage and adjust accordingly over time.
 

@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 In this section, you are guided through configuring a PostgreSQL database to
-be used with GitLab in one of our [reference architectures](../reference_architectures/index.md).
+be used with GitLab in one of our [reference architectures](../reference_architectures/_index.md).
 
 ## Configuration options
 

@@ -42,7 +42,7 @@ Example log output:
 {"severity":"INFO","time":"2020-06-08T14:39:50.648Z","class":"NewIssueWorker","args":["455","1"],"retry":3,"queue":"new_issue","backtrace":true,"jid":"a24af71f96fd129ec47f5d1e","created_at":"2020-06-08T14:39:50.643Z","meta.user":"root","meta.project":"h5bp/html5-boilerplate","meta.root_namespace":"h5bp","meta.caller_id":"Projects::IssuesController#create","correlation_id":"f9UCZHqhuP7","uber-trace-id":"28f65730f99f55a3:a5d2b62dec38dffc:48ddd092707fa1b7:1","enqueued_at":"2020-06-08T14:39:50.646Z","pid":65011,"message":"NewIssueWorker JID-a24af71f96fd129ec47f5d1e: start","job_status":"start","scheduling_latency_s":0.001144}
 ```
 
-When using [Sidekiq JSON logging](../logs/index.md#sidekiqlog),
+When using [Sidekiq JSON logging](../logs/_index.md#sidekiqlog),
 arguments logs are limited to a maximum size of 10 kilobytes of text;
 any arguments after this limit are discarded and replaced with a
 single argument containing the string `"..."`.

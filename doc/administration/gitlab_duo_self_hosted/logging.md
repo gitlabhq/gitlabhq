@@ -90,13 +90,13 @@ Logging in the `application.json`, `production_json.log`, and `production.log` f
 
 ### The `llm.log` file
 
-When the `:expanded_ai_logging` feature flag is enabled, the [`llm.log` file](../logs/index.md#llmlog) in your GitLab instance captures code generation and Chat events that occur through your instance. The log file does not capture anything when the feature flag is not enabled. Code completion logs are captured directly in the AI gateway.
+When the `:expanded_ai_logging` feature flag is enabled, the [`llm.log` file](../logs/_index.md#llmlog) in your GitLab instance captures code generation and Chat events that occur through your instance. The log file does not capture anything when the feature flag is not enabled. Code completion logs are captured directly in the AI gateway.
 
 For more information on:
 
 - Logged events and their properties, see the [logged event documentation](../../development/ai_features/logged_events.md).
-- How to rotate, manage, export, and visualize the logs in `llm.log`, see the [log system documentation](../logs/index.md).
-- The log file location (for example, so you can delete logs), see [LLM input and output logging](../logs/index.md#llm-input-and-output-logging).
+- How to rotate, manage, export, and visualize the logs in `llm.log`, see the [log system documentation](../logs/_index.md).
+- The log file location (for example, so you can delete logs), see [LLM input and output logging](../logs/_index.md#llm-input-and-output-logging).
 
 ### Logs in your AI gateway container
 

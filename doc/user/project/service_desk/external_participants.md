@@ -96,7 +96,7 @@ For example:
 ### Notifications sent to external participants
 
 External participants get notifications for all public comments on an issue.
-For private communication, use [internal notes](../../discussions/index.md#add-an-internal-note).
+For private communication, use [internal notes](../../discussions/_index.md#add-an-internal-note).
 
 External participants don't receive notifications for any other issue or ticket event.
 

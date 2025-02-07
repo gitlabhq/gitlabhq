@@ -82,7 +82,7 @@ before we remove them.
 
 If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
 a message is logged in the
-[`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file.
+[`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog) file.
 
 If you are using a compatible version and after connecting to OpenSearch, you get the message `Elasticsearch version not compatible`, [resume indexing](#resume-indexing).
 
@@ -372,7 +372,7 @@ may need to set the `production -> elasticsearch -> indexer_path` setting in you
 ### View indexing errors
 
 Errors from the [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer) are reported in
-the [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file and the [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) file with a `json.exception.class` of `Gitlab::Elastic::Indexer::Error`.
+the [`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog) file and the [`sidekiq.log`](../../administration/logs/_index.md#sidekiqlog) file with a `json.exception.class` of `Gitlab::Elastic::Indexer::Error`.
 These errors may occur when indexing Git repository data.
 
 ## Enable advanced search
@@ -785,14 +785,14 @@ This should return something similar to:
 }
 ```
 
-To debug issues with the migrations, check the [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file.
+To debug issues with the migrations, check the [`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog) file.
 
 ### Retry a halted migration
 
 Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
 it is halted and a notification is displayed in the advanced search integration settings.
 
-It is recommended to check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog) to
+It is recommended to check the [`elasticsearch.log` file](../../administration/logs/_index.md#elasticsearchlog) to
 debug why the migration was halted and make any changes before retrying the migration.
 
 When you believe you've fixed the cause of the failure:
@@ -983,7 +983,7 @@ Prerequisites:
 WARNING:
 Indexing a large instance generates a lot of Sidekiq jobs.
 Make sure to prepare for this task by having a
-[scalable setup](../../administration/reference_architectures/index.md) or by creating
+[scalable setup](../../administration/reference_architectures/_index.md) or by creating
 [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
 
 If [enabling advanced search](#enable-advanced-search) causes problems
@@ -1339,18 +1339,18 @@ but you can inspect the logs for any missing updates.
 To recover data more quickly, you can replay:
 
 1. All synced non-repository updates by searching in
-   [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog)
+   [`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog)
    for [`track_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/1e60ea99bd8110a97d8fc481e2f41cab14e63d31/ee/app/services/elastic/process_bookkeeping_service.rb#L25).
    You must send these items again through
    `::Elastic::ProcessBookkeepingService.track!`.
 1. All repository updates by searching in
-   [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog)
+   [`elasticsearch.log`](../../administration/logs/_index.md#elasticsearchlog)
    for [`indexing_commit_range`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f9d75dd3898536b9ec2fb206e0bd677ab59bd6d/ee/lib/gitlab/elastic/indexer.rb#L41).
    You must set [`IndexStatus#last_commit/last_wiki_commit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/index_status.rb)
    to the oldest `from_sha` in the logs and then trigger another index of
    the project with [`ElasticCommitIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_commit_indexer_worker.rb) and [`ElasticWikiIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_wiki_indexer_worker.rb).
 1. All project deletes by searching in
-   [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) for
+   [`sidekiq.log`](../../administration/logs/_index.md#sidekiqlog) for
    [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb).
    You must trigger another `ElasticDeleteProjectWorker`.
 

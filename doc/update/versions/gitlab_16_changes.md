@@ -192,8 +192,8 @@ To workaround the problem:
 
 Linux package installations for GitLab 16.10 include an upgrade to a new major version of Patroni, from version 2.1.0 to version 3.0.1.
 
-If you're using one of the [reference architectures](../../administration/reference_architectures/index.md)
-that enables [High Availability (HA)](../../administration/reference_architectures/index.md#high-availability-ha)
+If you're using one of the [reference architectures](../../administration/reference_architectures/_index.md)
+that enables [High Availability (HA)](../../administration/reference_architectures/_index.md#high-availability-ha)
 (3k users or more), you're using
 [PostgreSQL replication and failover for Linux package installations](../../administration/postgresql/replication_and_failover.md), which uses Patroni.
 

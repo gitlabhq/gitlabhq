@@ -41,7 +41,7 @@ Do not use Latin abbreviations. Use **and** instead, unless you are documenting 
 ## `@mention`
 
 Try to avoid **`@mention`**. Say **mention** instead, and consider linking to the
-[mentions topic](../../../user/discussions/index.md#mentions).
+[mentions topic](../../../user/discussions/_index.md#mentions).
 Don't use backticks.
 
 ## 2FA, two-factor authentication
@@ -1292,7 +1292,7 @@ Do not use **handy**. If the user doesn't find the feature or process to be hand
 
 ## high availability, HA
 
-Do not use **high availability** or **HA**, except in the GitLab [reference architectures](../../../administration/reference_architectures/index.md#high-availability-ha). Instead, direct readers to the reference architectures for more information about configuring GitLab for handling greater amounts of users.
+Do not use **high availability** or **HA**, except in the GitLab [reference architectures](../../../administration/reference_architectures/_index.md#high-availability-ha). Instead, direct readers to the reference architectures for more information about configuring GitLab for handling greater amounts of users.
 
 Do not use phrases like **high availability setup** to mean a multiple node environment. Instead, use **multi-node setup** or similar.
 
@@ -2201,7 +2201,7 @@ Do not use **sanity check**. Use **check for completeness** instead. ([Vale](../
 
 Do not use **scalability** when talking about increasing GitLab performance for additional users. The words scale or scaling
 are sometimes acceptable, but references to increasing GitLab performance for additional users should direct readers
-to the GitLab [reference architectures](../../../administration/reference_architectures/index.md) page.
+to the GitLab [reference architectures](../../../administration/reference_architectures/_index.md) page.
 
 ## search
 

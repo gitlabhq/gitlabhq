@@ -211,7 +211,7 @@ in users not being deleted, and the following error generated:
 ERROR: null value in column "user_id" violates not-null constraint
 ```
 
-The error can be found in the [PostgreSQL log](../../../administration/logs/index.md#postgresql-logs) and
+The error can be found in the [PostgreSQL log](../../../administration/logs/_index.md#postgresql-logs) and
 in the **Retries** section of the [background jobs view](../../../administration/admin_area.md#background-jobs) in the **Admin** area.
 
 If the user being deleted used the [iterations](../../group/iterations/index.md) feature, such

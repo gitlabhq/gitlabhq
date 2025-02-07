@@ -54,7 +54,7 @@ Details about Protected Branches models can be found in the [Code Owners](../../
 
 ### Gitaly touch points
 
-[Gitaly](../../../administration/gitaly/index.md) provides high-level RPC access to Git repositories.
+[Gitaly](../../../administration/gitaly/_index.md) provides high-level RPC access to Git repositories.
 It is present in every GitLab installation and coordinates Git repository storage and retrieval.
 Gitaly implements a client-server architecture with Gitaly as the server and Gitaly clients, also
 known as _Gitaly consumers_, including:

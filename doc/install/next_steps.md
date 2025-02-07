@@ -48,7 +48,7 @@ installation.
 
 ## Backup and upgrade
 
-- [Back up and restore GitLab](../administration/backup_restore/index.md): Learn the different
+- [Back up and restore GitLab](../administration/backup_restore/_index.md): Learn the different
   ways you can back up or restore GitLab.
 - [Upgrade GitLab](../update/_index.md): Every month, a new feature-rich GitLab version
   is released. Learn how to upgrade to it, or to an interim release that contains a security fix.
@@ -68,7 +68,7 @@ installation.
 
 ## Scaling and replication
 
-- [Scaling GitLab](../administration/reference_architectures/index.md):
+- [Scaling GitLab](../administration/reference_architectures/_index.md):
   GitLab supports several different types of clustering.
 - [Geo replication](../administration/geo/index.md):
   Geo is the solution for widely distributed development teams.

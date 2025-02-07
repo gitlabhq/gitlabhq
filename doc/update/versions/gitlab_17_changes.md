@@ -248,7 +248,7 @@ to identify and assess the compatibility of your external integrations.
 
 - The Linux package upgrades OpenSSL from v1.1.1w to v3.0.0.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
-  action is needed. However, note that [Cloud Native Hybrid](../../administration/reference_architectures/index.md#recommended-cloud-providers-and-services) installations
+  action is needed. However, note that [Cloud Native Hybrid](../../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services) installations
   use the Linux packages for stateful components, such as Gitaly. For those components, you will need to verify
   the TLS versions, ciphers, and certificates that are used work with the security level changes discussed below.
 

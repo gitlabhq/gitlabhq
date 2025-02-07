@@ -97,7 +97,7 @@ identity providers and protocols, including
 
 - [SAML](../integration/saml.md)
 
-- More information on identity providers can be found in [GitLab Docs](../administration/auth/index.md).
+- More information on identity providers can be found in [GitLab Docs](../administration/auth/_index.md).
 
 #### Native GitLab User Authentication Configurations
 
@@ -281,7 +281,7 @@ instance.
 **Log System**
 
 GitLab includes an advanced log system where everything can be logged.
-GitLab offers [guidance on log system](../administration/logs/index.md#importerlog)
+GitLab offers [guidance on log system](../administration/logs/_index.md#importerlog)
 log types, which include a wide range of outputs. Review the linked
 guidance for further details.
 
@@ -335,7 +335,7 @@ additional organizational requirements when enabling events in GitLab.
 
 Outside of security events, administrators may also want visibility into
 the performance of their application to support uptime. GitLab provides
-a [robust set of documentation around metrics](../administration/monitoring/index.md)
+a [robust set of documentation around metrics](../administration/monitoring/_index.md)
 that are supported in a GitLab instance.
 
 **Storage**
@@ -465,7 +465,7 @@ providers:
 
 - [Amazon Web Services](../install/aws/_index.md)
 
-GitLab provides a [decision tree for assisting customers with selecting reference architectures and availability models](../administration/reference_architectures/index.md#decision-tree).
+GitLab provides a [decision tree for assisting customers with selecting reference architectures and availability models](../administration/reference_architectures/_index.md#decision-tree).
 Most cloud service providers provide resiliency in a region for
 managed services. When selecting an architecture, it is important to
 consider the organization's tolerance for downtime and the criticality

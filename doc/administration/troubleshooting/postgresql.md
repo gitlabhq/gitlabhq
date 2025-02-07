@@ -201,14 +201,14 @@ without having to [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-
 which in this case would restart Puma and Sidekiq.
 
 For example, a backup may fail with the following errors in the output of the
-[backup command](../backup_restore/index.md#back-up-gitlab)
+[backup command](../backup_restore/_index.md#back-up-gitlab)
 because the statement timeout was too short:
 
 ```plaintext
 pg_dump: error: Error message from server: server closed the connection unexpectedly
 ```
 
-You may also see errors in the [PostgreSQL logs](../logs/index.md#postgresql-logs):
+You may also see errors in the [PostgreSQL logs](../logs/_index.md#postgresql-logs):
 
 ```plaintext
 canceling statement due to statement timeout

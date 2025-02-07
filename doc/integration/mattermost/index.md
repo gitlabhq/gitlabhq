@@ -196,7 +196,7 @@ sudo gitlab-psql -d mattermost_production
 
 ## Back up GitLab Mattermost
 
-GitLab Mattermost is not included in the regular [Linux package backup](../../administration/backup_restore/index.md) Rake task.
+GitLab Mattermost is not included in the regular [Linux package backup](../../administration/backup_restore/_index.md) Rake task.
 
 The general Mattermost [backup and disaster recovery](https://docs.mattermost.com/deploy/backup-disaster-recovery.html) documentation can be used as a guide
 on what needs to be backed up.

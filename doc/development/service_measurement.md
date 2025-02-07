@@ -18,7 +18,7 @@ The measuring module is a tool that allows to measure a service's execution, and
 - RSS memory usage
 - Server worker ID
 
-The measuring module logs these measurements into a structured log called [`service_measurement.log`](../administration/logs/index.md#service_measurementlog),
+The measuring module logs these measurements into a structured log called [`service_measurement.log`](../administration/logs/_index.md#service_measurementlog),
 as a single entry for each service execution.
 
 For GitLab.com, `service_measurement.log` is ingested in Elasticsearch and Kibana as part of our monitoring solution.

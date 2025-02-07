@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Monitor your GitLab Dedicated instance
 ---
 
-GitLab delivers [application logs](../logs/index.md) to an Amazon S3 bucket in the GitLab tenant account, which can be shared with you.
+GitLab delivers [application logs](../logs/_index.md) to an Amazon S3 bucket in the GitLab tenant account, which can be shared with you.
 
 Logs stored in the S3 bucket are retained indefinitely, until the one year retention policy is fully enforced. GitLab team members can view more information in confidential issue [483](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483).
 
@@ -34,7 +34,7 @@ For information about how to access S3 buckets after you have the name, see the 
 
 ## S3 bucket contents and structure
 
-The Amazon S3 bucket contains a combination of infrastructure logs and application logs from the GitLab [log system](../logs/index.md).
+The Amazon S3 bucket contains a combination of infrastructure logs and application logs from the GitLab [log system](../logs/_index.md).
 
 The logs in the bucket are encrypted using an AWS KMS key managed by GitLab. If you choose to enable [BYOK](../dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
 

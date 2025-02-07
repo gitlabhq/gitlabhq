@@ -452,7 +452,7 @@ Changes to the issue format can be submitted in the
 #### Instance level
 
 Any feature flag change that affects any GitLab instance is automatically logged in
-[features_json.log](../../administration/logs/index.md#features_jsonlog).
+[features_json.log](../../administration/logs/_index.md#features_jsonlog).
 You can search the change history in [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/).
 You can also access the feature flag change history for GitLab.com [in Kibana](https://log.gprd.gitlab.net/goto/d060337c017723084c6d97e09e591fc6).
 

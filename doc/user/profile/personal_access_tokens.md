@@ -142,7 +142,7 @@ Prerequisites:
 
 - You must have the Owner role for the group that the enterprise user belongs to.
 
-Disabling the personal access tokens of a group's [enterprise users](../enterprise_user/index.md):
+Disabling the personal access tokens of a group's [enterprise users](../enterprise_user/_index.md):
 
 - Stops the enterprise users from creating new personal access tokens. This behavior applies
   even if an enterprise user is also an administrator of the group.

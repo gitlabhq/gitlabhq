@@ -22,7 +22,7 @@ Use if you want the most mature, scalable method. This version is also used on G
 For more information, see:
 
 - [Linux package](https://docs.gitlab.com/omnibus/installation/)
-- [Reference architectures](../administration/reference_architectures/index.md)
+- [Reference architectures](../administration/reference_architectures/_index.md)
 - [System requirements](requirements.md)
 - [Supported Linux operating systems](../administration/package_information/supported_os.md)
 
@@ -74,7 +74,7 @@ For more information, see [Source](installation.md).
 
 [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#documentation) is a set of opinionated Terraform and Ansible scripts.
 
-Use to deploy a [reference architecture](../administration/reference_architectures/index.md) on selected major cloud providers.
+Use to deploy a [reference architecture](../administration/reference_architectures/_index.md) on selected major cloud providers.
 
 This installation methods has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of), and requires manual setup for production environments.
 

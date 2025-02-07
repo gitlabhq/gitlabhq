@@ -52,7 +52,7 @@ To enable GitLab replication:
    checkbox to enable it.
 
 For LFS, follow the documentation to
-[set up LFS object storage](../../lfs/index.md#storing-lfs-objects-in-remote-object-storage).
+[set up LFS object storage](../../lfs/_index.md#storing-lfs-objects-in-remote-object-storage).
 
 For CI job artifacts, there is similar documentation to configure
 [jobs artifact object storage](../../cicd/job_artifacts.md#using-object-storage)

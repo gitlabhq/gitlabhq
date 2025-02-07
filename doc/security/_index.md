@@ -40,7 +40,7 @@ You can find all those directories listed in the [Linux package configuration do
 
 ### User accounts
 
-- [Review authentication options](../administration/auth/index.md).
+- [Review authentication options](../administration/auth/_index.md).
 - [Configure password length limits](password_length_limits.md).
 - [Restrict SSH key technologies and require minimum key lengths](ssh_keys_restrictions.md).
 - [Restrict account creation with sign up restrictions](../administration/settings/sign_up_restrictions.md).
@@ -74,7 +74,7 @@ GitLab Self-Managed customers and administrators are responsible for the securit
 
 ### Logs
 
-- [Review the log types and contents produced by GitLab](../administration/logs/index.md).
+- [Review the log types and contents produced by GitLab](../administration/logs/_index.md).
 - [Review Runner job logs information](../administration/cicd/job_logs.md).
 - [How to use correlation ID to trace logs](../administration/logs/tracing_correlation_id.md).
 - [Logging configuration and access](https://docs.gitlab.com/omnibus/settings/logs.html).

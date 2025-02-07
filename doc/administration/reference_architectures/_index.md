@@ -76,7 +76,7 @@ Each architecture is designed to handle specific RPS targets for different types
 
 Finding out the RPS can depend notably on the specific environment setup and monitoring stack. Some potential options include:
 
-- [GitLab Prometheus](../monitoring/prometheus/index.md#sample-prometheus-queries) with queries like `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController|'}[1m])) by (controller, action)`.
+- [GitLab Prometheus](../monitoring/prometheus/_index.md#sample-prometheus-queries) with queries like `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController|'}[1m])) by (controller, action)`.
 - [`get-rps` script](https://gitlab.com/gitlab-com/support/toolbox/dotfiles/-/blob/main/scripts/get-rps.rb?ref_type=heads) from GitLab Support.
 - Other monitoring solutions.
 - Load Balancer statistics.
@@ -320,7 +320,7 @@ Any "burstable" instance types are not recommended due to inconsistent performan
 
 Most standard disk types are expected to work for GitLab. However, be aware of the following specific call-outs:
 
-- [Gitaly](../gitaly/index.md#disk-requirements) requires at least 8,000 input/output operations per second (IOPS) for read operations, and 2,000 IOPS for write operations.
+- [Gitaly](../gitaly/_index.md#disk-requirements) requires at least 8,000 input/output operations per second (IOPS) for read operations, and 2,000 IOPS for write operations.
 - We don't recommend the use of any disk types that are "burstable" due to inconsistent performance.
 
 Other disk types are expected to work with GitLab. Choose based on your requirements such as durability or cost.
@@ -335,7 +335,7 @@ their services, or self-managed (ESXi) that meet both:
 
 However, this does not guarantee compatibility with every potential permutation.
 
-See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+See [Recommended cloud providers and services](#recommended-cloud-providers-and-services) for more information.
 
 ### Large Monorepos
 
@@ -361,7 +361,7 @@ follow these guidance to ensure good performance and to keep costs in check:
 
 ### Additional workloads
 
-These architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab
+These architectures have been [designed and tested](#validation-and-test-results) for standard GitLab
 setups based on real data.
 
 However, additional workloads can multiply the impact of operations by triggering follow-up actions.
@@ -835,7 +835,7 @@ For more information, see the following documentation:
 
 - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
 - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
-- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/index.md#migrate-to-gitaly-cluster)
+- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/_index.md#migrate-to-gitaly-cluster)
 
 ### Upgrades
 
@@ -848,10 +848,10 @@ You should upgrade a reference architecture in the same order as you created it.
 
 ### Monitoring
 
-You can monitor your infrastructure and [GitLab](../monitoring/index.md) using various options. See the selected monitoring solution's documentation for more information.
+You can monitor your infrastructure and [GitLab](../monitoring/_index.md) using various options. See the selected monitoring solution's documentation for more information.
 
 NOTE:
-GitLab application is bundled with [Prometheus and various Prometheus compatible exporters](../monitoring/prometheus/index.md) that could be hooked into your solution.
+GitLab application is bundled with [Prometheus and various Prometheus compatible exporters](../monitoring/prometheus/_index.md) that could be hooked into your solution.
 
 ## Update history
 

@@ -48,13 +48,13 @@ It is possible to use cloud hosted services for PostgreSQL and Redis, but this i
 ## Prerequisites: Two independently working GitLab multi-node sites
 
 One GitLab site serves as the Geo **primary** site. Use the
-[GitLab reference architectures documentation](../../reference_architectures/index.md)
+[GitLab reference architectures documentation](../../reference_architectures/_index.md)
 to set this up. You can use different reference architecture sizes for each Geo site. If
 you already have a working GitLab instance that is in-use, it can be used as a
 **primary** site.
 
 The second GitLab site serves as the Geo **secondary** site. Again, use the
-[GitLab reference architectures documentation](../../reference_architectures/index.md) to set this up.
+[GitLab reference architectures documentation](../../reference_architectures/_index.md) to set this up.
 It's a good idea to sign in and test it. However, be aware that its data is
 wiped out as part of the process of replicating from the **primary** site.
 
@@ -125,7 +125,7 @@ Configure the following services, again using the non-Geo multi-node
 documentation:
 
 - [Configuring Redis for GitLab](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application) for multiple nodes.
-- [Gitaly](../../gitaly/index.md), which stores data that is
+- [Gitaly](../../gitaly/_index.md), which stores data that is
   synchronized from the Geo **primary** site.
 
 NOTE:
@@ -200,7 +200,7 @@ machines running the GitLab application services. These services are enabled
 selectively in the configuration.
 
 Configure the GitLab Rails application nodes following the relevant steps
-outlined in the [reference architectures](../../reference_architectures/index.md),
+outlined in the [reference architectures](../../reference_architectures/_index.md),
 then make the following modifications:
 
 1. Edit `/etc/gitlab/gitlab.rb` on each application node in the Geo **secondary**
@@ -310,7 +310,7 @@ more information.
 
 The minimal [architecture diagram](#architecture-overview) above shows all application services
 running together on the same machines. However, for multiple nodes we
-[strongly recommend running all services separately](../../reference_architectures/index.md).
+[strongly recommend running all services separately](../../reference_architectures/_index.md).
 
 For example, a Sidekiq node could be configured similarly to the frontend
 application nodes above, with some changes to run only the `sidekiq` service:

@@ -23,8 +23,8 @@ The following Rake tasks are available for use with GitLab:
 
 | Tasks                                                                                                      | Description |
 |:-----------------------------------------------------------------------------------------------------------|:------------|
-| [Access token expiration tasks](../administration/raketasks/tokens/index.md)                               | Bulk extend or remove expiration dates for access tokens. |
-| [Back up and restore](../administration/backup_restore/index.md)                                           | Back up, restore, and migrate GitLab instances between servers. |
+| [Access token expiration tasks](../administration/raketasks/tokens/_index.md)                               | Bulk extend or remove expiration dates for access tokens. |
+| [Back up and restore](../administration/backup_restore/_index.md)                                           | Back up, restore, and migrate GitLab instances between servers. |
 | [Clean up](cleanup.md)                                                                                     | Clean up unneeded items from GitLab instances. |
 | [Development](../development/rake_tasks.md)                                                                | Tasks for GitLab contributors. |
 | [Elasticsearch](../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks)         | Maintain Elasticsearch in a GitLab instance. |

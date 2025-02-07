@@ -77,5 +77,5 @@ Open a merge request
 
 - [Confidential issues](../issues/confidential_issues.md)
 - [Make an epic confidential](../../group/epics/manage_epics.md#make-an-epic-confidential)
-- [Add an internal note](../../discussions/index.md#add-an-internal-note)
+- [Add an internal note](../../discussions/_index.md#add-an-internal-note)
 - [Security practices for confidential merge requests](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-releases-critical-non-critical-as-a-developer) at GitLab

@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Project repositories including wiki and design repositories can be moved between storages. This API can help you when
-[migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster), for example.
+[migrating to Gitaly Cluster](../administration/gitaly/_index.md#migrate-to-gitaly-cluster), for example.
 
 As project repository storage moves are processed, they transition through different states. Values
 of `state` are:

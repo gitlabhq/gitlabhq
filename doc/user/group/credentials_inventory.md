@@ -18,7 +18,7 @@ This page describes how to manage the credentials inventory for GitLab.com. To m
 
 In the credentials inventory, you can view:
 
-- For [enterprise users](../enterprise_user/index.md):
+- For [enterprise users](../enterprise_user/_index.md):
   - Personal access tokens (PATs).
   - SSH keys.
 

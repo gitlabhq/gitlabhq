@@ -150,4 +150,4 @@ You should sign in and re-enable 2FA as soon as possible.
 
 If you are a top-level Owner of a namespace on a paid plan, you can disable 2FA for enterprise users.
 For more information, see
-[Disable two-factor-authentication](../../enterprise_user/index.md#disable-two-factor-authentication).
+[Disable two-factor-authentication](../../enterprise_user/_index.md#disable-two-factor-authentication).

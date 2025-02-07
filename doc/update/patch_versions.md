@@ -13,7 +13,7 @@ Update self-compiled installations with patch versions.
 
 Prerequisites:
 
-- A [back up](../administration/backup_restore/index.md) of your self-compiled installation.
+- A [back up](../administration/backup_restore/_index.md) of your self-compiled installation.
 
 ## Stop GitLab server
 

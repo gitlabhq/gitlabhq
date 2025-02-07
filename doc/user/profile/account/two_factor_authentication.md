@@ -393,7 +393,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-- Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/index.md).
+- Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/_index.md).
 - To ensure 2FA authorizes correctly with an OTP server, synchronize your GitLab
   server's time using a service like NTP. Otherwise, authorization can always fail because of time differences.
 - The GitLab WebAuthn implementation does _not_ work when the GitLab instance is accessed from multiple hostnames

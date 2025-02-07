@@ -409,7 +409,7 @@ review:
   WARNING: Uploading artifacts as "archive" to coordinator... failed id=12345 responseStatus=500 Internal Server Error status=500 token=abcd1234
   ```
 
-- The [workhorse log](../logs/index.md#workhorse-logs) for an error message similar to:
+- The [workhorse log](../logs/_index.md#workhorse-logs) for an error message similar to:
 
   ```json
   {"error":"MissingRegion: could not find region configuration","level":"error","msg":"error uploading S3 session","time":"2021-03-16T22:10:55-04:00"}

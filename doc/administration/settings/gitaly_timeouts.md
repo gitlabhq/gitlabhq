@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-[Gitaly](../gitaly/index.md) provides two types of configurable timeouts:
+[Gitaly](../gitaly/_index.md) provides two types of configurable timeouts:
 
 - Call timeouts, configured by using the GitLab UI.
 - Negotiation timeouts, configured by using Gitaly configuration files.

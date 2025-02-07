@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     docsPath() {
-      return `${helpPagePath('user/glql/index')}#glql-views`;
+      return `${helpPagePath('user/glql/_index')}#glql-views`;
     },
   },
   async mounted() {

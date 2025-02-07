@@ -36,7 +36,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Issues:
   - [Multiple assignees for issues](../user/project/issues/multiple_assignees_for_issues.md)
   - [Issue weights](../user/project/issues/issue_weight.md)
-  - Issue histories contain [changes to issue description](../user/discussions/index.md#view-description-change-history)
+  - Issue histories contain [changes to issue description](../user/discussions/_index.md#view-description-change-history)
   - [Adding an issue to an iteration](../user/project/issues/managing_issues.md#add-an-issue-to-an-iteration)
 - [Iterations](../user/group/iterations/index.md)
 - [Kerberos integration](../integration/kerberos.md)
@@ -59,8 +59,8 @@ the tiers are no longer mentioned in GitLab documentation:
     - Rake tasks for [LDAP tasks](../administration/raketasks/ldap.md), including
       [syncing groups](../administration/raketasks/ldap.md#run-a-group-sync)
 - Logging:
-  - [`audit_json.log`](../administration/logs/index.md#audit_jsonlog) (specific entries)
-  - [`elasticsearch.log`](../administration/logs/index.md#elasticsearchlog)
+  - [`audit_json.log`](../administration/logs/_index.md#audit_jsonlog) (specific entries)
+  - [`elasticsearch.log`](../administration/logs/_index.md#elasticsearchlog)
 - Merge requests:
   - [Full code quality reports in the code quality tab](../ci/testing/code_quality.md#pipeline-details-view)
   - [Merge request approvals](../user/project/merge_requests/approvals/_index.md)
@@ -78,7 +78,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - Rake tasks:
   - [Displaying GitLab license information](../administration/raketasks/maintenance.md#show-gitlab-license-information)
 - Reference Architecture information:
-  - [Zero-downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades)
+  - [Zero-downtime upgrades](../administration/reference_architectures/_index.md#zero-downtime-upgrades)
 - Repositories:
   - [Repository size limit](../administration/settings/account_and_limit_settings.md#repository-size-limit)
   - Repository mirroring:

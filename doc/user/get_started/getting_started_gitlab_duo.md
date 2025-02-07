@@ -30,7 +30,7 @@ For more information, see:
 - [Assign seats to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - [Features included in Duo Pro and Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
 - [List of GitLab Duo features and their language models](../gitlab_duo/index.md).
-- [Self-hosted models](../../administration/self_hosted_models/index.md).
+- [Self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
 ## Step 2: Try GitLab Duo Chat in the UI

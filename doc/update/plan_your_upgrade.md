@@ -49,7 +49,7 @@ Create a backup of GitLab and all its data (database, repositories, uploads, bui
 artifacts, LFS objects, registry, pages). This is vital for making it possible
 to roll back GitLab to a working state if there's a problem with the upgrade:
 
-- Create a [GitLab backup](../administration/backup_restore/index.md).
+- Create a [GitLab backup](../administration/backup_restore/_index.md).
   Make sure to follow the instructions based on your installation method.
   Don't forget to back up the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - Alternatively, create a snapshot of your instance. If this is a multi-node
@@ -63,9 +63,9 @@ If you have a test environment that mimics your production one, you should test 
 To restore your GitLab backup:
 
 - Before restoring, make sure to read about the
-  [prerequisites](../administration/backup_restore/index.md#restore-gitlab), most importantly,
+  [prerequisites](../administration/backup_restore/_index.md#restore-gitlab), most importantly,
   the versions of the backed up and the new GitLab instance must be the same.
-- [Restore GitLab](../administration/backup_restore/index.md#restore-gitlab).
+- [Restore GitLab](../administration/backup_restore/_index.md#restore-gitlab).
   Make sure to follow the instructions based on your installation method.
   Confirm that the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files) are also restored.
 - If restoring from a snapshot, know the steps to do this.

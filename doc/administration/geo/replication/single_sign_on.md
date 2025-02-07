@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-This documentation only discusses Geo-specific SSO considerations and configuration. For more information on general authentication, see [GitLab authentication and authorization](../../auth/index.md).
+This documentation only discusses Geo-specific SSO considerations and configuration. For more information on general authentication, see [GitLab authentication and authorization](../../auth/_index.md).
 
 ## Configuring instance-wide SAML
 

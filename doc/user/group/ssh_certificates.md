@@ -96,7 +96,7 @@ Prerequisites:
 - The user certificates can only be used to access the projects in the top-level group and its subgroups.
 - A user's username or primary email (`user` or `user@example.com`) must be specified to associate a
   GitLab user with the user certificate.
-- The user must be an [Enterprise User](../enterprise_user/index.md).
+- The user must be an [Enterprise User](../enterprise_user/_index.md).
 
 To issue user certificates, use the private key from the pair you [created earlier](#add-a-ca-certificate-to-a-top-level-group):
 

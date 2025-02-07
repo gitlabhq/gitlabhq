@@ -64,7 +64,7 @@ Repositories with known check failures can be found at
 ## Run a check using the command line
 
 You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command line on repositories on
-[Gitaly servers](gitaly/index.md). To locate the repositories:
+[Gitaly servers](gitaly/_index.md). To locate the repositories:
 
 1. Go to the storage location for repositories:
    - For Linux package installations, repositories are stored in the `/var/opt/gitlab/git-data/repositories` directory
@@ -85,7 +85,7 @@ You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command li
 
 ## What to do if a check failed
 
-If a repository check fails, locate the error in the [`repocheck.log` file](logs/index.md#repochecklog) on disk at:
+If a repository check fails, locate the error in the [`repocheck.log` file](logs/_index.md#repochecklog) on disk at:
 
 - `/var/log/gitlab/gitlab-rails` for Linux package installations.
 - `/home/git/gitlab/log` for self-compiled installations.

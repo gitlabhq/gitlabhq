@@ -97,7 +97,7 @@ While Geo's [selective synchronization](replication/selective_synchronization.md
 
 ### Provide access control
 
-Geo [read-only secondary site](secondary_proxy/_index.md#disable-secondary-site-git-proxying) functionality is not a first-class feature, and might not be supported in the future. You should not rely on this functionality for access control purposes. GitLab provides [authentication and authorization](../auth/index.md) controls that better serve this purpose.
+Geo [read-only secondary site](secondary_proxy/_index.md#disable-secondary-site-git-proxying) functionality is not a first-class feature, and might not be supported in the future. You should not rely on this functionality for access control purposes. GitLab provides [authentication and authorization](../auth/_index.md) controls that better serve this purpose.
 
 ### An alternative to zero downtime upgrades
 
@@ -105,7 +105,7 @@ Geo is a not a solution for [zero downtime upgrades](../../update/zero_downtime.
 
 ### Protect against malicious or unintentional corruption
 
-Geo replicates corruption on the primary site to all secondary sites. To protect against malicious or unintentional corruption you should complement Geo with [backups](../backup_restore/index.md).
+Geo replicates corruption on the primary site to all secondary sites. To protect against malicious or unintentional corruption you should complement Geo with [backups](../backup_restore/_index.md).
 
 ### Active-active, high-availability configuration
 
@@ -114,7 +114,7 @@ Geo is designed to be a active-passive, high-availability solution. It operates 
 ## Gitaly Cluster
 
 Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
-the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly/index.md#comparison-to-geo).
+the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly/_index.md#comparison-to-geo).
 
 ## How it works
 
@@ -270,7 +270,7 @@ These known issues reflect only the latest version of GitLab. If you are using a
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
   [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
-  GitLab instances based on our [Reference Architectures](../reference_architectures/index.md), including automation of common daily tasks.
+  GitLab instances based on our [Reference Architectures](../reference_architectures/_index.md), including automation of common daily tasks.
   [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on **secondary** sites where [http proxying is disabled](secondary_proxy/_index.md#disable-secondary-site-http-proxying).
 - [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
@@ -367,7 +367,7 @@ To find out how to disable Geo, see [Disabling Geo](replication/disable_geo.md).
 
 Geo stores structured log messages in a `geo.log` file.
 
-For more information on how to access and consume Geo logs, see the [Geo section in the log system documentation](../logs/index.md#geolog).
+For more information on how to access and consume Geo logs, see the [Geo section in the log system documentation](../logs/_index.md#geolog).
 
 ## Disaster Recovery
 

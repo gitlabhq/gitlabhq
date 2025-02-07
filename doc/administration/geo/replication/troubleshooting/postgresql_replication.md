@@ -37,7 +37,7 @@ If the secondary site is not able to reconnect, use the following steps to remov
    Slots where `active` is `f` are inactive.
 
 - If this slot should be active, because you have a **secondary** site configured using that slot:
-  - Look for the [PostgreSQL logs](../../../logs/index.md#postgresql-logs) for the **secondary** site,
+  - Look for the [PostgreSQL logs](../../../logs/_index.md#postgresql-logs) for the **secondary** site,
      to view why the replication is not running.
   - If the secondary site is no longer able to reconnect:
 
@@ -58,7 +58,7 @@ If a replication slot is inactive,
 the `pg_wal` logs corresponding to the slot are reserved forever
 (or until the slot is active again). This causes continuous disk usage growth
 and the following messages appear repeatedly in the
-[PostgreSQL logs](../../../logs/index.md#postgresql-logs):
+[PostgreSQL logs](../../../logs/_index.md#postgresql-logs):
 
 ```plaintext
 WARNING: oldest xmin is far in the past

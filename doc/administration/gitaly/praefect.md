@@ -12,7 +12,7 @@ DETAILS:
 Configure Gitaly Cluster using either:
 
 - Gitaly Cluster configuration instructions available as part of
-  [reference architectures](../reference_architectures/index.md) for installations of up to:
+  [reference architectures](../reference_architectures/_index.md) for installations of up to:
   - [60 RPS or 3,000 users](../reference_architectures/3k_users.md#configure-gitaly-cluster).
   - [100 RPS or 5,000 users](../reference_architectures/5k_users.md#configure-gitaly-cluster).
   - [200 RPS or 10,000 users](../reference_architectures/10k_users.md#configure-gitaly-cluster).
@@ -20,7 +20,7 @@ Configure Gitaly Cluster using either:
   - [1000 RPS or 50,000 users](../reference_architectures/50k_users.md#configure-gitaly-cluster).
 - The custom configuration instructions that follow on this page.
 
-Smaller GitLab installations may need only [Gitaly itself](index.md).
+Smaller GitLab installations may need only [Gitaly itself](_index.md).
 
 NOTE:
 Gitaly Cluster is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
@@ -36,7 +36,7 @@ The minimum recommended configuration for a Gitaly Cluster requires:
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
 NOTE:
-[Disk requirements](index.md#disk-requirements) apply to Gitaly nodes.
+[Disk requirements](_index.md#disk-requirements) apply to Gitaly nodes.
 
 You should configure an odd number of Gitaly nodes so that transactions have a tie-breaker in case one of the
 Gitaly nodes fails in a mutating RPC call.
@@ -54,7 +54,7 @@ Network latency for Gitaly Cluster should ideally be measurable in single-digit 
 important for:
 
 - Gitaly node health checks. Nodes must be able to respond within 1 second.
-- Reference transactions that enforce [strong consistency](index.md#strong-consistency). Lower latencies mean Gitaly
+- Reference transactions that enforce [strong consistency](_index.md#strong-consistency). Lower latencies mean Gitaly
   nodes can agree on changes faster.
 
 Achieving acceptable latency between Gitaly nodes:
@@ -64,9 +64,9 @@ Achieving acceptable latency between Gitaly nodes:
   are designed for this type of synchronization. Latency of less than 2 ms should be sufficient for Gitaly Cluster.
 
 If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
-more information, see [Comparison to Geo](index.md#comparison-to-geo).
+more information, see [Comparison to Geo](_index.md#comparison-to-geo).
 
-Gitaly Cluster [components](index.md#components) communicate with each other over many routes. Your firewall rules must
+Gitaly Cluster [components](_index.md#components) communicate with each other over many routes. Your firewall rules must
 allow the following for Gitaly Cluster to function properly:
 
 | From                   | To                     | Default port | TLS port |
@@ -192,7 +192,7 @@ Clustered database support for other databases (for example, Praefect and Geo da
 The following options are available:
 
 - For non-Geo installations, either:
-  - Use one of the documented [PostgreSQL setups](../postgresql/index.md).
+  - Use one of the documented [PostgreSQL setups](../postgresql/_index.md).
   - Use your own third-party database setup. This requires [manual setup](#manual-database-setup).
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/11/high-availability.html).
@@ -624,7 +624,7 @@ Updates to example must be made at:
    WARNING:
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
    afterwards.
 
    Replace `PRAEFECT_INTERNAL_TOKEN` with a strong secret, which is used by
@@ -1036,7 +1036,7 @@ To complete this section you need:
   These should be dedicated nodes, do not run other services on these nodes.
 
 Every Gitaly server assigned to the Praefect cluster needs to be configured. The
-configuration is the same as a standard [standalone Gitaly server](index.md),
+configuration is the same as a standard [standalone Gitaly server](_index.md),
 except:
 
 - The storage names are exposed to Praefect, not GitLab
@@ -1309,7 +1309,7 @@ Particular attention should be shown to:
 
    WARNING:
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data to your Gitaly Cluster storage](index.md#migrate-to-gitaly-cluster)
+   you should [migrate the data to your Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
    first.
 
    ```ruby
@@ -1554,7 +1554,7 @@ current assignments: gitaly-1, gitaly-2
 ### Repository storage recommendations
 
 The size of the required storage can vary between instances and depends on the set
-[replication factor](index.md#replication-factor). You might want to include implementing
+[replication factor](_index.md#replication-factor). You might want to include implementing
 repository storage redundancy.
 
 For a replication factor:
@@ -1643,7 +1643,7 @@ praefect['configuration'] = {
 WARNING:
 Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
 that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
-than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
+than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
 By default, the worker deletes invalid metadata records. It also logs the deleted records and outputs Prometheus
 metrics.

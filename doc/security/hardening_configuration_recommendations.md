@@ -135,9 +135,9 @@ nodes that only allow the other node to access those particular ports.
 
 ## Sidekiq Configuration
 
-In the [instructions for configuring an external Sidekiq](../administration/sidekiq/index.md)
+In the [instructions for configuring an external Sidekiq](../administration/sidekiq/_index.md)
 there are numerous references to configuring IP ranges. You must
-[configure HTTPS](../administration/sidekiq/index.md#enable-https),
+[configure HTTPS](../administration/sidekiq/_index.md#enable-https),
 and consider restricting those IP addresses to specific systems that Sidekiq talks to.
 You might have to adjust firewall rules at the operating system level as well.
 

@@ -561,7 +561,7 @@ To increase the max attachment size to 200 MB in a
 
 ### This repository has exceeded its size limit
 
-If you receive intermittent push errors in your [Rails exceptions log](../logs/index.md#exceptions_jsonlog), like this:
+If you receive intermittent push errors in your [Rails exceptions log](../logs/_index.md#exceptions_jsonlog), like this:
 
 ```plaintext
 Your push has been rejected, because this repository has exceeded its size limit.

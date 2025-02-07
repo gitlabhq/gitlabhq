@@ -46,7 +46,7 @@ Some of the actions that add a to-do item to your To-Do List:
 
 - An issue or merge request is assigned to you.
 - A [merge request review](project/merge_requests/reviews/_index.md) is requested.
-- You're [mentioned](discussions/index.md#mentions) in the description or
+- You're [mentioned](discussions/_index.md#mentions) in the description or
   comment of an issue, merge request, or epic.
 - You're mentioned in a comment on a commit or design.
 - The CI/CD pipeline for your merge request fails.

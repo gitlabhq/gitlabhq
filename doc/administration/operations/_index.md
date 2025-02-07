@@ -21,7 +21,7 @@ Keep your GitLab instance up and running.
 - [Use SSH certificates](../operations/ssh_certificates.md)
 - [Enable encrypted configuration](../encrypted_configuration.md)
 - [Rake tasks](../../raketasks/_index.md)
-- [Backup and restore](../backup_restore/index.md)
+- [Backup and restore](../backup_restore/_index.md)
 - [Inactive project deletion](../inactive_project_deletion.md)
 - [Move repositories](../operations/moving_repositories.md)
 - [Read-only state](../read_only_gitlab.md)

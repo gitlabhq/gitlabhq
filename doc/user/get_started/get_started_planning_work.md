@@ -83,7 +83,7 @@ When you mention someone, they receive a notification.
 For more information, see:
 
 - [Labels](../project/labels.md)
-- [Comments and threads](../discussions/index.md)
+- [Comments and threads](../discussions/_index.md)
 
 ## Step 5: Track progress
 

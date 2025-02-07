@@ -25,7 +25,7 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
 - [Git Large File Storage (LFS)](../../../topics/git/lfs/_index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
   - On self-managed instances, a GitLab administrator must
-    [enable LFS globally](../../../administration/lfs/index.md).
+    [enable LFS globally](../../../administration/lfs/_index.md).
   - On both GitLab.com and self-managed instances, LFS must be
     [enabled for the project itself](../settings/index.md#configure-project-features-and-permissions).
     If enabled globally, LFS is enabled by default for all projects. If you have
@@ -212,7 +212,7 @@ You can change the order of designs by dragging them to a new position.
 
 ## Add a comment to a design
 
-You can start [discussions](../../discussions/index.md) on uploaded designs. To do so:
+You can start [discussions](../../discussions/_index.md) on uploaded designs. To do so:
 
 1. Go to an issue.
 1. Select the design.

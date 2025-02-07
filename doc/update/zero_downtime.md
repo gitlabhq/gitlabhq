@@ -22,7 +22,7 @@ or management of third party services, such as AWS RDS, please refer to the resp
 ## Before you start
 
 Achieving _true_ zero downtime as part of an upgrade is notably difficult for any distributed application. The process detailed in
-this guide has been tested as given against our HA [Reference Architectures](../administration/reference_architectures/index.md)
+this guide has been tested as given against our HA [Reference Architectures](../administration/reference_architectures/_index.md)
 and was found to result in effectively no observable downtime, but please be aware your mileage may vary dependent on the specific system makeup.
 
 For additional confidence, some customers have found success with further techniques such as the
@@ -110,7 +110,7 @@ Run through the following steps sequentially on each component's node to perform
 
 ### Gitaly
 
-[Gitaly](../administration/gitaly/index.md) follows the same core process when it comes to upgrading but with a key difference
+[Gitaly](../administration/gitaly/_index.md) follows the same core process when it comes to upgrading but with a key difference
 that the Gitaly process itself is not restarted as it has a built-in process to gracefully reload
 at the earliest opportunity. Note that any other component will still need to be restarted.
 
@@ -323,7 +323,7 @@ In addition to the above, Rails is where the main database migrations need to be
 
 ### Sidekiq
 
-[Sidekiq](../administration/sidekiq/index.md) follows the same underlying process as others to upgrading without downtime.
+[Sidekiq](../administration/sidekiq/_index.md) follows the same underlying process as others to upgrading without downtime.
 
 Run through the following steps sequentially on each component node to perform the upgrade:
 

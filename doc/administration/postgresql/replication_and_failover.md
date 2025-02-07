@@ -591,7 +591,7 @@ While you can use a different networking setup, it's recommended to ensure that 
 for synchronous replication to occur across the cluster.
 As a general rule, a latency of less than 2 ms ensures replication operations to be performant.
 
-GitLab [reference architectures](../reference_architectures/index.md) are sized to
+GitLab [reference architectures](../reference_architectures/_index.md) are sized to
 assume that application database queries are shared by all three nodes.
 Communication latency higher than 2 ms can lead to database locks and
 impact the replica's ability to serve read-only queries in a timely fashion.

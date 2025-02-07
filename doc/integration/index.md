@@ -23,7 +23,7 @@ You can configure an [external issue tracker](external-issue-tracker.md) and use
 
 You can integrate GitLab with authentication providers like LDAP and SAML.
 
-For more information, see [GitLab authentication and authorization](../administration/auth/index.md).
+For more information, see [GitLab authentication and authorization](../administration/auth/_index.md).
 
 ## Security improvements
 

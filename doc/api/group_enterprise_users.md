@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-Use this API to interact with enterprise users accounts. For more information, see [enterprise users](../user/enterprise_user/index.md).
+Use this API to interact with enterprise users accounts. For more information, see [enterprise users](../user/enterprise_user/_index.md).
 
 This API endpoint only works for top-level groups. Users do not have to be a member of the group.
 

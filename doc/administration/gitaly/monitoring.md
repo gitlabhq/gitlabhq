@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Monitoring Gitaly and Gitaly Cluster
 ---
 
-You can use the available logs and [Prometheus metrics](../monitoring/prometheus/index.md) to
+You can use the available logs and [Prometheus metrics](../monitoring/prometheus/_index.md) to
 monitor Gitaly and Gitaly Cluster (Praefect).
 
 Metric definitions are available:
@@ -40,7 +40,7 @@ of requests dropped due to request limiting. The `reason` label indicates why a 
 
 You can observe specific behavior of [concurrency-queued requests](concurrency_limiting.md#limit-rpc-concurrency) using Gitaly logs and Prometheus.
 
-In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
+In the [Gitaly logs](../logs/_index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
 
 | Log Field | Description |
 | --- | --- |
@@ -71,7 +71,7 @@ In Prometheus, look for the following metrics:
 
 You can observe specific behavior of [pack-objects limiting](concurrency_limiting.md#limit-pack-objects-concurrency) using Gitaly logs and Prometheus.
 
-In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
+In the [Gitaly logs](../logs/_index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
 
 | Log Field | Description |
 |:---|:---|
@@ -103,7 +103,7 @@ In Prometheus, look for the following metrics:
 
 You can observe specific behavior of [adaptive concurrency limiting](concurrency_limiting.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
 
-In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the adaptive concurrency limiting when the current limits are adjusted.
+In the [Gitaly logs](../logs/_index.md#gitaly-logs), you can identify logs related to the adaptive concurrency limiting when the current limits are adjusted.
 You can filter the content of the logs (`msg`) for "Multiplicative decrease" and "Additive increase" messages.
 
 | Log Field | Description |
@@ -251,7 +251,7 @@ available from which metrics can be scraped:
 
 The following metrics are available from the `/metrics` endpoint:
 
-- `gitaly_praefect_read_distribution`, a counter to track [distribution of reads](index.md#distributed-reads).
+- `gitaly_praefect_read_distribution`, a counter to track [distribution of reads](_index.md#distributed-reads).
   It has two labels:
 
   - `virtual_storage`.
@@ -266,7 +266,7 @@ The following metrics are available from the `/metrics` endpoint:
 - `gitaly_praefect_connections_total`, the total number of connections to Praefect.
 - `gitaly_praefect_method_types`, a count of accessor and mutator RPCs per node.
 
-To monitor [strong consistency](index.md#strong-consistency), you can use the following Prometheus metrics:
+To monitor [strong consistency](_index.md#strong-consistency), you can use the following Prometheus metrics:
 
 - `gitaly_praefect_transactions_total`, the number of transactions created and voted on.
 - `gitaly_praefect_subtransactions_per_transaction_total`, the number of times nodes cast a vote for
@@ -291,7 +291,7 @@ To monitor [repository verification](praefect.md#repository-verification), use t
 - `gitaly_praefect_stale_verification_leases_released_total`, the number of stale verification leases
   released.
 
-You can also monitor the [Praefect logs](../logs/index.md#praefect-logs).
+You can also monitor the [Praefect logs](../logs/_index.md#praefect-logs).
 
 ### Database metrics `/db_metrics` endpoint
 

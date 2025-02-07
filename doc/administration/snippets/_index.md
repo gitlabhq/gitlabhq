@@ -23,7 +23,7 @@ or the [Application settings API](../../api/settings.md).
 
 The limit **must** be in bytes.
 
-This setting is not available in the [**Admin** area settings](../settings/index.md).
+This setting is not available in the [**Admin** area settings](../settings/_index.md).
 
 ### Use the Rails console
 

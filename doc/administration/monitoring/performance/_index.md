@@ -15,7 +15,7 @@ GitLab Performance Monitoring is available in both the Community and Enterprise 
 Apart from this introduction, you are advised to read through the following
 documents to understand and properly configure GitLab Performance Monitoring:
 
-- [Prometheus documentation](../prometheus/index.md)
+- [Prometheus documentation](../prometheus/_index.md)
 - [Grafana configuration](grafana_configuration.md)
 - [Performance bar](performance_bar.md)
 

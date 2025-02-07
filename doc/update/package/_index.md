@@ -40,7 +40,7 @@ sudo touch /etc/gitlab/skip-auto-backup
 ```
 
 Nevertheless, you should maintain a full up-to-date
-[backup](../../administration/backup_restore/index.md) on your own.
+[backup](../../administration/backup_restore/_index.md) on your own.
 
 ## Upgrade a Linux package instance
 

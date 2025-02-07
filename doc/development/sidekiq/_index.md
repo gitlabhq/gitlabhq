@@ -8,7 +8,7 @@ title: Sidekiq development guidelines
 We use [Sidekiq](https://github.com/mperham/sidekiq) as our background
 job processor. These guides are for writing jobs that work well on
 GitLab.com and are consistent with our existing worker classes. For
-information on administering GitLab, see [configuring Sidekiq](../../administration/sidekiq/index.md).
+information on administering GitLab, see [configuring Sidekiq](../../administration/sidekiq/_index.md).
 
 There are pages with additional detail on the following topics:
 

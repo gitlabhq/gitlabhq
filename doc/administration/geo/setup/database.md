@@ -590,7 +590,7 @@ On the GitLab Geo **primary** site:
    sudo gitlab-ctl restart postgresql
    ```
 
-Until the password is updated on any **secondary** sites, the [PostgreSQL log](../../logs/index.md#postgresql-logs) on
+Until the password is updated on any **secondary** sites, the [PostgreSQL log](../../logs/_index.md#postgresql-logs) on
 the secondaries report the following error message:
 
 ```console

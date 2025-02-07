@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
 Group wiki repositories can be moved between storages. This API can help you, for example,
-[migrate to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster)
+[migrate to Gitaly Cluster](../administration/gitaly/_index.md#migrate-to-gitaly-cluster)
 or migrate a [group wiki](../user/project/wiki/group.md). This API does not manage
 project repositories in a group. To schedule project moves, use the
 [project repository storage moves API](project_repository_storage_moves.md).

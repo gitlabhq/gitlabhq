@@ -61,7 +61,7 @@ To move databases from one instance to another:
    gitlab_rails['db_host'] = '<destination postgresql host>'
    ```
 
-   For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/index.md).
+   For more information on GitLab multi-node setups, refer to the [reference architectures](../reference_architectures/_index.md).
 
 1. Reconfigure for the changes to take effect:
 

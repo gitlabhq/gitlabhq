@@ -26,7 +26,7 @@ export default {
     archivedProjectDocsPath: helpPagePath('user/project/working_with_projects', {
       anchor: 'archive-a-project',
     }),
-    lockedIssueDocsPath: helpPagePath('user/discussions/index.md', {
+    lockedIssueDocsPath: helpPagePath('user/discussions/_index.md', {
       anchor: 'prevent-comments-by-locking-the-discussion',
     }),
     projectArchivedWarning: __('This project is archived and cannot be commented on.'),

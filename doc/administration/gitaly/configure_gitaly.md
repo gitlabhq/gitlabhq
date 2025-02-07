@@ -60,7 +60,7 @@ When configured to run on their own servers, Gitaly servers must be
 [upgraded](../../update/package/_index.md) before Gitaly clients in your cluster.
 
 NOTE:
-[Disk requirements](index.md#disk-requirements) apply to Gitaly nodes.
+[Disk requirements](_index.md#disk-requirements) apply to Gitaly nodes.
 
 The process for setting up Gitaly on its own server is:
 
@@ -875,7 +875,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-[Gitaly](index.md), the service that provides storage for Git
+[Gitaly](_index.md), the service that provides storage for Git
 repositories, can be configured to cache a short rolling window of Git
 fetch responses. This can reduce server load when your server receives
 lots of CI fetch traffic.

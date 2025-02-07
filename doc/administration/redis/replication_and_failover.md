@@ -831,7 +831,7 @@ See the [Redis troubleshooting guide](troubleshooting.md).
 
 Read more:
 
-1. [Reference architectures](../reference_architectures/index.md)
+1. [Reference architectures](../reference_architectures/_index.md)
 1. [Configure the database](../postgresql/replication_and_failover.md)
 1. [Configure NFS](../nfs.md)
 1. [Configure the load balancers](../load_balancer.md)

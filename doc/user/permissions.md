@@ -15,7 +15,7 @@ The role determines which actions they can take in GitLab.
 If you add a user to both a project's group and the
 project itself, the higher role is used.
 
-GitLab [administrators](../administration/index.md) have all permissions.
+GitLab [administrators](../administration/_index.md) have all permissions.
 
 <!-- Keep these tables sorted according the following rules in order:
 1. By minimum role.

@@ -12,7 +12,7 @@ DETAILS:
 
 Merge requests are the primary method of making changes to files in a
 GitLab project. [Create and submit](../creating_merge_requests.md) a merge request
-to propose changes. Your team leaves [comments](../../../discussions/index.md) on
+to propose changes. Your team leaves [comments](../../../discussions/_index.md) on
 your merge request, and makes [suggestions](suggestions.md) you can accept
 from the user interface. When a teammate reviews your work, they can choose
 to accept or reject it.
@@ -106,7 +106,7 @@ In this example, the merge request requires 3 Code Owner approvals, but has none
 
 ### Re-request a review
 
-After a reviewer completes their [merge request reviews](../../../discussions/index.md),
+After a reviewer completes their [merge request reviews](../../../discussions/_index.md),
 the author of the merge request can request a new review from the reviewer.
 To do this, either use the `/request_review @user` quick action in any text field on the merge request, or:
 

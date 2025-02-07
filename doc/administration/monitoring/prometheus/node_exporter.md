@@ -16,7 +16,7 @@ For self-compiled installations, you must install and configure it yourself.
 
 To enable the node exporter:
 
-1. [Enable Prometheus](index.md#configuring-prometheus).
+1. [Enable Prometheus](_index.md#configuring-prometheus).
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Add (or find and uncomment) the following line, making sure it's set to `true`:
 

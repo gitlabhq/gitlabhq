@@ -41,7 +41,7 @@ At a high level, the process is:
 ## Stop writes to the database
 
 Before upgrade, you need to stop writes to the database. The process is different
-depending on your [reference architecture](../administration/reference_architectures/index.md).
+depending on your [reference architecture](../administration/reference_architectures/_index.md).
 
 ::Tabs
 
@@ -56,7 +56,7 @@ sudo gitlab-ctl stop puma
 
 :::TabTitle Cloud Native Hybrid
 
-For [Cloud Native Hybrid](../administration/reference_architectures/index.md#cloud-native-hybrid) environments:
+For [Cloud Native Hybrid](../administration/reference_architectures/_index.md#cloud-native-hybrid) environments:
 
 1. Note the current number of replicas for database clients for subsequent restart:
 

@@ -57,7 +57,7 @@ Prerequisites:
 - [GitLab is configured](#configure-gitlab) for SCIM.
 - The SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
   described in the [Okta setup notes](../../integration/saml.md#set-up-okta).
-- Your Okta SAML setup matches the [configuration steps](index.md), especially the NameID configuration.
+- Your Okta SAML setup matches the [configuration steps](_index.md), especially the NameID configuration.
 
 To configure Okta for SCIM:
 

@@ -433,7 +433,7 @@ You can also filter activity by **Comments only** and **History only** in additi
 
 ## Comments and threads
 
-You can add [comments](discussions/index.md) and reply to threads in tasks.
+You can add [comments](discussions/_index.md) and reply to threads in tasks.
 
 ## Copy task reference
 
@@ -461,7 +461,7 @@ You can create a comment in a task by sending an email.
 Sending an email to this address creates a comment that contains the email body.
 
 For more information about creating comments by sending an email and the necessary configuration, see
-[Reply to a comment by sending email](discussions/index.md#reply-to-a-comment-by-sending-email).
+[Reply to a comment by sending email](discussions/_index.md#reply-to-a-comment-by-sending-email).
 
 To copy the task's email address:
 

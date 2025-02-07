@@ -14,7 +14,7 @@ When working with the [Jira issues integration](configure.md), you might encount
 ## GitLab cannot link to a Jira issue
 
 When you mention a Jira issue ID in GitLab, the issue link might be missing.
-[`sidekiq.log`](../../administration/logs/index.md#sidekiq-logs) might contain the following exception:
+[`sidekiq.log`](../../administration/logs/_index.md#sidekiq-logs) might contain the following exception:
 
 ```plaintext
 No Link Issue Permission for issue 'JIRA-1234'
@@ -32,7 +32,7 @@ If GitLab cannot comment on a Jira issue, ensure the Jira user you created for t
 When the [GitLab issue tracker](../external-issue-tracker.md) is disabled, Jira issue references and comments do not work.
 If you [restrict IP addresses for Jira access](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), ensure you add your GitLab Self-Managed IP addresses or [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist in Jira.
 
-For the root cause, check the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
+For the root cause, check the [`integrations_json.log`](../../administration/logs/_index.md#integrations_jsonlog) file. When GitLab tries to comment on a Jira issue, an `Error sending message` log entry might appear.
 
 In GitLab 16.1 and later, when an error occurs, the `integrations_json.log` file contains `client_*` keys in the outgoing API request to Jira.
 You can use the `client_*` keys to check the [Atlassian API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-group-issues) for why the error has occurred.
@@ -137,7 +137,7 @@ When you test the Jira issues integration settings, you might get the following 
 Connection failed. Check your integration settings. SSL_connect returned=1 errno=0 peeraddr=<jira.example.com> state=error: certificate verify failed (unable to get local issuer certificate)
 ```
 
-This error might also appear in the [`integrations_json.log`](../../administration/logs/index.md#integrations_jsonlog) file:
+This error might also appear in the [`integrations_json.log`](../../administration/logs/_index.md#integrations_jsonlog) file:
 
 ```json
 {
@@ -255,7 +255,7 @@ When [viewing Jira issues](configure.md#view-jira-issues) in GitLab, you might e
 ### Error: `500 We're sorry`
 
 When you access a Jira issue in GitLab, you might get a `500 We're sorry. Something went wrong on our end` error.
-Check [`production.log`](../../administration/logs/index.md#productionlog) to see if the file contains the following exception:
+Check [`production.log`](../../administration/logs/_index.md#productionlog) to see if the file contains the following exception:
 
 ```plaintext
 :NoMethodError (undefined method 'duedate' for #<JIRA::Resource::Issue:0x00007f406d7b3180>)

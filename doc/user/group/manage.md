@@ -203,7 +203,7 @@ For more information, see:
 ## Disable group mentions
 
 You can prevent users from being added to a conversation and getting notified when
-anyone [mentions a group](../discussions/index.md#mentions)
+anyone [mentions a group](../discussions/_index.md#mentions)
 in which those users are members.
 
 Groups with disabled mentions are visualized accordingly in the autocompletion dropdown list.

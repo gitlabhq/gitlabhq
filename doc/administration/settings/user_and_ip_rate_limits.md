@@ -157,7 +157,7 @@ The bypass works only if the header is set to `1`.
 
 Requests that bypassed the rate limiter because of the bypass header
 are marked with `"throttle_safelist":"throttle_bypass_header"` in
-[`production_json.log`](../logs/index.md#production_jsonlog).
+[`production_json.log`](../logs/_index.md#production_jsonlog).
 
 To disable the bypass mechanism, make sure the environment variable
 `GITLAB_THROTTLE_BYPASS_HEADER` is unset or empty.
@@ -181,9 +181,9 @@ the allowlist configuration would be `1,53,217`.
 
 Requests that bypassed the rate limiter because of the user allowlist
 are marked with `"throttle_safelist":"throttle_user_allowlist"` in
-[`production_json.log`](../logs/index.md#production_jsonlog).
+[`production_json.log`](../logs/_index.md#production_jsonlog).
 
-At application startup, the allowlist is logged in [`auth.log`](../logs/index.md#authlog).
+At application startup, the allowlist is logged in [`auth.log`](../logs/_index.md#authlog).
 
 ## Try out throttling settings before enforcing them
 
@@ -217,7 +217,7 @@ non-protected paths can be done by setting
 To enable dry run mode for all throttles, the variable can be set to `*`.
 
 Setting a throttle to dry run mode logs a message to the
-[`auth.log`](../logs/index.md#authlog) when it would hit the limit, while letting the
+[`auth.log`](../logs/_index.md#authlog) when it would hit the limit, while letting the
 request continue. The log message contains an `env` field set to `track`. The `matched`
 field contains the name of throttle that was hit.
 

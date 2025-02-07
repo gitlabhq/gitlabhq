@@ -1219,7 +1219,7 @@ The ZIP archives are stored every time pages site is updated.
 
 ## Backup
 
-GitLab Pages are part of the [regular backup](../backup_restore/index.md), so there is no separate backup to configure.
+GitLab Pages are part of the [regular backup](../backup_restore/_index.md), so there is no separate backup to configure.
 
 ## Security
 

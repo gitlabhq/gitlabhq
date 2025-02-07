@@ -117,7 +117,7 @@ A roadmap filtered for the parent epic opens.
 - Create workflows with [epic boards](epic_boards.md).
 - [Turn on notifications](../../profile/notifications.md) for about epic events.
 - [Add an emoji reaction](../../emoji_reactions.md) to an epic or its comments.
-- Collaborate on an epic by posting comments in a [thread](../../discussions/index.md).
+- Collaborate on an epic by posting comments in a [thread](../../discussions/_index.md).
 - Use [health status](manage_epics.md#health-status) to track your progress.
 
 <!-- ## Troubleshooting

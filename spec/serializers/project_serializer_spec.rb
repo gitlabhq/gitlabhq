@@ -25,6 +25,24 @@ RSpec.describe ProjectSerializer do
     end
   end
 
+  context 'when serializer option is :project_details' do
+    subject do
+      described_class.new.represent(project, serializer: :project_details)
+    end
+
+    before do
+      allow(API::Entities::Project).to receive(:represent)
+    end
+
+    it 'represents with API::Entities::Project' do
+      subject
+
+      expect(API::Entities::Project)
+        .to have_received(:represent)
+              .with(project, serializer: :project_details, request: an_instance_of(EntityRequest))
+    end
+  end
+
   context 'when serializer option is omitted' do
     subject do
       described_class.new.represent(project)

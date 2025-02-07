@@ -113,7 +113,7 @@ The following table lists the valid `objects` that can be used:
 | `artifacts`        | [CI/CD job artifacts](cicd/job_artifacts.md) |
 | `external_diffs`   | [Merge request diffs](merge_request_diffs.md) |
 | `uploads`          | [User uploads](uploads.md) |
-| `lfs`              | [Git Large File Storage objects](lfs/index.md) |
+| `lfs`              | [Git Large File Storage objects](lfs/_index.md) |
 | `packages`         | [Project packages (for example, PyPI, Maven, or NuGet)](packages/index.md) |
 | `dependency_proxy` | [Dependency Proxy](packages/dependency_proxy.md) |
 | `terraform_state`  | [Terraform state files](terraform_state.md) |
@@ -172,7 +172,7 @@ supported by the consolidated form, refer to the following guides:
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
 | [Secure Files](cicd/secure_files.md#using-object-storage) | **{check-circle}** Yes |
 | [Job artifacts](cicd/job_artifacts.md#using-object-storage) including archived job logs | **{check-circle}** Yes |
-| [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
+| [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
 | [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
 | [Packages](packages/index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
@@ -745,7 +745,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
 To migrate existing local data to object storage see the following guides:
 
 - [Job artifacts](cicd/job_artifacts.md#migrating-to-object-storage) including archived job logs
-- [LFS objects](lfs/index.md#migrating-to-object-storage)
+- [LFS objects](lfs/_index.md#migrating-to-object-storage)
 - [Uploads](raketasks/uploads/migrate.md#migrate-to-object-storage)
 - [Merge request diffs](merge_request_diffs.md#using-object-storage)
 - [Packages](packages/index.md#migrate-local-packages-to-object-storage) (optional feature)
@@ -834,7 +834,7 @@ After you have done at least one successful Rclone copy from the old location to
 
 ## Alternatives to file system storage
 
-If you're working to [scale out](reference_architectures/index.md) your GitLab implementation,
+If you're working to [scale out](reference_architectures/_index.md) your GitLab implementation,
 or add fault tolerance and redundancy, you may be
 looking at removing dependencies on block or network file systems.
 See the following additional guides:
@@ -938,7 +938,7 @@ This can result in some of the following problems:
   An error occurred while loading the file. Please try again later.
   ```
 
-  See [the LFS documentation](lfs/index.md#error-viewing-a-pdf-file) for more details.
+  See [the LFS documentation](lfs/_index.md#error-viewing-a-pdf-file) for more details.
 
 Additionally for a short time period users could share pre-signed, time-limited object storage URLs
 with others without authentication. Also bandwidth charges may be incurred
