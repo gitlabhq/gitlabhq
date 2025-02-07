@@ -17,7 +17,7 @@ Geo undergoes significant changes from release to release. Upgrades are
 supported and [documented](#upgrading-geo), but you should ensure that you're
 using the right version of the documentation for your installation.
 
-To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/index.md).
+To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/_index.md).
 
 Fetching large repositories can take a long time for teams and runners located far from a single GitLab instance.
 
@@ -285,7 +285,7 @@ These known issues reflect only the latest version of GitLab. If you are using a
 - When a single Git repository receives pushes at a high-enough rate, the secondary site's local copy can be perpetually out-of-date. This causes all Git fetches of that repository to be forwarded to the primary site. See [GitLab issue #455870](https://gitlab.com/gitlab-org/gitlab/-/issues/455870).
 - [Proxying](secondary_proxy/_index.md) is implemented only in the GitLab application in the Puma service or Web service, so other services do not benefit from this behavior. You should use a [separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) to ensure requests are always sent to the primary. These services include:
   - GitLab container registry - [can be configured to use a separate domain](../packages/container_registry.md#configure-container-registry-under-its-own-domain), such as `registry.example.com`. Secondary site container registries are intended only for disaster recovery. Users should not be routed to them, especially not for pushes, because the data is not propagated to the primary site.
-  - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../pages/index.md#prerequisites).
+  - GitLab Pages - should always use a separate domain, as part of [the prerequisites for running GitLab Pages](../pages/_index.md#prerequisites).
 - With a [unified URL](secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites), Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain. To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate the certificate, then copy it to all other sites.
 - When a [secondary site uses a separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) from the primary site, [signing in the secondary site using SAML](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled) is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
 - Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
@@ -379,6 +379,6 @@ For answers to common questions, see the [Geo FAQ](replication/faq.md).
 
 ## Troubleshooting
 
-- For Geo troubleshooting steps, see [Geo Troubleshooting](replication/troubleshooting/index.md).
+- For Geo troubleshooting steps, see [Geo Troubleshooting](replication/troubleshooting/_index.md).
 
 - For Disaster Recovery troubleshooting steps, see [Troubleshooting Geo failover](disaster_recovery/failover_troubleshooting.md).

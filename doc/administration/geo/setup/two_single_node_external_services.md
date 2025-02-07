@@ -19,7 +19,7 @@ Prerequisites:
   - The second GitLab site serves as the **Geo secondary site**. Geo supports multiple secondary sites.
 - The Geo primary site has at least a [GitLab Premium](https://about.gitlab.com/pricing/) license.
   You need only one license for all sites.
-- Confirm all sites meet the [requirements for running Geo](../index.md#requirements-for-running-geo).
+- Confirm all sites meet the [requirements for running Geo](../_index.md#requirements-for-running-geo).
 
 ## Set up Geo for Linux package (Omnibus)
 
@@ -90,7 +90,7 @@ has three main functions:
 
 1. Configure the replica database.
 1. Configure the tracking database.
-1. Enable the [Geo Log Cursor](../index.md#geo-log-cursor).
+1. Enable the [Geo Log Cursor](../_index.md#geo-log-cursor).
 
 To configure the connection to the external read-replica database:
 
@@ -339,7 +339,7 @@ secondary site is a read-only copy.
    sudo gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/index.md).
+   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/_index.md).
 
 1. To verify that the secondary site is reachable, SSH into a Rails or Sidekiq server on your primary site and run:
 
@@ -347,7 +347,7 @@ secondary site is a read-only copy.
    sudo gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/index.md).
+   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/_index.md).
 
 After the secondary site is added to the Geo administration page and restarted,
 the site automatically starts to replicate missing data from the primary site
@@ -493,4 +493,4 @@ The reconfigure in the [steps above](#configure-gitlab) handles these steps auto
 
 ## Troubleshooting
 
-See [troubleshooting Geo](../replication/troubleshooting/index.md).
+See [troubleshooting Geo](../replication/troubleshooting/_index.md).

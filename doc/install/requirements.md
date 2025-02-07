@@ -80,12 +80,12 @@ For more information, see [managing PostgreSQL extensions](postgresql_extensions
 
 ### GitLab Geo
 
-For [GitLab Geo](../administration/geo/index.md), you should use the Linux package or
+For [GitLab Geo](../administration/geo/_index.md), you should use the Linux package or
 [validated cloud providers](../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services)
 to install GitLab.
 Compatibility with other external databases is not guaranteed.
 
-For more information, see [requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo).
+For more information, see [requirements for running Geo](../administration/geo/_index.md#requirements-for-running-geo).
 
 ### Locale compatibility
 
@@ -103,7 +103,7 @@ For more information, see [upgrading operating systems for PostgreSQL](../admini
 
 ### GitLab schemas
 
-You should create or use databases exclusively for GitLab, [Geo](../administration/geo/index.md),
+You should create or use databases exclusively for GitLab, [Geo](../administration/geo/_index.md),
 [Gitaly Cluster](../administration/gitaly/praefect.md), or other components.
 Do not create or modify databases, schemas, users, or other properties except when you follow:
 

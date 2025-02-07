@@ -39571,6 +39571,7 @@ Conversation type of the thread.
 | ----- | ----------- |
 | <a id="aiconversationsthreadsconversationtypeduo_chat"></a>`DUO_CHAT` | duo_chat thread. |
 | <a id="aiconversationsthreadsconversationtypeduo_code_review"></a>`DUO_CODE_REVIEW` | duo_code_review thread. |
+| <a id="aiconversationsthreadsconversationtypeduo_quick_chat"></a>`DUO_QUICK_CHAT` | duo_quick_chat thread. |
 
 ### `AiFeatureProviders`
 

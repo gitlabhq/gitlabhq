@@ -114,10 +114,10 @@ The following table lists the valid `objects` that can be used:
 | `external_diffs`   | [Merge request diffs](merge_request_diffs.md) |
 | `uploads`          | [User uploads](uploads.md) |
 | `lfs`              | [Git Large File Storage objects](lfs/_index.md) |
-| `packages`         | [Project packages (for example, PyPI, Maven, or NuGet)](packages/index.md) |
+| `packages`         | [Project packages (for example, PyPI, Maven, or NuGet)](packages/_index.md) |
 | `dependency_proxy` | [Dependency Proxy](packages/dependency_proxy.md) |
 | `terraform_state`  | [Terraform state files](terraform_state.md) |
-| `pages`            | [Pages](pages/index.md) |
+| `pages`            | [Pages](pages/_index.md) |
 | `ci_secure_files`  | [Secure files](cicd/secure_files.md) |
 
 Within each object type, three parameters can be defined:
@@ -175,10 +175,10 @@ supported by the consolidated form, refer to the following guides:
 | [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
 | [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
-| [Packages](packages/index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
+| [Packages](packages/_index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
-| [Pages content](pages/index.md#object-storage-settings) | **{check-circle}** Yes |
+| [Pages content](pages/_index.md#object-storage-settings) | **{check-circle}** Yes |
 
 ## Configure the connection settings
 
@@ -748,10 +748,10 @@ To migrate existing local data to object storage see the following guides:
 - [LFS objects](lfs/_index.md#migrating-to-object-storage)
 - [Uploads](raketasks/uploads/migrate.md#migrate-to-object-storage)
 - [Merge request diffs](merge_request_diffs.md#using-object-storage)
-- [Packages](packages/index.md#migrate-local-packages-to-object-storage) (optional feature)
+- [Packages](packages/_index.md#migrate-local-packages-to-object-storage) (optional feature)
 - [Dependency Proxy](packages/dependency_proxy.md#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage)
 - [Terraform state files](terraform_state.md#migrate-to-object-storage)
-- [Pages content](pages/index.md#migrate-pages-deployments-to-object-storage)
+- [Pages content](pages/_index.md#migrate-pages-deployments-to-object-storage)
 - [Project-level Secure Files](cicd/secure_files.md#migrate-to-object-storage)
 
 ## Transition to consolidated form
@@ -843,7 +843,7 @@ See the following additional guides:
 1. Configure [database lookup of SSH keys](operations/fast_ssh_key_lookup.md)
    to eliminate the need for a shared `authorized_keys` file.
 1. [Prevent local disk usage for job logs](cicd/job_logs.md#prevent-local-disk-usage).
-1. [Disable Pages local storage](pages/index.md#disable-pages-local-storage).
+1. [Disable Pages local storage](pages/_index.md#disable-pages-local-storage).
 
 ## Troubleshooting
 
@@ -899,7 +899,7 @@ This is not the default behavior with object storage.
 The `proxy_download` setting controls this behavior: the default is `false`.
 Verify this in the documentation for each use case.
 
-Set `proxy_download` to `true` if you want GitLab to proxy the files. 
+Set `proxy_download` to `true` if you want GitLab to proxy the files.
 There can be a large performance hit to the GitLab server if `proxy_download` is set to `true`. The server deployments of GitLab have `proxy_download` set to `false`.
 
 When `proxy_download` to `false`, GitLab returns an

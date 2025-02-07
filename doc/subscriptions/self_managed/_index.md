@@ -176,7 +176,7 @@ You can trigger a manual update of the daily and historical billable users in yo
 
 Managing the number of users against the number of subscription seats can be difficult:
 
-- If [LDAP is integrated with GitLab](../../administration/auth/ldap/index.md), anyone
+- If [LDAP is integrated with GitLab](../../administration/auth/ldap/_index.md), anyone
   in the configured domain can sign up for a GitLab account. This can result in
   an unexpected bill at time of renewal.
 - If sign-up is turned on in your instance, anyone who can access the instance can
@@ -186,7 +186,7 @@ GitLab has several features to help you manage the number of users. You can:
 
 - [Require administrator approval for new sign ups](../../administration/settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups).
 - Automatically block new users, either through
-  [LDAP](../../administration/auth/ldap/index.md#basic-configuration-settings) or
+  [LDAP](../../administration/auth/ldap/_index.md#basic-configuration-settings) or
   [OmniAuth](../../integration/omniauth.md#configure-common-settings).
 - [Limit the number of billable users](../../administration/settings/sign_up_restrictions.md#user-cap)
   who can sign up or be added to a subscription without administrator approval.

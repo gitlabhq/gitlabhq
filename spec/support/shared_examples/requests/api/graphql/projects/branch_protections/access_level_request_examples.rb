@@ -12,12 +12,10 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
   let(:access_levels_count) { access_levels.size }
   let(:maintainer_access_level) { access_levels.for_role.first }
   let(:maintainer_access_level_data) { access_levels_data.first }
+  let(:branch_rules_data) { graphql_data_at('project', 'branchRules', 'nodes') }
   let(:access_levels_data) do
-    graphql_data_at(
-      'project',
-      'branchRules',
-      'nodes',
-      0,
+    branch_rule = branch_rules_data.find { |data| data['name'] == protected_branch.name }
+    branch_rule&.dig(
       'branchProtection',
       "#{access_level_kind.to_s.camelize(:lower)}AccessLevels",
       'nodes'
@@ -28,8 +26,9 @@ RSpec.shared_examples 'a GraphQL query for access levels' do |access_level_kind|
     <<~GQL
     query($path: ID!) {
       project(fullPath: $path) {
-        branchRules(first: 1) {
+        branchRules(first: 2) {
           nodes {
+            name
             branchProtection {
               #{access_level_kind.to_s.camelize(:lower)}AccessLevels {
                 nodes {

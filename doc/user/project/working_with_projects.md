@@ -526,7 +526,7 @@ You cannot use LDAP groups to manage project access, but you can use the followi
 
 Prerequisites:
 
-- You must [integrate LDAP with GitLab](../../administration/auth/ldap/index.md).
+- You must [integrate LDAP with GitLab](../../administration/auth/ldap/_index.md).
 - You must be an administrator.
 
 1. [Create a group](../group/index.md#create-a-group) to track membership of your project.

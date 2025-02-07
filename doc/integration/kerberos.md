@@ -165,12 +165,12 @@ knowledge can be a security risk.
 
 ## Link Kerberos and LDAP accounts together
 
-If your users sign in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap/index.md)
+If your users sign in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap/_index.md)
 enabled, your users are linked to their LDAP accounts on their first sign-in.
 For this to work, some prerequisites must be met:
 
 The Kerberos username must match the LDAP user's UID. You can choose which LDAP
-attribute is used as the UID in the GitLab [LDAP configuration](../administration/auth/ldap/index.md#configure-ldap)
+attribute is used as the UID in the GitLab [LDAP configuration](../administration/auth/ldap/_index.md#configure-ldap)
 but for Active Directory, this should be `sAMAccountName`.
 
 The Kerberos realm must match the domain part of the LDAP user's Distinguished

@@ -33,7 +33,7 @@ The following Rake tasks are available for use with GitLab:
 | [Import large project exports](../administration/raketasks/project_import_export.md#import-large-projects) | Import large GitLab [project exports](../user/project/settings/import_export.md). |
 | [Incoming email](../administration/raketasks/incoming_email.md)                                            | Incoming email-related tasks. |
 | [Integrity checks](../administration/raketasks/check.md)                                                   | Check the integrity of repositories, files, LDAP, and more. |
-| [LDAP maintenance](../administration/raketasks/ldap.md)                                                    | [LDAP](../administration/auth/ldap/index.md)-related tasks. |
+| [LDAP maintenance](../administration/raketasks/ldap.md)                                                    | [LDAP](../administration/auth/ldap/_index.md)-related tasks. |
 | [Praefect Rake tasks](../administration/raketasks/praefect.md)                                             | [Praefect](../administration/gitaly/praefect.md)-related tasks. |
 | [Project import/export](../administration/raketasks/project_import_export.md)                              | Prepare for [project exports and imports](../user/project/settings/import_export.md). |
 | [Sidekiq job migration](../administration/sidekiq/sidekiq_job_migration.md)                                | Migrate Sidekiq jobs scheduled for future dates to a new queue. |

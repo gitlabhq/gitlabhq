@@ -318,9 +318,9 @@ the finalization.
 
 Here is an example scenario:
 
-- 17.2 and 17.5 are required stops.
-- In 17.0 the batched background migration is queued.
-- In 17.3 the migration may be finalized, provided that it's completed in GitLab.com.
+- 17.3 and 17.5 are required stops.
+- In 17.1 the batched background migration is queued.
+- In 17.4 the migration may be finalized, provided that it's completed in GitLab.com.
 - In 17.6 the code related to the migration may be deleted.
 
 Batched background migration code is routinely deleted when migrations are squashed.

@@ -98,6 +98,11 @@ Refer to [Track and Propose Sessions for Python Learning Group](https://gitlab.c
      - [FastAPI Documentation](https://fastapi.tiangolo.com/)
      - [Pydantic Documentation](https://pydantic-docs.helpmanual.io/)
 
+### Communication
+
+- Stay updated by following the [learning group issue](<https://gitlab.com/gitlab-org/gitlab/-/issues/517449>)
+- Join the discussion on Slack: **#python_getting_started**
+
 ---
 
 ### Python Review Office Hours

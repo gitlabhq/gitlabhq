@@ -211,10 +211,7 @@ section is marked as optional.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `codeowner_role_approvers`.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/497504) in GitLab 17.8.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512623) in GitLab 17.9 Feature flag `codeowner_role_approvers` removed.
 
 You can add or set a role for direct project members as Code Owners:
 

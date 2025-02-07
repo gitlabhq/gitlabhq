@@ -46,7 +46,7 @@ After you configure a GitLab repository as a pull mirror:
 1. GitLab adds the repository to a queue.
 1. Once per minute, a Sidekiq cron job schedules repository mirrors to update, based on:
    - Available capacity, determined by Sidekiq settings. For GitLab.com, read
-     [GitLab.com Sidekiq settings](../../../gitlab_com/index.md#sidekiq).
+     [GitLab.com Sidekiq settings](../../../gitlab_com/_index.md#sidekiq).
    - How many mirrors are already in the queue and due for updates. Being due depends
      on when the repository mirror was last updated, and how many times updates have been retried.
 1. Sidekiq becomes available to process updates, mirrors are updated. If the update process:
@@ -66,7 +66,7 @@ Prerequisites:
   create a [personal access token for GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
   with the `repo` scope. If 2FA is enabled, this personal access
   token serves as your GitHub password.
-- [GitLab Silent Mode](../../../../administration/silent_mode/index.md) is not enabled.
+- [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) is not enabled.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.

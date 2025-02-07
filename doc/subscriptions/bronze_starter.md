@@ -50,7 +50,7 @@ the tiers are no longer mentioned in GitLab documentation:
       [all groups programmatically](../administration/auth/ldap/ldap_synchronization.md#group-sync),
       [group sync schedule](../administration/auth/ldap/ldap_synchronization.md#adjust-ldap-group-sync-schedule), and
       [all groups manually](../administration/auth/ldap/ldap-troubleshooting.md#sync-all-groups)
-    - [Configuration settings](../administration/auth/ldap/index.md#ldap-sync-configuration-settings)
+    - [Configuration settings](../administration/auth/ldap/_index.md#ldap-sync-configuration-settings)
     - Users: [all users](../administration/auth/ldap/ldap_synchronization.md#user-sync),
       [administrators](../administration/auth/ldap/ldap_synchronization.md#administrator-sync),
       [user sync schedule](../administration/auth/ldap/ldap_synchronization.md#adjust-ldap-user-sync-schedule)

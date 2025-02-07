@@ -186,8 +186,6 @@ module API
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :admin_deployments
       put ':id/deployments/:deployment_id' do
-        authorize!(:read_deployment, user_project)
-
         deployment = user_project.deployments.find(params[:deployment_id])
 
         authorize!(:update_deployment, deployment)

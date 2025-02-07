@@ -30,7 +30,7 @@ To use the dependency proxy for packages, ensure your project is configured prop
 and that users who pull from the cache have the necessary authentication:
 
 1. In the global configuration, if the following features are disabled, enable them:
-   - The [`package` feature](../../../../administration/packages/index.md#enable-or-disable-the-package-registry). Enabled by default.
+   - The [`package` feature](../../../../administration/packages/_index.md#enable-or-disable-the-package-registry). Enabled by default.
    - The [`dependency_proxy` feature](../../../../administration/packages/dependency_proxy.md#turn-on-the-dependency-proxy). Enabled by default.
 1. In the project settings, if the [`package` feature](../index.md#disable-the-package-registry)
    is disabled, enable it. It is enabled by default.

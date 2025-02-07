@@ -23,7 +23,7 @@ This page focuses on how to configure a self-managed instance if you're using th
 - You must ensure both [outbound](#allow-outbound-connections-from-the-gitlab-instance)
   and [inbound](#allow-inbound-connections-from-clients-to-the-gitlab-instance) connectivity exists.
   Network firewalls can cause lag or delay.
-- [Silent Mode](../../administration/silent_mode/index.md) must not be turned on.
+- [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
 - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
 - GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
 

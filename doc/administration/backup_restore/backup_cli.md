@@ -201,7 +201,7 @@ Changes to existing files during backup might cause issues on the GitLab instanc
 
 A workaround of this issue, is either to:
 
-- Transition the GitLab instance into [Maintenance Mode](../maintenance_mode/index.md).
+- Transition the GitLab instance into [Maintenance Mode](../maintenance_mode/_index.md).
 - Restrict traffic to the servers during backup to preserve instance resources.
 
 We're investigating an alternative to the copy strategy, see [issue 428520](https://gitlab.com/gitlab-org/gitlab/-/issues/428520).

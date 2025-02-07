@@ -139,7 +139,7 @@ You can control access to your Pages website with:
 GitLab Pages for Dedicated:
 
 - Is enabled by default.
-- Only works in the primary site if [Geo](../../administration/geo/index.md) is enabled.
+- Only works in the primary site if [Geo](../../administration/geo/_index.md) is enabled.
 - Is not included as part of instance migrations to GitLab Dedicated.
 
 The following GitLab Pages features are not available for GitLab Dedicated:

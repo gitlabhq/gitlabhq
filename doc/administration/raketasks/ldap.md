@@ -156,7 +156,7 @@ sudo gitlab-rake gitlab:ldap:rename_provider[old_provider,new_provider] force=ye
 
 ## Secrets
 
-GitLab can use [LDAP configuration secrets](../auth/ldap/index.md#use-encrypted-credentials) to read from an encrypted file.
+GitLab can use [LDAP configuration secrets](../auth/ldap/_index.md#use-encrypted-credentials) to read from an encrypted file.
 The following Rake tasks are provided for updating the contents of the encrypted file.
 
 ### Show secret

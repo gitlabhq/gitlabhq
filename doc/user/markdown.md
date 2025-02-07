@@ -1779,7 +1779,7 @@ To customize the number of processed include directives, administrators can chan
 
 To use includes from separate wiki pages or external URLs, administrators can enable the
 `wiki_asciidoc_allow_uri_includes`
-[application setting](../administration/wikis/index.md#allow-uri-includes-for-asciidoc).
+[application setting](../administration/wikis/_index.md#allow-uri-includes-for-asciidoc).
 
 ```markdown
 <!-- define application setting wiki_asciidoc_allow_uri_includes to true to allow content to be read from URI -->

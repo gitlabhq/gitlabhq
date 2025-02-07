@@ -2,6 +2,7 @@
 import { GlDisclosureDropdownItem, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import { setUrlParams, relativePathToAbsolute, getBaseURL } from '~/lib/utils/url_utility';
+import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 
 export const i18n = {
   btnCopyContentsTitle: __('Copy file contents'),
@@ -22,20 +23,11 @@ export default {
     canDownloadCode: {
       default: true,
     },
+    blobInfo: {
+      default: () => DEFAULT_BLOB_INFO.repository.blobs.nodes[0],
+    },
   },
   props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    path: {
-      type: String,
-      required: true,
-    },
-    rawPath: {
-      type: String,
-      required: true,
-    },
     activeViewerType: {
       type: String,
       required: true,
@@ -56,16 +48,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    environmentName: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    environmentPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   computed: {
     copyFileContentsItem() {
@@ -81,7 +63,7 @@ export default {
     openRawItem() {
       return {
         text: i18n.btnRawTitle,
-        href: this.rawPath,
+        href: this.blobInfo.rawPath || this.blobInfo.externalStorageUrl,
         extraAttrs: {
           target: '_blank',
         },
@@ -100,7 +82,7 @@ export default {
     environmentItem() {
       return {
         text: this.environmentTitle,
-        href: this.environmentPath,
+        href: this.blobInfo.environmentExternalUrlForRouteMap,
         extraAttrs: {
           target: '_blank',
           'data-testid': 'environment',
@@ -120,14 +102,20 @@ export default {
       return `[data-blob-hash="${this.blobHash}"]`;
     },
     downloadUrl() {
-      return setUrlParams({ inline: false }, relativePathToAbsolute(this.rawPath, getBaseURL()));
+      return setUrlParams(
+        { inline: false },
+        relativePathToAbsolute(this.blobInfo.rawPath, getBaseURL()),
+      );
     },
     showEnvironmentItem() {
-      return this.environmentName && this.environmentPath;
+      return (
+        this.blobInfo.environmentFormattedExternalUrl &&
+        this.blobInfo.environmentExternalUrlForRouteMap
+      );
     },
     environmentTitle() {
       return sprintf(s__('BlobViewer|View on %{environmentName}'), {
-        environmentName: this.environmentName,
+        environmentName: this.blobInfo.environmentFormattedExternalUrl,
       });
     },
   },

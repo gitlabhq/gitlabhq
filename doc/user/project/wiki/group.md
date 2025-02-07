@@ -76,7 +76,7 @@ To open group settings:
 
 ## Related topics
 
-- [Wiki settings for administrators](../../../administration/wikis/index.md)
+- [Wiki settings for administrators](../../../administration/wikis/_index.md)
 - [Project wikis API](../../../api/wikis.md)
 - [Group repository storage moves API](../../../api/group_repository_storage_moves.md)
 - [Group wikis API](../../../api/group_wikis.md)

@@ -20,7 +20,7 @@ With inactive project deletion, you can identify these projects, warn the mainta
 projects if they remain inactive. When an inactive project is deleted, the action generates an audit event that it was
 performed by the @GitLab-Admin-Bot.
 
-For the default setting on GitLab.com, see the [GitLab.com settings page](../user/gitlab_com/index.md#inactive-project-deletion).
+For the default setting on GitLab.com, see the [GitLab.com settings page](../user/gitlab_com/_index.md#inactive-project-deletion).
 
 ## Configure inactive project deletion
 

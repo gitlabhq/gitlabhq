@@ -22,7 +22,7 @@ pending approval state because an administrator has enabled any of the following
 - [Require administrator approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
 - [User cap](settings/sign_up_restrictions.md#user-cap).
 - [Block auto-created users (OmniAuth)](../integration/omniauth.md#configure-common-settings)
-- [Block auto-created users (LDAP)](auth/ldap/index.md#basic-configuration-settings)
+- [Block auto-created users (LDAP)](auth/ldap/_index.md#basic-configuration-settings)
 
 When a user registers for an account while this setting is enabled:
 

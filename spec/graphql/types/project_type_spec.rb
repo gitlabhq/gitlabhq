@@ -895,8 +895,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
 
       it 'is present and correct' do
-        expect(branch_rules_data.count).to eq(1)
-        expect(branch_rules_data.first['name']).to eq(name)
+        expect(branch_rules_data.count).to eq(2)
+        expect(branch_rules_data.first['name']).to eq('All branches')
+        expect(branch_rules_data.last['name']).to eq(name)
       end
     end
 

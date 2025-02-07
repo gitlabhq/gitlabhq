@@ -125,7 +125,7 @@ from [owasp.org](https://owasp.org/).
 
 - Geo imposes no additional restrictions on operating system (see the
   [GitLab installation](https://about.gitlab.com/install/) page for more
-  details), however we recommend using the operating systems listed in the [Geo documentation](../index.md#requirements-for-running-geo).
+  details), however we recommend using the operating systems listed in the [Geo documentation](../_index.md#requirements-for-running-geo).
 
 ### What details regarding required OS components and lock‐down needs have been defined?
 

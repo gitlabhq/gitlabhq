@@ -49,7 +49,10 @@ module Mutations
           def resolve(project_path:, **kwargs)
             project = authorized_find!(project_path)
 
-            response = ::ContainerRegistry::Protection::CreateRuleService.new(project, current_user, kwargs).execute
+            response =
+              ::ContainerRegistry::Protection::CreateRuleService
+                .new(project: project, current_user: current_user, params: kwargs)
+                .execute
 
             { container_protection_repository_rule: response.payload[:container_registry_protection_rule],
               errors: response.errors }

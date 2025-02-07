@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-If you have [configured LDAP to work with GitLab](index.md), GitLab can automatically synchronize
+If you have [configured LDAP to work with GitLab](_index.md), GitLab can automatically synchronize
 users and groups.
 
 LDAP synchronization updates user and group information for existing GitLab users that have an LDAP identity assigned. It does not create new GitLab users through LDAP.
@@ -436,7 +436,7 @@ When global group memberships lock is enabled:
 
 To enable global group memberships lock:
 
-1. [Configure LDAP](index.md#configure-ldap).
+1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
@@ -448,7 +448,7 @@ By default, group members with the Owner role can manage [LDAP group synchroniza
 
 GitLab administrators can remove this permission from group Owners:
 
-1. [Configure LDAP](index.md#configure-ldap).
+1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
@@ -732,7 +732,7 @@ By default, GitLab runs a worker once per day at 01:30 a.m. server time to
 check and update GitLab users against LDAP.
 
 WARNING:
-Do not run the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule. For more information, see the [LDAP Security documentation](index.md#security).
+Do not run the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule. For more information, see the [LDAP Security documentation](_index.md#security).
 
 You can manually configure LDAP user sync times by setting the
 following configuration values, in cron format. If needed, you can

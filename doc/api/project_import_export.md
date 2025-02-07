@@ -44,7 +44,7 @@ project to a web server or to any S3-compatible platform. For exports, GitLab:
   - [GitLab UI](../administration/settings/import_and_export_settings.md).
   - [Application settings API](settings.md#update-application-settings)
 - Has a fixed limit for the maximum import file size on GitLab.com. For more information, see
-  [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings).
+  [Account and limit settings](../user/gitlab_com/_index.md#account-and-limit-settings).
 
 The `upload[url]` parameter is required if the `upload` parameter is present.
 

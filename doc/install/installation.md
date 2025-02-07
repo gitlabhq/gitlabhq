@@ -975,7 +975,7 @@ sudo editor /etc/nginx/sites-available/gitlab
 
 If you intend to enable GitLab Pages, there is a separate NGINX configuration you need
 to use. Read all about the needed configuration at the
-[GitLab Pages administration guide](../administration/pages/index.md).
+[GitLab Pages administration guide](../administration/pages/_index.md).
 
 If you want to use HTTPS, replace the `gitlab` NGINX configuration with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 

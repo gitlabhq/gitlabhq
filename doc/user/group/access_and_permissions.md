@@ -113,7 +113,7 @@ On GitLab.com instance runners are added to the [global allowlist](../../adminis
 
 Artifact and Registry downloading from runners is sourced from any Google or, in the case of MacOS runners, Amazon IP address in that region.
 The download is therefore not added to the global allowlist.
-To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com/index.md#ip-range) to your group allowlist.
+To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com/_index.md#ip-range) to your group allowlist.
 
 ## Restrict group access by domain
 
@@ -283,7 +283,7 @@ To create group links with an LDAP user filter:
 
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP user filter`.
-1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/index.md#set-up-ldap-user-filter).
+1. Input your filter in the **LDAP User filter** box. Follow the [documentation on user filters](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter).
 1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles.md) for users synced in this group.
 1. Select **Add Synchronization**.
 

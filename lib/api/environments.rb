@@ -192,8 +192,8 @@ module API
       route_setting :authorization, job_token_policies: :admin_environments
       delete ':id/environments/:environment_id' do
         authorize! :read_environment, user_project
-
         environment = user_project.environments.find(params[:environment_id])
+
         authorize! :destroy_environment, environment
 
         destroy_conditionally!(environment)
@@ -215,7 +215,7 @@ module API
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :admin_environments
       post ':id/environments/:environment_id/stop' do
-        authorize! :read_environment, user_project
+        authorize! :stop_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
         ::Environments::StopService.new(user_project, current_user, declared_params(include_missing: false))

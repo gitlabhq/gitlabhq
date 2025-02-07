@@ -127,7 +127,7 @@ You can also manually trigger an update:
   set by the administrator on self-managed instances.
 
 NOTE:
-[GitLab Silent Mode](../../../../administration/silent_mode/index.md) disables both push and pull updates.
+[GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables both push and pull updates.
 
 ### Force an update
 
@@ -213,7 +213,7 @@ for you to check:
 - [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/configure-ssh-and-two-step-verification/)
 - [Codeberg](https://docs.codeberg.org/security/ssh-fingerprint/)
 - [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints)
-- [GitLab.com](../../../gitlab_com/index.md#ssh-host-keys-fingerprints)
+- [GitLab.com](../../../gitlab_com/_index.md#ssh-host-keys-fingerprints)
 - [Launchpad](https://help.launchpad.net/SSHFingerprints)
 - [Savannah](https://savannah.gnu.org/maintenance/SshAccess/)
 - [SourceForge](https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)

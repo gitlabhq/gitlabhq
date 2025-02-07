@@ -57,7 +57,7 @@ The following guide assumes that:
 - You have a **primary** site already set up (the GitLab server you are
   replicating from), running PostgreSQL (or equivalent version) managed by your Linux package installation, and
   you have a new **secondary** site set up with the same
-  [versions of PostgreSQL](../index.md#requirements-for-running-geo),
+  [versions of PostgreSQL](../_index.md#requirements-for-running-geo),
   OS, and GitLab on all sites.
 
 WARNING:
@@ -1065,4 +1065,4 @@ Follow [Geo with external PostgreSQL instances](external_database.md#configure-t
 
 ## Troubleshooting
 
-Read the [troubleshooting document](../replication/troubleshooting/index.md).
+Read the [troubleshooting document](../replication/troubleshooting/_index.md).

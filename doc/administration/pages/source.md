@@ -15,7 +15,7 @@ Before attempting to enable GitLab Pages, first make sure you have
 
 This document explains how to configure GitLab Pages for self-compiled GitLab installations.
 
-For more information about configuring GitLab Pages for Linux Package installations (recommended), see the [Linux package documentation](index.md).
+For more information about configuring GitLab Pages for Linux Package installations (recommended), see the [Linux package documentation](_index.md).
 
 The advantage of using the Linux package installation is that it contains the latest supported version of GitLab Pages.
 

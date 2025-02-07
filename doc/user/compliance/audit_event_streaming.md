@@ -26,7 +26,7 @@ With audit event streaming for top-level groups, group owners can:
 Each streaming destination:
 
 - Can have up to 20 custom HTTP headers included with each streamed event.
-- For GitLab.com, must allow traffic from the [GitLab.com IP address range](../gitlab_com/index.md#ip-range).
+- For GitLab.com, must allow traffic from the [GitLab.com IP address range](../gitlab_com/_index.md#ip-range).
 
 GitLab can stream a single event more than once to the same destination. Use the `id` key in the payload to deduplicate
 incoming data.
@@ -365,4 +365,4 @@ To delete AWS S3 streaming destinations to a top-level group:
 
 ## Related topics
 
-- [Audit event streaming for instances](../../administration/audit_event_streaming/index.md)
+- [Audit event streaming for instances](../../administration/audit_event_streaming/_index.md)

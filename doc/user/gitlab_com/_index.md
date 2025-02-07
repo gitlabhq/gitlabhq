@@ -166,7 +166,7 @@ Host gitlab.com
 ## GitLab Pages
 
 Some settings for [GitLab Pages](../project/pages/index.md) differ from the
-[defaults for self-managed instances](../../administration/pages/index.md):
+[defaults for self-managed instances](../../administration/pages/_index.md):
 
 | Setting                                           | GitLab.com             |
 |:--------------------------------------------------|:-----------------------|

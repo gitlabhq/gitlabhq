@@ -118,8 +118,8 @@ established but GitLab doesn't show you LDAP users in the output, one of the
 following is most likely true:
 
 - The `bind_dn` user doesn't have enough permissions to traverse the user tree.
-- The users don't fall under the [configured `base`](index.md#configure-ldap).
-- The [configured `user_filter`](index.md#set-up-ldap-user-filter) blocks access to the users.
+- The users don't fall under the [configured `base`](_index.md#configure-ldap).
+- The [configured `user_filter`](_index.md#set-up-ldap-user-filter) blocks access to the users.
 
 In this case, you con confirm which of the above is true using
 [ldapsearch](#ldapsearch) with the existing LDAP configuration in your
@@ -130,9 +130,9 @@ In this case, you con confirm which of the above is true using
 A user can have trouble signing in for any number of reasons. To get started,
 here are some questions to ask yourself:
 
-- Does the user fall under the [configured `base`](index.md#configure-ldap) in
+- Does the user fall under the [configured `base`](_index.md#configure-ldap) in
   LDAP? The user must fall under this `base` to sign in.
-- Does the user pass through the [configured `user_filter`](index.md#set-up-ldap-user-filter)?
+- Does the user pass through the [configured `user_filter`](_index.md#set-up-ldap-user-filter)?
   If one is not configured, this question can be ignored. If it is, then the
   user must also pass through this filter to be allowed to sign in.
   - Refer to our documentation on [debugging the `user_filter`](#debug-ldap-user-filter).
@@ -249,7 +249,7 @@ To resolve this:
 #### Debug LDAP user filter
 
 [`ldapsearch`](#ldapsearch) allows you to test your configured
-[user filter](index.md#set-up-ldap-user-filter)
+[user filter](_index.md#set-up-ldap-user-filter)
 to confirm that it returns the users you expect it to return.
 
 ```shell
@@ -778,7 +778,7 @@ end; nil
 
 ## Expired license causes errors with multiple LDAP servers
 
-Using [multiple LDAP servers](index.md#use-multiple-ldap-servers) requires a valid license. An expired license can
+Using [multiple LDAP servers](_index.md#use-multiple-ldap-servers) requires a valid license. An expired license can
 cause:
 
 - `502` errors in the web interface.
@@ -887,7 +887,7 @@ identical to what's configured in the `gitlab.rb`.
 
 #### Use ldapsearch with `start_tls` encryption
 
-The previous example performs an LDAP test in plaintext to port 389. If you are using [`start_tls` encryption](index.md#basic-configuration-settings), in
+The previous example performs an LDAP test in plaintext to port 389. If you are using [`start_tls` encryption](_index.md#basic-configuration-settings), in
 the `ldapsearch` command include:
 
 - The `-Z` flag.
@@ -905,7 +905,7 @@ ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
 
 #### Use ldapsearch with `simple_tls` encryption
 
-If you are using [`simple_tls` encryption](index.md#basic-configuration-settings) (usually on port 636), include the following in the `ldapsearch` command:
+If you are using [`simple_tls` encryption](_index.md#basic-configuration-settings) (usually on port 636), include the following in the `ldapsearch` command:
 
 - The LDAP server FQDN with the `-H` flag and the port.
 - The full constructed URI.

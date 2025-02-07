@@ -6,7 +6,7 @@ title: Upgrading operating systems for PostgreSQL
 ---
 
 WARNING:
-[Geo](../geo/index.md) cannot be used to migrate a PostgreSQL database from one operating system to another. If you attempt to do so, the secondary site may appear to be 100% replicated when in fact some data is not replicated, leading to data loss. This is because Geo depends on PostgreSQL streaming replication, which suffers from the limitations described in this document. Also see [Geo Troubleshooting - Check OS locale data compatibility](../geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility).
+[Geo](../geo/_index.md) cannot be used to migrate a PostgreSQL database from one operating system to another. If you attempt to do so, the secondary site may appear to be 100% replicated when in fact some data is not replicated, leading to data loss. This is because Geo depends on PostgreSQL streaming replication, which suffers from the limitations described in this document. Also see [Geo Troubleshooting - Check OS locale data compatibility](../geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility).
 
 If you upgrade the operating system on which PostgreSQL runs, any
 [changes to locale data might corrupt your database indexes](https://wiki.postgresql.org/wiki/Locale_data_changes).
@@ -345,7 +345,7 @@ primary site and the other secondary site:
 
 To provide users with read-only access to GitLab during the OS upgrade (partial downtime):
 
-1. Enable [Maintenance Mode](../maintenance_mode/index.md) on the primary site instead of stopping
+1. Enable [Maintenance Mode](../maintenance_mode/_index.md) on the primary site instead of stopping
    it.
 1. Promote the secondary site but do not route users to it yet.
 1. Perform the OS upgrade on the promoted site.

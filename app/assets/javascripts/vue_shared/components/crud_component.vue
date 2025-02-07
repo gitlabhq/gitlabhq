@@ -249,7 +249,7 @@ export default {
 
     <div
       v-if="isFormUsedAndVisible"
-      class="gl-border-b gl-border-section gl-bg-section gl-p-5 gl-pt-4"
+      class="gl-border-b gl-border-section gl-bg-subtle gl-p-5 gl-pt-4"
       data-testid="crud-form"
     >
       <slot name="form" :hide-form="hideForm"></slot>

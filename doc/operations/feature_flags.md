@@ -399,7 +399,7 @@ Read [How it works](#how-it-works) section before diving into the details.
 ### Maximum supported clients in application nodes
 
 GitLab accepts as many client requests as possible until it hits the [rate limit](../security/rate_limits.md).
-The feature flag API is considered **Unauthenticated traffic (from a given IP address)**. For GitLab.com, see the [GitLab.com specific limits](../user/gitlab_com/index.md).
+The feature flag API is considered **Unauthenticated traffic (from a given IP address)**. For GitLab.com, see the [GitLab.com specific limits](../user/gitlab_com/_index.md).
 
 The polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:
 

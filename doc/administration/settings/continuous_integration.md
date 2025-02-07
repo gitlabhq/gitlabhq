@@ -158,7 +158,7 @@ An administrator can set the maximum size of the
 - Each project
 - Each group
 
-For the setting on GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/index.md#gitlab-cicd).
+For the setting on GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#gitlab-cicd).
 
 The value is in MB, and the default value is 100 MB per job. An administrator can change the default value for the:
 
@@ -261,7 +261,7 @@ After that time passes, the jobs are archived in the background and no longer ab
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
 for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
-For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/index.md#gitlab-cicd).
+For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#gitlab-cicd).
 
 ## Protect CI/CD variables by default
 

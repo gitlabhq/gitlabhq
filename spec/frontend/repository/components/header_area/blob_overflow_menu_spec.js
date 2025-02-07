@@ -23,23 +23,11 @@ describe('Blob Overflow Menu', () => {
     wrapper = shallowMountExtended(BlobOverflowMenu, {
       router,
       provide: {
-        canModifyBlob: true,
-        canModifyBlobWithWebIde: true,
+        blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
         ...provided,
       },
       propsData: {
-        path: blobControlsDataMock.repository.blobs.nodes[0].path,
-        rawPath: blobControlsDataMock.repository.blobs.nodes[0].rawPath,
         projectPath,
-        richViewer: blobControlsDataMock.repository.blobs.nodes[0].richViewer,
-        simpleViewer: blobControlsDataMock.repository.blobs.nodes[0].simpleViewer,
-        name: blobControlsDataMock.repository.blobs.nodes[0].name,
-        isBinary: blobControlsDataMock.repository.blobs.nodes[0].binary,
-        archived: blobControlsDataMock.repository.blobs.nodes[0].archived,
-        replacePath: blobControlsDataMock.repository.blobs.nodes[0].replacePath,
-        webPath: blobControlsDataMock.repository.blobs.nodes[0].webPath,
-        canCurrentUserPushToBranch:
-          blobControlsDataMock.repository.blobs.nodes[0].canCurrentUserPushToBranch,
         ...propsData,
       },
       stub: {
@@ -87,9 +75,15 @@ describe('Blob Overflow Menu', () => {
     });
 
     it('does not render when blob is archived', () => {
-      createComponent({
-        archived: true,
-      });
+      createComponent(
+        {},
+        {
+          blobInfo: {
+            ...blobControlsDataMock.repository.blobs.nodes[0],
+            archived: true,
+          },
+        },
+      );
 
       expect(findBlobButtonGroup().exists()).toBe(false);
     });

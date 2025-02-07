@@ -36,7 +36,7 @@ To upgrade GitLab:
    You must spread out upgrades between major and minor releases to allow time for background migrations to finish.
 1. Test your upgrade in a test environment first, and have a [rollback plan](plan_your_upgrade.md#rollback-plan)
    to reduce the risk of unplanned outages and extended downtime.
-1. If available in your starting version, consider [turning on maintenance mode](../administration/maintenance_mode/index.md)
+1. If available in your starting version, consider [turning on maintenance mode](../administration/maintenance_mode/_index.md)
    during the upgrade.
 1. Consult changes for different versions of GitLab to ensure compatibility before upgrading:
    - [GitLab 17 changes](versions/gitlab_17_changes.md)
@@ -53,7 +53,7 @@ To upgrade GitLab:
 1. If your GitLab instance has any runners associated with it, upgrade them to match the current GitLab version.
    This step ensures [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 1. If you encounter problems with the upgrade, [get support](#getting-support).
-1. [Disable maintenance mode](../administration/maintenance_mode/index.md#disable-maintenance-mode) if you had enabled
+1. [Disable maintenance mode](../administration/maintenance_mode/_index.md#disable-maintenance-mode) if you had enabled
    it.
 1. Unpause [running CI/CD pipelines and jobs](#cicd-pipelines-and-jobs-during-upgrades).
 1. Perform [post-upgrade checks](#pre-upgrade-and-post-upgrade-checks).

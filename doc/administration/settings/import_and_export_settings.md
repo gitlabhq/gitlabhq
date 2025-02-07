@@ -14,7 +14,7 @@ Settings for import- and export-related features.
 ## Configure allowed import sources
 
 Before you can import projects from other systems, you must enable the
-[import source](../../user/gitlab_com/index.md#default-import-sources) for that system.
+[import source](../../user/gitlab_com/_index.md#default-import-sources) for that system.
 
 1. Sign in to GitLab as a user with Administrator access level.
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -122,7 +122,7 @@ If you choose a size larger than the configured value for the web server,
 you may receive errors. See the [troubleshooting section](../settings/account_and_limit_settings.md#troubleshooting) for more
 details.
 
-For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
+For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 ## Maximum remote file size for imports
 

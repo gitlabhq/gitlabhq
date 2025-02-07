@@ -6,21 +6,23 @@ export default {
   props: {
     checked: {
       type: String,
-      required: true,
+      required: false,
+      default: undefined,
     },
   },
-  data() {
-    return {
-      checkedOptions: this.checked,
-    };
+  methods: {
+    onChange(value) {
+      this.$emit('change', value);
+    },
   },
 };
 </script>
 
 <template>
   <gl-form-radio-group
-    v-model="checkedOptions"
+    :checked="checked"
     class="multiple-choice-selector gl-border gl-block gl-rounded-base"
+    @change="onChange"
   >
     <slot></slot>
   </gl-form-radio-group>

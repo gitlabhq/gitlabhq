@@ -221,7 +221,7 @@ Cloud Native Hybrid is an alternative and more **advanced** setup compared to a 
 
 ### GitLab Geo (Cross Regional Distribution / Disaster Recovery)
 
-With [GitLab Geo](../geo/index.md), you can achieve distributed environments in
+With [GitLab Geo](../geo/_index.md), you can achieve distributed environments in
 different regions with a full Disaster Recovery (DR) setup in place. GitLab Geo
 requires at least two separate environments:
 
@@ -511,12 +511,12 @@ If you choose to use a third-party external service:
 1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard
    Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
 1. Database Connection Poolers are not required for this setup as the options vary per service. As a result, connection count configuration may need to be adjusted depending on the environment size. If Pooling is desired, a third party option needs to be explored. [Database Load Balancing](../postgresql/database_load_balancing.md)  can also be used to spread the load accordingly.
-   
+
    Ensure that if a pooler is included in a Cloud Provider service, it can handle the total load without bottlenecks.
    For example, Azure Database for PostgreSQL flexible server can optionally deploy a PgBouncer pooler in front of the database. However, PgBouncer is single threaded, which may cause bottlenecks under heavy load. To mitigate this issue, you can use database load balancing to distribute the pooler across multiple nodes.
 1. The number of nodes required for HA may vary depending on the service. The requirements for one deployment may vary from those for Linux package installations.
 
-1. To use [GitLab Geo](../geo/index.md), the service should support cross-region replication.
+1. To use [GitLab Geo](../geo/_index.md), the service should support cross-region replication.
 
 #### Unsupported database services
 
@@ -591,7 +591,7 @@ multiple data centers can negatively impact their functionality.
 
 This limitation applies to all potential GitLab environment setups, including Cloud Native Hybrid alternatives.
 
-For deploying GitLab over multiple data centers or regions, we offer [GitLab Geo](../geo/index.md) as a comprehensive solution.
+For deploying GitLab over multiple data centers or regions, we offer [GitLab Geo](../geo/_index.md) as a comprehensive solution.
 
 ## Validation and test results
 

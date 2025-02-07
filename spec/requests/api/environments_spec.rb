@@ -615,6 +615,14 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       end
     end
 
+    context 'as a reporter' do
+      it 'rejects the request' do
+        post api("/projects/#{project.id}/environments/#{environment.id}/stop", reporter)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'a non member' do
       it 'rejects the request' do
         post api("/projects/#{project.id}/environments/#{environment.id}/stop", non_member)

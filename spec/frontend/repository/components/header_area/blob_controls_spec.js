@@ -166,33 +166,10 @@ describe('Blob controls component', () => {
 
       expect(findOverflowMenu().exists()).toBe(true);
       expect(findOverflowMenu().props()).toEqual({
-        name: 'file.js',
         projectPath: 'some/project',
-        path: 'some/file.js',
-        rawPath: 'https://testing.com/flightjs/flight/snippets/51/raw',
         isBinary: true,
-        environmentName: '',
-        environmentPath: '',
         isEmpty: false,
         overrideCopy: true,
-        archived: false,
-        replacePath: 'some/replace/file.js',
-        webPath: 'some/file.js',
-        canCurrentUserPushToBranch: true,
-        simpleViewer: {
-          __typename: 'BlobViewer',
-          renderError: null,
-          tooLarge: false,
-          type: 'simple',
-          fileType: 'rich',
-        },
-        richViewer: {
-          __typename: 'BlobViewer',
-          renderError: 'too big file',
-          tooLarge: false,
-          type: 'rich',
-          fileType: 'rich',
-        },
         isEmptyRepository: false,
         isUsingLfs: false,
       });

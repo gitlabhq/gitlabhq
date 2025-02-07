@@ -38,12 +38,14 @@ describe('GlobalSearchStatusBar', () => {
     id: 1,
     name: 'group-name',
     full_name: 'Group Full Name',
+    full_path: 'group-full-path',
   };
 
   const projectInitialJson = {
     id: 1,
     name: 'project-name',
     name_with_namespace: 'Project with Namespace',
+    full_path: 'group-full-path/project-path',
   };
 
   const createComponent = ({ propsData = {}, initialState = {} } = {}) => {
@@ -62,10 +64,11 @@ describe('GlobalSearchStatusBar', () => {
       store,
       stubs: {
         GlSprintf,
-        GlLink,
       },
     });
   };
+
+  const findGlLink = () => wrapper.findComponent(GlLink);
 
   describe('simple status message', () => {
     describe('multiple results', () => {
@@ -117,6 +120,10 @@ describe('GlobalSearchStatusBar', () => {
           'Showing 3000 code results for test in group Group Full Name',
         );
       });
+
+      it('renders link with proper url', () => {
+        expect(findGlLink().attributes('href')).toBe('http://test.host/group-full-path');
+      });
     });
     describe('single result', () => {
       beforeEach(() => {
@@ -143,6 +150,10 @@ describe('GlobalSearchStatusBar', () => {
       it('renders the status bar', () => {
         expect(wrapper.text()).toContain('Showing 1 code result for test in group Group Full Name');
       });
+
+      it('renders link with proper url', () => {
+        expect(findGlLink().attributes('href')).toBe('http://test.host/group-full-path');
+      });
     });
   });
 
@@ -165,6 +176,12 @@ describe('GlobalSearchStatusBar', () => {
       it('renders the status bar', () => {
         expect(wrapper.text()).toContain(
           'Showing 3000 code results for test in  of Project with Namespace',
+        );
+      });
+
+      it('renders link with proper url', () => {
+        expect(findGlLink().attributes('href')).toBe(
+          'http://test.host/group-full-path/project-path',
         );
       });
     });
@@ -193,6 +210,12 @@ describe('GlobalSearchStatusBar', () => {
       it('renders the status bar', () => {
         expect(wrapper.text()).toContain(
           'Showing 1 code result for test in  of Project with Namespace',
+        );
+      });
+
+      it('renders link with proper url', () => {
+        expect(findGlLink().attributes('href')).toBe(
+          'http://test.host/group-full-path/project-path',
         );
       });
     });

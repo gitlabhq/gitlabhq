@@ -23,7 +23,7 @@ import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
-import { TEXT_FILE_TYPE } from '../../constants';
+import { TEXT_FILE_TYPE, DEFAULT_BLOB_INFO } from '../../constants';
 import OverflowMenu from './blob_overflow_menu.vue';
 
 export default {
@@ -64,8 +64,7 @@ export default {
   },
   provide() {
     return {
-      canModifyBlob: computed(() => this.blobInfo?.canModifyBlob ?? false),
-      canModifyBlobWithWebIde: computed(() => this.blobInfo?.canModifyBlobWithWebIde ?? false),
+      blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
     };
   },
   props: {
@@ -227,22 +226,11 @@ export default {
 
     <overflow-menu
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
-      :name="blobInfo.name"
       :project-path="projectPath"
-      :path="blobInfo.path"
-      :raw-path="rawPath"
-      :rich-viewer="blobInfo.richViewer"
-      :simple-viewer="blobInfo.simpleViewer"
       :is-binary="isBinaryFileType"
-      :environment-name="blobInfo.environmentFormattedExternalUrl"
-      :environment-path="blobInfo.environmentExternalUrlForRouteMap"
       :is-empty="isEmpty"
       :override-copy="true"
-      :archived="blobInfo.archived"
-      :replace-path="blobInfo.replacePath"
-      :web-path="blobInfo.webPath"
       :is-empty-repository="project.repository.empty"
-      :can-current-user-push-to-branch="blobInfo.canCurrentUserPushToBranch"
       :is-using-lfs="isUsingLfs"
       @copy="onCopy"
     />

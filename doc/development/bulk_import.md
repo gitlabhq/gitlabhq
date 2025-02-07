@@ -7,7 +7,7 @@ title: Group migration by direct transfer
 
 NOTE:
 To use direct transfer, ensure your GitLab installation is accessible from
-[GitLab IP addresses](../user/gitlab_com/index.md#ip-range) and has a public DNS entry.
+[GitLab IP addresses](../user/gitlab_com/_index.md#ip-range) and has a public DNS entry.
 
 [Group migration by direct transfer](../user/group/import/index.md) is the
 evolution of migrating groups and projects using file exports. The goal is to have an easier way for the user to migrate a whole group,

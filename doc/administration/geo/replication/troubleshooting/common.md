@@ -463,7 +463,7 @@ This machine's Geo node name matches a database record ... no
   You could add or update a Geo node database record, setting the name to "https://example.com/".
   Or you could set this machine's Geo node name to match the name of an existing database record: "London", "Shanghai"
   For more information see:
-  doc/administration/geo/replication/troubleshooting/index.md#can-geo-detect-the-current-node-correctly
+  doc/administration/geo/replication/troubleshooting/_index.md#can-geo-detect-the-current-node-correctly
 ```
 
 For more information about recommended site names in the description of the Name field, see
@@ -471,7 +471,7 @@ For more information about recommended site names in the description of the Name
 
 ### Check OS locale data compatibility
 
-If at all possible, all Geo nodes across all sites should be deployed with the same method and operating system, as defined in the [requirements for running Geo](../../index.md#requirements-for-running-geo).
+If at all possible, all Geo nodes across all sites should be deployed with the same method and operating system, as defined in the [requirements for running Geo](../../_index.md#requirements-for-running-geo).
 
 If different operating systems or different operating system versions are deployed across Geo sites, you **must** perform a locale data compatibility check before setting up Geo. You must also check `glibc` when using a mixture of GitLab deployment methods. The locale might be different between a Linux package install, a GitLab Docker container, a Helm chart deployment, or external database services. See the [documentation on upgrading operating systems for PostgreSQL](../../../postgresql/upgrading_os.md), including how to check `glibc` version compatibility.
 
@@ -561,7 +561,7 @@ If you set up a new secondary from scratch, you must also [remove the old site f
 The most common problems that prevent the database from replicating correctly are:
 
 - **Secondary** sites cannot reach the **primary** site. Check credentials and
-  [firewall rules](../../index.md#firewall-rules).
+  [firewall rules](../../_index.md#firewall-rules).
 - SSL certificate problems. Make sure you copied `/etc/gitlab/gitlab-secrets.json` from the **primary** site.
 - Database storage disk is full.
 - Database replication slot is misconfigured.

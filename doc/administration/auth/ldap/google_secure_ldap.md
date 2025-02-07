@@ -215,7 +215,7 @@ For self-compiled installations:
 ## Using encrypted credentials
 
 You can optionally store the `bind_dn` and `password` in a separate encrypted configuration file using the
-[same steps as the regular LDAP integration](index.md#use-encrypted-credentials).
+[same steps as the regular LDAP integration](_index.md#use-encrypted-credentials).
 
 <!-- ## Troubleshooting
 

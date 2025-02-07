@@ -1,10 +1,12 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import BlobDefaultActionsGroup from '~/repository/components/header_area/blob_default_actions_group.vue';
+import { blobControlsDataMock } from '../../mock_data';
 
 const mockBlobHash = 'foo-bar';
 const mockEnvironmentName = 'my.testing.environment';
 const mockEnvironmentPath = 'https://my.testing.environment';
+const blobInfoMock = blobControlsDataMock.repository.blobs.nodes[0];
 
 describe('Blob Default Actions Group', () => {
   let wrapper;
@@ -12,9 +14,6 @@ describe('Blob Default Actions Group', () => {
   const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMount(BlobDefaultActionsGroup, {
       propsData: {
-        name: 'dummy.md',
-        path: 'foo/bar/dummy.md',
-        rawPath: 'https://testing.com/flightjs/flight/snippets/51/raw',
         blobHash: mockBlobHash,
         activeViewerType: 'simple',
         hasRenderError: false,
@@ -27,6 +26,10 @@ describe('Blob Default Actions Group', () => {
       provide: {
         blobHash: mockBlobHash,
         canDownloadCode: true,
+        blobInfo: {
+          ...blobInfoMock,
+          ...provide.blobInfo,
+        },
         ...provide,
       },
     });
@@ -38,7 +41,8 @@ describe('Blob Default Actions Group', () => {
   const findCopyFileContentItem = () => findDropdownItemWithText('Copy file contents');
   const findViewRawItem = () => findDropdownItemWithText('Open raw');
   const findDownloadItem = () => findDropdownItemWithText('Download');
-  const findEnvironmentItem = () => findDropdownItemWithText(`View on ${mockEnvironmentName}`);
+  const findEnvironmentItem = () =>
+    findDropdownItemWithText(`View on ${blobInfoMock.environmentFormattedExternalUrl}`);
 
   beforeEach(() => {
     createComponent();
@@ -106,7 +110,16 @@ describe('Blob Default Actions Group', () => {
       'when environmentName is $environmentName and environmentPath is $environmentPath',
       ({ environmentName, environmentPath, isVisible }) => {
         it(`${isVisible ? 'renders' : 'does not render'} the button`, () => {
-          createComponent({ environmentName, environmentPath });
+          createComponent(
+            {},
+            {
+              blobInfo: {
+                ...blobInfoMock,
+                environmentFormattedExternalUrl: environmentName,
+                environmentExternalUrlForRouteMap: environmentPath,
+              },
+            },
+          );
 
           expect(findEnvironmentItem()).toEqual(isVisible);
         });
@@ -114,10 +127,15 @@ describe('Blob Default Actions Group', () => {
     );
 
     it('renders the correct props', () => {
-      createComponent({
-        environmentName: mockEnvironmentName,
-        environmentPath: mockEnvironmentPath,
-      });
+      createComponent(
+        {},
+        {
+          blobInfo: {
+            environmentFormattedExternalUrl: mockEnvironmentName,
+            environmentExternalUrlForRouteMap: mockEnvironmentPath,
+          },
+        },
+      );
 
       expect(findEnvironmentItem().props('item')).toMatchObject({
         text: `View on ${mockEnvironmentName}`,

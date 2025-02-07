@@ -128,7 +128,7 @@ sequenceDiagram
 
 ### On a Geo secondary site
 
-We also collect metrics specific to [Geo](../../../administration/geo/index.md) secondary sites to send with Service Ping.
+We also collect metrics specific to [Geo](../../../administration/geo/_index.md) secondary sites to send with Service Ping.
 
 1. The [Geo secondary service ping cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/geo/secondary_usage_data_cron_worker.rb) is set in Sidekiq to run weekly.
 1. When the cron job runs, it calls [`SecondaryUsageData.update_metrics!`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo/secondary_usage_data.rb#L33). This collects the relevant metrics from Prometheus and stores the data in the Geo secondary tracking database for transmission to the primary site during a [Geo node status update](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/geo_node_status.rb#L105).

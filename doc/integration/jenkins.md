@@ -201,7 +201,7 @@ To fix this issue:
 
 ### Merge request event does not trigger a Jenkins pipeline
 
-This issue might occur when the request exceeds the [webhook timeout limit](../user/gitlab_com/index.md#webhooks),
+This issue might occur when the request exceeds the [webhook timeout limit](../user/gitlab_com/_index.md#webhooks),
 which is set to 10 seconds by default.
 
 For this issue, check:

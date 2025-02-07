@@ -29,7 +29,7 @@ This behavior enables use-cases including:
 For an overview, see [Geo proxying for secondary sites](https://www.youtube.com/watch?v=TALLy7__Na8).
 <!-- Video published on 2022-01-26 -->
 
-For known issues, see [proxying-related items in the Geo documentation](../index.md#known-issues).
+For known issues, see [proxying-related items in the Geo documentation](../_index.md#known-issues).
 
 ## Set up a unified URL for Geo sites
 

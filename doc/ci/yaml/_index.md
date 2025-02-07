@@ -1238,7 +1238,7 @@ attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
 The artifacts are sent to GitLab after the job finishes. They are
 available for download in the GitLab UI if the size is smaller than the
-[maximum artifact size](../../user/gitlab_com/index.md#gitlab-cicd).
+[maximum artifact size](../../user/gitlab_com/_index.md#gitlab-cicd).
 
 By default, jobs in later stages automatically download all the artifacts created
 by jobs in earlier stages. You can control artifact download behavior in jobs with
@@ -1413,7 +1413,7 @@ test:
 - Glob patterns are unsupported.
 - If a directory is specified and there is more than one file in the directory,
   the link is to the job [artifacts browser](../jobs/job_artifacts.md#download-job-artifacts).
-- If [GitLab Pages](../../administration/pages/index.md) is enabled, GitLab automatically
+- If [GitLab Pages](../../administration/pages/_index.md) is enabled, GitLab automatically
   renders the artifacts when the artifacts is a single file with one of these extensions:
   - `.html` or `.htm`
   - `.txt`

@@ -32,7 +32,7 @@ it is deleted from the remote mirror on the next push. Branches with unmerged
 changes are kept. If a branch diverges, the **Mirroring repositories** section
 displays an error.
 
-[GitLab Silent Mode](../../../../administration/silent_mode/index.md) disables pushing to,
+[GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables pushing to,
 and pulling from, remote mirrors.
 
 ## Configure push mirroring

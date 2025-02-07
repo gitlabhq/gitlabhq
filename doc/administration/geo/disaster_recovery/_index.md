@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 Geo replicates your database, your Git repositories, and other assets.
-Some [known issues](../index.md#known-issues) exist.
+Some [known issues](../_index.md#known-issues) exist.
 
 WARNING:
 Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
@@ -441,7 +441,7 @@ must disable the **primary** site:
 ### Step 2. Promote all **secondary** site nodes external to the cluster
 
 WARNING:
-If the secondary site [has been paused](../../geo/index.md#pausing-and-resuming-replication), this performs
+If the secondary site [has been paused](../../geo/_index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
 Data that was created on the primary while the secondary was paused is lost.
 
@@ -477,7 +477,7 @@ Data that was created on the primary while the secondary was paused is lost.
 
    | Name | Default value | Description |
    | ---- | ------------- | ------- |
-   | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/index.md) before promotion (GitLab 16.4 and later) |
+   | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/_index.md) before promotion (GitLab 16.4 and later) |
 
 ### Step 3. Promote the **secondary** cluster
 

@@ -31,7 +31,7 @@ To set up Pages with a custom domain name, read the requirements and steps below
 
 ### Prerequisites
 
-- An administrator has configured the server for [GitLab Pages custom domains](../../../../administration/pages/index.md#advanced-configuration)
+- An administrator has configured the server for [GitLab Pages custom domains](../../../../administration/pages/_index.md#advanced-configuration)
 - A GitLab Pages website up and running, served under the default Pages domain
   (`*.gitlab.io`, for GitLab.com).
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
@@ -73,7 +73,7 @@ according to the type of domain you want to use with your Pages site:
 - [For subdomains](#for-subdomains), `subdomain.example.com`.
 - [For both](#for-both-root-and-subdomains).
 
-You can [configure IPv6 on self-managed instances](../../../../administration/pages/index.md#advanced-configuration),
+You can [configure IPv6 on self-managed instances](../../../../administration/pages/_index.md#advanced-configuration),
 but IPv6 is not currently configured for Pages on GitLab.com.
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214718) for details.
 
@@ -177,7 +177,7 @@ Additionally:
 
 - Domain verification is **required for GitLab.com users**.
   For GitLab Self-Managed, your GitLab administrator has the option
-  to [disabled custom domain verification](../../../../administration/pages/index.md#custom-domain-verification).
+  to [disabled custom domain verification](../../../../administration/pages/_index.md#custom-domain-verification).
 - [DNS propagation may take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
   although it's usually a matter of minutes to complete. Until it does, verification
   fails, and attempts to visit your domain result in a 404.

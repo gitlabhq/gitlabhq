@@ -16,7 +16,7 @@ or manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that
 the [Linux package ships with](../../package_information/postgresql_versions.md)
-to [avoid version mismatches](../index.md#requirements-for-running-geo)
+to [avoid version mismatches](../_index.md#requirements-for-running-geo)
 in case a Geo site has to be rebuilt.
 
 NOTE:
@@ -158,7 +158,7 @@ has three main functions:
 
 1. Configure the replica database.
 1. Configure the tracking database.
-1. Enable the [Geo Log Cursor](../index.md#geo-log-cursor) (not covered in this section).
+1. Enable the [Geo Log Cursor](../_index.md#geo-log-cursor) (not covered in this section).
 
 To configure the connection to the external read-replica database and enable Log Cursor:
 

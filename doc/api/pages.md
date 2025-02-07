@@ -11,11 +11,11 @@ DETAILS:
 
 Endpoints for managing [GitLab Pages](../user/project/pages/index.md).
 
-The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
+The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/index.md) the feature.
 
 ## Unpublish Pages
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.7
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
 
 Prerequisites:
 
@@ -107,7 +107,7 @@ Example response:
 ## Update Pages settings for a project
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 17.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.7
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
 
 Prerequisites:
 

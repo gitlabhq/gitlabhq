@@ -3220,7 +3220,7 @@ As a multi-tenant solution, group SAML on GitLab Self-Managed is limited compare
 to the recommended [instance-wide SAML](saml.md). Use
 instance-wide SAML to take advantage of:
 
-- [LDAP compatibility](../administration/auth/ldap/index.md).
+- [LDAP compatibility](../administration/auth/ldap/_index.md).
 - [LDAP Group Sync](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 - [Required groups](#required-groups).
 - [Administrator groups](#administrator-groups).

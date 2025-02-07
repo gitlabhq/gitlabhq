@@ -95,8 +95,8 @@ ensure these processes are close to 100% as possible during active use.
 If the **secondary** site is still replicating data from the **primary** site,
 follow these steps to avoid unnecessary data loss:
 
-1. Enable [maintenance mode](../../../maintenance_mode/index.md) on the **primary** site,
-   and make sure to stop any [background jobs](../../../maintenance_mode/index.md#background-jobs).
+1. Enable [maintenance mode](../../../maintenance_mode/_index.md) on the **primary** site,
+   and make sure to stop any [background jobs](../../../maintenance_mode/_index.md#background-jobs).
 1. Finish replicating and verifying all data:
 
    WARNING:

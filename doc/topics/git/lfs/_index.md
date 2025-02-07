@@ -47,7 +47,7 @@ on where to fetch (or push) the large file.
 Your Git repository remains smaller, which helps you adhere to repository size limits.
 For more information, see repository size limits
 [for self-managed](../../../administration/settings/account_and_limit_settings.md#repository-size-limit) and
-[for GitLab.com](../../../user/gitlab_com/index.md#account-and-limit-settings).
+[for GitLab.com](../../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 ## Understand how Git LFS works with forks
 

@@ -19,6 +19,7 @@ DETAILS:
 Prerequisites:
 
 - You must be an administrator.
+- You must have an Ultimate license.
 - You must have a Duo Enterprise license add-on.
 
 To enable logging and access the logs, enable the feature flag:

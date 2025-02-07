@@ -662,7 +662,7 @@ to configure other related settings. These requirements are
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
 | `silent_admin_exports_enabled`           | boolean          | no                                   | Enable [Silent admin exports](../administration/settings/import_and_export_settings.md#enable-silent-admin-exports). Default is `false`. |
-| `silent_mode_enabled`                    | boolean          | no                                   | Enable [Silent mode](../administration/silent_mode/index.md). Default is `false`. |
+| `silent_mode_enabled`                    | boolean          | no                                   | Enable [Silent mode](../administration/silent_mode/_index.md). Default is `false`. |
 | `slack_app_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `slack_app_id`, `slack_app_secret`, `slack_app_signing_secret`, and `slack_app_verification_token`) Enable the GitLab for Slack app. |
 | `slack_app_id`                           | string           | required by: `slack_app_enabled`     | The client ID of the GitLab for Slack app. |
 | `slack_app_secret`                       | string           | required by: `slack_app_enabled`     | The client secret of the GitLab for Slack app. Used for authenticating OAuth requests from the app. |

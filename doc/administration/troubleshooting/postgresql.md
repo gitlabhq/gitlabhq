@@ -322,7 +322,7 @@ PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device
 When troubleshooting problems with Geo, you should:
 
 - Review [common Geo errors](../geo/replication/troubleshooting/common.md#fixing-common-errors).
-- [Review your Geo configuration](../geo/replication/troubleshooting/index.md), including:
+- [Review your Geo configuration](../geo/replication/troubleshooting/_index.md), including:
   - Reconfiguring hosts and ports.
   - Reviewing and fixing the user and password mappings.
 

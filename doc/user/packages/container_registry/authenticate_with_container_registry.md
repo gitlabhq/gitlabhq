@@ -37,7 +37,7 @@ echo "$TOKEN" | docker login registry.example.com -u <username> --password-stdin
 After authentication, the client caches the credentials. Later operations make authorization
 requests that return JWT tokens, authorized to do only the specified operation.
 Tokens remain valid for [5 minutes by default](../../../administration/packages/container_registry.md#increase-token-duration),
-and [15 minutes on GitLab.com](../../gitlab_com/index.md#gitlab-container-registry).
+and [15 minutes on GitLab.com](../../gitlab_com/_index.md#gitlab-container-registry).
 
 ## Use GitLab CI/CD to authenticate
 

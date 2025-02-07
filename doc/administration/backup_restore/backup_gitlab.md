@@ -1394,7 +1394,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=repositories RAILS_ENV
 For manually backing up the Git repository data on disk, there are multiple possible strategies:
 
 - Use snapshots, such as the previous examples of Amazon EBS drive snapshots, or LVM snapshots + rsync.
-- Use [GitLab Geo](../geo/index.md) and rely on the repository data on a Geo secondary site.
+- Use [GitLab Geo](../geo/_index.md) and rely on the repository data on a Geo secondary site.
 - [Prevent writes and copy the Git repository data](#prevent-writes-and-copy-the-git-repository-data).
 - [Create an online backup by marking repositories as read-only (experimental)](#online-backup-through-marking-repositories-as-read-only-experimental).
 
@@ -1407,7 +1407,7 @@ has a longer discussion explaining the potential problems.
 
 To prevent writes to the Git repository data, there are two possible approaches:
 
-- Use [maintenance mode](../maintenance_mode/index.md) to place GitLab in a read-only state.
+- Use [maintenance mode](../maintenance_mode/_index.md) to place GitLab in a read-only state.
 - Create explicit downtime by stopping all Gitaly services before backing up the repositories:
 
   ```shell

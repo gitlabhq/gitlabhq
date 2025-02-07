@@ -43,7 +43,7 @@ and all **secondary** sites:
 1. Ensure that the secrets in the `/etc/gitlab/gitlab-secrets.json` file of both the primary site and the secondary site are the same. The file must be the same on all of a site's nodes.
 1. SSH into each node of **secondary** sites.
 1. [Upgrade GitLab on each **secondary** site](../../../update/package/_index.md#by-using-the-official-repositories-recommended).
-1. If you paused replication in step 1, [resume replication on each **secondary**](../index.md#pausing-and-resuming-replication).
+1. If you paused replication in step 1, [resume replication on each **secondary**](../_index.md#pausing-and-resuming-replication).
    Then, restart Puma and Sidekiq on each **secondary** site. This is to ensure they
    are initialized against the newer database schema that is now replicated from
    the previously upgraded **primary** site.
@@ -70,4 +70,4 @@ everything is working correctly:
 1. Test the data replication by pushing code to the **primary** site and see if it
    is received by **secondary** sites.
 
-If you encounter any issues, see the [Geo troubleshooting guide](troubleshooting/index.md).
+If you encounter any issues, see the [Geo troubleshooting guide](troubleshooting/_index.md).

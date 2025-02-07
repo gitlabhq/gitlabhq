@@ -454,4 +454,4 @@ If your IP address has been blocked, a corresponding log entry exists in the
 
 The failed authentication ban limits differ depending if you are using a
 [self-managed instance](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
-or [GitLab.com](../../user/gitlab_com/index.md#ip-blocks).
+or [GitLab.com](../../user/gitlab_com/_index.md#ip-blocks).

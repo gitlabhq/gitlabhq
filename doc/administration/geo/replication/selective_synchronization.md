@@ -17,7 +17,7 @@ latter is more suited to progressively rolling out Geo to a large GitLab
 instance.
 
 NOTE:
-Geo's synchronization logic is outlined in the [documentation](../index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
+Geo's synchronization logic is outlined in the [documentation](../_index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
 
 Selective synchronization:
 

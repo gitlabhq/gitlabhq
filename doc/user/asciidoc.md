@@ -233,7 +233,7 @@ The current maximum allowed value for `asciidoc_max_includes` is 64. If the valu
 too high, it might cause performance issues in some situations.
 
 To use includes from separate pages or external URLs, enable the `allow-uri-read`
-in [application settings](../administration/wikis/index.md#allow-uri-includes-for-asciidoc).
+in [application settings](../administration/wikis/_index.md#allow-uri-includes-for-asciidoc).
 
 ```plaintext
 // define application setting allow-uri-read to true to allow content to be read from URI

@@ -2,7 +2,7 @@
 
 module ContainerRegistry
   module Protection
-    class CreateTagRuleService < BaseService
+    class CreateTagRuleService < BaseProjectService
       ALLOWED_ATTRIBUTES = %i[
         tag_name_pattern
         minimum_access_level_for_push

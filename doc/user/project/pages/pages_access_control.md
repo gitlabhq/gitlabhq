@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can enable Pages access control on your project
-if your administrator has [enabled the access control feature](../../../administration/pages/index.md#access-control)
+if your administrator has [enabled the access control feature](../../../administration/pages/_index.md#access-control)
 on your GitLab instance. When enabled, only authenticated
 [members of your project](../../permissions.md#project-members-permissions)
 (at least Guest) can access your website, by default:
@@ -22,7 +22,7 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Toggle the **Pages** button to enable the access control. If you don't see the toggle button,
-   that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/index.md#access-control).
+   that means it isn't enabled. Ask your administrator to [enable it](../../../administration/pages/_index.md#access-control).
 
 1. The Pages access control dropdown list allows you to set who can view pages hosted
    with GitLab Pages, depending on your project's visibility:
@@ -55,7 +55,7 @@ When enabled, all projects in the group and its subgroups become visible only to
 
 Prerequisites
 
-- Public access to Pages must not be [disabled at the instance level.](../../../administration/pages/index.md#disable-public-access-to-all-pages-sites)
+- Public access to Pages must not be [disabled at the instance level.](../../../administration/pages/_index.md#disable-public-access-to-all-pages-sites)
 - You must have the Owner role for the group.
 
 To do this:

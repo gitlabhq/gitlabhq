@@ -2,7 +2,7 @@
 
 module ContainerRegistry
   module Protection
-    class CreateRuleService < BaseService
+    class CreateRuleService < BaseProjectService
       ALLOWED_ATTRIBUTES = %i[
         repository_path_pattern
         minimum_access_level_for_push

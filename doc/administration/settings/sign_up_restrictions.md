@@ -56,7 +56,7 @@ NOTE:
 This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
 signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
 [OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
-[LDAP configuration](../auth/ldap/index.md#basic-configuration-settings).
+[LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
 A [user cap](#user-cap) can also be used to enforce approvals for new users.
 
 ## Confirm user email
@@ -243,7 +243,7 @@ semicolon, comma, or a new line.
 
 You can limit GitLab access to a subset of the LDAP users on your LDAP server.
 
-See the [documentation on setting up an LDAP user filter](../auth/ldap/index.md#set-up-ldap-user-filter) for more information.
+See the [documentation on setting up an LDAP user filter](../auth/ldap/_index.md#set-up-ldap-user-filter) for more information.
 
 ## Turn on administrator approval for role promotions
 

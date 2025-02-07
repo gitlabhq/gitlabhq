@@ -193,7 +193,7 @@ Use the following questions to guide you:
    - Based on the plan you choose to use the feature in, add the feature identifier to `PREMIUM_FEATURES`
      or `ULTIMATE_FEATURES`.
 1. Will this feature be available globally (system-wide for the GitLab instance)?
-   - Features such as [Geo](../administration/geo/index.md) and
+   - Features such as [Geo](../administration/geo/_index.md) and
      [Database Load Balancing](../administration/postgresql/database_load_balancing.md) are used by the entire instance
      and cannot be restricted to individual user namespaces. These features are defined in the instance license.
      Add these features to `GLOBAL_FEATURES`.

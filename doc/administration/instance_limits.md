@@ -289,7 +289,7 @@ Set the limit to `0` to disable it.
 
 The default maximum number of webhooks is `100` per project and `50` per group. Webhooks in a subgroup do not count towards the webhook limit of their parent group.
 
-For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/index.md#webhooks).
+For GitLab.com, see the [webhook limits for GitLab.com](../user/gitlab_com/_index.md#webhooks).
 
 ### Webhook payload size
 
@@ -316,7 +316,7 @@ To change the webhook timeout value:
    gitlab-ctl restart
    ```
 
-See also [webhook limits for GitLab.com](../user/gitlab_com/index.md#other-limits).
+See also [webhook limits for GitLab.com](../user/gitlab_com/_index.md#other-limits).
 
 ### Recursive webhooks
 
@@ -421,7 +421,7 @@ If a new pipeline would cause the total number of jobs to exceed the limit, the 
 fails with a `job_activity_limit_exceeded` error.
 
 - On GitLab.com, a limit is
-  [defined for each subscription tier](../user/gitlab_com/index.md#gitlab-cicd),
+  [defined for each subscription tier](../user/gitlab_com/_index.md#gitlab-cicd),
   and this limit affects all projects with that tier.
 - On GitLab Self-Managed, [Premium or Ultimate](https://about.gitlab.com/pricing/) subscriptions,
   this limit is defined under a `default` plan that affects all
@@ -481,7 +481,7 @@ If a new subscription would cause the total number of subscription to exceed the
 limit, the subscription is considered invalid.
 
 - On GitLab.com, a limit is
-  [defined for each subscription tier](../user/gitlab_com/index.md#gitlab-cicd),
+  [defined for each subscription tier](../user/gitlab_com/_index.md#gitlab-cicd),
   and this limit affects all projects with that tier.
 - On GitLab Self-Managed [Premium or Ultimate](https://about.gitlab.com/pricing/),
   this limit is defined under a `default` plan that
@@ -513,7 +513,7 @@ To set this limit to `100` on a GitLab Self-Managed instance, run the following 
 Plan.default.actual_limits.update!(pipeline_triggers: 100)
 ```
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
 
 ### Number of pipeline schedules
 
@@ -523,7 +523,7 @@ would cause the total number of pipeline schedules to exceed the limit, the
 pipeline schedule is not created.
 
 On GitLab.com, the limit is
-[defined for each subscription tier](../user/gitlab_com/index.md#gitlab-cicd),
+[defined for each subscription tier](../user/gitlab_com/_index.md#gitlab-cicd),
 and this limit affects all projects with that tier.
 
 On GitLab Self-Managed [Premium or Ultimate](https://about.gitlab.com/pricing/),
@@ -559,7 +559,7 @@ To set this limit to `1440` on a GitLab Self-Managed instance, run the following
 Plan.default.actual_limits.update!(ci_daily_pipeline_schedule_triggers: 1440)
 ```
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
 
 ### Limit the number of schedule rules defined for security policy project
 
@@ -579,7 +579,7 @@ To set this limit for a GitLab Self-Managed instance, run the following in the
 Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100)
 ```
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
 
 ### CI/CD variable limits
 
@@ -689,7 +689,7 @@ The total number of custom domains per GitLab Pages website is limited to `150` 
 
 The default limit for [GitLab Self-Managed](../subscriptions/self_managed/_index.md) is `0` (unlimited).
 To set a limit on your instance, use the
-[**Admin** area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
+[**Admin** area](pages/_index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
 
 ### Number of parallel Pages deployments
 
@@ -822,7 +822,7 @@ Plan.default.actual_limits.update!(dotenv_variables: 100)
 You can also set this limit by using the [GitLab UI](settings/continuous_integration.md#set-cicd-limits) or the
 [Plan limits API](../api/plan_limits.md).
 
-This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
+This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
 
 ### Limit dotenv file size
 
@@ -1022,7 +1022,7 @@ that only people you trust can add content.
 
 ## Wiki limits
 
-- [Wiki page content size limit](wikis/index.md#wiki-page-content-size-limit).
+- [Wiki page content size limit](wikis/_index.md#wiki-page-content-size-limit).
 - [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).
 
 ## Snippets limits
@@ -1039,7 +1039,7 @@ See the limits in the [Add a design to an issue](../user/project/issues/design_m
 
 The maximum allowed [push size](settings/account_and_limit_settings.md#max-push-size).
 
-Not set by default on GitLab Self-Managed. For GitLab.com, see [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings)
+Not set by default on GitLab Self-Managed. For GitLab.com, see [Account and limit settings](../user/gitlab_com/_index.md#account-and-limit-settings)
 
 ### Webhooks and Project Services
 
@@ -1073,7 +1073,7 @@ The default maximum file size for a package that's uploaded to the [GitLab packa
 - PyPI: 3 GB
 - Terraform: 1 GB
 
-The [maximum file sizes on GitLab.com](../user/gitlab_com/index.md#package-registry-limits)
+The [maximum file sizes on GitLab.com](../user/gitlab_com/_index.md#package-registry-limits)
 might be different.
 
 To set these limits for a GitLab Self-Managed instance, you can do it [through the **Admin** area](settings/continuous_integration.md#package-file-size-limits)

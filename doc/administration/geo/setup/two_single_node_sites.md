@@ -19,7 +19,7 @@ Prerequisites:
   - The second GitLab site serves as the **Geo secondary site**. Geo supports multiple secondary sites.
 - The Geo primary site has at least a [GitLab Premium](https://about.gitlab.com/pricing/) license.
   You need only one license for all sites.
-- Confirm all sites meet the [requirements for running Geo](../index.md#requirements-for-running-geo).
+- Confirm all sites meet the [requirements for running Geo](../_index.md#requirements-for-running-geo).
 
 ## Set up Geo for Linux package (Omnibus)
 
@@ -593,7 +593,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/index.md).
+   If any of the checks fail, see the [troubleshooting documentation](../replication/troubleshooting/_index.md).
 
 1. To verify that the secondary site is reachable, SSH into a Rails or Sidekiq server on your primary site and sign in as root:
 
@@ -601,7 +601,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/index.md).
+   If any of the checks fail, check the [troubleshooting documentation](../replication/troubleshooting/_index.md).
 
 After the secondary site is added to the Geo administration page and restarted,
 the site automatically starts to replicate missing data from the primary site
@@ -649,4 +649,4 @@ site **Geo Sites** dashboard in your browser.
 
 ## Related topics
 
-- [Troubleshooting Geo](../replication/troubleshooting/index.md)
+- [Troubleshooting Geo](../replication/troubleshooting/_index.md)

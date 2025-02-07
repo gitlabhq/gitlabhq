@@ -29,7 +29,7 @@ upgrade plan, document and share it with the answers to the following questions:
   to confirm that later updates are available.
 - Is it a single-node or a multi-node setup? If multi-node, document and share any architectural details about each node.
   Which external components are used? For example, Gitaly, PostgreSQL, or Redis?
-- Are you using [GitLab Geo](../administration/geo/index.md)? If so, document and share any architectural details about
+- Are you using [GitLab Geo](../administration/geo/_index.md)? If so, document and share any architectural details about
   each secondary node.
 - What else might be unique or interesting in your setup that might be important?
 - Are you running into any known issues with your current version of GitLab?

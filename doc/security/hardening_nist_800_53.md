@@ -93,7 +93,7 @@ GitLab Self-Managed.
 GitLab provides resources for configuring various
 identity providers and protocols, including
 
-- [LDAP](../administration/auth/ldap/index.md)
+- [LDAP](../administration/auth/ldap/_index.md)
 
 - [SAML](../integration/saml.md)
 
@@ -273,7 +273,7 @@ Information and Event Management (SIEM) solution.
 
 #### Event Types
 
-GitLab outlines the [configurable audit event log types](../administration/audit_event_streaming/index.md),
+GitLab outlines the [configurable audit event log types](../administration/audit_event_streaming/_index.md),
 which can be streamed and/or saved to a database. Administrators are
 able to configure the events that they'd like captured for their GitLab
 instance.
@@ -502,7 +502,7 @@ including:
 GitLab Geo
 
 GitLab Geo is likely to be a critical component of any implementation
-pursuing compliance with NIST 800-53. It is important to review [the available documentation](../administration/geo/index.md)
+pursuing compliance with NIST 800-53. It is important to review [the available documentation](../administration/geo/_index.md)
 to ensure that Geo is configured appropriately for each use case.
 
 Implementing Geo provides the following benefits:
@@ -548,9 +548,9 @@ Additional Geo Resources:
 
 - [Setting up Geo](../administration/geo/setup/_index.md)
 
-- [Requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo)
+- [Requirements for running Geo](../administration/geo/_index.md#requirements-for-running-geo)
 
-- [Geo Limitations](../administration/geo/index.md)
+- [Geo Limitations](../administration/geo/_index.md)
 
 - [Geo Disaster Recovery Steps](../administration/geo/disaster_recovery/_index.md)
 

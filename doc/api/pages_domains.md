@@ -11,7 +11,7 @@ DETAILS:
 
 Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](../user/project/pages/index.md).
 
-The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
+The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/index.md) the feature.
 
 ## List all Pages domains
 

@@ -272,7 +272,7 @@ If you're using GitLab Pages with custom domain support you will need some
 additional port configurations.
 GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 `pages_external_url` from `/etc/gitlab/gitlab.rb` at the new virtual IP address. See the
-[GitLab Pages documentation](../pages/index.md) for more information.
+[GitLab Pages documentation](../pages/_index.md) for more information.
 
 | LB Port | Backend Port  | Protocol  |
 | ------- | ------------- | --------- |
@@ -281,7 +281,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 
 - (*1*): The backend port for GitLab Pages depends on the
   `gitlab_pages['external_http']` and `gitlab_pages['external_https']`
-  setting. See [GitLab Pages documentation](../pages/index.md) for more details.
+  setting. See [GitLab Pages documentation](../pages/_index.md) for more details.
 - (*2*): Port 443 for GitLab Pages should always use the TCP protocol. Users can
   configure custom domains with custom SSL, which would not be possible
   if SSL was terminated at the load balancer.

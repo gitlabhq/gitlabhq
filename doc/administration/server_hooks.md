@@ -32,7 +32,7 @@ If you don't have access to the `gitaly` command, alternatives to server hooks i
 - [GitLab CI/CD](../ci/_index.md).
 - [Push rules](../user/project/repository/push_rules.md), for a user-configurable Git hook interface.
 
-[Geo](geo/index.md) doesn't replicate server hooks to secondary nodes.
+[Geo](geo/_index.md) doesn't replicate server hooks to secondary nodes.
 
 ## Set server hooks for a repository
 

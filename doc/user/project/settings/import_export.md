@@ -229,7 +229,7 @@ You can import a project and its data. The amount of data you can import depends
 
 - On GitLab Self-Managed, administrators can
   [set maximum import file size](#set-maximum-import-file-size).
-- On GitLab.com, the value is [set to 5 GB](../../gitlab_com/index.md#account-and-limit-settings).
+- On GitLab.com, the value is [set to 5 GB](../../gitlab_com/_index.md#account-and-limit-settings).
 
 WARNING:
 Only import projects from sources you trust. If you import a project from an untrusted source, it
@@ -344,7 +344,7 @@ The maximum import file size depends on whether you import to GitLab Self-Manage
   - The `max_import_size` option in the [Application settings API](../../../api/settings.md#update-application-settings).
   - The [**Admin** area](../../../administration/settings/account_and_limit_settings.md).
 - On GitLab.com, you can import groups using import files of no more than
-  [5 GB](../../gitlab_com/index.md#account-and-limit-settings) in size.
+  [5 GB](../../gitlab_com/_index.md#account-and-limit-settings) in size.
 
 ### Compatibility
 

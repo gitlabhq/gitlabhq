@@ -11,7 +11,7 @@ DETAILS:
 
 NOTE:
 For GitLab.com, see
-[GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+[GitLab.com-specific rate limits](../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application.
@@ -47,7 +47,7 @@ You can set these rate limits in the **Admin** area of your instance:
 - [Rate limits on Git SSH operations](../administration/settings/rate_limits_on_git_ssh_operations.md)
 - [Files API rate limits](../administration/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../administration/settings/deprecated_api_rate_limits.md)
-- [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
+- [GitLab Pages rate limits](../administration/pages/_index.md#rate-limits)
 - [Pipeline rate limits](../administration/settings/rate_limit_on_pipelines_creation.md)
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
 - [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)

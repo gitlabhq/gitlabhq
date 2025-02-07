@@ -19,7 +19,7 @@ The following tables are intended to guide you to choose the right combination o
 
 ## Geo capabilities
 
-If your availability needs to span multiple zones or multiple locations, read about [Geo](../geo/index.md).
+If your availability needs to span multiple zones or multiple locations, read about [Geo](../geo/_index.md).
 
 | Capability | Availability | Recoverability | Data Resiliency | Performance | Risks/Trade-offs|
 |------------|--------------|----------------|-----------------|-------------|-----------------|

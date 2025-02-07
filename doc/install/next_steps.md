@@ -42,7 +42,7 @@ installation.
 
 ## Authentication
 
-- [LDAP](../administration/auth/ldap/index.md): Configure LDAP to be used as
+- [LDAP](../administration/auth/ldap/_index.md): Configure LDAP to be used as
   an authentication mechanism for GitLab.
 - [SAML and OAuth](../integration/omniauth.md): Authenticate via online services like Okta, Google, Azure AD, and more.
 
@@ -70,7 +70,7 @@ installation.
 
 - [Scaling GitLab](../administration/reference_architectures/_index.md):
   GitLab supports several different types of clustering.
-- [Geo replication](../administration/geo/index.md):
+- [Geo replication](../administration/geo/_index.md):
   Geo is the solution for widely distributed development teams.
 
 ## Install the product documentation

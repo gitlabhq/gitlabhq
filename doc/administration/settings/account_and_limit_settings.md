@@ -53,7 +53,7 @@ To change the maximum attachment size:
 If you choose a size larger than the configured value for the web server,
 you may receive errors. For more information, see the [troubleshooting section](#troubleshooting).
 
-For GitLab.com repository size limits, see [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
+For GitLab.com repository size limits, see [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 ## Max push size
 
@@ -64,7 +64,7 @@ You can change the maximum push size for your instance:
 1. Expand **Account and limit**.
 1. Increase or decrease by changing the value in **Maximum push size (MiB)**.
 
-For GitLab.com push size limits, see [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
+For GitLab.com push size limits, see [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 NOTE:
 When you [add files to a repository](../../user/project/repository/web_editor.md#create-a-file)
@@ -131,7 +131,7 @@ For instance, consider the following workflow:
 
 On GitLab Self-Managed, only a GitLab administrator can set those limits. Setting the limit to `0` means
 there are no restrictions. For GitLab.com repository size limits, see
-[accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
+[accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 These settings can be found in:
 

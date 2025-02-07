@@ -101,7 +101,7 @@ If you're using GitLab.com, your website is publicly available to the internet.
 To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
 
 If you're using a self-managed instance, your websites are published on your
-own server, according to the [Pages settings](../../../administration/pages/index.md)
+own server, according to the [Pages settings](../../../administration/pages/_index.md)
 chosen by your sysadmin, who can make them public or internal.
 
 ## Pages examples
@@ -118,7 +118,7 @@ and adapt for your own needs:
 ## Administer GitLab Pages for self-managed instances
 
 If you are running a self-managed instance of GitLab,
-[follow the administration steps](../../../administration/pages/index.md) to configure Pages.
+[follow the administration steps](../../../administration/pages/_index.md) to configure Pages.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=dD8c7WNcc6s) about how to get started with GitLab Pages administration.
 
@@ -295,7 +295,7 @@ branch named `username/testing_feature`, this parallel Pages deployment would be
 The number of parallel deployments is limited by the root-level namespace. For
 specific limits for:
 
-- GitLab.com, see [Other limits](../../gitlab_com/index.md#other-limits).
+- GitLab.com, see [Other limits](../../gitlab_com/_index.md#other-limits).
 - GitLab Self-Managed, see
   [Number of parallel Pages deployments](../../../administration/instance_limits.md#number-of-parallel-pages-deployments).
 
@@ -311,7 +311,7 @@ delete older deployments, see
 
 By default, parallel deployments expire after 24 hours, after which they are
 deleted. If you're using a self-hosted instance, your instance admin can
-[configure a different default duration](../../../administration/pages/index.md#configure-the-default-expiry-for-parallel-deployments).
+[configure a different default duration](../../../administration/pages/_index.md#configure-the-default-expiry-for-parallel-deployments).
 
 To customize the expiry time, [configure `pages.expire_in`](#expiring-deployments).
 

@@ -134,7 +134,7 @@ For example, `GOPRIVATE=gitlab.com/namespace/* go mod tidy`.
 
 ## Fetch Go modules from Geo secondary sites
 
-Use [Geo](../../administration/geo/index.md) to access Git repositories that contain Go modules
+Use [Geo](../../administration/geo/_index.md) to access Git repositories that contain Go modules
 on secondary Geo servers.
 
 You can use SSH or HTTP to access the Geo secondary server.

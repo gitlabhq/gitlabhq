@@ -19,7 +19,7 @@ Requests made using this token return a `401 Unauthorized` response. Too many
 unauthorized requests in a short period of time from the same IP address
 result in `403 Forbidden` responses from GitLab.com.
 
-For more information on authentication request limits, see [Git and container registry failed authentication ban](../../user/gitlab_com/index.md#git-and-container-registry-failed-authentication-ban).
+For more information on authentication request limits, see [Git and container registry failed authentication ban](../../user/gitlab_com/_index.md#git-and-container-registry-failed-authentication-ban).
 
 ### Identify expired access tokens from logs
 

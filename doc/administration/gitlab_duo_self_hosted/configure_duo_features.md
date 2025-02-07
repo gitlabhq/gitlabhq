@@ -41,16 +41,13 @@ To configure your GitLab instance to access the available self-hosted models in 
 Prerequisites:
 
 - You must be an administrator.
+- You must have an Ultimate license.
 - You must have a Duo Enterprise license add-on.
 
 To configure a self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo**.
-1. In the **GitLab Duo** section, select **Change configuration**.
-1. Under **Self-hosted AI models**, select **Turn on self-hosted models**.
-1. Select **Save changes**.
-1. On the left sidebar, select **Self-hosted models**.
+1. Select **Self-hosted models**.
    - If the **Self-hosted models** menu item is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
@@ -75,11 +72,33 @@ To configure a self-hosted model:
 
 1. Select **Create self-hosted model**.
 
+## Configure self-hosted beta models
+
+Prerequisites:
+
+- You must be an administrator.
+- You must have an Ultimate license.
+- You must have a Duo Enterprise license add-on.
+
+To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+1. In the **GitLab Duo** section, select **Change configuration**.
+1. Under **Self-hosted AI models**, select **Use beta self-hosted models features**.
+1. Select **Save changes**.
+
+NOTE:
+Turning on beta self-hosted models features also accepts the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+For more information, see the [list of available beta models](supported_models_and_hardware_requirements.md) under evaluation.
+
 ## Configure GitLab Duo features to use self-hosted models
 
 Prerequisites:
 
 - You must be an administrator.
+- You must have an Ultimate license.
 - You must have a Duo Enterprise license add-on.
 
 ### View configured features

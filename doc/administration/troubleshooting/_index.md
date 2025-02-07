@@ -18,7 +18,7 @@ for in this list, you should search the documentation.
 ## Troubleshooting guides
 
 - [SSL](https://docs.gitlab.com/omnibus/settings/ssl/ssl_troubleshooting.html)
-- [Geo](../geo/replication/troubleshooting/index.md)
+- [Geo](../geo/replication/troubleshooting/_index.md)
 - [SAML](../../user/group/saml_sso/troubleshooting.md)
 - [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
 - [Linux cheat sheet](linux_cheat_sheet.md)

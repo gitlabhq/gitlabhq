@@ -98,7 +98,7 @@ export default {
       <template #term
         ><code>{{ query.search }}</code></template
       ><template #groupNameLink
-        ><gl-link :href="`${getBaseURL}/${groupInitialJson.name}`">{{
+        ><gl-link :href="`${getBaseURL}/${groupInitialJson.full_path}`">{{
           groupInitialJson.full_name
         }}</gl-link></template
       >
@@ -118,7 +118,7 @@ export default {
         />
       </template>
       <template #ProjectWithGroupPathLink
-        ><gl-link :href="`${getBaseURL}/${groupInitialJson.name}/${projectInitialJson.name}`">{{
+        ><gl-link :href="`${getBaseURL}/${projectInitialJson.full_path}`">{{
           projectInitialJson.name_with_namespace
         }}</gl-link></template
       >

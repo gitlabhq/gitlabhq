@@ -1,7 +1,7 @@
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { projectMock } from 'ee_else_ce_jest/repository/mock_data';
+import { projectMock, blobControlsDataMock } from 'ee_else_ce_jest/repository/mock_data';
 import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -19,11 +19,6 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 const DEFAULT_PROPS = {
-  name: 'some name',
-  path: 'some/path',
-  replacePath: 'some/replace/path',
-  deletePath: 'some/delete/path',
-  canPushToBranch: true,
   isEmptyRepository: false,
   projectPath: 'some/project/path',
   isUsingLfs: true,
@@ -32,8 +27,7 @@ const DEFAULT_PROPS = {
 const DEFAULT_INJECT = {
   targetBranch: 'master',
   originalBranch: 'master',
-  canModifyBlob: true,
-  canModifyBlobWithWebIde: true,
+  blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
 };
 
 describe('BlobButtonGroup component', () => {
@@ -105,8 +99,9 @@ describe('BlobButtonGroup component', () => {
 
   it('renders component', () => {
     expect(wrapper.props()).toMatchObject({
-      name: 'some name',
-      path: 'some/path',
+      isEmptyRepository: false,
+      isUsingLfs: true,
+      projectPath: 'some/project/path',
     });
   });
 
@@ -141,7 +136,13 @@ describe('BlobButtonGroup component', () => {
       beforeEach(async () => {
         await createComponent({
           props: { isUsingLfs: false },
-          inject: { canModifyBlob: false, canModifyBlobWithWebIde: false },
+          inject: {
+            blobInfo: {
+              ...blobControlsDataMock.repository.blobs.nodes[0],
+              canModifyBlob: false,
+              canModifyBlobWithWebIde: false,
+            },
+          },
         });
       });
 
@@ -171,18 +172,18 @@ describe('BlobButtonGroup component', () => {
 
   it('renders UploadBlobModal', () => {
     expect(findUploadBlobModal().props()).toMatchObject({
-      commitMessage: 'Replace some name',
+      commitMessage: 'Replace file.js',
       targetBranch: 'master',
       originalBranch: 'master',
       canPushCode: true,
-      path: 'some/path',
-      replacePath: 'some/replace/path',
+      path: 'some/file.js',
+      replacePath: 'some/replace/file.js',
     });
   });
 
   it('renders CommitChangesModal for delete', () => {
     expect(findDeleteBlobModal().props()).toMatchObject({
-      commitMessage: 'Delete some name',
+      commitMessage: 'Delete file.js',
       targetBranch: 'master',
       originalBranch: 'master',
       canPushCode: true,

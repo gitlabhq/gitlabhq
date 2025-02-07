@@ -37,7 +37,7 @@ Instead you can authenticate:
     with `read_registry` or `write_registry` scope is required.
   - For [dependency proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy-for-container-images) requests, a PAT with
     `read_registry` and `write_registry` scopes is required.
-- If you have configured LDAP, using an [LDAP password](../../../administration/auth/ldap/index.md)
+- If you have configured LDAP, using an [LDAP password](../../../administration/auth/ldap/_index.md)
 - Using an [OAuth credential helper](../../profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
 ## Error: "invalid pin code"

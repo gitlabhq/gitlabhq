@@ -180,7 +180,7 @@ following to `gitlab.rb` on each node:
 
 NOTE:
 Do not store the GitLab application database and the Praefect
-database on the same PostgreSQL server if using [Geo](../geo/index.md).
+database on the same PostgreSQL server if using [Geo](../geo/_index.md).
 The replication state is internal to each instance of GitLab and should
 not be replicated.
 

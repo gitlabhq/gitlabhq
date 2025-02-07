@@ -272,13 +272,13 @@ RPO and RTO discussed above.
 
 ### Comparison to Geo
 
-Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the redundancy of:
+Gitaly Cluster and [Geo](../geo/_index.md) both provide redundancy. However the redundancy of:
 
 - Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
   not aware when Gitaly Cluster is used.
-- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/_index.md) for
+- Geo provides [replication](../geo/_index.md) and [disaster recovery](../geo/disaster_recovery/_index.md) for
   an entire instance of GitLab. Users know when they are using Geo for
-  [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#replicated-data-types),
+  [replication](../geo/_index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#replicated-data-types),
   including Git data.
 
 The following table outlines the major differences between Gitaly Cluster and Geo:
@@ -290,8 +290,8 @@ The following table outlines the major differences between Gitaly Cluster and Ge
 
 For more information, see:
 
-- Geo [use cases](../geo/index.md#use-cases).
-- Geo [architecture](../geo/index.md#architecture).
+- Geo [use cases](../geo/_index.md#use-cases).
+- Geo [architecture](../geo/_index.md#architecture).
 
 ### Virtual storage
 

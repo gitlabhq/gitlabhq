@@ -371,7 +371,7 @@ GEM
     base32 (0.3.4)
     base64 (0.2.0)
     batch-loader (2.0.5)
-    bcrypt (3.1.18)
+    bcrypt (3.1.20)
     benchmark (0.2.0)
     benchmark-ips (2.14.0)
     benchmark-malloc (0.2.0)

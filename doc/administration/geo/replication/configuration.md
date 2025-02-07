@@ -248,7 +248,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/index.md).
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/_index.md).
 
 1. SSH into a **Rails or Sidekiq server on your primary** site and login as root to verify the
    **secondary** site is reachable or there are any common issues with your Geo setup:
@@ -257,7 +257,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    gitlab-rake gitlab:geo:check
    ```
 
-   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/index.md).
+   If any of the checks fail, check the [troubleshooting documentation](troubleshooting/_index.md).
 
 After the **secondary** site is added to the Geo administration page and restarted,
 the site automatically starts replicating missing data from the **primary** site
@@ -357,14 +357,14 @@ site's **Geo Sites** dashboard in your browser.
 ![Geo dashboard of secondary site](img/geo_dashboard_v14_0.png)
 
 If your installation isn't working properly, check the
-[troubleshooting document](troubleshooting/index.md).
+[troubleshooting document](troubleshooting/_index.md).
 
 The two most obvious issues that can become apparent in the dashboard are:
 
 1. Database replication not working well.
 1. Instance to instance notification not working. In that case, it can be
    something of the following:
-   - You are using a custom certificate or custom CA (see the [troubleshooting document](troubleshooting/index.md)).
+   - You are using a custom certificate or custom CA (see the [troubleshooting document](troubleshooting/_index.md)).
    - The instance is firewalled (check your firewall rules).
 
 Disabling a **secondary** site stops the synchronization process.
@@ -384,4 +384,4 @@ Currently, this is what is synced:
 
 ## Troubleshooting
 
-See the [troubleshooting document](troubleshooting/index.md).
+See the [troubleshooting document](troubleshooting/_index.md).

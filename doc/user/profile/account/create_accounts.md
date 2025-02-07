@@ -63,7 +63,7 @@ GitLab can automatically create user accounts through authentication integration
 Users are created when they:
 
 - Sign in for the first time with:
-  - [LDAP](../../../administration/auth/ldap/index.md)
+  - [LDAP](../../../administration/auth/ldap/_index.md)
   - [Group SAML](../../group/saml_sso/index.md)
   - An [OmniAuth provider](../../../integration/omniauth.md) that has the setting `allow_single_sign_on` turned on
 - Are provisioned through [SCIM](../../group/saml_sso/scim_setup.md) in the identity provider.

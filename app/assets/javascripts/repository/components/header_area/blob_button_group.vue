@@ -36,34 +36,11 @@ export default {
     originalBranch: {
       default: '',
     },
-    canModifyBlob: {
-      default: () => false,
-    },
-    canModifyBlobWithWebIde: {
-      default: () => false,
+    blobInfo: {
+      default: () => DEFAULT_BLOB_INFO.repository.blobs.nodes[0],
     },
   },
   props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    path: {
-      type: String,
-      required: true,
-    },
-    replacePath: {
-      type: String,
-      required: true,
-    },
-    deletePath: {
-      type: String,
-      required: true,
-    },
-    canPushToBranch: {
-      type: Boolean,
-      required: true,
-    },
     isEmptyRepository: {
       type: Boolean,
       required: true,
@@ -131,10 +108,10 @@ export default {
       return uniqueId('delete-modal');
     },
     replaceCommitMessage() {
-      return sprintf(__('Replace %{name}'), { name: this.name });
+      return sprintf(__('Replace %{name}'), { name: this.blobInfo.name });
     },
     deleteModalCommitMessage() {
-      return sprintf(__('Delete %{name}'), { name: this.name });
+      return sprintf(__('Delete %{name}'), { name: this.blobInfo.name });
     },
     canFork() {
       const { createMergeRequestIn, forkProject } = this.userPermissions;
@@ -142,10 +119,10 @@ export default {
       return this.isLoggedIn && !this.isUsingLfs && createMergeRequestIn && forkProject;
     },
     showSingleFileEditorForkSuggestion() {
-      return this.canFork && !this.canModifyBlob;
+      return this.canFork && !this.blobInfo.canModifyBlob;
     },
     showWebIdeForkSuggestion() {
-      return this.canFork && !this.canModifyBlobWithWebIde;
+      return this.canFork && !this.blobInfo.canModifyBlobWithWebIde;
     },
     showForkSuggestion() {
       return this.showSingleFileEditorForkSuggestion || this.showWebIdeForkSuggestion;
@@ -168,8 +145,8 @@ export default {
   <gl-disclosure-dropdown-group>
     <lock-file-dropdown-item
       v-if="glFeatures.fileLocks"
-      :name="name"
-      :path="path"
+      :name="blobInfo.name"
+      :path="blobInfo.path"
       :project-path="projectPath"
       :path-locks="pathLocks"
       :user-permissions="userPermissions"
@@ -187,19 +164,19 @@ export default {
       :target-branch="targetBranch || ref"
       :original-branch="originalBranch || ref"
       :can-push-code="userPermissions.pushCode"
-      :can-push-to-branch="canPushToBranch"
-      :path="path"
-      :replace-path="replacePath"
+      :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"
+      :path="blobInfo.path"
+      :replace-path="blobInfo.replacePath"
     />
     <delete-blob-modal
       :ref="deleteModalId"
-      :delete-path="deletePath"
+      :delete-path="blobInfo.webPath"
       :modal-id="deleteModalId"
       :commit-message="deleteModalCommitMessage"
       :target-branch="targetBranch || ref"
       :original-branch="originalBranch || ref"
       :can-push-code="userPermissions.pushCode"
-      :can-push-to-branch="canPushToBranch"
+      :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"
       :empty-repo="isEmptyRepository"
       :is-using-lfs="isUsingLfs"
     />

@@ -31,7 +31,7 @@ Prerequisites:
   - You must have a [Jira Cloud API token](#create-a-jira-cloud-api-token) and the email address you used to create the token.
   - If you've enabled
     [IP allowlists](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), add the
-    [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist to [view Jira issues](#view-jira-issues) in GitLab.
+    [GitLab.com IP range](../../user/gitlab_com/_index.md#ip-range) to the allowlist to [view Jira issues](#view-jira-issues) in GitLab.
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
   - Jira personal access token (GitLab 16.0 and later).

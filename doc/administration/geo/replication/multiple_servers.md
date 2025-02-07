@@ -110,7 +110,7 @@ major differences:
 - There is an additional PostgreSQL database for each Geo **secondary** site,
   called the "Geo tracking database", which tracks the replication and verification
   state of various resources.
-- There is an additional GitLab service [`geo-logcursor`](../index.md#geo-log-cursor)
+- There is an additional GitLab service [`geo-logcursor`](../_index.md#geo-log-cursor)
 
 Therefore, we set up the multi-node components one by one and include deviations
 from the typical multi-node setup. However, we highly recommend configuring a

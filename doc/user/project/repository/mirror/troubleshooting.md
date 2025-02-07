@@ -234,7 +234,7 @@ The error can be avoided by:
 
 ## Pull or push mirror fails to update: `The project is not mirrored`
 
-Pull and push mirrors fail to update when [GitLab Silent Mode](../../../../administration/silent_mode/index.md) is enabled.
+Pull and push mirrors fail to update when [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) is enabled.
 When this happens, the option to allow mirroring on the UI is disabled.
 
 An administrator can check to confirm that GitLab Silent Mode is disabled.

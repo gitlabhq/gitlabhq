@@ -346,7 +346,7 @@ can enable or disable a project wiki by following the instructions in
 [Sharing and permissions](../settings/index.md#configure-project-features-and-permissions).
 
 Administrators for GitLab Self-Managed can
-[configure additional wiki settings](../../../administration/wikis/index.md).
+[configure additional wiki settings](../../../administration/wikis/_index.md).
 
 You can disable group wikis from the [group settings](group.md#configure-group-wiki-visibility)
 
@@ -486,7 +486,7 @@ All data from the wiki has been cleared, and the wiki is ready for use.
 
 ## Related topics
 
-- [Wiki settings for administrators](../../../administration/wikis/index.md)
+- [Wiki settings for administrators](../../../administration/wikis/_index.md)
 - [Project wikis API](../../../api/wikis.md)
 - [Group wikis API](../../../api/group_wikis.md)
 - [Group repository storage moves API](../../../api/group_repository_storage_moves.md)

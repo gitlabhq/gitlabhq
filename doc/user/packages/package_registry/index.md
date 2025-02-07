@@ -113,7 +113,7 @@ The package registry is automatically enabled.
 
 If you are using a self-managed instance of GitLab, your administrator can remove
 the menu item, **Packages and registries**, from the GitLab sidebar. For more information,
-see the [administration documentation](../../../administration/packages/index.md).
+see the [administration documentation](../../../administration/packages/_index.md).
 
 You can also remove the package registry for your project specifically:
 

@@ -175,7 +175,7 @@ users and groups are not automatically synchronized.
 
 For more information about configuring LDAP for GitLab, see:
 
-- [GitLab LDAP configuration documentation](../auth/ldap/index.md#configure-ldap)
+- [GitLab LDAP configuration documentation](../auth/ldap/_index.md#configure-ldap)
 - [LDAP synchronization documentation](../auth/ldap/ldap_synchronization.md#adjust-ldap-user-sync-schedule)
 
 To enable LDAP with the synchronization worker for Sidekiq:

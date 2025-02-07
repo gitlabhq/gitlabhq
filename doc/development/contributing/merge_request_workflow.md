@@ -200,7 +200,7 @@ To reach the definition of done, the merge request must create no regressions an
 
 - Verified as working in production on GitLab.com.
 - Verified as working for self-managed instances.
-- Verified as supporting [Geo](../../administration/geo/index.md) through the [self-service framework](../geo/framework.md). For more information, see [Geo is a requirement in the definition of done](../geo/framework.md#geo-is-a-requirement-in-the-definition-of-done).
+- Verified as supporting [Geo](../../administration/geo/_index.md) through the [self-service framework](../geo/framework.md). For more information, see [Geo is a requirement in the definition of done](../geo/framework.md#geo-is-a-requirement-in-the-definition-of-done).
 
 If a regression occurs, we prefer you revert the change.
 Your contribution is *incomplete* until you have made sure it meets all of these

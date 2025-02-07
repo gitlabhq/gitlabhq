@@ -55,8 +55,10 @@ module API
           at_least_one_of :minimum_access_level_for_push, :minimum_access_level_for_delete
         end
         post do
-          response = ::ContainerRegistry::Protection::CreateRuleService.new(user_project,
-            current_user, declared_params).execute
+          response =
+            ::ContainerRegistry::Protection::CreateRuleService
+              .new(project: user_project, current_user: current_user, params: declared_params)
+              .execute
 
           render_api_error!({ error: response.message }, :unprocessable_entity) if response.error?
 

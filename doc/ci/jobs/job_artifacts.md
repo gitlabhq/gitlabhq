@@ -281,9 +281,9 @@ from:
 - A job's detail page. On the right of the page, select **Browse**.
 - The **Artifacts** page. On the right of the job, select **Browse** (**{folder-open}**).
 
-If [GitLab Pages](../../administration/pages/index.md) is enabled globally, even if it is disabled in the project settings,
+If [GitLab Pages](../../administration/pages/_index.md) is enabled globally, even if it is disabled in the project settings,
 you can preview some artifacts file extensions directly in your browser. If the project is internal or private,
-you must enable [GitLab Pages access control](../../administration/pages/index.md#access-control) to enable the preview.
+you must enable [GitLab Pages access control](../../administration/pages/_index.md#access-control) to enable the preview.
 
 The following extensions are supported:
 

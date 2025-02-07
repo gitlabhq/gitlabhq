@@ -466,7 +466,7 @@ GitLab can be considered to have two layers from a process perspective:
   - [Omnibus](../administration/consul.md)
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#postgresql)
 - Layer: Core Service (Data)
-- GitLab.com: [Consul](../user/gitlab_com/index.md#consul)
+- GitLab.com: [Consul](../user/gitlab_com/_index.md#consul)
 
 Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
@@ -553,12 +553,12 @@ You can use it to sync deployments onto your Kubernetes cluster.
 #### GitLab Pages
 
 - Configuration:
-  - [Omnibus](../administration/pages/index.md)
+  - [Omnibus](../administration/pages/_index.md)
   - [Charts](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/37)
   - [Source](../install/installation.md#install-gitlab-pages)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/pages.md)
 - Layer: Core Service (Processor)
-- GitLab.com: [GitLab Pages](../user/gitlab_com/index.md#gitlab-pages)
+- GitLab.com: [GitLab Pages](../user/gitlab_com/_index.md#gitlab-pages)
 
 GitLab Pages is a feature that allows you to publish static websites directly from a repository in GitLab.
 
@@ -753,7 +753,7 @@ GitLab packages the popular Database to provide storage for Application meta dat
   - [Charts](https://docs.gitlab.com/charts/installation/deployment.html#prometheus)
 - Layer: Monitoring
 - Process: `prometheus`
-- GitLab.com: [Prometheus](../user/gitlab_com/index.md#prometheus)
+- GitLab.com: [Prometheus](../user/gitlab_com/_index.md#prometheus)
 
 Prometheus is a time-series tool that helps GitLab administrators expose metrics about the individual processes used to provide GitLab the service.
 
@@ -836,7 +836,7 @@ For monitoring deployed apps, see the [Sentry integration docs](../operations/er
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `sidekiq`
-- GitLab.com: [Sidekiq](../user/gitlab_com/index.md#sidekiq)
+- GitLab.com: [Sidekiq](../user/gitlab_com/_index.md#sidekiq)
 
 Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue and processes them. Background jobs allow GitLab to provide a faster request/response cycle by moving work into the background.
 
@@ -852,14 +852,14 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
 - Process: `puma`
-- GitLab.com: [Puma](../user/gitlab_com/index.md#puma)
+- GitLab.com: [Puma](../user/gitlab_com/_index.md#puma)
 
 [Puma](https://puma.io/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often this displays in process output as `bundle` or `config.ru` depending on the GitLab version.
 
 #### LDAP Authentication
 
 - Configuration:
-  - [Omnibus](../administration/auth/ldap/index.md)
+  - [Omnibus](../administration/auth/ldap/_index.md)
   - [Charts](https://docs.gitlab.com/charts/charts/globals.html#ldap)
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/ldap.md)
@@ -874,7 +874,7 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
-- GitLab.com: [Mail configuration](../user/gitlab_com/index.md#mail-configuration)
+- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#mail-configuration)
 
 #### Inbound Email
 
@@ -884,7 +884,7 @@ Starting with GitLab 13.0, Puma is the default web server.
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
-- GitLab.com: [Mail configuration](../user/gitlab_com/index.md#mail-configuration)
+- GitLab.com: [Mail configuration](../user/gitlab_com/_index.md#mail-configuration)
 
 ## GitLab by request type
 

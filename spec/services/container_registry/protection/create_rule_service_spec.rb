@@ -6,7 +6,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
-  let(:service) { described_class.new(project, current_user, params) }
+  let(:service) { described_class.new(project: project, current_user: current_user, params: params) }
   let(:params) { attributes_for(:container_registry_protection_rule, project: project) }
 
   subject(:service_execute) { service.execute }

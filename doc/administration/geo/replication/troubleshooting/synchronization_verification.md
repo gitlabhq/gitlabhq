@@ -622,7 +622,7 @@ To solve this:
 
 ## Failures during backfill
 
-During a [backfill](../../index.md#backfill), failures are scheduled to be retried at the end
+During a [backfill](../../_index.md#backfill), failures are scheduled to be retried at the end
 of the backfill queue, therefore these failures only clear up **after** the backfill completes.
 
 ## Message: `unexpected disconnect while reading sideband packet`

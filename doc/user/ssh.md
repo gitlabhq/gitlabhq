@@ -352,7 +352,7 @@ The following commands use the example hostname `gitlab.example.com`. Replace th
 By default, GitLab uses `git` username to authenticate. It can be different if it was [changed by the administrator](https://docs.gitlab.com/omnibus/settings/configuration.html#change-the-name-of-the-git-user-or-group).
 
 1. To ensure you're connecting to the correct server, check the server's SSH host keys fingerprint. For:
-   - GitLab.com, see the [SSH host keys fingerprints](gitlab_com/index.md#ssh-host-keys-fingerprints) documentation.
+   - GitLab.com, see the [SSH host keys fingerprints](gitlab_com/_index.md#ssh-host-keys-fingerprints) documentation.
    - GitLab.com or another GitLab instance, see `gitlab.example.com/help/instance_configuration#ssh-host-keys-fingerprints` where `gitlab.example.com` is `gitlab.com` (for
      GitLab.com) or the address of the GitLab instance.
 1. Open a terminal and run this command, replacing `gitlab.example.com` with your

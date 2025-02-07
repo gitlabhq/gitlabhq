@@ -17,7 +17,7 @@ export const storageTypeHelpPaths = {
   snippets: helpPagePath('user/snippets', {
     anchor: 'reduce-snippets-repository-size',
   }),
-  wiki: helpPagePath('administration/wikis/index.md', {
+  wiki: helpPagePath('administration/wikis/_index.md', {
     anchor: 'reduce-wiki-repository-size',
   }),
 };

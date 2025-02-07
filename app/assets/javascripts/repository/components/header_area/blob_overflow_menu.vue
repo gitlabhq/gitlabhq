@@ -1,7 +1,7 @@
 <script>
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { computed } from 'vue';
-import { sprintf, s__, __ } from '~/locale';
+import { __ } from '~/locale';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import BlobDefaultActionsGroup from './blob_default_actions_group.vue';
@@ -21,66 +21,21 @@ export default {
   directives: {
     GlTooltipDirective,
   },
-  inject: ['canModifyBlob', 'canModifyBlobWithWebIde'],
+  inject: ['blobInfo'],
   provide() {
     return {
-      canModifyBlob: computed(() => this.canModifyBlob),
-      canModifyBlobWithWebIde: computed(() => this.canModifyBlobWithWebIde),
+      blobInfo: computed(() => this.blobInfo ?? {}),
     };
   },
   props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    archived: {
-      type: Boolean,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,
-    },
-    path: {
-      type: String,
-      required: true,
-    },
-    rawPath: {
-      type: String,
-      required: true,
-    },
-    replacePath: {
-      type: String,
-      required: true,
-    },
-    webPath: {
-      type: String,
-      required: true,
-    },
-    richViewer: {
-      type: Object,
-      required: false,
-      default: () => {},
-    },
-    simpleViewer: {
-      type: Object,
-      required: false,
-      default: () => {},
     },
     isBinary: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    environmentName: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    environmentPath: {
-      type: String,
-      required: false,
-      default: null,
     },
     isEmpty: {
       type: Boolean,
@@ -96,10 +51,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    canCurrentUserPushToBranch: {
-      type: Boolean,
-      required: true,
     },
     isUsingLfs: {
       type: Boolean,
@@ -123,15 +74,12 @@ export default {
       return SIMPLE_BLOB_VIEWER;
     },
     viewer() {
-      return this.activeViewerType === RICH_BLOB_VIEWER ? this.richViewer : this.simpleViewer;
+      return this.activeViewerType === RICH_BLOB_VIEWER
+        ? this.blobInfo.richViewer
+        : this.blobInfo.simpleViewer;
     },
     hasRenderError() {
       return Boolean(this.viewer.renderError);
-    },
-    environmentTitle() {
-      return sprintf(s__('BlobViewer|View on %{environmentName}'), {
-        environmentName: this.environmentName,
-      });
     },
   },
   methods: {
@@ -153,27 +101,17 @@ export default {
     text-sr-only
   >
     <blob-button-group
-      v-if="isLoggedIn && !archived"
-      :path="path"
-      :name="name"
-      :replace-path="replacePath"
-      :delete-path="webPath"
-      :can-push-to-branch="canCurrentUserPushToBranch"
+      v-if="isLoggedIn && !blobInfo.archived"
       :is-empty-repository="isEmptyRepository"
       :project-path="projectPath"
       :is-using-lfs="isUsingLfs"
     />
     <blob-default-actions-group
-      :name="name"
-      :path="path"
-      :raw-path="rawPath"
       :active-viewer-type="activeViewerType"
       :has-render-error="hasRenderError"
       :is-binary="isBinary"
       :is-empty="isEmpty"
       :override-copy="overrideCopy"
-      :environment-name="environmentName"
-      :environment-path="environmentPath"
       @copy="onCopy"
     />
   </gl-disclosure-dropdown>

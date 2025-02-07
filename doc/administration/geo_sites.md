@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 You can configure various settings for GitLab Geo sites. For more information, see
-[Geo documentation](geo/index.md).
+[Geo documentation](geo/_index.md).
 
 On either the primary or secondary site:
 

@@ -199,7 +199,7 @@ If a runner is repeatedly unable to connect to a GitLab instance, it stops tryin
 To ensure that all data is replicated to a secondary site, updates (write requests) need to
 be disabled on the **primary** site:
 
-1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** site.
+1. Enable [maintenance mode](../../maintenance_mode/_index.md) on the **primary** site.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Monitoring > Background jobs**.
 1. On the Sidekiq dashboard, select **Cron**.

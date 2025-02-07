@@ -24,7 +24,7 @@ DETAILS:
 
 Audit event types are used to filter streamed audit events:
 
-- [For instances](../../administration/audit_event_streaming/index.md#update-event-filters).
+- [For instances](../../administration/audit_event_streaming/_index.md#update-event-filters).
 - [For top-level groups](audit_event_streaming.md#update-event-filters)
 
 Every audit event is associated with an event type. Audit event types can allow:

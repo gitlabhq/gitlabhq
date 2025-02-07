@@ -119,6 +119,6 @@ To resolve this issue:
 If a webhook is not triggered, verify that:
 
 - The webhook is not [disabled automatically](webhooks.md#auto-disabled-webhooks).
-- The GitLab instance is not in [Silent Mode](../../../administration/silent_mode/index.md).
+- The GitLab instance is not in [Silent Mode](../../../administration/silent_mode/_index.md).
 - The **Push event activities limit** and **Push event hooks limit** settings in the
   [**Admin** area](../../../administration/settings/push_event_activities_limit.md) are set to a value greater than `0`.

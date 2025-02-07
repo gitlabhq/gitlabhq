@@ -41,7 +41,7 @@ getent passwd git | cut -d: -f6 | awk '{print $1"/.ssh/authorized_keys"}'
 ```
 
 The `authorized_keys` file contains all the public SSH keys for users allowed to access GitLab. However, to maintain a
-single source of truth, [Geo](../geo/index.md) must be configured to perform SSH fingerprint
+single source of truth, [Geo](../geo/_index.md) must be configured to perform SSH fingerprint
 lookups with database lookup.
 
 When you [set up Geo](../geo/setup/_index.md), you must follow the steps below

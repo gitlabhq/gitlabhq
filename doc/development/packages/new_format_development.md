@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Developing support for a new package format
 ---
 
-This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/index.md).
+This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/_index.md).
 
 See the already supported formats in the [Packages and registries documentation](../../user/packages/index.md)
 
@@ -240,7 +240,7 @@ the package format does not upload and store package files.
 #### Rate Limits on GitLab.com
 
 Package manager clients can make rapid requests that exceed the
-[GitLab.com standard API rate limits](../../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
+[GitLab.com standard API rate limits](../../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
 This results in a `429 Too Many Requests` error.
 
 We have opened a set of paths to allow higher rate limits. Unless it is not possible,
