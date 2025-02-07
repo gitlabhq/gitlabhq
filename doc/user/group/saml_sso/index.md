@@ -180,7 +180,7 @@ To set up OneLogin as your identity provider:
 ### Configure assertions
 
 NOTE:
-The attributes are case-insensitive.
+These attributes are case-insensitive.
 
 At minimum, you must configure the following assertions:
 
@@ -193,7 +193,7 @@ Optionally, you can pass user information to GitLab as attributes in the SAML as
 - The username can be either a **username** or **nickname** attribute. You should specify only
   one of these.
 
-For more information, see the [attributes available for GitLab Self-Managed](../../../integration/saml.md#configure-assertions).
+For more information on available attributes, see [SAML SSO for GitLab Self-Managed](../../../integration/saml.md#configure-assertions).
 
 ### Use metadata
 

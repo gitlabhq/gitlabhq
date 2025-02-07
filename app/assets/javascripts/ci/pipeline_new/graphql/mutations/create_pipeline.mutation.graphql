@@ -1,9 +1,23 @@
-mutation createPipeline($endpoint: String, $ref: String, $variablesAttributes: Array) {
-  createPipeline(endpoint: $endpoint, ref: $ref, variablesAttributes: $variablesAttributes)
-    @client {
-    id
+# This name is specifically needed for backend logic
+mutation internalPipelineCreate($input: PipelineCreateInput!) {
+  pipelineCreate(input: $input) {
+    clientMutationId
     errors
-    totalWarnings
-    warnings
+    pipeline {
+      id
+      path
+      errorMessages {
+        nodes {
+          id
+          content
+        }
+      }
+      warningMessages {
+        nodes {
+          id
+          content
+        }
+      }
+    }
   }
 }

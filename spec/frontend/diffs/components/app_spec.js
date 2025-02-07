@@ -657,47 +657,61 @@ describe('diffs/components/app', () => {
       );
     });
 
-    it('should always render diffs file tree', () => {
-      createComponent({});
-      expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
-    });
-
-    it('should pass visible to file tree as true when files are present', () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
-        },
+    describe('File browser', () => {
+      it('should always render diffs file tree', () => {
+        createComponent({});
+        expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
       });
-      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(true);
-    });
 
-    it('should pass visible to file tree as false without files', () => {
-      createComponent({});
-      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(false);
-    });
-
-    it('should hide file tree when toggled', async () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
-        },
+      it('should pass visible to file tree as true when files are present', () => {
+        createComponent({
+          extendStore: ({ state }) => {
+            state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+          },
+        });
+        expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(true);
       });
-      wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
-      await nextTick();
-      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(false);
-    });
 
-    it('should show file tree when toggled', async () => {
-      createComponent({
-        extendStore: ({ state }) => {
-          state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
-        },
+      it('should pass visible to file tree as false without files', () => {
+        createComponent({});
+        expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(false);
       });
-      wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
-      await nextTick();
-      wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
-      await nextTick();
-      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(true);
+
+      it('should hide file tree when toggled', async () => {
+        createComponent({
+          extendStore: ({ state }) => {
+            state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+          },
+        });
+        wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
+        await nextTick();
+        expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(false);
+      });
+
+      it('should show file tree when toggled', async () => {
+        createComponent({
+          extendStore: ({ state }) => {
+            state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+          },
+        });
+        wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
+        await nextTick();
+        wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
+        await nextTick();
+        expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(true);
+      });
+
+      it('should handle clickFile events', () => {
+        const file = { path: '111.js' };
+        createComponent({
+          extendStore: ({ state }) => {
+            state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+          },
+        });
+        jest.spyOn(store, 'dispatch');
+        wrapper.findComponent(DiffsFileTree).vm.$emit('clickFile', file);
+        expect(store.dispatch).toHaveBeenCalledWith('diffs/goToFile', { path: file.path });
+      });
     });
   });
 

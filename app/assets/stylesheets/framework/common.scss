@@ -278,12 +278,11 @@ li.note {
 
 // these classes override styles from the dropzone node package
 .dropzone .dz-preview .dz-progress {
-  border-color: $border-color !important;
+  @apply gl-border #{!important};
 
   .dz-upload {
     background: $green-500 !important;
   }
-
 }
 
 .dz-message {
@@ -407,7 +406,7 @@ li.note {
   padding-bottom: $gl-spacing-scale-6;
   margin: 0;
 
-  border-top: 1px solid $border-color;
+  @apply gl-border-t;
 }
 
 .gl-pseudo-placeholder:empty::before {

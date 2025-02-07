@@ -221,11 +221,34 @@
   align-items: flex-start;
 
   &:hover {
-    background-color: rgba($white, 0.2);
+    background-color: var(--gl-color-alpha-light-8);
   }
 
   .arrow {
     left: 0;
+  }
+}
+
+.job-log-line-highlight {
+  $highlight-border-size: 2px;
+  $highlight-extra-x-padding: 2px;
+  $highlight-x-padding: $gl-padding-8 + $highlight-extra-x-padding;
+  $highlight-border: $highlight-border-size solid currentColor;
+  $highlight-x-margin: -#{$highlight-border-size + $highlight-extra-x-padding};
+
+  border-left: $highlight-border;
+  border-right: $highlight-border;
+
+  padding-left: $highlight-x-padding;
+  padding-right: $highlight-x-padding;
+
+  margin-left: $highlight-x-margin;
+  margin-right: $highlight-x-margin;
+
+  background-color: var(--gl-color-alpha-light-4);
+
+  .arrow {
+    left: $highlight-extra-x-padding;
   }
 }
 

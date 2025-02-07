@@ -27,3 +27,6 @@ desired_sharding_key:
         table: bulk_import_exports
         sharding_key: group_id
         belongs_to: export
+desired_sharding_key_migration_job_name:
+- BackfillBulkImportExportBatchesProjectId
+- BackfillBulkImportExportBatchesGroupId

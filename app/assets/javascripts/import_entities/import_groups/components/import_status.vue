@@ -42,12 +42,17 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-badge :icon="mappedStatus.icon" :variant="mappedStatus.variant" icon-size="sm">
+  <div class="gl-flex gl-flex-col gl-items-start gl-gap-2">
+    <gl-badge
+      :icon="mappedStatus.icon"
+      icon-optically-aligned
+      :variant="mappedStatus.variant"
+      class="gl-pr-3"
+    >
       {{ mappedStatus.text }}
     </gl-badge>
 
-    <div v-if="failuresHref" class="gl-mt-2">
+    <div v-if="failuresHref">
       <gl-link :href="failuresHref">{{ s__('Import|Show errors') }} &gt;</gl-link>
     </div>
   </div>

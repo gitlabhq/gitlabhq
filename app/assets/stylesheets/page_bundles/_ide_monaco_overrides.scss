@@ -71,7 +71,7 @@
 
     .diffOverview {
       background-color: $white;
-      border-left: 1px solid $border-color;
+      @apply gl-border-l;
       cursor: ns-resize;
     }
 

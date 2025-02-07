@@ -475,6 +475,7 @@ export default {
       'collapseAllFiles',
       'setDiffViewType',
       'setShowWhitespace',
+      'goToFile',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
@@ -804,7 +805,11 @@ export default {
         :data-can-create-note="getNoteableData.current_user.can_create_note"
         class="files gl-mt-2 gl-flex"
       >
-        <diffs-file-tree :visible="renderFileTree" @toggled="fileTreeToggled" />
+        <diffs-file-tree
+          :visible="renderFileTree"
+          @toggled="fileTreeToggled"
+          @clickFile="goToFile({ path: $event.path })"
+        />
         <div class="col-12 col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <gl-alert

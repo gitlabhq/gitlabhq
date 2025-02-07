@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillRequiredCodeOwnersSectionsProtectedBranchNamespaceId
+description: Backfills sharding key `required_code_owners_sections.protected_branch_namespace_id` from `protected_branches`.
+feature_category: source_code_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180440
+milestone: '17.9'
+queued_migration_version: 20250205200247
+finalized_by: # version of the migration that finalized this BBM

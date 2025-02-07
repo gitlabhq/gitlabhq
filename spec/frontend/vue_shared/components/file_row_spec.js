@@ -63,7 +63,7 @@ describe('File row component', () => {
     expect(wrapper.element.title.trim()).toEqual('');
   });
 
-  it('emits toggleTreeOpen on click', () => {
+  it('emits toggleTreeOpen on tree click', () => {
     const fileName = 't3';
     createComponent({
       file: {
@@ -76,6 +76,22 @@ describe('File row component', () => {
     wrapper.element.click();
 
     expect(wrapper.emitted('toggleTreeOpen')[0][0]).toEqual(fileName);
+  });
+
+  it('emits clickFile on blob click', () => {
+    const fileName = 't3';
+    const fileProp = {
+      ...file(fileName),
+      type: 'blob',
+    };
+    createComponent({
+      file: fileProp,
+      level: 1,
+    });
+
+    wrapper.element.click();
+
+    expect(wrapper.emitted('clickFile')[0][0]).toEqual(fileProp);
   });
 
   it('calls scrollIntoView if made active', () => {

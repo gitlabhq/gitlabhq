@@ -21,6 +21,13 @@ describe('DiffsFileTree', () => {
     });
   };
 
+  it('re-emits clickFile event', () => {
+    const obj = {};
+    createComponent();
+    wrapper.findComponent(TreeList).vm.$emit('clickFile', obj);
+    expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
+  });
+
   describe('visibility', () => {
     describe('when renderDiffFiles and showTreeList are true', () => {
       beforeEach(() => {

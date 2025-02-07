@@ -174,6 +174,33 @@ Add guidelines for profile images.
 
 GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, but you must manually enable Libravatar support on the GitLab instance. For more information, see [Libravatar](libravatar.md) to use the service.
 
+## Change the color theme for all new users
+
+To [change the default color theme](../user/profile/preferences.md#change-the-color-theme) for all new users:
+
+1. Add `gitlab_rails['gitlab_default_theme']` to your GitLab configuration file at `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['gitlab_default_theme'] = 2
+   ```
+
+1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+As of GitLab 17.8, `gitlab_default_theme` can specify [a value from 1 to 10](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/17.8.0+ee.0/files/gitlab-config-template/gitlab.rb.template?ref_type=tags#L137) to set the default theme. 
+
+| Value | Color |
+| ------ | ------  |
+| 1       | Indigo |
+| 2       | Dark |
+| 3       | Light |
+| 4       | Blue |
+| 5       |Green|
+| 6       |Light Indigo|
+| 7       |Light Blue|
+| 8       |Light Green|
+| 9       |Red|
+| 10       |Light Red|
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

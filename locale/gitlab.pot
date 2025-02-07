@@ -21202,6 +21202,9 @@ msgstr ""
 msgid "Downstream"
 msgstr ""
 
+msgid "Downstream pipeline"
+msgstr ""
+
 msgid "Downvotes"
 msgstr ""
 
@@ -69493,6 +69496,9 @@ msgid "unicode domains should use IDNA encoding"
 msgstr ""
 
 msgid "units"
+msgstr ""
+
+msgid "unknown"
 msgstr ""
 
 msgid "unsubscribed %{emails}"

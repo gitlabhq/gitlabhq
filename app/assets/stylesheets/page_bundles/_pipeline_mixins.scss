@@ -1,18 +1,3 @@
-@mixin build-content($border-radius: 30px) {
-  display: inline-block;
-  padding: 8px 10px 9px;
-  width: 100%;
-  border: 1px solid var(--gl-border-color-default);
-  border-radius: $border-radius;
-  background-color: var(--white, $white);
-
-  &:hover {
-    background-color: var(--gray-50, $gray-50);
-    border: 1px solid $dropdown-toggle-active-border-color;
-    color: var(--gl-text-color-default);
-  }
-}
-
 /**
  Action icons inside dropdowns:
  - dropdown in big graph

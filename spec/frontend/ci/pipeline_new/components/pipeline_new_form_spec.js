@@ -1,32 +1,28 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlForm, GlSprintf, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlForm, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import mockPipelineCreateMutationResponse from 'test_fixtures/graphql/pipelines/create_pipeline.mutation.graphql.json';
+import mockPipelineCreateMutationErrorResponse from 'test_fixtures/graphql/pipelines/create_pipeline_error.mutation.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import {
-  HTTP_STATUS_BAD_REQUEST,
-  HTTP_STATUS_INTERNAL_SERVER_ERROR,
-  HTTP_STATUS_OK,
-} from '~/lib/utils/http_status';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import PipelineNewForm, {
   POLLING_INTERVAL,
 } from '~/ci/pipeline_new/components/pipeline_new_form.vue';
 import ciConfigVariablesQuery from '~/ci/pipeline_new/graphql/queries/ci_config_variables.graphql';
-import { resolvers } from '~/ci/pipeline_new/graphql/resolvers';
+import pipelineCreateMutation from '~/ci/pipeline_new/graphql/mutations/create_pipeline.mutation.graphql';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
 import VariableValuesListbox from '~/ci/pipeline_new/components/variable_values_listbox.vue';
 import {
   mockCiConfigVariablesResponse,
   mockCiConfigVariablesResponseWithoutDesc,
   mockEmptyCiConfigVariablesResponse,
-  mockError,
   mockNoCachedCiConfigVariablesResponse,
   mockQueryParams,
-  mockPostParams,
   mockProjectId,
   mockYamlVariables,
   mockPipelineConfigButtonText,
@@ -43,7 +39,6 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const pipelinesPath = '/root/project/-/pipelines';
 const pipelinesEditorPath = '/root/project/-/ci/editor';
 const projectPath = '/root/project/-/pipelines/config_variables';
-const newPipelinePostResponse = { id: 1 };
 const defaultBranch = 'main';
 
 describe('Pipeline New Form', () => {
@@ -52,6 +47,8 @@ describe('Pipeline New Form', () => {
   let mockApollo;
   let mockCiConfigVariables;
   let dummySubmitEvent;
+
+  const pipelineCreateMutationHandler = jest.fn();
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findRefsDropdown = () => wrapper.findComponent(RefsDropdown);
@@ -66,11 +63,8 @@ describe('Pipeline New Form', () => {
   const findErrorAlert = () => wrapper.findByTestId('run-pipeline-error-alert');
   const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
   const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');
-  const findWarningAlertSummary = () => findWarningAlert().findComponent(GlSprintf);
-  const findWarnings = () => wrapper.findAllByTestId('run-pipeline-warning');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findCiCdSettingsLink = () => wrapper.findByTestId('ci-cd-settings-link');
-  const getFormPostParams = () => JSON.parse(mock.history.post[0].data);
 
   const advanceToNextFetch = (milliseconds) => {
     jest.advanceTimersByTime(milliseconds);
@@ -99,8 +93,11 @@ describe('Pipeline New Form', () => {
     mountFn = shallowMountExtended,
     stubs = {},
   } = {}) => {
-    const handlers = [[ciConfigVariablesQuery, mockCiConfigVariables]];
-    mockApollo = createMockApollo(handlers, resolvers);
+    const handlers = [
+      [ciConfigVariablesQuery, mockCiConfigVariables],
+      [pipelineCreateMutation, pipelineCreateMutationHandler],
+    ];
+    mockApollo = createMockApollo(handlers);
 
     wrapper = mountFn(PipelineNewForm, {
       apolloProvider: mockApollo,
@@ -208,7 +205,7 @@ describe('Pipeline New Form', () => {
   describe('Pipeline creation', () => {
     beforeEach(() => {
       mockCiConfigVariables.mockResolvedValue(mockEmptyCiConfigVariablesResponse);
-      mock.onPost(pipelinesPath).reply(HTTP_STATUS_OK, newPipelinePostResponse);
+      pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
     });
 
     it('does not submit the native HTML form', () => {
@@ -224,33 +221,45 @@ describe('Pipeline New Form', () => {
 
       expect(findSubmitButton().props('disabled')).toBe(false);
 
-      findForm().vm.$emit('submit', dummySubmitEvent);
-      await waitForPromises();
+      await findForm().vm.$emit('submit', dummySubmitEvent);
 
       expect(findSubmitButton().props('disabled')).toBe(true);
     });
 
-    it('creates pipeline with full ref and variables', async () => {
+    it('fires the mutation when the submit button is clicked', async () => {
       createComponentWithApollo();
 
       findForm().vm.$emit('submit', dummySubmitEvent);
       await waitForPromises();
 
-      expect(getFormPostParams().ref).toEqual(`refs/heads/${defaultBranch}`);
-      expect(visitUrl).toHaveBeenCalledWith(`${pipelinesPath}/${newPipelinePostResponse.id}`);
+      expect(pipelineCreateMutationHandler).toHaveBeenCalled();
     });
 
-    it('creates a pipeline with short ref and variables from the query params', async () => {
-      createComponentWithApollo({ props: mockQueryParams });
+    it('creates pipeline with ref and variables', async () => {
+      createComponentWithApollo();
 
+      findForm().vm.$emit('submit', dummySubmitEvent);
+      await waitForPromises();
+
+      expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
+        input: {
+          ref: 'main',
+          projectPath: '/root/project/-/pipelines/config_variables',
+          variables: [],
+        },
+      });
+    });
+
+    it('navigates to the created pipeline', async () => {
+      const pipelinePath = mockPipelineCreateMutationResponse.data.pipelineCreate.pipeline.path;
+
+      createComponentWithApollo();
       await waitForPromises();
 
       findForm().vm.$emit('submit', dummySubmitEvent);
-
       await waitForPromises();
 
-      expect(getFormPostParams()).toEqual(mockPostParams);
-      expect(visitUrl).toHaveBeenCalledWith(`${pipelinesPath}/${newPipelinePostResponse.id}`);
+      expect(visitUrl).toHaveBeenCalledWith(pipelinePath);
     });
   });
 
@@ -491,38 +500,29 @@ describe('Pipeline New Form', () => {
         findRefsDropdown().vm.$emit('loadingError');
       });
 
-      it('shows both an error alert', () => {
+      it('shows an error alert', () => {
         expect(findErrorAlert().exists()).toBe(true);
         expect(findWarningAlert().exists()).toBe(false);
       });
     });
 
-    describe('when the error response can be handled', () => {
+    describe('when pipeline creation mutation is not successful', () => {
       beforeEach(async () => {
-        mock.onPost(pipelinesPath).reply(HTTP_STATUS_BAD_REQUEST, mockError);
+        pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationErrorResponse);
 
         findForm().vm.$emit('submit', dummySubmitEvent);
 
         await waitForPromises();
       });
 
-      it('shows both error and warning', () => {
+      it('shows error', () => {
         expect(findErrorAlert().exists()).toBe(true);
-        expect(findWarningAlert().exists()).toBe(true);
       });
 
       it('shows the correct error', () => {
-        expect(findErrorAlert().text()).toBe(mockError.errors[0]);
-      });
+        const error = mockPipelineCreateMutationErrorResponse.data.pipelineCreate.errors[0];
 
-      it('shows the correct warning title', () => {
-        const { length } = mockError.warnings;
-
-        expect(findWarningAlertSummary().attributes('message')).toBe(`${length} warnings found:`);
-      });
-
-      it('shows the correct amount of warnings', () => {
-        expect(findWarnings()).toHaveLength(mockError.warnings.length);
+        expect(findErrorAlert().text()).toBe(error);
       });
 
       it('re-enables the submit button', () => {

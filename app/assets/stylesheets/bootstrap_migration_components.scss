@@ -108,7 +108,7 @@ input[type='file'] {
   height: 0;
   margin: 4px 0;
   overflow: hidden;
-  border-top: 1px solid $border-color;
+  @apply gl-border-t;
 }
 
 .info-well {

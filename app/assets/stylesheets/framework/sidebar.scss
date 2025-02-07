@@ -150,7 +150,7 @@
     .block {
       padding: 16px 0;
       width: 250px;
-      border-bottom: 1px solid $border-color;
+      @apply gl-border-b;
     }
   }
 
@@ -249,10 +249,10 @@
   @apply gl-text-subtle;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid $border-color;
+  @apply gl-border-b;
 
   &:hover {
-    background-color: $border-color;
+    background-color: $gray-100;
     @apply gl-text-default;
   }
 }
@@ -569,7 +569,7 @@
     }
 
     .participants {
-      border-bottom: 1px solid $border-color;
+      @apply gl-border-b;
     }
 
     .hide-collapsed {
@@ -581,7 +581,7 @@
       height: $sidebar-toggle-height;
       margin-top: 0;
       margin-left: 0;
-      border-bottom: 1px solid $border-color !important;
+      @apply gl-border-b #{!important};
       border-radius: 0;
     }
 

@@ -19,7 +19,7 @@ Administrators can add Switchboard users to their GitLab Dedicated instance. The
 
 To add a new user to your GitLab Dedicated instance:
 
-1. From the **Tenants** page, select **Manage** next to the tenant instance.
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. From the top of the page, select **Users**.
 1. Select **New user**.
 1. Enter the **Email** and select a **Role** for the user.

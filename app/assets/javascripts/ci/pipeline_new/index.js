@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import PipelineNewForm from './components/pipeline_new_form.vue';
-import { resolvers } from './graphql/resolvers';
 
 const mountPipelineNewForm = (el) => {
   const {
@@ -31,7 +30,7 @@ const mountPipelineNewForm = (el) => {
   Vue.use(VueApollo);
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

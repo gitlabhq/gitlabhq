@@ -65,6 +65,6 @@ export default {
       side="right"
       @resize-end="cacheTreeListWidth"
     />
-    <tree-list :hide-file-stats="hideFileStats" />
+    <tree-list :hide-file-stats="hideFileStats" @clickFile="$emit('clickFile', $event)" />
   </div>
 </template>

@@ -742,10 +742,13 @@ your provider's support.
 
 ### Configure assertions
 
+DETAILS:
+**Offering:** GitLab.com, GitLab Self-Managed
+
 > - Microsoft Azure/Entra ID attribute support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
 
 NOTE:
-The attributes are case-sensitive.
+These attributes are case-sensitive.
 
 | Field           | Supported default keys                                                                                                                                                         |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

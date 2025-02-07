@@ -68,7 +68,6 @@ $purple-light: #ede8fb !default;
 /*
  * UI elements
  */
-$border-color: $gray-100;
 $well-expand-item: #e8f2f7 !default;
 
 /*
@@ -234,7 +233,6 @@ $dropdown-max-height-lg: 445px;
 $dropdown-vertical-offset: 4px;
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-loading-bg: rgba($white, 0.6);
-$dropdown-toggle-active-border-color: darken($border-color, 14%);
 $dropdown-fade-mask-height: 32px;
 $dropdown-member-form-control-width: 163px;
 

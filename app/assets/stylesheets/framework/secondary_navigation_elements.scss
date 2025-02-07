@@ -6,7 +6,7 @@
   margin: 0;
   list-style: none;
   height: auto;
-  border-bottom: 1px solid $border-color;
+  @apply gl-border-b;
 
   li:not(.md-header-toolbar) {
     display: flex;
@@ -328,7 +328,7 @@
 
   &.activities {
     display: flex;
-    border-bottom: 1px solid $border-color;
+    @apply gl-border-b;
     align-items: center;
 
     .nav-links {

@@ -38,9 +38,14 @@ export const mockError = {
 };
 
 export const mockIdentityVerificationRequiredError = {
-  errors: ['Identity verification is required in order to run CI jobs'],
-  warnings: [],
-  total_warnings: 0,
+  data: {
+    pipelineCreate: {
+      clientMutationId: 'test-mutation-id',
+      errors: ['Identity verification is required in order to run CI jobs'],
+      pipeline: null,
+      __typename: 'PipelineCreatePayload',
+    },
+  },
 };
 
 export const mockBranchRefs = ['main', 'dev', 'release'];

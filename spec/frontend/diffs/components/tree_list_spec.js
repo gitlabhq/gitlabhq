@@ -233,6 +233,12 @@ describe('Diffs tree list component', () => {
       expect(getScroller().props('items')).toHaveLength(6);
     });
 
+    it('re-emits clickFile event', () => {
+      const obj = {};
+      wrapper.findComponent(DiffFileRow).vm.$emit('clickFile', obj);
+      expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
+    });
+
     it('hides file stats', () => {
       createComponent({ hideFileStats: true });
       expect(getFileRow().props('hideFileStats')).toBe(true);

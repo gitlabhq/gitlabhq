@@ -1,7 +1,8 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import DownstreamPipelineDropdown from './downstream_pipeline_dropdown.vue';
+
 /**
  * Renders the downstream portion of the pipeline mini graph.
  */
@@ -11,7 +12,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CiIcon,
+    DownstreamPipelineDropdown,
   },
   props: {
     pipelines: {
@@ -51,24 +52,16 @@ export default {
       });
     },
   },
-  methods: {
-    pipelineTooltipText(pipeline) {
-      return `${pipeline?.project?.name} - ${pipeline?.detailedStatus?.label}`;
-    },
-  },
 };
 </script>
 
 <template>
   <span v-if="pipelines" class="gl-inline-flex gl-gap-2 gl-align-middle">
-    <ci-icon
+    <downstream-pipeline-dropdown
       v-for="pipeline in pipelinesTrimmed"
       :key="pipeline.id"
-      v-gl-tooltip.hover
-      :title="pipelineTooltipText(pipeline)"
-      :status="pipeline.detailedStatus"
-      :show-tooltip="false"
-      data-testid="downstream-pipelines"
+      :pipeline="pipeline"
+      @jobActionExecuted="$emit('jobActionExecuted')"
     />
 
     <a

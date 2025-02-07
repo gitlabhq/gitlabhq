@@ -8,7 +8,7 @@ title: GitLab Pages Let's Encrypt certificates
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+**Offering:** GitLab.com, GitLab Self-Managed
 
 The GitLab Pages integration with Let's Encrypt (LE) allows you
 to use LE certificates for your Pages website with custom domains

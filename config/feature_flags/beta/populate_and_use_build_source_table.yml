@@ -2,8 +2,8 @@
 name: populate_and_use_build_source_table
 feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11796
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170899
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517040
 milestone: '17.7'
 group: group::security policies
-type: wip
+type: beta
 default_enabled: false

@@ -41,7 +41,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [Deprecate CI job implementation of Repository X-Ray](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) | Low | Create | Project |
 | [Pipeline job limits extended to the Commits API](https://gitlab.com/gitlab-org/gitlab/-/issues/436361) | Low | Verify | Project |
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/381894) | Low | Fulfillment | Project |
-| [Rename 'setPreReceiveSecretDetection' GraphQL mutation to 'setSecretPushProtection'](https://gitlab.com/gitlab-org/gitlab/-/issues/462504) | Low | Application_security_testing | Project |
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/396284) | Low | Fulfillment | Group |
 | [Workspaces `editor` GraphQL field is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/508155) | Low | Create | Project |
 | [Enforce keyset pagination on audit event API](https://gitlab.com/gitlab-org/gitlab/-/issues/382338) | Low | Software supply chain security | Instance, group, project |
@@ -85,6 +84,7 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/474175) | Low | Govern | Project |
 | [Guest users can pull packages from private projects on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/336622) | High | Package | Project |
 | [Removal of `migrationState` field in `ContainerRepository` GraphQL API](https://gitlab.com/gitlab-org/gitlab/-/issues/459869) | Low | Package | Project |
+| [Rename `setPreReceiveSecretDetection` GraphQL mutation to `setSecretPushProtection`](https://gitlab.com/gitlab-org/gitlab/-/issues/514414) | Medium | Application_security_testing | Project |
 | [Updated tooling to release CI/CD components to the Catalog](https://gitlab.com/groups/gitlab-org/-/epics/12788) | High | Verify | Instance |
 | [Increased default security for use of pipeline variables](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) | Medium | Verify | Project |
 | [Amazon S3 Signature Version 2](https://gitlab.com/gitlab-org/container-registry/-/issues/1449) | Low | Package | Project |

@@ -72,7 +72,7 @@ a {
 .error-nav {
   margin: $gl-spacing-scale-6 0 0 0;
   padding: $gl-spacing-scale-4 0 0 0;
-  border-top: 1px solid $border-color;
+  border-top: 1px solid $gl-border-color-default;
 
   li {
     display: block;

@@ -150,7 +150,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleTreeOpen', 'goToFile', 'setRenderTreeList', 'setTreeOpen']),
+    ...mapActions('diffs', ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
 
     scrollVirtualScrollerToFileHash(hash) {
       const item = document.querySelector(`[data-file-row="${hash}"]`);
@@ -239,7 +239,7 @@ export default {
                 class="gl-relative !gl-m-1"
                 :data-file-row="item.fileHash"
                 @toggleTreeOpen="toggleTreeOpen"
-                @clickFile="(path) => goToFile({ path })"
+                @clickFile="$emit('clickFile', $event)"
               />
             </template>
             <template #after>

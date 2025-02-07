@@ -24,7 +24,7 @@
   width: $award-emoji-width;
   font-size: 14px;
   background-color: $white;
-  border: 1px solid $border-color;
+  @apply gl-border;
   border-radius: $border-radius-base;
   box-shadow: 0 6px 12px $award-emoji-menu-shadow;
   pointer-events: none;
@@ -129,19 +129,6 @@
 }
 
 .gl-button.btn.award-control {
-  margin: 4px 8px 4px 0;
-
-  &.disabled {
-    cursor: default;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $white;
-      border-color: $border-color;
-    }
-  }
-
   &.active,
   &:hover,
   &:active,

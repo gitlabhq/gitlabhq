@@ -244,7 +244,7 @@ describe('Job Log Line', () => {
         isHighlighted: true,
       });
 
-      expect(wrapper.classes()).toContain('gl-bg-gray-700');
+      expect(wrapper.classes()).toContain('job-log-line-highlight');
     });
 
     it('does not apply highlight class to search result elements', () => {
@@ -258,7 +258,7 @@ describe('Job Log Line', () => {
         path: '/root/ci-project/-/jobs/1089',
       });
 
-      expect(wrapper.classes()).not.toContain('gl-bg-gray-700');
+      expect(wrapper.classes()).not.toContain('job-log-line-highlight');
     });
   });
 
@@ -279,7 +279,7 @@ describe('Job Log Line', () => {
           path: '/root/ci-project/-/jobs/6353',
         });
 
-        expect(wrapper.classes()).toContain('gl-bg-gray-700');
+        expect(wrapper.classes()).toContain('job-log-line-highlight');
       });
     });
 
@@ -299,7 +299,7 @@ describe('Job Log Line', () => {
           path: '/root/ci-project/-/jobs/6353',
         });
 
-        expect(wrapper.classes()).not.toContain('gl-bg-gray-700');
+        expect(wrapper.classes()).not.toContain('job-log-line-highlight');
       });
     });
   });

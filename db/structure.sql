@@ -1787,6 +1787,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_3be1956babdb() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."snippet_organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."snippet_organization_id"
+  FROM "snippets"
+  WHERE "snippets"."id" = NEW."snippet_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3d1a58344b29() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1924,6 +1940,22 @@ IF NEW."namespace_id" IS NULL THEN
   INTO NEW."namespace_id"
   FROM "issues"
   WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_47b402bdab5f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "bulk_import_exports"
+  WHERE "bulk_import_exports"."id" = NEW."export_id";
 END IF;
 
 RETURN NEW;
@@ -2536,6 +2568,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_8ba074736a77() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."snippet_project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."snippet_project_id"
+  FROM "snippets"
+  WHERE "snippets"."id" = NEW."snippet_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_8d002f38bdef() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2657,6 +2705,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "deployments"
   WHERE "deployments"."id" = NEW."deployment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_951ac22c24d7() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."protected_branch_namespace_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
 END IF;
 
 RETURN NEW;
@@ -2913,6 +2977,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "incident_management_oncall_schedules"
   WHERE "incident_management_oncall_schedules"."id" = NEW."oncall_schedule_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_b0f4298cadff() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."protected_branch_project_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
 END IF;
 
 RETURN NEW;
@@ -3233,6 +3313,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "vulnerability_occurrences"
   WHERE "vulnerability_occurrences"."id" = NEW."vulnerability_occurrence_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_de59b81d3044() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "bulk_import_exports"
+  WHERE "bulk_import_exports"."id" = NEW."export_id";
 END IF;
 
 RETURN NEW;
@@ -9546,6 +9642,8 @@ CREATE TABLE bulk_import_export_batches (
     batch_number integer DEFAULT 0 NOT NULL,
     objects_count integer DEFAULT 0 NOT NULL,
     error text,
+    project_id bigint,
+    group_id bigint,
     CONSTRAINT check_046dc60dfe CHECK ((char_length(error) <= 255))
 );
 
@@ -20348,6 +20446,8 @@ CREATE TABLE required_code_owners_sections (
     id bigint NOT NULL,
     protected_branch_id bigint NOT NULL,
     name text NOT NULL,
+    protected_branch_project_id bigint,
+    protected_branch_namespace_id bigint,
     CONSTRAINT check_e58d53741e CHECK ((char_length(name) <= 1024))
 );
 
@@ -21287,6 +21387,8 @@ CREATE TABLE snippet_repository_storage_moves (
     source_storage_name text NOT NULL,
     destination_storage_name text NOT NULL,
     error_message text,
+    snippet_project_id bigint,
+    snippet_organization_id bigint,
     CONSTRAINT check_a42ab83060 CHECK ((char_length(error_message) <= 256)),
     CONSTRAINT snippet_repository_storage_moves_destination_storage_name CHECK ((char_length(destination_storage_name) <= 255)),
     CONSTRAINT snippet_repository_storage_moves_source_storage_name CHECK ((char_length(source_storage_name) <= 255))
@@ -31428,6 +31530,10 @@ CREATE INDEX index_bulk_import_entities_on_parent_id ON bulk_import_entities USI
 
 CREATE INDEX index_bulk_import_entities_on_project_id ON bulk_import_entities USING btree (project_id);
 
+CREATE INDEX index_bulk_import_export_batches_on_group_id ON bulk_import_export_batches USING btree (group_id);
+
+CREATE INDEX index_bulk_import_export_batches_on_project_id ON bulk_import_export_batches USING btree (project_id);
+
 CREATE INDEX index_bulk_import_export_uploads_on_export_id ON bulk_import_export_uploads USING btree (export_id);
 
 CREATE INDEX index_bulk_import_export_uploads_on_group_id ON bulk_import_export_uploads USING btree (group_id);
@@ -34342,6 +34448,10 @@ CREATE INDEX index_remote_mirrors_on_project_id ON remote_mirrors USING btree (p
 
 CREATE INDEX index_required_code_owners_sections_on_protected_branch_id ON required_code_owners_sections USING btree (protected_branch_id);
 
+CREATE INDEX index_required_code_owners_sections_on_protected_branch_namespa ON required_code_owners_sections USING btree (protected_branch_namespace_id);
+
+CREATE INDEX index_required_code_owners_sections_on_protected_branch_project ON required_code_owners_sections USING btree (protected_branch_project_id);
+
 CREATE INDEX index_requirements_management_test_reports_on_author_id ON requirements_management_test_reports USING btree (author_id);
 
 CREATE INDEX index_requirements_management_test_reports_on_build_id ON requirements_management_test_reports USING btree (build_id);
@@ -34611,6 +34721,10 @@ CREATE INDEX index_snippet_repositories_pending_verification ON snippet_reposito
 CREATE INDEX index_snippet_repositories_verification_state ON snippet_repositories USING btree (verification_state);
 
 CREATE INDEX index_snippet_repository_storage_moves_on_snippet_id ON snippet_repository_storage_moves USING btree (snippet_id);
+
+CREATE INDEX index_snippet_repository_storage_moves_on_snippet_organization_ ON snippet_repository_storage_moves USING btree (snippet_organization_id);
+
+CREATE INDEX index_snippet_repository_storage_moves_on_snippet_project_id ON snippet_repository_storage_moves USING btree (snippet_project_id);
 
 CREATE INDEX index_snippet_repository_storage_moves_on_state ON snippet_repository_storage_moves USING btree (state) WHERE (state = ANY (ARRAY[2, 3]));
 
@@ -37882,6 +37996,8 @@ CREATE TRIGGER trigger_38bfee591e40 BEFORE INSERT OR UPDATE ON dependency_proxy_
 
 CREATE TRIGGER trigger_397d1b13068e BEFORE INSERT OR UPDATE ON issue_customer_relations_contacts FOR EACH ROW EXECUTE FUNCTION trigger_397d1b13068e();
 
+CREATE TRIGGER trigger_3be1956babdb BEFORE INSERT OR UPDATE ON snippet_repository_storage_moves FOR EACH ROW EXECUTE FUNCTION trigger_3be1956babdb();
+
 CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_alert_assignees FOR EACH ROW EXECUTE FUNCTION trigger_3d1a58344b29();
 
 CREATE TRIGGER trigger_3e067fa9bfe3 BEFORE INSERT OR UPDATE ON incident_management_timeline_event_tag_links FOR EACH ROW EXECUTE FUNCTION trigger_3e067fa9bfe3();
@@ -37899,6 +38015,8 @@ CREATE TRIGGER trigger_44ff19ad0ab2 BEFORE INSERT OR UPDATE ON packages_pypi_met
 CREATE TRIGGER trigger_468b8554e533 BEFORE INSERT OR UPDATE ON security_findings FOR EACH ROW EXECUTE FUNCTION trigger_468b8554e533();
 
 CREATE TRIGGER trigger_46ebe375f632 BEFORE INSERT OR UPDATE ON epic_issues FOR EACH ROW EXECUTE FUNCTION trigger_46ebe375f632();
+
+CREATE TRIGGER trigger_47b402bdab5f BEFORE INSERT OR UPDATE ON bulk_import_export_batches FOR EACH ROW EXECUTE FUNCTION trigger_47b402bdab5f();
 
 CREATE TRIGGER trigger_49862b4b3035 BEFORE INSERT OR UPDATE ON approval_group_rules_protected_branches FOR EACH ROW EXECUTE FUNCTION trigger_49862b4b3035();
 
@@ -37982,6 +38100,8 @@ CREATE TRIGGER trigger_8ac78f164b2d BEFORE INSERT OR UPDATE ON design_management
 
 CREATE TRIGGER trigger_8b39d532224c BEFORE INSERT OR UPDATE ON ci_secure_file_states FOR EACH ROW EXECUTE FUNCTION trigger_8b39d532224c();
 
+CREATE TRIGGER trigger_8ba074736a77 BEFORE INSERT OR UPDATE ON snippet_repository_storage_moves FOR EACH ROW EXECUTE FUNCTION trigger_8ba074736a77();
+
 CREATE TRIGGER trigger_8d002f38bdef BEFORE INSERT OR UPDATE ON packages_debian_group_components FOR EACH ROW EXECUTE FUNCTION trigger_8d002f38bdef();
 
 CREATE TRIGGER trigger_8d17725116fe BEFORE INSERT OR UPDATE ON merge_request_reviewers FOR EACH ROW EXECUTE FUNCTION trigger_8d17725116fe();
@@ -37997,6 +38117,8 @@ CREATE TRIGGER trigger_90fa5c6951f1 BEFORE INSERT OR UPDATE ON dast_profiles_tag
 CREATE TRIGGER trigger_9259aae92378 BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_9259aae92378();
 
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
+
+CREATE TRIGGER trigger_951ac22c24d7 BEFORE INSERT OR UPDATE ON required_code_owners_sections FOR EACH ROW EXECUTE FUNCTION trigger_951ac22c24d7();
 
 CREATE TRIGGER trigger_96298f7da5d3 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_96298f7da5d3();
 
@@ -38027,6 +38149,8 @@ CREATE TRIGGER trigger_a7e0fb195210 BEFORE INSERT OR UPDATE ON vulnerability_fin
 CREATE TRIGGER trigger_af3f17817e4d BEFORE INSERT OR UPDATE ON protected_tag_create_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_af3f17817e4d();
 
 CREATE TRIGGER trigger_b046dd50c711 BEFORE INSERT OR UPDATE ON incident_management_oncall_rotations FOR EACH ROW EXECUTE FUNCTION trigger_b046dd50c711();
+
+CREATE TRIGGER trigger_b0f4298cadff BEFORE INSERT OR UPDATE ON required_code_owners_sections FOR EACH ROW EXECUTE FUNCTION trigger_b0f4298cadff();
 
 CREATE TRIGGER trigger_b2612138515d BEFORE INSERT OR UPDATE ON project_relation_exports FOR EACH ROW EXECUTE FUNCTION trigger_b2612138515d();
 
@@ -38073,6 +38197,8 @@ CREATE TRIGGER trigger_dbdd61a66a91 BEFORE INSERT OR UPDATE ON agent_activity_ev
 CREATE TRIGGER trigger_dbe374a57cbb BEFORE INSERT OR UPDATE ON status_page_published_incidents FOR EACH ROW EXECUTE FUNCTION trigger_dbe374a57cbb();
 
 CREATE TRIGGER trigger_dc13168b8025 BEFORE INSERT OR UPDATE ON vulnerability_flags FOR EACH ROW EXECUTE FUNCTION trigger_dc13168b8025();
+
+CREATE TRIGGER trigger_de59b81d3044 BEFORE INSERT OR UPDATE ON bulk_import_export_batches FOR EACH ROW EXECUTE FUNCTION trigger_de59b81d3044();
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
@@ -38459,6 +38585,9 @@ ALTER TABLE ONLY import_failures
 ALTER TABLE ONLY project_ci_cd_settings
     ADD CONSTRAINT fk_24c15d2f2e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY snippet_repository_storage_moves
+    ADD CONSTRAINT fk_2522a20cfb FOREIGN KEY (snippet_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY security_pipeline_execution_policy_config_links
     ADD CONSTRAINT fk_256bbe966d FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
 
@@ -38531,6 +38660,9 @@ ALTER TABLE ONLY vulnerability_merge_request_links
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_2ef8e4e35b FOREIGN KEY (instance_integration_id) REFERENCES instance_integrations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY required_code_owners_sections
+    ADD CONSTRAINT fk_2f43f5cbbb FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT fk_2f6398d8ee FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -38560,6 +38692,9 @@ ALTER TABLE ONLY approvals
 
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_319256d87a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY snippet_repository_storage_moves
+    ADD CONSTRAINT fk_321e6c6235 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_approval_metrics
     ADD CONSTRAINT fk_324639fb86 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -39250,6 +39385,9 @@ ALTER TABLE ONLY vulnerability_occurrences
 
 ALTER TABLE ONLY project_control_compliance_statuses
     ADD CONSTRAINT fk_9826fbb4a6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY required_code_owners_sections
+    ADD CONSTRAINT fk_98c3f48741 FOREIGN KEY (protected_branch_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_98f3d044fe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -39953,6 +40091,9 @@ ALTER TABLE ONLY vulnerability_external_issue_links
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_f081aa4489 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_export_batches
+    ADD CONSTRAINT fk_f0e254a867 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT fk_f10de8b524 FOREIGN KEY (resolved_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -39973,6 +40114,9 @@ ALTER TABLE ONLY workspaces_agent_configs
 
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT fk_f29c5f4380_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_export_batches
+    ADD CONSTRAINT fk_f2ab0c5303 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_select_field_values
     ADD CONSTRAINT fk_f2d308e706 FOREIGN KEY (custom_field_select_option_id) REFERENCES custom_field_select_options(id) ON DELETE CASCADE;

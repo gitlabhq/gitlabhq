@@ -1312,17 +1312,21 @@ In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may 
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Rename 'setPreReceiveSecretDetection' GraphQL mutation to 'setSecretPushProtection'
+### Rename `setPreReceiveSecretDetection` GraphQL mutation to `setSecretPushProtection`
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.7</span>
 - Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/462504).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/514414).
 
 </div>
 
-The 'setPreReceiveSecretDetection' GraphQL mutation has been renamed to 'setSecretPushProtection'.
+The `setPreReceiveSecretDetection` GraphQL mutation has been renamed to `setSecretPushProtection`. We are also renaming some fields in the mutation's response to reflect the name change of the feature `pre_receive_secret_detection` to `secret_push_protection`.
+To avoid breaking workflows that use the old name, before GitLab 18.0 you should:
+
+- Stop using the old mutation name `setPreReceiveSecretDetection`. Instead, use the name `setSecretPushProtection`.
+- Change any references to the field `pre_receive_secret_detection_enabled` to `secret_push_protection_enabled`.
 
 </div>
 

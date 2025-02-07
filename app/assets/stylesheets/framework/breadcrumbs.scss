@@ -6,7 +6,7 @@
 
   .avatar-tile {
     margin-right: 4px;
-    border: 1px solid $border-color;
+    @apply gl-border;
     border-radius: 50%;
     vertical-align: sub;
   }
