@@ -17,7 +17,7 @@ the tiers are no longer mentioned in GitLab documentation:
 - [Activate GitLab EE with a license](../administration/license.md)
 - [Add a help message to the sign-in page](../administration/settings/help_page.md#add-a-help-message-to-the-sign-in-page)
 - [Burndown and burnup charts](../user/project/milestones/burndown_and_burnup_charts.md) in the [Milestone View](../user/project/milestones/index.md#burndown-charts),
-- [Code owners](../user/project/codeowners/index.md)
+- [Code owners](../user/project/codeowners/_index.md)
 - Description templates:
   - [Setting a default template for merge requests and issues](../user/project/description_templates.md#set-a-default-template-for-merge-requests-and-issues)
 - [Email from GitLab](../administration/email_from_gitlab.md)

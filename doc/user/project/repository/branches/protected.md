@@ -141,7 +141,7 @@ To protect a branch for all the projects in a group:
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. In the **Branch** text box, type the branch name or a wildcard.
-   Branch names and wildcards [are case-sensitive](index.md#name-your-branch).
+   Branch names and wildcards [are case-sensitive](_index.md#name-your-branch).
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
 1. Select **Protect**.
@@ -237,7 +237,7 @@ To protect multiple branches at the same time:
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, type the branch name and a wildcard.
-   Branch names and wildcards [are case-sensitive](index.md#name-your-branch). For example:
+   Branch names and wildcards [are case-sensitive](_index.md#name-your-branch). For example:
 
    | Wildcard protected branch | Matching branches                                      |
    |---------------------------|--------------------------------------------------------|
@@ -373,7 +373,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/index.md).
+For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/_index.md).
 If a branch is protected by multiple rules, code owner approval is required if _any_ of
 the applicable rules have **Required approval from code owners** enabled.
 
@@ -456,7 +456,7 @@ branches by using the GitLab web interface:
 1. Select **Code > Branches**.
 1. Next to the branch you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.
-   Branch names [are case-sensitive](index.md#name-your-branch).
+   Branch names [are case-sensitive](_index.md#name-your-branch).
 
 Protected branches can only be deleted by using GitLab either from the UI or API.
 This prevents accidentally deleting a branch through local Git commands or
@@ -465,7 +465,7 @@ third-party Git clients.
 ## Related topics
 
 - [Protected branches API](../../../../api/protected_branches.md)
-- [Branches](index.md)
+- [Branches](_index.md)
 - [Branches API](../../../../api/branches.md)
 
 ## Troubleshooting
@@ -473,5 +473,5 @@ third-party Git clients.
 ### Branch names are case-sensitive
 
 Branch names in `git` are case-sensitive. When configuring your protected branch,
-or your [target branch workflow](index.md#configure-workflows-for-target-branches),
+or your [target branch workflow](_index.md#configure-workflows-for-target-branches),
 `dev` is not the same `DEV` or `Dev`.

@@ -177,7 +177,7 @@ approve in the following ways:
 
 ### Code owners as eligible approvers
 
-If you add [code owners](../../codeowners/index.md) to your repository, the owners of files
+If you add [code owners](../../codeowners/_index.md) to your repository, the owners of files
 become eligible approvers in the project. To enable this merge request approval rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.

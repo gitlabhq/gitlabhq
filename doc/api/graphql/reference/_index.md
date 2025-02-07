@@ -81,7 +81,7 @@ Retrieve the active add-on purchase. This query can be used in GitLab SaaS and s
 
 DETAILS:
 **Deprecated** in GitLab 17.4.
-Use add_on_purchases instead.
+Use [addOnPurchases](#queryaddonpurchases) instead.
 
 Returns [`AddOnPurchase`](#addonpurchase).
 
@@ -5954,7 +5954,6 @@ Input type: `GeoRegistriesUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationgeoregistriesupdateaction"></a>`action` | [`GeoRegistryAction!`](#georegistryaction) | Action to be executed on a Geo registry. |
 | <a id="mutationgeoregistriesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationgeoregistriesupdateregistryclass"></a>`registryClass` | [`GeoRegistryClass`](#georegistryclass) | Class of the Geo registry to be updated. |
 | <a id="mutationgeoregistriesupdateregistryid"></a>`registryId` | [`GeoBaseRegistryID!`](#geobaseregistryid) | ID of the Geo registry entry to be updated. |
 
 #### Fields
@@ -11621,6 +11620,27 @@ Input type: `VulnerabilitiesRemoveAllFromProjectInput`
 | <a id="mutationvulnerabilitiesremoveallfromprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitiesremoveallfromprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilitiesremoveallfromprojectprojects"></a>`projects` | [`[Project!]!`](#project) | Projects for which the deletion was scheduled. |
+
+### `Mutation.vulnerabilitiesSeverityOverride`
+
+Input type: `vulnerabilitiesSeverityOverrideInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesseverityoverrideclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesseverityoverridecomment"></a>`comment` | [`String`](#string) | Comment why vulnerability severity was changed (maximum 50,000 characters). |
+| <a id="mutationvulnerabilitiesseverityoverrideseverity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | New severity value for the severities. |
+| <a id="mutationvulnerabilitiesseverityoverridevulnerabilityids"></a>`vulnerabilityIds` | [`[VulnerabilityID!]!`](#vulnerabilityid) | IDs of the vulnerabilities for which severity needs to be changed (maximum 100 entries). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitiesseverityoverrideclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitiesseverityoverrideerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationvulnerabilitiesseverityoverridevulnerabilities"></a>`vulnerabilities` | [`[Vulnerability!]!`](#vulnerability) | Vulnerabilities after severity change. |
 
 ### `Mutation.vulnerabilityConfirm`
 

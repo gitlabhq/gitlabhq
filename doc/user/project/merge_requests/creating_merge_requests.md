@@ -13,9 +13,9 @@ DETAILS:
 GitLab provides many different ways to create a merge request, including by [using Git commands](../../../topics/git/merge.md).
 
 NOTE:
-GitLab enforces [branch naming rules](../repository/branches/index.md#name-your-branch)
+GitLab enforces [branch naming rules](../repository/branches/_index.md#name-your-branch)
 to prevent problems, and provides
-[branch naming patterns](../repository/branches/index.md#prefix-branch-names-with-issue-numbers)
+[branch naming patterns](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers)
 to streamline merge request creation.
 
 ## From the merge request list
@@ -50,7 +50,7 @@ To create a branch and a merge request at the same time:
 1. Go to the bottom of the issue description.
 1. Select **Create merge request > Create merge request and branch**.
 1. On the dialog, review the suggested branch name. It's based on your project's
-   [branch name template](../repository/branches/index.md).
+   [branch name template](../repository/branches/_index.md).
 1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
 1. Select a source branch or tag.
 1. Select **Create merge request**.
@@ -64,7 +64,7 @@ To create only a branch directly from an issue:
 1. Go to the bottom of the issue description.
 1. Select **Create merge request > Create branch**.
 1. In the dialog, review the suggested branch name. It's based on your project's
-   [branch name template](../repository/branches/index.md) Rename it if the
+   [branch name template](../repository/branches/_index.md) Rename it if the
    branch name is already taken, or you need a different branch name.
 1. Select a source branch or tag.
 1. Select **Create branch**.
@@ -81,7 +81,7 @@ If your Git repository is empty, GitLab:
   by helping you create a `.gitlab-ci.yml` file.
 
 If the name of the branch you create is
-[prefixed with the issue number](../repository/branches/index.md#prefix-branch-names-with-issue-numbers),
+[prefixed with the issue number](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers),
 GitLab cross-links the issue and merge request, and adds the
 [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically)
 to the description of the merge request. In most cases, this looks like `Closes #ID`,
@@ -114,7 +114,7 @@ To create a branch and a merge request at the same time:
 1. Go to the bottom of the task description.
 1. Select **Create merge request**.
 1. On the dialog, review the suggested branch name.
-   It's based on your project's [branch name template](../repository/branches/index.md).
+   It's based on your project's [branch name template](../repository/branches/_index.md).
 1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
 1. Select a source branch or tag.
 1. Select **Create merge request**.
@@ -129,7 +129,7 @@ To create only a branch directly from a task:
 1. Go to the bottom of the task description.
 1. Select **Create merge request > Create branch**.
 1. On the dialog, review the suggested branch name.
-   It's based on your project's [branch name template](../repository/branches/index.md).
+   It's based on your project's [branch name template](../repository/branches/_index.md).
 1. Optional. If the branch name is already taken, or you need a different branch name, rename it.
 1. Select a source branch or tag.
 1. Select **Create branch**.
@@ -146,7 +146,7 @@ If your Git repository is empty, GitLab:
   by helping you create a `.gitlab-ci.yml` file.
 
 If the name of the branch you create is
-[prefixed with the task number](../repository/branches/index.md#prefix-branch-names-with-issue-numbers),
+[prefixed with the task number](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers),
 GitLab cross-links the issue and merge request, and adds the
 [closing pattern](../issues/managing_issues.md#closing-issues-automatically)
 to the description of the merge request. In most cases, this looks like `Closes #ID`,

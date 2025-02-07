@@ -270,4 +270,42 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
       end
     end
   end
+
+  describe 'GET /projects/:id/remote_mirrors/:mirror_id/public_key' do
+    let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror.id}/public_key" }
+    let(:mirror) { project.remote_mirrors.first }
+
+    it 'requires `admin_remote_mirror` permission' do
+      get api(route, developer)
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+
+    context 'when auth_method is not ssh_public_key' do
+      it 'returns 404 Not Found' do
+        project.add_maintainer(user)
+
+        get api(route, user)
+
+        expect(mirror.auth_method).not_to eq('ssh_public_key')
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when auth_method is ssh_public_key' do
+      let(:mirror) do
+        project.remote_mirrors.create!(url: 'ssh://foo.com', enabled: true, auth_method: 'ssh_public_key')
+      end
+
+      it 'returns the remote mirror public key' do
+        project.add_maintainer(user)
+
+        get api(route, user)
+
+        expect(mirror.auth_method).to eq('ssh_public_key')
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['public_key']).to eq(mirror.ssh_public_key)
+      end
+    end
+  end
 end

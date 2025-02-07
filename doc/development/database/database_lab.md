@@ -53,7 +53,7 @@ This procedure is similar to [Rails console access with Teleport](https://gitlab
 
 You can access Database Lab's query analysis features either:
 
-- In [the Postgres.ai web console](https://console.postgres.ai/GitLab/joe-instances).
+- In [the Postgres.ai web console](https://console.postgres.ai/gitlab/joe-instances).
   Shows only the commands you run.
 
 #### Generate query plans

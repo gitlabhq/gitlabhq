@@ -67,7 +67,7 @@ Prerequisites:
 
 - An active [GitLab Duo add-on subscription](../../../subscriptions/subscription-add-ons.md)
 
-SAML Group Sync can manage GitLab Duo seat assignment and removal based on IdP group membership. Seats are only assigned when there are seats remaining in the subscription.  
+SAML Group Sync can manage GitLab Duo seat assignment and removal based on IdP group membership. Seats are only assigned when there are seats remaining in the subscription.
 
 1. When [configuring a SAML Group Link](#configure-saml-group-links), select the **Assign GitLab Duo seats to users in this group** checkbox.
 1. Select **Save**.
@@ -284,7 +284,7 @@ When global group memberships lock is enabled:
   - Share a project with other groups.
 
     NOTE:
-    You cannot set groups or subgroups as [Code Owners](../../project/codeowners/index.md).
+    You cannot set groups or subgroups as [Code Owners](../../project/codeowners/_index.md).
     The Code Owners feature requires direct group memberships, which are not possible when this lock is enabled.
 
   - Invite members to a project created in a group.

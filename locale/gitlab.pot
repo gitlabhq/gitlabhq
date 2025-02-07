@@ -25553,6 +25553,9 @@ msgstr ""
 msgid "Geo|Minimum interval in days"
 msgstr ""
 
+msgid "Geo|Model record: %{modelRecordId}"
+msgstr ""
+
 msgid "Geo|Must match with the %{codeStart}external_url%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 

@@ -38,6 +38,7 @@ module ArchivedAbilities
     cluster
     release
     timelog
+    package
   ].freeze
 
   class_methods do

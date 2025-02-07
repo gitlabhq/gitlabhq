@@ -247,7 +247,7 @@ POST /projects/:id/protected_branches
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. The access level `No access` is not available for this field. Premium and Ultimate only. |
-| `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). (defaults: false) Premium and Ultimate only. |
+| `code_owner_approval_required`               | boolean        | no  | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). (defaults: false) Premium and Ultimate only. |
 | `merge_access_level`                         | integer        | no  | Access levels allowed to merge. (defaults: `40`, Maintainer role). |
 | `push_access_level`                          | integer        | no  | Access levels allowed to push. (defaults: `40`, Maintainer role) |
 | `unprotect_access_level`                     | integer        | no  | Access levels allowed to unprotect. (defaults: `40`, Maintainer role) |
@@ -587,7 +587,7 @@ PATCH /projects/:id/protected_branches/:name
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_push`                            | array          | no  | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
 | `allowed_to_unprotect`                       | array          | no  | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. The access level `No access` is not available for this field. Premium and Ultimate only. |
-| `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/index.md). Premium and Ultimate only. |
+| `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Premium and Ultimate only. |
 
 In the following example, the project ID is `5` and branch name is `feature-branch`.
 
@@ -688,5 +688,5 @@ Example response:
 ## Related topics
 
 - [Protected branches](../user/project/repository/branches/protected.md)
-- [Branches](../user/project/repository/branches/index.md)
+- [Branches](../user/project/repository/branches/_index.md)
 - [Branches API](branches.md)

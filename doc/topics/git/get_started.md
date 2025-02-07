@@ -72,7 +72,7 @@ NOTE:
 To ensure no work is lost, verify that all changes are incorporated into the default branch
 before you delete the branch after the final merge.
 
-For more information, see [Branches](../../user/project/repository/branches/index.md).
+For more information, see [Branches](../../user/project/repository/branches/_index.md).
 
 ## Understand the Git workflow
 

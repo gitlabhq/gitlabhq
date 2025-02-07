@@ -19,7 +19,6 @@ While information in this section gives valuable and qualified guidance on ways 
 - [Coding Languages and Frameworks](languages/_index.md)
 - [Integrations](integrations/_index.md)
 - [Solution Components](components/_index.md)
-  - [Security Metrics and KPIs Dashboard](components/securitykpi.md)
 
 ## Self-Hosted Model
 

@@ -1,6 +1,6 @@
 ---
-key_path: redis_hll_counters.ci_users.ci_users_executing_verify_environment_job_weekly
-description: Weekly counts of times users have executed verify jobs
+key_path: redis_hll_counters.ci_users.ci_users_executing_verify_environment_job
+description: Counts of times users have executed verify jobs
 product_group: environments
 product_categories:
 - continuous_delivery
@@ -8,7 +8,9 @@ value_type: number
 status: active
 milestone: "15.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91925
-time_frame: 7d
+time_frame:
+- 28d
+- 7d
 data_source: redis_hll
 data_category: optional
 instrumentation_class: RedisHLLMetric

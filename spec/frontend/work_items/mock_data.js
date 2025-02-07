@@ -5350,19 +5350,43 @@ export const allowedParentTypesResponse = {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
       workItemType: {
-        id: 'gid://gitlab/WorkItems::Type/6',
-        name: 'Objective',
+        id: 'gid://gitlab/WorkItems::Type/1',
+        name: 'Issue',
         widgetDefinitions: [
           {
             type: 'HIERARCHY',
             allowedParentTypes: {
               nodes: [
                 {
-                  id: 'gid://gitlab/WorkItems::Type/6',
-                  name: 'Objective',
+                  id: 'gid://gitlab/WorkItems::Type/8',
+                  name: 'Epic',
                   __typename: 'WorkItemType',
                 },
               ],
+              __typename: 'WorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetDefinitionHierarchy',
+          },
+        ],
+        __typename: 'WorkItemType',
+      },
+      __typename: 'WorkItem',
+    },
+  },
+};
+
+export const allowedParentTypesEmptyResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/1',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/1',
+        name: 'Issue',
+        widgetDefinitions: [
+          {
+            type: 'HIERARCHY',
+            allowedParentTypes: {
+              nodes: [],
               __typename: 'WorkItemTypeConnection',
             },
             __typename: 'WorkItemWidgetDefinitionHierarchy',

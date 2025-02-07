@@ -18,7 +18,7 @@ module Packages
 
       def execute
         return ::Packages::Conan::Package.none unless name.present?
-        return [] if name == SQL_WILDCARD && version == SQL_WILDCARD
+        return ::Packages::Conan::Package.none if name == SQL_WILDCARD && version == SQL_WILDCARD
 
         packages
       end

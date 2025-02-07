@@ -1,11 +1,13 @@
 ---
 data_category: optional
-key_path: redis_hll_counters.snippets.i_snippets_show_monthly
-description: Monthly number of users viewing snippets
+key_path: redis_hll_counters.snippets.i_snippets_show
+description: Number of users viewing snippets
 product_group: source_code
 value_type: number
 status: active
-time_frame: 28d
+time_frame:
+- 28d
+- 7d
 data_source: redis_hll
 instrumentation_class: RedisHLLMetric
 options:

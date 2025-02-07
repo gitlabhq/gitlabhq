@@ -60,7 +60,7 @@ Additionally, approval settings provide configuration options to define how thos
 Examples of approval rules and settings include:
 
 - [Merge request approval rules](../../user/project/merge_requests/approvals/rules.md)
-- [Code owner approvals](../../user/project/codeowners/index.md)
+- [Code owner approvals](../../user/project/codeowners/_index.md)
 - [Security approvals](../../user/application_security/index.md#security-approvals-in-merge-requests)
 - [Prevent editing approval rules](../../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests)
 - [Remove all approvals when commits are added](../../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)

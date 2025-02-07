@@ -1196,8 +1196,6 @@ GEM
       mustermann (>= 1.0.0)
     mutex_m (0.3.0)
     nap (1.1.0)
-    neighbor (0.3.2)
-      activerecord (>= 6.1)
     nenv (0.3.0)
     net-http (0.6.0)
       uri
@@ -1443,7 +1441,7 @@ GEM
       activerecord (>= 6.1)
       request_store (~> 1.4)
     parallel (1.26.3)
-    parser (3.3.7.0)
+    parser (3.3.7.1)
       ast (~> 2.4.1)
       racc
     parslet (1.8.2)
@@ -2223,7 +2221,6 @@ DEPENDENCIES
   minitest (~> 5.11.0)
   multi_json (~> 1.14.1)
   mutex_m (~> 0.3)
-  neighbor (~> 0.3.2)
   net-http (= 0.6.0)
   net-ldap (~> 0.17.1)
   net-ntp
@@ -2279,7 +2276,7 @@ DEPENDENCIES
   pact (~> 1.64)
   paper_trail (~> 15.0)
   parallel (~> 1.19)
-  parser (= 3.3.7.0)
+  parser (= 3.3.7.1)
   parslet (~> 1.8)
   peek (~> 1.1)
   pg (~> 1.5.6)

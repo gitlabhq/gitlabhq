@@ -114,17 +114,19 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
         context 'with nil query' do
           let(:query) { nil }
 
-          it 'returns an empty array' do
-            expect(subject).to be_empty
-          end
+          it { is_expected.to be_empty }
         end
 
         context 'without name' do
           let(:query) { "/1.0.0" }
 
-          it 'returns an empty array' do
-            expect(subject).to be_empty
-          end
+          it { is_expected.to be_empty }
+        end
+
+        context 'with a wildcard name and a wildcard version' do
+          let(:query) { '*/*' }
+
+          it { is_expected.to be_empty }
         end
 
         context 'with a different project' do
@@ -144,7 +146,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
           stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
         end
 
-        it { is_expected.to eq([]) }
+        it { is_expected.to be_empty }
       end
     end
 

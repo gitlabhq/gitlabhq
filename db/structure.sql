@@ -3624,15 +3624,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION trigger_ff16c1fd43ea() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."geo_event_id_convert_to_bigint" := NEW."geo_event_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_fff8735b6b9a() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13661,7 +13652,6 @@ CREATE TABLE geo_event_log (
     created_at timestamp without time zone NOT NULL,
     repositories_changed_event_id bigint,
     cache_invalidation_event_id bigint,
-    geo_event_id_convert_to_bigint integer,
     geo_event_id bigint
 );
 
@@ -16314,7 +16304,8 @@ CREATE TABLE milestones (
     start_date date,
     cached_markdown_version integer,
     group_id bigint,
-    lock_version integer DEFAULT 0 NOT NULL
+    lock_version integer DEFAULT 0 NOT NULL,
+    CONSTRAINT check_08e9c27987 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE milestones_id_seq
@@ -38264,8 +38255,6 @@ CREATE TRIGGER trigger_fbd42ed69453 BEFORE INSERT OR UPDATE ON external_status_c
 CREATE TRIGGER trigger_fbd8825b3057 BEFORE INSERT OR UPDATE ON boards_epic_board_labels FOR EACH ROW EXECUTE FUNCTION trigger_fbd8825b3057();
 
 CREATE TRIGGER trigger_fd4a1be98713 BEFORE INSERT OR UPDATE ON container_repository_states FOR EACH ROW EXECUTE FUNCTION trigger_fd4a1be98713();
-
-CREATE TRIGGER trigger_ff16c1fd43ea BEFORE INSERT OR UPDATE ON geo_event_log FOR EACH ROW EXECUTE FUNCTION trigger_ff16c1fd43ea();
 
 CREATE TRIGGER trigger_fff8735b6b9a BEFORE INSERT OR UPDATE ON vulnerability_finding_signatures FOR EACH ROW EXECUTE FUNCTION trigger_fff8735b6b9a();
 

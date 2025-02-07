@@ -22,7 +22,7 @@ You can configure approvals to be optional or required, depending on your projec
   flexibility to:
 
   - Create required [rules](rules.md) about the number and type of required approvals.
-  - Create a list of [Code Owners](../../codeowners/index.md) for specific files.
+  - Create a list of [Code Owners](../../codeowners/_index.md) for specific files.
   - Configure approvals
     [for the entire instance](../../../../administration/merge_requests_approvals.md).
   - Configure  [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
@@ -65,7 +65,7 @@ Use cases include:
 - Enforce review of all code that gets merged into a repository.
 - Specify reviewers and a minimum number of approvals.
 - Specify categories of reviewers, such as backend, frontend, quality assurance, database, or documentation.
-- Use the [Code Owners](../../codeowners/index.md) files to determine reviewers.
+- Use the [Code Owners](../../codeowners/_index.md) files to determine reviewers.
 - Require approval for [declining test coverage](../../../../ci/testing/code_coverage/_index.md#add-a-coverage-check-approval-rule).
 - GitLab Ultimate: [Require security team approval](../../../application_security/index.md#security-approvals-in-merge-requests) for potential vulnerabilities.
 

@@ -20,8 +20,11 @@ import {
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
+import { findHierarchyWidgetDefinition } from '../utils';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
+import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
 
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
@@ -77,6 +80,7 @@ export default {
   data() {
     return {
       workItemParticipants: [],
+      allowedParentTypes: [],
     };
   },
   apollo: {
@@ -97,6 +101,24 @@ export default {
         return (
           this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS, workspace.workItem)?.participants?.nodes ||
           []
+        );
+      },
+      error(e) {
+        Sentry.captureException(e);
+      },
+    },
+    allowedParentTypes: {
+      query: workItemAllowedParentTypesQuery,
+      variables() {
+        return {
+          id: this.workItem.id,
+        };
+      },
+      update(data) {
+        return (
+          findHierarchyWidgetDefinition(data.workItem)?.allowedParentTypes?.nodes.map(
+            (el) => WORK_ITEM_TYPE_VALUE_MAP[el.name],
+          ) || []
         );
       },
       error(e) {
@@ -147,11 +169,14 @@ export default {
     showRolledupDates() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
     },
-    showParent() {
+    isParentEnabled() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? this.hasSubepicsFeature : true;
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
+    },
+    showParent() {
+      return this.allowedParentTypes.length > 0 && this.workItemHierarchy && this.isParentEnabled;
     },
     workItemTimeTracking() {
       return this.isWidgetPresent(WIDGET_TYPE_TIME_TRACKING);
@@ -333,7 +358,7 @@ export default {
       :full-path="fullPath"
       :can-update="canUpdate"
     />
-    <template v-if="workItemHierarchy && showParent">
+    <template v-if="showParent">
       <work-item-parent
         class="work-item-attributes-item"
         :can-update="canUpdate"

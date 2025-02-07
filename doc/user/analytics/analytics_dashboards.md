@@ -45,7 +45,7 @@ You can create custom dashboards with the dashboard designer.
 - Each dashboard can reference one or more [visualizations](#define-a-chart-visualization).
 - Visualizations are shared across dashboards.
 
-Project maintainers can enforce approval rules on dashboard changes with features such as [code owners](../project/codeowners/index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
+Project maintainers can enforce approval rules on dashboard changes with features such as [code owners](../project/codeowners/_index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
 Your dashboard files are versioned in source control with the rest of a project's code.
 
 ## Dashboard designer
@@ -296,10 +296,10 @@ To enable filters, in the `.yaml` configuration file set the filter's `enabled` 
 ```yaml
 title: My dashboard
 ...
-filters: 
-  excludeAnonymousUsers: 
+filters:
+  excludeAnonymousUsers:
     enabled: true
-  dateRange: 
+  dateRange:
     enabled: true
 ```
 

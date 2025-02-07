@@ -93,7 +93,7 @@ their own:
    you can't change it for your project.
 1. Select **Save changes**.
 
-[Code owners](../../codeowners/index.md) who commit to a merge request cannot approve it,
+[Code owners](../../codeowners/_index.md) who commit to a merge request cannot approve it,
 if the merge request affects files they own.
 
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).

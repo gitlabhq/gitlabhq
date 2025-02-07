@@ -168,6 +168,25 @@ module API
           render_api_error!(result.message, 400) if result.error?
         end
       end
+
+      desc 'Get the public key of a single remote mirror' do
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[remote_mirrors]
+      end
+      params do
+        requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
+      end
+      get ':id/remote_mirrors/:mirror_id/public_key' do
+        mirror = find_remote_mirror
+
+        not_found! unless mirror.ssh_key_auth?
+
+        { public_key: mirror.ssh_public_key }
+      end
     end
   end
 end

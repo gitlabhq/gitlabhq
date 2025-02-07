@@ -691,12 +691,6 @@ describe('WorkItemActions component', () => {
       expect(findWorkItemChangeTypeModal().exists()).toBe(true);
     });
 
-    it('hides the action in case of `workItemBeta` is disabled', () => {
-      createComponent({ workItemType: 'Task', workItemsBeta: false });
-
-      expect(findChangeTypeButton().exists()).toBe(false);
-    });
-
     it('hides the action in case of Epic type', () => {
       createComponent({ workItemType: 'Epic' });
 

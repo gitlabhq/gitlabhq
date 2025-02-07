@@ -57,7 +57,7 @@ pipeline secret detection can detect if a secret was added in one commit and rem
 - Historical scan
 
   If the `SECRET_DETECTION_HISTORIC_SCAN` variable is set, the content of all
-  [branches](../../../project/repository/branches/index.md) is scanned. Before scanning the
+  [branches](../../../project/repository/branches/_index.md) is scanned. Before scanning the
   repository's content, pipeline secret detection runs the command `git fetch --all` to fetch the content of all
   branches.
 

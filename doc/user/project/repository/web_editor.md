@@ -279,7 +279,7 @@ To create a directory in the Web Editor:
 
 ## Create a branch
 
-To create a [branch](branches/index.md) in the Web Editor:
+To create a [branch](branches/_index.md) in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Next to the repository name, select the plus icon (**{plus}**) > **New branch**.
@@ -299,7 +299,7 @@ production releases and release candidates. To create a tag in the Web Editor:
 ## Related topics
 
 - [Create merge requests](../merge_requests/creating_merge_requests.md)
-- [Branches](branches/index.md)
+- [Branches](branches/_index.md)
   - [Default branch](branches/default.md)
   - [Protected branches](branches/protected.md)
 - [Web IDE](../web_ide/index.md)

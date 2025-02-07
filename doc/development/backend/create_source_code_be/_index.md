@@ -21,7 +21,7 @@ Features owned by the Source Code Management group are listed on the
 
 Source Code Management shares ownership of Code Owners with the Code Review group.
 
-- [Feature homepage](../../../user/project/codeowners/index.md)
+- [Feature homepage](../../../user/project/codeowners/_index.md)
 - [Developer Reference](../../code_owners/_index.md)
 
 ### Approval Rules

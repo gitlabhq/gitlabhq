@@ -39,7 +39,7 @@ found to your merge request:
 | :-- | :--: | :--: | :--: | :--: | :--: |
 | Standard commit message | 1 | 2 | 3 | 4 | 5 |
 | Commit message with an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically) like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
-| Branch name [prefixed with an issue ID](../repository/branches/index.md#prefix-branch-names-with-issue-numbers), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
+| Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
 
 NOTE:
 Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
@@ -99,7 +99,7 @@ To filter the list of merge requests:
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
      - **Approved-By**, for merge requests already approved by a user. Premium and Ultimate only.
      - **Approver**, for merge requests that this user is eligible to approve.
-       (For more information, read about [Code owners](../codeowners/index.md)). Premium and Ultimate only.
+       (For more information, read about [Code owners](../codeowners/_index.md)). Premium and Ultimate only.
      - **Merged-By**, for merge requests merged by this user.
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are

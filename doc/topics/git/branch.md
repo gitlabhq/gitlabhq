@@ -23,9 +23,9 @@ To create a branch:
 git checkout -b <name-of-branch>
 ```
 
-GitLab enforces [branch naming rules](../../user/project/repository/branches/index.md#name-your-branch)
+GitLab enforces [branch naming rules](../../user/project/repository/branches/_index.md#name-your-branch)
 to prevent problems, and provides
-[branch naming patterns](../../user/project/repository/branches/index.md#prefix-branch-names-with-issue-numbers)
+[branch naming patterns](../../user/project/repository/branches/_index.md#prefix-branch-names-with-issue-numbers)
 to streamline merge request creation.
 
 ## Switch to a branch
@@ -60,5 +60,5 @@ To update your branch with the latest changes in the default branch, either:
 
 ## Related topics
 
-- [Branches](../../user/project/repository/branches/index.md)
+- [Branches](../../user/project/repository/branches/_index.md)
 - [Tags](../../user/project/repository/tags/index.md)

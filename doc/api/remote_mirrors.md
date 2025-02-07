@@ -86,6 +86,45 @@ Example response:
 }
 ```
 
+## Get a single project's remote mirror public key
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180291) in GitLab 17.9.
+
+Get the public key of a remote mirror that uses SSH authentication.
+
+```plaintext
+GET /projects/:id/remote_mirrors/:mirror_id/public_key
+```
+
+Supported attributes:
+
+| Attribute        | Type           | Required | Description |
+|:-----------------|:---------------|:---------|:------------|
+| `id`             | integer/string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `mirror_id`      | integer        | Yes      | Remote mirror ID. |
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute    | Type     | Description |
+|:-------------|:---------|:------------|
+| `public_key` |  string  | Public key of the remote mirror. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/public_key"
+```
+
+Example response:
+
+```json
+{
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EA..."
+}
+```
+
 ## Create a pull mirror
 
 Learn how to [configure a pull mirror](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) by using the

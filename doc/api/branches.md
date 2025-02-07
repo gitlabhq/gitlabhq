@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This API operates on [repository branches](../user/project/repository/branches/index.md).
+This API operates on [repository branches](../user/project/repository/branches/_index.md).
 
 See also [Protected branches API](protected_branches.md).
 
@@ -260,6 +260,6 @@ curl --request DELETE \
 
 ## Related topics
 
-- [Branches](../user/project/repository/branches/index.md)
+- [Branches](../user/project/repository/branches/_index.md)
 - [Protected branches](../user/project/repository/branches/protected.md)
 - [Protected branches API](protected_branches.md)

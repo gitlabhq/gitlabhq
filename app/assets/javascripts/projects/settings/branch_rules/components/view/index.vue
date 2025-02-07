@@ -43,7 +43,7 @@ import {
 } from './constants';
 
 const protectedBranchesHelpDocLink = helpPagePath('user/project/repository/branches/protected');
-const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/index');
+const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/_index');
 const pushRulesHelpDocLink = helpPagePath('user/project/repository/push_rules');
 const squashSettingsHelpDocLink = helpPagePath('user/project/merge_requests/squash_and_merge');
 

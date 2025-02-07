@@ -13,7 +13,7 @@ import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.gra
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
 import getAllowedWorkItemParentTypes from '~/work_items/graphql/work_item_allowed_parent_types.query.graphql';
-import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 
 import {
   availableObjectivesResponse,
@@ -280,7 +280,7 @@ describe('WorkItemParent component', () => {
       expect(searchedItemQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full-path',
         searchTerm: '',
-        types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+        types: [WORK_ITEM_TYPE_ENUM_EPIC],
         in: undefined,
         iid: null,
         isNumber: false,
@@ -296,7 +296,7 @@ describe('WorkItemParent component', () => {
       expect(searchedItemQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full-path',
         searchTerm: mockText,
-        types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+        types: [WORK_ITEM_TYPE_ENUM_EPIC],
         in: 'TITLE',
         iid: null,
         isNumber: false,
@@ -327,7 +327,7 @@ describe('WorkItemParent component', () => {
       expect(availableWorkItemsSuccessHandler).toHaveBeenCalledWith({
         fullPath: mockFullPath,
         searchTerm: '',
-        types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+        types: [WORK_ITEM_TYPE_ENUM_EPIC],
         in: undefined,
         iid: null,
         isNumber: false,

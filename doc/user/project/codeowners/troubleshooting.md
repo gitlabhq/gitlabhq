@@ -16,7 +16,7 @@ For more information about how the Code Owners feature handles errors, see [Erro
 
 ## Approvals do not show
 
-The [`CODEOWNERS` file](index.md#codeowners-file) must be present in the target branch before the
+The [`CODEOWNERS` file](_index.md#codeowners-file) must be present in the target branch before the
 merge request is created.
 
 Code Owner approval rules only update when the merge request is created.

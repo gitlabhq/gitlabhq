@@ -147,7 +147,7 @@ module Projects
     end
 
     def ambiguous_head_documentation_link
-      url = Rails.application.routes.url_helpers.help_page_path('user/project/repository/branches/index.md', anchor: 'error-ambiguous-head-branch-exists')
+      url = Rails.application.routes.url_helpers.help_page_path('user/project/repository/branches/_index.md', anchor: 'error-ambiguous-head-branch-exists')
 
       format('<a href="%{url}" target="_blank" rel="noopener noreferrer">', url: url)
     end

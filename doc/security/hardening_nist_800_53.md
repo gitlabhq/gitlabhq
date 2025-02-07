@@ -399,7 +399,7 @@ settings to consider:
 
 - Restrict individuals who can dismiss code change reviews.
 
-- Assign [code owners](../user/project/codeowners/index.md#codeowners-file)
+- Assign [code owners](../user/project/codeowners/_index.md#codeowners-file)
   to be notified when sensitive code or configurations are changed through
   merge requests.
 
