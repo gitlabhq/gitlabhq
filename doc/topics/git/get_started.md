@@ -154,4 +154,4 @@ GitLab provides a web-based interface for many Git operations, but you can also 
 Git from the command line to interact with GitLab. This provides you with additional
 flexibility and control.
 
-For a hands-on approach to learning Git commands, see [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/index.md). For other helpful resources, see [Tutorials: Learn Git](../../tutorials/learn_git.md).
+For a hands-on approach to learning Git commands, see [Tutorial: Make your first Git commit](../../tutorials/make_first_git_commit/_index.md). For other helpful resources, see [Tutorials: Learn Git](../../tutorials/learn_git.md).

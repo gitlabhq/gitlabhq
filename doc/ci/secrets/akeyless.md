@@ -221,7 +221,7 @@ job:
 
 ## Troubleshooting
 
-## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+### `The secrets provider can not be found. Check your CI/CD variables and try again.` message
 
 You might receive this error when attempting to start a job configured to access Akeyless:
 

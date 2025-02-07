@@ -15,7 +15,7 @@ facilitate the following common Scrum ceremonies in both co-located and distribu
 - Story points
 - Velocity and volatility
 
-This page builds on the concepts and workflows from the [introductory Scrum tutorial](index.md).
+This page builds on the concepts and workflows from the [introductory Scrum tutorial](_index.md).
 If you haven't completed that tutorial, you should do so before you go further.
 
 ## Daily stand-ups
@@ -297,4 +297,4 @@ If you're experiencing high volatility, you can explore the following:
 
 ## Related topics
 
-- [Tutorial: Set up an issue board for a team stand-up](../boards_for_standups/index.md)
+- [Tutorial: Set up an issue board for a team stand-up](../boards_for_standups/_index.md)

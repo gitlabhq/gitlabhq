@@ -15,7 +15,7 @@ With a group namespace, you can create multiple subgroups and manage their membe
 
 You don't have to start from scratch. You can create a new group
 and move your existing projects to the group to get the added benefits.
-To find out how, see [Tutorial: Move your personal project to a group](../move_personal_project_to_group/index.md).
+To find out how, see [Tutorial: Move your personal project to a group](../move_personal_project_to_group/_index.md).
 
 You can also go one step further and convert your personal namespace into a group namespace.
 Converting your namespace lets you keep the existing username and URL. For example, if your

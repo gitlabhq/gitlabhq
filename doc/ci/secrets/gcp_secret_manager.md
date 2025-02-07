@@ -149,7 +149,7 @@ This limit is imposed by Google Cloud IAM, tracked in [Google issue #264362370](
 The only fix for this issue is to use shorter names
 [for your branch and repository](https://github.com/google-github-actions/auth/blob/main/docs/TROUBLESHOOTING.md#subject-exceeds-the-127-byte-limit).
 
-## `The secrets provider can not be found. Check your CI/CD variables and try again.` message
+### `The secrets provider can not be found. Check your CI/CD variables and try again.` message
 
 You might receive this error when attempting to start a job configured to access GCP Secret Manager:
 

@@ -15,9 +15,11 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 ## Unpublish Pages
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.7
+
 Prerequisites:
 
-- You must have administrator access to the instance.
+- You must have at least the Maintainer role for the project.
 
 Remove Pages.
 
@@ -105,10 +107,11 @@ Example response:
 ## Update Pages settings for a project
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 17.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.7
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- You must have at least the Maintainer role for the project.
 
 Update Pages settings for the project.
 

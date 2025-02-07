@@ -15,7 +15,8 @@ RSpec.describe API::Pages, feature_category: :pages do
         stub_pages_setting(enabled: true)
       end
 
-      let(:succes_status_code) { :no_content }
+      let(:success_status_code) { :no_content }
+      let(:failed_status_code) { :not_found }
     end
 
     context 'when Pages is disabled' do

@@ -157,7 +157,7 @@ Personal projects are not located in top-level group namespaces. You can manage
 the users in each of your personal projects, but you cannot have more than five
 users in all of your personal projects.
 
-You should [move your personal project to a group](../tutorials/move_personal_project_to_group/index.md)
+You should [move your personal project to a group](../tutorials/move_personal_project_to_group/_index.md)
 so that you can:
 
 - Increase the amount of users to more than five.

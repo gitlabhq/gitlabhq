@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Pages::UpdateService, feature_category: :pages do
-  let_it_be(:admin) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project) }
   let(:domain) { 'my.domain.com' }
@@ -22,11 +21,10 @@ RSpec.describe Pages::UpdateService, feature_category: :pages do
 
   describe '#execute' do
     context 'with sufficient permissions' do
-      let(:service) { described_class.new(project, admin, params) }
+      let(:service) { described_class.new(project, user, params) }
 
       before do
-        allow(admin).to receive(:can_read_all_resources?).and_return(true)
-        allow(service).to receive(:can?).with(admin, :update_pages, project).and_return(true)
+        allow(service).to receive(:can?).with(user, :update_pages, project).and_return(true)
       end
 
       context 'when updating page setting succeeds' do

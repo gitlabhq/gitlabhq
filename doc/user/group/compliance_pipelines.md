@@ -36,7 +36,7 @@ For more information, see:
 
 - [Example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
   labeled project pipeline configuration.
-- The [Create a compliance pipeline](../../tutorials/compliance_pipeline/index.md) tutorial.
+- The [Create a compliance pipeline](../../tutorials/compliance_pipeline/_index.md) tutorial.
 
 ## Pipeline execution policies migration
 

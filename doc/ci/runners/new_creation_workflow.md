@@ -158,7 +158,7 @@ or not reusable. If the runner configuration is static, you should reuse the run
 an existing runner.
 
 For instructions about how to automate runner creation and registration, see the tutorial,
-[Automate runner creation and registration](../../tutorials/automate_runner_creation/index.md).
+[Automate runner creation and registration](../../tutorials/automate_runner_creation/_index.md).
 
 ## Installing GitLab Runner with Helm chart
 

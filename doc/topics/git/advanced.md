@@ -31,7 +31,7 @@ When you use advanced Git operations, you should:
 
 - Create a backup or work on a [separate branch](branch.md).
 - Communicate with your team before when you use operations that affect shared branch history.
-- Use descriptive [commit messages](../../tutorials/update_commit_messages/index.md)
+- Use descriptive [commit messages](../../tutorials/update_commit_messages/_index.md)
   when you rewrite history.
 - Update your knowledge of Git to stay current with best practices and new features.
   For more information, see the [Git documentation](https://git-scm.com/docs).
@@ -99,7 +99,7 @@ Use this if:
 - Your organization moved your projects to a new GitLab instance with a new domain name.
 - The project was renamed to a new path in the same GitLab instance.
 
-For more information, see [Update Git remote URLs](../../tutorials/update_git_remote_url/index.md).
+For more information, see [Update Git remote URLs](../../tutorials/update_git_remote_url/_index.md).
 
 ## Related topics
 

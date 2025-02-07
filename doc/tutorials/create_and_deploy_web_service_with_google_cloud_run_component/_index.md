@@ -9,7 +9,7 @@ Learn how to use the [Google Cloud Run component](https://gitlab.com/google-gitl
 
 ## Before you begin
 
-1. Follow the instructions in [Set up the Google Cloud integration](../set_up_gitlab_google_integration/index.md) to:
+1. Follow the instructions in [Set up the Google Cloud integration](../set_up_gitlab_google_integration/_index.md) to:
 
    - Set up Google Cloud IAM.
    - Connect GitLab to Google Artifact Registry.

@@ -22,7 +22,7 @@ Explore the different areas of the documentation:
 |                         |                         |
 |:------------------------|:------------------------|
 | [**Use GitLab**](user/index.md)<br>Get started with GitLab features and functionality. | [**Administer GitLab**](administration/index.md)<br/>Administer GitLab Self-Managed. |
-| [**New to Git and GitLab?**](tutorials/index.md)<br/>Start learning about Git and GitLab. | [**Contribute to GitLab development**](#contribute-to-gitlab)<br/>Create new GitLab functionality and documentation. |
+| [**New to Git and GitLab?**](tutorials/_index.md)<br/>Start learning about Git and GitLab. | [**Contribute to GitLab development**](#contribute-to-gitlab)<br/>Create new GitLab functionality and documentation. |
 | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Learn how to move to GitLab. | [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Integrate with Jira and other common applications. |
 | [**Choose a subscription**](subscriptions/index.md)<br/>Determine which subscription tier makes sense for you. | [**Install GitLab**](install/_index.md)<br/>Install GitLab on different platforms. |
 | [**Reference architectures**](administration/reference_architectures/index.md)<br/>View recommended deployments at scale. | [**Upgrade GitLab**](update/_index.md)<br/>Upgrade your GitLab Self-Managed instance to the latest version. |

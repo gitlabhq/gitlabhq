@@ -145,7 +145,7 @@ either missing or not configured as expected.
 To find the problem, an administrator can look for more details in the instance's
 `exceptions_json.log` for the specific method that failed.
 
-#### `GitLab::Ci::Jwt::NoSigningKeyError`
+### `GitLab::Ci::Jwt::NoSigningKeyError`
 
 This error in the `exceptions_json.log` file is likely because the signing key is
 missing from the database and the token could not be generated. To verify this is the issue,

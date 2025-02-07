@@ -14,7 +14,6 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
     push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
     push_frontend_feature_flag(:namespace_level_work_items, project&.group)
-    push_force_frontend_feature_flag(:custom_fields_feature, project&.group)
     push_frontend_feature_flag(:work_item_description_templates, project&.group)
   end
 

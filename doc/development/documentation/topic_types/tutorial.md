@@ -33,7 +33,7 @@ For tutorial Markdown files, you can either:
 
 In the left nav, add the tutorial near the relevant feature documentation.
 
-Add a link to the tutorial on one of the [tutorial pages](../../../tutorials/index.md).
+Add a link to the tutorial on one of the [tutorial pages](../../../tutorials/_index.md).
 
 ## Tutorial format
 
@@ -77,7 +77,7 @@ To do step 2:
 ```
 
 An example of a tutorial that follows this format is
-[Tutorial: Make your first Git commit](../../../tutorials/make_first_git_commit/index.md).
+[Tutorial: Make your first Git commit](../../../tutorials/make_first_git_commit/_index.md).
 
 ## Tutorial page title
 
@@ -87,7 +87,7 @@ In the left nav, use the full page title. Do not abbreviate it.
 Put the text in quotes so the pipeline succeeds. For example,
 `"Tutorial: Make your first Git commit"`.
 
-On [the **Learn GitLab with tutorials** page](../../../tutorials/index.md),
+On [the **Learn GitLab with tutorials** page](../../../tutorials/_index.md),
 do not use `Tutorial` in the title.
 
 ## Screenshots

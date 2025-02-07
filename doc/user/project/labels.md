@@ -521,5 +521,5 @@ To set a label to get locked on merge:
 
 Practice working with labels in the following tutorials:
 
-- [Set up a single project for issue triage](../../tutorials/issue_triage/index.md)
-- [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/index.md)
+- [Set up a single project for issue triage](../../tutorials/issue_triage/_index.md)
+- [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/_index.md)

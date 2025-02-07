@@ -14,7 +14,7 @@ Steps are reusable units of a job that when composed together replace the `scrip
 While you are not required to use steps, the reusability, composability, testability, and independence
 of steps make it easier to understand and maintain CI/CD pipeline.
 
-To get started, you can try the [Set up steps tutorial](../../tutorials/setup_steps/index.md).
+To get started, you can try the [Set up steps tutorial](../../tutorials/setup_steps/_index.md).
 To start creating your own steps, see [Creating your own step](#create-your-own-step). To understand how pipelines can benefit
 from using both CI/CD Components and CI/CD Steps, see [Combine CI/CD Components and CI/CD Steps](#combine-cicd-components-and-cicd-steps).
 

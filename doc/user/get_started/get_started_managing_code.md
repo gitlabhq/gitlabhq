@@ -80,7 +80,7 @@ and proposes combining it into the target branch.
 
 For details, see:
 
-- [Use Git to create a merge request](../../tutorials/make_first_git_commit/index.md)
+- [Use Git to create a merge request](../../tutorials/make_first_git_commit/_index.md)
 - [Use the UI to create a merge request when you add, edit, or upload a file](../project/merge_requests/creating_merge_requests.md)
 
 ## Step 4: Have the code reviewed

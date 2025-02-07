@@ -40,7 +40,7 @@ predictable delivery cadence.
 When teams work in sprints, each iteration provides a clear timebox for planning,
 execution, and delivery of work items.
 For more information, see
-[Tutorial: Use GitLab to facilitate Scrum](../../../tutorials/scrum_events/index.md).
+[Tutorial: Use GitLab to facilitate Scrum](../../../tutorials/scrum_events/_index.md).
 
 For example, when running two-week sprints, teams often need to coordinate multiple workstreams.
 The development team tracks implementation in the current sprint, while product managers prepare
@@ -364,4 +364,4 @@ To group issues by label:
 ## Related topics
 
 - [Add an issue to an iteration](../../project/issues/managing_issues.md#add-an-issue-to-an-iteration)
-- [Tutorial: Use GitLab to run an Agile iteration](../../../tutorials/agile_sprint/index.md)
+- [Tutorial: Use GitLab to run an Agile iteration](../../../tutorials/agile_sprint/_index.md)

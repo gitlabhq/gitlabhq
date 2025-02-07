@@ -115,9 +115,6 @@ keyword with:
 - [`needs:project`](#for-a-job-configured-with-needsproject)
 - [`needs:pipeline:job`](#for-a-job-configured-with-needspipelinejob)
 
-- [`needs:project`](#for-a-job-configured-with-needsproject)
-- [`needs:pipeline:job`](#for-a-job-configured-with-needspipelinejob)
-
 ### For a job configured with `needs:project`
 
 The `could not retrieve the needed artifacts.` error can happen for a job using

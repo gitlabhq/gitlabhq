@@ -34,7 +34,7 @@ module Pages
     end
 
     def can_update_page_settings?
-      current_user&.can_read_all_resources? && can?(current_user, :update_pages, project)
+      can?(current_user, :update_pages, project)
     end
   end
 end

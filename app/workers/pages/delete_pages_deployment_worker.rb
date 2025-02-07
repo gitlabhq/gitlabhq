@@ -12,7 +12,10 @@ module Pages
       project = Project.find_by_id(event.data['project_id'])
       return unless project
 
-      ::Pages::DeleteService.new(project).execute
+      user = project.owner
+      return unless user
+
+      ::Pages::DeleteService.new(project, user).execute
     end
   end
 end

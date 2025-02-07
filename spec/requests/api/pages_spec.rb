@@ -100,7 +100,8 @@ RSpec.describe API::Pages, feature_category: :pages do
     context 'when the user is authorized' do
       context 'and the update succeeds' do
         it 'updates the pages settings and returns 200' do
-          patch api(path, admin, admin_mode: true), params: params
+          project.add_maintainer(user)
+          patch api(path, user), params: params
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['force_https']).to eq(true)
@@ -136,7 +137,8 @@ RSpec.describe API::Pages, feature_category: :pages do
         end
 
         it 'returns 403 forbidden with the passed along error message' do
-          patch api(path, admin, admin_mode: true), params: params
+          project.add_maintainer(user)
+          patch api(path, user), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(response.body).to include(service_error_message)
@@ -146,6 +148,7 @@ RSpec.describe API::Pages, feature_category: :pages do
 
     context 'when the user is unauthorized' do
       it 'returns a 403 forbidden' do
+        project.add_developer(user)
         patch api(path, user), params: params
 
         expect(response).to have_gitlab_http_status(:forbidden)
@@ -158,7 +161,7 @@ RSpec.describe API::Pages, feature_category: :pages do
       end
 
       it 'returns a 404 not found' do
-        patch api(path, admin, admin_mode: true), params: params
+        patch api(path, user), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

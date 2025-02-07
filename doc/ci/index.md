@@ -56,7 +56,7 @@ If you don't use GitLab.com, you can:
 
 For more information, see:
 
-- [Create a runner on your local machine](../tutorials/create_register_first_runner/index.md)
+- [Create a runner on your local machine](../tutorials/create_register_first_runner/_index.md)
 - [More information about runners](https://docs.gitlab.com/runner/)
 
 ## Step 3: Define your pipelines

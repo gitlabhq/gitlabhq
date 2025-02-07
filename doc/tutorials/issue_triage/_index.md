@@ -224,7 +224,7 @@ Next, you can:
   - Create separate issue boards named `Issue triage (by priority)` and `Issue triage (by type)`.
     This way, you'll keep various types of triage work separate, but will require switching between
     boards.
-  - [Set up issue boards for team hand-off](../boards_for_teams/index.md).
+  - [Set up issue boards for team hand-off](../boards_for_teams/_index.md).
 - Browse issues by priority or severity in issue lists,
   [filtered by each label](../../user/project/issues/managing_issues.md#filter-the-list-of-issues).
   If it's available to you, make use of

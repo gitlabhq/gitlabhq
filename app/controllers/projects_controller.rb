@@ -54,7 +54,6 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:custom_fields_feature, @project&.group)
     push_frontend_feature_flag(:work_item_description_templates, @project&.group)
   end
 
