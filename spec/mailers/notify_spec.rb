@@ -666,31 +666,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
-    describe 'project invitation declined' do
-      let(:recipient) { create(:user, maintainer_of: project) }
-      let(:project_member) do
-        invitee = invite_to_project(project, inviter: recipient)
-        invitee.decline_invite!
-        invitee
-      end
-
-      subject { described_class.member_invite_declined_email('Project', project.id, project_member.invite_email, recipient.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'an email sent to a user'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_body_text project.full_name
-        is_expected.to have_body_text project.web_url
-        is_expected.to have_body_text project_member.invite_email
-      end
-    end
-
     context 'items that are noteable, the email for a note' do
       let(:note_author) { create(:user, name: 'author_name') }
       let(:note) { create(:note, project: project, author: note_author) }
@@ -1710,30 +1685,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text group.web_url
         is_expected.to have_body_text group_member.invite_email
         is_expected.to have_body_text invited_user.name
-      end
-    end
-
-    describe 'group invitation declined' do
-      let(:owner) { create(:user, owner_of: group) }
-      let(:group_member) do
-        invitee = invite_to_group(group, inviter: owner)
-        invitee.decline_invite!
-        invitee
-      end
-
-      subject { described_class.member_invite_declined_email('group', group.id, group_member.invite_email, owner.id) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-
-      it 'contains all the useful information' do
-        is_expected.to have_subject 'Invitation declined'
-        is_expected.to have_body_text group.name
-        is_expected.to have_body_text group.web_url
-        is_expected.to have_body_text group_member.invite_email
       end
     end
 

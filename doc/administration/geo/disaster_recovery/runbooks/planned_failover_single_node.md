@@ -15,7 +15,7 @@ Disaster Recovery (Geo) promotion runbooks.
 
 WARNING:
 This runbook is an [experiment](../../../../policy/development_stages_support.md#experiment). For complete, production-ready documentation, see the
-[disaster recovery documentation](../index.md).
+[disaster recovery documentation](../_index.md).
 
 ## Geo planned failover for a single-node configuration
 
@@ -169,7 +169,7 @@ follow these steps to avoid unnecessary data loss:
    as lost if you proceed.
 
    NOTE:
-   If you plan to [update the **primary** domain DNS record](../index.md#step-4-optional-updating-the-primary-domain-dns-record),
+   If you plan to [update the **primary** domain DNS record](../_index.md#step-4-optional-updating-the-primary-domain-dns-record),
    you may wish to lower the TTL now to speed up propagation.
 
    When performing a failover, we want to avoid a split-brain situation where
@@ -246,6 +246,6 @@ To promote the secondary site:
 ### Next steps
 
 To regain geographic redundancy as quickly as possible, you should
-[add a new **secondary** site](../../setup/index.md). To
+[add a new **secondary** site](../../setup/_index.md). To
 do that, you can re-add the old **primary** as a new secondary and bring it back
 online.

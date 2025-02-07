@@ -89,7 +89,7 @@ Note the following when promoting a secondary:
   error message during this process, for more information, see this
   [troubleshooting advice](failover_troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 - If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#step-4-optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
-- If you are using [location-aware DNS](../secondary_proxy/index.md#configure-location-aware-dns), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
+- If you are using [location-aware DNS](../secondary_proxy/_index.md#configure-location-aware-dns), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
     1. On the left sidebar, at the bottom, select **Admin**.
@@ -312,7 +312,7 @@ changing Git remotes and API URLs.
 Promoting a **secondary** site to **primary** site using the process above does not enable
 Geo on the new **primary** site.
 
-To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/index.md).
+To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/_index.md).
 
 ### Step 6. Removing the former secondary's tracking database
 

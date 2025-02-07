@@ -11,7 +11,7 @@ DETAILS:
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
-use the [GitLab agent](../../clusters/agent/index.md).
+use the [GitLab agent](../../clusters/agent/_index.md).
 
 Similar to [project-level](../../project/clusters/index.md) and
 [instance-level](../../instance/clusters/index.md) Kubernetes clusters,
@@ -60,7 +60,7 @@ your cluster, resources for your projects are automatically created. See the
 section for details on which resources GitLab creates for you.
 
 For clusters not managed by GitLab, project-specific resources aren't created
-automatically. If you're using [Auto DevOps](../../../topics/autodevops/index.md)
+automatically. If you're using [Auto DevOps](../../../topics/autodevops/_index.md)
 for deployments with a cluster not managed by GitLab, you must ensure:
 
 - The project's deployment service account has permissions to deploy to
@@ -89,7 +89,7 @@ To clear the cache:
 Domains at the cluster level permit support for multiple domains
 per [multiple Kubernetes clusters](#multiple-kubernetes-clusters) When specifying a domain,
 this is automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
-the [Auto DevOps](../../../topics/autodevops/index.md) stages.
+the [Auto DevOps](../../../topics/autodevops/_index.md) stages.
 
 The domain should have a wildcard DNS configured to the Ingress IP address. [More details](../../project/clusters/gitlab_managed_clusters.md#base-domain).
 

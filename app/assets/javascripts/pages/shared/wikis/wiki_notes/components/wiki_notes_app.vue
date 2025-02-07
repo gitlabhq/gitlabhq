@@ -66,6 +66,9 @@ export default {
     wikiPageData() {
       return this.$apollo.queries.wikiPage;
     },
+    isLoading() {
+      return this.$apollo.queries.wikiPage.loading;
+    },
   },
   mounted() {
     eventHub.$on(EVENT_EDIT_WIKI_START, () => {
@@ -126,8 +129,9 @@ export default {
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <wiki-comment-form
+          v-if="!isLoading"
           :noteable-id="noteableId"
-          :note-id="containerId"
+          :note-id="noteableId"
           @creating-note:start="setPlaceHolderNote"
           @creating-note:done="removePlaceholder"
           @creating-note:success="updateDiscussions"

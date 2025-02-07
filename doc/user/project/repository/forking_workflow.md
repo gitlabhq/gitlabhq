@@ -106,7 +106,7 @@ You can also choose to update your fork from the command line.
 
 Prerequisites:
 
-- You must [download and install the Git client](../../../topics/git/how_to_install_git/index.md) on your local machine.
+- You must [download and install the Git client](../../../topics/git/how_to_install_git/_index.md) on your local machine.
 - You must [create a fork](#create-a-fork) of the repository you want to update.
 
 To update your fork from the command line, follow the instruction in
@@ -178,7 +178,7 @@ For more information and to check the storage use, see [View project fork storag
 
 - GitLab community forum: [Refreshing a fork](https://forum.gitlab.com/t/refreshing-a-fork/32469)
 - [Prevent project forking outside group](../../group/access_and_permissions.md#prevent-project-forking-outside-group)
-- [Understand how Git LFS works with forks](../../../topics/git/lfs/index.md#understand-how-git-lfs-works-with-forks)
+- [Understand how Git LFS works with forks](../../../topics/git/lfs/_index.md#understand-how-git-lfs-works-with-forks)
 
 ## Troubleshooting
 

@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 NOTE:
-[GitLab Geo supports location-aware DNS including web UI and API traffic.](../secondary_proxy/index.md#configure-location-aware-dns)
+[GitLab Geo supports location-aware DNS including web UI and API traffic.](../secondary_proxy/_index.md#configure-location-aware-dns)
 This configuration is recommended over the location-aware Git remote URL
 described in this document.
 
@@ -45,7 +45,7 @@ In any case, you require:
 - A Route53 Hosted Zone managing your domain.
 
 If you haven't yet set up a Geo _primary_ site and _secondary_ site, see the
-[Geo setup instructions](../setup/index.md).
+[Geo setup instructions](../setup/_index.md).
 
 ## Create a traffic policy
 

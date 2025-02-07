@@ -39,7 +39,7 @@ Prerequisites:
 
 To enable Code Quality, either:
 
-- Enable [Auto DevOps](../../topics/autodevops/index.md), which includes
+- Enable [Auto DevOps](../../topics/autodevops/_index.md), which includes
   [Auto Code Quality](../../topics/autodevops/stages.md#auto-code-quality).
 
 - Include the [Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) in your

@@ -12,7 +12,7 @@ DETAILS:
 
 Use GitLab Dedicated to run GitLab on a fully-managed, single-tenant instance hosted on AWS. You maintain control over your instance configuration through Switchboard, the GitLab Dedicated management portal, while GitLab manages the underlying infrastructure.
 
-For more information about this offering, see the [subscription page](../../subscriptions/gitlab_dedicated/index.md).
+For more information about this offering, see the [subscription page](../../subscriptions/gitlab_dedicated/_index.md).
 
 ## Architecture overview
 
@@ -45,8 +45,8 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 | [SAML SSO](configure_instance/saml.md) | You configure the connection to your identity provider. GitLab handles the authentication flow. | Switchboard |
 | [IP allowlists](configure_instance/network_security.md#ip-allowlist) | You specify approved IP addresses. GitLab blocks unauthorized access attempts. | Switchboard |
 | [Custom certificates](configure_instance/network_security.md#custom-certificates) | You import your SSL certificates. GitLab maintains secure connections to your private services. | Switchboard |
-| [Compliance frameworks](../../subscriptions/gitlab_dedicated/index.md#monitoring) | GitLab maintains compliance with SOC 2, ISO 27001, and other frameworks. You can access reports through the [Trust Center](https://trust.gitlab.com/?product=gitlab-dedicated). | Available by <br>default |
-| [Emergency access protocols](../../subscriptions/gitlab_dedicated/index.md#access-controls) | GitLab provides controlled break-glass procedures for urgent situations. | Available by <br>default |
+| [Compliance frameworks](../../subscriptions/gitlab_dedicated/_index.md#monitoring) | GitLab maintains compliance with SOC 2, ISO 27001, and other frameworks. You can access reports through the [Trust Center](https://trust.gitlab.com/?product=gitlab-dedicated). | Available by <br>default |
+| [Emergency access protocols](../../subscriptions/gitlab_dedicated/_index.md#access-controls) | GitLab provides controlled break-glass procedures for urgent situations. | Available by <br>default |
 
 ## Set up networking
 
@@ -61,7 +61,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 | Feature | How it works | Set up with |
 |------------|-------------|-----------------|
-| [GitLab Pages](../../subscriptions/gitlab_dedicated/index.md#gitlab-pages) | GitLab hosts your static websites on a dedicated domain. You can publish sites from your repositories. | Available by <br>default |
+| [GitLab Pages](../../subscriptions/gitlab_dedicated/_index.md#gitlab-pages) | GitLab hosts your static websites on a dedicated domain. You can publish sites from your repositories. | Available by <br>default |
 | [Advanced search](../../integration/advanced_search/elasticsearch.md) | GitLab maintains the search infrastructure. You can search across your code, issues, and merge requests. | Available by <br>default |
 | [Hosted runners (beta)](hosted_runners.md) | You purchase a subscription and configure your hosted runners. GitLab manages the auto-scaling CI/CD infrastructure. | Switchboard |
 
@@ -77,6 +77,6 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 To get started with GitLab Dedicated:
 
-1. [Create your GitLab Dedicated instance](../dedicated/create_instance.md).
-1. [Configure your GitLab Dedicated instance](../dedicated/configure_instance/index.md).
-1. [Create a hosted runner](../dedicated/hosted_runners.md).
+1. [Create your GitLab Dedicated instance](create_instance.md).
+1. [Configure your GitLab Dedicated instance](configure_instance/_index.md).
+1. [Create a hosted runner](hosted_runners.md).

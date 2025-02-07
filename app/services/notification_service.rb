@@ -514,18 +514,6 @@ class NotificationService
     recipients.each { |recipient| deliver_access_request_email(recipient, member) }
   end
 
-  def decline_invite(member)
-    # Must always send, regardless of project/namespace configuration since it's a
-    # response to the user's action.
-
-    mailer.member_invite_declined_email(
-      member.real_source_type,
-      member.source.id,
-      member.invite_email,
-      member.created_by_id
-    ).deliver_later
-  end
-
   def new_member(member)
     notifiable_options = case member.source
                          when Group

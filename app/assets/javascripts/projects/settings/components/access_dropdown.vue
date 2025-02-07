@@ -268,7 +268,10 @@ export default {
               this.initialLoading = false;
               this.loading = false;
             });
-        } else if (this.glAbilities.adminProtectedBranch) {
+        } else if (
+          this.glAbilities.adminProtectedBranch ||
+          this.glAbilities.adminProtectedEnvironments
+        ) {
           Promise.all([getUsers(this.query), this.getGroups()])
             .then(([usersResponse, groupsResponse]) => {
               this.consolidateData(null, usersResponse.data, groupsResponse.data);

@@ -16,7 +16,7 @@ that occur during the lifecycle of a GitLab object, such as:
 - [Alerts](../../operations/incident_management/alerts.md).
 - [Designs](issues/design_management.md).
 - [Issues](issues/index.md).
-- [Merge requests](merge_requests/index.md).
+- [Merge requests](merge_requests/_index.md).
 - [Objectives and key results](../okrs.md) (OKRs).
 - [Tasks](../tasks.md).
 

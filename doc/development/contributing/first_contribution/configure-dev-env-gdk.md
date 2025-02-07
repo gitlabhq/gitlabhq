@@ -37,7 +37,7 @@ To install the GDK:
 
 1. Ensure you're on
    [one of the supported platforms](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/#supported-platforms).
-1. Confirm that [Git](../../../topics/git/how_to_install_git/index.md) is installed,
+1. Confirm that [Git](../../../topics/git/how_to_install_git/_index.md) is installed,
    and that you have a source code editor.
 1. Choose the directory where you want to install the GDK.
    The installation script installs the application to a new subdirectory called `gitlab-development-kit`.

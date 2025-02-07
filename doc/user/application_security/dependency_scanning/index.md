@@ -717,7 +717,7 @@ Prerequisites:
 
 To enable the analyzer, either:
 
-- Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes dependency scanning.
+- Enable [Auto DevOps](../../../topics/autodevops/_index.md), which includes dependency scanning.
 - Use a preconfigured merge request.
 - Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces dependency
   scanning.

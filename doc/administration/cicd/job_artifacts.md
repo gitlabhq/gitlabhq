@@ -292,7 +292,7 @@ an expiry for the artifacts, they are marked for deletion right after that date 
 Otherwise, they expire per the [default artifacts expiration setting](../settings/continuous_integration.md#default-artifacts-expiration).
 
 Artifacts are deleted by the `expire_build_artifacts_worker` cron job which Sidekiq
-runs every 7 minutes (`*/7 * * * *` in [Cron](../../topics/cron/index.md) syntax).
+runs every 7 minutes (`*/7 * * * *` in [Cron](../../topics/cron/_index.md) syntax).
 
 To change the default schedule on which expired artifacts are deleted:
 

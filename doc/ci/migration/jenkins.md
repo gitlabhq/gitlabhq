@@ -25,9 +25,9 @@ Additionally, there are some important differences between the two:
 - GitLab CI/CD pipelines are all configured in a YAML format configuration file.
   Jenkins uses either a Groovy format configuration file (declarative pipelines)
   or Jenkins DSL (scripted pipelines).
-- GitLab offers [GitLab.com](../../subscriptions/gitlab_com/index.md), a multi-tenant SaaS service,
-  and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md), a fully isolated
-  single-tenant SaaS service. You can also run your own [GitLab Self-Managed](../../subscriptions/self_managed/index.md)
+- GitLab offers [GitLab.com](../../subscriptions/gitlab_com/_index.md), a multi-tenant SaaS service,
+  and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md), a fully isolated
+  single-tenant SaaS service. You can also run your own [GitLab Self-Managed](../../subscriptions/self_managed/_index.md)
   instance. Jenkins deployments must be self-hosted.
 - GitLab provides source code management (SCM) out of the box. Jenkins requires a separate
   SCM solution to store code.
@@ -622,8 +622,8 @@ in GitLab with keywords and features that offer similar functionality. For examp
 | Jenkins plugin                                                                    | GitLab feature |
 |-----------------------------------------------------------------------------------|----------------|
 | [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout` keyword](../yaml/_index.md#timeout) |
-| [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage.md) |
-| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization/index.md) |
+| [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [Coverage report artifacts](../yaml/artifacts_reports.md#artifactsreportscoverage_report) and [Code coverage](../testing/code_coverage/_index.md) |
+| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code coverage](../testing/code_coverage/_index.md) and [Coverage visualization](../testing/code_coverage/_index.md#coverage-visualization) |
 | [Embeddable Build Status](https://plugins.jenkins.io/embeddable-build-status/)    | [Pipeline status badges](../../user/project/badges.md#pipeline-status-badges) |
 | [JUnit](https://plugins.jenkins.io/junit/)                                        | [JUnit test report artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) and [Unit test reports](../testing/unit_test_reports.md) |
 | [Mailer](https://plugins.jenkins.io/mailer/)                                      | [Notification emails](../../user/profile/notifications.md) |
@@ -720,7 +720,7 @@ Before doing any migration work, you should first:
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Migrate Jenkins configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)

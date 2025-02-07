@@ -148,7 +148,7 @@ If a user has asked you to review a merge request:
 
 ### Resolve or unresolve thread with a comment
 
-Review comments can also resolve or unresolve [resolvable threads](../index.md#resolve-a-thread).
+Review comments can also resolve or unresolve [resolvable threads](../_index.md#resolve-a-thread).
 To resolve or unresolve a thread when replying to a comment:
 
 1. In the comment text area, write your comment.
@@ -292,7 +292,7 @@ Merge requests are related to these features:
 
 - [Cherry-pick changes](../cherry_pick_changes.md):
   In the GitLab UI, select **Cherry-pick** in a merged merge request or a commit to cherry-pick it.
-- [Fast-forward merge requests](../methods/index.md#fast-forward-merge):
+- [Fast-forward merge requests](../methods/_index.md#fast-forward-merge):
   For a linear Git history and a way to accept merge requests without creating merge commits
 - [Find the merge request that introduced a change](../versions.md):
   When viewing the commit details page, GitLab links to the merge requests containing that commit.
@@ -307,5 +307,5 @@ Merge requests are related to these features:
 
 ## Related topics
 
-- [Merge methods](../methods/index.md)
+- [Merge methods](../methods/_index.md)
 - [Draft Notes API](../../../../api/draft_notes.md)

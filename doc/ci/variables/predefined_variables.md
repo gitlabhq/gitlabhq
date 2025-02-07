@@ -171,7 +171,7 @@ and the merge request must be open.
 
 | Variable                                    | Description |
 |---------------------------------------------|-------------|
-| `CI_MERGE_REQUEST_APPROVED`                 | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/index.md) is available and the merge request has been approved. |
+| `CI_MERGE_REQUEST_APPROVED`                 | Approval status of the merge request. `true` when [merge request approvals](../../user/project/merge_requests/approvals/_index.md) is available and the merge request has been approved. |
 | `CI_MERGE_REQUEST_ASSIGNEES`                | Comma-separated list of usernames of assignees for the merge request. |
 | `CI_MERGE_REQUEST_DIFF_BASE_SHA`            | The base SHA of the merge request diff. |
 | `CI_MERGE_REQUEST_DIFF_ID`                  | The version of the merge request diff. |
@@ -229,7 +229,7 @@ explains if the integration has any deployment variables available.
 
 ## Auto DevOps variables
 
-When [Auto DevOps](../../topics/autodevops/index.md) is enabled, some additional
+When [Auto DevOps](../../topics/autodevops/_index.md) is enabled, some additional
 [pre-pipeline](#variable-availability) variables are made available:
 
 - `AUTO_DEVOPS_EXPLICITLY_ENABLED`: Has a value of `1` to indicate Auto DevOps is enabled.

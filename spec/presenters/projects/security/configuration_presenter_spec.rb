@@ -35,7 +35,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       let!(:build_license_scanning) { create(:ci_build, :license_scanning, pipeline: pipeline) }
 
       it 'includes links to auto devops and secure product docs' do
-        expect(html_data[:auto_devops_help_page_path]).to eq(help_page_path('topics/autodevops/index.md'))
+        expect(html_data[:auto_devops_help_page_path]).to eq(help_page_path('topics/autodevops/_index.md'))
         expect(html_data[:help_page_path]).to eq(help_page_path('user/application_security/index.md'))
       end
 

@@ -24,7 +24,7 @@ GitLab does not support [Microsoft Active Directory Trusts](https://learn.micros
 
 Users added through LDAP:
 
-- Usually use a [licensed seat](../../../subscriptions/self_managed/index.md#billable-users).
+- Usually use a [licensed seat](../../../subscriptions/self_managed/_index.md#billable-users).
 - Can authenticate with Git using either their GitLab username or their email and LDAP password,
   even if password authentication for Git
   [is disabled](../../settings/sign_in_restrictions.md#password-authentication-enabled).

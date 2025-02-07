@@ -35,7 +35,7 @@ A user pending approval:
 - Cannot sign in.
 - Cannot access Git repositories or the GitLab API.
 - Does not receive any notifications from GitLab.
-- Does not consume a [seat](../subscriptions/self_managed/index.md#billable-users).
+- Does not consume a [seat](../subscriptions/self_managed/_index.md#billable-users).
 
 An administrator must [approve their sign up](#approve-or-reject-a-user-sign-up) to allow them to
 sign in.
@@ -67,7 +67,7 @@ Approving a user:
 
 - Activates their account.
 - Changes the user's state to active.
-- Consumes a subscription [seat](../subscriptions/self_managed/index.md#billable-users).
+- Consumes a subscription [seat](../subscriptions/self_managed/_index.md#billable-users).
 
 Rejecting a user:
 
@@ -97,7 +97,7 @@ A blocked user:
 - Cannot sign in or access any repositories.
   - Any associated data remains in these repositories.
 - Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a [seat](../subscriptions/self_managed/index.md#billable-users).
+- Does not occupy a [seat](../subscriptions/self_managed/_index.md#billable-users).
 
 ### Block a user
 
@@ -129,7 +129,7 @@ A blocked user can be unblocked from the **Admin** area. To do this:
 1. For the user you want to unblock, select the vertical ellipsis (**{ellipsis_v}**), then **Unblock**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/self_managed/index.md#billable-users).
+[seat](../subscriptions/self_managed/_index.md#billable-users).
 
 NOTE:
 Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-access-to-a-user).
@@ -155,7 +155,7 @@ A deactivated user:
   - If a deactivated user signs in, they are automatically reactivated.
 - Cannot access repositories or the API.
 - Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/index.md#billable-users).
+- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/_index.md#billable-users).
 
 When you deactivate a user, their projects, groups, and history remain.
 
@@ -178,7 +178,7 @@ For more information, see [user deactivation emails](settings/email.md#user-deac
 To deactivate users with the GitLab API, see [deactivate user](../api/user_moderation.md#deactivate-a-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
 
 To remove a user from a GitLab.com subscription, see
-[Remove users from your subscription](../subscriptions/gitlab_com/index.md#remove-users-from-subscription).
+[Remove users from your subscription](../subscriptions/gitlab_com/_index.md#remove-users-from-subscription).
 
 ### Automatically deactivate dormant users
 
@@ -252,7 +252,7 @@ To do this:
 1. For the user you want to reactivate, select the vertical ellipsis (**{ellipsis_v}**), then **Activate**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/self_managed/index.md#billable-users).
+[seat](../subscriptions/self_managed/_index.md#billable-users).
 
 NOTE:
 A deactivated user can also reactivate their account themselves by logging back in through the UI.
@@ -272,7 +272,7 @@ A banned user:
 - Cannot sign in or access any repositories.
   - Any associated projects, issues, merge requests, or comments are hidden.
 - Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a [seat](../subscriptions/self_managed/index.md#billable-users).
+- Does not occupy a [seat](../subscriptions/self_managed/_index.md#billable-users).
 
 ### Ban a user
 
@@ -298,7 +298,7 @@ To unban a user:
 1. From the dropdown list, select **Unban member**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/self_managed/index.md#billable-users).
+[seat](../subscriptions/self_managed/_index.md#billable-users).
 
 ## Delete a user
 

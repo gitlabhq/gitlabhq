@@ -915,7 +915,7 @@ When the runner executes the job:
 
 ## Related topics
 
-- You can configure [Auto DevOps](../../topics/autodevops/index.md) to pass CI/CD variables
+- You can configure [Auto DevOps](../../topics/autodevops/_index.md) to pass CI/CD variables
   to a running application. To make a CI/CD variable available as an environment variable in the running application's container,
   [prefix the variable key](../../topics/autodevops/cicd_variables.md#configure-application-secret-variables)
   with `K8S_SECRET_`.

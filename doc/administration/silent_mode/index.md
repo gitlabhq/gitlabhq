@@ -16,7 +16,7 @@ DETAILS:
 Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 
 - Validating Geo site promotion. You have a secondary Geo site as part of your
-  [disaster recovery](../geo/disaster_recovery/index.md) solution. You want to
+  [disaster recovery](../geo/disaster_recovery/_index.md) solution. You want to
   regularly test promoting it to become a primary Geo site, as a best practice
   to ensure your disaster recovery plan actually works. But you don't want to
   actually perform an entire failover, since the primary site lives in a region
@@ -120,5 +120,5 @@ Outbound communications from the following features are not silenced by Silent M
 | [Server hooks](../server_hooks.md)                                                                          |                                                                                                                                                                                                                                                 |
 | [Advanced search](../../integration/advanced_search/elasticsearch.md)                                       | If two GitLab instances are using the same Advanced Search instance, then they can both modify Search data. This is a split-brain scenario which can occur for example after promoting a secondary Geo site while the primary Geo site is live. |
 | [Snowplow](../../development/internal_analytics/product_analytics.md)                                                           | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/409661).                                                                                                                                          |
-| [Deprecated Kubernetes Connections](../../user/clusters/agent/index.md)                                     | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/396470).                                                                                                                                          |
+| [Deprecated Kubernetes Connections](../../user/clusters/agent/_index.md)                                    | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/396470).                                                                                                                                          |
 | [Container registry webhooks](../packages/container_registry.md#configure-container-registry-notifications) | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/409682).                                                                                                                                          |

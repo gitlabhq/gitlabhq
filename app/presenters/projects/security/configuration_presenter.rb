@@ -11,7 +11,7 @@ module Projects
       def to_h
         {
           auto_devops_enabled: auto_devops_source?,
-          auto_devops_help_page_path: help_page_path('topics/autodevops/index.md'),
+          auto_devops_help_page_path: help_page_path('topics/autodevops/_index.md'),
           auto_devops_path: auto_devops_settings_path(project),
           can_enable_auto_devops: can_enable_auto_devops?,
           features: features,

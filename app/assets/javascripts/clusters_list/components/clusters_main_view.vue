@@ -25,7 +25,7 @@ export default {
       'ClusterAgents|Optionally, for additional configuration settings, a %{linkStart}configuration file%{linkEnd} can be created in the repository. You can do so within the default branch by creating the file at: %{codeStart}.gitlab/agents/%{agentName}/config.yaml%{codeEnd}',
     ),
   },
-  configurationDocsLink: helpPagePath('user/clusters/agent/install/index', {
+  configurationDocsLink: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'create-an-agent-configuration-file',
   }),
   components: {

@@ -12,7 +12,7 @@ DETAILS:
 
 ## Bring your own domain (BYOD)
 
-You can use a [custom hostname](../../../subscriptions/gitlab_dedicated/index.md#bring-your-own-domain) to access your GitLab Dedicated instance. You can also provide a custom hostname for the bundled container registry and Kubernetes Agent Server (KAS) services.
+You can use a [custom hostname](../../../subscriptions/gitlab_dedicated/_index.md#bring-your-own-domain) to access your GitLab Dedicated instance. You can also provide a custom hostname for the bundled container registry and Kubernetes Agent Server (KAS) services.
 
 ### Let's Encrypt certificates
 

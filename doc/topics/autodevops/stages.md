@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-The following sections describe the stages of [Auto DevOps](index.md).
+The following sections describe the stages of [Auto DevOps](_index.md).
 Read them carefully to understand how each one works.
 
 ## Auto Build

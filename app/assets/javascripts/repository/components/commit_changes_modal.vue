@@ -241,7 +241,7 @@ export default {
       this.$emit('submit-form', formData);
     },
   },
-  deleteLfsHelpPath: helpPagePath('topics/git/lfs', {
+  deleteLfsHelpPath: helpPagePath('topics/git/lfs/_index', {
     anchor: 'delete-a-git-lfs-file-from-repository-history',
   }),
   protectedBranchHelpPath: helpPagePath('user/project/repository/branches/protected'),

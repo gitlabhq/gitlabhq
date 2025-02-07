@@ -30,7 +30,7 @@ To disable Geo, you need to first remove all your secondary Geo sites, which mea
 anymore on these sites. You can follow our documentation to [remove your secondary Geo sites](remove_geo_site.md).
 
 If the current site that you want to keep using is a secondary site, you need to first promote it to primary.
-You can use our steps on [how to promote a secondary site](../disaster_recovery/index.md#step-3-promoting-a-secondary-site)
+You can use our steps on [how to promote a secondary site](../disaster_recovery/_index.md#step-3-promoting-a-secondary-site)
 to do that.
 
 ## Remove the primary site from the UI

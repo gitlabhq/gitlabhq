@@ -286,7 +286,7 @@ When you add the GitLab-managed CI/CD template to your pipeline, the right [SAST
 To configure SAST for a project you can:
 
 - Use [Auto SAST](../../../topics/autodevops/stages.md#auto-sast), provided by
-  [Auto DevOps](../../../topics/autodevops/index.md).
+  [Auto DevOps](../../../topics/autodevops/_index.md).
 - [Configure SAST in your CI/CD YAML](#configure-sast-in-your-cicd-yaml).
 - [Configure SAST by using the UI](#configure-sast-by-using-the-ui).
 

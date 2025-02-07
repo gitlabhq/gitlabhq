@@ -188,7 +188,7 @@ Your expired access tokens are listed in the [inactive project access tokens tab
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default. When enabled new bot users are made members with no expiry date and, when the token is later revoked or expires, the bot user is retained for 30 days.
 > - Inactive bot users retention is [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
-Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/self_managed/index.md#billable-users).
+Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/self_managed/_index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
 This user is not a billable user, so it does not count toward the license limit.
 

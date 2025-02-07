@@ -442,6 +442,6 @@ For more information on adding groups as Code Owners, see [Add a group as a Code
 
 - [Code Owners](index.md)
 - [Advanced `CODEOWNERS` configuration](advanced.md)
-- [Merge request approvals](../merge_requests/approvals/index.md)
+- [Merge request approvals](../merge_requests/approvals/_index.md)
 - [Protected branches](../repository/branches/protected.md)
 - [Troubleshooting Code Owners](troubleshooting.md)

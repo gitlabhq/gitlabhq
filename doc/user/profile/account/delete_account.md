@@ -109,7 +109,7 @@ When deleting users, you can either:
     on other users' [commits](../../project/repository/index.md#commit-changes-to-a-repository),
     [epics](../../group/epics/index.md),
     [issues](../../project/issues/index.md),
-    [merge requests](../../project/merge_requests/index.md)
+    [merge requests](../../project/merge_requests/_index.md)
     and [snippets](../../snippets.md).
 
 In both cases, commits retain [user information](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects#_git_commit_objects)

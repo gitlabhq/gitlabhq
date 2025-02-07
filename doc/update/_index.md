@@ -231,7 +231,7 @@ If you're using Geo:
 
 ### GitLab agent for Kubernetes
 
-If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agents for Kubernetes](../user/clusters/agent/install/index.md#update-the-agent-version) to match your new GitLab version.
+If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agents for Kubernetes](../user/clusters/agent/install/_index.md#update-the-agent-version) to match your new GitLab version.
 
 ### Elasticsearch
 

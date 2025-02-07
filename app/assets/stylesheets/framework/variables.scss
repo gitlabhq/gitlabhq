@@ -292,18 +292,6 @@ $builds-log-bg: #111;
 $job-line-number-width: 50px;
 
 /*
- * Calendar
- */
-// See https://gitlab.com/gitlab-org/gitlab/-/issues/332150 to align with Pajamas Design System
-$calendar-activity-colors: (
-  var(--gray-50),
-  var(--data-viz-blue-100),
-  var(--data-viz-blue-400),
-  var(--data-viz-blue-600),
-  var(--data-viz-blue-900)
-) !default;
-
-/*
 * Commit Page
 */
 $commit-max-width-marker-color: rgba(0, 0, 0, 0);

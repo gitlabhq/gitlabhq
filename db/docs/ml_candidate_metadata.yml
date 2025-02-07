@@ -8,14 +8,6 @@ gitlab_schema: gitlab_main_cell
 description: A Candidate Metadata record holds extra information about the candidate
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104267
 milestone: '15.7'
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: candidate_id
-        table: ml_candidates
-        sharding_key: project_id
-        belongs_to: candidate
-desired_sharding_key_migration_job_name: BackfillMlCandidateMetadataProjectId
 table_size: small
+sharding_key:
+  project_id: projects

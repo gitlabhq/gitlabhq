@@ -238,7 +238,7 @@ If you've completed a repository cleanup process but the storage usage remains u
 If you've reached the repository size limit:
 
 - Try removing some data and making a new commit.
-- If unsuccessful, consider moving some blobs to [Git LFS](../../../topics/git/lfs/index.md) or removing old dependency updates from history.
+- If unsuccessful, consider moving some blobs to [Git LFS](../../../topics/git/lfs/_index.md) or removing old dependency updates from history.
 - If you still can't push changes, contact your GitLab administrator to temporarily [increase the limit for your project](../../../administration/settings/account_and_limit_settings.md#repository-size-limit).
 - As a last resort, create a new project and migrate your data.
 

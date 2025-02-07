@@ -7825,10 +7825,13 @@ msgstr ""
 msgid "Are you sure you want to attempt to merge?"
 msgstr ""
 
-msgid "Are you sure you want to cancel %{actionText} this comment?"
+msgid "Are you sure you want to cancel creating this comment?"
 msgstr ""
 
 msgid "Are you sure you want to cancel editing this %{commentType}?"
+msgstr ""
+
+msgid "Are you sure you want to cancel editing this comment?"
 msgstr ""
 
 msgid "Are you sure you want to close this blocked issue?"
@@ -16017,6 +16020,9 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
+msgid "Continue creating"
+msgstr ""
+
 msgid "Continue editing"
 msgstr ""
 
@@ -20882,9 +20888,6 @@ msgid "Disabled mirrors can only be enabled by instance owners. It is recommende
 msgstr ""
 
 msgid "Discard"
-msgstr ""
-
-msgid "Discard Changes"
 msgstr ""
 
 msgid "Discard all changes"
@@ -67897,9 +67900,6 @@ msgid "contains URLs that exceed the 1024 character limit (%{urls})"
 msgstr ""
 
 msgid "contains invalid URLs (%{urls})"
-msgstr ""
-
-msgid "continue %{actionText}"
 msgstr ""
 
 msgid "contribute to this project."

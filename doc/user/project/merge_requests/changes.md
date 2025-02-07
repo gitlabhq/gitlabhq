@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-A [merge request](index.md) proposes a set of changes to files in a branch in your repository. GitLab
+A [merge request](_index.md) proposes a set of changes to files in a branch in your repository. GitLab
 shows these changes as a _diff_ (difference) between the current state and the proposed
 changes. By default, the diff compares your proposed changes (the source branch) with
 the target branch. By default, GitLab shows only the changed portions of the files.

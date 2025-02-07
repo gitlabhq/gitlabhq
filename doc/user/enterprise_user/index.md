@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com
 
 Enterprise users have user accounts that are administered by an organization that
-has [verified their email domain](#verified-domains-for-groups) and purchased a [GitLab subscription](../../subscriptions/index.md).
+has [verified their email domain](#verified-domains-for-groups) and purchased a [GitLab subscription](../../subscriptions/_index.md).
 
 Enterprise users are identified by the **Enterprise** badge
 next to their names on the [Members list](../group/index.md#filter-and-sort-members-in-a-group).

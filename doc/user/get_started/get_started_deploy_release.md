@@ -54,7 +54,7 @@ For more information, see:
 
 - [Environments](../../ci/environments/_index.md)
 - [Deploy to AWS](../../ci/cloud_deployment/index.md)
-- [Deploy to Kubernetes](../clusters/agent/index.md)
+- [Deploy to Kubernetes](../clusters/agent/_index.md)
 - [Dashboard for Kubernetes](../../ci/environments/kubernetes_dashboard.md)
 - [Environments Dashboard](../../ci/environments/environments_dashboard.md)
 - [Operations Dashboard](../operations_dashboard/index.md)

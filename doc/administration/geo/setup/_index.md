@@ -63,7 +63,7 @@ Depending on how you use GitLab, the following configuration might be required:
   For more information, see [LDAP with Geo](../replication/single_sign_on.md#ldap).
 - If you use the container registry, [configure the container registry for replication](../replication/container_registry.md) on the **primary** and **secondary** sites.
 
-You should [configure unified URLs](../secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites) to use a single, unified URL for all Geo sites.
+You should [configure unified URLs](../secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites) to use a single, unified URL for all Geo sites.
 
 ## Using GitLab Charts
 

@@ -101,9 +101,9 @@ GitLab tracks the review status and prevents merging until necessary approvals a
 
 For details, see:
 
-- [Request a review of your merge request](../project/merge_requests/reviews/index.md#request-a-review)
+- [Request a review of your merge request](../project/merge_requests/reviews/_index.md#request-a-review)
 - [Add suggestions to a merge request](../project/merge_requests/reviews/suggestions.md#create-suggestions)
-- [Merge request approvals](../project/merge_requests/approvals/index.md)
+- [Merge request approvals](../project/merge_requests/approvals/_index.md)
 
 ## Step 5: Merge the merge request
 
@@ -118,4 +118,4 @@ but before you merged it into the target branch. You must resolve any conflicts 
 For details, see:
 
 - [Merge conflicts](../project/merge_requests/conflicts.md)
-- [Merge methods](../project/merge_requests/methods/index.md)
+- [Merge methods](../project/merge_requests/methods/_index.md)

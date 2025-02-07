@@ -195,7 +195,7 @@ The following totals are also included:
 - Blocked users
 - Total users
 
-GitLab billing is based on the number of [**Billable users**](../subscriptions/self_managed/index.md#billable-users).
+GitLab billing is based on the number of [**Billable users**](../subscriptions/self_managed/_index.md#billable-users).
 
 ### Add email to user
 

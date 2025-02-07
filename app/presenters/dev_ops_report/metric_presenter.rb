@@ -44,7 +44,7 @@ module DevOpsReport
           description: 'per active user',
           feature: 'merge_requests',
           blog: 'https://8thlight.com/blog/uncle-bob/2013/02/01/The-Humble-Craftsman.html',
-          docs: help_page_path('user/project/merge_requests/index.md')
+          docs: help_page_path('user/project/merge_requests/_index.md')
         ),
         Card.new(
           metric: metric,

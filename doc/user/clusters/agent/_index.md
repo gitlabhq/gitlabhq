@@ -10,7 +10,7 @@ title: Connecting a Kubernetes cluster with GitLab
 You can connect your Kubernetes cluster with GitLab to deploy, manage,
 and monitor your cloud-native solutions.
 
-To connect a Kubernetes cluster to GitLab, you must first [install an agent in your cluster](install/index.md).
+To connect a Kubernetes cluster to GitLab, you must first [install an agent in your cluster](install/_index.md).
 
 The agent runs in the cluster, and you can use it to:
 
@@ -131,7 +131,7 @@ This glossary provides definitions for terms related to the GitLab Kubernetes in
 - [GitOps workflow](gitops.md)
 - [GitOps examples and learning materials](gitops.md#related-topics)
 - [GitLab CI/CD workflow](ci_cd_workflow.md)
-- [Install the agent](install/index.md)
+- [Install the agent](install/_index.md)
 - [Work with the agent](work_with_agent.md)
 - [Migrate to the agent for Kubernetes from the legacy certificate-based integration](../../infrastructure/clusters/migrate_to_gitlab_agent.md)
 - [Troubleshooting](troubleshooting.md)

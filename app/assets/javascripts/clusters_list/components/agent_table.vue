@@ -57,10 +57,10 @@ export default {
   mixins: [timeagoMixin],
   AGENT_STATUSES,
   troubleshootingLink: helpPagePath('user/clusters/agent/troubleshooting'),
-  versionUpdateLink: helpPagePath('user/clusters/agent/install/index', {
+  versionUpdateLink: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'update-the-agent-version',
   }),
-  configHelpLink: helpPagePath('user/clusters/agent/install/index', {
+  configHelpLink: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'create-an-agent-configuration-file',
   }),
   props: {

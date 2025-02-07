@@ -23,7 +23,7 @@ If you have any doubts about the consistency of the data on this site, we recomm
 Since the former **primary** site is out of sync with the current **primary** site, the first step is to bring the former **primary** site up to date. Note, deletion of data stored on disk like
 repositories and uploads is not replayed when bringing the former **primary** site back
 into sync, which may result in increased disk usage.
-Alternatively, you can [set up a new **secondary** GitLab instance](../setup/index.md) to avoid this.
+Alternatively, you can [set up a new **secondary** GitLab instance](../setup/_index.md) to avoid this.
 
 To bring the former **primary** site up to date:
 
@@ -45,19 +45,19 @@ To bring the former **primary** site up to date:
    ```
 
    NOTE:
-   If you [disabled the **primary** site permanently](index.md#step-2-permanently-disable-the-primary-site),
+   If you [disabled the **primary** site permanently](_index.md#step-2-permanently-disable-the-primary-site),
    you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
    `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
    the GitLab instance from scratch and set it up as a **secondary** site by
-   following [Setup instructions](../setup/index.md). In this case, you don't need to follow the next step.
+   following [Setup instructions](../setup/_index.md). In this case, you don't need to follow the next step.
 
    NOTE:
-   If you [changed the DNS records](index.md#step-4-optional-updating-the-primary-domain-dns-record)
+   If you [changed the DNS records](_index.md#step-4-optional-updating-the-primary-domain-dns-record)
    for this site during disaster recovery procedure you may need to
    [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
    during this procedure.
 
-1. [Set up Geo](../setup/index.md). In this case, the **secondary** site
+1. [Set up Geo](../setup/_index.md). In this case, the **secondary** site
    refers to the former **primary** site.
    1. If [PgBouncer](../../postgresql/pgbouncer.md) was enabled on the **current secondary** site
       (when it was a primary site) disable it by editing `/etc/gitlab/gitlab.rb`
@@ -65,7 +65,7 @@ To bring the former **primary** site up to date:
    1. You can then set up database replication on the **secondary** site.
 
 If you have lost your original **primary** site, follow the
-[setup instructions](../setup/index.md) to set up a new **secondary** site.
+[setup instructions](../setup/_index.md) to set up a new **secondary** site.
 
 ## Promote the **secondary** site to **primary** site
 

@@ -26,9 +26,9 @@ and is used by default in groups where the feature is enabled.
 
 ## Enable exact code search
 
-- For [GitLab.com](../../subscriptions/gitlab_com/index.md),
+- For [GitLab.com](../../subscriptions/gitlab_com/_index.md),
   exact code search is enabled in paid subscriptions.
-- For [GitLab Self-Managed](../../subscriptions/self_managed/index.md), an administrator must
+- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
   [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 

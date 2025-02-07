@@ -13,7 +13,7 @@ When you're done, you'll have a project where you can practice using Git.
 
 ## Before you begin
 
-- [Install Git on your local machine](../../topics/git/how_to_install_git/index.md).
+- [Install Git on your local machine](../../topics/git/how_to_install_git/_index.md).
 - Ensure you can sign in to an instance of GitLab. If your organization doesn't
   have GitLab, create an account on GitLab.com.
 - [Create SSH keys and add them to GitLab](../../user/ssh.md). SSH keys are how you
@@ -242,7 +242,7 @@ to the default branch (`main`).
 
 NOTE:
 For this tutorial, you merge your branch directly to the default branch for your
-repository. In GitLab, you typically use a [merge request](../../user/project/merge_requests/index.md)
+repository. In GitLab, you typically use a [merge request](../../user/project/merge_requests/_index.md)
 to merge your branch.
 
 ### View your changes in GitLab

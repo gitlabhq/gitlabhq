@@ -26,7 +26,7 @@ export default {
   VISIT_DOCS_EVENT,
   DEPLOYMENT_TARGET_LABEL,
   selectId: 'deployment-target-select',
-  helpPageUrl: helpPagePath('user/clusters/agent/index'),
+  helpPageUrl: helpPagePath('user/clusters/agent/_index'),
   components: {
     GlFormGroup,
     GlFormSelect,

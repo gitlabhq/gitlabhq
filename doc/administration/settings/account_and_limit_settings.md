@@ -71,7 +71,7 @@ When you [add files to a repository](../../user/project/repository/web_editor.md
 through the web UI, the maximum **attachment** size is the limiting factor. This happens
 because the [web server](../../development/architecture.md#components)
 must receive the file before GitLab can generate the commit.
-Use [Git LFS](../../topics/git/lfs/index.md) to add large files to a repository.
+Use [Git LFS](../../topics/git/lfs/_index.md) to add large files to a repository.
 This setting does not apply when pushing Git LFS objects.
 
 ## Personal access token prefix
@@ -124,7 +124,7 @@ For instance, consider the following workflow:
 
 1. Your team develops apps which require large files to be stored in
    the application repository.
-1. Although you have enabled [Git LFS](../../topics/git/lfs/index.md)
+1. Although you have enabled [Git LFS](../../topics/git/lfs/_index.md)
    to your project, your storage has grown significantly.
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.

@@ -19,7 +19,7 @@ Kubernetes Service (EKS).
 ## Connect an existing EKS cluster
 
 If you already have an EKS cluster and want to connect it to GitLab,
-use the [GitLab agent](../../clusters/agent/index.md).
+use the [GitLab agent](../../clusters/agent/_index.md).
 
 ## Create a new EKS cluster
 
@@ -174,7 +174,7 @@ When you create a new cluster, you have the following settings:
 | Kubernetes cluster name | Your cluster's name. |
 | Environment scope       | The [associated environment](multiple_kubernetes_clusters.md#setting-the-environment-scope). |
 | Service role            | The **EKS IAM role** (**role A**). |
-| Kubernetes version      | The [Kubernetes version](../../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features) for your cluster. |
+| Kubernetes version      | The [Kubernetes version](../../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features) for your cluster. |
 | Key pair name           | The [key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) that you can use to connect to your worker nodes. |
 | VPC                     | The [VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) to use for your EKS Cluster resources. |
 | Subnets                 | The [subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html) in your VPC where your worker nodes run. Two are required. |
@@ -198,10 +198,10 @@ Alternatively, disable PostgreSQL by setting the project variable
 ## Deploy the app to EKS
 
 With RBAC disabled and services deployed,
-[Auto DevOps](../../../topics/autodevops/index.md) can now be leveraged
+[Auto DevOps](../../../topics/autodevops/_index.md) can now be leveraged
 to build, test, and deploy the app.
 
-[Enable Auto DevOps](../../../topics/autodevops/index.md#per-project)
+[Enable Auto DevOps](../../../topics/autodevops/_index.md#per-project)
 if not already enabled. If a wildcard DNS entry was created resolving to the
 Load Balancer, enter it in the `domain` field under the Auto DevOps settings.
 Otherwise, the deployed app isn't externally available outside of the cluster.

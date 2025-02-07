@@ -13,7 +13,7 @@ DETAILS:
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
+To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
 To manage applications, use the [Cluster Project Management Template](../../clusters/management_project_template.md).
 
 FLAG:
@@ -25,7 +25,7 @@ the [Access controls](cluster_access.md) section for
 details about the created resources.
 
 If you choose to manage your own cluster, project-specific resources aren't created
-automatically. If you are using [Auto DevOps](../../../topics/autodevops/index.md), you must
+automatically. If you are using [Auto DevOps](../../../topics/autodevops/_index.md), you must
 explicitly provide the `KUBE_NAMESPACE` [deployment variable](deploy_to_cluster.md#deployment-variables)
 for your deployment jobs to use. Otherwise, a namespace is created for you.
 
@@ -50,7 +50,7 @@ To clear the cache:
 ## Base domain
 
 Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
-If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different
+If you are using [Auto DevOps](../../../topics/autodevops/_index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
 The domain should have a wildcard DNS configured to the Ingress IP address.

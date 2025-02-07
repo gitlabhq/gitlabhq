@@ -18,7 +18,7 @@ and the services you configure for your project.
 ## Pipeline information
 
 If you've set up [GitLab CI/CD](../../../ci/index.md) in your project,
-a [merge request](index.md) displays pipeline information in the widgets area
+a [merge request](_index.md) displays pipeline information in the widgets area
 of the **Overview** tab:
 
 - Both pre-merge and post-merge pipelines, and the environment information, if any.
@@ -73,7 +73,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 To view a list of licenses that detected for your project's dependencies,
-configure [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md)
+configure [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/_index.md)
 for your project.
 
 ![Merge request pipeline](img/license_compliance_widget_v15_3.png)

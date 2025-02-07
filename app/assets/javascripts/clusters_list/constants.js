@@ -206,7 +206,7 @@ export const AGENT_CARD_INFO = {
         'ClusterAgents|The GitLab agent provides an increased level of security when connecting Kubernetes clusters to GitLab. %{linkStart}Learn more about the GitLab agent.%{linkEnd}',
       ),
     ),
-    link: helpPagePath('user/clusters/agent/index'),
+    link: helpPagePath('user/clusters/agent/_index'),
   },
   footerText: sprintf(s__('ClusterAgents|View all %{number} agents')),
 };

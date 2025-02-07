@@ -161,7 +161,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 To enable pipeline secret detection, either:
 
-- Enable [Auto DevOps](../../../../topics/autodevops/index.md), which includes [Auto Secret Detection](../../../../topics/autodevops/stages.md#auto-secret-detection).
+- Enable [Auto DevOps](../../../../topics/autodevops/_index.md), which includes [Auto Secret Detection](../../../../topics/autodevops/stages.md#auto-secret-detection).
 
 - [Edit the `.gitlab-ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually). Use this method
   if your `.gitlab-ci.yml` file is complex.

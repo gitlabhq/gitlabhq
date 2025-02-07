@@ -12,7 +12,7 @@ DETAILS:
 NOTE:
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
+If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
 
 The basic steps of configuring a **secondary** site are to:
 
@@ -90,7 +90,7 @@ they must be manually replicated to **all nodes of the secondary site**.
 GitLab integrates with the system-installed SSH daemon, designating a user
 (typically named `git`) through which all access requests are handled.
 
-In a [Disaster Recovery](../disaster_recovery/index.md) situation, GitLab system
+In a [Disaster Recovery](../disaster_recovery/_index.md) situation, GitLab system
 administrators promote a **secondary** site to the **primary** site. DNS records for the
 **primary** domain should also be updated to point to the new **primary** site
 (previously a **secondary** site). Doing so avoids the need to update Git remotes and API URLs.

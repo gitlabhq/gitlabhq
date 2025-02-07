@@ -140,7 +140,7 @@ Dependency paths are supported for the following package managers:
 ### Licenses
 
 If the [Dependency Scanning](../dependency_scanning/index.md) CI job is configured,
-[discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/index.md) are displayed on this page.
+[discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/_index.md) are displayed on this page.
 
 ## Download the dependency list
 

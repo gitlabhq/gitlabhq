@@ -276,7 +276,7 @@ Gitaly Cluster and [Geo](../geo/index.md) both provide redundancy. However the r
 
 - Gitaly Cluster provides fault tolerance for data storage and is invisible to the user. Users are
   not aware when Gitaly Cluster is used.
-- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/index.md) for
+- Geo provides [replication](../geo/index.md) and [disaster recovery](../geo/disaster_recovery/_index.md) for
   an entire instance of GitLab. Users know when they are using Geo for
   [replication](../geo/index.md). Geo [replicates multiple data types](../geo/replication/datatypes.md#replicated-data-types),
   including Git data.
@@ -286,7 +286,7 @@ The following table outlines the major differences between Gitaly Cluster and Ge
 | Tool           | Nodes    | Locations | Latency tolerance                                                                                     | Failover                                                                    | Consistency                           | Provides redundancy for |
 |:---------------|:---------|:----------|:------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------|:--------------------------------------|:------------------------|
 | Gitaly Cluster | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](praefect.md#network-latency-and-connectivity) | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](index.md#strong-consistency) | Data storage in Git     |
-| Geo            | Multiple | Multiple  | Up to one minute                                                                                      | [Manual](../geo/disaster_recovery/index.md)                                 | Eventual                              | Entire GitLab instance  |
+| Geo            | Multiple | Multiple  | Up to one minute                                                                                      | [Manual](../geo/disaster_recovery/_index.md)                                 | Eventual                              | Entire GitLab instance  |
 
 For more information, see:
 

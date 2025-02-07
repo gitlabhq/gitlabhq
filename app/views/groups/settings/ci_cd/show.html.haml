@@ -42,7 +42,7 @@
     id: 'auto-devops-settings',
     expanded: expanded) do |c|
     - c.with_description do
-      - auto_devops_url = help_page_path('topics/autodevops/index.md')
+      - auto_devops_url = help_page_path('topics/autodevops/_index.md')
       - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke.md')
       - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }
       - quickstart_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: quickstart_url }

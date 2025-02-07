@@ -207,7 +207,7 @@ If you are not an administrator for the instance or group a service account is a
 
 ## Related topics
 
-- [Billable users](../../subscriptions/self_managed/index.md#billable-users)
+- [Billable users](../../subscriptions/self_managed/_index.md#billable-users)
 - [Associated records](account/delete_account.md#associated-records)
 - [Project access tokens - bot users](../project/settings/project_access_tokens.md#bot-users-for-projects)
 - [Group access tokens - bot users](../group/settings/group_access_tokens.md#bot-users-for-groups)

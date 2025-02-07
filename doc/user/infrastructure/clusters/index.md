@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
+To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
 
 ## Certificate-based Kubernetes integration (deprecated)
 
@@ -30,7 +30,7 @@ It had the following issues:
 - Users were constantly reporting issues with features based on this model.
 
 For this reason, we started to build features based on a new model, the
-[GitLab agent](../../clusters/agent/index.md).
+[GitLab agent](../../clusters/agent/_index.md).
 Maintaining both methods in parallel caused a lot of confusion
 and significantly increased the complexity to use, develop, maintain, and
 document them. For this reason, we decided to deprecate them to focus on the

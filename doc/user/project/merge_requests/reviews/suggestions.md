@@ -41,7 +41,7 @@ merge request, authored by the user who suggested the changes.
 1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
    - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
    - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
-1. To leave your comment unpublished until you finish a [review](index.md), select
+1. To leave your comment unpublished until you finish a [review](_index.md), select
    **Start a review**, or use the keyboard shortcut:
    - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
    - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>

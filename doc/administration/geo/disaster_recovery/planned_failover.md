@@ -21,7 +21,7 @@ length of this window is determined by your replication capacity - when the
 data loss.
 
 This document assumes you already have a fully configured, working Geo setup.
-Read this document and the [Disaster Recovery](index.md) failover
+Read this document and the [Disaster Recovery](_index.md) failover
 documentation in full before proceeding. Planned failover is a major operation,
 and if performed incorrectly, there is a high risk of data loss. Consider
 rehearsing the procedure until you are comfortable with the necessary steps and
@@ -88,7 +88,7 @@ Each step is described in more detail below.
 
 ### DNS TTL
 
-If you plan to [update the primary domain DNS record](index.md#step-4-optional-updating-the-primary-domain-dns-record),
+If you plan to [update the primary domain DNS record](_index.md#step-4-optional-updating-the-primary-domain-dns-record),
 you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
 ### Object storage
@@ -246,7 +246,7 @@ At this point, your **secondary** site contains an up-to-date copy of everything
 
 ## Promote the **secondary** site
 
-After the replication is finished, [promote the **secondary** site to a **primary** site](index.md). This process causes a brief outage on the **secondary** site, and users may need to sign in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
+After the replication is finished, [promote the **secondary** site to a **primary** site](_index.md). This process causes a brief outage on the **secondary** site, and users may need to sign in again. If you follow the steps correctly, the old primary Geo site should still be disabled and user traffic should go to the newly-promoted site instead.
 
 When the promotion is completed, the maintenance window is over, and your new **primary** site now
 begins to diverge from the old one. If problems do arise at this point, failing

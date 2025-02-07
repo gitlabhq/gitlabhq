@@ -37,7 +37,7 @@ On this page, you can view:
 
 To configure your agent:
 
-- Add content to the `config.yaml` file optionally created [during installation](install/index.md#create-an-agent-configuration-file).
+- Add content to the `config.yaml` file optionally created [during installation](install/_index.md#create-an-agent-configuration-file).
 
 You can quickly locate an agent configuration file from the list of agents.
 The **Configuration** column indicates the location of the `config.yaml` file,
@@ -138,7 +138,7 @@ To reset the agent token without downtime:
    1. On the **Access tokens** tab, select **Create token**.
    1. Enter token's name and description (optional) and select **Create token**.
 1. Securely store the generated token.
-1. Use the token to [install the agent in your cluster](install/index.md#install-the-agent-in-the-cluster) and to [update the agent](install/index.md#update-the-agent-version) to another version.
+1. Use the token to [install the agent in your cluster](install/_index.md#install-the-agent-in-the-cluster) and to [update the agent](install/_index.md#update-the-agent-version) to another version.
 1. To delete the token you're no longer using, return to the token list and select **Revoke** (**{remove}**).
 
 ## Remove an agent

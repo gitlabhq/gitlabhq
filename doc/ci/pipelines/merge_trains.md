@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
-> - Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
+> - Support for [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/_index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
 > - [Feature flag `fast_forward_merge_trains_support` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148964#note_1855981445) in GitLab 16.11.
 
 In projects with frequent merges to the default branch, changes in different merge requests
@@ -207,7 +207,7 @@ Merging immediately can use a lot of CI/CD resources. Use this option
 only in critical situations.
 
 NOTE:
-The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge)
+The **merge immediately** option may not be available if your project uses the [fast-forward](../../user/project/merge_requests/methods/_index.md#fast-forward-merge)
 merge method and the source branch is behind the target branch. See [issue 434070](https://gitlab.com/gitlab-org/gitlab/-/issues/434070) for more details.
 
 ### Allow merge trains to be skipped to merge immediately without restarting merge train pipelines
@@ -267,7 +267,7 @@ the merge train drops your merge request automatically. For example, this could 
 
 - Changing the merge request to a [draft](../../user/project/merge_requests/drafts.md).
 - A merge conflict.
-- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)
+- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)
   is enabled.
 
 You can find reason the merge request was dropped from the merge train in the system

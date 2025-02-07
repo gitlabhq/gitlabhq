@@ -22,7 +22,7 @@ The project template works on GitLab.com without modifications. If you're on a s
 If you **have not yet** used the agent to connect your cluster with GitLab:
 
 1. [Create a project from the cluster management project template](#create-a-project-based-on-the-cluster-management-project-template).
-1. [Configure the project for the agent](agent/install/index.md).
+1. [Configure the project for the agent](agent/install/_index.md).
 1. In your project's settings, create an
    [environment variable](../../ci/variables/_index.md#for-a-project) named `$KUBE_CONTEXT`
    and set the value to `path/to/agent-configuration-project:your-agent-name`.

@@ -35,7 +35,7 @@ User limits do not apply to users in the Free tier of:
     - GitLab for Open Source
     - GitLab for Education
     - GitLab for Startups
-- [Self-managed subscriptions](../subscriptions/self_managed/index.md)
+- [Self-managed subscriptions](../subscriptions/self_managed/_index.md)
 
 For more information, you can [talk to an expert](https://page.gitlab.com/usage_limits_help.html).
 
@@ -99,7 +99,7 @@ To remove user limits on groups with Free tier subscriptions, include those grou
 in your organization's subscription:
 
 1. To check if a group is included in the subscription,
-   [view that group's subscription details](../subscriptions/gitlab_com/index.md#view-gitlabcom-subscription).
+   [view that group's subscription details](../subscriptions/gitlab_com/_index.md#view-gitlabcom-subscription).
 
    If the group has a Free tier subscription, it is not included in your organization's
    subscription.
@@ -110,7 +110,7 @@ in your organization's subscription:
 
 If the five-user limit has been applied to your group even though you have
 a paid subscription in the Premium or Ultimate tier, make sure that
-[your subscription is linked](../subscriptions/gitlab_com/index.md#link-subscription-to-a-group)
+[your subscription is linked](../subscriptions/gitlab_com/_index.md#link-subscription-to-a-group)
 to either of the following:
 
 - The correct top-level namespace.
@@ -133,7 +133,7 @@ For example, your company has Group A and Group B:
 
 Users that are not part of the top-level namespace require additional seats to
 remain active. For more information, see
-[add seats to your subscription](../subscriptions/gitlab_com/index.md#add-seats-to-subscription).
+[add seats to your subscription](../subscriptions/gitlab_com/_index.md#add-seats-to-subscription).
 
 ## Increase the five-user limit
 
@@ -144,8 +144,8 @@ For larger teams, you should upgrade to the paid Premium or Ultimate tiers. Thes
 do not limit users and have more features to increase team productivity. For more
 information, see:
 
-- [Upgrade your subscription tier on GitLab Self-Managed](../subscriptions/self_managed/index.md#upgrade-your-subscription-tier).
-- [Upgrade your subscription tier on GitLab.com](../subscriptions/gitlab_com/index.md#upgrade-subscription-tier).
+- [Upgrade your subscription tier on GitLab Self-Managed](../subscriptions/self_managed/_index.md#upgrade-your-subscription-tier).
+- [Upgrade your subscription tier on GitLab.com](../subscriptions/gitlab_com/_index.md#upgrade-subscription-tier).
 
 To try the paid tiers before deciding to upgrade, start a
 [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html)

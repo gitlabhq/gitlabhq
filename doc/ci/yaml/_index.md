@@ -2069,7 +2069,7 @@ In this example:
 
 **Additional details**:
 
-- You can find regex examples in [Code Coverage](../testing/code_coverage.md#test-coverage-examples).
+- You can find regex examples in [Code Coverage](../testing/code_coverage/_index.md#coverage-regex-patterns).
 - If there is more than one matched line in the job output, the last line is used
   (the first result of reverse search).
 - If there are multiple matches in a single line, the last match is searched
@@ -2368,7 +2368,7 @@ for an environment.
 
 **Supported values**:
 
-- `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md). The format is `path/to/agent/project:agent-name`.
+- `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md). The format is `path/to/agent/project:agent-name`.
 - `namespace`: A string representing the Kubernetes namespace. It needs to be set together with the `agent` keyword.
 - `flux_resource_path`: A string representing the path to the Flux resource. This must be the full resource path. It needs to be set together with the
   `agent` and `namespace` keywords.
@@ -2388,7 +2388,7 @@ deploy:
 ```
 
 This configuration sets up the `deploy` job to deploy to the `production`
-environment, associates the [agent](../../user/clusters/agent/index.md) named `agent-name` with the environment,
+environment, associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment,
 and configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
 the namespace `my-namespace` and the `flux_resource_path` set to
 `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.
@@ -2396,7 +2396,7 @@ the namespace `my-namespace` and the `flux_resource_path` set to
 **Additional details**:
 
 - To use the dashboard, you must
-  [install the GitLab agent for Kubernetes](../../user/clusters/agent/install/index.md) and
+  [install the GitLab agent for Kubernetes](../../user/clusters/agent/install/_index.md) and
   [configure `user_access`](../../user/clusters/agent/user_access.md)
   for the environment's project or its parent group.
 - The user running the job must be authorized to access the cluster agent.
@@ -3068,7 +3068,7 @@ This example creates four paths of execution:
 - The maximum number of jobs that a single job can have in the `needs` array is limited:
   - For GitLab.com, the limit is 50. For more information, see
     [issue 350398](https://gitlab.com/gitlab-org/gitlab/-/issues/350398).
-  - For GitLab Self-Managed, the default limit is 50. This limit [can be changed](../../administration/cicd/index.md#set-the-needs-job-limit).
+  - For GitLab Self-Managed, the default limit is 50. This limit [can be changed](../../administration/cicd/_index.md#set-the-needs-job-limit).
 - If `needs` refers to a job that uses the [`parallel`](#parallel) keyword,
   it depends on all jobs created in parallel, not just one job. It also downloads
   artifacts from all the parallel jobs by default. If the artifacts have the same

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Approval rules define how many [approvals](index.md) a merge request must receive before it can
+Approval rules define how many [approvals](_index.md) a merge request must receive before it can
 be merged, and which users should do the approving. They can be used in conjunction
 with [code owners](#code-owners-as-eligible-approvers) to ensure that changes are
 reviewed both by the group maintaining the feature, and any groups responsible

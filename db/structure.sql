@@ -16318,7 +16318,8 @@ CREATE TABLE ml_candidate_metadata (
     value text NOT NULL,
     project_id bigint,
     CONSTRAINT check_6b38a286a5 CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_9453f4a8e9 CHECK ((char_length(value) <= 5000))
+    CONSTRAINT check_9453f4a8e9 CHECK ((char_length(value) <= 5000)),
+    CONSTRAINT check_b964e2ac27 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ml_candidate_metadata_id_seq
@@ -27044,6 +27045,9 @@ ALTER TABLE project_relation_exports
 
 ALTER TABLE vulnerability_finding_signatures
     ADD CONSTRAINT check_f4ab9ffc5a CHECK ((project_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE merge_request_blocks
+    ADD CONSTRAINT check_f8034ca45e CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE approval_merge_request_rule_sources
     ADD CONSTRAINT check_f82666a937 CHECK ((project_id IS NOT NULL)) NOT VALID;

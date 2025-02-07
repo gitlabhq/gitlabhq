@@ -56,7 +56,7 @@ When upgrading a Geo site, you might not be able to sign into a secondary site t
 
 ### Secondary site returns 502 errors with Geo proxying
 
-When [Geo proxying for secondary sites](../../secondary_proxy/index.md) is enabled, and the secondary site user interface returns
+When [Geo proxying for secondary sites](../../secondary_proxy/_index.md) is enabled, and the secondary site user interface returns
 502 errors, it is possible that the response header proxied from the primary site is too large.
 
 Check the NGINX logs for errors similar to this example:

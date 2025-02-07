@@ -14,7 +14,7 @@ DETAILS:
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
-to add this functionality to the [agent](../clusters/agent/index.md).
+to add this functionality to the [agent](../clusters/agent/_index.md).
 
 FLAG:
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
@@ -27,7 +27,7 @@ without any need to access Kubernetes.
 
 NOTE:
 If you have a Kubernetes cluster, you can Auto Deploy applications to production
-environments by using [Auto DevOps](../../topics/autodevops/index.md).
+environments by using [Auto DevOps](../../topics/autodevops/_index.md).
 
 ## Overview
 

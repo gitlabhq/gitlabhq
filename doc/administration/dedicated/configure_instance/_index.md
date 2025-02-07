@@ -10,13 +10,13 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab Dedicated
 
-The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../../subscriptions/gitlab_dedicated/index.md#available-features).
+The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../../subscriptions/gitlab_dedicated/_index.md#available-features).
 
 Administrators can configure additional settings in their GitLab application by using the [**Admin** area](../../admin_area.md).
 
 As a GitLab-managed solution, you cannot change any GitLab functionality controlled by SaaS environment settings. Examples of such SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 
-GitLab Dedicated engineers do not have direct access to your environment, except for [break glass situations](../../../subscriptions/gitlab_dedicated/index.md#access-controls).
+GitLab Dedicated engineers do not have direct access to your environment, except for [break glass situations](../../../subscriptions/gitlab_dedicated/_index.md#access-controls).
 
 NOTE:
 An instance refers to a GitLab Dedicated deployment, whereas a tenant refers to a customer.
@@ -44,7 +44,7 @@ To make a configuration change:
 1. Follow the instructions in the relevant sections below.
 
 For all other instance configurations, submit a support ticket according to the
-[configuration change request policy](../configure_instance/index.md#request-configuration-changes-with-a-support-ticket).
+[configuration change request policy](_index.md#request-configuration-changes-with-a-support-ticket).
 
 ### Apply configuration changes in Switchboard
 

@@ -55,7 +55,7 @@ GitLab shows the total number of **Active** merge requests on the left sidebar o
 ## The review process for merge requests
 
 During the life of a merge request, it is created, reviewed, modified, approved, and eventually merged.
-On the merge request homepage, merge requests are sorted by steps in the [review process](../../user/project/merge_requests/reviews/index.md),
+On the merge request homepage, merge requests are sorted by steps in the [review process](../../user/project/merge_requests/reviews/_index.md),
 to help you understand quickly what actions you should take:
 
 ```mermaid
@@ -84,8 +84,8 @@ This review flow makes some assumptions:
 
 1. The **Assignee** is the author of the merge request.
 1. **Reviewers** are the users who review the work in the merge request.
-1. Reviewers use the [**Start a review**](../../user/project/merge_requests/reviews/index.md#start-a-review) and
-   [**Submit a review**](../../user/project/merge_requests/reviews/index.md#submit-a-review) features.
+1. Reviewers use the [**Start a review**](../../user/project/merge_requests/reviews/_index.md#start-a-review) and
+   [**Submit a review**](../../user/project/merge_requests/reviews/_index.md#submit-a-review) features.
 
 ## How to read the display
 
@@ -106,7 +106,7 @@ The table groups related information about a merge request together into columns
 - **Reviewers** - The reviewers' avatars. Reviewers with a green check mark have approved the merge request.
 - **Checks** - A compact assessment of mergeability.
   - Number of unresolved threads, like `0 of 3`.
-  - Current required [approval status](../../user/project/merge_requests/approvals/index.md#in-the-list-of-merge-requests).
+  - Current required [approval status](../../user/project/merge_requests/approvals/_index.md#in-the-list-of-merge-requests).
   - Most recent pipeline's status.
   - Date of last update.
 

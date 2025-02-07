@@ -14,7 +14,7 @@ might span multiple groups. You can create group wikis, instead of [project wiki
 to ensure all group members have the correct access permissions to contribute.
 Group wikis are similar to [project wikis](index.md), with a few limitations:
 
-- [Git LFS](../../../topics/git/lfs/index.md) is not supported.
+- [Git LFS](../../../topics/git/lfs/_index.md) is not supported.
 - Changes to group wikis don't show up in the [group's activity feed](../../group/manage.md#group-activity-analytics).
 
 For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).

@@ -72,7 +72,7 @@ For more information about efforts to create an organization view of all groups,
 A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability Report](../application_security/vulnerability_report/index.md),
-[compliance center](../compliance/compliance_center/index.md), and
+[compliance center](../compliance/compliance_center/_index.md), and
 [value stream analytics](value_stream_analytics/index.md).
 
 ## Group visibility
@@ -337,7 +337,7 @@ NOTE:
 The display of group members' **Source** might be inconsistent.
 For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
-To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/gitlab_com/index.md#view-seat-usage).
+To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/gitlab_com/_index.md#view-seat-usage).
 
 ## Filter and sort members in a group
 

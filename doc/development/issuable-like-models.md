@@ -7,7 +7,7 @@ title: Issuable-like Rails models utilities
 
 GitLab Rails codebase contains several models that hold common functionality and behave similarly to
 [Issues](../user/project/issues/index.md). Other examples of "issuables"
-are [merge requests](../user/project/merge_requests/index.md) and
+are [merge requests](../user/project/merge_requests/_index.md) and
 [Epics](../user/group/epics/index.md).
 
 This guide accumulates guidelines on working with such Rails models.

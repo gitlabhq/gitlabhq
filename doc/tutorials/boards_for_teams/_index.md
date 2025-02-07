@@ -54,7 +54,7 @@ After you set up everything, the two teams will be able to hand off issues from 
 
    1. Assigns themselves to the **Redesign user profile page** issue.
    1. Drags the issue card to the `Workflow::In development` list. The previous workflow label is automatically removed.
-   1. Adds the frontend code in a [merge request](../../user/project/merge_requests/index.md).
+   1. Adds the frontend code in a [merge request](../../user/project/merge_requests/_index.md).
    1. Adds the `Workflow::Complete` label.
 
 ## Create a group

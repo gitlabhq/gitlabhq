@@ -1417,7 +1417,7 @@ Supported general project attributes:
 | `issues_enabled`                                   | boolean | No                             | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
 | `jobs_enabled`                                     | boolean | No                             | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                      | boolean | No                             | Enable LFS. |
-| `merge_method`                                     | string  | No                             | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
+| `merge_method`                                     | string  | No                             | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean | No                             | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean | No                             | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_trains_enabled`                             | boolean | No                             | Enable or disable merge trains. |
@@ -1468,7 +1468,7 @@ settings with access control options can be one of:
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
+| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
@@ -1541,7 +1541,7 @@ Supported general project attributes:
 | `jobs_enabled`                                     | boolean | No       | _(Deprecated)_ Enable jobs for this project. Use `builds_access_level` instead. |
 | `lfs_enabled`                                      | boolean | No       | Enable LFS. |
 | `merge_commit_template`                            | string  | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
-| `merge_method`                                     | string  | No       | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
+| `merge_method`                                     | string  | No       | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_requests_enabled`                           | boolean | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `mirror_trigger_builds`                            | boolean | No       | Pull mirroring triggers builds. Premium and Ultimate only. |
 | `mirror`                                           | boolean | No       | Enables pull mirroring in a project. Premium and Ultimate only. |
@@ -1591,7 +1591,7 @@ settings with access control options can be one of:
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
+| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
@@ -1661,7 +1661,7 @@ Supported general project attributes:
 | `lfs_enabled`                                      | boolean           | No       | Enable LFS. |
 | `max_artifacts_size`                               | integer           | No       | The maximum file size in megabytes for individual job artifacts. |
 | `merge_commit_template`                            | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create merge commit message in merge requests. |
-| `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
+| `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean           | No       | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean           | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
 | `merge_requests_template`                          | string            | No       | Default description for merge requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). Premium and Ultimate only. |
@@ -1729,7 +1729,7 @@ Supported project visibility attributes:
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
-| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/index.md). |
+| `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |

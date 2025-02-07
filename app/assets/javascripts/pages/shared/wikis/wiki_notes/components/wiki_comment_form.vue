@@ -9,7 +9,7 @@ import createWikiPageNoteMuatation from '~/wikis/graphql/notes/create_wiki_page_
 import updateWikiPageMutation from '~/wikis/graphql/notes/update_wiki_page_note.mutation.graphql';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { COMMENT_FORM } from '~/notes/i18n';
-import { __, sprintf } from '~/locale';
+import { __ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import * as constants from '~/notes/constants';
@@ -145,15 +145,13 @@ export default {
         return this.$emit('cancel');
       }
 
-      const actionText = this.isEdit ? 'editing' : 'creating';
-
-      const msg = sprintf(__('Are you sure you want to cancel %{actionText} this comment?'), {
-        actionText,
-      });
+      const msg = this.isEdit
+        ? __('Are you sure you want to cancel editing this comment?')
+        : __('Are you sure you want to cancel creating this comment?');
 
       const confirmed = await confirmAction(msg, {
-        primaryBtnText: __('Discard Changes'),
-        cancelBtnText: sprintf(__('continue %{actionText}'), { actionText }),
+        primaryBtnText: __('Discard changes'),
+        cancelBtnText: this.isEdit ? __('Continue editing') : __('Continue creating'),
       });
 
       if (confirmed) {

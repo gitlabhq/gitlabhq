@@ -18,7 +18,7 @@ to file handling and display, such as:
 - Create [custom merge drivers](#custom-merge-drivers).
 - Create [exclusive lock files](../../file_lock.md) to mark files as read-only.
 - Change [syntax highlighting](highlighting.md) in diffs.
-- Declare binary file handling with [Git LFS](../../../../topics/git/lfs/index.md).
+- Declare binary file handling with [Git LFS](../../../../topics/git/lfs/_index.md).
 - Declare [languages used in your repository](../index.md#add-repository-languages).
 
 ## Encoding requirements

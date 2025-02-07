@@ -90,7 +90,7 @@ In pipelines that have already started:
   by 1,000 compute minutes. After the 1,000 compute minute grace period, any remaining running jobs
   are also dropped.
 
-If you're using GitLab.com, you can [purchase additional packs of compute minutes](../../subscriptions/gitlab_com/index.md)
+If you're using GitLab.com, you can [purchase additional packs of compute minutes](../../subscriptions/gitlab_com/_index.md)
 to continue running CI/CD pipelines on instance runners.
 
 Project runners are not affected by the compute quota and continue processing jobs.

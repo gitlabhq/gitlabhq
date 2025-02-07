@@ -39,5 +39,5 @@ Merge request approval settings that can be set for the instance are:
 
 The following are also affected by rules for the entire instance:
 
-- [Project merge request approval rules](../user/project/merge_requests/approvals/index.md).
+- [Project merge request approval rules](../user/project/merge_requests/approvals/_index.md).
 - [Group merge request approval settings](../user/group/manage.md#group-merge-request-approval-settings).

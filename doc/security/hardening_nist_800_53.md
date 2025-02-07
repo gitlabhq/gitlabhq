@@ -389,7 +389,7 @@ Merge requests offer a method for standardizing changes from a source
 branch to a target branch. In the context of NIST 800-53, it is
 important to consider how approvals should be collected prior to merging
 code and who has the ability to merge code within the organization.
-GitLab provides guidance on the [various settings available for approvals in merge requests](../user/project/merge_requests/approvals/index.md).
+GitLab provides guidance on the [various settings available for approvals in merge requests](../user/project/merge_requests/approvals/_index.md).
 Consider assigning approval and merge privileges only to appropriate
 roles after the necessary reviews have been completed. Additional merge
 settings to consider:
@@ -403,7 +403,7 @@ settings to consider:
   to be notified when sensitive code or configurations are changed through
   merge requests.
 
-- [Ensure all open comments are resolved before allowing code change merging](../user/project/merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
+- [Ensure all open comments are resolved before allowing code change merging](../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved).
 
 - [Configure push rules](../user/project/repository/push_rules.md) -
   Push rules can be configured to meet requirements such as reviewing
@@ -546,13 +546,13 @@ Geo provides the following core features:
 
 Additional Geo Resources:
 
-- [Setting up Geo](../administration/geo/setup/index.md)
+- [Setting up Geo](../administration/geo/setup/_index.md)
 
 - [Requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo)
 
 - [Geo Limitations](../administration/geo/index.md)
 
-- [Geo Disaster Recovery Steps](../administration/geo/disaster_recovery/index.md)
+- [Geo Disaster Recovery Steps](../administration/geo/disaster_recovery/_index.md)
 
 **PostgreSQL**
 

@@ -124,7 +124,7 @@ To change the default handling of a file or file type, create a
 - Configure file display in diffs, such as [syntax highlighting](highlighting.md)
   or [collapsing generated files](../../merge_requests/changes.md#collapse-generated-files).
 - Control file storage and protection, such as [making files read-only](../../file_lock.md),
-  or storing large files [with Git LFS](../../../../topics/git/lfs/index.md).
+  or storing large files [with Git LFS](../../../../topics/git/lfs/_index.md).
 
 ## Related topics
 

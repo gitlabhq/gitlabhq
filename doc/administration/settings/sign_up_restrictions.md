@@ -141,7 +141,7 @@ You can set a user cap to enforce approvals for new users.
 
 Set a user cap to restrict the number of users who can sign up without administrator approval.
 
-The number of [billable users](../../subscriptions/self_managed/index.md#billable-users) is updated once a day.
+The number of [billable users](../../subscriptions/self_managed/_index.md#billable-users) is updated once a day.
 The user cap might apply only retrospectively after the cap has already been exceeded.
 If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
 
@@ -263,7 +263,7 @@ turn on administrator approval for role promotions. You can then approve or reje
 that are [pending administrator approval](../moderate_users.md#view-users-pending-role-promotion).
 
 - If an administrator adds a user to a group or project:
-  - If the new user role is [billable](../../subscriptions/self_managed/index.md#billable-users),
+  - If the new user role is [billable](../../subscriptions/self_managed/_index.md#billable-users),
   all other membership requests for that user are automatically approved.
   - If the new user role is not billable, other requests for that user remain pending until administrator
   approval.

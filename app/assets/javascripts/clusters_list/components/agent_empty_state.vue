@@ -5,7 +5,7 @@ import { I18N_AGENTS_EMPTY_STATE } from '../constants';
 
 export default {
   i18n: I18N_AGENTS_EMPTY_STATE,
-  agentDocsUrl: helpPagePath('user/clusters/agent/index'),
+  agentDocsUrl: helpPagePath('user/clusters/agent/_index'),
   components: {
     GlEmptyState,
     GlLink,

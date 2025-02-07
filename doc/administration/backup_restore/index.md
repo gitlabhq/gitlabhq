@@ -58,7 +58,7 @@ on how GitLab creates this archive, see [Backup archive process](backup_archive_
 ## Related topics
 
 - [Geo](../geo/index.md)
-- [Disaster Recovery (Geo)](../geo/disaster_recovery/index.md)
+- [Disaster Recovery (Geo)](../geo/disaster_recovery/_index.md)
 - [Migrating GitLab groups](../../user/group/import/index.md)
 - [Import and migrate projects](../../user/project/import/index.md)
 - [GitLab Linux package (Omnibus) - Backup and Restore](https://docs.gitlab.com/omnibus/settings/backups.html)

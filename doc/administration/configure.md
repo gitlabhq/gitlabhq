@@ -13,7 +13,7 @@ DETAILS:
 Customize and configure GitLab Self-Managed.
 
 - [Authentication](auth/index.md)
-- [CI/CD](cicd/index.md)
+- [CI/CD](cicd/_index.md)
 - [Configuration](admin_area.md)
 - [Consul](consul.md)
 - [Environment variables](environment_variables.md)
@@ -34,7 +34,7 @@ Customize and configure GitLab Self-Managed.
 - [Merge request diffs storage](merge_request_diffs.md)
 - [Static objects external storage](static_objects_external_storage.md)
 - [Geo](geo/index.md)
-- [Disaster recovery (Geo)](geo/disaster_recovery/index.md)
+- [Disaster recovery (Geo)](geo/disaster_recovery/_index.md)
 - [Agent server for Kubernetes](clusters/kas.md)
 - [Server hooks](server_hooks.md)
 - [Terraform state](terraform_state.md)

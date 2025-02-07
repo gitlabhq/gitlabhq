@@ -31,7 +31,7 @@ Failed pipelines and jobs are included in this process. If a scanner is configur
 that scanner is still considered enabled. This process also determines the scanners and statuses
 returned through the [API](../../../api/graphql/reference/_index.md#securityscanners).
 
-If the latest pipeline uses [Auto DevOps](../../../topics/autodevops/index.md),
+If the latest pipeline uses [Auto DevOps](../../../topics/autodevops/_index.md),
 all security features are configured by default.
 
 To view a project's security configuration:

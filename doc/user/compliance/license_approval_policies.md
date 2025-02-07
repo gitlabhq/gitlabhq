@@ -36,7 +36,7 @@ To ensure enforcement of your policies, you should enable dependency scanning on
 - Use a [Compliance Pipeline](../group/compliance_frameworks.md) to define a Dependency Scanning job that is enforced on projects enforced by a given Compliance Framework.
 - Work with development teams to configure [Dependency Scanning](../application_security/dependency_scanning/index.md) in each of their project's `.gitlab-ci.yml` files or enable by using the [Security Configuration panel](../application_security/configuration/index.md).
 
-License approval policies require license information from [GitLab-supported packages](license_scanning_of_cyclonedx_files/index.md#supported-languages-and-package-managers).
+License approval policies require license information from [GitLab-supported packages](license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers).
 
 ## Create a new license approval policy
 

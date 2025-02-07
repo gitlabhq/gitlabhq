@@ -59,7 +59,7 @@ with (`git bisect` for one) which makes for a more productive workflow.
 Migrating to Git/GitLab benefits you:
 
 - **Shorter learning curve**. Git has a big community and a vast number of
-  tutorials to get you started (see our [Git topic](../../../topics/git/index.md)).
+  tutorials to get you started (see our [Git topic](../../../topics/git/_index.md)).
 - **Integration with modern tools**. migrating to Git and GitLab you can have
   an open source end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.

@@ -31,7 +31,7 @@ export default {
       default: '',
     },
   },
-  clustersHelpPagePath: helpPagePath('user/clusters/agent/index.md'),
+  clustersHelpPagePath: helpPagePath('user/clusters/agent/_index.md'),
   i18n: {
     namespaceLabel: s__('Environments|Kubernetes namespace (optional)'),
     namespaceHelpText: s__('Environments|Select namespace'),

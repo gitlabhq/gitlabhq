@@ -234,7 +234,7 @@ is supported in GitLab CI/CD natively with CI/CD keywords and features.
 
 | TeamCity plugin                                                                                                                    | GitLab feature |
 |------------------------------------------------------------------------------------------------------------------------------------|----------------|
-| [Code coverage](https://www.jetbrains.com/help/teamcity/configuring-test-reports-and-code-coverage.html#Code+Coverage+in+TeamCity) | [Code coverage](../testing/code_coverage.md) and [Test coverage visualization](../testing/test_coverage_visualization/index.md) |
+| [Code coverage](https://www.jetbrains.com/help/teamcity/configuring-test-reports-and-code-coverage.html#Code+Coverage+in+TeamCity) | [Code coverage](../testing/code_coverage/_index.md) and [Test coverage visualization](../testing/code_coverage/_index.md#coverage-visualization) |
 | [Unit Test Report](https://www.jetbrains.com/help/teamcity/configuring-test-reports-and-code-coverage.html)                        | [JUnit test report artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) and [Unit test reports](../testing/unit_test_reports.md) |
 | [Notifications](https://www.jetbrains.com/help/teamcity/configuring-notifications.html)                                            | [Notification emails](../../user/profile/notifications.md) and [Slack](../../user/project/integrations/gitlab_slack_application.md) |
 
@@ -280,7 +280,7 @@ Before doing any migration work, you should first:
 1. Create a `.gitlab-ci.yml` file in each project.
 1. Migrate TeamCity configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share [CI/CD templates](../examples/index.md#cicd-templates) or [CI/CD components](../components/index.md).
 1. See [pipeline efficiency](../pipelines/pipeline_efficiency.md)

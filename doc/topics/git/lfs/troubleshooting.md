@@ -86,7 +86,7 @@ server for Git LFS, and you encounter this problem:
 1. Consider a manual push with `git lfs push --all`.
 
 If you store Git LFS files outside of GitLab, you can
-[disable Git LFS](index.md#enable-or-disable-git-lfs-for-a-project) on your project.
+[disable Git LFS](_index.md#enable-or-disable-git-lfs-for-a-project) on your project.
 
 ## Hosting LFS objects externally
 
@@ -101,7 +101,7 @@ If you use an external LFS store, GitLab can't verify the LFS objects. Pushes th
 fail if you have GitLab LFS support enabled.
 
 To stop push failures, you can disable Git LFS support in your
-[Project settings](index.md#enable-or-disable-git-lfs-for-a-project). However, this approach
+[Project settings](_index.md#enable-or-disable-git-lfs-for-a-project). However, this approach
 might not be desirable, because it also disables GitLab LFS features like:
 
 - Verifying LFS objects.

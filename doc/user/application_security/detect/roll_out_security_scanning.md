@@ -28,7 +28,7 @@ For instructions on how to enable individual security scanners, see their docume
 ## Enable security scanning by using Auto DevOps
 
 To enable the following security scanning tools, with default settings, enable
-[Auto DevOps](../../../topics/autodevops/index.md):
+[Auto DevOps](../../../topics/autodevops/_index.md):
 
 - [Auto SAST](../../../topics/autodevops/stages.md#auto-sast)
 - [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection)

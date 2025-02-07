@@ -17,7 +17,7 @@ We call GitLab objects that accept emoji reactions awardables. You can react wit
 
 - [Epics](../user/group/epics/index.md) ([API](epics.md)).
 - [Issues](../user/project/issues/index.md) ([API](issues.md)).
-- [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
+- [Merge requests](../user/project/merge_requests/_index.md) ([API](merge_requests.md)).
 - [Snippets](../user/snippets.md) ([API](snippets.md)).
 - [Comments](../user/emoji_reactions.md#emoji-reactions-for-comments) ([API](notes.md)).
 

@@ -566,7 +566,7 @@ This issue will guide you through the whole release process. In general, you hav
 - Check the list of supported technologies in GitLab documentation.
   - [Supported languages in SAST](../../user/application_security/sast/index.md#supported-languages-and-frameworks)
   - [Supported languages in DS](../../user/application_security/dependency_scanning/index.md#supported-languages-and-package-managers)
-  - [Supported languages in LS](../../user/compliance/license_scanning_of_cyclonedx_files/index.md#supported-languages-and-package-managers)
+  - [Supported languages in LS](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers)
 
 - Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.
 

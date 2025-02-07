@@ -45,7 +45,7 @@ Many to-do items are created automatically.
 Some of the actions that add a to-do item to your To-Do List:
 
 - An issue or merge request is assigned to you.
-- A [merge request review](project/merge_requests/reviews/index.md) is requested.
+- A [merge request review](project/merge_requests/reviews/_index.md) is requested.
 - You're [mentioned](discussions/index.md#mentions) in the description or
   comment of an issue, merge request, or epic.
 - You're mentioned in a comment on a commit or design.
@@ -76,7 +76,7 @@ You can manually add an item to your To-Do List.
 1. Go to your:
 
    - [Issue](project/issues/index.md)
-   - [Merge request](project/merge_requests/index.md)
+   - [Merge request](project/merge_requests/_index.md)
    - [Epic](group/epics/index.md)
    - [Design](project/issues/design_management.md)
    - [Incident](../operations/incident_management/incidents.md)

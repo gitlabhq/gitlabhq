@@ -80,7 +80,7 @@ configured to use `needs` then return the error `job can only need 0 others`.
 
 ## Change maximum scheduled pipeline frequency
 
-[Scheduled pipelines](../../ci/pipelines/schedules.md) can be configured with any [cron value](../../topics/cron/index.md),
+[Scheduled pipelines](../../ci/pipelines/schedules.md) can be configured with any [cron value](../../topics/cron/_index.md),
 but they do not always run exactly when scheduled. An internal process, called the
 _pipeline schedule worker_, queues all the scheduled pipelines, but does not
 run continuously. The worker runs on its own schedule, and scheduled pipelines that

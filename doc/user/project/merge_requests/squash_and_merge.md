@@ -22,7 +22,7 @@ in your Git repository by using the _squash and merge_ strategy.
 Each time a branch merges into your base branch, up to two commits are added:
 
 - The single commit created by squashing the commits from the branch.
-- A merge commit, unless you have enabled [fast-forward merges](methods/index.md#fast-forward-merge)
+- A merge commit, unless you have enabled [fast-forward merges](methods/_index.md#fast-forward-merge)
   in your project. Fast-forward merges disable merge commits.
 
 By default, squashed commits contain the following metadata:
@@ -87,7 +87,7 @@ To configure the default squashing behavior for all merge requests in your proje
 ## Related topics
 
 - [Commit message templates](commit_templates.md)
-- [Merge methods](methods/index.md)
+- [Merge methods](methods/_index.md)
 
 <!-- ## Troubleshooting
 

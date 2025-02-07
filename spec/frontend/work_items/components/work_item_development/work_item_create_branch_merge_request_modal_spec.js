@@ -222,7 +222,7 @@ describe('CreateBranchMergeRequestModal', () => {
         expect(findPrivateForksSelector().props()).toMatchObject({
           namespacePath: 'groupPath',
           projectPath: 'fullPath',
-          helpPagePath: '/help/user/project/merge_requests/index.md',
+          helpPagePath: '/help/user/project/merge_requests/_index.md',
           newForkPath: '/fullPath/-/forks/new',
         });
       });

@@ -7,7 +7,7 @@ title: Approval rules development guidelines
 ---
 
 This document explains the backend design and flow of all related functionality
-about [merge request approval rules](../../user/project/merge_requests/approvals/index.md).
+about [merge request approval rules](../../user/project/merge_requests/approvals/_index.md).
 
 This should help contributors to understand the code design easier and to also
 help see if there are parts to improve as the feature and its implementation

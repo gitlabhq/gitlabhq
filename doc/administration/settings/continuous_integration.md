@@ -14,7 +14,7 @@ including runners, job artifacts, and the package registry.
 
 ## Auto DevOps
 
-To enable (or disable) [Auto DevOps](../../topics/autodevops/index.md)
+To enable (or disable) [Auto DevOps](../../topics/autodevops/_index.md)
 for all projects:
 
 1. On the left sidebar, at the bottom, select **Admin**.

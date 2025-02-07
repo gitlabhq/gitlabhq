@@ -52,7 +52,7 @@ describe('GroupListItemPreventDeleteModal', () => {
       "This group can't be deleted because it is linked to a subscription. To delete this group, link the subscription with a different group.",
     );
     expect(findGlModal().findComponent(HelpPageLink).props()).toMatchObject({
-      href: 'subscriptions/gitlab_com/index',
+      href: 'subscriptions/gitlab_com/_index',
       anchor: 'link-subscription-to-a-group',
     });
   });

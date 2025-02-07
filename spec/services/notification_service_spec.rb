@@ -253,16 +253,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     it_behaves_like 'participating by assignee notification', check_delivery_jobs_queue: check_delivery_jobs_queue
   end
 
-  shared_examples 'declines the invite' do
-    specify do
-      member = source.members.last
-
-      expect do
-        notification.decline_invite(member)
-      end.to change { ActionMailer::Base.deliveries.size }.by(1)
-    end
-  end
-
   describe '.permitted_actions' do
     it 'includes public methods' do
       expect(described_class.permitted_actions).to include(:access_token_created)
@@ -3672,21 +3662,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         let(:notification_trigger) { group.request_access(added_user) }
       end
     end
-
-    describe '#decline_invite' do
-      let(:creator) { create(:user) }
-      let(:group) { create(:group) }
-      let(:member) { create(:user) }
-
-      before do
-        group.add_owner(creator)
-        group.add_developer(member, creator)
-      end
-
-      it_behaves_like 'declines the invite' do
-        let(:source) { group }
-      end
-    end
   end
 
   describe 'ProjectMember', :deliver_mails_inline do
@@ -3801,18 +3776,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             let(:notification_trigger) { project.request_access(added_user) }
           end
         end
-      end
-    end
-
-    describe '#decline_invite' do
-      let(:member) { create(:user) }
-
-      before do
-        project.add_developer(member, current_user: project.first_owner)
-      end
-
-      it_behaves_like 'declines the invite' do
-        let(:source) { project }
       end
     end
 

@@ -352,14 +352,14 @@ your review. It's time to think broadly, one last time.
    username, in case they work from to-do items. State clearly:
    - What's your overall finding?
    - Are you finished reviewing, or do you want to see this merge request again after more work is done?
-1. Select [**Submit your review**](../../user/project/merge_requests/reviews/index.md#submit-a-review)
+1. Select [**Submit your review**](../../user/project/merge_requests/reviews/_index.md#submit-a-review)
    (or use the `/submit_review` quick action) to publish all comments in your review.
    Submitting your review also runs any [quick actions](../../user/project/quick_actions.md)
    those review comments contain.
    - If the changes look good, select **Approve**.
    - If the changes need more work, select **Request changes**.
 
-If you [approve a merge request](../../user/project/merge_requests/approvals/index.md#approve-a-merge-request)
+If you [approve a merge request](../../user/project/merge_requests/approvals/_index.md#approve-a-merge-request)
 and are shown in the reviewer list, a green check mark **{check-circle-filled}**
 displays next to your name.
 

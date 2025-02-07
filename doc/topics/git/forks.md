@@ -22,7 +22,7 @@ You can also update a fork with the [GitLab UI](../../user/project/repository/fo
 
 Prerequisites:
 
-- You must [download and install the Git client](how_to_install_git/index.md) on your local machine.
+- You must [download and install the Git client](how_to_install_git/_index.md) on your local machine.
 - You must [create a fork](../../user/project/repository/forking_workflow.md#create-a-fork) of the
   repository you want to update.
 
@@ -141,4 +141,4 @@ To change or add a commit to the contributor's merge request:
   - [Create a fork](../../user/project/repository/forking_workflow.md#create-a-fork)
   - [Unlink a fork](../../user/project/repository/forking_workflow.md#unlink-a-fork)
 - [Collaborate on merge requests across forks](../../user/project/merge_requests/allow_collaboration.md)
-- [Merge requests](../../user/project/merge_requests/index.md)
+- [Merge requests](../../user/project/merge_requests/_index.md)

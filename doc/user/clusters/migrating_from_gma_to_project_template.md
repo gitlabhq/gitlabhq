@@ -24,7 +24,7 @@ follow the steps below.
 See also [video walk-throughs](#video-walk-throughs) with examples.
 
 1. Create a new project based on the [Cluster Management Project template](management_project_template.md#create-a-project-based-on-the-cluster-management-project-template).
-1. [Install an agent](agent/install/index.md) for this project in your cluster.
+1. [Install an agent](agent/install/_index.md) for this project in your cluster.
 1. Set the `KUBE_CONTEXT` CI/CD variable to the newly installed agent's context, as instructed in the `.gitlab-ci.yml` from the Project Template.
 1. Detect apps deployed through Helm v2 releases by using the pre-configured [`.gitlab-ci.yml`](management_project_template.md#the-gitlab-ciyml-file) file:
 

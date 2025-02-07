@@ -88,7 +88,7 @@ This error occurs when your GitLab instance is using a certificate signed by an 
 certificate authority that is unknown to the agent.
 
 To fix this issue, you can present the CA certificate file to the agent
-by [customizing the Helm installation](install/index.md#customize-the-helm-installation).
+by [customizing the Helm installation](install/_index.md#customize-the-helm-installation).
 Add `--set-file config.kasCaCert=my-custom-ca.pem` to the `helm install` command. The file should be a valid PEM or DER-encoded certificate.
 
 When you deploy `agentk` with a set `config.kasCaCert` value, the certificate is added to `configmap` and the certificate file is mounted in `/etc/ssl/certs`.
@@ -194,7 +194,7 @@ When you install the agent, you might encounter an error that states:
 Error: parse error at (gitlab-agent/templates/observability-secret.yaml:1): unclosed action
 ```
 
-This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](index.md#supported-kubernetes-versions-for-gitlab-features).
+This error is typically caused by an incompatible version of Helm. To resolve the issue, ensure that you are using a version of Helm [compatible with your version of Kubernetes](_index.md#supported-kubernetes-versions-for-gitlab-features).
 
 ## `GitLab Agent Server: Unauthorized` error on Dashboard for Kubernetes
 

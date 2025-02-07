@@ -37,7 +37,7 @@ The error lists the unique IDs for files rather than their filename. To look up 
 tree -r | grep <id>
 ```
 
-Because Git is not designed to handle large non-text-based data well, you should use [Git LFS](../topics/git/lfs/index.md) for these files.
+Because Git is not designed to handle large non-text-based data well, you should use [Git LFS](../topics/git/lfs/_index.md) for these files.
 Git LFS is designed to work with Git to track large files.
 
 ## Feedback

@@ -1580,7 +1580,7 @@ Parameters:
 The response is `202 Accepted` if the user has authorization.
 
 NOTE:
-A GitLab.com group can't be deleted if it is linked to a subscription. To delete such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#link-subscription-to-a-group) with a different group.
+A GitLab.com group can't be deleted if it is linked to a subscription. To delete such a group, first [link the subscription](../subscriptions/gitlab_com/_index.md#link-subscription-to-a-group) with a different group.
 
 #### Restore a group marked for deletion
 

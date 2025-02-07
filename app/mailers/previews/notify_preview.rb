@@ -183,15 +183,6 @@ class NotifyPreview < ActionMailer::Preview
     Notify.member_invite_accepted_email(member.source_type, member.id).message
   end
 
-  def member_invite_declined_email
-    Notify.member_invite_declined_email(
-      'project',
-      project.id,
-      'invite@example.com',
-      user.id
-    ).message
-  end
-
   def member_about_to_expire_email
     cleanup do
       member = project.add_member(user, Gitlab::Access::GUEST, expires_at: 7.days.from_now.to_date)

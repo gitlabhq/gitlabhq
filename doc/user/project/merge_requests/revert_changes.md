@@ -29,7 +29,7 @@ Prerequisites:
 
 - You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
-- Your project must use the [merge method](methods/index.md#fast-forward-merge) **Merge Commit**,
+- Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
   set in your project's **Settings > Merge requests**.
 
   [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22236), you can revert

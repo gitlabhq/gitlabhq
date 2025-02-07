@@ -24,13 +24,13 @@ Before you [create a workspace](#create-a-workspace), you must set up your infra
 To set up infrastructure for workspaces:
 
 1. Set up a Kubernetes cluster that the GitLab agent supports.
-   See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
+   See the [supported Kubernetes versions](../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features).
 1. Ensure autoscaling for the Kubernetes cluster is enabled.
 1. In the Kubernetes cluster:
    1. Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
       is defined so that volumes can be dynamically provisioned for each workspace.
    1. Install an Ingress controller of your choice (for example, `ingress-nginx`).
-   1. [Install](../clusters/agent/install/index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
+   1. [Install](../clusters/agent/install/_index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
    1. Point [`dns_zone`](settings.md#dns_zone) and `*.<dns_zone>`
       to the load balancer exposed by the Ingress controller.
       This load balancer must support WebSockets.

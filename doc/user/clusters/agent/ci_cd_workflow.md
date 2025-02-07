@@ -13,7 +13,7 @@ DETAILS:
 
 You can use GitLab CI/CD to safely connect, deploy, and update your Kubernetes clusters.
 
-To do so, [install an agent in your cluster](install/index.md). When done, you have a Kubernetes context and can
+To do so, [install an agent in your cluster](install/_index.md). When done, you have a Kubernetes context and can
 run Kubernetes API commands in your GitLab CI/CD pipeline.
 
 To ensure access to your cluster is safe:
@@ -32,14 +32,14 @@ Prerequisites:
 To update a Kubernetes cluster with GitLab CI/CD:
 
 1. Ensure you have a working Kubernetes cluster and the manifests are in a GitLab project.
-1. In the same GitLab project, [register and install the GitLab agent](install/index.md).
+1. In the same GitLab project, [register and install the GitLab agent](install/_index.md).
 1. [Update your `.gitlab-ci.yml` file](#update-your-gitlab-ciyml-file-to-run-kubectl-commands) to
    select the agent's Kubernetes context and run the Kubernetes API commands.
 1. Run your pipeline to deploy to or update the cluster.
 
 If you have multiple GitLab projects that contain Kubernetes manifests:
 
-1. [Install the GitLab agent](install/index.md) in its own project, or in one of the
+1. [Install the GitLab agent](install/_index.md) in its own project, or in one of the
    GitLab projects where you keep Kubernetes manifests.
 1. [Authorize the agent](#authorize-the-agent) to access your GitLab projects.
 1. Optional. For added security, [use impersonation](#restrict-project-and-group-access-by-using-impersonation).
@@ -63,7 +63,7 @@ Authorization configuration can take one or two minutes to propagate.
 
 To authorize the agent to access the GitLab project where you keep Kubernetes manifests:
 
-1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `projects` attribute.
 1. For the `id`, add the path to the project.
 
@@ -87,7 +87,7 @@ Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 To authorize the agent to access all of the GitLab projects in a group or subgroup:
 
-1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `groups` attribute.
 1. For the `id`, add the path:
 

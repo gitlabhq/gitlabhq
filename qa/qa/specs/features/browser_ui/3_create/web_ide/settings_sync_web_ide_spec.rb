@@ -2,7 +2,10 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Settings Sync in Web IDE', product_group: :remote_development, feature_category: :web_ide do
+    describe 'Settings Sync in Web IDE', product_group: :remote_development, feature_category: :web_ide, quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/516980',
+      type: :investigating
+    } do
       include_context 'Web IDE test prep'
       let(:project) { create(:project, :with_readme, name: 'webide-settings-sync-project') }
       let(:settings_sync_data) do

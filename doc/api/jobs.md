@@ -558,7 +558,7 @@ Example of response
 ## Get GitLab agent by `CI_JOB_TOKEN`
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
-[agents](../user/clusters/agent/index.md).
+[agents](../user/clusters/agent/_index.md).
 
 ```plaintext
 GET /job/allowed_agents

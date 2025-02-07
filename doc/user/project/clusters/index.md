@@ -12,7 +12,7 @@ DETAILS:
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 in GitLab 14.5. To connect clusters to GitLab, use the
-[GitLab agent](../../clusters/agent/index.md).
+[GitLab agent](../../clusters/agent/_index.md).
 
 [Project-level](../../infrastructure/clusters/connect/index.md#cluster-levels-deprecated) Kubernetes clusters
 allow you to connect a Kubernetes cluster to a project in GitLab.

@@ -25,11 +25,11 @@ The development workflow for branches is:
 1. [Create a branch](#create-a-branch) and add commits to it.
    To streamline this process, you should follow
    [branch naming patterns](#prefix-branch-names-with-issue-numbers).
-1. When the work is ready for review, create a [merge request](../../merge_requests/index.md) to propose merging the changes in your branch.
+1. When the work is ready for review, create a [merge request](../../merge_requests/_index.md) to propose merging the changes in your branch.
 1. Preview the changes with a [review app](../../../../ci/review_apps/index.md).
-1. [Request a review](../../merge_requests/reviews/index.md#request-a-review).
+1. [Request a review](../../merge_requests/reviews/_index.md#request-a-review).
 1. After your merge request is approved, merge your branch to the origin branch.
-   The [merge method](../../merge_requests/methods/index.md) determines how merge requests
+   The [merge method](../../merge_requests/methods/_index.md) determines how merge requests
    are handled in your project.
 1. After the contents of your branch are merged, [delete the merged branch](#delete-merged-branches).
 
@@ -325,7 +325,7 @@ To do this:
 - [Protected branches](protected.md)
 - [Branches API](../../../../api/branches.md)
 - [Protected Branches API](../../../../api/protected_branches.md)
-- [Getting started with Git](../../../../topics/git/index.md)
+- [Getting started with Git](../../../../topics/git/_index.md)
 - [Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 
 ## Troubleshooting

@@ -79,6 +79,7 @@ describe('Access Level Dropdown', () => {
   const abilities = {
     adminProject: true,
     adminProtectedBranch: false,
+    adminProtectedEnvironments: false,
   };
   const createComponent = ({
     accessLevelsData = mockAccessLevelsData,
@@ -138,7 +139,27 @@ describe('Access Level Dropdown', () => {
       it('should make an api call for users && groups when user has a license', () => {
         createComponent({
           groupsWithProjectAccess: true,
-          glAbilities: { adminProject: false, adminProtectedBranch: true },
+          glAbilities: {
+            adminProject: false,
+            adminProtectedBranch: true,
+            adminProtectedEnvironments: false,
+          },
+        });
+        expect(getUsers).toHaveBeenCalled();
+        expect(getGroups).toHaveBeenCalledWith({ withProjectAccess: true });
+        expect(getDeployKeys).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('withProtectedEnvironmentsAccess', () => {
+      it('should make an api call for users && groups when user has a license', () => {
+        createComponent({
+          groupsWithProjectAccess: true,
+          glAbilities: {
+            adminProject: false,
+            adminProtectedBranch: false,
+            adminProtectedEnvironments: true,
+          },
         });
         expect(getUsers).toHaveBeenCalled();
         expect(getGroups).toHaveBeenCalledWith({ withProjectAccess: true });

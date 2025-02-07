@@ -13,7 +13,7 @@ DETAILS:
 > - Endpoint `/approvals` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0.
 
 Configuration for
-[approvals on all merge requests](../user/project/merge_requests/approvals/index.md)
+[approvals on all merge requests](../user/project/merge_requests/approvals/_index.md)
 in the project. All endpoints require authentication.
 
 ## Group-level MR approvals

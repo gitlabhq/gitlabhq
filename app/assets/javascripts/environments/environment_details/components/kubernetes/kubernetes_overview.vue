@@ -276,7 +276,7 @@ export default {
     actions: __('Actions'),
     error: __('Error: '),
   },
-  learnMoreLink: helpPagePath('user/clusters/agent/index'),
+  learnMoreLink: helpPagePath('user/clusters/agent/_index'),
   getStartedLink: helpPagePath('ci/environments/kubernetes_dashboard'),
   CLUSTER_EMPTY_SVG,
   CONNECT_MODAL_ID,

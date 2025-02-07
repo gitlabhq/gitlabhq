@@ -25,7 +25,7 @@ least the Maintainer role:
 The banner can be disabled for:
 
 - A user, when they dismiss it themselves.
-- A project, by explicitly [disabling Auto DevOps](index.md#enable-or-disable-auto-devops).
+- A project, by explicitly [disabling Auto DevOps](_index.md#enable-or-disable-auto-devops).
 - An entire GitLab instance:
   - By an administrator running the following in a Rails console:
 

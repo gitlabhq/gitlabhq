@@ -10,20 +10,19 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Use GitLab CI/CD to test the changes included in a feature branch. You can also
-display reports or link to important information directly from [merge requests](../../user/project/merge_requests/index.md).
+display reports or link to important information directly from [merge requests](../../user/project/merge_requests/_index.md).
 
 | Feature                                                                                | Description |
-|----------------------------------------------------------------------------------------|-------------|
+| -------------------------------------------------------------------------------------- | ----------- |
 | [Accessibility Testing](accessibility_testing.md)                                      | Automatically report A11y violations for changed pages in merge requests. |
 | [Browser Performance Testing](browser_performance_testing.md)                          | Quickly determine the browser performance impact of pending code changes. |
 | [Load Performance Testing](load_performance_testing.md)                                | Quickly determine the server performance impact of pending code changes. |
-| [Code Coverage](code_coverage.md)                                                      | See code coverage results in the MR, project or group. |
+| [Code coverage](../testing/code_coverage/_index.md)                                                      | View test coverage results in merge requests, line-by-line coverage in file diffs, and overall metrics. |
 | [Code Quality](code_quality.md)                                                        | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area. |
 | [Display arbitrary job artifacts](../yaml/_index.md#artifactsexpose_as)                 | Configure CI pipelines with the `artifacts:expose_as` parameter to directly link to selected [artifacts](../jobs/job_artifacts.md) in merge requests. |
 | [Unit test reports](unit_test_reports.md)                                              | Configure your CI jobs to use Unit test reports, and let GitLab display a report on the merge request so that it's easier and faster to identify the failure without having to check the entire job log. |
-| [License Scanning](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) | Manage the licenses of your dependencies. |
+| [License Scanning](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md) | Manage the licenses of your dependencies. |
 | [Metrics Reports](metrics_reports.md)                                                  | Display the Metrics Report on the merge request so that it's fast and easier to identify changes to important metrics. |
-| [Test Coverage visualization](test_coverage_visualization/index.md)                    | See test coverage results for merge requests, in the file diff. |
 | [Fail fast testing](fail_fast_testing.md)                                              | Run a subset of your RSpec test suite, so failed tests stop the pipeline before the full suite of tests run, saving resources. |
 
 ## Security Reports

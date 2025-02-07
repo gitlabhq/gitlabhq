@@ -223,7 +223,7 @@ Access to the underlying infrastructure is only available to GitLab team members
 The following operational features are not available:
 
 - Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
-- [Geo proxying](../../administration/geo/secondary_proxy/index.md) and using a unified URL
+- [Geo proxying](../../administration/geo/secondary_proxy/_index.md) and using a unified URL
 - Self-serve purchasing and configuration
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
 - Observability dashboard in Switchboard

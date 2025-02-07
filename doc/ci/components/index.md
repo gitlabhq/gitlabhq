@@ -800,7 +800,7 @@ you deliver to users, follow these best practices:
 - **Review changes carefully**:
   - Carefully review all changes to the CI/CD component pipeline configuration before
     merging into default or release branches.
-  - Use [merge request approvals](../../user/project/merge_requests/approvals/index.md)
+  - Use [merge request approvals](../../user/project/merge_requests/approvals/_index.md)
     for all user-facing changes to CI/CD component catalog projects.
 
 ## Troubleshooting

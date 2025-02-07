@@ -14,7 +14,7 @@ If your application offers a web interface and you're using
 impact of pending code changes in the browser.
 
 NOTE:
-You can automate this feature in your applications by using [Auto DevOps](../../topics/autodevops/index.md).
+You can automate this feature in your applications by using [Auto DevOps](../../topics/autodevops/_index.md).
 
 ## Overview
 

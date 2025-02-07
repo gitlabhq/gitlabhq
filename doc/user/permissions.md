@@ -128,7 +128,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | View pipelines tab in MR                                                                                                       |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      | Non-members and guests: Only if the project is public. |
 | View [vulnerabilities in a pipeline](application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline) |            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      | Guests: Only if **Public pipelines** is enabled in **Project Settings > CI/CD**. |
 | Run deployment job for a protected environment                                                                                 |            |       |         |    ✓     |     ✓     |     ✓      | Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).<br>Developers and maintainers: Only if the user is [allowed to deploy to the protected branch](../ci/environments/protected_environments.md#protecting-environments). |
-| View [agents for Kubernetes](clusters/agent/index.md)                                                                          |            |       |         |          |     ✓     |     ✓      |       |
+| View [agents for Kubernetes](clusters/agent/_index.md)                                                                          |            |       |         |          |     ✓     |     ✓      |       |
 | View project [Secure Files](../api/secure_files.md)                                                                            |            |       |         |          |     ✓     |     ✓      |       |
 | Download project [Secure Files](../api/secure_files.md)                                                                        |            |       |         |          |     ✓     |     ✓      |       |
 | View a job with [debug logging](../ci/variables/_index.md#enable-debug-logging)                                                 |            |       |         |          |     ✓     |     ✓      |       |
@@ -145,7 +145,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Read [Terraform](infrastructure/index.md) state                                                                                |            |       |         |          |     ✓     |     ✓      |       |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                       |            |       |         |          |     ✓     |     ✓      |       |
 | Use pipeline editor                                                                                                            |            |       |         |          |     ✓     |     ✓      |       |
-| Manage [agents for Kubernetes](clusters/agent/index.md)                                                                        |            |       |         |          |           |     ✓      |       |
+| Manage [agents for Kubernetes](clusters/agent/_index.md)                                                                        |            |       |         |          |           |     ✓      |       |
 | Manage CI/CD settings                                                                                                          |            |       |         |          |           |     ✓      |       |
 | Manage job triggers                                                                                                            |            |       |         |          |           |     ✓      |       |
 | Manage project CI/CD variables                                                                                                 |            |       |         |          |           |     ✓      |       |
@@ -175,11 +175,11 @@ Guest users and members with the Reporter role cannot do any of these actions.
 
 ### Compliance
 
-Project permissions for [compliance](compliance/index.md) features including compliance center, audit events, compliance frameworks, and licenses.
+Project permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
 
 | Action                                                                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View [allowed and denied licenses in MR](compliance/license_scanning_of_cyclonedx_files/index.md) |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be have at least the Reporter role, even if the project is internal. Users with the Guest role on GitLab.com are able to perform this action only on public projects because internal visibility is not available. |
+| View [allowed and denied licenses in MR](compliance/license_scanning_of_cyclonedx_files/_index.md) |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be have at least the Reporter role, even if the project is internal. Users with the Guest role on GitLab.com are able to perform this action only on public projects because internal visibility is not available. |
 | View [audit events](compliance/audit_events.md)                                                   |       |         |          |     ✓     |     ✓      |   ✓   | Users can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
 | View licenses in [dependency list](application_security/dependency_list/index.md)                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)                                       |       |         |          |           |            |   ✓   |       |
@@ -374,11 +374,11 @@ Project permissions for [repository](project/repository/index.md) features inclu
 | Remove fork relationship                                              |       |         |          |           |            |   ✓   |       |
 | Force push to protected branches                                      |       |         |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push-on-a-protected-branch). |
 
-Project permissions for [merge requests](project/merge_requests/index.md):
+Project permissions for [merge requests](project/merge_requests/_index.md):
 
 | Action                                                                                                     | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ---------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| [View](project/merge_requests/index.md#view-merge-requests) a merge request                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
+| [View](project/merge_requests/_index.md#view-merge-requests) a merge request                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | Create [snippets](snippets.md)                                                                             |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create [merge request](project/merge_requests/creating_merge_requests.md)                                  |       |         |          |     ✓     |     ✓      |   ✓   | In projects that accept contributions from external members, users can create, edit, and close their own merge requests. For **private** projects, this excludes the Guest role as those users [cannot clone private projects](public_access.md#private-projects-and-groups). For **internal** projects, includes users with read-only access to the project, as [they can clone internal projects](public_access.md#internal-projects-and-groups). |
 | Update merge request including assign, review, Code Suggestions, approve, labels, lock and resolve threads |       |         |          |     ✓     |     ✓      |   ✓   | For information on eligible approvers for merge requests, see [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers). |
@@ -455,13 +455,13 @@ Group permissions for [CI/CD](../ci/index.md) features including runners, variab
 
 ### Compliance group permissions
 
-Group permissions for [compliance](compliance/index.md) features including compliance center, audit events, compliance frameworks, and licenses.
+Group permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
 
 | Action                                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
 | View licenses in the [dependency list](application_security/dependency_list/index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View the [compliance center](compliance/compliance_center/index.md)                   |       |         |          |           |            |   ✓   |       |
+| View the [compliance center](compliance/compliance_center/_index.md)                  |       |         |          |           |            |   ✓   |       |
 | Manage [compliance frameworks](group/compliance_frameworks.md)                        |       |         |          |           |            |   ✓   |       |
 | Assign [compliance frameworks](group/compliance_frameworks.md) to projects            |       |         |          |           |            |   ✓   |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)                           |       |         |          |           |            |   ✓   |       |
@@ -491,11 +491,11 @@ Group permissions for [group features](group/index.md):
 | Change custom settings for the [project integrations](project/integrations/index.md)       |       |         |          |           |     ✓      |   ✓   |       |
 | Edit [epic](group/epics/index.md) comments (posted by any user)                            |       |    ✓    |          |           |     ✓      |   ✓   |       |
 | Fork project into a group                                                                  |       |         |          |           |     ✓      |   ✓   |       |
-| View [Billing](../subscriptions/gitlab_com/index.md#view-gitlabcom-subscription)           |       |         |          |           |            |   ✓   | Does not apply to subgroups |
+| View [Billing](../subscriptions/gitlab_com/_index.md#view-gitlabcom-subscription)          |       |         |          |           |            |   ✓   | Does not apply to subgroups |
 | View group [Usage Quotas](storage_usage_quotas.md) page                                    |       |         |          |           |            |   ✓   | Does not apply to subgroups |
 | [Migrate group](group/import/index.md)                                                     |       |         |          |           |            |   ✓   |       |
 | Delete group                                                                               |       |         |          |           |            |   ✓   |       |
-| Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/index.md) |       |         |          |           |            |   ✓   |       |
+| Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |       |
 | Manage [group access tokens](group/settings/group_access_tokens.md)                        |       |         |          |           |            |   ✓   |       |
 | Change group visibility level                                                              |       |         |          |           |            |   ✓   |       |
 | Edit group settings                                                                        |       |         |          |           |            |   ✓   |       |

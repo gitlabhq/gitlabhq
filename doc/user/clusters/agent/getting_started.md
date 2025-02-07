@@ -19,7 +19,7 @@ When you finish, you will be able to:
 Make sure you have the following before you complete this tutorial:
 
 - A Kubernetes cluster that you can access locally with `kubectl`.
-  To see what versions of Kubernetes GitLab supports, see [Supported Kubernetes versions for GitLab features](index.md#supported-kubernetes-versions-for-gitlab-features).
+  To see what versions of Kubernetes GitLab supports, see [Supported Kubernetes versions for GitLab features](_index.md#supported-kubernetes-versions-for-gitlab-features).
 
   You can check that everything is properly configured by running:
 
@@ -128,7 +128,7 @@ By default, the command:
 1. Commits the Flux Helm resources to the Git repository.
 1. Triggers a Flux reconciliation.
 
-For more information about configuring the agent, see [Installing the agent for Kubernetes](install/index.md).
+For more information about configuring the agent, see [Installing the agent for Kubernetes](install/_index.md).
 
 ## Check out the dashboard for Kubernetes
 

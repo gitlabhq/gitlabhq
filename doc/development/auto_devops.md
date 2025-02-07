@@ -6,7 +6,7 @@ title: Auto DevOps development guidelines
 ---
 
 This document provides a development guide for contributors to
-[Auto DevOps](../topics/autodevops/index.md).
+[Auto DevOps](../topics/autodevops/_index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 An [Auto DevOps technical walk-through](https://youtu.be/G7RTLeToz9E)

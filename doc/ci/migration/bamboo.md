@@ -20,7 +20,7 @@ the basic concepts and how to create your first [`.gitlab-ci.yml` file](../quick
 If you already have some experience using GitLab CI/CD, you can review [CI/CD YAML syntax reference](../yaml/_index.md)
 to see the full list of available keywords.
 
-You can also take a look at [Auto DevOps](../../topics/autodevops/index.md), which automatically
+You can also take a look at [Auto DevOps](../../topics/autodevops/_index.md), which automatically
 builds, tests, and deploys your application using a collection of
 pre-configured features and integrations.
 
@@ -31,9 +31,9 @@ pre-configured features and integrations.
 Atlassian offers Bamboo in its Cloud (SaaS) or Data center (self-hosted) options.
 A third Server option is scheduled for [EOL on February 15, 2024](https://about.gitlab.com/blog/2023/09/26/atlassian-server-ending-move-to-a-single-devsecops-platform/).
 
-These options are similar to [GitLab.com](../../subscriptions/gitlab_com/index.md)
-and [GitLab Self-Managed](../../subscriptions/self_managed/index.md). GitLab also offers
-[GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md), a fully isolated
+These options are similar to [GitLab.com](../../subscriptions/gitlab_com/_index.md)
+and [GitLab Self-Managed](../../subscriptions/self_managed/_index.md). GitLab also offers
+[GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md), a fully isolated
 single-tenant SaaS service.
 
 ### Agents vs Runners
@@ -81,7 +81,7 @@ Bamboo Specs can also be [repository-stored](https://confluence.atlassian.com/ba
 #### `.gitlab-ci.yml` configuration file
 
 GitLab, by default, uses a `.gitlab-ci.yml` file for CI/CD configuration.
-Alternatively, [Auto DevOps](../../topics/autodevops/index.md) can automatically build,
+Alternatively, [Auto DevOps](../../topics/autodevops/_index.md) can automatically build,
 test, and deploy your application without a manually configured `.gitlab-ci.yml` file.
 
 GitLab CI/CD configuration can be organized into templates that are reusable across projects.
@@ -771,7 +771,7 @@ Before doing any migration work, you should first:
 1. Export your Bamboo Projects/Plans as YAML Spec
 1. Migrate Bamboo YAML Spec configuration to GitLab CI/CD jobs and configure them to show results directly in merge requests.
 1. Migrate deployment jobs by using [cloud deployment templates](../cloud_deployment/index.md),
-   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/index.md).
+   [environments](../environments/_index.md), and the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md).
 1. Check if any CI/CD configuration can be reused across different projects, then create
    and share CI/CD templates.
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)

@@ -18,7 +18,7 @@ You can estimate and track the time you spend on an item, such as:
 - [Epic](../group/epics/index.md). Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
 - [Issue](issues/index.md).
 - [Task](../tasks.md).
-- [Merge request](merge_requests/index.md).
+- [Merge request](merge_requests/_index.md).
 
 Then you can [view a report](#view-an-items-time-tracking-report) that shows totals over time.
 

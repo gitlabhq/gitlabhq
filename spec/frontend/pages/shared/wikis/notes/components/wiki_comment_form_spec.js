@@ -453,8 +453,8 @@ describe('WikiCommentForm', () => {
             expect(confirmActionSpy).toHaveBeenCalledWith(
               'Are you sure you want to cancel editing this comment?',
               {
-                primaryBtnText: 'Discard Changes',
-                cancelBtnText: 'continue editing',
+                primaryBtnText: 'Discard changes',
+                cancelBtnText: 'Continue editing',
               },
             );
           });
@@ -471,8 +471,8 @@ describe('WikiCommentForm', () => {
             expect(confirmActionSpy).toHaveBeenCalledWith(
               'Are you sure you want to cancel creating this comment?',
               {
-                primaryBtnText: 'Discard Changes',
-                cancelBtnText: 'continue creating',
+                primaryBtnText: 'Discard changes',
+                cancelBtnText: 'Continue creating',
               },
             );
           });

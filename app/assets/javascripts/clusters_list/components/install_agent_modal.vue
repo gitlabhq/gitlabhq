@@ -39,10 +39,10 @@ export default {
   EVENT_LABEL_MODAL,
   glabCommand: 'glab cluster agent bootstrap <agent-name>',
   enableKasPath: helpPagePath('administration/clusters/kas'),
-  registerAgentPath: helpPagePath('user/clusters/agent/install/index', {
+  registerAgentPath: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'register-the-agent-with-gitlab',
   }),
-  bootstrapAgentWithFluxHelpPath: helpPagePath('user/clusters/agent/install/index', {
+  bootstrapAgentWithFluxHelpPath: helpPagePath('user/clusters/agent/install/_index', {
     anchor: 'bootstrap-the-agent-with-flux-support-recommended',
   }),
   commandLanguage: 'shell',

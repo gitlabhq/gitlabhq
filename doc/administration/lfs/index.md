@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 This page contains information about configuring Git LFS on GitLab Self-Managed.
-For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).
+For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/_index.md).
 
 Prerequisites:
 
@@ -457,7 +457,7 @@ You can see the total storage used for LFS objects for groups and projects in:
 ## Related topics
 
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- User documentation: [Git Large File Storage (LFS)](../../topics/git/lfs/index.md)
+- User documentation: [Git Large File Storage (LFS)](../../topics/git/lfs/_index.md)
 - [Git LFS developer information](../../development/lfs.md)
 
 ## Troubleshooting

@@ -369,7 +369,7 @@ container_scanning:
 `CS_DEFAULT_BRANCH_IMAGE` should remain the same for a given `CS_IMAGE`. If it changes, then a
 duplicate set of vulnerabilities are created, which must be manually dismissed.
 
-When using [Auto DevOps](../../../topics/autodevops/index.md), `CS_DEFAULT_BRANCH_IMAGE` is
+When using [Auto DevOps](../../../topics/autodevops/_index.md), `CS_DEFAULT_BRANCH_IMAGE` is
 automatically set to `$CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_APPLICATION_TAG`.
 
 ### Using a custom SSL CA certificate authority

@@ -64,7 +64,7 @@ a license, add the license in the **Admin area** in the web user interface.
 
 If you use a license file or key to activate your instance in an offline environment, you are encouraged to submit your license
 usage data monthly to simplify future purchases and renewals.
-To submit the data, [export your license usage](../subscriptions/self_managed/index.md#export-your-license-usage)
+To submit the data, [export your license usage](../subscriptions/self_managed/_index.md#export-your-license-usage)
 and send it by email to the renewals service, `renewals-service@customers.gitlab.com`. **You must not open the license
 usage file before you send it**. Otherwise, the file's content could be manipulated by the used program (for example,
 timestamps could be converted to another format) and cause failures when the file is being processed.
@@ -94,9 +94,9 @@ For example, if a license has a start date of January 1, 2024 and an end date of
 - The grace period of 14 days starts at 12:00:00 AM server time January 1, 2025 and ends at 11:59:59 PM server time January 14, 2025.
 - Your instance becomes read-only at 12:00:00 AM server time January 15, 2025.
 
-To resume functionality, [renew your subscription](../subscriptions/self_managed/index.md#renew-subscription-manually).
+To resume functionality, [renew your subscription](../subscriptions/self_managed/_index.md#renew-subscription-manually).
 
-If the license has been expired for more than 30 days, you must purchase a [new subscription](../subscriptions/self_managed/index.md) to resume functionality.
+If the license has been expired for more than 30 days, you must purchase a [new subscription](../subscriptions/self_managed/_index.md) to resume functionality.
 
 To go back to Free features, [delete all expired licenses](#remove-a-license).
 
@@ -123,7 +123,7 @@ the current date range is the active license.
 When you add a future-dated license, it doesn't take effect until its applicable date.
 You can view all active subscriptions in the **Subscription history** table.
 
-You can also [export](../subscriptions/self_managed/index.md) your license usage information to a CSV file.
+You can also [export](../subscriptions/self_managed/_index.md) your license usage information to a CSV file.
 
 ## License commands in the Rails console
 
@@ -241,7 +241,7 @@ This issue might occur if:
 - You're running GitLab Community Edition. Before you add your license, you
   must [upgrade to Enterprise Edition](../update/_index.md#community-to-enterprise-edition).
 - You're using GitLab.com. You cannot add a GitLab Self-Managed license to GitLab.com.
-  To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/gitlab_com/index.md).
+  To use paid features on GitLab.com, [purchase a separate subscription](../subscriptions/gitlab_com/_index.md).
 
 ### Users exceed license limit upon renewal
 

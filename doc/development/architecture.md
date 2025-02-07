@@ -518,7 +518,7 @@ repository updates to secondary nodes.
 #### GitLab Geo
 
 - Configuration:
-  - [Omnibus](../administration/geo/setup/index.md)
+  - [Omnibus](../administration/geo/setup/_index.md)
   - [Charts](https://docs.gitlab.com/charts/advanced/geo/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/geo.md)
 - Layer: Core Service (Processor)
@@ -544,7 +544,7 @@ GitLab Exporter is a process designed in house that allows us to export metrics 
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/kas/index.html)
 
-The [GitLab agent](../user/clusters/agent/index.md) is an active in-cluster
+The [GitLab agent](../user/clusters/agent/_index.md) is an active in-cluster
 component for solving GitLab and Kubernetes integration tasks in a secure and
 cloud-native way.
 

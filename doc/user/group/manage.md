@@ -14,7 +14,7 @@ For more information about efforts to create an organization view of all groups,
 A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability Report](../application_security/vulnerability_report/index.md),
-[compliance center](../compliance/compliance_center/index.md), and
+[compliance center](../compliance/compliance_center/_index.md), and
 [value stream analytics](value_stream_analytics/index.md).
 
 ## Add a group README

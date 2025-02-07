@@ -54,7 +54,7 @@ strategies to deploy to your cluster with restricted account access. To do so:
 
 In your Auto DevOps project, you can use the GitLab agent to connect with your Kubernetes cluster.
 
-1. [Install an agent](../../clusters/agent/install/index.md) in your cluster.
+1. [Install an agent](../../clusters/agent/install/_index.md) in your cluster.
 1. In GitLab, go to the project where you use Auto DevOps.
 1. Add three variables. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value.

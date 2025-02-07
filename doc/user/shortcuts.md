@@ -36,7 +36,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>s</kbd>    | Go to your **Snippets** page. |
 | <kbd>s</kbd> / <kbd>/</kbd>        | Put cursor in the search bar. |
 | <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your **Issues** page. |
-| <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [**Merge requests**](project/merge_requests/index.md) page. |
+| <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [**Merge requests**](project/merge_requests/_index.md) page. |
 | <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your **Review requests** page. |
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your **To-Do List** page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
@@ -81,7 +81,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project **Issues** page (**Plan > Issues**). |
 | <kbd>i</kbd>                | Go to the **New Issue** page (**Plan > Issues**, select **New issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project **Issue boards** page (**Plan > Issue boards**). |
-| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [**Merge requests**](project/merge_requests/index.md) page (**Code > Merge requests**). |
+| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [**Merge requests**](project/merge_requests/_index.md) page (**Code > Merge requests**). |
 | <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD **Pipelines** page (**Build > Pipelines**). |
 | <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD **Jobs** page (**Build > Jobs**). |
 | <kbd>g</kbd> + <kbd>e</kbd> | Go to the project **Environments** page (**Operate > Environments**). |
@@ -108,7 +108,7 @@ These shortcuts are available when viewing issues:
 
 ### Merge requests
 
-These shortcuts are available when viewing [merge requests](project/merge_requests/index.md):
+These shortcuts are available when viewing [merge requests](project/merge_requests/_index.md):
 
 | macOS shortcut                    | Windows shortcut                  | Description |
 |-----------------------------------|-----------------------------------|-------------|
@@ -121,7 +121,7 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>c</kbd> + <kbd>r</kbd>       |                                   | Copy merge request reference. |
 | <kbd>r</kbd>                      |                                   | Start writing a comment. Pre-selected text is quoted in the comment. |
 | <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd> | Publish your comment immediately. |
-| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Add your comment in a pending state, as part of a [review](project/merge_requests/reviews/index.md#start-a-review). |
+| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Add your comment in a pending state, as part of a [review](project/merge_requests/reviews/_index.md#start-a-review). |
 | <kbd>c</kbd>                      |                                   | Move to next commit. |
 | <kbd>x</kbd>                      |                                   | Move to previous commit. |
 | <kbd>f</kbd>                      |                                   | Toggle file browser. |

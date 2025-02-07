@@ -140,7 +140,7 @@ You should authenticate with the JWT method instead.
 Support for mTLS is tracked in
 [issue 64](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/issues/64).
 
-[Receptive agents](../index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters that
+[Receptive agents](../_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters that
 cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
 
 1. Follow the steps in option 1 to register an agent in your cluster.

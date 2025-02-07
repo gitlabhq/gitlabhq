@@ -211,7 +211,7 @@ CI/CD artifacts are S3-compatible.
 
 #### LFS objects
 
-[LFS Objects in GitLab](../topics/git/lfs/index.md) implement a similar
+[LFS Objects in GitLab](../topics/git/lfs/_index.md) implement a similar
 storage pattern using two characters and two-level folders, following the Git implementation:
 
 ```ruby

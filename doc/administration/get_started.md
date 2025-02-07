@@ -199,7 +199,7 @@ DETAILS:
 Geo provides local, read-only instances of your GitLab instances.
 
 While GitLab Geo helps remote teams work more efficiently by using a local GitLab node, it can also be used as a disaster recovery solution.
-Learn more about using [Geo as a disaster recovery solution](geo/disaster_recovery/index.md).
+Learn more about using [Geo as a disaster recovery solution](geo/disaster_recovery/_index.md).
 
 Geo replicates your database, your Git repositories, and a few other assets.
 Learn more about the [data types Geo replicates](geo/replication/datatypes.md#replicated-data-types).

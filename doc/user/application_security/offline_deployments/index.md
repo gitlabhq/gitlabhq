@@ -95,13 +95,13 @@ above. You can find more information at each of the pages below:
 - [Secret Detection offline directions](../secret_detection/pipeline/index.md#offline-configuration)
 - [DAST offline directions](../dast/browser/configuration/offline_configuration.md)
 - [API Fuzzing offline directions](../api_fuzzing/configuration/offline_configuration.md)
-- [License Scanning offline directions](../../compliance/license_scanning_of_cyclonedx_files/index.md#running-in-an-offline-environment)
+- [License Scanning offline directions](../../compliance/license_scanning_of_cyclonedx_files/_index.md#running-in-an-offline-environment)
 - [Dependency Scanning offline directions](../dependency_scanning/index.md#offline-environment)
 
 ## Loading Docker images onto your offline host
 
 To use many GitLab features, including security scans
-and [Auto DevOps](../../../topics/autodevops/index.md), the runner must be able to fetch the
+and [Auto DevOps](../../../topics/autodevops/_index.md), the runner must be able to fetch the
 relevant Docker images.
 
 The process for making these images available without direct access to the public internet
@@ -241,4 +241,4 @@ an offline environment.
 
 These steps are specific to GitLab Secure with AutoDevOps. Using other stages with
 AutoDevOps may require other steps covered in the
-[Auto DevOps documentation](../../../topics/autodevops/index.md).
+[Auto DevOps documentation](../../../topics/autodevops/_index.md).

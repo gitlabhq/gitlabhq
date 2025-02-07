@@ -53,7 +53,7 @@ You can find **Run** (**{play}**) in the pipelines, environments, deployments, a
 GitLab can track newly included merge requests per deployment.
 When a deployment succeeds, the system calculates commit-diffs between the latest deployment and the previous deployment.
 You can fetch tracking information with the [Deployment API](../../api/deployments.md#list-of-merge-requests-associated-with-a-deployment)
-or view it at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/index.md).
+or view it at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/_index.md).
 
 To enable tracking configure your environment so either:
 

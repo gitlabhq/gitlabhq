@@ -343,7 +343,7 @@ You can delete multiple artifacts at the same time:
 ## Link to job artifacts in the merge request UI
 
 Use the [`artifacts:expose_as`](../yaml/_index.md#artifactsexpose_as) keyword to display
-a link to job artifacts in the [merge request](../../user/project/merge_requests/index.md) UI.
+a link to job artifacts in the [merge request](../../user/project/merge_requests/_index.md) UI.
 
 For example, for an artifact with a single file:
 

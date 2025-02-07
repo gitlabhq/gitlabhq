@@ -97,7 +97,7 @@ You must register `agentk` before you install it in your cluster.
 To register `agentk`:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-   If you have an [agent configuration file](../install/index.md#create-an-agent-configuration-file),
+   If you have an [agent configuration file](../install/_index.md#create-an-agent-configuration-file),
    it must be in this project. Your cluster manifest files should also be in this project.
 1. Select **Operate > Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.

@@ -189,7 +189,7 @@ involve pinning to the previous template versions, for example:
   ```
 
 Additionally, we provide a dedicated project containing the versioned legacy templates.
-This can be used for offline setups or for anyone wishing to use [Auto DevOps](../../topics/autodevops/index.md).
+This can be used for offline setups or for anyone wishing to use [Auto DevOps](../../topics/autodevops/_index.md).
 
 Instructions are available in the [legacy template project](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 

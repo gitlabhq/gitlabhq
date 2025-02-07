@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Before enabling [Auto DevOps](index.md), we recommend you to prepare it for
+Before enabling [Auto DevOps](_index.md), we recommend you to prepare it for
 deployment. If you don't, you can use it to build and test your apps, and
 then configure the deployment later.
 
@@ -26,7 +26,7 @@ To prepare the deployment:
    1. [Google Kubernetes Engine](cloud_deployments/auto_devops_with_gke.md).
    1. [Bare metal](#auto-devops-requirements-for-bare-metal).
 
-1. [Enable Auto DevOps](index.md#enable-or-disable-auto-devops).
+1. [Enable Auto DevOps](_index.md#enable-or-disable-auto-devops).
 
 ## Auto DevOps deployment strategy
 
@@ -152,7 +152,7 @@ If you don't have Kubernetes or Prometheus configured, then
 [Auto Deploy](stages.md#auto-deploy)
 are skipped.
 
-After all requirements are met, you can [enable Auto DevOps](index.md#enable-or-disable-auto-devops).
+After all requirements are met, you can [enable Auto DevOps](_index.md#enable-or-disable-auto-devops).
 
 ## Auto DevOps requirements for bare metal
 

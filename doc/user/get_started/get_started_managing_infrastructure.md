@@ -44,8 +44,8 @@ and non-production environments, and much more.
 
 For more information, see:
 
-- [Create Kubernetes clusters in the cloud](../clusters/create/index.md)
-- [Connect Kubernetes clusters with GitLab](../clusters/agent/index.md)
+- [Create Kubernetes clusters in the cloud](../clusters/create/_index.md)
+- [Connect Kubernetes clusters with GitLab](../clusters/agent/_index.md)
 
 ## Step 3: Document procedures with runbooks
 

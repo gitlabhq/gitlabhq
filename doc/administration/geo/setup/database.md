@@ -20,7 +20,7 @@ the roles cannot perform all necessary configuration steps. In this case, use th
 
 NOTE:
 The stages of the setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
+If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
 
 Ensure the **secondary** site is running the same version of GitLab Enterprise Edition as the **primary** site. Confirm you have added a license for a [Premium or Ultimate subscription](https://about.gitlab.com/pricing/) to your **primary** site.
 

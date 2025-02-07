@@ -413,7 +413,7 @@ as Large File Storage (LFS) objects. With LFS, the objects are stored externally
 Storage, which reduces the number and size of objects in the repository. Storing
 objects in external Object Storage can improve performance.
 
-For more information, refer to the [Git LFS documentation](../../../../topics/git/lfs/index.md).
+For more information, refer to the [Git LFS documentation](../../../../topics/git/lfs/_index.md).
 
 ### Reference architectures
 

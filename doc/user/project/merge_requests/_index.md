@@ -123,7 +123,7 @@ you can type (or select from the dropdown list) the following:
 - Deployed-after
 
 NOTE:
-Projects using a [fast-forward merge method](methods/index.md#fast-forward-merge)
+Projects using a [fast-forward merge method](methods/_index.md#fast-forward-merge)
 do not return results, as this method does not create a merge commit.
 
 When filtering by an environment, a dropdown list presents all environments that
@@ -173,7 +173,7 @@ GitLab adds the merge request to the user's **Assigned merge requests** page.
 
 ## Merge a merge request
 
-During the [merge request review process](reviews/index.md), reviewers provide
+During the [merge request review process](reviews/_index.md), reviewers provide
 feedback on your changes. When a reviewer is satisfied with the changes,
 they can enable [auto-merge](auto_merge.md), even if some merge checks are failing.
 After all merge checks pass, the merge request is automatically merged, without further action from you.
@@ -259,10 +259,10 @@ For a software developer working in a team:
 1. You work on the implementation optimizing code with [Code Quality reports](../../../ci/testing/code_quality.md).
 1. You verify your changes with [Unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
 1. You avoid using dependencies whose license is not compatible with your project with [License approval policies](../../compliance/license_approval_policies.md).
-1. You request the [approval](approvals/index.md) from your manager.
+1. You request the [approval](approvals/_index.md) from your manager.
 1. Your manager:
    1. Pushes a commit with their final review.
-   1. [Approves the merge request](approvals/index.md).
+   1. [Approves the merge request](approvals/_index.md).
    1. Sets it to [auto-merge](auto_merge.md) (formerly **Merge when pipeline succeeds**).
 1. Your changes get deployed to production with [manual jobs](../../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) for GitLab CI/CD.
 1. Your implementations were successfully shipped to your customer.
@@ -273,7 +273,7 @@ For a web developer writing a webpage for your company's website:
 1. You gather feedback from your reviewers.
 1. You preview your changes with [review apps](../../../ci/review_apps/index.md).
 1. You request your web designers for their implementation.
-1. You request the [approval](approvals/index.md) from your manager.
+1. You request the [approval](approvals/_index.md) from your manager.
 1. After approval, GitLab:
    - [Squashes](squash_and_merge.md) the commits.
    - Merges the commit.
@@ -401,7 +401,7 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 ## Related topics
 
 - [Create a merge request](creating_merge_requests.md)
-- [Review a merge request](reviews/index.md)
+- [Review a merge request](reviews/_index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Testing and reports](../../../ci/testing/index.md)
 - [GitLab keyboard shortcuts](../../shortcuts.md)

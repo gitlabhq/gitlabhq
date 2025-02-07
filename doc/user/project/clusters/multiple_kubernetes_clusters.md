@@ -12,7 +12,7 @@ DETAILS:
 WARNING:
 Using multiple Kubernetes clusters for a single project **with cluster
 certificates** was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/index.md).
+To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
 
 You can associate more than one Kubernetes cluster to your
 project. That way you can have different clusters for different environments,

@@ -467,7 +467,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
 
-[Receptive agents](../user/clusters/agent/index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
+[Receptive agents](../user/clusters/agent/_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
 that cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
 
 ### List URL configurations for a receptive agent

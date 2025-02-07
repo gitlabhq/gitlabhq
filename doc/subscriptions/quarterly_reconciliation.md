@@ -60,7 +60,7 @@ If you are billed quarterly:
 At the end of each subscription quarter, GitLab notifies you about overages.
 The date you're notified about the overage is not the same as the date you are billed.
 
-1. An email that communicates the [overage seat quantity](gitlab_com/index.md#seats-owed)
+1. An email that communicates the [overage seat quantity](gitlab_com/_index.md#seats-owed)
 and expected invoice amount is sent:
 
    - On GitLab.com: On the reconciliation date, to group owners.

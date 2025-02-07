@@ -34,7 +34,7 @@ add one when you create an environment.
 
 Prerequisites:
 
-- A GitLab agent for Kubernetes is [installed](../../user/clusters/agent/install/index.md) and [`user_access`](../../user/clusters/agent/user_access.md) is configured for the environment's project or its parent group.
+- A GitLab agent for Kubernetes is [installed](../../user/clusters/agent/install/_index.md) and [`user_access`](../../user/clusters/agent/user_access.md) is configured for the environment's project or its parent group.
 
 ::Tabs
 
@@ -209,7 +209,7 @@ To provide feedback on the detailed dashboard, see [issue 460279](https://gitlab
 
 Prerequisites:
 
-- A GitLab agent for Kubernetes is [configured](../../user/clusters/agent/install/index.md) and shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
+- A GitLab agent for Kubernetes is [configured](../../user/clusters/agent/install/_index.md) and shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
 
 The detailed dashboard is not linked from the sidebar navigation.
 To view a detailed dashboard:

@@ -226,7 +226,7 @@ so this configuration can affect performance.
 
 ## GitLab cluster agent tokens
 
-When you [register a GitLab agent for Kubernetes](../../user/clusters/agent/install/index.md#register-the-agent-with-gitlab), GitLab generates an access token to authenticate the cluster agent with GitLab.
+When you [register a GitLab agent for Kubernetes](../../user/clusters/agent/install/_index.md#register-the-agent-with-gitlab), GitLab generates an access token to authenticate the cluster agent with GitLab.
 
 To revoke this cluster agent token, you can either:
 

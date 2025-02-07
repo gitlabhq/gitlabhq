@@ -67,7 +67,7 @@ issues created through customer support requests, and filter or interact with th
 ![Service Desk Issue tracker](img/service_desk_issue_tracker_v16_10.png)
 
 Messages from the end user are shown as coming from the special
-[Support Bot user](../../../subscriptions/self_managed/index.md#billable-users).
+[Support Bot user](../../../subscriptions/self_managed/_index.md#billable-users).
 You can read and write comments as you usually do in GitLab:
 
 ![Service Desk issue thread](img/service_desk_thread_v9_1.png)

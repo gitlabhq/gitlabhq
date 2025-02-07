@@ -724,7 +724,7 @@ class Member < ApplicationRecord
   end
 
   def after_decline_invite
-    notification_service.decline_invite(self)
+    Members::InviteDeclinedMailer.with(member: self).email.deliver_later
   end
 
   def after_accept_request

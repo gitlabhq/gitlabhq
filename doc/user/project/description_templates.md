@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can define templates to use as descriptions
-for your [issues](issues/index.md) and [merge requests](merge_requests/index.md).
+for your [issues](issues/index.md) and [merge requests](merge_requests/_index.md).
 
 You can define these templates in a project, group, or instance. Projects
 inherit the templates defined at a higher level.

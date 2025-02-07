@@ -80,7 +80,7 @@ It replaces large files with text pointers in Git, and stores the file contents 
 Prerequisites:
 
 - Download and install the appropriate version of the [CLI extension for Git LFS](https://git-lfs.com) for your operating system.
-- [Configure your project to use Git LFS](lfs/index.md).
+- [Configure your project to use Git LFS](lfs/_index.md).
 - Install the Git LFS pre-push hook. To do this, run `git lfs install` in the root directory of your repository.
 
 ### Add and track files
@@ -207,7 +207,7 @@ It's a good option for:
 
 Prerequisites:
 
-- You must have [Git LFS installed](../git/lfs/index.md).
+- You must have [Git LFS installed](../git/lfs/_index.md).
 - You must have the Maintainer role for the project.
 
 ### Configure file locks
@@ -322,5 +322,5 @@ To lock a file, edit it, and optionally unlock it:
 ## Related topics
 
 - [File management with the GitLab UI](../../user/project/repository/files/index.md)
-- [Git Large File Storage (LFS) documentation](lfs/index.md)
+- [Git Large File Storage (LFS) documentation](lfs/_index.md)
 - [File locking](../../user/project/file_lock.md)

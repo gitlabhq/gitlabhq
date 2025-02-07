@@ -19,7 +19,7 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { clusterAgents, connectedTimeNow, connectedTimeInactive } from './mock_data';
 
 const defaultConfigHelpUrl =
-  '/help/user/clusters/agent/install/index#create-an-agent-configuration-file';
+  '/help/user/clusters/agent/install/_index#create-an-agent-configuration-file';
 
 const defaultProps = {
   agents: clusterAgents,

@@ -126,13 +126,13 @@ To turn off diff previews for a project:
 
 Configure your project's merge request settings:
 
-- Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
+- Set up the [merge request method](../merge_requests/methods/_index.md) (merge commit, fast-forward merge).
 - Add merge request [description templates](../description_templates.md).
 - Turn on:
-  - [Merge request approvals](../merge_requests/approvals/index.md).
+  - [Merge request approvals](../merge_requests/approvals/_index.md).
   - [Status checks](../merge_requests/status_checks.md).
   - [Merge only if pipeline succeeds](../merge_requests/auto_merge.md).
-  - [Merge only when all threads are resolved](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
+  - [Merge only when all threads are resolved](../merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved).
   - [Required associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
   - [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
 - Configure:

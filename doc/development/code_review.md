@@ -47,8 +47,8 @@ also helps to spread the workload.
 
 For assistance with security scans or comments, include the Application Security Team (`@gitlab-com/gl-security/appsec`).
 
-The reviewers use the [reviewer functionality](../user/project/merge_requests/reviews/index.md) in the sidebar.
-Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/index.md#approve-a-merge-request).
+The reviewers use the [reviewer functionality](../user/project/merge_requests/reviews/_index.md) in the sidebar.
+Reviewers can add their approval by [approving additionally](../user/project/merge_requests/approvals/_index.md#approve-a-merge-request).
 
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
@@ -471,14 +471,14 @@ After merging, a maintainer should stay as the reviewer listed on the merge requ
 
 ### Dogfooding the Reviewers feature
 
-Our code review process dogfoods the [Merge request reviews feature](../user/project/merge_requests/reviews/index.md).
+Our code review process dogfoods the [Merge request reviews feature](../user/project/merge_requests/reviews/_index.md).
 Here is a summary, which is also reflected in other sections.
 
 - Merge request authors and DRIs stay as Assignees.
 - Merge request reviewers stay as Reviewers even after they have reviewed.
-- Authors [request a review](../user/project/merge_requests/reviews/index.md#request-a-review) by assigning users as Reviewers.
-- Authors [re-request a review](../user/project/merge_requests/reviews/index.md#re-request-a-review) when they have made changes and wish a reviewer to re-review.
-- Reviewers use the [reviews feature](../user/project/merge_requests/reviews/index.md#start-a-review) to submit feedback.
+- Authors [request a review](../user/project/merge_requests/reviews/_index.md#request-a-review) by assigning users as Reviewers.
+- Authors [re-request a review](../user/project/merge_requests/reviews/_index.md#re-request-a-review) when they have made changes and wish a reviewer to re-review.
+- Reviewers use the [reviews feature](../user/project/merge_requests/reviews/_index.md#start-a-review) to submit feedback.
   Tip: Select **Start review** or **Start a review** rather than **Add comment now** in any comment context on the MR.
 
 ## Best practices
@@ -572,7 +572,7 @@ first time.
 ### Requesting a review
 
 When you are ready to have your merge request reviewed,
-you should [request an initial review](../user/project/merge_requests/reviews/index.md) by selecting a reviewer based on the [approval guidelines](#approval-guidelines).
+you should [request an initial review](../user/project/merge_requests/reviews/_index.md) by selecting a reviewer based on the [approval guidelines](#approval-guidelines).
 
 When a merge request has multiple areas for review, it is recommended you specify which area a reviewer should be reviewing, and at which stage (first or second).
 This will help team members who qualify as a reviewer for multiple areas to know which area they're being requested to review.
@@ -581,7 +581,7 @@ For example, when a merge request has both `backend` and `frontend` concerns, yo
 
 You can also use `workflow::ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
 
-When re-requesting a review, click the [**Re-request a review** icon](../user/project/merge_requests/reviews/index.md#re-request-a-review) (**{redo}**) next to the reviewer's name, or use the `/request_review @user` quick action.
+When re-requesting a review, click the [**Re-request a review** icon](../user/project/merge_requests/reviews/_index.md#re-request-a-review) (**{redo}**) next to the reviewer's name, or use the `/request_review @user` quick action.
 This ensures the merge request appears in the reviewer's **Reviews requested** section of their merge request homepage.
 
 When your merge request receives an approval from the first reviewer it can be passed to a maintainer. You should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.

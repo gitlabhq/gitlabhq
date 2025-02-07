@@ -293,5 +293,5 @@ For more details and configuration options, see the [DAST documentation](../../.
 ## Further reading
 
 - If you're interested in more of the continuous deployments to clouds, see [cloud deployments](../index.md).
-- If you want to quickly set up DevSecOps in your project, see [Auto DevOps](../../../topics/autodevops/index.md).
+- If you want to quickly set up DevSecOps in your project, see [Auto DevOps](../../../topics/autodevops/_index.md).
 - If you want to quickly set up the production-grade environment, see [the 5 Minute Production App](https://gitlab.com/gitlab-org/5-minute-production-app/deploy-template/-/blob/master/README.md).

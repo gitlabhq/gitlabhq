@@ -15,7 +15,7 @@ Choose which GitLab offering suits your needs:
 - GitLab.com: The GitLab software-as-a-service offering.
   You don't need to install anything to use GitLab.com, you only need to
   [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
-- [GitLab Dedicated](gitlab_dedicated/index.md): A single-tenant SaaS service for highly regulated and large enterprises.
+- [GitLab Dedicated](gitlab_dedicated/_index.md): A single-tenant SaaS service for highly regulated and large enterprises.
 - GitLab Self-Managed: Install, administer, and maintain your own GitLab instance.
 
 On GitLab Self-Managed, a GitLab subscription provides the same set of
@@ -45,10 +45,10 @@ You can purchase the following add-ons:
 
 - [GitLab Duo](subscription-add-ons.md): Get access to AI-powered features like Code Suggestions, GitLab
 Duo Chat, and more.
-- [Enterprise Agile Planning](gitlab_com/index.md#enterprise-agile-planning): Increase collaboration between
+- [Enterprise Agile Planning](gitlab_com/_index.md#enterprise-agile-planning): Increase collaboration between
 technical and non-technical teams on a single platform. Non-engineering team members can participate in planning,
 measure impact with Value Stream Analytics, and gain visibility into software development velocity.
-- [Storage](gitlab_com/index.md#purchase-more-storage): Buy more storage when you exceed your
+- [Storage](gitlab_com/_index.md#purchase-more-storage): Buy more storage when you exceed your
 free 10 GiB storage quota.
 - [Compute minutes](gitlab_com/compute_minutes.md): Buy additional compute minutes when your
 plan exceeds its allocated amount and you need to continue running automated

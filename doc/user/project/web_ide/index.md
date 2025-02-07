@@ -139,7 +139,7 @@ To commit changes in the Web IDE:
 
 ## Create a merge request
 
-To create a [merge request](../merge_requests/index.md) in the Web IDE:
+To create a [merge request](../merge_requests/_index.md) in the Web IDE:
 
 1. [Commit the changes](#commit-changes).
 1. In the notification that appears in the lower right, select **Create MR**.

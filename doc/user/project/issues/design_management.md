@@ -22,7 +22,7 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
 
 ## Prerequisites
 
-- [Git Large File Storage (LFS)](../../../topics/git/lfs/index.md) must be enabled:
+- [Git Large File Storage (LFS)](../../../topics/git/lfs/_index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
   - On self-managed instances, a GitLab administrator must
     [enable LFS globally](../../../administration/lfs/index.md).

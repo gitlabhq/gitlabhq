@@ -63,10 +63,10 @@ the tiers are no longer mentioned in GitLab documentation:
   - [`elasticsearch.log`](../administration/logs/index.md#elasticsearchlog)
 - Merge requests:
   - [Full code quality reports in the code quality tab](../ci/testing/code_quality.md#pipeline-details-view)
-  - [Merge request approvals](../user/project/merge_requests/approvals/index.md)
-  - [Multiple assignees](../user/project/merge_requests/index.md#assign-a-user-to-a-merge-request)
-  - [Approval rule information for reviewers](../user/project/merge_requests/reviews/index.md#request-a-review)
-  - [Required Approvals](../user/project/merge_requests/approvals/index.md#required-approvals)
+  - [Merge request approvals](../user/project/merge_requests/approvals/_index.md)
+  - [Multiple assignees](../user/project/merge_requests/_index.md#assign-a-user-to-a-merge-request)
+  - [Approval rule information for reviewers](../user/project/merge_requests/reviews/_index.md#request-a-review)
+  - [Required Approvals](../user/project/merge_requests/approvals/_index.md#required-approvals)
   - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
   - [Restricting push and merge access to certain users](../user/project/repository/branches/protected.md)
@@ -100,8 +100,8 @@ the tiers are no longer mentioned in GitLab documentation:
   - [External groups](../integration/saml.md#external-groups)
   - [Required groups](../integration/saml.md#required-groups)
 - Search:
-  - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by approvers
-  - [Filtering merge requests](../user/project/merge_requests/index.md#filter-the-list-of-merge-requests) by "approved by"
+  - [Filtering merge requests](../user/project/merge_requests/_index.md#filter-the-list-of-merge-requests) by approvers
+  - [Filtering merge requests](../user/project/merge_requests/_index.md#filter-the-list-of-merge-requests) by "approved by"
   - [Advanced search (Elasticsearch)](../user/search/advanced_search.md)
 - [Service Desk](../user/project/service_desk/index.md)
 - [Storage usage statistics](../user/storage_usage_quotas.md)
@@ -125,7 +125,7 @@ Bronze-level subscribers:
   - Project milestones API: [Get all burndown chart events for a single milestone](../api/milestones.md#get-all-burndown-chart-events-for-a-single-milestone)
   - [Project iterations API](../api/iterations.md)
   - Fields in the [Search API](../api/search.md) available only to [advanced search (Elasticsearch)](../integration/advanced_search/elasticsearch.md) users
-  - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/approvals/index.md)
+  - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/approvals/_index.md)
   - Fields in the [Protected branches API](../api/protected_branches.md) that specify users or groups allowed to merge
   - [Merge request approvals API](../api/merge_request_approvals.md)
 - Development information:
