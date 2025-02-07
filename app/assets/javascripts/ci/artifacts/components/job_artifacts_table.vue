@@ -15,6 +15,7 @@ import {
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
+import { updateHistory, getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -127,6 +128,7 @@ export default {
       isBulkDeleteModalVisible: false,
       jobArtifactsToDelete: [],
       isBulkDeleting: false,
+      page: INITIAL_CURRENT_PAGE,
     };
   },
   computed: {
@@ -199,7 +201,17 @@ export default {
         : '';
     },
   },
+  created() {
+    this.updateQueryParamsFromUrl();
+    window.addEventListener('popstate', this.updateQueryParamsFromUrl);
+  },
+  destroyed() {
+    window.removeEventListener('popstate', this.updateQueryParamsFromUrl);
+  },
   methods: {
+    updateQueryParamsFromUrl() {
+      this.page = Number(getParameterByName('page')) || INITIAL_CURRENT_PAGE;
+    },
     refetchArtifacts() {
       this.$apollo.queries.jobArtifacts.refetch();
     },
@@ -211,6 +223,11 @@ export default {
       return `#${id}`;
     },
     handlePageChange(page) {
+      this.page = page;
+
+      updateHistory({
+        url: setUrlParams({ page }),
+      });
       const { startCursor, endCursor } = this.pageInfo;
 
       if (page > this.pagination.currentPage) {
@@ -605,7 +622,7 @@ export default {
       :prev-page="prevPage"
       :next-page="nextPage"
       align="center"
-      class="gl-mt-3"
+      class="gl-mt-6"
       @input="handlePageChange"
     />
   </div>

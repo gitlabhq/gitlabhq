@@ -147,8 +147,7 @@ To delete an on-demand scan:
 > - Additional variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177703) in GitLab 17.9.
 
 A site profile defines the attributes and configuration details of the deployed application,
-website, or API to be scanned by DAST. A site profile can be referenced in `.gitlab-ci.yml` and
-on-demand scans.
+website, or API to be scanned by DAST.
 
 A site profile contains:
 
@@ -175,6 +174,22 @@ When an API site type is selected, a host override is used to ensure the API bei
 
 When configured, request headers and password fields are encrypted using [`aes-256-gcm`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) before being stored in the database.
 This data can only be read and decrypted with a valid secrets file.
+
+You can reference a site profile in `.gitlab-ci.yml` and
+on-demand scans.
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  stage: dast
+  dast_configuration:
+    site_profile: "<profile name>"
+```
 
 ### Site profile validation
 
@@ -362,8 +377,7 @@ app.get('/dast-website-target', function(req, res) {
 > - Deprecated AJAX Spider option with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
 > - Renamed spider timeout to crawl timeout with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
 
-A scanner profile defines the configuration details of a security scanner. A scanner profile can be
-referenced in `.gitlab-ci.yml` and on-demand scans.
+A scanner profile defines the configuration details of a security scanner.
 
 A scanner profile contains:
 
@@ -374,6 +388,22 @@ A scanner profile contains:
 - **Target timeout:** The maximum number of seconds DAST waits for the site to be available before
   starting the scan.
 - **Debug messages:** Include debug messages in the DAST console output.
+
+You can reference a scanner profile in `.gitlab-ci.yml` and
+on-demand scans.
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  stage: dast
+  dast_configuration:
+    scanner_profile: "<profile name>"
+```
 
 ### Create a scanner profile
 

@@ -3,6 +3,7 @@
 module Projects
   class RefreshBuildArtifactsSizeStatisticsWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include LimitedCapacity::Worker
 
     data_consistency :always

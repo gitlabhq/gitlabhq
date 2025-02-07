@@ -32,6 +32,7 @@ class User < ApplicationRecord
   include IgnorableColumns
   include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
+  include Todoable
 
   # `ensure_namespace_correct` needs to be moved to an after_commit (?)
   cross_database_ignore_tables %w[namespaces namespace_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
@@ -1133,6 +1134,10 @@ class User < ApplicationRecord
 
   def to_reference(_from = nil, target_container: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
+  end
+
+  def readable_by?(user)
+    id == user.id
   end
 
   def skip_confirmation=(bool)

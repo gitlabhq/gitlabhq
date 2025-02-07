@@ -11,7 +11,6 @@ Rails/PluralizationGrammar:
     - 'ee/spec/lib/ee/gitlab/git_access_project_spec.rb'
     - 'ee/spec/lib/ee/gitlab/pages/deployment_validations_spec.rb'
     - 'ee/spec/requests/api/graphql/namespace/projects_spec.rb'
-    - 'ee/spec/services/search/rake_task_executor_service_spec.rb'
     - 'spec/controllers/admin/plan_limits_controller_spec.rb'
     - 'spec/factories/gitlab/database/reindexing/reindex_action.rb'
     - 'spec/lib/gitlab/ci/artifact_file_reader_spec.rb'

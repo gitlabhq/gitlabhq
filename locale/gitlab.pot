@@ -4023,7 +4023,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model identifier must be less than 255 characters."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Model identifier must start with \"bedrock/\""
+msgid "AdminSelfHostedModels|Model identifier must start with \"%{bedrockIdentifierPrefix}\""
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model uses an API token"
@@ -4108,9 +4108,6 @@ msgid "AdminSelfHostedModels|You do not currently have any self-hosted models. %
 msgstr ""
 
 msgid "AdminSelfHostedModels|Your self-hosted model was successfully deleted."
-msgstr ""
-
-msgid "AdminSelfHostedModels|bedrock/"
 msgstr ""
 
 msgid "AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
@@ -21201,6 +21198,9 @@ msgstr ""
 msgid "Download image"
 msgstr ""
 
+msgid "Download one of the files below to see all changes."
+msgstr ""
+
 msgid "Download raw data (.csv)"
 msgstr ""
 
@@ -24926,7 +24926,7 @@ msgstr ""
 msgid "For a faster browsing experience, only %{strongStart}%{visible} of %{total}%{strongEnd} files are shown. Download one of the files below to see all changes."
 msgstr ""
 
-msgid "For a faster browsing experience, only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are shown. Download one of the files below to see all changes."
+msgid "For a faster browsing experience, only %{strong_open}%{display_size} of %{real_size}%{strong_close} files are shown."
 msgstr ""
 
 msgid "For a faster browsing experience, some files are collapsed by default."

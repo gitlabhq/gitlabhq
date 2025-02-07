@@ -368,7 +368,7 @@ export default {
     class="issue !gl-flex !gl-px-5"
     :class="{
       closed: issuable.closedAt,
-      'gl-bg-blue-50': isActive,
+      'gl-bg-feedback-info': isActive,
       'gl-cursor-pointer': preventRedirect && !showCheckbox,
       'hover:gl-bg-subtle': preventRedirect && !isActive && !showCheckbox,
     }"

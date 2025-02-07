@@ -10,6 +10,10 @@ module Diffs
       @merge_request = merge_request
     end
 
+    def before_render
+      @can_download_files = commit? || merge_request?
+    end
+
     def message
       html_escape(message_text) % {
         display_size: @diff_files.size,
@@ -39,6 +43,20 @@ module Diffs
       end
     end
 
+    def message_text
+      base_message = _(
+        "For a faster browsing experience, only %{strong_open}%{display_size} of %{real_size}%{strong_close} " \
+          "files are shown."
+      )
+      download_message = _("Download one of the files below to see all changes.")
+
+      if @can_download_files
+        "#{base_message} #{download_message}"
+      else
+        base_message
+      end
+    end
+
     private
 
     def commit?
@@ -50,13 +68,6 @@ module Diffs
       current_controller?("projects/merge_requests/diffs") &&
         @merge_request.present? &&
         @merge_request.persisted?
-    end
-
-    def message_text
-      _(
-        "For a faster browsing experience, only %{strong_open}%{display_size} of %{real_size}%{strong_close} " \
-          "files are shown. Download one of the files below to see all changes."
-      )
     end
   end
 end

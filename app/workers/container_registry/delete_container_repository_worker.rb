@@ -3,6 +3,7 @@
 module ContainerRegistry
   class DeleteContainerRepositoryWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
     extend ::Gitlab::Utils::Override

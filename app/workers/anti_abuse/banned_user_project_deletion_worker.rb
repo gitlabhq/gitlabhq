@@ -3,6 +3,7 @@
 module AntiAbuse
   class BannedUserProjectDeletionWorker
     include ApplicationWorker
+    include CronjobChildWorker
 
     idempotent!
     feature_category :instance_resiliency

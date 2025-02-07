@@ -203,9 +203,12 @@
     "Milestone"
   ],
   "Todoable": [
+    "AddOnUser",
     "AlertManagementAlert",
+    "AutocompletedUser",
     "BoardEpic",
     "Commit",
+    "CurrentUser",
     "Design",
     "Epic",
     "EpicIssue",
@@ -213,8 +216,13 @@
     "Issue",
     "Key",
     "MergeRequest",
+    "MergeRequestAssignee",
+    "MergeRequestAuthor",
+    "MergeRequestParticipant",
+    "MergeRequestReviewer",
     "Namespace",
     "Project",
+    "UserCore",
     "Vulnerability",
     "WikiPage",
     "WorkItem"

@@ -181,7 +181,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :container_repository
 - :name: container_repository:container_expiration_policies_cleanup_container_repository
   :worker_name: ContainerExpirationPolicies::CleanupContainerRepositoryWorker
@@ -201,7 +202,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :container_repository
 - :name: container_repository_delete:container_registry_delete_container_repository
   :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
@@ -211,7 +213,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :container_repository_delete
 - :name: cronjob:admin_email
   :worker_name: AdminEmailWorker
@@ -1191,7 +1194,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_blob:virtual_registries_packages_cache_destroy_orphan_entries
   :worker_name: VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker
@@ -1201,7 +1205,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_blob:virtual_registries_packages_destroy_orphan_cached_responses
   :worker_name: VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker
@@ -1211,7 +1216,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
@@ -1221,7 +1227,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :dependency_proxy_manifest
 - :name: deployment:deployments_archive_in_project
   :worker_name: Deployments::ArchiveInProjectWorker
@@ -2061,7 +2068,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_cleanup_package_file
   :worker_name: Packages::CleanupPackageFileWorker
@@ -2071,7 +2079,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_mark_package_files_for_destruction
   :worker_name: Packages::MarkPackageFilesForDestructionWorker
@@ -2091,7 +2100,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_nuget_cleanup_stale_symbols
   :worker_name: Packages::Nuget::CleanupStaleSymbolsWorker
@@ -2101,7 +2111,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_repositories:packages_debian_generate_distribution
   :worker_name: Packages::Debian::GenerateDistributionWorker
@@ -2581,7 +2592,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace: :repository_check
 - :name: repository_check:repository_check_clear
   :worker_name: RepositoryCheck::ClearWorker
@@ -2721,7 +2733,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: anti_abuse_ban_duplicate_users
   :worker_name: AntiAbuse::BanDuplicateUsersWorker
@@ -2741,7 +2754,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: anti_abuse_spam_abuse_events
   :worker_name: AntiAbuse::SpamAbuseEventsWorker
@@ -3251,7 +3265,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: ci_destroy_old_pipelines
   :worker_name: Ci::DestroyOldPipelinesWorker
@@ -3261,7 +3276,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: ci_execute_build_hooks
   :worker_name: Ci::ExecuteBuildHooksWorker
@@ -3351,7 +3367,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: ci_update_build_names
   :worker_name: Ci::UpdateBuildNamesWorker
@@ -3971,7 +3988,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: members_prune_deletions
   :worker_name: Members::PruneDeletionsWorker
@@ -3981,7 +3999,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: merge
   :worker_name: MergeWorker
@@ -4001,7 +4020,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: merge_request_mergeability_check
   :worker_name: MergeRequestMergeabilityCheckWorker
@@ -4241,7 +4261,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: pages_domain_verification
   :worker_name: PagesDomainVerificationWorker
@@ -4251,7 +4272,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: pages_reset_pages_default_domain_redirect
   :worker_name: Pages::ResetPagesDefaultDomainRedirectWorker
@@ -4441,7 +4463,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: projects_post_creation
   :worker_name: Projects::PostCreationWorker
@@ -4481,7 +4504,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: projects_schedule_bulk_repository_shard_moves
   :worker_name: Projects::ScheduleBulkRepositoryShardMovesWorker
@@ -4591,7 +4615,8 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
-  :tags: []
+  :tags:
+  - :cronjob_child
   :queue_namespace:
 - :name: remote_mirror_notification
   :worker_name: RemoteMirrorNotificationWorker

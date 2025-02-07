@@ -15,13 +15,13 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js, feature_categor
     it 'project visibility select is available' do
       visibility_select_container = find('.project-visibility-setting')
 
-      expect(visibility_select_container.find('select').value).to eq project.visibility_level.to_s
+      expect(find_by_testid('project-visibility-dropdown').value).to eq project.visibility_level.to_s
       expect(visibility_select_container).to have_content 'Accessible by anyone, regardless of authentication.'
     end
 
     it 'project visibility description updates on change' do
       visibility_select_container = find('.project-visibility-setting')
-      visibility_select = visibility_select_container.find('select')
+      visibility_select = find_by_testid('project-visibility-dropdown')
       visibility_select.select('Private')
 
       expect(visibility_select.value).to eq '0'

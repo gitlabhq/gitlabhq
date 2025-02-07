@@ -18,6 +18,8 @@ module Types
 
     def self.resolve_type(object, context)
       case object
+      when User
+        Types::UserType
       when WorkItem
         Types::WorkItemType
       when Issue

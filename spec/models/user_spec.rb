@@ -8981,6 +8981,22 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#readable_by?' do
+    let_it_be(:user) { create :user }
+
+    context 'when it is the user' do
+      let(:user_2) { user }
+
+      it { expect(user.readable_by?(user_2)).to eq true }
+    end
+
+    context 'when key does not belong to user' do
+      let(:user_2) { build(:user) }
+
+      it { expect(user.readable_by?(user_2)).to eq false }
+    end
+  end
+
   describe '#can_leave_project?' do
     let_it_be(:user) { create :user, :with_namespace }
     let_it_be(:user_namespace_project) { create(:project, namespace: user.namespace) }

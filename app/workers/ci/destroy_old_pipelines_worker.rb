@@ -3,6 +3,7 @@
 module Ci
   class DestroyOldPipelinesWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include LimitedCapacity::Worker
 
     data_consistency :sticky

@@ -1,4 +1,4 @@
-import { GlSprintf, GlToggle, GlFormCheckbox } from '@gitlab/ui';
+import { GlCard, GlSprintf, GlToggle, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import CiCatalogSettings from '~/pages/projects/shared/permissions/components/ci_catalog_settings.vue';
@@ -82,7 +82,7 @@ describe('Settings Panel', () => {
       currentSettings = {},
       glFeatures = {},
       cascadingSettingsData = {},
-      stubs = {},
+      stubs = { GlCard },
       ...customProps
     } = {},
     mountFn = shallowMountExtended,
@@ -216,7 +216,7 @@ describe('Settings Panel', () => {
     );
 
     it('should set the visibility level description based upon the selected visibility level', () => {
-      wrapper = mountComponent({ stubs: { GlSprintf } });
+      wrapper = mountComponent({ stubs: { GlSprintf, GlCard } });
 
       setProjectVisibilityLevel(VISIBILITY_LEVEL_INTERNAL_INTEGER);
 

@@ -61,6 +61,8 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
 
       page.within('.gl-alert') do
         expect(page).to have_text("Some changes are not shown. For a faster browsing experience, only 3 of 3+ files are shown. Download one of the files below to see all changes. Plain diff Patches")
+        expect(page).to have_link("Plain diff", href: merge_request_path(merge_request, format: :diff))
+        expect(page).to have_link("Patches", href: merge_request_path(merge_request, format: :patch))
       end
     end
   end

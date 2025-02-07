@@ -5,6 +5,7 @@ module VirtualRegistries
     module Cache
       class DestroyOrphanEntriesWorker
         include ApplicationWorker
+        include CronjobChildWorker
         include LimitedCapacity::Worker
 
         MAX_CAPACITY = 2

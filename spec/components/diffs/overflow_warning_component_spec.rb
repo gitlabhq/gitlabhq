@@ -96,6 +96,7 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
       end
     end
 
+    # Compare revisions or Merge Request create page
     context "both conditions fail" do
       before do
         allow(component).to receive(:commit?).and_return(false)
@@ -175,6 +176,50 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_catego
       allow(component).to receive(:merge_request?).and_return(false)
 
       is_expected.to be_nil
+    end
+  end
+
+  describe '#message_text' do
+    subject { component.message_text }
+
+    context "when on a commit page" do
+      before do
+        allow(component).to receive(:commit?).and_return(true)
+        render_inline component
+      end
+
+      it "contains base and download message" do
+        expect(subject).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
+          "%{real_size}%{strong_close} files are shown."))
+        expect(subject).to include(_("Download one of the files below to see all changes."))
+      end
+    end
+
+    context "when on a merge request page" do
+      before do
+        allow(component).to receive(:merge_request?).and_return(true)
+        render_inline component
+      end
+
+      it "contains base and download message" do
+        expect(subject).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
+          "%{real_size}%{strong_close} files are shown."))
+        expect(subject).to include(_("Download one of the files below to see all changes."))
+      end
+    end
+
+    context "when not on a commit or merge request page" do
+      before do
+        allow(component).to receive(:commit?).and_return(false)
+        allow(component).to receive(:merge_request?).and_return(false)
+        render_inline component
+      end
+
+      it "contains base message only" do
+        expect(subject).to include(_("For a faster browsing experience, only %{strong_open}%{display_size} of " \
+          "%{real_size}%{strong_close} files are shown."))
+        expect(subject).not_to include(_("Download one of the files below to see all changes."))
+      end
     end
   end
 end

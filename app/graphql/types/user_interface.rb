@@ -7,6 +7,8 @@ module Types
     graphql_name 'User'
     description 'Representation of a GitLab user.'
 
+    implements Types::TodoableInterface
+
     field :user_permissions,
       type: Types::PermissionTypes::User,
       description: 'Permissions for the current user on the resource.',

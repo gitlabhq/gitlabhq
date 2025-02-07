@@ -39,8 +39,7 @@ InitializerConnections.raise_if_new_database_connection do
     end
 
     use_doorkeeper_device_authorization_grant do
-      controller device_authorizations: 'oauth/device_authorizations',
-        device_codes: 'oauth/device_codes'
+      controller device_authorizations: 'oauth/device_authorizations'
     end
 
     # Add OPTIONS method for CORS preflight requests

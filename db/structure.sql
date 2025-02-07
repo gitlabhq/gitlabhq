@@ -27031,6 +27031,9 @@ ALTER TABLE terraform_state_versions
 ALTER TABLE approval_merge_request_rules
     ADD CONSTRAINT check_90caab37e0 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE approvals
+    ADD CONSTRAINT check_9da7c942dc CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE issue_links
     ADD CONSTRAINT check_c32f659c75 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 

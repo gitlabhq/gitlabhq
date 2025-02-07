@@ -3,6 +3,7 @@
 module Members
   class PruneDeletionsWorker
     include ApplicationWorker
+    include CronjobChildWorker
     include LimitedCapacity::Worker
     include Gitlab::Utils::StrongMemoize
 

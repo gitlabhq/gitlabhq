@@ -2,6 +2,7 @@
 
 module Types
   class TodoTargetEnum < BaseEnum
+    value 'USER', value: 'User', description: 'User.'
     value 'COMMIT', value: 'Commit', description: 'Commit.'
     value 'ISSUE', value: 'Issue', description: 'Issue.'
     value 'WORKITEM', value: 'WorkItem', description: 'Work item.'
