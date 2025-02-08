@@ -245,7 +245,7 @@ Expressions are different from template interpolation which uses double square-b
 and are evaluated during job generation.
 
 Expressions only have access to CI/CD job variables with names starting with `CI_`, `DOCKER_`,
-or `GITLAB_`. Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073+)
+or `GITLAB_`. Follow [epic 15073](https://gitlab.com/groups/gitlab-org/-/epics/15073)
 to track when steps can access all CI/CD job variables.
 
 ### Using prior step outputs
