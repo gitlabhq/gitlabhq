@@ -31,7 +31,7 @@ Use the `Bug` or `Feature Proposal` template.
 
 ## Related topics
 
-- [Code Suggestions](../../user/project/repository/code_suggestions/index.md)
+- [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
 - [Eclipse troubleshooting](troubleshooting.md)
 - [GitLab Language Server documentation](../language_server/_index.md)
 - [About the Create:Editor Extensions Group](https://handbook.gitlab.com/handbook/engineering/development/dev/create/editor-extensions/)

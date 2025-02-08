@@ -23,7 +23,7 @@ When you add files of these types to your project, GitLab renders their output
 to improve readability:
 
 - [GeoJSON](geojson.md) files display as maps.
-- [Jupyter Notebook](jupyter_notebooks/index.md) files display as rendered HTML.
+- [Jupyter Notebook](jupyter_notebooks/_index.md) files display as rendered HTML.
 - Files in many markup languages are rendered for display.
 
 ### Supported markup languages

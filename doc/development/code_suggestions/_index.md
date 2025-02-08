@@ -54,7 +54,7 @@ with the deployed staging AI gateway. To do this:
    ```
 
 1. Restart the GDK.
-1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/index.md).
+1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/_index.md).
 1. Test out the Code Suggestions feature by opening the Web IDE for a project.
 
 ### Setup instructions to use GDK with the Code Suggestions Add-on

@@ -91,7 +91,7 @@ To sign a commit:
 ## Verify commits
 
 You can verify all types of signed commits
-[in the GitLab UI](../signed_commits/index.md#verify-commits). Commits signed
+[in the GitLab UI](../signed_commits/_index.md#verify-commits). Commits signed
 with an SSH key can also be verified locally.
 
 ### Verify commits locally

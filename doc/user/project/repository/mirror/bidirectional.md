@@ -15,7 +15,7 @@ DETAILS:
 WARNING:
 Bidirectional mirroring may cause conflicts.
 
-Bidirectional [mirroring](index.md) configures two repositories to both pull from,
+Bidirectional [mirroring](_index.md) configures two repositories to both pull from,
 and push to, each other. There is no guarantee that either repository can update
 without errors.
 
@@ -24,7 +24,7 @@ without errors.
 If you configure bidirectional mirroring, prepare your repositories for
 conflicts. Configure them to reduce conflicts, and how to settle them when they occur:
 
-- [Mirror only protected branches](index.md#mirror-only-protected-branches). Rewriting
+- [Mirror only protected branches](_index.md#mirror-only-protected-branches). Rewriting
   any mirrored commit on either remote causes conflicts and mirroring to fail.
 - [Protect the branches](../branches/protected.md) you want to mirror on both
   remotes to prevent conflicts caused by rewriting history.

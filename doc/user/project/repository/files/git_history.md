@@ -22,7 +22,7 @@ Each commit shows:
 - The user's name. Hover over the name to see the user's job title, location, local time, and current status message.
 - The date of the commit, in time-ago format. To see the precise date and time of
   the commit, hover over the date.
-- If the [commit is signed](../signed_commits/index.md), a **Verified** badge.
+- If the [commit is signed](../signed_commits/_index.md), a **Verified** badge.
 - The commit SHA. GitLab shows the first 8 characters. Select **Copy commit SHA** (**{copy-to-clipboard}**) to copy the entire SHA.
 - A link to **browse** (**{folder-open}**) the file as it appeared at the time of this commit.
 

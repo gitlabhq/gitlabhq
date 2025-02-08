@@ -16,7 +16,7 @@ You can manage project [pull mirroring](../user/project/repository/mirror/pull.m
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
 > - [Extended response](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168377) to include mirror configuration information in GitLab 17.5. The following configuration settings are included: `enabled`, `mirror_trigger_builds`, `only_mirror_protected_branches`, `mirror_overwrites_diverged_branches`, and `mirror_branch_regex`.
 
-Return the details of a project's [pull mirror](../user/project/repository/mirror/index.md).
+Return the details of a project's [pull mirror](../user/project/repository/mirror/_index.md).
 
 ```plaintext
 GET /projects/:id/mirror/pull

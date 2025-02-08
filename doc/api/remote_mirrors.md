@@ -226,7 +226,7 @@ Example response:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388907) in GitLab 16.11.
 
-[Force an update](../user/project/repository/mirror/index.md#force-an-update) to a push mirror.
+[Force an update](../user/project/repository/mirror/_index.md#force-an-update) to a push mirror.
 
 ```plaintext
 POST /projects/:id/remote_mirrors/:mirror_id/sync

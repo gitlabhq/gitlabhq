@@ -80,7 +80,7 @@ built-in error reporting tool:
 
 ## Related topics
 
-- [Code Suggestions](../../user/project/repository/code_suggestions/index.md)
+- [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
 - [JetBrains troubleshooting](jetbrains_troubleshooting.md)
 - [GitLab Language Server documentation](../language_server/_index.md)
 - [About the Create:Editor Extensions Group](https://handbook.gitlab.com/handbook/engineering/development/dev/create/editor-extensions/)

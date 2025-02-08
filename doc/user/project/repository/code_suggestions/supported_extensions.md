@@ -50,7 +50,7 @@ Code Suggestions provides enhanced support for the following core languages:
 - PHP
 - TypeScript
 
-When working with these languages, Code Suggestions leverages [files open in tabs as context](index.md#use-files-open-in-tabs-as-context) and [Repository X-Ray](repository_xray.md) to deliver more accurate, context-aware code suggestions.
+When working with these languages, Code Suggestions leverages [files open in tabs as context](_index.md#use-files-open-in-tabs-as-context) and [Repository X-Ray](repository_xray.md) to deliver more accurate, context-aware code suggestions.
 
 The following table provides more information on the languages Code Suggestions supports by default, and the IDEs.
 

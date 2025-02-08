@@ -126,7 +126,7 @@ If the GUI-based import tool does not work, you can try to:
 
 - Use the [GitLab Import API](../../../api/import.md#import-repository-from-bitbucket-server)
   Bitbucket Server endpoint.
-- Set up [repository mirroring](../repository/mirror/index.md).
+- Set up [repository mirroring](../repository/mirror/_index.md).
   It provides verbose error output.
 
 See the [troubleshooting section](bitbucket.md#troubleshooting)

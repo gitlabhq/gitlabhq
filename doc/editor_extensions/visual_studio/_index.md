@@ -8,7 +8,7 @@ title: GitLab extension for Visual Studio
 
 The [GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
 integrates GitLab with Visual Studio for Windows. GitLab for Visual Studio supports
-[GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
+[GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md).
 
 [Install and configure the extension](setup.md).
 

@@ -146,11 +146,11 @@ fail nor succeed. They also do not leave a clear log. To check for this problem:
 
 1. After you run the command, the [background jobs page](../../../../administration/admin_area.md#background-jobs)
    should show new mirroring jobs being scheduled, especially when
-   [triggered manually](index.md#update-a-mirror).
+   [triggered manually](_index.md#update-a-mirror).
 
 ## Invalid URL
 
-If you receive this error while setting up mirroring over [SSH](index.md#ssh-authentication), make sure the URL is in a valid format.
+If you receive this error while setting up mirroring over [SSH](_index.md#ssh-authentication), make sure the URL is in a valid format.
 
 Mirroring **does not** support SCP-like clone URLs in the form of
 `git@gitlab.com:gitlab-org/gitlab.git`, with host and project path separated using `:`.
@@ -162,7 +162,7 @@ that includes the `ssh://` protocol, like `ssh://git@gitlab.com/gitlab-org/gitla
 This error is returned when the target host public SSH key changes.
 Public SSH keys rarely change. If host key verification fails,
 but you suspect the key is still valid, you must delete the repository mirror
-and create it again. For more information, see [Create a repository mirror](index.md#create-a-repository-mirror).
+and create it again. For more information, see [Create a repository mirror](_index.md#create-a-repository-mirror).
 
 ## Transfer mirror users and tokens to a single service account
 
@@ -290,4 +290,4 @@ For more information, see the [Git documentation on discovering references](http
 To resolve this, you can do either of the following:
 
 - Migrate the source repository to a "smart" server.
-- Mirror the repository using the [SSH protocol](index.md#ssh-authentication) (requires authentication).
+- Mirror the repository using the [SSH protocol](_index.md#ssh-authentication) (requires authentication).

@@ -356,7 +356,7 @@ Set the limit to `0` to disable it.
 
 ## Pull mirroring interval
 
-The [minimum wait time between pull refreshes](../user/project/repository/mirror/index.md)
+The [minimum wait time between pull refreshes](../user/project/repository/mirror/_index.md)
 defaults to 300 seconds (5 minutes). For example, a pull refresh only runs once in a given 300 second period, regardless of how many times you trigger it.
 
 This setting applies in the context of pull refreshes invoked by using the [projects API](../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),

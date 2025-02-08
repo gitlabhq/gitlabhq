@@ -4,7 +4,7 @@
 
     GitLab Duo Code Suggestions helps teams create software faster and more efficiently, by completing lines of code and defining and generating logic for functions.
 
-    Code Suggestions is built with privacy as a critical foundation. Private, non-public customer code stored in GitLab is not used as training data. Learn about [data usage](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/index.html#code-suggestions-data-usage) when using Code Suggestions.
+    Code Suggestions is built with privacy as a critical foundation. Private, non-public customer code stored in GitLab is not used as training data. Learn about [data usage](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/_index.html#code-suggestions-data-usage) when using Code Suggestions.
 
     In the general release, we've made [Code Suggestions available across several IDEs](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/#supported-editor-extensions). Code Suggestions is also now more intuitive and responsive.
 

@@ -1,11 +1,11 @@
 ---
-redirect_to: 'files/index.md'
+redirect_to: 'files/_index.md'
 remove_date: '2025-06-11'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](files/index.md).
+This document was moved to [another location](files/_index.md).
 
 <!-- This redirect file can be deleted after <2025-06-11>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

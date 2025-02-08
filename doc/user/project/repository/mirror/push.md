@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-A _push mirror_ is a downstream repository that [mirrors](index.md) the commits made
+A _push mirror_ is a downstream repository that [mirrors](_index.md) the commits made
 to the upstream repository. Push mirrors passively receive copies of the commits made to the
 upstream repository. To prevent the mirror from diverging from the upstream
 repository, don't push commits directly to the downstream mirror. Push commits to
@@ -20,7 +20,7 @@ While [pull mirroring](pull.md) periodically retrieves updates from the upstream
 push mirrors only receive changes when:
 
 - Commits are pushed to the upstream GitLab repository.
-- An administrator [force-updates the mirror](index.md#force-an-update).
+- An administrator [force-updates the mirror](_index.md#force-an-update).
 
 When you push a change to the upstream repository, the push mirror receives it:
 
@@ -45,7 +45,7 @@ To set up push mirroring for an existing project:
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.
 1. Select an **Authentication method**. For more information, see
-   [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).
+   [Authentication methods for mirrors](_index.md#authentication-methods-for-mirrors).
 1. Select **Only mirror protected branches**, if necessary.
 1. Select **Keep divergent refs**, if desired.
 1. To save the configuration, select **Mirror repository**.

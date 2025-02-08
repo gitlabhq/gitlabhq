@@ -43,7 +43,7 @@ The following list illustrates the main differences between CVS and Git:
   You can also ask the other developer to do the merge and resolve any conflicts
   themselves.
 - **Signed commits.** Git supports
-  [signing your commits](../repository/signed_commits/index.md) for additional
+  [signing your commits](../repository/signed_commits/_index.md) for additional
   security and verification that the commit indeed came from its original author.
   GitLab shows whether a signed commit is correctly verified.
 

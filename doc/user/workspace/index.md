@@ -185,7 +185,7 @@ For more information, see the [VS Code documentation](https://code.visualstudio.
 The GitLab Workflow extension for VS Code is configured by default in workspaces.
 
 With this extension, you can view issues, create merge requests, and manage CI/CD pipelines.
-This extension also powers AI features like [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md)
+This extension also powers AI features like [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
 and [GitLab Duo Chat](../gitlab_duo_chat/index.md).
 
 For more information, see [GitLab Workflow extension for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension).

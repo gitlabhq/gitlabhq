@@ -64,7 +64,7 @@ For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/ep
 
 Prerequisites:
 
-- [Code Suggestions](../project/repository/code_suggestions/index.md) must be enabled.
+- [Code Suggestions](../project/repository/code_suggestions/_index.md) must be enabled.
 - [ClickHouse for contribution analytics](../group/contribution_analytics/index.md#contribution-analytics-with-clickhouse) must be configured.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.

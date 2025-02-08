@@ -40,7 +40,7 @@ For public projects, and members of internal and private projects
 with [permissions to view the project's code](../permissions.md#project-members-permissions),
 the project overview page shows:
 
-- A [`README` or index file](repository/files/index.md#readme-and-index-files).
+- A [`README` or index file](repository/files/_index.md#readme-and-index-files).
 - A list of directories in the project's repository.
 
 For users without permission to view the project's code, the overview page shows:

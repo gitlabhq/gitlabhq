@@ -275,7 +275,7 @@ If the requirements are not met, the importer can't map the particular user's co
 DETAILS:
 **Tier:** Premium, Ultimate
 
-Depending on your GitLab tier, [repository mirroring](../repository/mirror/index.md) can be set up to keep
+Depending on your GitLab tier, [repository mirroring](../repository/mirror/_index.md) can be set up to keep
 your imported repository in sync with its GitHub copy.
 
 Additionally, you can configure GitLab to send pipeline status updates back to GitHub with the

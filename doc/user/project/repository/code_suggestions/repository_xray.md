@@ -15,7 +15,7 @@ DETAILS:
 
 Repository X-Ray automatically enriches:
 
-- Code generation requests for [GitLab Duo Code Suggestions](index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
+- Code generation requests for [GitLab Duo Code Suggestions](_index.md) by providing additional context about a project's dependencies to improve the accuracy and relevance of code recommendations.
 - Requests to [refactor code](../../../gitlab_duo_chat/examples.md#refactor-code-in-the-ide), [fix code](../../../gitlab_duo_chat/examples.md#fix-code-in-the-ide), and [write tests](../../../gitlab_duo_chat/examples.md#write-tests-in-the-ide).
 
 To do this, Repository X-Ray gives the code assistant more insight into the project's codebase and dependencies by:
@@ -44,7 +44,7 @@ When a code generation request is made, a maximum of 300 libraries from the pars
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/476180) in GitLab 17.4 [with a flag](../../../feature_flags.md) named `ai_enable_internal_repository_xray_service`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483928) in GitLab 17.6. Feature flag `ai_enable_internal_repository_xray_service` removed.
 
-The Repository X-Ray service is automatically enabled if your project has access to [GitLab Duo Code Suggestions](index.md).
+The Repository X-Ray service is automatically enabled if your project has access to [GitLab Duo Code Suggestions](_index.md).
 
 ## Supported languages and dependency managers
 
@@ -81,7 +81,7 @@ and is planned for removal in 18.0. Use [Enable Repository X-Ray](#enable-reposi
 
 Prerequisites:
 
-- You must have access to [GitLab Duo Code Suggestions](index.md) in the project.
+- You must have access to [GitLab Duo Code Suggestions](_index.md) in the project.
 - GitLab Runner must be set up and enabled for the project, because Repository X-Ray runs analysis pipelines using GitLab runners.
 
 To enable Repository X-Ray, add the following definition job to the project's `.gitlab-ci.yml`.

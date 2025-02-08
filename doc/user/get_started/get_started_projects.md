@@ -111,7 +111,7 @@ use the file finder.
 For more information, see:
 
 - [Code intelligence](../project/code_intelligence.md)
-- [Files](../project/repository/files/index.md)
+- [Files](../project/repository/files/_index.md)
 
 ## Step 6: Migrate projects into GitLab
 

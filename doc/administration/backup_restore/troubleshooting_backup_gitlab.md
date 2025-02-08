@@ -21,7 +21,7 @@ decrypt those columns, preventing access to the following items:
 - [Custom Pages domains](../../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../../operations/error_tracking.md)
 - [Runner authentication](../../ci/runners/_index.md)
-- [Project mirroring](../../user/project/repository/mirror/index.md)
+- [Project mirroring](../../user/project/repository/mirror/_index.md)
 - [Integrations](../../user/project/integrations/index.md)
 - [Web hooks](../../user/project/integrations/webhooks.md)
 - [Deploy tokens](../../user/project/deploy_tokens/index.md)

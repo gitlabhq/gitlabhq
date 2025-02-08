@@ -792,7 +792,7 @@ you deliver to users, follow these best practices:
   - Require everyone submit merge requests for changes to protected branches. Set the
     **Allowed to push and merge** option to `No one` for protected branches.
   - Block force pushes to protected branches.
-- **Sign all commits**: [Sign all commits](../../user/project/repository/signed_commits/index.md) to the component project.
+- **Sign all commits**: [Sign all commits](../../user/project/repository/signed_commits/_index.md) to the component project.
 - **Discourage using `latest`**: Avoid including examples in your `README.md` that use `@latest`.
 - **Limit dependency on caches and artifacts from other jobs**: Only use cache and artifacts
   from other jobs in CI/CD components if absolutely necessary

@@ -50,7 +50,7 @@ To improve your workflow while planning work, try these features:
 
 To improve your workflow while authoring code, try these features:
 
-- [Code Suggestions](../project/repository/code_suggestions/index.md): Generate code and show suggestions as you type.
+- [Code Suggestions](../project/repository/code_suggestions/_index.md): Generate code and show suggestions as you type.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)
 - Code Explanation: Have code explained. View docs for explaining code in:
 
@@ -104,7 +104,7 @@ To improve your security, try these features:
 | [GitLab Duo Workflow](../duo_workflow/index.md) | Ultimate | - | GitLab.com | Experiment |
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Code Suggestions](../project/repository/code_suggestions/index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [Code Suggestions](../project/repository/code_suggestions/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Code Explanation](../project/repository/code_explain.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |

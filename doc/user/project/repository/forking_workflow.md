@@ -125,7 +125,7 @@ A fork can be configured as a mirror of the upstream if all these conditions are
 1. You do not work on [merge requests for confidential issues](../merge_requests/confidential.md),
    which requires changes to `main`.
 
-[Repository mirroring](mirror/index.md) keeps your fork synced with the original repository.
+[Repository mirroring](mirror/_index.md) keeps your fork synced with the original repository.
 This method updates your fork once per hour, with no manual `git pull` required.
 For instructions, read [Configure pull mirroring](mirror/pull.md#configure-pull-mirroring).
 

@@ -15,7 +15,7 @@ or any other Git server. Some [known issues](#known-issues) exist.
 Instead of moving your entire project to GitLab, you can connect your
 external repository to get the benefits of GitLab CI/CD.
 
-Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/index.md)
+Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/_index.md)
 and creates a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
 [can be re-enabled later](../../user/project/settings/index.md#configure-project-features-and-permissions).
@@ -33,7 +33,7 @@ If the **Run CI/CD for external repository** option is not available:
 
 - The GitLab instance might not have any import sources configured.
   Ask an administrator to check the [import sources configuration](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
-- [Project mirroring](../../user/project/repository/mirror/index.md) might be disabled.
+- [Project mirroring](../../user/project/repository/mirror/_index.md) might be disabled.
   If disabled, only administrators can use the **Run CI/CD for external repository** option.
   Ask an administrator to check the [project mirroring configuration](../../administration/settings/visibility_and_access_controls.md#enable-project-mirroring).
 

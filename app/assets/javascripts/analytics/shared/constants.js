@@ -306,7 +306,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
     ),
     groupLink: '',
     projectLink: '',
-    docsLink: helpPagePath('user/project/repository/code_suggestions/index'),
+    docsLink: helpPagePath('user/project/repository/code_suggestions/_index'),
   },
   [AI_METRICS.CODE_SUGGESTIONS_ACCEPTANCE_RATE]: {
     description: s__(
@@ -314,7 +314,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
     ),
     groupLink: '',
     projectLink: '',
-    docsLink: helpPagePath('user/project/repository/code_suggestions/index', {
+    docsLink: helpPagePath('user/project/repository/code_suggestions/_index', {
       anchor: 'use-code-suggestions',
     }),
   },

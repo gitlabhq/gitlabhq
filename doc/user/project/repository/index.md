@@ -105,7 +105,7 @@ When new files are added, this information can take up to five minutes to update
 ### Add repository languages
 
 Not all files are detected and listed on the **Project overview** page. Documentation,
-vendor code, and [most markup languages](files/index.md#supported-markup-languages) are excluded.
+vendor code, and [most markup languages](files/_index.md#supported-markup-languages) are excluded.
 To view a list of supported files and languages, see [supported data types](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
 To change this behavior and include additional file types in the default settings:
@@ -119,7 +119,7 @@ To change this behavior and include additional file types in the default setting
    ```
 
 This feature can use excessive CPU. If you experience an issue, see the
-[Repository Languages: excessive CPU use](files/index.md#repository-languages-excessive-cpu-use) troubleshooting section.
+[Repository Languages: excessive CPU use](files/_index.md#repository-languages-excessive-cpu-use) troubleshooting section.
 
 ## Repository contributor analytics
 
@@ -170,7 +170,7 @@ After you change a path, you must update the existing URL in the following resou
 - [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md)
 - [Lock files and prevent change conflicts](../file_lock.md)
 - [Repository API](../../../api/repositories.md)
-- [Files](files/index.md)
+- [Files](files/_index.md)
 - [Branches](branches/_index.md)
 - [Create a directory](web_editor.md#create-a-directory)
 - [Find file history](files/git_history.md)

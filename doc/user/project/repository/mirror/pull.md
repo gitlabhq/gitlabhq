@@ -13,7 +13,7 @@ DETAILS:
 > - Moved to GitLab Premium in 13.9.
 
 You can use the GitLab interface to browse the content and activity of a repository,
-even if it isn't hosted on GitLab. Create a pull [mirror](index.md) to copy the
+even if it isn't hosted on GitLab. Create a pull [mirror](_index.md) to copy the
 branches, tags, and commits from an upstream repository to yours.
 
 Unlike [push mirrors](push.md), pull mirrors retrieve changes from an upstream (remote)
@@ -22,7 +22,7 @@ repository, don't push commits directly to the downstream mirror. Push commits t
 the upstream repository instead. Changes in the remote repository are pulled into the GitLab repository:
 
 - Automatically, 30 minutes after a previous pull. This cannot be disabled.
-- When an administrator [force-updates the mirror](index.md#force-an-update).
+- When an administrator [force-updates the mirror](_index.md#force-an-update).
 - When an [API call triggers an update](#trigger-an-update-by-using-the-api).
 
 UI and API updates are subject to default
@@ -79,7 +79,7 @@ Prerequisites:
 
 1. In **Mirror direction**, select **Pull**.
 1. In **Authentication method**, select your authentication method. For more information, see
-   [Authentication methods for mirrors](index.md#authentication-methods-for-mirrors).
+   [Authentication methods for mirrors](_index.md#authentication-methods-for-mirrors).
 1. Select any of the options you need:
    - [**Overwrite diverged branches**](#overwrite-diverged-branches)
    - [**Trigger pipelines for mirror updates**](#trigger-pipelines-for-mirror-updates)
@@ -116,7 +116,7 @@ the remote repository updates branches or tags. Before you enable this feature:
 Pull mirroring uses polling to detect new branches and commits added upstream,
 often minutes afterwards. You can notify GitLab using an
 [API call](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
-but the [minimum interval for pull mirroring limits](index.md#force-an-update) is still enforced.
+but the [minimum interval for pull mirroring limits](_index.md#force-an-update) is still enforced.
 
 For more information, read
 [Start the pull mirroring process for a project](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project).
@@ -131,7 +131,7 @@ and mirroring attempts stop. This failure is visible in either the:
 - Project's main dashboard.
 - Pull mirror settings page.
 
-To resume project mirroring, [force an update](index.md#force-an-update).
+To resume project mirroring, [force an update](_index.md#force-an-update).
 
 If multiple projects are affected by this problem, such as after a long network or
 server outage, you can use the [Rails console](../../../../administration/operations/rails_console.md)

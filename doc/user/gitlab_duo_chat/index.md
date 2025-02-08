@@ -83,7 +83,7 @@ We are continuously working to expand contextual awareness of Chat to include mo
 ### Additional features
 
 [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) automatically enriches
-code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md).
+code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md).
 If your project has access to Code Suggestions, then the `/refactor`, `/fix`, and `/tests` slash commands
 also have access to the latest Repository X-Ray report, and include that report as context for Duo.
 

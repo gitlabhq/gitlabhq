@@ -321,6 +321,6 @@ To lock a file, edit it, and optionally unlock it:
 
 ## Related topics
 
-- [File management with the GitLab UI](../../user/project/repository/files/index.md)
+- [File management with the GitLab UI](../../user/project/repository/files/_index.md)
 - [Git Large File Storage (LFS) documentation](lfs/_index.md)
 - [File locking](../../user/project/file_lock.md)

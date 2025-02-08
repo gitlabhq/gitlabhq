@@ -11,7 +11,7 @@ title: Control GitLab Duo availability
 GitLab Duo features that are generally available are automatically turned on for all users that have access.
 
 - You must have an [GitLab Duo Pro or Enterprise add-on subscription](../../subscriptions/subscription-add-ons.md).
-- For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/index.md),
+- For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/_index.md),
   [you must also assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
   to the users you want to have access.
 

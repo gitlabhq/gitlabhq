@@ -52,7 +52,7 @@ You can add multiple commits before pushing your changes.
 
 - **Sign a commit:**
 
-  Add extra security by [signing your commits](../repository/signed_commits/index.md).
+  Add extra security by [signing your commits](../repository/signed_commits/_index.md).
 
 For additional information, see [Stage, commit, and push changes](../../../topics/git/commit.md).
 

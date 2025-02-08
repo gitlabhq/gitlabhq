@@ -87,7 +87,7 @@ the tiers are no longer mentioned in GitLab documentation:
     - [Trigger pipelines for mirror updates](../user/project/repository/mirror/pull.md#trigger-pipelines-for-mirror-updates)
     - [Fix hard failures when mirroring](../user/project/repository/mirror/pull.md#fix-hard-failures-when-mirroring)
     - [Trigger pull mirroring from the API](../user/project/repository/mirror/pull.md#trigger-an-update-by-using-the-api)
-    - [Mirror only protected branches](../user/project/repository/mirror/index.md#mirror-only-protected-branches)
+    - [Mirror only protected branches](../user/project/repository/mirror/_index.md#mirror-only-protected-branches)
     - [Bidirectional mirroring](../user/project/repository/mirror/bidirectional.md)
     - [Mirror with Perforce Helix with Git Fusion](../user/project/repository/mirror/bidirectional.md#mirror-with-perforce-helix-with-git-fusion)
 - Runners:

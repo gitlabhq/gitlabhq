@@ -90,7 +90,7 @@ see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](htt
 For more information about other API client libraries, see [Third-party clients](../api/rest/third_party_clients.md).
 
 NOTE:
-Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/index.md) to write code more efficiently.
+Use [GitLab Duo Code Suggestions](project/repository/code_suggestions/_index.md) to write code more efficiently.
 
 ## Storage analysis
 
