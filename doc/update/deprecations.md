@@ -1535,6 +1535,25 @@ From GitLab 18.0 and later, the runner registration methods implemented by the n
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Support for SUSE Linux Enterprise Server 15 SP2
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8888).
+
+</div>
+
+Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 15 SP2 ended in December 2024.
+
+Therefore, we will longer support the SLES SP2 distribution for Linux package installs. You should upgrade to
+SLES 15 SP6 for continued support.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### The GitLab legacy requirement IID is deprecated in favor of work item IID
 
 <div class="deprecation-notes">
