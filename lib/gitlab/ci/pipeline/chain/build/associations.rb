@@ -43,6 +43,11 @@ module Gitlab
             end
 
             def apply_permissions(variables)
+              # On demand DAST validation pipelines are created by the GitLab backend.
+              # Their pipeline variables are also controlled by GitLab.
+              # See https://gitlab.com/gitlab-org/gitlab/-/issues/513148
+              return variables if @command.source.to_sym == :ondemand_dast_validation
+
               # We allow parent pipelines to pass variables to child pipelines since
               # these variables are coming from internal configurations. We will check
               # permissions to :set_pipeline_variables when those are injected upstream,
