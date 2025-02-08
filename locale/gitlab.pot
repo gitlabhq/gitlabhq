@@ -50503,7 +50503,7 @@ msgstr ""
 msgid "ScanResultPolicy|Unknown"
 msgstr ""
 
-msgid "ScanResultPolicy|Use this format for package paths: path/file.yaml@group-name/project-name. For multiple packages, separate paths with comma \",\"."
+msgid "ScanResultPolicy|Use purl format for package paths: %{schemaStart}scheme:type/namespace/name@version?qualifiers#subpath%{schemaEnd}. For multiple packages, separate paths with comma \",\"."
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanType} %{scanners} runs against the %{branches} %{branchExceptions} and find(s) %{vulnerabilitiesNumber} %{boldDescription} of the following criteria:"
@@ -52386,6 +52386,9 @@ msgid "SecurityOrchestration|Vulnerability management policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Warn in merge request"
+msgstr ""
+
+msgid "SecurityOrchestration|Warn users with a bot comment and contact the following users as security consultants for support: %{approvers}"
 msgstr ""
 
 msgid "SecurityOrchestration|What does an example message look like?"

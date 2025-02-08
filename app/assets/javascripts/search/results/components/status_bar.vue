@@ -27,6 +27,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    error: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapState(['query', 'groupInitialJson', 'projectInitialJson', 'repositoryRef']),
@@ -74,6 +79,9 @@ export default {
         'GlobalSearch|Showing %{resultsTotal} code results for %{term} in %{branchDropdown} of %{ProjectWithGroupPathLink}',
         this?.resultsTotal ?? 0,
       );
+    },
+    hasError() {
+      return Boolean(this.error);
     },
   },
   methods: {

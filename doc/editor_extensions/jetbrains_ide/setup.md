@@ -14,9 +14,12 @@ Prerequisites:
 - JetBrains IDEs: **2023.2.X** and later.
 - GitLab version 16.8 or later.
 
-If you use an older version of a JetBrains IDE, check the version compatibility list on the marketplace listing.
-It contains a table of plugin versions and their
-[supported IDE versions](https://plugins.jetbrains.com/plugin/22325-gitlab-duo/versions).
+If you use an older version of a JetBrains IDE, download a version of the plugin compatible with your IDE:
+
+1. On the GitLab Duo [plugin page](https://plugins.jetbrains.com/plugin/22325-gitlab-duo), select **Versions**.
+1. Select **Compatibility**, then select your JetBrains IDE.
+1. Select a **Channel** to filter for stable releases or alpha releases.
+1. In the compatibility table, find your IDE version and select **Download**.
 
 ## Enable the plugin
 
