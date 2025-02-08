@@ -81,6 +81,7 @@
 - :lib
 - :line_number
 - :location
+- :lock_recorder
 - :mailer
 - :manage
 - :migration

@@ -44,9 +44,17 @@ module Namespaces
       included do
         before_update :lock_both_roots, if: -> { parent_id_changed? }
         after_update :sync_traversal_ids, if: -> { saved_change_to_parent_id? }
+
+        # Update the traversal_ids for this namespace in a process safe way.
+        #
         # This uses rails internal before_commit API to sync traversal_ids on namespace create, right before transaction is committed.
         # This helps reduce the time during which the root namespace record is locked to ensure updated traversal_ids are valid
-        before_commit :sync_traversal_ids, on: [:create]
+        before_commit :sync_traversal_ids, if: -> { Feature.disabled?(:shared_namespace_locks, root_ancestor) }, on: [:create]
+        # We are taking less aggressive shared locks here so we do not have to use the unofficial before_commit API.
+        # The before_commit behaves in unexpected ways for something like:
+        # build(:issue, spam: true).project.update_attributes(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+        after_create :sync_traversal_ids_on_create, -> { Feature.enabled?(:shared_namespace_locks, root_ancestor) }
+
         after_commit :set_traversal_ids,
           if: -> { traversal_ids.empty? || saved_change_to_parent_id? },
           on: [:create, :update]
@@ -77,15 +85,6 @@ module Namespaces
 
           prefixes
         end
-      end
-
-      def traversal_ids=(ids)
-        super(ids)
-        self.transient_traversal_ids = nil
-      end
-
-      def traversal_ids
-        read_attribute(:traversal_ids).presence || transient_traversal_ids || []
       end
 
       def traversal_path
@@ -212,8 +211,6 @@ module Namespaces
 
       private
 
-      attr_accessor :transient_traversal_ids
-
       # Update the traversal_ids for the full hierarchy.
       #
       # NOTE: self.traversal_ids will be stale. Reload for a fresh record.
@@ -226,23 +223,34 @@ module Namespaces
         end
       end
 
+      def sync_traversal_ids_on_create
+        run_callbacks :sync_traversal_ids do
+          # Clear any previously memoized root_ancestor as our ancestors have changed.
+          clear_memoization(:root_ancestor)
+
+          # When the FF is enabled we sync the traversal ids from the node itself. In this case the ancestors are locked
+          # FOR SHARE while the node is locked with FOR NO KEY UPDATE.
+          # When the FF is diabled we sync the traversal ids from the node's root ancestor which is locked with FOR NO
+          # KEY UPDATE.
+          if Feature.enabled?(:shared_namespace_locks, root_ancestor)
+            Namespace::TraversalHierarchy.sync_traversal_ids!(self)
+          else
+            Namespace::TraversalHierarchy.for_namespace(self).sync_traversal_ids!
+          end
+        end
+      end
+
       def set_traversal_ids
         return if id.blank?
 
         # This is a temporary guard and will be removed.
         return if is_a?(Namespaces::ProjectNamespace)
 
-        self.transient_traversal_ids = if parent_id
-                                         # remove safe navigation and `.to_a` with https://gitlab.com/gitlab-org/gitlab/-/issues/508611
-                                         parent&.traversal_ids.to_a + [id]
-                                       else
-                                         [id]
-                                       end
+        # Update our traversal_ids state to match the database.
+        self.traversal_ids = self.class.where(id: self).pick(:traversal_ids)
+        clear_traversal_ids_change
 
-        # Clear root_ancestor memo if changed.
-        if read_attribute(:traversal_ids)&.first != transient_traversal_ids.first
-          clear_memoization(:root_ancestor)
-        end
+        clear_memoization(:root_ancestor)
 
         # Update traversal_ids for any associated child objects.
         children.each(&:reload) if children.loaded?
@@ -262,7 +270,7 @@ module Namespaces
           .reorder(nil)
           .top_level
 
-        Namespace.lock.select(:id).where(id: roots).order(id: :asc).load
+        Namespace.lock('FOR NO KEY UPDATE').select(:id).where(id: roots).order(id: :asc).load
       end
 
       # Search this namespace's lineage. Bound inclusively by top node.

@@ -614,6 +614,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  context 'on create' do
+    let!(:root) { create(:group) }
+    let!(:parent) { create(:group, parent: root) }
+    let(:group) { build(:group, parent: parent) }
+
+    subject { group.save! }
+
+    it 'locks self and ancestors', :lock_recorder do
+      expect { subject }.to lock_rows(
+        root => 'FOR SHARE',
+        parent => 'FOR SHARE',
+        group => 'FOR NO KEY UPDATE'
+      )
+    end
+
+    context 'when shared_namespace_locks is disabled' do
+      before do
+        stub_feature_flags(shared_namespace_locks: false)
+      end
+
+      it 'locks root ancestor', :lock_recorder do
+        expect { subject }.to lock_rows(root => 'FOR NO KEY UPDATE')
+      end
+    end
+  end
+
   context 'when creating a new project' do
     let_it_be(:group) { create(:group) }
 
@@ -716,19 +742,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:old_parent) { create(:group, parent: root) }
         let!(:new_parent) { create(:group, parent: root) }
 
-        context 'with FOR NO KEY UPDATE lock' do
-          before do
-            subject
-          end
+        it 'updates traversal_ids' do
+          subject
 
-          it 'updates traversal_ids' do
-            expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
-          end
+          expect(group.traversal_ids).to eq [root.id, new_parent.id, group.id]
+        end
 
-          it_behaves_like 'hierarchy with traversal_ids'
-          it_behaves_like 'locked row' do
-            let(:row) { root }
-          end
+        it_behaves_like 'hierarchy with traversal_ids'
+
+        it 'locks root ancestor', :lock_recorder do
+          expect { subject }.to lock_rows(root => 'FOR NO KEY UPDATE')
         end
       end
 
@@ -737,16 +760,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:new_parent) { create(:group) }
         let!(:group) { create(:group, parent: old_parent) }
 
-        before do
-          subject
-        end
-
         it 'updates traversal_ids' do
+          subject
+
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
         end
 
-        it_behaves_like 'locked rows' do
-          let(:rows) { [old_parent, new_parent] }
+        it 'locks both root ancestors', :lock_recorder do
+          expect { subject }.to lock_rows(
+            old_parent => 'FOR NO KEY UPDATE',
+            new_parent => 'FOR NO KEY UPDATE'
+          )
         end
 
         context 'old hierarchy' do
@@ -766,16 +790,17 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:old_parent) { nil }
         let!(:new_parent) { create(:group) }
 
-        before do
-          subject
-        end
-
         it 'updates traversal_ids' do
+          subject
+
           expect(group.traversal_ids).to eq [new_parent.id, group.id]
         end
 
-        it_behaves_like 'locked rows' do
-          let(:rows) { [group, new_parent] }
+        it 'locks rows', :lock_recorder do
+          expect { subject }.to lock_rows(
+            group => 'FOR NO KEY UPDATE',
+            new_parent => 'FOR NO KEY UPDATE'
+          )
         end
 
         it_behaves_like 'hierarchy with traversal_ids' do
@@ -787,20 +812,25 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         let!(:old_parent) { create(:group) }
         let!(:new_parent) { nil }
 
-        before do
-          subject
-        end
-
         it 'updates traversal_ids' do
+          subject
+
           expect(group.traversal_ids).to eq [group.id]
         end
 
-        it_behaves_like 'locked rows' do
-          let(:rows) { [old_parent, group] }
+        it 'locks rows', :lock_recorder do
+          expect { subject }.to lock_rows(
+            group => 'FOR NO KEY UPDATE',
+            old_parent => 'FOR NO KEY UPDATE'
+          )
         end
 
         it_behaves_like 'hierarchy with traversal_ids' do
           let(:root) { group }
+
+          before do
+            subject
+          end
         end
       end
     end

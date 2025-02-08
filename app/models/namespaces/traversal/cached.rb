@@ -72,6 +72,16 @@ module Namespaces
       override :sync_traversal_ids
       def sync_traversal_ids
         super
+        wrap_sync_traversal_ids
+      end
+
+      override :sync_traversal_ids_on_create
+      def sync_traversal_ids_on_create
+        super
+        wrap_sync_traversal_ids
+      end
+
+      def wrap_sync_traversal_ids
         return if is_a?(Namespaces::UserNamespace)
 
         ids = [id]

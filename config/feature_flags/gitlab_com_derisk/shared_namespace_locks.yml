@@ -1,0 +1,9 @@
+---
+name: shared_namespace_locks
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19202
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180027
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516979
+milestone: '17.9'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

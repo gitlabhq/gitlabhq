@@ -13,7 +13,7 @@ module Ci
         end
 
         # Projects in group and descendant namespaces owned by the user
-        user.owned_groups.select(:id).each_batch do |owned_groups_relation|
+        user.owned_groups.select(:id, :traversal_ids).each_batch do |owned_groups_relation|
           owned_groups_relation.each do |owned_group|
             Project.in_namespace(owned_group.self_and_descendant_ids).each_batch do |project_relation|
               project_ids = project_relation.pluck_primary_key

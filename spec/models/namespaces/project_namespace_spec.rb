@@ -121,4 +121,22 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :gr
       expect(project_namespace.all_projects).to match_array([project])
     end
   end
+
+  describe 'combine create and update within a single transaction' do
+    let(:issue) { build(:issue, spam: true) }
+
+    subject(:combined_calls) do
+      issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+    end
+
+    it { expect { combined_calls }.not_to raise_error }
+
+    context 'when shared_namespace_locks is false' do
+      before do
+        stub_feature_flags(shared_namespace_locks: false)
+      end
+
+      it { expect { combined_calls }.not_to raise_error }
+    end
+  end
 end
