@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { clearDraft } from '~/lib/utils/autosave';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemCommentLocked from '~/work_items/components/notes/work_item_comment_locked.vue';
@@ -21,6 +22,14 @@ import {
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/autosave');
+
+jest.mock('~/lib/utils/url_utility', () => {
+  const actual = jest.requireActual('~/lib/utils/url_utility');
+  return {
+    ...actual,
+    visitUrl: jest.fn(),
+  };
+});
 
 const workItemId = workItemQueryResponse.data.workItem.id;
 
@@ -284,6 +293,45 @@ describe('Work item add note', () => {
 
         expect(findCommentForm().props('isWorkItemConfidential')).toBe(true);
       });
+    });
+
+    describe('when the work item type is changed to incident', () => {
+      it.each`
+        command                   | shouldPerformReload
+        ${'/promote_to_incident'} | ${true}
+        ${'/type Incident'}       | ${true}
+        ${'/type incident'}       | ${true}
+        ${'/promote_to Incident'} | ${true}
+        ${'/promote_to incident'} | ${true}
+        ${'/promote_to Epic'}     | ${false}
+        ${'/type Issue'}          | ${false}
+        ${'/type Task'}           | ${false}
+        ${'No quick action'}      | ${false}
+      `(
+        'calls visitUrl $shouldPerformReload when note was added with command: $command',
+        async ({ command, shouldPerformReload }) => {
+          await createComponent({
+            isEditing: true,
+            mutationHandler: jest.fn().mockResolvedValue(
+              createWorkItemNoteResponse({
+                messages: ['Message does not matter because its localized'],
+              }),
+            ),
+          });
+
+          findCommentForm().vm.$emit('submitForm', {
+            commentText: command,
+          });
+
+          await waitForPromises();
+
+          if (shouldPerformReload) {
+            expect(visitUrl).toHaveBeenCalled();
+          } else {
+            expect(visitUrl).not.toHaveBeenCalled();
+          }
+        },
+      );
     });
   });
 

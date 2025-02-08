@@ -517,7 +517,7 @@ as both have a different home directory:
 
 You can either copy over the `.ssh/` directory to use the same key, or generate a key in each environment.
 
-If you're running Windows 11 and using [OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview), ensure the `HOME`
+If you're running Windows 11 and using [OpenSSH for Windows](https://learn.microsoft.com/en-us/windows-server/administration/OpenSSH/openssh-overview), ensure the `HOME`
 environment variable is set correctly. Otherwise, your private SSH key might not be found.
 
 Alternative tools include:

@@ -22,7 +22,7 @@ requires both Snowflake and GitLab configuration.
    1. Sign in to GitLab.
    1. Follow steps outlined to [create a personal access token](../user/profile/personal_access_tokens.md#create-a-personal-access-token).
 1. Create a [external access integration](https://docs.snowflake.com/en/developer-guide/external-network-access/creating-using-external-network-access) in Snowflake. For more information,
-   see [setup documentation](https://gitlab.com/gitlab-org/govern/compliance/engineering/snowflake-connector#setup) in the `snowflake-connector` project.
+   see [setup documentation](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/snowflake-connector#setup) in the `snowflake-connector` project.
 1. Create a [warehouse](https://docs.snowflake.com/en/user-guide/warehouses-tasks#creating-a-warehouse) in Snowflake.
 
 ## Configure the GitLab Data Connector

@@ -64,7 +64,7 @@ Install and configure the Jenkins plugin to authorize the connection to GitLab.
 
 1. On the Jenkins server, select **Manage Jenkins > Manage Plugins**.
 1. Select the **Available** tab. Search for `gitlab-plugin` and select it to install.
-   See the [Jenkins GitLab documentation](https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin)
+   See the [Jenkins GitLab documentation](https://plugins.jenkins.io/gitlab-plugin/)
    for other ways to install the plugin.
 1. Select **Manage Jenkins > Configure System**.
 1. In the **GitLab** section, select **Enable authentication for '/project' end-point**.

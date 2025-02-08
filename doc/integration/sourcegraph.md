@@ -42,10 +42,10 @@ DETAILS:
 
 Prerequisites:
 
-- You must have a Sourcegraph instance [configured and running](https://docs.sourcegraph.com/admin)
+- You must have a Sourcegraph instance [configured and running](https://sourcegraph.com/docs/admin)
   with your GitLab instance as an external service.
 - If your Sourcegraph instance uses a HTTPS connection to GitLab, you must
-  [configure HTTPS](https://docs.sourcegraph.com/admin/http_https_configuration)
+  [configure HTTPS](https://sourcegraph.com/docs/admin/http_https_configuration)
   for your Sourcegraph instance.
 
 In Sourcegraph:
@@ -54,7 +54,7 @@ In Sourcegraph:
 1. Optional. [Configure your GitLab external service](https://sourcegraph.com/docs/admin/code_hosts/gitlab).
    If your GitLab repositories are already searchable in Sourcegraph, you can skip this step.
 1. Confirm that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.
-1. Add your GitLab instance URL to the [`corsOrigin` setting](https://docs.sourcegraph.com/admin/config/site_config#corsOrigin)
+1. Add your GitLab instance URL to the [`corsOrigin` setting](https://sourcegraph.com/docs/admin/config/site_config#corsOrigin)
    in your Sourcegraph configuration.
 
 Next, configure your GitLab instance to connect to your Sourcegraph instance.

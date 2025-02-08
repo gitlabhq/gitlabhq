@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { ASC } from '~/notes/constants';
@@ -262,11 +263,25 @@ export default {
         this.$emit('replied');
         clearDraft(this.autosaveKey);
         this.cancelEditing();
+        this.doFullPageReloadIfIncident(commentText);
       } catch (error) {
         this.$emit('error', error.message);
         Sentry.captureException(error);
       } finally {
         this.isSubmitting = false;
+      }
+    },
+    // Until incidents are fully migrated to work items
+    // we need to browse to the detail page again
+    // so the legacy detail view is rendered.
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
+    doFullPageReloadIfIncident(commentText) {
+      // Matches quick actions /promote_to incident /promote_to_incident and /type incident case insensitive
+      const incidentTypeChangeRegex =
+        /\/(promote_to(?:_incident|\s{1,3}incident)|type\s{1,3}incident)(?!\S)/im;
+
+      if (incidentTypeChangeRegex.test(commentText)) {
+        visitUrl(this.workItem.webUrl);
       }
     },
     cancelEditing() {

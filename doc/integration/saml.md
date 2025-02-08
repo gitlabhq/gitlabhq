@@ -734,7 +734,7 @@ For more information, see an [example configuration page](../user/group/saml_sso
 Some IdPs have documentation on how to use them as the IdP in SAML configurations.
 For example:
 
-- [Active Directory Federation Services (ADFS)](https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust)
+- [Active Directory Federation Services (ADFS)](https://learn.microsoft.com/en-us/previous-versions/windows-server/it-pro/windows-server-2012/identity/ad-fs/operations/Create-a-Relying-Party-Trust)
 - [Auth0](https://auth0.com/docs/authenticate/single-sign-on/outbound-single-sign-on/configure-auth0-saml-identity-provider)
 
 If you have any questions on configuring your IdP in a SAML configuration, contact
@@ -3074,7 +3074,7 @@ GitLab then:
   to validate the signature of the received request with.
 
 For more information on this option, see the
-[Ruby SAML gem documentation](https://github.com/onelogin/ruby-saml/tree/v1.7.0).
+[Ruby SAML gem documentation](https://github.com/SAML-Toolkits/ruby-saml/tree/v1.7.0).
 
 The Ruby SAML gem is used by the
 [OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml) to implement the

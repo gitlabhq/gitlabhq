@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: US Public Sector Services
-info: All material changes to this page must be approved by the [FedRAMP Compliance team](https://about.gitlab.com/handbook/security/security-assurance/dedicated-compliance/index.md). To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments.
+info: All material changes to this page must be approved by the [FedRAMP Compliance team](https://handbook.gitlab.com/handbook/security/security-assurance/security-compliance/fedramp-compliance/#gitlabs-fedramp-initiative). To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments.
 title: NIST 800-53 compliance
 ---
 
@@ -493,7 +493,7 @@ including:
 
 - [Container Registry](../administration/backup_restore/backup_gitlab.md#container-registry)
 
-- [Redis](https://redis.io../s/management/persistence/#backing-up-redis-data)
+- [Redis](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#backing-up-redis-data)
 
 - [Configuration Files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files)
 

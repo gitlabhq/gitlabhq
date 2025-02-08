@@ -87,7 +87,7 @@ In addition, any system dependencies used in Omnibus packages or the Cloud Nativ
 
 ## Release management
 
-If the service component needs to be updated or released with the monthly GitLab release, then it should be added to the [release tools automation](https://gitlab.com/gitlab-org/release-tools). This project is maintained by the [Delivery group](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/delivery/).
+If the service component needs to be updated or released with the monthly GitLab release, then it should be added to the [release tools automation](https://gitlab.com/gitlab-org/release-tools). This project is maintained by the [Delivery group](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/delivery/).
 
 Different levels of automation are available to include a component in GitLab monthly releases. The requirements and process for including a component in a release at these different levels are detailed in the [release documentation](https://gitlab.com/gitlab-org/release/docs/-/tree/master/components).
 

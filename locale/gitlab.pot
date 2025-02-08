@@ -35620,6 +35620,12 @@ msgstr ""
 msgid "MergeRequestDiffs|Select comment starting line"
 msgstr ""
 
+msgid "MergeRequestsTab|Active"
+msgstr ""
+
+msgid "MergeRequestsTab|Merged"
+msgstr ""
+
 msgid "MergeRequests|Can't perform this action automatically. It may have already been done, or a more recent commit may have updated some of this content. Please perform this action locally."
 msgstr ""
 

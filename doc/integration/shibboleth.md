@@ -18,7 +18,7 @@ You can use the bundled NGINX provided in the Linux package to run a Shibboleth 
 
 To enable the Shibboleth OmniAuth provider, you must:
 
-- [Install the Apache module](https://wiki.shibboleth.net/confluence/display/SP3/Apache).
+- [Install the Apache module](https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335062/Apache).
 - [Configure the Apache module](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 
 To enable Shibboleth:

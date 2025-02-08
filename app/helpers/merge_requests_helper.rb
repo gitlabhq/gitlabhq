@@ -485,7 +485,7 @@ module MergeRequestsHelper
     {
       tabs: [
         {
-          title: 'Active',
+          title: s_('MergeRequestsTab|Active'),
           key: '',
           lists: [
             [
@@ -574,7 +574,7 @@ module MergeRequestsHelper
           ]
         },
         {
-          title: 'Merged',
+          title: s_('MergeRequestsTab|Merged'),
           key: 'merged',
           lists: [
             [{

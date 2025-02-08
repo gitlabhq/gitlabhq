@@ -13,7 +13,7 @@ DETAILS:
 administrators to connect Sentry to GitLab, so users can view a list of Sentry errors in GitLab.
 
 GitLab integrates with both the cloud-hosted [Sentry](https://sentry.io) and Sentry
-deployed in your [on-premise instance](https://github.com/getsentry/onpremise/).
+deployed in your [on-premise instance](https://github.com/getsentry/self-hosted).
 
 ## Enable Sentry integration for a project
 
@@ -25,7 +25,7 @@ Prerequisites:
 
 To enable the Sentry integration:
 
-1. Sign up to Sentry.io, or deploy your own [on-premise Sentry instance](https://github.com/getsentry/onpremise/).
+1. Sign up to Sentry.io, or deploy your own [on-premise Sentry instance](https://github.com/getsentry/self-hosted).
 1. [Create a new Sentry project](https://docs.sentry.io/product/sentry-basics/integrate-frontend/create-new-project/).
    For each GitLab project that you want to integrate, create a new Sentry project.
 1. Find or generate a [Sentry auth token](https://docs.sentry.io/api/auth/#auth-tokens).

@@ -15,7 +15,7 @@ class Namespace
   class TraversalHierarchy
     include Transactions
 
-    LOCK_TIMEOUT = '500ms'
+    LOCK_TIMEOUT = '1000ms'
 
     attr_accessor :root
 

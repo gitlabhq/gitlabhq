@@ -19,7 +19,7 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
 
   describe 'log_with_level_proc' do
     it 'calls AppJsonLogger with the correct log level and parameters' do
-      expect(::Gitlab::AppJsonLogger).to receive(:debug).with({ message: 'Test', "correlation_id" => anything })
+      expect(::Gitlab::AppJsonLogger).to receive(:debug).with({ message: 'Test', caller: anything })
 
       described_class.configuration.log_with_level(:debug, message: 'Test')
     end
