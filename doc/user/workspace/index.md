@@ -98,7 +98,39 @@ by specifying the necessary tools, languages, runtimes, and other components for
 Use them to automatically configure your development environment with your defined specifications.
 They create consistent and reproducible development environments, regardless of the machine or platform you use.
 
-The default location is `.devfile.yaml`, but you can also use a custom location.
+Workspaces support both GitLab default devfile and custom devfiles.
+
+### GitLab default devfile
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171230) in GitLab 17.8.
+
+A GitLab default devfile is available for all projects when you create a workspace.
+This devfile contains:
+
+```yaml
+schemaVersion: 2.2.0
+components:
+  - name: development-environment
+    attributes:
+      gl/inject-editor: true
+    container:
+      image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:20250109224147-golang-1.23@sha256:c3d5527641bc0c6f4fbbea4bb36fe225b8e9f1df69f682c927941327312bc676"
+```
+
+A GitLab default devfile might not be suitable for all development environments configurations.
+In these cases, you can create a [custom devfile](#custom-devfile).
+
+### Custom devfile
+
+If you need a specific development environment configuration, create a custom devfile.
+You can define a devfile in the following locations, relative to your project's root directory:
+
+```plaintext
+- /.devfile.yaml
+- /.devfile.yml
+- /.devfile/.devfile.{devfile_suffix}.yaml
+- /.devfile/.devfile.{devfile_suffix}.yml
+```
 
 ### Validation rules
 

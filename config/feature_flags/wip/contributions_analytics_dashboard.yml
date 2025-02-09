@@ -1,0 +1,9 @@
+---
+name: contributions_analytics_dashboard
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515430
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179490
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516180
+milestone: '17.9'
+group: group::platform insights
+type: wip
+default_enabled: false

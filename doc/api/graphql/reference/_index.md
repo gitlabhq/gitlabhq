@@ -27803,6 +27803,15 @@ IDE settings and feature flags.
 | ---- | ---- | ----------- |
 | <a id="idecodesuggestionsenabled"></a>`codeSuggestionsEnabled` | [`Boolean!`](#boolean) | Indicates whether AI assisted code suggestions are enabled. |
 
+### `ImagePullSecrets`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="imagepullsecretsname"></a>`name` | [`String!`](#string) | Name of the Kubernetes image pull secret. |
+| <a id="imagepullsecretsnamespace"></a>`namespace` | [`String!`](#string) | Namespace of the kubernetes image pull secret. |
+
 ### `ImportSourceUser`
 
 #### Fields
@@ -31421,6 +31430,15 @@ Describes where code is deployed for a project organized by folder.
 | <a id="nestedenvironmentenvironment"></a>`environment` | [`Environment`](#environment) | Latest environment in the folder. |
 | <a id="nestedenvironmentname"></a>`name` | [`String!`](#string) | Human-readable name of the environment. |
 | <a id="nestedenvironmentsize"></a>`size` | [`Int!`](#int) | Number of environments nested in the folder. |
+
+### `NetworkPolicyEgress`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="networkpolicyegressallow"></a>`allow` | [`String!`](#string) | IP range to allow traffic from. |
+| <a id="networkpolicyegressexcept"></a>`except` | [`[String!]`](#string) | List of IP ranges to exclude from the `allow` range. |
 
 ### `Note`
 
@@ -35958,6 +35976,17 @@ Counts of requirements by their state.
 | <a id="requirementstatescountarchived"></a>`archived` | [`Int`](#int) | Number of archived requirements. |
 | <a id="requirementstatescountopened"></a>`opened` | [`Int`](#int) | Number of opened requirements. |
 
+### `ResourceQuotas`
+
+Resource quotas of a workspace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="resourcequotascpu"></a>`cpu` | [`String!`](#string) | Number of cpu cores. |
+| <a id="resourcequotasmemory"></a>`memory` | [`String!`](#string) | Bytes of memory. |
+
 ### `RootStorageStatistics`
 
 #### Fields
@@ -39423,6 +39452,17 @@ Represents a remote development workspace.
 | <a id="workspaceworkspacevariables"></a>`workspaceVariables` **{warning-solid}** | [`WorkspaceVariableConnection`](#workspacevariableconnection) | **Introduced** in GitLab 17.9. **Status**: Experiment. User defined variables associated with the workspace. |
 | <a id="workspaceworkspacesagentconfigversion"></a>`workspacesAgentConfigVersion` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 17.6. **Status**: Experiment. Version of the associated WorkspacesAgentConfig for the workspace. |
 
+### `WorkspaceResources`
+
+Resource specifications of the workspace container.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workspaceresourceslimits"></a>`limits` | [`ResourceQuotas`](#resourcequotas) | Limits for the requested container resources of a workspace. |
+| <a id="workspaceresourcesrequests"></a>`requests` | [`ResourceQuotas`](#resourcequotas) | Requested resources for the container of a workspace. |
+
 ### `WorkspaceVariable`
 
 Represents a remote development workspace variable.
@@ -39451,13 +39491,17 @@ Represents a workspaces agent config.
 | <a id="workspacesagentconfigclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Cluster agent that the workspaces agent config belongs to. |
 | <a id="workspacesagentconfigcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workspaces agent config was created. |
 | <a id="workspacesagentconfigdefaultmaxhoursbeforetermination"></a>`defaultMaxHoursBeforeTermination` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in GitLab 17.9. Field is not used. |
+| <a id="workspacesagentconfigdefaultresourcesperworkspacecontainer"></a>`defaultResourcesPerWorkspaceContainer` **{warning-solid}** | [`WorkspaceResources!`](#workspaceresources) | **Introduced** in GitLab 17.9. **Status**: Experiment. Default cpu and memory resources of the workspace container. |
 | <a id="workspacesagentconfigdefaultruntimeclass"></a>`defaultRuntimeClass` | [`String!`](#string) | Default Kubernetes RuntimeClass. |
 | <a id="workspacesagentconfigdnszone"></a>`dnsZone` | [`String!`](#string) | DNS zone where workspaces are available. |
 | <a id="workspacesagentconfigenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether remote development is enabled for the GitLab agent. |
 | <a id="workspacesagentconfiggitlabworkspacesproxynamespace"></a>`gitlabWorkspacesProxyNamespace` | [`String!`](#string) | Namespace where gitlab-workspaces-proxy is installed. |
 | <a id="workspacesagentconfigid"></a>`id` | [`RemoteDevelopmentWorkspacesAgentConfigID!`](#remotedevelopmentworkspacesagentconfigid) | Global ID of the workspaces agent config. |
+| <a id="workspacesagentconfigimagepullsecrets"></a>`imagePullSecrets` **{warning-solid}** | [`[ImagePullSecrets!]!`](#imagepullsecrets) | **Introduced** in GitLab 17.9. **Status**: Experiment. Kubernetes secrets to pull private images for a workspace. |
 | <a id="workspacesagentconfiglabels"></a>`labels` | [`[KubernetesLabel!]!`](#kuberneteslabel) | Labels to apply to Kubernetes objects. |
 | <a id="workspacesagentconfigmaxhoursbeforeterminationlimit"></a>`maxHoursBeforeTerminationLimit` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in GitLab 17.9. Field is not used. |
+| <a id="workspacesagentconfigmaxresourcesperworkspace"></a>`maxResourcesPerWorkspace` **{warning-solid}** | [`WorkspaceResources!`](#workspaceresources) | **Introduced** in GitLab 17.9. **Status**: Experiment. Maximum cpu and memory resources of the workspace. |
+| <a id="workspacesagentconfignetworkpolicyegress"></a>`networkPolicyEgress` **{warning-solid}** | [`[NetworkPolicyEgress!]!`](#networkpolicyegress) | **Introduced** in GitLab 17.9. **Status**: Experiment. IP CIDR range specifications for egress destinations from a workspace. |
 | <a id="workspacesagentconfignetworkpolicyenabled"></a>`networkPolicyEnabled` | [`Boolean!`](#boolean) | Whether the network policy of the workspaces agent config is enabled. |
 | <a id="workspacesagentconfigprojectid"></a>`projectId` | [`ID`](#id) | ID of the project that the workspaces agent config belongs to. |
 | <a id="workspacesagentconfigupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable workspaces agent config property. |

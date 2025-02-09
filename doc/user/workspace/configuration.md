@@ -51,11 +51,6 @@ Prerequisites:
 
 - You must [set up workspace infrastructure](#set-up-workspace-infrastructure).
 - You must have at least the Developer role for the workspace and agent projects.
-- In each project where you want to create a workspace, create a [devfile](index.md#devfile):
-  1. On the left sidebar, select **Search or go to** and find your project.
-  1. In the root directory of your project, create a file named `devfile`.
-     You can use one of the [example configurations](index.md#example-configurations).
-- Ensure the container images used in the devfile support [arbitrary user IDs](index.md#arbitrary-user-ids).
 
 To create a workspace:
 
@@ -64,8 +59,11 @@ To create a workspace:
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
    GitLab uses to create the workspace.
-1. In **Devfile location**, enter the path to the devfile you use to configure the workspace.
-   If your devfile is not in the root directory of your project, specify a relative path.
+1. From the **Devfile** dropdown list, select one of the following:
+
+   - [GitLab default devfile](index.md#gitlab-default-devfile).
+   - [Custom devfile](index.md#custom-devfile).
+
 1. In **Variables**, enter the keys and values of the environment variables you want to inject into the workspace.
    To add a new variable, select **Add variable**.
 1. Select **Create workspace**.
