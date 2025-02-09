@@ -2363,6 +2363,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_765cae42cd77() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "bulk_import_entities"
+  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_77d9fbad5b12() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2470,6 +2486,22 @@ BEGIN
   NEW."user_id_convert_to_bigint" := NEW."user_id";
   RETURN NEW;
 END;
+$$;
+
+CREATE FUNCTION trigger_7f84f9c7b945() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "bulk_import_entities"
+  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
+END IF;
+
+RETURN NEW;
+
+END
 $$;
 
 CREATE FUNCTION trigger_81b4c93e7133() RETURNS trigger
@@ -3489,6 +3521,22 @@ IF NEW."protected_branch_namespace_id" IS NULL THEN
   INTO NEW."protected_branch_namespace_id"
   FROM "protected_branches"
   WHERE "protected_branches"."id" = NEW."protected_branch_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_eeb25d23ab2d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "bulk_import_entities"
+  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
 END IF;
 
 RETURN NEW;
@@ -9758,6 +9806,9 @@ CREATE TABLE bulk_import_trackers (
     source_objects_count bigint DEFAULT 0 NOT NULL,
     fetched_objects_count bigint DEFAULT 0 NOT NULL,
     imported_objects_count bigint DEFAULT 0 NOT NULL,
+    project_id bigint,
+    namespace_id bigint,
+    organization_id bigint,
     CONSTRAINT check_2d45cae629 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_40aeaa600b CHECK ((char_length(next_page) <= 255)),
     CONSTRAINT check_603f91cb06 CHECK ((char_length(jid) <= 255)),
@@ -31566,6 +31617,12 @@ CREATE INDEX index_bulk_import_failures_on_bulk_import_entity_id ON bulk_import_
 
 CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_failures USING btree (correlation_id_value);
 
+CREATE INDEX index_bulk_import_trackers_on_namespace_id ON bulk_import_trackers USING btree (namespace_id);
+
+CREATE INDEX index_bulk_import_trackers_on_organization_id ON bulk_import_trackers USING btree (organization_id);
+
+CREATE INDEX index_bulk_import_trackers_on_project_id ON bulk_import_trackers USING btree (project_id);
+
 CREATE INDEX index_bulk_imports_on_updated_at_and_id_for_stale_status ON bulk_imports USING btree (updated_at, id) WHERE (status = ANY (ARRAY[0, 1]));
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
@@ -38086,6 +38143,8 @@ CREATE TRIGGER trigger_70d3f0bba1de BEFORE INSERT OR UPDATE ON compliance_framew
 
 CREATE TRIGGER trigger_740afa9807b8 BEFORE INSERT OR UPDATE ON subscription_user_add_on_assignments FOR EACH ROW EXECUTE FUNCTION trigger_740afa9807b8();
 
+CREATE TRIGGER trigger_765cae42cd77 BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION trigger_765cae42cd77();
+
 CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_project_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_77d9fbad5b12();
 
 CREATE TRIGGER trigger_78c85ddc4031 BEFORE INSERT OR UPDATE ON issue_emails FOR EACH ROW EXECUTE FUNCTION trigger_78c85ddc4031();
@@ -38101,6 +38160,8 @@ CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validat
 CREATE TRIGGER trigger_7e2eed79e46e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_7e2eed79e46e();
 
 CREATE TRIGGER trigger_7f41427eda69 BEFORE UPDATE OF pre_receive_secret_detection_enabled ON application_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_7f41427eda69();
+
+CREATE TRIGGER trigger_7f84f9c7b945 BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION trigger_7f84f9c7b945();
 
 CREATE TRIGGER trigger_7fbecfcdf89a BEFORE UPDATE OF secret_push_protection_enabled ON project_security_settings FOR EACH ROW EXECUTE FUNCTION function_for_trigger_7fbecfcdf89a();
 
@@ -38239,6 +38300,8 @@ CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_p
 CREATE TRIGGER trigger_ec1934755627 BEFORE INSERT OR UPDATE ON alert_management_alert_metric_images FOR EACH ROW EXECUTE FUNCTION trigger_ec1934755627();
 
 CREATE TRIGGER trigger_ed554313ca66 BEFORE INSERT OR UPDATE ON protected_branch_unprotect_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_ed554313ca66();
+
+CREATE TRIGGER trigger_eeb25d23ab2d BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION trigger_eeb25d23ab2d();
 
 CREATE TRIGGER trigger_efb9d354f05a BEFORE INSERT OR UPDATE ON incident_management_issuable_escalation_statuses FOR EACH ROW EXECUTE FUNCTION trigger_efb9d354f05a();
 
@@ -38471,6 +38534,9 @@ ALTER TABLE ONLY member_approvals
 ALTER TABLE ONLY cluster_agent_migrations
     ADD CONSTRAINT fk_13af035625 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_trackers
+    ADD CONSTRAINT fk_13c8d30bfb FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_control_compliance_statuses
     ADD CONSTRAINT fk_13fb61bcfa FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -38659,6 +38725,9 @@ ALTER TABLE ONLY agent_group_authorizations
 
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_2d060dfc73 FOREIGN KEY (deployment_id) REFERENCES deployments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_trackers
+    ADD CONSTRAINT fk_2d0e051bc3 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations
     ADD CONSTRAINT fk_2d3ebd0fbc FOREIGN KEY (stream_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE SET NULL;
@@ -39454,6 +39523,9 @@ ALTER TABLE ONLY packages_conan_recipe_revisions
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_9d480c64b2 FOREIGN KEY (start_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY bulk_import_trackers
+    ADD CONSTRAINT fk_9dc0581779 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_group_callouts
     ADD CONSTRAINT fk_9dc8b9d4b2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
