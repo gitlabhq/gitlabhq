@@ -20,7 +20,7 @@ to prove their identity:
 they would need both factors.
 
 NOTE:
-If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IdP) side. Enforcing 2FA on GitLab as well might be unnecessary.
+If you are [using and enforcing SSO](../user/group/saml_sso/_index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IdP) side. Enforcing 2FA on GitLab as well might be unnecessary.
 
 ## Enforce 2FA for all users
 

@@ -70,6 +70,6 @@ RSpec.describe GroupClusterablePresenter do
   describe '#learn_more_link' do
     subject { presenter.learn_more_link }
 
-    it { is_expected.to include('user/group/clusters/index') }
+    it { is_expected.to include('user/group/clusters/_index') }
   end
 end

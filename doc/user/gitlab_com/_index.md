@@ -123,7 +123,7 @@ Groups are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
 
-You can [view and restore groups marked for deletion](../group/index.md#restore-a-group).
+You can [view and restore groups marked for deletion](../group/_index.md#restore-a-group).
 
 ## Delayed project deletion
 
@@ -227,7 +227,7 @@ the related documentation.
 ## Package registry limits
 
 The [maximum file size](../../administration/instance_limits.md#file-size-limits)
-for a package uploaded to the [GitLab package registry](../packages/package_registry/index.md)
+for a package uploaded to the [GitLab package registry](../packages/package_registry/_index.md)
 varies by format:
 
 | Package type              | GitLab.com |

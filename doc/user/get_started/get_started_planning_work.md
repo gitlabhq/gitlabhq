@@ -27,7 +27,7 @@ to release every two weeks.
 For more information, see:
 
 - [Milestones](../project/milestones/index.md)
-- [Iterations](../group/iterations/index.md)
+- [Iterations](../group/iterations/_index.md)
 
 ## Step 2: Plan and organize work
 
@@ -50,7 +50,7 @@ and evaluate the impact of your work on the broader organization's objectives.
 
 For more information, see:
 
-- [Epics](../group/epics/index.md)
+- [Epics](../group/epics/_index.md)
 - [Issues](../project/issues/index.md)
 - [Tasks](../tasks.md)
 - [OKRs](../okrs.md)
@@ -102,7 +102,7 @@ Use it to track your progress and adjust your efforts accordingly.
 
 For more information, see:
 
-- [Roadmaps](../group/roadmap/index.md)
+- [Roadmaps](../group/roadmap/_index.md)
 - [Time tracking](../project/time_tracking.md)
 - [Milestone burnup and burndown charts](../project/milestones/burndown_and_burnup_charts.md)
 

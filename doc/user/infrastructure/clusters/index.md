@@ -65,7 +65,7 @@ This feature flag re-enables the certificate-based Kubernetes integration.
 ### Cluster levels
 
 The concept of [project-level](../../project/clusters/index.md),
-[group-level](../../group/clusters/index.md), and
+[group-level](../../group/clusters/_index.md), and
 [instance-level](../../instance/clusters/index.md) clusters becomes
 extinct in the new model, although the functionality remains to some extent.
 

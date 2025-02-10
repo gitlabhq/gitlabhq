@@ -451,7 +451,7 @@ module ProjectsHelper
   def project_permissions_panel_data(project)
     {
       packagesAvailable: ::Gitlab.config.packages.enabled,
-      packagesHelpPath: help_page_path('user/packages/index.md'),
+      packagesHelpPath: help_page_path('user/packages/_index.md'),
       currentSettings: project_permissions_settings(project),
       canAddCatalogResource: can_add_catalog_resource?(project),
       canSetDiffPreviewInEmail: can_set_diff_preview_in_email?(project, current_user),

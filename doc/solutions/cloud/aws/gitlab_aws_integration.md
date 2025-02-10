@@ -142,7 +142,7 @@ Top-level groups on GitLab.com are also known as "Namespaces" and naming one aft
 
 ### User authentication and authorization between GitLab and AWS
 
-- [SAML SSO for GitLab.com groups](../../../user/group/saml_sso/index.md) `[GitLab Configuration]` - GitLab.com only
+- [SAML SSO for GitLab.com groups](../../../user/group/saml_sso/_index.md) `[GitLab Configuration]` - GitLab.com only
 - [Integrate LDAP with GitLab](../../../administration/auth/ldap/_index.md) `[GitLab Configuration]` - Self-managed only
 
 ### Runner workload authentication and authorization integration

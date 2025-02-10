@@ -26,7 +26,7 @@ when a snippet's original author wasn't available. For example, when the user wa
 
 Other examples of internal users:
 
-- [GitLab Automation Bot](../user/group/iterations/index.md#gitlab-automation-bot-user)
+- [GitLab Automation Bot](../user/group/iterations/_index.md#gitlab-automation-bot-user)
 - [GitLab Security Bot](#gitlab-security-bot)
 - [GitLab Security Policy Bot](#gitlab-security-policy-bot)
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)

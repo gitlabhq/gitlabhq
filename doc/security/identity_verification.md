@@ -21,7 +21,7 @@ three stages of verification to register an account:
 - **Medium-risk users** - Phone number verification.
 - **High-risk users** - Credit card verification.
 
-Users created after signing in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md) are exempt from identity verification.
+Users created after signing in with [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md) are exempt from identity verification.
 
 ## Email verification
 

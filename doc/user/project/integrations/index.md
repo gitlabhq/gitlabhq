@@ -149,7 +149,7 @@ only those integrations are available.
 | [Jenkins](../../../integration/jenkins.md)                   | Run CI/CD pipelines with Jenkins.                                                        | **{check-circle}** Yes |
 | JetBrains TeamCity                                           | Run CI/CD pipelines with TeamCity.                                                       | **{check-circle}** Yes |
 | [JetBrains YouTrack](youtrack.md)                            | Use JetBrains YouTrack as your project's issue tracker.                                  | **{dotted-circle}** No |
-| [Jira](../../../integration/jira/index.md)                   | Use Jira as an issue tracker.                                                            | **{dotted-circle}** No |
+| [Jira](../../../integration/jira/_index.md)                  | Use Jira as an issue tracker.                                                            | **{dotted-circle}** No |
 | [Matrix notifications](matrix.md)                            | Send notifications about project events to Matrix.                                       | **{dotted-circle}** No |
 | [Mattermost notifications](mattermost.md)                    | Send notifications about project events to Mattermost channels.                          | **{dotted-circle}** No |
 | [Mattermost slash commands](mattermost_slash_commands.md)    | Run slash commands from a Mattermost chat environment.                                   | **{dotted-circle}** No |

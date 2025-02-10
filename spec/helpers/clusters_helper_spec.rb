@@ -58,7 +58,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
     end
 
     it 'displays and ancestor_help_path' do
-      expect(subject[:ancestor_help_path]).to eq(help_page_path('user/group/clusters/index.md', anchor: 'cluster-precedence'))
+      expect(subject[:ancestor_help_path]).to eq(help_page_path('user/group/clusters/_index.md', anchor: 'cluster-precedence'))
     end
 
     it 'displays empty image path' do

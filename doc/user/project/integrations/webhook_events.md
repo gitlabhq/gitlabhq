@@ -216,7 +216,7 @@ Payload example:
 Work item events are triggered when a work item is created, edited, closed, or reopened.
 The supported work item types are:
 
-- [Epics](../../group/epics/index.md)
+- [Epics](../../group/epics/_index.md)
 - [Issue](../issues/index.md)
 - [Tasks](../../tasks.md)
 - [Incidents](../../../operations/incident_management/incidents.md)

@@ -25,7 +25,7 @@ Supported clients:
 
 ### Authenticate to the package registry
 
-You need a token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../package_registry/index.md#authenticate-with-the-registry).
+You need a token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../package_registry/_index.md#authenticate-with-the-registry).
 
 Create a token and save it to use later in the process.
 

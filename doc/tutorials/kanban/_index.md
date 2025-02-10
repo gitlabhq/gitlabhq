@@ -21,7 +21,7 @@ For other information, see [Advanced tips and tricks](#advanced-tips-and-tricks)
 
 ## Set up groups and projects
 
-Follow the corresponding steps to [create your groups](../../user/group/index.md#create-a-group) and [projects](../../user/project/index.md)
+Follow the corresponding steps to [create your groups](../../user/group/_index.md#create-a-group) and [projects](../../user/project/index.md)
 
 If your team is working across multiple repositories, create a project for each repository in your group.
 
@@ -67,7 +67,7 @@ A "work in progress limit" cut line will also be visible in the list to visually
 ## Visualize flow and distribution
 
 Kanban traditionally uses Cumulative Flow Diagrams to visualize load and help identify bottlenecks.
-In GitLab, this can be accomplished with [Value Stream Analytics (VSA)](../../user/group/value_stream_analytics/index.md).
+In GitLab, this can be accomplished with [Value Stream Analytics (VSA)](../../user/group/value_stream_analytics/_index.md).
 Next, we'll create a custom VSA report that matches your Kanban workflow.
 
 ### Visualize flow

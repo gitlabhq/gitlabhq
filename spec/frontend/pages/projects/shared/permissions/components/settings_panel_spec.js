@@ -62,7 +62,7 @@ const defaultProps = {
   pagesAccessControlForced: false,
   pagesHelpPath: '/help/user/project/pages/introduction#gitlab-pages-access-control',
   packagesAvailable: false,
-  packagesHelpPath: '/help/user/packages/index',
+  packagesHelpPath: '/help/user/packages/_index',
   requestCveAvailable: true,
   confirmationPhrase: 'my-fake-project',
   showVisibilityConfirmModal: false,

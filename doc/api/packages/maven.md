@@ -9,18 +9,18 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Maven Packages](../../user/packages/maven_repository/index.md).
+This is the API documentation for [Maven Packages](../../user/packages/maven_repository/_index.md).
 
 WARNING:
 This API is used by the [Maven package manager client](https://maven.apache.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install Maven packages from the GitLab
-package registry, see the [Maven package registry documentation](../../user/packages/maven_repository/index.md).
+package registry, see the [Maven package registry documentation](../../user/packages/maven_repository/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See [Maven package registry documentation](../../user/packages/maven_repository/index.md)
+See [Maven package registry documentation](../../user/packages/maven_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Download a package file at the instance-level

@@ -13,4 +13,4 @@ DETAILS:
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108502) in GitLab 15.8
 and removed in 16.0.
-Use [migrating groups and projects by direct transfer](../../group/import/index.md) instead.
+Use [migrating groups and projects by direct transfer](../../group/import/_index.md) instead.

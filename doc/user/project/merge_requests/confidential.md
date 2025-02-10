@@ -41,7 +41,7 @@ namespace than the upstream repository. The two namespaces might not contain the
 Prerequisites:
 
 - You have the Owner or Maintainer role for the public repository, as you need one
-  of these roles to [create a subgroup](../../group/subgroups/index.md).
+  of these roles to [create a subgroup](../../group/subgroups/_index.md).
 - You have [forked](../repository/forking_workflow.md) the public repository.
 - Your fork has a **Visibility level** of _Private_.
 

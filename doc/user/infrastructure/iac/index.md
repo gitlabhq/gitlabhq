@@ -28,7 +28,7 @@ Most features are fully compatible, including:
 
 - [GitLab-managed Terraform/OpenTofu state](terraform_state.md)
 - [Terraform/OpenTofu integration in merge requests](mr_integration.md)
-- [Terraform/OpenTofu Module Registry](../../packages/terraform_module_registry/index.md)
+- [Terraform/OpenTofu Module Registry](../../packages/terraform_module_registry/_index.md)
 
 For simplicity, the GitLab documentation refers primarily to OpenTofu.
 However, differences between the Terraform and OpenTofu integration
@@ -147,7 +147,7 @@ For GitLab-curated template recipes, see [Terraform template recipes](terraform_
 
 ## Related topics
 
-- Use GitLab as a [Terraform/OpenTofu Module Registry](../../packages/terraform_module_registry/index.md).
+- Use GitLab as a [Terraform/OpenTofu Module Registry](../../packages/terraform_module_registry/_index.md).
 - To store state files in local storage or in a remote store, use the [GitLab-managed Terraform/OpenTofu state](terraform_state.md).
 - To collaborate on Terraform code changes and IaC workflows, use the
   [Terraform integration in merge requests](mr_integration.md).

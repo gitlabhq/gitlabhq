@@ -16,7 +16,7 @@ and the following external authentication and authorization providers:
 - [LDAP](ldap/_index.md): Includes Active Directory, Apple Open Directory, Open LDAP,
   and 389 Server.
   - [Google Secure LDAP](ldap/google_secure_ldap.md)
-- [SAML for GitLab.com groups](../../user/group/saml_sso/index.md)
+- [SAML for GitLab.com groups](../../user/group/saml_sso/_index.md)
 - [Smart card](smartcard.md)
 
 NOTE:

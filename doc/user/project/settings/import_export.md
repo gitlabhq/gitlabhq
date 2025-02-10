@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Migrating groups and projects by using [direct transfer](../../group/import/index.md) is recommended. However, in some
+Migrating groups and projects by using [direct transfer](../../group/import/_index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
 
 ## Known issues
@@ -39,7 +39,7 @@ Therefore, user contributions never map correctly when importing file exports fr
 Instead, all GitLab user associations (such as comment author) are changed to the user importing the project. To preserve
 contribution history, do one of the following:
 
-- [Migrate by using direct transfer](../../group/import/index.md).
+- [Migrate by using direct transfer](../../group/import/_index.md).
 - Consider engaging Professional Services. For more information, see the
   [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
 
@@ -306,7 +306,7 @@ To help avoid abuse, by default, users are rate limited to:
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6 and replaced by
-[migrating groups by direct transfer](../../group/import/index.md). However, this feature is still recommended for migrating groups between
+[migrating groups by direct transfer](../../group/import/_index.md). However, this feature is still recommended for migrating groups between
 offline systems. To follow progress on an alternative solution for [offline environments](../../application_security/offline_deployments/index.md), see
 [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/8985).
 
@@ -438,6 +438,6 @@ To help avoid abuse, by default, users are rate limited to:
 
 - [Project import and export API](../../../api/project_import_export.md)
 - [Project import and export administration Rake tasks](../../../administration/raketasks/project_import_export.md)
-- [Migrating GitLab groups](../../group/import/index.md)
+- [Migrating GitLab groups](../../group/import/_index.md)
 - [Group import and export API](../../../api/group_import_export.md)
-- [Migrate groups by direct transfer](../../group/import/index.md).
+- [Migrate groups by direct transfer](../../group/import/_index.md).

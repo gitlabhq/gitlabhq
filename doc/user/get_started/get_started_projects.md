@@ -72,7 +72,7 @@ your group.
 For more information, see:
 
 - [Share projects](../project/members/sharing_projects_groups.md)
-- [Subgroups](../group/subgroups/index.md)
+- [Subgroups](../group/subgroups/_index.md)
 
 ## Step 4: Enhance project discoverability and recognition
 

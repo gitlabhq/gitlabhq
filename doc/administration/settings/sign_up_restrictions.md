@@ -286,7 +286,7 @@ To turn on approvals for role promotions:
 
 ### Known issues
 
-When a user [requests access to a group](../../user/group/index.md), the initial role assigned is Developer.
+When a user [requests access to a group](../../user/group/_index.md), the initial role assigned is Developer.
 If this access is approved by a user with the Owner role for the group and the user becomes a member of the group, the billable count
 increases if this user did not have a billable role previously.
 

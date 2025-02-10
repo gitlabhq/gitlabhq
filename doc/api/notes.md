@@ -12,7 +12,7 @@ DETAILS:
 Notes are comments on:
 
 - [Commits](../user/project/repository/index.md#commit-changes-to-a-repository)
-- [Epics](../user/group/epics/index.md)
+- [Epics](../user/group/epics/_index.md)
 - [Issues](../user/project/issues/index.md)
 - [Merge requests](../user/project/merge_requests/_index.md)
 - [Snippets](../user/snippets.md)

@@ -13,7 +13,7 @@ You can use the Jira development panel to view GitLab activity for a Jira issue 
 To set up the Jira development panel:
 
 - **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed and maintained by GitLab.
-- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
+- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/_index.md) developed and maintained by Atlassian.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Jira development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
@@ -45,7 +45,7 @@ This table shows the features available with the Jira DVCS connector and the Git
 The Jira development panel connects a Jira instance with all its projects to the following:
 
 - **For the [GitLab for Jira Cloud app](connect-app.md)**, linked GitLab groups or subgroups and their projects
-- **For the [Jira DVCS connector](dvcs/index.md)**, linked GitLab groups, subgroups, or personal namespaces and their projects
+- **For the [Jira DVCS connector](dvcs/_index.md)**, linked GitLab groups, subgroups, or personal namespaces and their projects
 
 ## Information displayed in the development panel
 

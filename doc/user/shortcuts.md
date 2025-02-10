@@ -228,7 +228,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-These shortcuts are available when viewing [epics](group/epics/index.md):
+These shortcuts are available when viewing [epics](group/epics/_index.md):
 
 | Keyboard shortcut            | Description       |
 |------------------------------|-------------------|

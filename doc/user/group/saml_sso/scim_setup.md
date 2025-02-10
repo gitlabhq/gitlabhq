@@ -28,7 +28,7 @@ To set up SCIM on GitLab Self-Managed, see [Configure SCIM for GitLab Self-Manag
 
 Prerequisites:
 
-- [Group single sign-on](index.md) must be configured.
+- [Group single sign-on](_index.md) must be configured.
 
 To configure GitLab SAML SSO SCIM:
 
@@ -56,9 +56,9 @@ Other providers can work with GitLab but they have not been tested and are not s
 Prerequisites:
 
 - [GitLab is configured](#configure-gitlab).
-- [Group single sign-on](index.md) is configured.
+- [Group single sign-on](_index.md) is configured.
 
-The SAML application created during [single sign-on](index.md) set up for
+The SAML application created during [single sign-on](_index.md) set up for
 [Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
@@ -171,7 +171,7 @@ For each attribute:
 1. Select **Ok**.
 1. Select **Save**.
 
-If your SAML configuration differs from [the recommended SAML settings](index.md#azure), select the mapping
+If your SAML configuration differs from [the recommended SAML settings](_index.md#azure), select the mapping
 attributes and modify them accordingly. The source attribute that you map to the `externalId`
 target attribute must match the attribute used for the SAML `NameID`.
 
@@ -180,7 +180,7 @@ refer to the [internal group SCIM API](../../../development/internal_api/_index.
 
 ### Configure Okta
 
-The SAML application created during [single sign-on](index.md) set up for Okta must be set up for SCIM.
+The SAML application created during [single sign-on](_index.md) set up for Okta must be set up for SCIM.
 
 Prerequisites:
 
@@ -188,8 +188,8 @@ Prerequisites:
   product tier is required to use SCIM on Okta.
 - [GitLab is configured](#configure-gitlab).
 - SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
-  described in the [Okta setup notes](index.md#okta).
-- Your Okta SAML setup matches the [configuration steps exactly](index.md), especially the NameID configuration.
+  described in the [Okta setup notes](_index.md#okta).
+- Your Okta SAML setup matches the [configuration steps exactly](_index.md), especially the NameID configuration.
 
 To configure Okta for SCIM:
 
@@ -220,7 +220,7 @@ During the synchronization process, all new users:
 
 - Receive GitLab accounts.
 - Are welcomed to their groups with an invitation email.
-  You can [bypass email confirmation with a verified domain](index.md#bypass-user-email-confirmation-with-verified-domains).
+  You can [bypass email confirmation with a verified domain](_index.md#bypass-user-email-confirmation-with-verified-domains).
 
 The following diagram describes what happens when you add users to your SCIM app:
 
@@ -250,7 +250,7 @@ On subsequent visits, new and existing users can access groups either:
 - Through the identity provider's dashboard.
 - By visiting links directly.
 
-For role information, see the [Group SAML](index.md#user-access-and-management) page.
+For role information, see the [Group SAML](_index.md#user-access-and-management) page.
 
 ### Passwords for users created through SCIM for GitLab groups
 
@@ -261,7 +261,7 @@ GitLab generates passwords for users created through SCIM for GitLab groups, see
 
 ### Link SCIM and SAML identities
 
-If [group SAML](index.md) is configured and you have an existing GitLab.com account, users can link their SCIM and SAML
+If [group SAML](_index.md) is configured and you have an existing GitLab.com account, users can link their SCIM and SAML
 identities. Users should do this before synchronization is turned on because there can be provisioning errors for
 existing users when synchronization is active.
 
@@ -269,7 +269,7 @@ To link your SCIM and SAML identities:
 
 1. Update the [primary email](../../profile/index.md#change-your-primary-email) address in your GitLab.com user account
    to match the user profile email address in your identity provider.
-1. [Link your SAML identity](index.md#link-saml-to-your-existing-gitlabcom-account).
+1. [Link your SAML identity](_index.md#link-saml-to-your-existing-gitlabcom-account).
 
 ### Remove access
 

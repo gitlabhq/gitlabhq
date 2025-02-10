@@ -155,10 +155,10 @@ If you are adding a user with a custom role:
 
 To add a user with a custom role:
 
-- To a group, see [add users to a group](group/index.md#add-users-to-a-group).
+- To a group, see [add users to a group](group/_index.md#add-users-to-a-group).
 - To a project, see [add users to a project](project/members/index.md#add-users-to-a-project).
 
-If a group or project member has a custom role, the [group or project members list](group/index.md#view-group-members) displays **Custom Role** in the **Max role** column of the table.
+If a group or project member has a custom role, the [group or project members list](group/_index.md#view-group-members) displays **Custom Role** in the **Max role** column of the table.
 
 ## Assign a custom role to an existing group or project member
 
@@ -214,7 +214,7 @@ If you are unassigning a custom role from a:
 
 You can remove a custom role from a group or project only if no group or project members have that role. To do this, you can use one of the following methods:
 
-- Remove a member with a custom role from a [group](group/index.md#remove-a-member-from-the-group) or [project](project/members/index.md#remove-a-member-from-a-project).
+- Remove a member with a custom role from a [group](group/_index.md#remove-a-member-from-the-group) or [project](project/members/index.md#remove-a-member-from-a-project).
 - [Use the UI to change the user role](#use-the-ui-to-change-user-role).
 - [Use the API to change the user role](#use-the-api-to-change-user-role).
 

@@ -1062,7 +1062,7 @@ More information can be found in the [Push event activities limit and bulk push 
 
 ### File size limits
 
-The default maximum file size for a package that's uploaded to the [GitLab package registry](../user/packages/package_registry/index.md) varies by format:
+The default maximum file size for a package that's uploaded to the [GitLab package registry](../user/packages/package_registry/_index.md) varies by format:
 
 - Conan: 3 GB
 - Generic: 5 GB

@@ -18,7 +18,7 @@ Before making changes, ensure either the SAML response includes the `groups` att
 and the `AttributeValue` value matches the **SAML Group Name** in GitLab,
 or that all groups are removed from GitLab to disable Group Sync.
 
-SAML group sync allows users to be assigned to pre-existing GitLab groups with specific permissions based on the user's group assignment in the SAML identity provider (IdP). This feature allows you to create a many-to-many mapping between SAML IdP groups and GitLab groups. For example, if the user `@amelia` is assigned to the `security` group in the SAML IdP, SAML group sync allows you to assign `@amelia` to the `security-gitlab` and `vulnerability` GitLab groups with `maintainer` and `reporter` permissions, respectively. SAML group sync does not create groups. You [create groups separately](../index.md#create-a-group), and then create the mapping.
+SAML group sync allows users to be assigned to pre-existing GitLab groups with specific permissions based on the user's group assignment in the SAML identity provider (IdP). This feature allows you to create a many-to-many mapping between SAML IdP groups and GitLab groups. For example, if the user `@amelia` is assigned to the `security` group in the SAML IdP, SAML group sync allows you to assign `@amelia` to the `security-gitlab` and `vulnerability` GitLab groups with `maintainer` and `reporter` permissions, respectively. SAML group sync does not create groups. You [create groups separately](../_index.md#create-a-group), and then create the mapping.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
@@ -162,7 +162,7 @@ To configure SAML Group Sync for GitLab Self-Managed:
 
 To configure SAML Group Sync for **GitLab.com instances**:
 
-1. See [SAML SSO for GitLab.com groups](index.md).
+1. See [SAML SSO for GitLab.com groups](_index.md).
 1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
 
 NOTE:
@@ -198,7 +198,7 @@ group overage claim attribute in the SAML response. Then group memberships must 
 The [Graph API endpoint](https://learn.microsoft.com/en-us/graph/api/user-list-transitivememberof?view=graph-rest-1.0&tabs=http#http-request) supports only a
 [user object ID](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-user-object-id) or
 [userPrincipalName](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-userprincipalname#what-is-userprincipalname)
-as the [configured](index.md#azure) Unique User Identifier (Name identifier) attribute.
+as the [configured](_index.md#azure) Unique User Identifier (Name identifier) attribute.
 
 When the integration processes Group Sync, only Group Links configured with
 group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`) are supported.
@@ -243,7 +243,7 @@ To configure for a GitLab.com group:
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
 1. Select **Settings > SAML SSO**.
-1. Configure [SAML SSO for the group](index.md).
+1. Configure [SAML SSO for the group](_index.md).
 1. In the **Microsoft Azure integration** section, select the **Enable Microsoft Azure integration for this group** checkbox.
    This section is only visible if SAML SSO is configured and enabled for the group.
 1. Enter the **Tenant ID**, **Client ID**, and **Client secret** obtained earlier when configuring Azure Active Directory in the Azure Portal.

@@ -4,7 +4,7 @@ exports[`packages_list_app renders 1`] = `
 <div>
   <infrastructure-title-stub
     count="1"
-    helpurl="/help/user/packages/terraform_module_registry/index"
+    helpurl="/help/user/packages/terraform_module_registry/_index"
   />
   <infrastructure-search-stub />
   <div>
@@ -36,7 +36,7 @@ exports[`packages_list_app renders 1`] = `
           Learn how to
           <b-link-stub
             class="gl-link"
-            href="/help/user/packages/terraform_module_registry/index"
+            href="/help/user/packages/terraform_module_registry/_index"
             target="_blank"
           >
             publish and share your packages

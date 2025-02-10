@@ -32,7 +32,7 @@ Authentication is the first step in making your installation secure.
 Organize your environment by configuring your groups and projects.
 
 - [Projects](../user/project/working_with_projects.md): Designate a home for your files and code or track and organize issues in a business category.
-- [Groups](../user/group/index.md): Organize a collection of users or projects. Use these groups to quickly assign people and projects.
+- [Groups](../user/group/_index.md): Organize a collection of users or projects. Use these groups to quickly assign people and projects.
 - [Roles](../user/permissions.md): Define user access and visibility for your projects and groups.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -41,10 +41,10 @@ Watch an overview of [groups and projects](https://www.youtube.com/watch?v=cqb2m
 Get started:
 
 - Create a [project](../user/project/index.md).
-- Create a [group](../user/group/index.md#create-a-group).
-- [Add members](../user/group/index.md#add-users-to-a-group) to the group.
-- Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).
-- [Add members](../user/group/subgroups/index.md#subgroup-membership) to the subgroup.
+- Create a [group](../user/group/_index.md#create-a-group).
+- [Add members](../user/group/_index.md#add-users-to-a-group) to the group.
+- Create a [subgroup](../user/group/subgroups/_index.md#create-a-subgroup).
+- [Add members](../user/group/subgroups/_index.md#subgroup-membership) to the subgroup.
 - Enable [external authorization control](settings/external_authorization.md#configuration).
 
 **More resources**
@@ -53,7 +53,7 @@ Get started:
 - [Sync group memberships by using LDAP](auth/ldap/ldap_synchronization.md#group-sync).
 - Manage user access with inherited permissions. Use up to 20 levels of subgroups to organize both teams and projects.
   - [Inherited membership](../user/project/members/index.md#membership-types).
-  - [Example](../user/group/subgroups/index.md).
+  - [Example](../user/group/subgroups/_index.md).
 
 ## Import projects
 

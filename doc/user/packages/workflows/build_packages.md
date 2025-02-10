@@ -113,8 +113,8 @@ To build a package:
    ```
 
    NOTE:
-   If you use an [instance remote](../conan_repository/index.md#add-a-remote-for-your-instance), you must
-   follow a specific [naming convention](../conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes).
+   If you use an [instance remote](../conan_repository/_index.md#add-a-remote-for-your-instance), you must
+   follow a specific [naming convention](../conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes).
 
 A package with the recipe `Hello/0.1@mycompany/beta` is created.
 
@@ -350,7 +350,7 @@ The npm version is shown in the output:
    ```
 
 1. Enter responses to the questions. Ensure the **package name** follows
-   the [naming convention](../npm_registry/index.md#naming-convention) and is scoped to the project or group where the registry exists.
+   the [naming convention](../npm_registry/_index.md#naming-convention) and is scoped to the project or group where the registry exists.
 
 ## Yarn
 
@@ -382,7 +382,7 @@ The Yarn version is shown in the output:
    ```
 
 1. Enter responses to the questions. Ensure the **package name** follows
-   the [naming convention](../npm_registry/index.md#naming-convention) and is scoped to the
+   the [naming convention](../npm_registry/_index.md#naming-convention) and is scoped to the
    project or group where the registry exists.
 
 A `package.json` file is created.
@@ -497,7 +497,7 @@ After you create a project, you can create a package.
    about this file, see [creating `pyproject.toml`](https://packaging.python.org/en/latest/tutorials/packaging-projects/#creating-pyproject-toml).
    Because GitLab identifies packages based on
    [Python normalized names (PEP-503)](https://www.python.org/dev/peps/pep-0503/#normalized-names),
-   ensure your package name meets these requirements. See the [installation section](../pypi_repository/index.md#authenticate-with-the-gitlab-package-registry)
+   ensure your package name meets these requirements. See the [installation section](../pypi_repository/_index.md#authenticate-with-the-gitlab-package-registry)
    for details.
 
 1. Open the `pyproject.toml` file, and then add basic information:

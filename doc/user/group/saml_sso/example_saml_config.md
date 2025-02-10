@@ -11,15 +11,15 @@ DETAILS:
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team's collected knowledge.
 
-Refer to the GitLab [Group SAML](index.md) documentation for information on the feature and how to set it up.
+Refer to the GitLab [Group SAML](_index.md) documentation for information on the feature and how to set it up.
 
-When troubleshooting a SAML configuration, GitLab team members will frequently start with the [SAML troubleshooting section](index.md#troubleshooting).
+When troubleshooting a SAML configuration, GitLab team members will frequently start with the [SAML troubleshooting section](_index.md#troubleshooting).
 
 They may then set up a test configuration of the desired identity provider. We include example screenshots in this section.
 
 ## SAML and SCIM screenshots
 
-This section includes relevant screenshots of the following example configurations of [Group SAML](index.md) and [Group SCIM](scim_setup.md):
+This section includes relevant screenshots of the following example configurations of [Group SAML](_index.md) and [Group SCIM](scim_setup.md):
 
 - [Azure Active Directory](#azure-active-directory)
 - [Google Workspace](#google-workspace)

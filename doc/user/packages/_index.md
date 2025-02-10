@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-The GitLab [package registry](package_registry/index.md) acts as a private or public registry
+The GitLab [package registry](package_registry/_index.md) acts as a private or public registry
 for a variety of common package managers. You can publish and share
 packages, which can be easily consumed as a dependency in downstream projects.
 
@@ -19,7 +19,7 @@ The GitLab [Container Registry](container_registry/index.md) is a secure and pri
 
 ## Terraform Module Registry
 
-The GitLab [Terraform Module Registry](terraform_module_registry/index.md) is a secure and private registry for Terraform modules. You can use GitLab CI/CD to create and publish modules.
+The GitLab [Terraform Module Registry](terraform_module_registry/_index.md) is a secure and private registry for Terraform modules. You can use GitLab CI/CD to create and publish modules.
 
 ## Dependency Proxy
 

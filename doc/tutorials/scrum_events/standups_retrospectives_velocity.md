@@ -69,7 +69,7 @@ in his book, "The Art of Agile."
 
 ### Synchronous retrospectives
 
-It can be helpful to review the [iteration report](../../user/group/iterations/index.md#iteration-report)
+It can be helpful to review the [iteration report](../../user/group/iterations/_index.md#iteration-report)
 during retrospectives.
 
 To review an iteration report for a completed iteration:
@@ -290,7 +290,7 @@ If you're experiencing high volatility, you can explore the following:
 1. Understand where you have process bottlenecks.
 
    You can create a
-   [custom value stream analytics report](../../user/group/value_stream_analytics/index.md#create-a-value-stream-with-custom-stages)
+   [custom value stream analytics report](../../user/group/value_stream_analytics/_index.md#create-a-value-stream-with-custom-stages)
    that mirrors the workflow stages that a story progresses through in a sprint.
    This report can help focus discussions in your retrospectives on the specific workflow stages
    that take the longest during your sprint cycles.

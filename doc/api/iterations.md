@@ -19,7 +19,7 @@ We no longer have project-level iterations, but you can use this endpoint to fet
 Returns a list of project iterations.
 
 Iterations created by **Enable automatic scheduling** in
-[Iteration cadences](../user/group/iterations/index.md#iteration-cadences) return `null` for
+[Iteration cadences](../user/group/iterations/_index.md#iteration-cadences) return `null` for
 the `title` and `description` fields.
 
 ```plaintext

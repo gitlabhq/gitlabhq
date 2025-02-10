@@ -26,7 +26,7 @@ GitLab tracks the following contribution events:
 | Event | Contribution |
 | ----- | ------------ |
 | `approved` | Merge request |
-| `closed` | [Epic](../group/epics/index.md), Issue, Merge request, Milestone, Work item |
+| `closed` | [Epic](../group/epics/_index.md), Issue, Merge request, Milestone, Work item |
 | `commented` on any `Noteable` record. | Alert, Commit, Design, Issue, Merge request, Snippet |
 | `created` | Design, Epic, Issue, Merge request, Milestone, Project, Wiki page, Work item |
 | `destroyed` | Design, Milestone, Wiki page |

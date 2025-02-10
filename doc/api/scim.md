@@ -15,7 +15,7 @@ Use this API to manage SCIM identities in groups.
 
 Prerequisites:
 
-- You must enable [Group SSO](../user/group/saml_sso/index.md).
+- You must enable [Group SSO](../user/group/saml_sso/_index.md).
 - You must enable [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md).
 
 This API differs from the [internal group SCIM API](../development/internal_api/_index.md#group-scim-api) and the [instance SCIM API](../development/internal_api/_index.md#instance-scim-api):

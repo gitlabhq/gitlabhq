@@ -16,7 +16,7 @@ top-level
 relation (for example, milestones, issues, and labels).
 
 The project relations export API is primarily used in
-[group migration](../user/group/import/index.md) can't
+[group migration](../user/group/import/_index.md) can't
 be used with the
 [project import and export API](project_import_export.md).
 

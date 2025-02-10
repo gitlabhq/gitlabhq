@@ -370,7 +370,7 @@ You may need to adjust the suggested specifications to compensate if you use:
 - Security software on the nodes.
 - Hundreds of concurrent CI jobs for [large repositories](../../user/project/repository/monorepos/index.md).
 - Custom scripts that [run at high frequency](../logs/log_parsing.md#print-top-api-user-agents).
-- [Integrations](../../integration/index.md) in many large projects.
+- [Integrations](../../integration/_index.md) in many large projects.
 - [Server hooks](../server_hooks.md).
 - [System hooks](../system_hooks.md).
 

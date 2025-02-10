@@ -70,7 +70,7 @@ To build integrations with GitLab:
 |:--------------------------------------------|:------------|
 | [GitLab REST API](api/rest/_index.md)       | Integrate with GitLab using our REST API. |
 | [GitLab GraphQL API](api/graphql/_index.md) | Integrate with GitLab using our GraphQL API. |
-| [Integrations](integration/index.md)        | Integrations with third-party products. |
+| [Integrations](integration/_index.md)       | Integrations with third-party products. |
 
 ## Contribute to GitLab
 

@@ -9,14 +9,14 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Conan Packages](../../user/packages/conan_repository/index.md).
+This is the API documentation for [Conan Packages](../../user/packages/conan_repository/_index.md).
 
 WARNING:
 This API is used by the [Conan package manager client](https://docs.conan.io/en/latest/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install Conan packages from the GitLab
-package registry, see the [Conan package registry documentation](../../user/packages/conan_repository/index.md).
+package registry, see the [Conan package registry documentation](../../user/packages/conan_repository/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
@@ -42,7 +42,7 @@ The examples in this document all use the instance-level prefix.
 ```
 
 When using the instance-level routes, be aware that there is a
-[naming restriction](../../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)
+[naming restriction](../../user/packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes)
 for Conan recipes.
 
 ### Project-level

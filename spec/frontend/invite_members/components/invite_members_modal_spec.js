@@ -199,7 +199,7 @@ describe('InviteMembersModal', () => {
         createInviteMembersToGroupWrapper();
 
         expect(findBase().props('accessExpirationHelpLink')).toBe(
-          helpPagePath('user/group/index', { anchor: 'add-users-to-a-group' }),
+          helpPagePath('user/group/_index', { anchor: 'add-users-to-a-group' }),
         );
       });
     });

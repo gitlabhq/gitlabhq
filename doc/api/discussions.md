@@ -13,7 +13,7 @@ Discussions are attached to:
 
 - Snippets
 - Issues
-- [Epics](../user/group/epics/index.md)
+- [Epics](../user/group/epics/_index.md)
 - Merge requests
 - Commits
 

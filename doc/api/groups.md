@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Interact with [groups](../user/group/index.md) by using the REST API.
+Interact with [groups](../user/group/_index.md) by using the REST API.
 
 The fields returned in responses vary based on the [permissions](../user/permissions.md) of the authenticated user.
 
@@ -1271,7 +1271,7 @@ Parameters:
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`  | boolean | no       | Require all users in this group to set up two-factor authentication. |
 | `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
-| `subgroup_creation_level`            | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `subgroup_creation_level`            | string  | no       | Allowed to [create subgroups](../user/group/subgroups/_index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                         | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `membership_lock`                    | boolean | no       | Users cannot be added to projects in this group. Premium and Ultimate only. |
@@ -1374,7 +1374,7 @@ PUT /groups/:id
 | `require_two_factor_authentication`                  | boolean           | no       | Require all users in this group to set up two-factor authentication. |
 | `shared_runners_setting`                             | string            | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable instance runners for a group's subgroups and projects. |
 | `share_with_group_lock`                              | boolean           | no       | Prevent sharing a project with another group within this group. |
-| `subgroup_creation_level`                            | string            | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
+| `subgroup_creation_level`                            | string            | no       | Allowed to [create subgroups](../user/group/subgroups/_index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                            | integer           | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                         | string            | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `extra_shared_runners_minutes_limit`                 | integer           | no       | Can be set by administrators only. Additional compute minutes for this group. GitLab Self-Managed, Premium and Ultimate only. |
@@ -1726,7 +1726,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 Transfer a group to a new parent group or turn a subgroup to a top-level group. Available to administrators and users:
 
 - With the Owner role for the group to transfer.
-- With permission to [create a subgroup](../user/group/subgroups/index.md#create-a-subgroup) in the new parent group if transferring a group.
+- With permission to [create a subgroup](../user/group/subgroups/_index.md#create-a-subgroup) in the new parent group if transferring a group.
 - With [permission to create a top-level group](../administration/user_settings.md) if turning a subgroup into a top-level group.
 
 ```plaintext

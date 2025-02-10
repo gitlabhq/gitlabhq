@@ -24,7 +24,7 @@ These integrations cover a variety of areas, including:
 
 For more information, see:
 
-- [The list of integrations](../../integration/index.md)
+- [The list of integrations](../../integration/_index.md)
 
 ## Step 2: Set up webhooks
 

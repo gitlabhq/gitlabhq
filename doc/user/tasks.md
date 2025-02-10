@@ -29,7 +29,7 @@ For the latest updates, check the [Tasks roadmap](https://gitlab.com/groups/gitl
 
 Tasks are a type of work item, a step towards [default issue types](https://gitlab.com/gitlab-org/gitlab/-/issues/323404)
 in GitLab.
-For the roadmap of migrating issues and [epics](group/epics/index.md)
+For the roadmap of migrating issues and [epics](group/epics/_index.md)
 to work items and adding custom work item types, see
 [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or the
 [Plan direction page](https://about.gitlab.com/direction/plan/).
@@ -395,7 +395,7 @@ DETAILS:
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.7. Feature flag `work_items_mvc` removed.
 
-You can add a task to an [iteration](group/iterations/index.md).
+You can add a task to an [iteration](group/iterations/_index.md).
 You can see the iteration title and period only when you view a task.
 
 Prerequisites:

@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can organize GitLab [groups](../index.md) into subgroups. You can use subgroups to:
+You can organize GitLab [groups](../_index.md) into subgroups. You can use subgroups to:
 
 - Separate internal and external content. Because every subgroup can have its own
   [visibility level](../../public_access.md), you can host groups for different
@@ -195,7 +195,7 @@ In the screenshot above:
 - Administrator has the Owner role on group _Four_ and is a member of all subgroups. For that reason, as with User 3,
   the **Source** column indicates they are a direct member.
 
-Members can be [filtered by inherited or direct membership](../index.md#filter-a-group).
+Members can be [filtered by inherited or direct membership](../_index.md#filter-a-group).
 
 ### Override ancestor group membership
 

@@ -15,7 +15,7 @@ Use a monorepo project as a package registry to publish packages to multiple pro
 
 To publish packages to a project and its child projects, you must add configuration files for each package. To learn how to configure packages for a specific package manager, see [Supported package managers](../package_registry/supported_package_managers.md).
 
-The following example shows you how to publish packages for a project and its child project with [npm](../npm_registry/index.md).
+The following example shows you how to publish packages for a project and its child project with [npm](../npm_registry/_index.md).
 
 Prerequisites:
 
@@ -37,7 +37,7 @@ MyProject/
 To publish a package for `MyProject`:
 
 1. Go to the `MyProject` directory.
-1. Initialize the project by running `npm init`. Make sure the package name follows the [naming convention](../npm_registry/index.md#naming-convention).
+1. Initialize the project by running `npm init`. Make sure the package name follows the [naming convention](../npm_registry/_index.md#naming-convention).
 1. Create a `.npmrc` file. Include the registry URL and the project endpoint. For example:
 
    ```yaml

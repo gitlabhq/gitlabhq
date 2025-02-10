@@ -35,7 +35,7 @@ You can use the [Jira development panel](development_panel.md) to
 including related branches, commits, and merge requests. To configure the Jira development panel:
 
 - **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed and maintained by GitLab.
-- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
+- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/_index.md) developed and maintained by Atlassian.
 
 ## Feature availability
 
@@ -61,7 +61,7 @@ If you integrate a private GitLab project with Jira, the private
 data is shared with users who have access to your Jira project.
 
 The [Jira issues integration](configure.md) posts GitLab data as comments on Jira issues.
-The [GitLab for Jira Cloud app](connect-app.md) and the [Jira DVCS connector](dvcs/index.md)
+The [GitLab for Jira Cloud app](connect-app.md) and the [Jira DVCS connector](dvcs/_index.md)
 share GitLab data through the [Jira development panel](development_panel.md).
 With the Jira development panel, you can restrict access to certain user groups or roles.
 

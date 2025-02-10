@@ -26,7 +26,7 @@ To access the visibility and access control options:
 ## Define which roles can create projects
 
 You can add project creation protections to your instance. These protections define which roles can
-[add projects to a group](../../user/group/index.md#specify-who-can-add-projects-to-a-group)
+[add projects to a group](../../user/group/_index.md#specify-who-can-add-projects-to-a-group)
 on the instance. To alter which roles have permission to create projects:
 
 Prerequisites:
@@ -223,7 +223,7 @@ Prerequisites:
 1. Select **Save changes**.
 
 For more details on group visibility, see
-[Group visibility](../../user/group/index.md#group-visibility).
+[Group visibility](../../user/group/_index.md#group-visibility).
 
 ## Restrict visibility levels
 

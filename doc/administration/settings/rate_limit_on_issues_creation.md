@@ -26,7 +26,7 @@ To limit the number of requests made to the issue and epic creation endpoints:
 
 ![The maximum requests per minute rate limit per user set to 300.](img/rate_limit_on_issues_creation_v14_2.png)
 
-The limit for [epic](../../user/group/epics/index.md) creation is the same limit applied to issue creation. The rate limit:
+The limit for [epic](../../user/group/epics/_index.md) creation is the same limit applied to issue creation. The rate limit:
 
 - Is applied independently per project and per user.
 - Is not applied per IP address.

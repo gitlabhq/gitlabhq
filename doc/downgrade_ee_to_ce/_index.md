@@ -76,7 +76,7 @@ bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleClou
 
 ### Variables environment scopes
 
-In GitLab Community Edition, [environment scopes](../user/group/clusters/index.md#environment-scopes)
+In GitLab Community Edition, [environment scopes](../user/group/clusters/_index.md#environment-scopes)
 are completely ignored, so if you are using this feature there may be some
 necessary adjustments to your configuration. This is especially true if
 configuration variables share the same key, but have different

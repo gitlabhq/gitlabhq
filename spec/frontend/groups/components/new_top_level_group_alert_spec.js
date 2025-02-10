@@ -42,7 +42,7 @@ describe('NewTopLevelGroupAlert', () => {
         NewTopLevelGroupAlert.i18n.primaryBtnText,
       );
       expect(findAlert().props('primaryButtonLink')).toBe(
-        helpPagePath('user/group/subgroups/index'),
+        helpPagePath('user/group/subgroups/_index'),
       );
     });
   });

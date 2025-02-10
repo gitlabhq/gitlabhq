@@ -24,8 +24,8 @@ export default {
     ),
     successMessage: __('Group %{group_name} was successfully created.'),
   },
-  groupsHelpPagePath: helpPagePath('user/group/index'),
-  subgroupsHelpPagePath: helpPagePath('user/group/subgroups/index'),
+  groupsHelpPagePath: helpPagePath('user/group/_index'),
+  subgroupsHelpPagePath: helpPagePath('user/group/subgroups/_index'),
   components: {
     GlLink,
     GlSprintf,

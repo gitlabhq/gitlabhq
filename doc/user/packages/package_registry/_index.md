@@ -82,11 +82,11 @@ CI/CD templates, which you can use to get started, are in [this repository](http
 For more information about using the GitLab package registry with CI/CD, see:
 
 - [Generic](../generic_packages/_index.md#publish-a-package)
-- [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [npm](../npm_registry/index.md#publish-a-package-with-a-cicd-pipeline)
-- [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
-- [PyPI](../pypi_repository/index.md#authenticate-with-the-gitlab-package-registry)
-- [Terraform](../terraform_module_registry/index.md#authenticate-to-the-terraform-module-registry)
+- [Maven](../maven_repository/_index.md#create-maven-packages-with-gitlab-cicd)
+- [npm](../npm_registry/_index.md#publish-a-package-with-a-cicd-pipeline)
+- [NuGet](../nuget_repository/_index.md#publish-a-nuget-package-by-using-cicd)
+- [PyPI](../pypi_repository/_index.md#authenticate-with-the-gitlab-package-registry)
+- [Terraform](../terraform_module_registry/_index.md#authenticate-to-the-terraform-module-registry)
 
 If you use CI/CD to build a package, extended activity information is displayed
 when you view the package details:
@@ -182,8 +182,8 @@ Several known issues exist when you allow anyone to pull from the package regist
 - Maven registry endpoint for groups are supported.
 - Terraform module registry endpoints for namespaces are supported.
 - Other group and instance endpoints are not fully supported. Support for group endpoints is proposed in [epic 14234](https://gitlab.com/groups/gitlab-org/-/epics/14234).
-- It does not work with the [Composer](../composer_repository/index.md#install-a-composer-package), because Composer only has a group endpoint.
-- It works with Conan, but using [`conan search`](../conan_repository/index.md#search-for-conan-packages-in-the-package-registry) does not work.
+- It does not work with the [Composer](../composer_repository/_index.md#install-a-composer-package), because Composer only has a group endpoint.
+- It works with Conan, but using [`conan search`](../conan_repository/_index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
 ## Accepting contributions
 

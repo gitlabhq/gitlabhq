@@ -96,7 +96,7 @@ and you can use it to create a value stream with a custom stage.
 ## Create a value stream with a custom stage
 
 Now that you have a project with collaborators, you can start tracking and visualizing the activity.
-[Value Stream Analytics](../../user/group/value_stream_analytics/index.md) helps you measure the time it takes
+[Value Stream Analytics](../../user/group/value_stream_analytics/_index.md) helps you measure the time it takes
 to go from an idea to production, and identify inefficiencies in the development process.
 For a click-through demo of analytics features, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
 
@@ -159,7 +159,7 @@ You and project members with at least the Developer role can view the Insights r
 ## View merge request and issue analytics
 
 In addition to the Insights reports, you can get detailed analytics on the merge requests and issues of your project.
-[Merge request analytics](../../user/analytics/merge_request_analytics.md) and [Issue analytics](../../user/group/issues_analytics/index.md) display charts and tables with metrics such as assignees, merge request throughput, and issue status.
+[Merge request analytics](../../user/analytics/merge_request_analytics.md) and [Issue analytics](../../user/group/issues_analytics/_index.md) display charts and tables with metrics such as assignees, merge request throughput, and issue status.
 
 To view merge request and issue analytics, in the `My website` project, select **Analyze > Merge request analytics** or **Analyze > Issue analytics**.
 

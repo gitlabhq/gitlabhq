@@ -22,7 +22,7 @@ After you've created these core components, you can begin running your iteration
 ## Create a group
 
 Iteration cadences are created at the group level, so start by
-[creating one](../../user/group/index.md#create-a-group) if you don't have one already.
+[creating one](../../user/group/_index.md#create-a-group) if you don't have one already.
 
 You use groups to manage one or more related projects at the same time.
 You add your users as members in the group, and assign them a role. Roles determine
@@ -38,13 +38,13 @@ your code and pipelines, but also the issues that are used for planning your upc
 ## Set up an iteration cadence
 
 Before you start creating epics or issues, create an
-[iteration cadence](../../user/group/iterations/index.md#iteration-cadences).
+[iteration cadence](../../user/group/iterations/_index.md#iteration-cadences).
 Iteration cadences contain the individual, sequential iteration timeboxes for planning and reporting
 on your issues.
 
 When creating an iteration cadence, you can decide whether to automatically manage the iterations or
 disable the automated scheduling to
-[manually manage the iterations](../../user/group/iterations/index.md#create-an-iteration-manually).
+[manually manage the iterations](../../user/group/iterations/_index.md#create-an-iteration-manually).
 
 Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your team has multiple groups and projects, create the iteration cadence in the top-most shared group:
 
@@ -71,7 +71,7 @@ or epic such as `type::feature`, `type::defect`, and `type::maintenance`.
 
 ## Create your epics and issues
 
-Now you can get started planning your iterations. Start by creating [epics](../../user/group/epics/index.md)
+Now you can get started planning your iterations. Start by creating [epics](../../user/group/epics/_index.md)
 in the group where you created your iteration cadence,
 then create child [issues](../../user/project/issues/index.md) in one or more of your projects.
 Add labels to each as needed.

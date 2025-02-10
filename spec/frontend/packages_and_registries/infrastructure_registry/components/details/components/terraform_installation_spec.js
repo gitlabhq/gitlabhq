@@ -67,7 +67,7 @@ describe('TerraformInstallation', () => {
   describe('link to help page', () => {
     it('is rendered', () => {
       expect(findLink().attributes('href')).toBe(
-        helpPagePath('user/packages/terraform_module_registry/index', {
+        helpPagePath('user/packages/terraform_module_registry/_index', {
           anchor: 'reference-a-terraform-module',
         }),
       );

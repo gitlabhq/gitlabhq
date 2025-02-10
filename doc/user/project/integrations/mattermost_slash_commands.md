@@ -24,7 +24,7 @@ you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/pla
 
 - **Linux package installations**: Mattermost is bundled with
   [Linux package](https://docs.gitlab.com/omnibus/). To configure Mattermost for Linux package
-  installations, read the [Linux package Mattermost documentation](../../../integration/mattermost/index.md).
+  installations, read the [Linux package Mattermost documentation](../../../integration/mattermost/_index.md).
 - **If Mattermost is installed on the same server as GitLab**, use the
   [automated configuration](#configure-automatically).
 - **For all other installations**, use the [manual configuration](#configure-manually).
@@ -126,7 +126,7 @@ You can see all authorized chat accounts in your Mattermost profile page under *
 
 ## Related topics
 
-- [Mattermost Linux package](../../../integration/mattermost/index.md)
+- [Mattermost Linux package](../../../integration/mattermost/_index.md)
 - [Slash commands at Mattermost](https://developers.mattermost.com/integrate/slash-commands/)
 
 ## Troubleshooting

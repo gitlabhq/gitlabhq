@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 Resource state events keep track of what happens to GitLab [issues](../user/project/issues/index.md)
-[merge requests](../user/project/merge_requests/_index.md) and [epics starting with GitLab 15.4](../user/group/epics/index.md)
+[merge requests](../user/project/merge_requests/_index.md) and [epics starting with GitLab 15.4](../user/group/epics/_index.md)
 
 Use them to track which state was set, who did it, and when it happened.
 

@@ -224,7 +224,7 @@ By default, users can create top-level groups. To prevent a user from creating a
 1. Clear the **Can create top-level group** checkbox.
 1. Select **Save changes**.
 
-It is also possible to [limit which roles can create a subgroup within a group](../user/group/subgroups/index.md#change-who-can-create-subgroups).
+It is also possible to [limit which roles can create a subgroup within a group](../user/group/subgroups/_index.md#change-who-can-create-subgroups).
 
 ## Administering groups
 
@@ -251,7 +251,7 @@ and Large File Storage (LFS) for all projects in the group. For more information
 To search for groups by name, enter your criteria in the search field. The group search is case
 insensitive, and applies partial matching.
 
-To [Create a new group](../user/group/index.md#create-a-group) select **New group**.
+To [Create a new group](../user/group/_index.md#create-a-group) select **New group**.
 
 ## Administering topics
 

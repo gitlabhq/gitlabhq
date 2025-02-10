@@ -59,27 +59,27 @@ If you're using npm, create an `.npmrc` file. Add the appropriate URL for publis
 packages to your project. Finally, add a section to your `package.json` file.
 
 Follow the instructions in the
-[GitLab package registry npm documentation](../npm_registry/index.md#authenticate-to-the-package-registry). After
+[GitLab package registry npm documentation](../npm_registry/_index.md#authenticate-to-the-package-registry). After
 you do this, you can publish your npm package to your project using `npm publish`, as described in the
-[publishing packages](../npm_registry/index.md#publish-to-gitlab-package-registry) section.
+[publishing packages](../npm_registry/_index.md#publish-to-gitlab-package-registry) section.
 
 ### Maven
 
 If you are using Maven, you update your `pom.xml` file with distribution sections. These updates include the
-appropriate URL for your project, as described in the [GitLab Maven Repository documentation](../maven_repository/index.md#naming-convention).
-Then, you need to add a `settings.xml` file and [include your access token](../maven_repository/index.md#authenticate-to-the-package-registry).
-Now you can [publish Maven packages](../maven_repository/index.md#publish-a-package) to your project.
+appropriate URL for your project, as described in the [GitLab Maven Repository documentation](../maven_repository/_index.md#naming-convention).
+Then, you need to add a `settings.xml` file and [include your access token](../maven_repository/_index.md#authenticate-to-the-package-registry).
+Now you can [publish Maven packages](../maven_repository/_index.md#publish-a-package) to your project.
 
 ### Conan
 
 For Conan, you need to add GitLab as a Conan registry remote. Follow the instructions in the
-[GitLab Conan Repository docs](../conan_repository/index.md#add-the-package-registry-as-a-conan-remote).
+[GitLab Conan Repository docs](../conan_repository/_index.md#add-the-package-registry-as-a-conan-remote).
 Then, create your package using the plus-separated (`+`) project path as your Conan user. For example,
 if your project is located at `https://gitlab.com/foo/bar/my-proj`,
-[create your Conan package](../conan_repository/index.md) using `conan create . foo+bar+my-proj/channel`.
+[create your Conan package](../conan_repository/_index.md) using `conan create . foo+bar+my-proj/channel`.
 `channel` is your package channel (such as `stable` or `beta`).
 
-After you create your package, you're ready to [publish your package](../conan_repository/index.md#publish-a-conan-package),
+After you create your package, you're ready to [publish your package](../conan_repository/_index.md#publish-a-conan-package),
 depending on your final package recipe. For example:
 
 ```shell
@@ -93,6 +93,6 @@ exists to implement functionality that allows you to publish such packages to ot
 
 ### All other package types
 
-[All package types supported by GitLab](../index.md) can be published in
+[All package types supported by GitLab](../_index.md) can be published in
 the same GitLab project. In previous releases, not all package types could
 be published in the same project.

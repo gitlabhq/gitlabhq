@@ -87,12 +87,12 @@ When bulk editing issues in a project, you can edit the following attributes:
 
 - Status (open or closed)
 - [Assignees](managing_issues.md#assignees)
-- [Epic](../../group/epics/index.md)
+- [Epic](../../group/epics/_index.md)
 - [Milestone](../milestones/index.md)
 - [Labels](../labels.md)
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
-- [Iteration](../../group/iterations/index.md)
+- [Iteration](../../group/iterations/_index.md)
 - [Confidentiality](confidential_issues.md)
 
 ### Bulk edit issues from a group
@@ -120,9 +120,9 @@ To edit multiple issues at the same time:
 
 When bulk editing issues in a group, you can edit the following attributes:
 
-- [Epic](../../group/epics/index.md)
+- [Epic](../../group/epics/_index.md)
 - [Milestone](../milestones/index.md)
-- [Iteration](../../group/iterations/index.md)
+- [Iteration](../../group/iterations/_index.md)
 - [Labels](../labels.md)
 - [Health status](#health-status)
 
@@ -477,7 +477,7 @@ DETAILS:
 
 > - Minimum role to promote an issue to an epic [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
-You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
+You can promote an issue to an [epic](../../group/epics/_index.md) in the immediate parent group.
 
 Promoting a confidential issue to an epic creates a
 [confidential epic](../../group/epics/manage_epics.md#make-an-epic-confidential), retaining
@@ -526,7 +526,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-To add an issue to an [iteration](../../group/iterations/index.md):
+To add an issue to an [iteration](../../group/iterations/_index.md):
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.

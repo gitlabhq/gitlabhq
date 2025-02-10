@@ -27,7 +27,7 @@ Several features use activity data:
 - The user's [contribution calendar](../../../user/profile/contributions_calendar.md) on the profile page.
 - Paginated list of the user's contributions.
 - Paginated list of user activity for a Project and a Group.
-- [Contribution analytics](../../../user/group/contribution_analytics/index.md).
+- [Contribution analytics](../../../user/group/contribution_analytics/_index.md).
 
 ### How is the activity data created
 

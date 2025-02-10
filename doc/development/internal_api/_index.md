@@ -849,7 +849,7 @@ DETAILS:
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.
 
-To use this API, enable [Group SSO](../../user/group/saml_sso/index.md) for the group.
+To use this API, enable [Group SSO](../../user/group/saml_sso/_index.md) for the group.
 This API is only in use where [SCIM for Group SSO](../../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
 
 This group SCIM API:

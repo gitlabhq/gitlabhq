@@ -47,7 +47,7 @@ Each object can have as many as 5,000 comments.
 
 ## Mentions
 
-You can mention a user or a group (including [subgroups](../group/subgroups/index.md#mention-subgroups)) in your GitLab
+You can mention a user or a group (including [subgroups](../group/subgroups/_index.md#mention-subgroups)) in your GitLab
 instance with `@username` or `@groupname`. GitLab notifies all mentioned users with to-do items and emails.
 Users can change this setting for themselves in the [notification settings](../profile/notifications.md).
 
@@ -89,7 +89,7 @@ added to their to-do list.
 
 GitLab creates a to-do item for all the group and subgroup members.
 
-For more information on mentioning subgroups, see [Mention subgroups](../group/subgroups/index.md#mention-subgroups).
+For more information on mentioning subgroups, see [Mention subgroups](../group/subgroups/_index.md#mention-subgroups).
 
 ## Add a comment to a merge request diff
 

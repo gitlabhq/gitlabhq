@@ -973,7 +973,7 @@ You can configure OIDC group membership to:
 
 GitLab checks these groups on each sign in and updates user attributes as necessary.
 This feature **does not** allow you to automatically add users to GitLab
-[groups](../../user/group/index.md).
+[groups](../../user/group/_index.md).
 
 ### Required groups
 

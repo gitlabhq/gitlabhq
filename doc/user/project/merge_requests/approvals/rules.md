@@ -204,8 +204,8 @@ Prerequisites:
 To enable approval permissions for these users without granting them push access:
 
 1. [Create a protected branch](../../repository/branches/protected.md)
-1. [Create a new group](../../../group/index.md#create-a-group).
-1. [Add the user to the group](../../../group/index.md#add-users-to-a-group),
+1. [Create a new group](../../../group/_index.md#create-a-group).
+1. [Add the user to the group](../../../group/_index.md#add-users-to-a-group),
    and select the Reporter role for the user. Do not assign roles with higher permissions than
    Reporter due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/492467).
    Assigning higher roles may result in unexpected behavior.

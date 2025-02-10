@@ -23,7 +23,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-To add an incident to an [iteration](../../user/group/iterations/index.md):
+To add an incident to an [iteration](../../user/group/iterations/_index.md):
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues** or **Monitor > Incidents**, then select your incident to view it.

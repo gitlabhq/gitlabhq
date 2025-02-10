@@ -40,7 +40,7 @@ Errors during the transfer process may lead to data loss of the project's compon
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) you are transferring to.
+- You must have at least the Maintainer role for the [group](../../group/_index.md#create-a-group) you are transferring to.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
 - For projects where the container registry is enabled:
@@ -48,12 +48,12 @@ Prerequisites:
   - On GitLab Self-Managed: The project must not contain [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
 - The project must not have a security policy.
   If a security policy is assigned to the project, it is automatically unassigned during the transfer.
-- If the root namespace changes, you must remove npm packages that follow the [naming convention](../../packages/npm_registry/index.md#naming-convention) from the project.
+- If the root namespace changes, you must remove npm packages that follow the [naming convention](../../packages/npm_registry/_index.md#naming-convention) from the project.
   After you transfer the project you can either:
 
   - Update the package scope with the new root namespace path, and publish it again to the project.
   - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention.
-    If you republish the package without updating the root namespace path, it will not be available for the [instance endpoint](../../packages/npm_registry/index.md#install-from-an-instance).
+    If you republish the package without updating the root namespace path, it will not be available for the [instance endpoint](../../packages/npm_registry/_index.md#install-from-an-instance).
 
 To transfer a project:
 

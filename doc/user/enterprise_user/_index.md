@@ -13,7 +13,7 @@ Enterprise users have user accounts that are administered by an organization tha
 has [verified their email domain](#verified-domains-for-groups) and purchased a [GitLab subscription](../../subscriptions/_index.md).
 
 Enterprise users are identified by the **Enterprise** badge
-next to their names on the [Members list](../group/index.md#filter-and-sort-members-in-a-group).
+next to their names on the [Members list](../group/_index.md#filter-and-sort-members-in-a-group).
 
 ## Automatic claims of enterprise users
 
@@ -227,11 +227,11 @@ A SAML identity administrator can configure the SAML response to set:
 - Whether enterprise users can create new top-level groups.
 - The maximum number of personal projects enterprise users can create.
 
-For more information, see how to [configure enterprise user settings from the SAML response](../group/saml_sso/index.md#configure-enterprise-user-settings-from-saml-response).
+For more information, see how to [configure enterprise user settings from the SAML response](../group/saml_sso/_index.md#configure-enterprise-user-settings-from-saml-response).
 
 ### Bypass email confirmation for provisioned users
 
-A top-level group Owner can [set up verified domains to bypass confirmation emails](../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
+A top-level group Owner can [set up verified domains to bypass confirmation emails](../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains).
 
 ### Get users' email addresses
 
@@ -252,7 +252,7 @@ Changing an enterprise user's primary email to an email from a non-verified doma
 
 ### Disable password authentication for enterprise users
 
-A top-level group Owner can [disable password authentication for enterprise users](../group/saml_sso/index.md#disable-password-authentication-for-enterprise-users).
+A top-level group Owner can [disable password authentication for enterprise users](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
 
 ## Related topics
 

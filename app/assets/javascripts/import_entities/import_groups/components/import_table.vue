@@ -116,7 +116,7 @@ export default {
       reimportRequests: [],
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
-      helpUrl: helpPagePath('user/group/import/index', {
+      helpUrl: helpPagePath('user/group/import/_index', {
         anchor: 'visibility-rules',
       }),
       shouldMigrateMemberships: true,

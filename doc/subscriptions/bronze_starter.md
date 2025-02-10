@@ -27,7 +27,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Managing group memberships with LDAP](../user/group/access_and_permissions.md#manage-group-memberships-with-ldap)
   - [Member locking](../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group)
   - [Overriding user permissions](../user/group/access_and_permissions.md#override-user-permissions)
-  - [User contribution analytics](../user/group/contribution_analytics/index.md)
+  - [User contribution analytics](../user/group/contribution_analytics/_index.md)
   - [Kerberos integration](../integration/kerberos.md)
 - Issue boards:
   - [Configurable issue boards](../user/project/issue_board.md#configurable-issue-boards)
@@ -38,7 +38,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Issue weights](../user/project/issues/issue_weight.md)
   - Issue histories contain [changes to issue description](../user/discussions/_index.md#view-description-change-history)
   - [Adding an issue to an iteration](../user/project/issues/managing_issues.md#add-an-issue-to-an-iteration)
-- [Iterations](../user/group/iterations/index.md)
+- [Iterations](../user/group/iterations/_index.md)
 - [Kerberos integration](../integration/kerberos.md)
 - LDAP:
   - Querying LDAP [from the Rails console](../administration/auth/ldap/ldap-troubleshooting.md#query-ldap), or
@@ -71,7 +71,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
   - [Restricting push and merge access to certain users](../user/project/repository/branches/protected.md)
 - Metrics and analytics:
-  - [Contribution Analytics](../user/group/contribution_analytics/index.md)
+  - [Contribution Analytics](../user/group/contribution_analytics/_index.md)
   - [Merge Request Analytics](../user/analytics/merge_request_analytics.md)
   - [Code Review Analytics](../user/analytics/code_review_analytics.md)
   - [Audit events](../administration/audit_event_reports.md)

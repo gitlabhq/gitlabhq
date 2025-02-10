@@ -14,7 +14,7 @@ When you choose a name for your namespace, keep in mind:
 - [Reserved group names](../reserved_names.md#reserved-group-names)
 
 NOTE:
-Namespaces with a period (`.`) cause issues with SSL certificate validation and the source path when [publishing Terraform modules](../packages/terraform_module_registry/index.md#publish-a-terraform-module).
+Namespaces with a period (`.`) cause issues with SSL certificate validation and the source path when [publishing Terraform modules](../packages/terraform_module_registry/_index.md#publish-a-terraform-module).
 
 ## Types of namespaces
 

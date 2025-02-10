@@ -187,7 +187,7 @@ To add a group variable:
      or [**Masked and hidden**](#hide-a-cicd-variable) (only available for new variables).
 
 The group variables that are available in a project are listed in the project's
-**Settings > CI/CD > Variables** section. Variables from [subgroups](../../user/group/subgroups/index.md)
+**Settings > CI/CD > Variables** section. Variables from [subgroups](../../user/group/subgroups/_index.md)
 are recursively inherited.
 
 #### Environment scope

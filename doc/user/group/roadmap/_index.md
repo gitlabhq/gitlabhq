@@ -49,7 +49,7 @@ heading to toggle the list of the milestone bars.
 
 ![roadmap view](img/roadmap_view_v14_3.png)
 
-From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/index.md#roadmap-in-epics).
+From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/_index.md#roadmap-in-epics).
 
 ## Sort and filter the roadmap
 
@@ -72,7 +72,7 @@ In the Roadmap view, you can sort epics by:
 
 Each option contains a button that toggles the sort order between **ascending**
 and **descending**. The sort option and order persist when browsing epics, including
-the [epics list view](../epics/index.md).
+the [epics list view](../epics/_index.md).
 
 In the Roadmap view, you can also filter by the epics':
 
@@ -86,7 +86,7 @@ In the Roadmap view, you can also filter by the epics':
 
 ![roadmap date range in weeks](img/roadmap_filters_v13_11.png)
 
-From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/index.md#roadmap-in-epics).
+From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/_index.md#roadmap-in-epics).
 
 ### Improve the performance of the roadmap
 

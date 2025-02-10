@@ -16,7 +16,7 @@ You can configure GitLab to act as a SAML service provider (SP). This allows
 GitLab to consume assertions from a SAML identity provider (IdP), such as
 Okta, to authenticate users.
 
-To set up SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md).
+To set up SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md).
 
 For more information on:
 
@@ -55,7 +55,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
+   - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -138,7 +138,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
+   - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -230,7 +230,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
+   - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -310,7 +310,7 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
+   - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
@@ -386,7 +386,7 @@ To configure a SAML application on your IdP, you need at least the following inf
 
 - Assertion consumer service URL.
 - Issuer.
-- [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
+- [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
 - [Email address claim](#configure-assertions).
 
 For an example configuration, see [set up identity providers](#set-up-identity-providers).
@@ -653,7 +653,7 @@ IdPs, contact your provider's support.
 1. Complete the SAML general configuration. Enter:
    - `"Single sign-on URL"`: Use the assertion consumer service URL.
    - `"Audience URI"`: Use the issuer.
-   - [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
+   - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - [Assertions](#configure-assertions).
 1. In the feedback section, enter that you're a customer and creating an
    app for internal use.
@@ -724,7 +724,7 @@ Google Workspace SAML application.
 
 1. Set the following attributes:
    - **Unique User Identifier (Name ID)** to `user.objectID`.
-      - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](../user/group/saml_sso/index.md#manage-user-saml-identity).
+      - **Name identifier format** to `persistent`. For more information, see how to [manage user SAML identity](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - **Additional claims** to [supported attributes](#configure-assertions).
 
 For more information, see an [example configuration page](../user/group/saml_sso/example_saml_config.md#azure-active-directory).
@@ -843,7 +843,7 @@ You can:
 
 GitLab checks these groups on each SAML sign in and updates user attributes as necessary.
 This feature **does not** allow you to automatically add users to GitLab
-[Groups](../user/group/index.md).
+[Groups](../user/group/_index.md).
 
 Support for these groups depends on:
 
@@ -2559,7 +2559,7 @@ a different attribute for the `uid`, you can set the `uid_attribute`.
 Before setting the `uid` to a unique attribute, make sure that you have configured
 the following attributes so your SAML users cannot change them:
 
-- [`NameID`](../user/group/saml_sso/index.md#manage-user-saml-identity).
+- [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
 - `Email` when used with `omniauth_auto_link_saml_user`.
 
 If users can change these attributes, they can sign in as other authorized users.
@@ -3244,7 +3244,7 @@ such as the following:
 | Sign SAML assertion | Optional | Validates the integrity of a SAML assertion. When active, signs the whole response. |
 | Check SAML request signature | Optional | Checks the signature on the SAML response. |
 | Default RelayState | Optional | Specifies the sub-paths of the base URL that users should end up on after successfully signing in through SAML at your IdP. |
-| NameID format | Persistent | See [NameID format details](../user/group/saml_sso/index.md#manage-user-saml-identity). |
+| NameID format | Persistent | See [NameID format details](../user/group/saml_sso/_index.md#manage-user-saml-identity). |
 | Additional URLs | Optional | May include the issuer, identifier, or assertion consumer service URL in other fields on some providers. |
 
 For example configurations, see the [notes on specific providers](#set-up-identity-providers).

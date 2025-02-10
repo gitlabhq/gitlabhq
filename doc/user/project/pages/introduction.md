@@ -84,7 +84,7 @@ work as long as you don't redirect HTTP to HTTPS.
 
 You must host your GitLab Pages website in a project. This project can be
 [private, internal, or public](../../public_access.md) and belong
-to a [group](../../group/index.md) or [subgroup](../../group/subgroups/index.md).
+to a [group](../../group/_index.md) or [subgroup](../../group/subgroups/_index.md).
 
 For [group websites](../pages/getting_started_part_one.md#user-and-group-website-examples),
 the group must be at the top level and not a subgroup.

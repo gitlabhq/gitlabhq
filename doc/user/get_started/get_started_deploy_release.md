@@ -32,7 +32,7 @@ applications.
 
 For more information, see:
 
-- [Packages and registries](../packages/index.md)
+- [Packages and registries](../packages/_index.md)
 
 ## Step 2: Deploy your application across environments
 

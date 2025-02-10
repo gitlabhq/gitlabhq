@@ -211,7 +211,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__('ValueStreamAnalytics|Median time from issue created to issue closed.'),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+    docsLink: helpPagePath('user/group/value_stream_analytics/_index', {
       anchor: 'lifecycle-metrics',
     }),
     unit: UNITS.DAYS,
@@ -223,7 +223,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     ),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/group/value_stream_analytics/index', {
+    docsLink: helpPagePath('user/group/value_stream_analytics/_index', {
       anchor: 'lifecycle-metrics',
     }),
     unit: UNITS.DAYS,
@@ -234,7 +234,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
     description: s__('ValueStreamAnalytics|Number of new issues created.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
-    docsLink: helpPagePath('user/group/issues_analytics/index'),
+    docsLink: helpPagePath('user/group/issues_analytics/_index'),
   },
   [FLOW_METRICS.COMMITS]: {
     label: s__('DORA4Metrics|Commits'),
@@ -257,7 +257,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
     description: s__('ValueStreamAnalytics|Number of issues closed by month.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
-    docsLink: helpPagePath('user/group/issues_analytics/index'),
+    docsLink: helpPagePath('user/group/issues_analytics/_index'),
   },
   [CONTRIBUTOR_METRICS.COUNT]: {
     description: s__(

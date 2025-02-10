@@ -27,7 +27,7 @@ exports[`ConanInstallation renders all the messages 1`] = `
   />
   For more information on the Conan registry,
   <gl-link-stub
-    href="/help/user/packages/conan_repository/index"
+    href="/help/user/packages/conan_repository/_index"
     target="_blank"
   >
     see the documentation

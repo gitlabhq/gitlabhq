@@ -27,7 +27,7 @@ When that user is added back to the SCIM app:
 - They can sign in using SSO.
 
 For users de-provisioned by SCIM before that date, their SAML identity is destroyed.
-To solve this problem, the user must [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
+To solve this problem, the user must [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account).
 
 ### GitLab Self-Managed
 
@@ -83,7 +83,7 @@ To change the identifier values to match, you can do one of the following:
 - Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
 
   WARNING:
-  This resets all users' roles in the top-level group and subgroups to the [configured default membership role](index.md#configure-gitlab).
+  This resets all users' roles in the top-level group and subgroups to the [configured default membership role](_index.md#configure-gitlab).
 - Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
   `NameId` or SCIM `externalId`.
 
@@ -98,7 +98,7 @@ Additionally, the user's primary email must match the email in your SCIM identit
 
 When the SCIM app changes:
 
-- Users can follow the instructions in the [Change the SAML app](index.md#change-the-identity-provider) section.
+- Users can follow the instructions in the [Change the SAML app](_index.md#change-the-identity-provider) section.
 - Administrators of the identity provider can:
   1. Remove users from the SCIM app, which:
      - In GitLab.com, removes all removed users from the group.
@@ -181,7 +181,7 @@ This might prevent the affected end user from accessing their account correctly.
 
 The first workaround is:
 
-1. Have the end user [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
+1. Have the end user [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account).
 1. After the user has done this, initiate a SCIM sync from your identity provider.
    If the SCIM sync completes without the same error, GitLab has
    successfully linked the SCIM identity to the existing user account, and the user

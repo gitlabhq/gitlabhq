@@ -39,9 +39,9 @@ To subscribe to GitLab.com:
    and decide which tier you want.
 1. Create a user account for yourself by using the
    [sign up page](https://gitlab.com/users/sign_up).
-1. Create a [group](../../user/group/index.md#create-a-group). Your subscription tier applies to the top-level group, its subgroups, and projects.
+1. Create a [group](../../user/group/_index.md#create-a-group). Your subscription tier applies to the top-level group, its subgroups, and projects.
 1. Create additional users and
-   [add them to the group](../../user/group/index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
+   [add them to the group](../../user/group/_index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
    the features of your subscription tier, and they consume a seat in your subscription.
 1. On the left sidebar, select **Settings > Billing** and choose a tier. You are taken to the Customers Portal.
 1. Fill out the form to complete your purchase.
@@ -341,7 +341,7 @@ To remove a billable user from your GitLab.com subscription:
 
 If you add a member to a group by using the [share a group with another group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-group) feature, you can't remove the member by using this method. Instead, you can either:
 
-- [Remove the member from the shared group](../../user/group/index.md#remove-a-member-from-the-group).
+- [Remove the member from the shared group](../../user/group/_index.md#remove-a-member-from-the-group).
 - [Remove the invited group](../../user/project/members/sharing_projects_groups.md#remove-an-invited-group).
 
 ## Link subscription to a group

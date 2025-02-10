@@ -735,7 +735,7 @@ To populate your instance's catalog, you can:
 To mirror a GitLab.com component in your GitLab Self-Managed instance:
 
 1. Make sure that [network outbound requests](../../security/webhooks.md) are allowed for `gitlab.com`.
-1. [Create a group](../../user/group/index.md#create-a-group) to host the component projects (recommended group: `components`).
+1. [Create a group](../../user/group/_index.md#create-a-group) to host the component projects (recommended group: `components`).
 1. [Create a mirror of the component project](../../user/project/repository/mirror/pull.md) in the new group.
 1. Write a [project description](../../user/project/working_with_projects.md#edit-project-name-and-description)
    for the component project mirror because mirroring repositories does not copy the description.

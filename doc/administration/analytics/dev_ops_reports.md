@@ -12,7 +12,7 @@ DETAILS:
 DevOps Reports give you an overview of your entire instance's adoption of
 development, security, and operations features, along with a DevOps score.
 
-For more information about this feature, see also [DevOps adoption by group](../../user/group/devops_adoption/index.md).
+For more information about this feature, see also [DevOps adoption by group](../../user/group/devops_adoption/_index.md).
 
 ## DevOps score
 

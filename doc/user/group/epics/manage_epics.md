@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This page collects instructions for all the things you can do with [epics](index.md) or in relation
+This page collects instructions for all the things you can do with [epics](_index.md) or in relation
 to them.
 
 ## Create an epic
@@ -26,7 +26,7 @@ To create an epic in the group you're in:
    - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
    - From an epic in your group, select **Epic actions** (**{ellipsis_v}**). Then select **New epic**.
    - From anywhere, in the top menu, select **New** (**{plus-square}**). Then select **New epic**.
-   - In an empty [roadmap](../roadmap/index.md), select **New epic**.
+   - In an empty [roadmap](../roadmap/_index.md), select **New epic**.
 
 1. Enter a title.
 1. Complete the fields.
@@ -216,7 +216,7 @@ Use colors to:
 - Indicate levels in the epic hierarchy.
 - Group related epics together.
 
-Epic colors are visible in [roadmaps](../roadmap/index.md) and [epic boards](epic_boards.md).
+Epic colors are visible in [roadmaps](../roadmap/_index.md) and [epic boards](epic_boards.md).
 
 On roadmaps, the timeline bars match the epic's color:
 
@@ -383,7 +383,7 @@ You can sort the epics list by:
 
 Each option contains a button that can toggle the order between **Ascending** and **Descending**.
 The sort option and order is saved and used wherever you browse epics, including the
-[Roadmap](../roadmap/index.md).
+[Roadmap](../roadmap/_index.md).
 
 ![epics sort](img/epics_sort_v14_7.png)
 
@@ -541,7 +541,7 @@ The maximum number of direct child issues and epics is 5000.
 
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
-You can add existing issues to an epic, including issues in a project from a [different group hierarchy](index.md#child-issues-from-different-group-hierarchies).
+You can add existing issues to an epic, including issues in a project from a [different group hierarchy](_index.md#child-issues-from-different-group-hierarchies).
 Newly added issues appear at the top of the list of issues in the **Child issues and epics** section.
 
 An epic contains a list of issues and an issue can be set as a child item of at most one epic.
@@ -739,7 +739,7 @@ To add a child epic from another group, paste the epic's URL when [adding an exi
 
 ### View child epics on a roadmap
 
-From an epic, view its child epics and related milestones on the [roadmap](../roadmap/index.md).
+From an epic, view its child epics and related milestones on the [roadmap](../roadmap/_index.md).
 
 Prerequisites:
 

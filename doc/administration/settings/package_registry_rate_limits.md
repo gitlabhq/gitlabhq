@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-With the [GitLab package registry](../../user/packages/package_registry/index.md),
+With the [GitLab package registry](../../user/packages/package_registry/_index.md),
 you can use GitLab as a private or public registry for a variety of common package managers. You can
 publish and share packages, which others can consume as a dependency in downstream projects through
 the [Packages API](../../api/packages.md).

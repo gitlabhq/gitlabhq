@@ -10,7 +10,7 @@ export const storageTypeHelpPaths = {
   buildArtifacts: helpPagePath('ci/jobs/job_artifacts', {
     anchor: 'keep-artifacts-from-most-recent-successful-jobs',
   }),
-  packages: helpPagePath('user/packages/package_registry/index.md', {
+  packages: helpPagePath('user/packages/package_registry/_index.md', {
     anchor: 'reduce-storage-usage',
   }),
   repository: helpPagePath('user/project/repository/repository_size'),

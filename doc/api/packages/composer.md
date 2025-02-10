@@ -9,18 +9,18 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Composer Packages](../../user/packages/composer_repository/index.md).
+This is the API documentation for [Composer Packages](../../user/packages/composer_repository/_index.md).
 
 WARNING:
 This API is used by the [Composer package manager client](https://getcomposer.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install Composer packages from the GitLab
-package registry, see the [Composer package registry documentation](../../user/packages/composer_repository/index.md).
+package registry, see the [Composer package registry documentation](../../user/packages/composer_repository/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See the [Composer Package Registry documentation](../../user/packages/composer_repository/index.md)
+See the [Composer Package Registry documentation](../../user/packages/composer_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Base repository request

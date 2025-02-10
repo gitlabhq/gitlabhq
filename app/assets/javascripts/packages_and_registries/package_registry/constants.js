@@ -236,14 +236,14 @@ export const PACKAGE_STATUS_OPTIONS = [
 
 // links
 
-export const EMPTY_LIST_HELP_URL = helpPagePath('user/packages/package_registry/index');
-export const PACKAGE_HELP_URL = helpPagePath('user/packages/index');
-export const NPM_HELP_PATH = helpPagePath('user/packages/npm_registry/index');
-export const MAVEN_HELP_PATH = helpPagePath('user/packages/maven_repository/index');
-export const CONAN_HELP_PATH = helpPagePath('user/packages/conan_repository/index');
-export const NUGET_HELP_PATH = helpPagePath('user/packages/nuget_repository/index');
-export const PYPI_HELP_PATH = helpPagePath('user/packages/pypi_repository/index');
-export const COMPOSER_HELP_PATH = helpPagePath('user/packages/composer_repository/index');
+export const EMPTY_LIST_HELP_URL = helpPagePath('user/packages/package_registry/_index');
+export const PACKAGE_HELP_URL = helpPagePath('user/packages/_index');
+export const NPM_HELP_PATH = helpPagePath('user/packages/npm_registry/_index');
+export const MAVEN_HELP_PATH = helpPagePath('user/packages/maven_repository/_index');
+export const CONAN_HELP_PATH = helpPagePath('user/packages/conan_repository/_index');
+export const NUGET_HELP_PATH = helpPagePath('user/packages/nuget_repository/_index');
+export const PYPI_HELP_PATH = helpPagePath('user/packages/pypi_repository/_index');
+export const COMPOSER_HELP_PATH = helpPagePath('user/packages/composer_repository/_index');
 export const PERSONAL_ACCESS_TOKEN_HELP_URL = helpPagePath('user/profile/personal_access_tokens');
 export const REQUEST_FORWARDING_HELP_PAGE_PATH = helpPagePath(
   'user/packages/package_registry/supported_functionality',

@@ -17,7 +17,7 @@ If someone has access to the group, they get access to all the projects in the g
 You can also view all of the issues and merge requests for the projects in the group,
 and analytics about the group's activity.
 
-For larger organizations, you can also create [subgroups](subgroups/index.md).
+For larger organizations, you can also create [subgroups](subgroups/_index.md).
 
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
@@ -73,7 +73,7 @@ A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability Report](../application_security/vulnerability_report/index.md),
 [compliance center](../compliance/compliance_center/_index.md), and
-[value stream analytics](value_stream_analytics/index.md).
+[value stream analytics](value_stream_analytics/_index.md).
 
 ## Group visibility
 
@@ -349,7 +349,7 @@ Filter a group to find members. By default, all members in the group and subgrou
 
 In lists of group members, entries can display the following badges:
 
-- **SAML**, to indicate the member has a [SAML account](saml_sso/index.md) connected to them.
+- **SAML**, to indicate the member has a [SAML account](saml_sso/_index.md) connected to them.
 - **Enterprise**, to indicate that the member of the top-level group is an [enterprise user](../enterprise_user/_index.md).
 
 1. On the left sidebar, select **Search or go to** and find your group.

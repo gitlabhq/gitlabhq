@@ -94,7 +94,7 @@ Alternatively, you can use the API to protect an environment:
        name: ${CI_JOB_NAME}
    ```
 
-1. Use the UI to [create a new group](../../user/group/index.md#create-a-group).
+1. Use the UI to [create a new group](../../user/group/_index.md#create-a-group).
    For example, this group is called `protected-access-group` and has the group ID `9899826`. Note
    that the rest of the examples in these steps use this group.
 
@@ -129,7 +129,7 @@ The group now has access and can be seen in the UI.
 
 ## Environment access by group membership
 
-A user may be granted access to protected environments as part of [group membership](../../user/group/index.md). Users
+A user may be granted access to protected environments as part of [group membership](../../user/group/_index.md). Users
 with the Reporter role can only be granted access to protected environments with this
 method.
 
@@ -217,7 +217,7 @@ and are protected at the same time.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) in GitLab 15.4.
 
 To maximize the effectiveness of group-level protected environments,
-[group-level memberships](../../user/group/index.md) must be correctly
+[group-level memberships](../../user/group/_index.md) must be correctly
 configured:
 
 - Operators should be given the Owner role
@@ -225,7 +225,7 @@ configured:
   the higher environments (such as production) in the group-level settings page,
   which includes group-level protected environments,
   [group-level runners](../runners/runners_scope.md#group-runners), and
-  [group-level clusters](../../user/group/clusters/index.md). Those
+  [group-level clusters](../../user/group/clusters/_index.md). Those
   configurations are inherited to the child projects as read-only entries.
   This ensures that only operators can configure the organization-wide
   deployment ruleset.
@@ -235,7 +235,7 @@ configured:
   top-level group, so operators can ensure that the critical configuration won't
   be accidentally changed by the developers.
 - For subgroups and child projects:
-  - Regarding [subgroups](../../user/group/subgroups/index.md), if a higher
+  - Regarding [subgroups](../../user/group/subgroups/_index.md), if a higher
     group has configured the group-level protected environment, the lower groups
     cannot override it.
   - [Project-level protected environments](#protecting-environments) can be
@@ -266,7 +266,7 @@ To protect a group-level environment, make sure your environments have the corre
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select the [deployment tier of environments](_index.md#deployment-tier-of-environments) you want to protect.
-1. In the **Allowed to deploy** list, select the [subgroups](../../user/group/subgroups/index.md) you want to give deploy access to.
+1. In the **Allowed to deploy** list, select the [subgroups](../../user/group/subgroups/_index.md) you want to give deploy access to.
 1. Select **Protect**.
 
 #### Using the API

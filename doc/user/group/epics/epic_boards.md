@@ -12,7 +12,7 @@ DETAILS:
 > - Displaying total weight on the top of lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.11.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
-Epic boards build on the existing [epic tracking functionality](index.md) and
+Epic boards build on the existing [epic tracking functionality](_index.md) and
 [labels](../../project/labels.md). Your epics appear as cards in vertical lists, organized by their assigned
 labels.
 

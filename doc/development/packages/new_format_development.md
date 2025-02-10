@@ -7,7 +7,7 @@ title: Developing support for a new package format
 
 This document guides you through adding support to GitLab for a new a [package management system](../../administration/packages/_index.md).
 
-See the already supported formats in the [Packages and registries documentation](../../user/packages/index.md)
+See the already supported formats in the [Packages and registries documentation](../../user/packages/_index.md)
 
 It is possible to add a new format with only backend changes.
 This guide is superficial and does not cover the way the code should be written.
@@ -73,7 +73,7 @@ Composer package naming scope is Instance Level.
 To avoid name conflict for instance-level endpoints you must define a package naming convention
 that gives a way to identify the project that the package belongs to. This generally involves using the project
 ID or full project path in the package name. See
-[Conan's naming convention](../../user/packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes) as an example.
+[Conan's naming convention](../../user/packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes) as an example.
 
 For group and project-level endpoints, naming can be less constrained and it is up to the group and project
 members to be certain that there is no conflict between two package names. However, the system should prevent

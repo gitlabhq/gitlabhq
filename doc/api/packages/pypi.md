@@ -9,18 +9,18 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/index.md).
+This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/_index.md).
 
 WARNING:
 This API is used by the [PyPI package manager client](https://pypi.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install PyPI packages from the GitLab
-Package Registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/index.md).
+Package Registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See the [PyPI package registry documentation](../../user/packages/pypi_repository/index.md)
+See the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 NOTE:

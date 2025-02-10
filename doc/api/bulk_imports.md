@@ -12,7 +12,7 @@ DETAILS:
 > - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
 
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
-[group migration by direct transfer](../user/group/import/index.md).
+[group migration by direct transfer](../user/group/import/_index.md).
 
 WARNING:
 Migrating projects with this API is in [beta](../policy/development_stages_support.md#beta). This feature is not

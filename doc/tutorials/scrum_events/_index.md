@@ -209,7 +209,7 @@ With your iteration cadence configured this way:
 - Incomplete issues from one sprint are automatically reassigned to the next sprint when the current sprint is closed.
 
 You can also disable **Automatic scheduling** and
-[manually create and manage iterations](../../user/group/iterations/index.md#create-an-iteration-manually) in your cadence.
+[manually create and manage iterations](../../user/group/iterations/_index.md#create-an-iteration-manually) in your cadence.
 
 ## Managing your feature backlog
 

@@ -11,7 +11,7 @@ DETAILS:
 
 This page contains possible solutions for problems you might encounter when using:
 
-- [SAML SSO for GitLab.com groups](index.md).
+- [SAML SSO for GitLab.com groups](_index.md).
 - The self-managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
 - [Switchboard](../../../administration/dedicated/configure_instance/saml.md#activate-saml-with-switchboard) to configure SAML for GitLab Dedicated instances.
 
@@ -50,7 +50,7 @@ To generate a SAML Response:
    - Go to the instance home page
    - Click on the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this
-   [example SAML response](index.md#example-saml-response).
+   [example SAML response](_index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
 
 #### Manually generate a SAML response
@@ -293,9 +293,9 @@ You might get an error that states `SAML authentication failed: Extern uid has a
 
 This issue occurs when you try to link your existing GitLab account to a SAML identity using Group SSO, but there is an existing GitLab account with your current `NameID`.
 
-To resolve this issue, tell your administrator to re-generate a unique `Extern UID` (`NameID`) for your IdP account. Make sure this new `Extern UID` adheres to the [GitLab `NameID` constraints](index.md#manage-user-saml-identity).
+To resolve this issue, tell your administrator to re-generate a unique `Extern UID` (`NameID`) for your IdP account. Make sure this new `Extern UID` adheres to the [GitLab `NameID` constraints](_index.md#manage-user-saml-identity).
 
-If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the SAML app](index.md#unlink-accounts).
+If you do not wish to use that GitLab user with the SAML login, you can [unlink the GitLab account from the SAML app](_index.md#unlink-accounts).
 
 ### Message: "SAML authentication failed: User has already been taken"
 
@@ -304,14 +304,14 @@ Here are possible causes and solutions:
 
 | Cause                                                                                          | Solution                                                                                                                                                                   |
 | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](index.md#unlink-accounts) from this GitLab account before attempting to sign in again. |
+| You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](_index.md#unlink-accounts) from this GitLab account before attempting to sign in again. |
 | The `NameID` changes every time the user requests SSO identification | [Check the `NameID`](#verify-nameid) is not set with `Transient` format, or the `NameID` is not changing on subsequent requests.|
 
 ### Message: "SAML authentication failed: Email has already been taken"
 
 | Cause                                                                                                                                    | Solution                                                                 |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user needs to [link their account](index.md#user-access-and-management). |
+| When a user account with the email address already exists in GitLab, but the user does not have the SAML identity tied to their account. | The user needs to [link their account](_index.md#user-access-and-management). |
 
 User accounts are created in one of the following ways:
 
@@ -327,7 +327,7 @@ Getting both of these errors at the same time suggests the `NameID` capitalizati
 - `SAML authentication failed: Extern UID has already been taken`
 - `User has already been taken`
 
-This can be prevented by configuring the `NameID` to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](index.md#unlink-accounts).
+This can be prevented by configuring the `NameID` to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](_index.md#unlink-accounts).
 
 ### Message: "Request to link SAML account must be authorized"
 
@@ -344,7 +344,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account):
+A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account):
 
 ```plaintext
 There is already a GitLab account associated with this email address.
@@ -366,7 +366,7 @@ DETAILS:
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
 
-- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case sensitive. For more information, see  [manage user SAML identity](index.md#manage-user-saml-identity).
+- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value. Both the NameID and the `extern_uid` are case sensitive. For more information, see  [manage user SAML identity](_index.md#manage-user-saml-identity).
 - Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
 
 The workaround is that a GitLab group Owner uses the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
@@ -402,7 +402,7 @@ This can then be compared to the `NameID` being sent by the identity provider by
 
 Ensure that the **GitLab single sign-on URL** (for GitLab.com) or the instance URL (for self-managed) has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
 
-For GitLab.com, alternatively, when users need to [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
+For GitLab.com, alternatively, when users need to [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
 
 ### Users receive a 404
 
@@ -422,8 +422,8 @@ If all users are receiving a `404` when attempting to sign in using SAML, confir
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#configure-saml-on-your-idp).
 
-If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#set-up-your-identity-provider), they may see a 404.
-As outlined in the [user access section](index.md#link-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
+If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](_index.md#set-up-your-identity-provider), they may see a 404.
+As outlined in the [user access section](_index.md#link-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.
 
 If the top-level group has [restricted membership by email domain](../access_and_permissions.md#restrict-group-access-by-domain), and a user with an email domain that is not allowed tries to sign in with SSO, that user might receive a 404. Users might have multiple accounts, and their SAML identity might be linked to their personal account which has an email address that is different than the company domain. To check this, verify the following:
 
@@ -431,7 +431,7 @@ If the top-level group has [restricted membership by email domain](../access_and
 - That, in [audit events](../../../administration/audit_event_reports.md) for the top-level group:
   - You can see **Signed in with GROUP_SAML authentication** action for that user.
   - That the user's username is the same as the username you configured for SAML SSO, by selecting the **Author** name.
-    - If the username is different to the username you configured for SAML SSO, ask the user to [unlink the SAML identity](index.md#unlink-accounts) from their personal account.
+    - If the username is different to the username you configured for SAML SSO, ask the user to [unlink the SAML identity](_index.md#unlink-accounts) from their personal account.
 
 If all users are receiving a `404` after signing in to the identity provider (IdP):
 
@@ -442,15 +442,15 @@ If all users are receiving a `404` after signing in to the identity provider (Id
 
 - Verify if the `404` is related to [the user having too many groups assigned to them in their Azure IdP](group_sync.md#user-that-belongs-to-many-saml-groups-automatically-removed-from-gitlab-group).
 
-If a subset of users are receiving a `404` after signing in to the IdP, first verify audit events if the user gets added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../index.md#search-a-group):
+If a subset of users are receiving a `404` after signing in to the IdP, first verify audit events if the user gets added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
 
-- Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management), and [SCIM](scim_setup.md) if configured.
+- Ensure the user has been [added to the SAML identity provider](_index.md#user-access-and-management), and [SCIM](scim_setup.md) if configured.
 - Ensure the user's SCIM identity's `active` attribute is `true` using the [SCIM API](../../../api/scim.md).
   If the `active` attribute is `false`, you can do one of the following to possibly resolve the issue:
 
   - Trigger a sync for the user in the SCIM identity provider. For example, Azure has a "Provision on demand" option.
   - Remove and re-add the user in the SCIM identity provider.
-  - Have the user [unlink their account](index.md#unlink-accounts) if possible, then [link their account](index.md#link-saml-to-your-existing-gitlabcom-account).
+  - Have the user [unlink their account](_index.md#unlink-accounts) if possible, then [link their account](_index.md#link-saml-to-your-existing-gitlabcom-account).
   - Use the [internal SCIM API](../../../development/internal_api/_index.md#update-a-single-scim-provisioned-user) to update the user's SCIM identity using your group's SCIM token.
     If you do not know your group's SCIM token, reset the token and update the SCIM identity provider app with the new token.
     Example request:
@@ -528,13 +528,13 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](index.md#sso-enforcement) enabled.
+This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](_index.md#sso-enforcement) enabled.
 
 If you see this message after trying to invite a user to a group:
 
-1. Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management).
-1. Ask the user to [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.
-1. Ensure the user is a [member of the top-level group](../index.md#search-a-group).
+1. Ensure the user has been [added to the SAML identity provider](_index.md#user-access-and-management).
+1. Ask the user to [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](_index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.
+1. Ensure the user is a [member of the top-level group](../_index.md#search-a-group).
 
 Additionally, see [troubleshooting users receiving a 404 after sign in](#users-receive-a-404).
 
@@ -551,7 +551,7 @@ identity provider directory does not have an email address value for your user
 This error appears when:
 
 - the SAML response does not contain the user's email address in an **email** or **mail** attribute.
-- a user attempts to [link SAML](index.md#user-access-and-management) to their account but has not yet completed the [identity verification process](../../../security/identity_verification.md).
+- a user attempts to [link SAML](_index.md#user-access-and-management) to their account but has not yet completed the [identity verification process](../../../security/identity_verification.md).
 
 Ensure the SAML identity provider is configured to send a [supported mail attribute](../../../integration/saml.md):
 

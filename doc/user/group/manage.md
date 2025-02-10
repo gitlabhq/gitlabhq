@@ -15,7 +15,7 @@ A top-level group offers insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability Report](../application_security/vulnerability_report/index.md),
 [compliance center](../compliance/compliance_center/_index.md), and
-[value stream analytics](value_stream_analytics/index.md).
+[value stream analytics](value_stream_analytics/_index.md).
 
 ## Add a group README
 
@@ -109,7 +109,7 @@ Transferring groups moves them from one place to another in the same GitLab inst
 - Convert a subgroup into a top-level group by transferring it out of its current group.
 
 If you need to copy a group to a different GitLab instance,
-[migrate the group by direct transfer](import/index.md).
+[migrate the group by direct transfer](import/_index.md).
 
 When transferring groups, note:
 
@@ -117,10 +117,10 @@ When transferring groups, note:
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
 - Only explicit group membership is transferred, not inherited membership. If the group's Owners have only inherited membership, this leaves the group without an Owner. In this case, the user transferring the group becomes the group's Owner.
-- Transfers fail if the group is a top-level group and [npm packages](../packages/npm_registry/index.md) following the [naming convention](../packages/npm_registry/index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
+- Transfers fail if the group is a top-level group and [npm packages](../packages/npm_registry/_index.md) following the [naming convention](../packages/npm_registry/_index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
 - `container_registry` images in the archived projects must be deleted before the transfer. For more information, see the [troubleshooting section](troubleshooting.md#missing-or-insufficient-permission-delete-button-disabled).
 - Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group-level endpoint.
-- Existing package names need to be updated if the package uses an instance-level endpoint ([Maven](../packages/maven_repository/index.md#naming-convention), [npm](../packages/npm_registry/index.md#naming-convention), [Conan](../packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another top-level group.
+- Existing package names need to be updated if the package uses an instance-level endpoint ([Maven](../packages/maven_repository/_index.md#naming-convention), [npm](../packages/npm_registry/_index.md#naming-convention), [Conan](../packages/conan_repository/_index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another top-level group.
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
 
 Prerequisites:

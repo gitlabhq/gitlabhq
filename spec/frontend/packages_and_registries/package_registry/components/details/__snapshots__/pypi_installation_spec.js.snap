@@ -225,7 +225,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
   <a
     class="gl-link"
     data-testid="pypi-docs-link"
-    href="/help/user/packages/pypi_repository/index"
+    href="/help/user/packages/pypi_repository/_index"
     rel="noopener"
     target="_blank"
   >

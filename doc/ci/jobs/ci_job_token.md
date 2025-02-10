@@ -40,7 +40,7 @@ The CI/CD job token can only access the following features and API endpoints:
 | [Environments API](../../api/environments.md)                                                         | `GET` requests are public by default. |
 | [Job artifacts API](../../api/job_artifacts.md#get-job-artifacts)                                     | `GET` requests are public by default. |
 | [API endpoint to get the job of a job token](../../api/jobs.md#get-job-tokens-job)                    | To get the job token's job. |
-| [Package registry](../../user/packages/package_registry/index.md#to-build-packages)                   |         |
+| [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                   |         |
 | [Packages API](../../api/packages.md)                                                                 | `GET` requests are public by default. |
 | [Pipeline triggers](../../api/pipeline_triggers.md)                                                   | Used with the `token=` parameter to [trigger a multi-project pipeline](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api). |
 | [Update pipeline metadata API endpoint](../../api/pipelines.md#update-pipeline-metadata)              | To update pipeline metadata. |

@@ -9,18 +9,18 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [NuGet Packages](../../user/packages/nuget_repository/index.md).
+This is the API documentation for [NuGet Packages](../../user/packages/nuget_repository/_index.md).
 
 WARNING:
 This API is used by the [NuGet package manager client](https://www.nuget.org/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install NuGet packages from the GitLab
-Package Registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/index.md).
+Package Registry, see the [NuGet package registry documentation](../../user/packages/nuget_repository/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See the [NuGet package registry documentation](../../user/packages/nuget_repository/index.md)
+See the [NuGet package registry documentation](../../user/packages/nuget_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Package index

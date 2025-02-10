@@ -77,7 +77,7 @@ You can manually add an item to your To-Do List.
 
    - [Issue](project/issues/index.md)
    - [Merge request](project/merge_requests/_index.md)
-   - [Epic](group/epics/index.md)
+   - [Epic](group/epics/_index.md)
    - [Design](project/issues/design_management.md)
    - [Incident](../operations/incident_management/incidents.md)
    - [Objective or key result](okrs.md)

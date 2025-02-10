@@ -17,7 +17,7 @@ shipped on time.
 Due dates are supported in:
 
 - [Issues](index.md)
-- [Epics](../../group/epics/index.md)
+- [Epics](../../group/epics/_index.md)
 - [Tasks](../../tasks.md)
 - [Objectives and key results](../../okrs.md)
 - [Incidents](../../../operations/incident_management/incidents.md)
@@ -89,7 +89,7 @@ feed can be added to calendar applications.
 
    - [Issues assigned to you](managing_issues.md#view-all-issues-assigned-to-you)
    - [Issues in a specific project](managing_issues.md#issue-list)
-   - Issues for all projects [in a group](../../group/index.md)
+   - Issues for all projects [in a group](../../group/_index.md)
 
 1. On the right, from the **Actions** (**{ellipsis_v}**) dropdown list, select **Subscribe to calendar** to display the `.ics` file.
 1. Copy the full link to the page (including the full query string) and use it in your

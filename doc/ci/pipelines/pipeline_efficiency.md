@@ -150,7 +150,7 @@ Review the storage use of the following to help analyze costs and efficiency:
 - [Job artifacts](../jobs/job_artifacts.md) and their [`expire_in`](../yaml/_index.md#artifactsexpire_in)
   configuration. If kept for too long, storage usage grows and could slow pipelines down.
 - [Container registry](../../user/packages/container_registry/index.md) usage.
-- [Package registry](../../user/packages/package_registry/index.md) usage.
+- [Package registry](../../user/packages/package_registry/_index.md) usage.
 
 ## Pipeline configuration
 

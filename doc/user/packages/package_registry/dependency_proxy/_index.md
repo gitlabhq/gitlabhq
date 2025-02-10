@@ -32,9 +32,9 @@ and that users who pull from the cache have the necessary authentication:
 1. In the global configuration, if the following features are disabled, enable them:
    - The [`package` feature](../../../../administration/packages/_index.md#enable-or-disable-the-package-registry). Enabled by default.
    - The [`dependency_proxy` feature](../../../../administration/packages/dependency_proxy.md#turn-on-the-dependency-proxy). Enabled by default.
-1. In the project settings, if the [`package` feature](../index.md#disable-the-package-registry)
+1. In the project settings, if the [`package` feature](../_index.md#disable-the-package-registry)
    is disabled, enable it. It is enabled by default.
-1. [Add an authentication method](#configure-a-client). The dependency proxy supports the same [authentication methods](../index.md#authenticate-with-the-registry) as the package registry:
+1. [Add an authentication method](#configure-a-client). The dependency proxy supports the same [authentication methods](../_index.md#authenticate-with-the-registry) as the package registry:
    - [Personal access token](../../../profile/personal_access_tokens.md)
    - [Project deploy token](../../../project/deploy_tokens/index.md)
    - [Group deploy token](../../../project/deploy_tokens/index.md)
@@ -63,7 +63,7 @@ which package format you use.
 
 | Package registry                                                                                                                         | Advanced caching supported? |
 |------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| [GitLab](../../maven_repository/index.md)                                                                                                | **{check-circle}** Yes      |
+| [GitLab](../../maven_repository/_index.md)                                                                                                | **{check-circle}** Yes      |
 | [Maven Central](https://mvnrepository.com/repos/central)                                                                                 | **{check-circle}** Yes      |
 | [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                           | **{check-circle}** Yes      |
 | [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                   | **{check-circle}** Yes      |
@@ -81,7 +81,7 @@ When the dependency proxy pulls a file, the following occurs:
    This is a write operation.
 
 Whether both steps are executed depends on user permissions.
-The dependency proxy uses the [same permissions as the package registry](../index.md#package-registry-visibility-permissions).
+The dependency proxy uses the [same permissions as the package registry](../_index.md#package-registry-visibility-permissions).
 
 | Project visibility | Minimum [role](../../../permissions.md#roles) | Can read package files? | Can write package files? | Behavior |
 |--------------------|-------------------------------------------------------|-------------------------|--------------------------|----------|
@@ -105,18 +105,18 @@ Configuring a client for the dependency proxy is similar to configuring a client
 
 ### For Maven packages
 
-For Maven packages, [all clients supported by the package registry](../../maven_repository/index.md) are supported by the dependency proxy:
+For Maven packages, [all clients supported by the package registry](../../maven_repository/_index.md) are supported by the dependency proxy:
 
 - `mvn`
 - `gradle`
 - `sbt`
 
-For authentication, you can use all methods accepted by the [Maven package registry](../../maven_repository/index.md#edit-the-client-configuration).
-You should use the [Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) method as it is less complex.
+For authentication, you can use all methods accepted by the [Maven package registry](../../maven_repository/_index.md#edit-the-client-configuration).
+You should use the [Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication) method as it is less complex.
 
 To configure the client:
 
-1. Follow the instructions in [Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication).
+1. Follow the instructions in [Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication).
 
    Make sure you use the endpoint URL `https://gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven`.
 
@@ -126,8 +126,8 @@ To configure the client:
 
 :::TabTitle mvn
 
-[Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) is accepted.
-However, you should use the [custom HTTP header authentication](../../maven_repository/index.md#custom-http-header),
+[Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication) is accepted.
+However, you should use the [custom HTTP header authentication](../../maven_repository/_index.md#custom-http-header),
 so that `mvn` uses fewer network requests.
 
 In the `pom.xml` file add a `repository` element:
@@ -144,10 +144,10 @@ In the `pom.xml` file add a `repository` element:
 Where:
 
 - `<project_id>` is the ID of the project to be used as a dependency proxy.
-- `<id>` contains the name of the `<server>` used in the [authentication configuration](../../maven_repository/index.md#basic-http-authentication).
+- `<id>` contains the name of the `<server>` used in the [authentication configuration](../../maven_repository/_index.md#basic-http-authentication).
 
 By default, Maven Central is checked first through the [Super POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Super_POM).
-However, you might want to force `mvn` to check the GitLab endpoint first. To do this, follow the instructions from the [request forward](../../maven_repository/index.md#additional-configuration-for-mvn).
+However, you might want to force `mvn` to check the GitLab endpoint first. To do this, follow the instructions from the [request forward](../../maven_repository/_index.md#additional-configuration-for-mvn).
 
 :::TabTitle gradle
 
@@ -192,7 +192,7 @@ Add a `repositories` section to your [`build.gradle`](https://docs.gradle.org/cu
 In this example:
 
 - `<project_id>` is the ID of the project to be used as a dependency proxy.
-- `REPLACE_WITH_NAME` is explained in the [Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) section.
+- `REPLACE_WITH_NAME` is explained in the [Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication) section.
 
 :::TabTitle sbt
 
@@ -208,7 +208,7 @@ In this example:
 
 - `<project_id>` is the ID of the project to be used as a dependency proxy.
 - `<host>` is the host present in the `<endpoint url>` without the protocol scheme or the port. Example: `gitlab.example.com`.
-- `<name>` and `<token>` are explained in the [Basic HTTP authentication](../../maven_repository/index.md#basic-http-authentication) section.
+- `<name>` and `<token>` are explained in the [Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication) section.
 
 ::EndTabs
 

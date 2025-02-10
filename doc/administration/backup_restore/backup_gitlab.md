@@ -178,7 +178,7 @@ including:
 
 Backups do not include:
 
-- [Mattermost data](../../integration/mattermost/index.md#back-up-gitlab-mattermost)
+- [Mattermost data](../../integration/mattermost/_index.md#back-up-gitlab-mattermost)
 - Redis (and thus Sidekiq jobs)
 - [Object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations
 - [Global server hooks](../server_hooks.md#create-global-server-hooks-for-all-repositories)

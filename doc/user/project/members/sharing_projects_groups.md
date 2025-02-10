@@ -21,7 +21,7 @@ You can share by invitation:
 ## Sharing projects
 
 When you want a group to have access to your project,
-you can invite the [group](../../group/index.md) to the project.
+you can invite the [group](../../group/_index.md) to the project.
 The group's direct and inherited members get access to the project, which becomes a **shared project**.
 
 In this case, inherited members are members that are inherited from parent groups into the groups that are invited.
@@ -205,7 +205,7 @@ After you [specify a user cap for the group](../../group/manage.md#specify-a-use
 ## Sharing groups
 
 When you want a group to have access to your group,
-you can invite another [group](../../group/index.md) to the group.
+you can invite another [group](../../group/_index.md) to the group.
 The invited group's direct members get access to the group.
 
 After you invite a group to your group:

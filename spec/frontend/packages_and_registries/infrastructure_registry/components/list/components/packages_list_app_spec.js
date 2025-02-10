@@ -167,7 +167,7 @@ describe('packages_list_app', () => {
       const link = findListComponent().findComponent(GlLink);
 
       expect(link.attributes('href')).toBe(
-        helpPagePath('user/packages/terraform_module_registry/index'),
+        helpPagePath('user/packages/terraform_module_registry/_index'),
       );
       expect(link.text()).toBe('publish and share your packages');
     });

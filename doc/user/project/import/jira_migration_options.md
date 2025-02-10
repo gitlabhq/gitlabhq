@@ -44,7 +44,7 @@ To import the Jira issue data from a CSV file into your GitLab project:
       - Only `title`, `description`, `due_date`, and `milestone` are imported.
       - You can [add quick actions to the description field](../quick_actions.md) to set other issue metadata automatically during the import process.
 1. Create a new GitLab group and project:
-   1. Sign in to your GitLab account and [create a group](../../group/index.md#create-a-group) to host your migrated projects.
+   1. Sign in to your GitLab account and [create a group](../../group/_index.md#create-a-group) to host your migrated projects.
    1. In the new group, [create a new project](../index.md#create-a-blank-project) to hold the migrated Jira issues.
 1. Import the Jira data into GitLab:
    1. In your new GitLab project, on the left sidebar, select **Plan > Issues**.
@@ -117,7 +117,7 @@ When writing your script, you need to map the Jira issue fields to their corresp
 - **Story Point**: Map this value to the GitLab issue's **weight** value.
 - **Sprint**: Map this value to the GitLab issue's **iteration** value. This value is meaningful
   only for issues that have not been completed or are scheduled for a future sprint. Before importing
-  the data, create the required [iterations](../../group/iterations/index.md#iteration-cadences) in the
+  the data, create the required [iterations](../../group/iterations/_index.md#iteration-cadences) in the
   parent group of your project.
 
 You might also need to handle parsing the Atlassian Document Format and mapping it to GitLab Flavored Markdown.

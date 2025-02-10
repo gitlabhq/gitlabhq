@@ -64,16 +64,16 @@ In the following table, you can see:
 | [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md) | GitLab 16.0 and later |
 | [Password complexity requirements](../settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
-| [Issue analytics](../../user/group/issues_analytics/index.md) | GitLab 16.5 and later |
+| [Issue analytics](../../user/group/issues_analytics/_index.md) | GitLab 16.5 and later |
 | [Custom Text in Emails](../settings/email.md#custom-additional-text) | GitLab 16.5 and later |
-| [Contribution analytics](../../user/group/contribution_analytics/index.md) | GitLab 16.5 and later |
+| [Contribution analytics](../../user/group/contribution_analytics/_index.md) | GitLab 16.5 and later |
 | [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
 | [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
 | [Service Level Agreement countdown timer](../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) | GitLab 16.6 and later |
 | [Lock project membership to group](../../user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) | GitLab 16.6 and later |
 | [Users and permissions report](../admin_area.md#user-permission-export) | GitLab 16.6 and later |
 | [Advanced search](../../user/search/advanced_search.md) | GitLab 16.6 and later |
-| [DevOps Adoption](../../user/group/devops_adoption/index.md) | GitLab 16.6 and later |
+| [DevOps Adoption](../../user/group/devops_adoption/_index.md) | GitLab 16.6 and later |
 | [Сross-project pipelines with artifacts dependencies](../../ci/yaml/_index.md#needsproject) | GitLab 16.7 and later |
 | [Feature flag related issues](../../operations/feature_flags.md#feature-flag-related-issues) | GitLab 16.7 and later |
 | [Merged results pipelines](../../ci/pipelines/merged_results_pipelines.md) | GitLab 16.7 and later |

@@ -529,7 +529,7 @@ Prerequisites:
 - You must [integrate LDAP with GitLab](../../administration/auth/ldap/_index.md).
 - You must be an administrator.
 
-1. [Create a group](../group/index.md#create-a-group) to track membership of your project.
+1. [Create a group](../group/_index.md#create-a-group) to track membership of your project.
 1. [Set up LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md) for that group.
 1. To use LDAP groups to manage access to a project,
    [add the LDAP-synchronized group as a member](../group/manage.md) to the project.

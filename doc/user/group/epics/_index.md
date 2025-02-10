@@ -97,7 +97,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
-have a start or due date, you can go to a [roadmap](../roadmap/index.md)
+have a start or due date, you can go to a [roadmap](../roadmap/_index.md)
 of the child epics from the epic.
 
 ![Child epics roadmap](img/epic_view_roadmap_v12_9.png)

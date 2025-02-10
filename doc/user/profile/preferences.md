@@ -141,7 +141,7 @@ You can change the main content on your group overview page. Your group overview
 - Details Dashboard (default), which includes an overview of group activities and projects.
 - Security Dashboard, which might include group security policies and other security topics.
 
-For more information, view [Groups](../group/index.md).
+For more information, view [Groups](../group/_index.md).
 
 To change the default content on your group overview page:
 

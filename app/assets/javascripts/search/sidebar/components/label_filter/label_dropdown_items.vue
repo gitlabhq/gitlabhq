@@ -23,6 +23,7 @@ export default {
       :key="label.key"
       :aria-label="label.title"
       tabindex="-1"
+      data-testid="label-filter-menu-item"
       class="label-filter-menu-item gl-px-5 gl-py-3"
     >
       <gl-form-checkbox

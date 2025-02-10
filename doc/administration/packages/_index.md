@@ -17,15 +17,15 @@ packages, which can be consumed as dependencies in downstream projects.
 
 The package registry supports the following formats:
 
-| Package type                                                      | GitLab version |
-|-------------------------------------------------------------------|----------------|
-| [Composer](../../user/packages/composer_repository/index.md)      | 13.2+          |
-| [Conan](../../user/packages/conan_repository/index.md)            | 12.6+          |
+| Package type                                                       | GitLab version |
+|--------------------------------------------------------------------|----------------|
+| [Composer](../../user/packages/composer_repository/_index.md)      | 13.2+          |
+| [Conan](../../user/packages/conan_repository/_index.md)            | 12.6+          |
 | [Go](../../user/packages/go_proxy/_index.md)                       | 13.1+          |
-| [Maven](../../user/packages/maven_repository/index.md)            | 11.3+          |
-| [npm](../../user/packages/npm_registry/index.md)                  | 11.7+          |
-| [NuGet](../../user/packages/nuget_repository/index.md)            | 12.8+          |
-| [PyPI](../../user/packages/pypi_repository/index.md)              | 12.10+         |
+| [Maven](../../user/packages/maven_repository/_index.md)            | 11.3+          |
+| [npm](../../user/packages/npm_registry/_index.md)                  | 11.7+          |
+| [NuGet](../../user/packages/nuget_repository/_index.md)            | 12.8+          |
+| [PyPI](../../user/packages/pypi_repository/_index.md)              | 12.10+         |
 | [Generic packages](../../user/packages/generic_packages/_index.md) | 13.5+          |
 | [Helm Charts](../../user/packages/helm_repository/_index.md)       | 14.1+          |
 

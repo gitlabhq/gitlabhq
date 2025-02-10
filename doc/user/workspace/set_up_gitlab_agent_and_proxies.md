@@ -86,7 +86,7 @@ Grant users with at least the Developer role for the workspace and agent project
 the necessary permissions to create and manage workspaces. You can:
 
 - [Add users to a project](../project/members/index.md#add-users-to-a-project)
-- [Add users to a group](../group/index.md#add-users-to-a-group)
+- [Add users to a group](../group/_index.md#add-users-to-a-group)
 
 ## Generate TLS certificates
 

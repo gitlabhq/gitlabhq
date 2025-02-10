@@ -14,7 +14,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 use the [GitLab agent](../../clusters/agent/_index.md).
 
 Similar to Kubernetes clusters for [projects](../../project/clusters/index.md)
-and [groups](../../group/clusters/index.md), instance Kubernetes clusters enable
+and [groups](../../group/clusters/_index.md), instance Kubernetes clusters enable
 you to connect a Kubernetes cluster to the GitLab instance, and use the same cluster
 across multiple projects.
 

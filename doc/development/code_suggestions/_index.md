@@ -111,7 +111,7 @@ The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-
 ### Setup instructions to use the Duo Pro add-on with a **staging** GitLab.com account
 
 1. Have your account ready at <https://staging.gitlab.com>.
-1. [Create a new group](../../user/group/index.md#create-a-group) or use an existing one as the namespace which will receive the Duo Pro access.
+1. [Create a new group](../../user/group/_index.md#create-a-group) or use an existing one as the namespace which will receive the Duo Pro access.
 1. Navigate to `Settings > Billing`.
 1. Initiate the purchase flow for the Ultimate plan by clicking on `Upgrade to Ultimate`.
 1. After being redirected to <https://customers.staging.gitlab.com>, click on `Continue with your Gitlab.com account`.
