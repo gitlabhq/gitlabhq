@@ -15,7 +15,7 @@ To enable the container registry for your GitLab instance, see the [administrato
 
 NOTE:
 If you pull container images from Docker Hub, you can use the
-[GitLab Dependency Proxy](../dependency_proxy/index.md#use-the-dependency-proxy-for-docker-images) to avoid
+[GitLab Dependency Proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
 rate limits and speed up your pipelines.
 
 ## View the container registry

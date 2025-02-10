@@ -5,7 +5,7 @@
   self-managed: true
   gitlab-com: false
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/runner/install/index.html#fips-compliant-gitlab-runner'
+  documentation_link: 'https://docs.gitlab.com/runner/install/#fips-compliant-gitlab-runner'
   image_url: https://about.gitlab.com/images/growth/verify.png
   published_at: 2022-01-22
   release: 14.7

@@ -155,7 +155,7 @@ for each agent. For example:
 ### Environments with both certificate-based and agent-based connections
 
 When you deploy to an environment that has both a
-[certificate-based cluster](../../infrastructure/clusters/index.md) (deprecated) and an agent connection:
+[certificate-based cluster](../../infrastructure/clusters/_index.md) (deprecated) and an agent connection:
 
 - The certificate-based cluster's context is called `gitlab-deploy`. This context
   is always selected by default.

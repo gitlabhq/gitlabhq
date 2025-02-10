@@ -103,7 +103,7 @@ To create a group:
 1. Select **Create group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../../user/reserved_names.md).
-1. In the **Group URL** text box, enter the path for the group used for the [namespace](../../user/namespace/index.md).
+1. In the **Group URL** text box, enter the path for the group used for the [namespace](../../user/namespace/_index.md).
 1. Select the [**Visibility level**](../../user/public_access.md) of the group.
 1. Optional. To personalize your GitLab experience:
    - From the **Role** dropdown list, select your role.

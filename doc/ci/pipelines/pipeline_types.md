@@ -37,7 +37,7 @@ Branch pipelines:
 
 ## Tag pipeline
 
-A pipeline can run every time you create or push a new [tag](../../user/project/repository/tags/index.md).
+A pipeline can run every time you create or push a new [tag](../../user/project/repository/tags/_index.md).
 
 This type of pipeline is called a *tag pipeline*.
 

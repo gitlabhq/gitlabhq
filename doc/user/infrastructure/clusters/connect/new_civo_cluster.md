@@ -8,7 +8,7 @@ title: Create a Civo Kubernetes cluster
 Every new Civo account receives [$250 in credit](https://dashboard.civo.com/signup) to get started with the GitLab integration with Civo Kubernetes. You can also use a marketplace app to install GitLab on your Civo Kubernetes cluster.
 
 Learn how to create a new cluster on Civo Kubernetes through
-[Infrastructure as Code (IaC)](../../index.md). This process uses the Civo
+[Infrastructure as Code (IaC)](../../_index.md). This process uses the Civo
 and Kubernetes Terraform providers to create Civo Kubernetes clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
@@ -109,7 +109,7 @@ After you provision the cluster, it is connected to GitLab and is ready for depl
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
-For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
 
 ## Remove the cluster
 

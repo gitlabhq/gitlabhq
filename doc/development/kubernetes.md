@@ -6,7 +6,7 @@ title: Kubernetes integration development guidelines
 ---
 
 This document provides various guidelines when developing for the GitLab
-[Kubernetes integration](../user/infrastructure/clusters/index.md).
+[Kubernetes integration](../user/infrastructure/clusters/_index.md).
 
 ## Development
 

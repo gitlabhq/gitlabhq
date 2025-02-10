@@ -45,7 +45,7 @@ Prerequisites:
 - The group must allow creation of new projects.
 - For projects where the container registry is enabled:
   - On GitLab.com: You can only transfer projects within the same top-level namespace.
-  - On GitLab Self-Managed: The project must not contain [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
+  - On GitLab Self-Managed: The project must not contain [container images](../../packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
 - The project must not have a security policy.
   If a security policy is assigned to the project, it is automatically unassigned during the transfer.
 - If the root namespace changes, you must remove npm packages that follow the [naming convention](../../packages/npm_registry/_index.md#naming-convention) from the project.

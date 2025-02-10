@@ -70,11 +70,10 @@ where you can share them with others on your team.
 To commit your changes, first copy them:
 
 - From your local computer, in your own branch
-- To GitLab, on a remote computer, to the default branch, usually called `main` or `master`.
+- To GitLab, on a remote computer, to the `default branch`.
 
 To copy files between branches, you create a merge request.
-There are different ways to create a merge request. It depends on
-where you authored the code and the tools you use to create it.
+How you do this depends on where you authored the code and the tools you use to create it.
 But the idea is to create a merge request that takes the contents of your source branch
 and proposes combining it into the target branch.
 

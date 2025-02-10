@@ -40,7 +40,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/group/repositories_analytics/index.html#latest-project-test-coverage-list
+  documentation_link: https://docs.gitlab.com/ee/user/group/repositories_analytics/#latest-project-test-coverage-list
   image_url: https://about.gitlab.com/images/13_6/display_selected_coverage_projects_example.png
   published_at: 2020-11-22
   release: 13.6

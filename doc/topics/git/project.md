@@ -25,7 +25,7 @@ Prerequisites:
 <!--- To push with SSH, you must have [an SSH key](../ssh.md) that is
   [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 -->
-- You must have permission to add new projects to a [namespace](../../user/namespace/index.md).
+- You must have permission to add new projects to a [namespace](../../user/namespace/_index.md).
   To verify your permissions:
 
   1. On the left sidebar, select **Search or go to** and find your group.
@@ -60,7 +60,7 @@ To create a project with `git push`:
       Replace the following values:
 
       - `gitlab.example.com` with the machine domain name hosts your Git repository.
-      - `namespace` with your [namespace](../../user/namespace/index.md) name.
+      - `namespace` with your [namespace](../../user/namespace/_index.md) name.
       - `myproject` with your project name.
       - If specifying a port, change `00` to your project's required port number.
       - Optional. To export existing repository tags, append the `--tags` flag to

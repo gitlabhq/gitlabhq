@@ -6,7 +6,7 @@ title: Create an Amazon EKS cluster
 ---
 
 You can create a cluster on Amazon Elastic Kubernetes Service (EKS) through
-[Infrastructure as Code (IaC)](../../index.md). This process uses the AWS and
+[Infrastructure as Code (IaC)](../../_index.md). This process uses the AWS and
 Kubernetes Terraform providers to create EKS clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
@@ -153,7 +153,7 @@ After you provision the cluster, it is connected to GitLab and is ready for depl
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
-For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
 
 ## Remove the cluster
 

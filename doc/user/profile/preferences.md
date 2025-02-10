@@ -106,7 +106,7 @@ The availability of this feature is controlled by a feature flag. For more infor
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
-If you are a member of two or more [organizations](../organization/index.md), you can choose a home organization.
+If you are a member of two or more [organizations](../organization/_index.md), you can choose a home organization.
 This is the organization you are in by default when you first sign in to GitLab.
 
 To choose your home organization:

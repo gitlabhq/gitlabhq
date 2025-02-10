@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-GitLab can be used as a backend for [Terraform](../user/infrastructure/index.md) state
+GitLab can be used as a backend for [Terraform](../user/infrastructure/_index.md) state
 files. The files are encrypted before being stored. This feature is enabled by default.
 
 The storage location of these files defaults to:

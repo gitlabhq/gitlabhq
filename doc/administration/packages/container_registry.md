@@ -25,7 +25,7 @@ For more details about the Distribution Registry:
 - [Deploy a registry server](https://distribution.github.io/distribution/about/deploying/)
 
 This document is the administrator's guide. To learn how to use the GitLab Container
-Registry, see the [user documentation](../../user/packages/container_registry/index.md).
+Registry, see the [user documentation](../../user/packages/container_registry/_index.md).
 
 ## Enable the container registry
 
@@ -851,7 +851,7 @@ auth:
 
 Without these entries, the registry logins cannot authenticate with GitLab.
 GitLab also remains unaware of
-[nested image names](../../user/packages/container_registry/index.md#naming-convention-for-your-container-images)
+[nested image names](../../user/packages/container_registry/_index.md#naming-convention-for-your-container-images)
 under the project hierarchy, like
 `registry.example.com/group/project/image-name:tag` or
 `registry.example.com/group/project/my/image-name:tag`, and only recognizes

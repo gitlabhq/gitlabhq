@@ -33,7 +33,7 @@ To deploy your environments to different Kubernetes clusters:
    - Set up a `KUBE_INGRESS_BASE_DOMAIN`. You must [configure the base domain](requirements.md#auto-devops-base-domain) for each environment to point to the Ingress of the relevant cluster.
    - Add a `KUBE_NAMESPACE` variable with a value of the Kubernetes namespace you want your deployments to target. You can scope the variable to multiple environments.
 
-For deprecated, [certificate-based clusters](../../user/infrastructure/clusters/index.md#certificate-based-kubernetes-integration-deprecated):
+For deprecated, [certificate-based clusters](../../user/infrastructure/clusters/_index.md#certificate-based-kubernetes-integration-deprecated):
 
 1. Go to the project and select **Operate > Kubernetes clusters** from the left sidebar.
 1. [Set the environment scope of each cluster](../../user/project/clusters/multiple_kubernetes_clusters.md#setting-the-environment-scope).

@@ -215,7 +215,7 @@ Prerequisites:
   to import or temporarily access external resources.
 
 1. Import the default IaC analyzer image from `registry.gitlab.com` into your
-   [local Docker container registry](../../packages/container_registry/index.md):
+   [local Docker container registry](../../packages/container_registry/_index.md):
 
    ```plaintext
    registry.gitlab.com/security-products/kics:5

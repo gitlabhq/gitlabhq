@@ -501,7 +501,7 @@ When you leave a project:
 
 Prerequisites:
 
-- You can leave a project this way only when a project is part of a group under a [group namespace](../namespace/index.md).
+- You can leave a project this way only when a project is part of a group under a [group namespace](../namespace/_index.md).
 - You must be a [direct member](members/index.md#membership-types) of the project.
 
 To leave a project:

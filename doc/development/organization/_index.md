@@ -6,7 +6,7 @@ description: "Development Guidelines: learn about organization when developing G
 title: Organization
 ---
 
-The [Organization initiative](../../user/organization/index.md) focuses on reaching feature parity between
+The [Organization initiative](../../user/organization/_index.md) focuses on reaching feature parity between
 GitLab.com and GitLab Self-Managed.
 
 ## Consolidate groups and projects
@@ -149,4 +149,4 @@ To populate the `organization_id` column, use these methods in order of preferen
 
 - [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/)
   architecture documentation
-- [Organization user documentation](../../user/organization/index.md)
+- [Organization user documentation](../../user/organization/_index.md)

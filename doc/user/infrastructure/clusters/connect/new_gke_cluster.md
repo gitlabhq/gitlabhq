@@ -6,7 +6,7 @@ title: Create a Google GKE cluster
 ---
 
 Learn how to create a new cluster on Google Kubernetes Engine (GKE) through
-[Infrastructure as Code (IaC)](../../index.md). This process uses the Google
+[Infrastructure as Code (IaC)](../../_index.md). This process uses the Google
 and Kubernetes Terraform providers create GKE clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
@@ -148,7 +148,7 @@ After you provision the cluster, it is connected to GitLab and is ready for depl
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
-For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
 
 ## Remove the cluster
 

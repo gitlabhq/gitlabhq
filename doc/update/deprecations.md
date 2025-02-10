@@ -13,7 +13,7 @@ The following GitLab features are deprecated and no longer recommended for use.
 - Some features cause breaking changes when they are removed.
 - On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
 - To view documentation for a removed feature, see the [GitLab Docs archive](https://docs.gitlab.com/archives/).
-- For GraphQL API deprecations, you should [verify your API calls work without the deprecated items](https://docs.gitlab.com/ee/api/graphql/index.html#verify-against-the-future-breaking-change-schema).
+- For GraphQL API deprecations, you should [verify your API calls work without the deprecated items](https://docs.gitlab.com/ee/api/graphql/#verify-against-the-future-breaking-change-schema).
 
 For advanced searching and filtering of this deprecation information, try
 [a tool built by our Customer Success team](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/what-is-new-since/?tab=deprecations).
@@ -1306,7 +1306,7 @@ The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been r
 
 </div>
 
-In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may experience issues if they are using this field with the [`aiMetrics` API](https://docs.gitlab.com/ee/api/graphql/reference/index.html#aimetrics), and instead they can use the `duoAssignedUsersCount`. This removal is part of the [fix to count both GitLab Duo Pro and Duo seats assigned users](https://gitlab.com/gitlab-org/gitlab/-/issues/485510).
+In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may experience issues if they are using this field with the [`aiMetrics` API](https://docs.gitlab.com/ee/api/graphql/reference/#aimetrics), and instead they can use the `duoAssignedUsersCount`. This removal is part of the [fix to count both GitLab Duo Pro and Duo seats assigned users](https://gitlab.com/gitlab-org/gitlab/-/issues/485510).
 
 </div>
 
@@ -1455,7 +1455,7 @@ A new method to bind runners to a GitLab instance has been implemented
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 For details, see [epic 7633](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and eliminates the legacy
-[runner registration token](https://docs.gitlab.com/ee/security/tokens/index.html#runner-registration-tokens-deprecated).
+[runner registration token](https://docs.gitlab.com/ee/security/tokens/#runner-registration-tokens-deprecated).
 In GitLab 18.0, only the runner registration methods implemented in the new GitLab Runner token architecture will be supported.
 
 </div>
@@ -1528,7 +1528,7 @@ We plan to implement a new method to bind runners to a GitLab instance
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
-[runner registration token](https://docs.gitlab.com/ee/security/tokens/index.html#runner-registration-tokens-deprecated).
+[runner registration token](https://docs.gitlab.com/ee/security/tokens/#runner-registration-tokens-deprecated).
 From GitLab 18.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
@@ -2484,7 +2484,7 @@ The message field was removed from security reports schema in GitLab 16.0 and is
 
 </div>
 
-The GitLab Runner Kubernetes executor setting, `terminationGracePeriodSeconds`, is deprecated and will be removed in GitLab 17.0. To manage the cleanup and termination of GitLab Runner worker pods on Kubernetes, customers should instead configure `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`. For information about how to use the `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`, see the [GitLab Runner Executor documentation](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings).
+The GitLab Runner Kubernetes executor setting, `terminationGracePeriodSeconds`, is deprecated and will be removed in GitLab 17.0. To manage the cleanup and termination of GitLab Runner worker pods on Kubernetes, customers should instead configure `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`. For information about how to use the `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`, see the [GitLab Runner Executor documentation](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings).
 
 </div>
 
@@ -2714,7 +2714,7 @@ The old values `gitlab.kas.privateApi.tls.enabled` and `gitlab.kas.privateApi.tl
 Because the new values provide a streamlined, comprehensive method to enable TLS for KAS, you should use `global.kas.tls.*` instead of `gitlab.kas.privateApi.tls.*`. The `gitlab.kas.privateApi.tls.*` For more information, see:
 
 - The [merge request](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2888) that introduces the `global.kas.tls.*` values.
-- The [deprecated `gitlab.kas.privateApi.tls.*` documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/index.html#enable-tls-communication-through-the-gitlabkasprivateapi-attributes-deprecated).
+- The [deprecated `gitlab.kas.privateApi.tls.*` documentation](https://docs.gitlab.com/charts/charts/gitlab/kas/#enable-tls-communication-through-the-gitlabkasprivateapi-attributes-deprecated).
 - The [new `global.kas.tls.*` documentation](https://docs.gitlab.com/charts/charts/globals.html#tls-settings-1).
 
 </div>
@@ -3163,7 +3163,7 @@ Users are advised to upgrade to 3.8.8 or greater.
 
 </div>
 
-Offset pagination for the `/users` REST API is deprecated in GitLab 16.5, and will be removed in GitLab 17.0. Use [keyset pagination](https://docs.gitlab.com/ee/api/rest/index.html#keyset-based-pagination) instead.
+Offset pagination for the `/users` REST API is deprecated in GitLab 16.5, and will be removed in GitLab 17.0. Use [keyset pagination](https://docs.gitlab.com/ee/api/rest/#keyset-based-pagination) instead.
 
 </div>
 
@@ -3189,7 +3189,7 @@ and as a result these old JSON web tokens are deprecated:
 - `CI_JOB_JWT_V1`
 - `CI_JOB_JWT_V2`
 
-To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens)
+To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
 instead of the deprecated tokens. For OIDC compliance, the `iss` claim now uses
 the fully qualified domain name, for example `https://example.com`, previously
 introduced with the `CI_JOB_JWT_V2` token.
@@ -4638,7 +4638,7 @@ We intend to replace this feature with the ability to [embed charts](https://git
 
 </div>
 
-While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/index.html#job-name) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
+While CI/CD [job names](https://docs.gitlab.com/ee/ci/jobs/#job-name) have a strict 255 character limit, other CI/CD parameters do not yet have validations ensuring they also stay under the limit.
 
 In GitLab 16.0, validation will be added to strictly limit the following to 255 characters as well:
 
@@ -4677,7 +4677,7 @@ From GitLab 16.0, when you search for environments with the API, you must use at
 
 </div>
 
-In the [GraphQL API](https://docs.gitlab.com/ee/api/graphql/), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/ee/api/graphql/reference/index.html#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/ee/user/project/releases/release_fields.html#links) is internal or external to your GitLab instance.
+In the [GraphQL API](https://docs.gitlab.com/ee/api/graphql/), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/ee/api/graphql/reference/#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/ee/user/project/releases/release_fields.html#links) is internal or external to your GitLab instance.
 As of GitLab 15.9, we treat all release links as external, and therefore, this field is deprecated in GitLab 15.9, and will be removed in GitLab 16.0.
 To avoid any disruptions to your workflow, please stop using the `external` field because it will be removed and will not be replaced.
 
@@ -5681,7 +5681,7 @@ Previously, the [`PipelineSecurityReportFinding` GraphQL type was updated](https
 
 </div>
 
-The `started` iteration state in the [iterations GraphQL API](https://docs.gitlab.com/ee/api/graphql/reference/index.html#iterationstate)
+The `started` iteration state in the [iterations GraphQL API](https://docs.gitlab.com/ee/api/graphql/reference/#iterationstate)
 and [iterations REST API](https://docs.gitlab.com/ee/api/iterations.html#list-project-iterations) is deprecated.
 
 The GraphQL API version will be removed in GitLab 16.0. This state is being replaced with the `current` state (already available)
@@ -5878,11 +5878,11 @@ With the general availability of Gitaly Cluster ([introduced in GitLab 13.0](htt
 
 Gitaly Cluster offers tremendous benefits for our customers such as:
 
-- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
-- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
-- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
+- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/#replication-factor).
+- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/#strong-consistency).
+- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/#distributed-reads).
 
-We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
+We encourage customers currently using NFS for Git repositories to plan their migration by reviewing our documentation on [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/#migrate-to-gitaly-cluster).
 
 </div>
 </div>
@@ -6806,7 +6806,7 @@ If you rely on Java 8 being present in the analyzer environment, you must take a
 As Advanced Search migrations usually require support multiple code paths for a long period of time,
 it's important to clean those up when we safely can. We use GitLab major version upgrades as a safe
 time to remove backward compatibility for indices that have not been fully migrated. See the
-[upgrade documentation](https://docs.gitlab.com/ee/update/index.html#upgrading-to-a-new-major-version) for details.
+[upgrade documentation](https://docs.gitlab.com/ee/update/#upgrading-to-a-new-major-version) for details.
 
 </div>
 
@@ -6857,7 +6857,7 @@ The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTren
 
 </div>
 
-[Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/index.html) is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
+[Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/) is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0.
 
 We're working on [consolidating our profiling tools](https://gitlab.com/groups/gitlab-org/-/epics/7327) and making them more easily accessible.
 We [evaluated](https://gitlab.com/gitlab-org/gitlab/-/issues/350152) the use of this feature and we found that it is not widely used.
@@ -6883,7 +6883,7 @@ The [required pipeline configuration](https://docs.gitlab.com/ee/administration/
 This change to move the feature to GitLab Ultimate tier is intended to help our features better align with our [pricing philosophy](https://handbook.gitlab.com/handbook/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
 
 This change will also help GitLab remain consistent in its tiering strategy with the other related Ultimate-tier features of:
-[Security policies](https://docs.gitlab.com/ee/user/application_security/policies/) and [compliance framework pipelines](https://docs.gitlab.com/ee/user/project/settings/index.html#compliance-pipeline-configuration).
+[Security policies](https://docs.gitlab.com/ee/user/application_security/policies/) and [compliance framework pipelines](https://docs.gitlab.com/ee/user/project/settings/#compliance-pipeline-configuration).
 
 </div>
 
@@ -7047,7 +7047,7 @@ We will update the default value of [GitLab-managed CI/CD templates](https://git
 - For Container Scanning, the default image address is already updated. There is no `SECURE_ANALYZERS_PREFIX` variable for Container Scanning.
 
 In a future release, we will stop publishing images to `registry.gitlab.com/gitlab-org/security-products/analyzers`.
-Once this happens, you must take action if you manually pull images and push them into a separate registry. This is commonly the case for [offline deployments](https://docs.gitlab.com/ee/user/application_security/offline_deployments/index.html).
+Once this happens, you must take action if you manually pull images and push them into a separate registry. This is commonly the case for [offline deployments](https://docs.gitlab.com/ee/user/application_security/offline_deployments/).
 Otherwise, you won't receive further updates.
 
 See the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352564) for more details.
@@ -7122,7 +7122,7 @@ As those are two separate servers, a configuration change will be required in 15
 to explicitly set separate ports for metrics and health-checks.
 The newly introduced settings for `sidekiq['health_checks_*']`
 should always be set in `gitlab.rb`.
-For more information, check the documentation for [configuring Sidekiq](https://docs.gitlab.com/ee/administration/sidekiq/index.html).
+For more information, check the documentation for [configuring Sidekiq](https://docs.gitlab.com/ee/administration/sidekiq/).
 
 These changes also require updates in either Prometheus to scrape the new endpoint or k8s health-checks to target the new
 health-check port to work properly, otherwise either metrics or health-checks will disappear.
@@ -7147,9 +7147,9 @@ to serve the Sidekiq metrics, similar to the way Sidekiq will behave in 15.0.
 
 </div>
 
-The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver similiar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the [Web IDE](https://docs.gitlab.com/ee/user/project/web_ide/index.html).
+The Static Site Editor will no longer be available starting in GitLab 15.0. Improvements to the Markdown editing experience across GitLab will deliver similiar benefit but with a wider reach. Incoming requests to the Static Site Editor will be redirected to the [Web IDE](https://docs.gitlab.com/ee/user/project/web_ide/).
 
-Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/web_ide/index.html) for more information, including how to remove the configuration files from existing projects.
+Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/web_ide/) for more information, including how to remove the configuration files from existing projects.
 
 </div>
 
@@ -7299,7 +7299,7 @@ The new security approvals feature is similar to vulnerability check. For exampl
 
 </div>
 
-As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#packagedetailstype).
+As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/#packagedetailstype).
 
 In milestone 15.0, we will completely remove `Version` from `PackageType`.
 
@@ -7425,7 +7425,7 @@ To mitigate possible performance problems, we will remove the `versions` field's
 
 </div>
 
-The `projectFingerprint` field in the [`PipelineSecurityReportFinding`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#pipelinesecurityreportfinding)
+The `projectFingerprint` field in the [`PipelineSecurityReportFinding`](https://docs.gitlab.com/ee/api/graphql/reference/#pipelinesecurityreportfinding)
 GraphQL object is being deprecated. This field contains a "fingerprint" of security findings used to determine uniqueness.
 The method for calculating fingerprints has changed, resulting in different values. Going forward, the new values will be
 exposed in the UUID field. Data previously available in the `projectFingerprint` field will eventually be removed entirely.

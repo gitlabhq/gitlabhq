@@ -4,7 +4,7 @@
   breaking_change: true  # If this deprecation is a breaking change, set this value to true
   reporter: matt_wilson  # GitLab username of the person reporting the deprecation
   body: |  # Do not modify this line, instead modify the lines below.
-    The `projectFingerprint` field in the [`PipelineSecurityReportFinding`](https://docs.gitlab.com/ee/api/graphql/reference/index.html#pipelinesecurityreportfinding)
+    The `projectFingerprint` field in the [`PipelineSecurityReportFinding`](https://docs.gitlab.com/ee/api/graphql/reference/#pipelinesecurityreportfinding)
     GraphQL object is being deprecated. This field contains a "fingerprint" of security findings used to determine uniqueness.
     The method for calculating fingerprints has changed, resulting in different values. Going forward, the new values will be
     exposed in the UUID field. Data previously available in the `projectFingerprint` field will eventually be removed entirely.

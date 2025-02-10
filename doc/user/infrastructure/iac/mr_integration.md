@@ -29,7 +29,7 @@ This setting ensures artifacts are accessible only to GitLab administrators and 
 
 ## Configure OpenTofu report artifacts
 
-GitLab [integrates with OpenTofu](index.md#quickstart-an-opentofu-project-in-pipelines)
+GitLab [integrates with OpenTofu](_index.md#quickstart-an-opentofu-project-in-pipelines)
 through the OpenTofu CI/CD component. This component uses GitLab-managed OpenTofu state to display OpenTofu changes on merge requests.
 
 ### Automatically configure OpenTofu report artifacts

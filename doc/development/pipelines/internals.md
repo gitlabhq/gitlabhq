@@ -121,7 +121,7 @@ The current stages are:
 
 Some of the jobs are using images from Docker Hub, where we also use
 `${GITLAB_DEPENDENCY_PROXY_ADDRESS}` as a prefix to the image path, so that we pull
-images from our [Dependency Proxy](../../user/packages/dependency_proxy/index.md).
+images from our [Dependency Proxy](../../user/packages/dependency_proxy/_index.md).
 By default, this variable is set from the value of `${GITLAB_DEPENDENCY_PROXY}`.
 
 `${GITLAB_DEPENDENCY_PROXY}` is a group CI/CD variable defined in

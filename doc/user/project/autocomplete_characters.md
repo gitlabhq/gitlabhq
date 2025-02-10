@@ -30,7 +30,7 @@ matching values. The string matching is not case sensitive.
 When you select an item from the list, the value is entered in the field.
 The more characters you enter, the more precise the matches are.
 
-Autocomplete characters are useful when combined with [Quick Actions](quick_actions.md).
+You can use autocomplete characters in combination with [Quick Actions](quick_actions.md).
 
 ## User autocomplete
 

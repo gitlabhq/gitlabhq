@@ -44,7 +44,7 @@ export default {
     charactersOverLimit: (char) => n__('%d character over limit', '%d characters over limit', char),
   },
   formId: 'organization-form',
-  markdownDocsPath: helpPagePath('user/organization/index', {
+  markdownDocsPath: helpPagePath('user/organization/_index', {
     anchor: 'supported-markdown-for-organization-description',
   }),
   restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
@@ -263,7 +263,7 @@ export default {
       <template #group(visibilityLevel)-label-description>
         {{ fields.visibilityLevel.labelDescription.text }}
         <help-page-link
-          href="user/organization/index"
+          href="user/organization/_index"
           anchor="view-an-organizations-visibility-level"
           >{{ fields.visibilityLevel.labelDescription.linkText }}</help-page-link
         >.

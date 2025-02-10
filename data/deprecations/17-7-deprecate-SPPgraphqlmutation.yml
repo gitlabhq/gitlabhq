@@ -17,4 +17,4 @@
     - Stop using the old mutation name `setPreReceiveSecretDetection`. Instead, use the name `setSecretPushProtection`.
     - Change any references to the field `pre_receive_secret_detection_enabled` to `secret_push_protection_enabled`.
 
-  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/index.html#mutationsetsecretpushprotection
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#mutationsetsecretpushprotection

@@ -59,7 +59,7 @@
   available_in: [Free, Premium, Ultimate]
   self-managed: true
   gitlab-com: true
-  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens'
+  documentation_link: 'https://docs.gitlab.com/ee/ci/yaml/#id_tokens'
   image_url: 'https://about.gitlab.com/images/16_4/id_tokens_img.png'
   published_at: 2023-09-22
   release: 16.4

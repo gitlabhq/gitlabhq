@@ -409,5 +409,5 @@ take longer to complete than the configured timeout period.
 
 To resolve this issue, choose one of the following:
 
-- Disable time-consuming server hooks. See [Git server hooks](../../../../administration/server_hooks.md).
-- Increase Gitaly's timeout settings. See [Gitaly timeouts](../../../../administration/settings/gitaly_timeouts.md).
+- Disable time-consuming [server hooks](../../../../administration/server_hooks.md).
+- Increase [Gitaly timeout](../../../../administration/settings/gitaly_timeouts.md) settings.

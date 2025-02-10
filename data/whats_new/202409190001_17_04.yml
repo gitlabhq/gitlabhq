@@ -31,7 +31,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/web_ide/index.html#extension-marketplace
+  documentation_link: https://docs.gitlab.com/ee/user/project/web_ide/#extension-marketplace
   image_url: https://about.gitlab.com/images/17_4/extensions-marketplace.png
   published_at: 2024-09-19
   release: 17.4

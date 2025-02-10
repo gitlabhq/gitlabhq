@@ -13,7 +13,7 @@ DETAILS:
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
-To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/index.md).
+To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/_index.md).
 
 ## Disable a cluster
 

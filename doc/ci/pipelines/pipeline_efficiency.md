@@ -30,7 +30,7 @@ The easiest indicators to check for inefficient pipelines are the runtimes of th
 stages, and the total runtime of the pipeline itself. The total pipeline duration is
 heavily influenced by the:
 
-- [Size of the repository](../../user/project/repository/monorepos/index.md)
+- [Size of the repository](../../user/project/repository/monorepos/_index.md)
 - Total number of stages and jobs.
 - Dependencies between jobs.
 - The ["critical path"](#needs-dependency-visualization), which represents
@@ -149,7 +149,7 @@ Review the storage use of the following to help analyze costs and efficiency:
 
 - [Job artifacts](../jobs/job_artifacts.md) and their [`expire_in`](../yaml/_index.md#artifactsexpire_in)
   configuration. If kept for too long, storage usage grows and could slow pipelines down.
-- [Container registry](../../user/packages/container_registry/index.md) usage.
+- [Container registry](../../user/packages/container_registry/_index.md) usage.
 - [Package registry](../../user/packages/package_registry/_index.md) usage.
 
 ## Pipeline configuration
@@ -208,7 +208,7 @@ of jobs.
 If a Docker image is slowing down job execution, analyze the base image size and network
 connection to the registry. If GitLab is running in the cloud, look for a cloud container
 registry offered by the vendor. In addition to that, you can make use of the
-[GitLab container registry](../../user/packages/container_registry/index.md) which can be accessed
+[GitLab container registry](../../user/packages/container_registry/_index.md) which can be accessed
 by the GitLab instance faster than other registries.
 
 #### Optimize Docker images

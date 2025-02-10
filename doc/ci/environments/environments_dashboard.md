@@ -44,7 +44,7 @@ To add a project to the dashboard:
 Once added, you can see a summary of each project's environment operational
 health, including the latest commit, pipeline status, and deployment time.
 
-The Environments and [Operations](../../user/operations_dashboard/index.md)
+The Environments and [Operations](../../user/operations_dashboard/_index.md)
 dashboards share the same list of projects. When you add or remove a
 project from one, GitLab adds or removes the project from the other.
 

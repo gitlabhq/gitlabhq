@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 
-If you've started out with a personal [namespace](../../user/namespace/index.md), but find
+If you've started out with a personal [namespace](../../user/namespace/_index.md), but find
 that you've outgrown its capabilities, you can switch to a group namespace instead.
 With a group namespace, you can create multiple subgroups and manage their members and permissions.
 
@@ -52,7 +52,7 @@ you must perform the steps below for each project.
 Before you start the transfer process, make sure you:
 
 - Have the Owner role for the project.
-- Remove [container images](../../user/packages/container_registry/index.md#move-or-rename-container-registry-repositories).
+- Remove [container images](../../user/packages/container_registry/_index.md#move-or-rename-container-registry-repositories).
   You can't transfer a project that contains container images.
 - Remove npm packages. You can't update the root namespace of a project that contains npm packages.
 

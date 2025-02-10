@@ -22,7 +22,7 @@ sole discretion of GitLab Inc.
 NOTE:
 Organization is in development.
 
-Organization will be above the [top-level namespaces](../namespace/index.md) for you to manage
+Organization will be above the [top-level namespaces](../namespace/_index.md) for you to manage
 everything you do as a GitLab administrator, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.
@@ -103,7 +103,7 @@ To switch organizations:
 1. Select **New group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).
-1. In the **Group URL** text box, enter the path for the group used for the [namespace](../namespace/index.md).
+1. In the **Group URL** text box, enter the path for the group used for the [namespace](../namespace/_index.md).
 1. Select the [**Visibility level**](../public_access.md) of the group.
 1. Select **Create group**.
 

@@ -17,7 +17,7 @@ that contain required, sensitive information. If the key is lost, GitLab can't
 decrypt those columns, preventing access to the following items:
 
 - [CI/CD variables](../../ci/variables/_index.md)
-- [Kubernetes / GCP integration](../../user/infrastructure/clusters/index.md)
+- [Kubernetes / GCP integration](../../user/infrastructure/clusters/_index.md)
 - [Custom Pages domains](../../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../../operations/error_tracking.md)
 - [Runner authentication](../../ci/runners/_index.md)
@@ -205,7 +205,7 @@ You should verify that the secrets are the root cause before deleting any data.
 
 ## Container registry is not restored
 
-If you restore a backup from an environment that uses the [container registry](../../user/packages/container_registry/index.md)
+If you restore a backup from an environment that uses the [container registry](../../user/packages/container_registry/_index.md)
 to a newly installed environment where the container registry is not enabled, the container registry is not restored.
 
 To also restore the container registry, you need to [enable it](../packages/container_registry.md#enable-the-container-registry) in the new
@@ -213,7 +213,7 @@ environment before you restore the backup.
 
 ## Container registry push failures after restoring from a backup
 
-If you use the [container registry](../../user/packages/container_registry/index.md),
+If you use the [container registry](../../user/packages/container_registry/_index.md),
 pushes to the registry may fail after restoring your backup on a Linux package (Omnibus)
 instance after restoring the registry data.
 

@@ -49,7 +49,7 @@ To see your new project in the list, refresh the page.
 
 1. You should see a client ID and client secret. Note them down
    or keep this page open as you need them later.
-1. To enable projects to access [Google Kubernetes Engine](../user/infrastructure/clusters/index.md),
+1. To enable projects to access [Google Kubernetes Engine](../user/infrastructure/clusters/_index.md),
    you must also enable the:
    - Google Kubernetes Engine API
    - Cloud Resource Manager API

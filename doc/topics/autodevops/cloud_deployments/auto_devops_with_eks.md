@@ -161,7 +161,7 @@ The jobs are separated into stages:
 ![Pipeline stages](img/guide_pipeline_stages_v13_0.png)
 
 - **Build** - The application builds a Docker image and uploads it to your project's
-  [Container Registry](../../../user/packages/container_registry/index.md) ([Auto Build](../stages.md#auto-build)).
+  [Container Registry](../../../user/packages/container_registry/_index.md) ([Auto Build](../stages.md#auto-build)).
 - **Test** - GitLab runs various checks on the application, but all jobs except `test`
   are allowed to fail in the test stage:
 

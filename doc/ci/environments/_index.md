@@ -821,7 +821,7 @@ WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 If you deploy to your environments with the help of a deployment service (for example,
-the [Kubernetes integration](../../user/infrastructure/clusters/index.md)), GitLab can open
+the [Kubernetes integration](../../user/infrastructure/clusters/_index.md)), GitLab can open
 a terminal session to your environment. You can then debug issues without leaving your web browser.
 
 The Web terminal is a container-based deployment, which often lack basic tools (like an editor),

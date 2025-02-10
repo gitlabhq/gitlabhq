@@ -220,7 +220,7 @@ You can use a Dependency Proxy to reduce the time taken to download dependencies
 
 Prerequisites:
 
-- [Dependency Proxy](../../user/packages/dependency_proxy/index.md) enabled in the project's
+- [Dependency Proxy](../../user/packages/dependency_proxy/_index.md) enabled in the project's
   group.
 
 To reference the Dependency Proxy, configure the following variables in the `.gitlab-ci.yml` file:

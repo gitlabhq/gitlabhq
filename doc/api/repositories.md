@@ -453,7 +453,7 @@ curl --request POST \
 
 ## Generate changelog data
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172842) authentiation through [CI/CD job token](../ci/jobs/ci_job_token.md) in GitLab 17.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172842) authentication through [CI/CD job token](../ci/jobs/ci_job_token.md) in GitLab 17.7.
 
 Generate changelog data based on commits in a repository, without committing
 them to a changelog file.

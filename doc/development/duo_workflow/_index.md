@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Development of GitLab Duo Workflow
 ---
 
-This guide describes how to set up the local development environment for the various projects that make up [GitLab Duo Workflow](../../user/duo_workflow/index.md).
+This guide describes how to set up the local development environment for the various projects that make up [GitLab Duo Workflow](../../user/duo_workflow/_index.md).
 
 ## Prerequisites
 

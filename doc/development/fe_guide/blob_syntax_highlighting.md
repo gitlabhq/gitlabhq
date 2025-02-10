@@ -42,10 +42,10 @@ To maintain optimal browser performance:
 
 ## Adding Syntax Highlighting Support
 
-There are two ways to add syntax highlighting support for new languages:
+You can add syntax highlighting support for new languages by:
 
-1. Using existing third-party language definitions
-1. Creating custom language definitions in our codebase
+1. Using existing third-party language definitions.
+1. Creating custom language definitions in our codebase.
 
 The method you choose depends on whether the language already has a Highlight.js compatible definition available.
 

@@ -288,7 +288,7 @@ To create a [branch](branches/_index.md) in the Web Editor:
 
 ## Create a tag
 
-You can create [tags](tags/index.md) to mark milestones such as
+You can create [tags](tags/_index.md) to mark milestones such as
 production releases and release candidates. To create a tag in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.

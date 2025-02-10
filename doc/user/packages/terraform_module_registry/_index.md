@@ -224,7 +224,7 @@ module "<module>" {
 }
 ```
 
-Where `<namespace>` is the [namespace](../../namespace/index.md) of the Terraform Module Registry.
+Where `<namespace>` is the [namespace](../../namespace/_index.md) of the Terraform Module Registry.
 
 ### From a project
 

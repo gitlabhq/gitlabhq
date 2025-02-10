@@ -53,7 +53,7 @@ export default {
     <template #left-secondary-text>
       <div data-testid="dependency-proxy-description">
         {{ description }}
-        <help-page-link href="user/packages/dependency_proxy/index">
+        <help-page-link href="user/packages/dependency_proxy/_index">
           {{ __('More information') }}
         </help-page-link>
       </div>

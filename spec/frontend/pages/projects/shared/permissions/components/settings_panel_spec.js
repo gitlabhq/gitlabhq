@@ -52,7 +52,7 @@ const defaultProps = {
   allowedVisibilityOptions: [0, 10, 20],
   visibilityHelpPath: '/help/public_access/public_access',
   registryAvailable: false,
-  registryHelpPath: '/help/user/packages/container_registry/index',
+  registryHelpPath: '/help/user/packages/container_registry/_index',
   lfsAvailable: true,
   lfsHelpPath: '/help/topics/git/lfs/index',
   lfsObjectsExist: false,

@@ -29,7 +29,7 @@ To access your user settings:
 
 ## Change your username
 
-Your username has a unique [namespace](../namespace/index.md),
+Your username has a unique [namespace](../namespace/_index.md),
 which is updated when you change your username. Before you change your username, read about
 [how redirects behave](../project/repository/index.md#repository-path-changes).
 If you do not want to update the namespace, you can create a new user or group and transfer projects to it instead.
@@ -37,7 +37,7 @@ If you do not want to update the namespace, you can create a new user or group a
 Prerequisites:
 
 - Your namespace must not:
-  - Contain a project with [Container Registry](../packages/container_registry/index.md) tags.
+  - Contain a project with [Container Registry](../packages/container_registry/_index.md) tags.
   - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
     see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
 - Your username:

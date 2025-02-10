@@ -13,7 +13,7 @@ To connect your Kubernetes cluster with GitLab, you can use:
 
 - [A GitOps workflow](../../clusters/agent/gitops.md).
 - [A GitLab CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
-- [A certificate-based integration](index.md).
+- [A certificate-based integration](_index.md).
 
 The certificate-based integration is
 [**deprecated**](https://about.gitlab.com/blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/)

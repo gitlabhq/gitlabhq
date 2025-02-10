@@ -330,7 +330,7 @@ update-job:
     - apk update
 ```
 
-GitLab provides every project a [container registry](../../user/packages/container_registry/index.md)
+GitLab provides every project a [container registry](../../user/packages/container_registry/_index.md)
 for hosting container images. Container images can be built and stored directly from
 GitLab CI/CD pipelines.
 

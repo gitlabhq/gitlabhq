@@ -26,7 +26,7 @@ Learn how to install and build packages different package formats.
 
 1. Run [`composer init`](https://getcomposer.org/doc/03-cli.md#init) and answer the prompts.
 
-   For namespace, enter your unique [namespace](../../namespace/index.md), like your GitLab username or group name.
+   For namespace, enter your unique [namespace](../../namespace/_index.md), like your GitLab username or group name.
 
    A file called `composer.json` is created:
 

@@ -74,7 +74,7 @@ To change your group path (group URL):
 
 WARNING:
 It is not possible to rename a namespace if it contains a
-project with [Container Registry](../packages/container_registry/index.md) tags,
+project with [Container Registry](../packages/container_registry/_index.md) tags,
 because the project cannot be moved.
 
 WARNING:

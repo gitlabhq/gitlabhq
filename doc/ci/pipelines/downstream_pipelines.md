@@ -287,7 +287,7 @@ Use:
 - The `project` keyword to specify the full path to the downstream project.
   In [GitLab 15.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367660),
   you can use [variable expansion](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
-- The `branch` keyword to specify the name of a branch or [tag](../../user/project/repository/tags/index.md)
+- The `branch` keyword to specify the name of a branch or [tag](../../user/project/repository/tags/_index.md)
   in the project specified by `project`. You can use variable expansion.
 
 ## Trigger a multi-project pipeline by using the API

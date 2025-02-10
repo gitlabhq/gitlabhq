@@ -14,7 +14,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 use the [GitLab agent](../../clusters/agent/_index.md).
 
 Similar to [project-level](../../project/clusters/index.md) and
-[instance-level](../../instance/clusters/index.md) Kubernetes clusters,
+[instance-level](../../instance/clusters/_index.md) Kubernetes clusters,
 group-level Kubernetes clusters allow you to connect a Kubernetes cluster to
 your group, enabling you to use the same cluster across multiple projects.
 
@@ -172,7 +172,7 @@ documentation for project-level clusters.
 ## More information
 
 For information on integrating GitLab and Kubernetes, see
-[Kubernetes clusters](../../infrastructure/clusters/index.md).
+[Kubernetes clusters](../../infrastructure/clusters/_index.md).
 
 <!-- ## Troubleshooting
 

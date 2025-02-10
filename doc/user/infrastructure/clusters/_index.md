@@ -66,7 +66,7 @@ This feature flag re-enables the certificate-based Kubernetes integration.
 
 The concept of [project-level](../../project/clusters/index.md),
 [group-level](../../group/clusters/_index.md), and
-[instance-level](../../instance/clusters/index.md) clusters becomes
+[instance-level](../../instance/clusters/_index.md) clusters becomes
 extinct in the new model, although the functionality remains to some extent.
 
 The agent is always configured in a single GitLab project and you can expose the cluster connection to other projects and groups to [access it from GitLab CI/CD](../../clusters/agent/ci_cd_workflow.md).

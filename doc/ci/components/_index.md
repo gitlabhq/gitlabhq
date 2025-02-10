@@ -650,7 +650,7 @@ To publish a new version of the component to the catalog:
        description: "Release $CI_COMMIT_TAG of components in $CI_PROJECT_PATH"
    ```
 
-1. Create a [new tag](../../user/project/repository/tags/index.md#create-a-tag) for the release,
+1. Create a [new tag](../../user/project/repository/tags/_index.md#create-a-tag) for the release,
    which should trigger a tag pipeline that contains the job responsible for creating the release.
    The tag must use [semantic versioning](#semantic-versioning).
 

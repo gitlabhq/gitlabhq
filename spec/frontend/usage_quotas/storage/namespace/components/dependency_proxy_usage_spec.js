@@ -63,7 +63,7 @@ describe('Dependency proxy usage component', () => {
       'Cache for frequently-accessed Docker images and packages. More information',
     );
     expect(moreInformationComponent.text()).toBe('More information');
-    expect(moreInformationComponent.props('href')).toBe('user/packages/dependency_proxy/index');
+    expect(moreInformationComponent.props('href')).toBe('user/packages/dependency_proxy/_index');
   });
 
   describe('when feature flag virtualRegistryMaven is disabled', () => {

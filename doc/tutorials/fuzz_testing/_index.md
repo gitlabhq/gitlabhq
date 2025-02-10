@@ -37,7 +37,7 @@ project template:
 1. [Fork the project template](../../user/project/repository/forking_workflow.md).
 1. When forking the project template:
    - Name the forked project `fuzz-testing-demo`.
-   - Select an appropriate [namespace](../../user/namespace/index.md).
+   - Select an appropriate [namespace](../../user/namespace/_index.md).
    - Set [project visibility](../../user/public_access.md) to **Private**.
 
 You have successfully forked the `fuzz-testing` project template. Before you can

@@ -218,7 +218,7 @@ Example response:
 }
 ```
 
-### Example with user / group level access
+### Example with user and group access
 
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have

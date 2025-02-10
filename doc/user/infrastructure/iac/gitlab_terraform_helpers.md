@@ -140,5 +140,5 @@ For supported combinations, see [the `terraform-images` container registry](http
 
 ## Related topics
 
-- [Terraform CI/CD templates](index.md)
+- [Terraform CI/CD templates](_index.md)
 - [Terraform template recipes](terraform_template_recipes.md)

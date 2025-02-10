@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed
 
 WARNING:
-This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/index.md)
+This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/_index.md)
 to create new clusters.
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
@@ -23,7 +23,7 @@ use the [GitLab agent](../../clusters/agent/_index.md).
 
 ## Create a new EKS cluster
 
-To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/index.md).
+To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastructure/iac/_index.md).
 
 ### How to create a new cluster on EKS through cluster certificates (deprecated)
 

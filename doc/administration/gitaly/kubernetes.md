@@ -112,7 +112,7 @@ gitlab:
 ### Address resource contention and saturation
 
 Gitaly service resource usage can be unpredictable because of the indeterminable nature of Git operations. Not all repositories are the same and size
-heavily influences performance and resource usage, especially for [monorepos](../../user/project/repository/monorepos/index.md).
+heavily influences performance and resource usage, especially for [monorepos](../../user/project/repository/monorepos/_index.md).
 
 In Kubernetes, uncontrolled resource usage can lead to Out Of Memory (OOM) events, which forces the platform to terminate the pod and kill all its processes.
 Pod termination raises two important concerns:

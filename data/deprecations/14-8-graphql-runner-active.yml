@@ -35,7 +35,7 @@
   # like [Free, Silver, Gold, Core, Premium, Ultimate]
   tiers:
   # Links to documentation and thumbnail image
-  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/index.html#cirunner
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#cirunner
   image_url:
   # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
   video_url:

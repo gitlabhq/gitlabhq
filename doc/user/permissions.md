@@ -58,7 +58,7 @@ available only:
 - For group and project Owners.
 - For Administrators.
 
-Personal [namespace](namespace/index.md) owners:
+Personal [namespace](namespace/_index.md) owners:
 
 - Are displayed as having the Maintainer role on projects in the namespace, but have the same permissions as a user with the Owner role.
 - For new projects in the namespace, are displayed as having the Owner role.
@@ -142,7 +142,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Enable [review apps](../ci/review_apps/_index.md)                                                                              |            |       |         |          |     ✓     |     ✓      |       |
 | Cancel jobs                                                                                                                    |            |       |         |          |     ✓     |     ✓      | Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). |
 | Retry jobs                                                                                                                     |            |       |         |          |     ✓     |     ✓      |       |
-| Read [Terraform](infrastructure/index.md) state                                                                                |            |       |         |          |     ✓     |     ✓      |       |
+| Read [Terraform](infrastructure/_index.md) state                                                                               |            |       |         |          |     ✓     |     ✓      |       |
 | Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                                      |            |       |         |          |     ✓     |     ✓      |       |
 | Use pipeline editor                                                                                                            |            |       |         |          |     ✓     |     ✓      |       |
 | Manage [agents for Kubernetes](clusters/agent/_index.md)                                                                        |            |       |         |          |           |     ✓      |       |
@@ -151,7 +151,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Manage project CI/CD variables                                                                                                 |            |       |         |          |           |     ✓      |       |
 | Manage project protected environments                                                                                          |            |       |         |          |           |     ✓      |       |
 | Manage project [Secure Files](../api/secure_files.md)                                                                          |            |       |         |          |           |     ✓      |       |
-| Manage [Terraform](infrastructure/index.md) state                                                                              |            |       |         |          |           |     ✓      |       |
+| Manage [Terraform](infrastructure/_index.md) state                                                                             |            |       |         |          |           |     ✓      |       |
 | Add project runners to project                                                                                                 |            |       |         |          |           |     ✓      |       |
 | Clear runner caches manually                                                                                                   |            |       |         |          |           |     ✓      |       |
 | Enable instance runners in project                                                                                             |            |       |         |          |           |     ✓      |       |
@@ -289,7 +289,7 @@ Project permissions for [container registry](packages/_index.md):
 
 | Action                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ----------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Pull an image from the container registry |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | The ability to view the container registry and pull images is controlled by the [container registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions). |
+| Pull an image from the container registry |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | The ability to view the container registry and pull images is controlled by the [container registry's visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions). |
 | Push an image to the container registry   |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Delete a container registry image         |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Manage cleanup policies                   |       |         |          |           |     ✓      |   ✓   |       |
@@ -360,8 +360,8 @@ Project permissions for [repository](project/repository/index.md) features inclu
 | View commit status                                                    |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create commit status                                                  |       |         |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
 | Update commit status                                                  |       |         |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers. |
-| Create [Git tags](project/repository/tags/index.md)                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Delete [Git tags](project/repository/tags/index.md)                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Create [Git tags](project/repository/tags/_index.md)                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Delete [Git tags](project/repository/tags/_index.md)                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Create new [branches](project/repository/branches/_index.md)           |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Delete non-protected branches                                         |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Force push to non-protected branches                                  |       |         |          |     ✓     |     ✓      |   ✓   |       |
@@ -645,6 +645,6 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Project aliases](project/working_with_projects.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)
-- [Container registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
+- [Container registry permissions](packages/container_registry/_index.md#container-registry-visibility-permissions)
 - [Release permissions](project/releases/index.md#release-permissions)
 - [Read-only namespaces](read_only_namespaces.md)

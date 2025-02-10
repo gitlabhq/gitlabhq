@@ -106,7 +106,7 @@ Before you can use Workflow:
 1. Ensure you have an account on GitLab.com.
 1. Ensure that the GitLab.com project you want to use with Workflow meets these requirements:
    - You must have at least the Developer role for the project.
-   - Your project must belong to a [group namespace](../namespace/index.md)
+   - Your project must belong to a [group namespace](../namespace/_index.md)
      with an **Ultimate** subscription and [experimental features turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
    - The project must have [GitLab Duo turned on](../gitlab_duo/index.md).
 1. [Install Visual Studio Code](https://code.visualstudio.com/download) (VS Code).

@@ -24,7 +24,7 @@ On GitLab.com:
 
 - Compute quotas are enabled for all projects, but certain
   projects [consume compute minutes at a slower rate](#cost-factor).
-- The base monthly compute quota for a GitLab.com [namespace](../../user/namespace/index.md)
+- The base monthly compute quota for a GitLab.com [namespace](../../user/namespace/_index.md)
   is determined by its [license tier](https://about.gitlab.com/pricing/).
 - You can [purchase additional compute minutes](../../subscriptions/gitlab_com/compute_minutes.md)
   if you need more than the amount of compute in your monthly quota.

@@ -1462,11 +1462,11 @@ settings with access control options can be one of:
 |:---------------------------------------|:-------|:---------|:------------|
 | `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
+| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
 | `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
+| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
@@ -1585,11 +1585,11 @@ settings with access control options can be one of:
 |:---------------------------------------|:-------|:---------|:------------|
 | `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
+| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
 | `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
+| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
@@ -1723,11 +1723,11 @@ Supported project visibility attributes:
 |:---------------------------------------|:-------|:---------|:------------|
 | `analytics_access_level`               | string | No       | Set visibility of [analytics](../user/analytics/_index.md). |
 | `builds_access_level`                  | string | No       | Set visibility of [pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines). |
-| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/index.md#change-visibility-of-the-container-registry). |
+| `container_registry_access_level`      | string | No       | Set visibility of [container registry](../user/packages/container_registry/_index.md#change-visibility-of-the-container-registry). |
 | `environments_access_level`            | string | No       | Set visibility of [environments](../ci/environments/_index.md). |
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
-| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/index.md). |
+| `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |

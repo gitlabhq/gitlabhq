@@ -750,7 +750,7 @@ of the following executors:
 In this example, you use Buildah to:
 
 1. Build a Docker image.
-1. Push it to [GitLab container registry](../../user/packages/container_registry/index.md).
+1. Push it to [GitLab container registry](../../user/packages/container_registry/_index.md).
 
 In the last step, Buildah uses the `Dockerfile` under the
 root directory of the project to build the Docker image. Finally, it pushes the image to the

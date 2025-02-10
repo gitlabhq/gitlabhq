@@ -18,7 +18,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/tutorials/left_sidebar/index.html
+  documentation_link: https://docs.gitlab.com/ee/tutorials/left_sidebar/
   image_url: https://img.youtube.com/vi/rGTl9_HIpbY/hqdefault.jpg
   published_at: 2023-06-22
   release: 16.1

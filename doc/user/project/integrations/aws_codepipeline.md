@@ -62,7 +62,7 @@ Now you've connected AWS CodeSuite to GitLab.com, you can create or edit a pipel
    You can also pick an option from the dialog, or type a new path manually.
    For more information about the:
    - Path and namespace, see the `path_with_namespace` field in the [projects API](../../../api/projects.md#get-a-single-project).
-   - Namespace in GitLab, see [namespaces](../../namespace/index.md).
+   - Namespace in GitLab, see [namespaces](../../namespace/_index.md).
 
 1. In **Branch name**, select the branch where you want your pipeline to detect source changes.
    If the branch name does not populate automatically, this might be because of one of the following:

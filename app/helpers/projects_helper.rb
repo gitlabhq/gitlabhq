@@ -460,7 +460,7 @@ module ProjectsHelper
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
       visibilityHelpPath: help_page_path('user/public_access.md'),
       registryAvailable: Gitlab.config.registry.enabled,
-      registryHelpPath: help_page_path('user/packages/container_registry/index.md'),
+      registryHelpPath: help_page_path('user/packages/container_registry/_index.md'),
       lfsAvailable: Gitlab.config.lfs.enabled,
       lfsHelpPath: help_page_path('topics/git/lfs/_index.md'),
       lfsObjectsExist: project.lfs_objects.exists?,
@@ -475,7 +475,7 @@ module ProjectsHelper
       environmentsHelpPath: help_page_path('ci/environments/_index.md'),
       featureFlagsHelpPath: help_page_path('operations/feature_flags.md'),
       releasesHelpPath: help_page_path('user/project/releases/index.md'),
-      infrastructureHelpPath: help_page_path('user/infrastructure/index.md')
+      infrastructureHelpPath: help_page_path('user/infrastructure/_index.md')
     }
   end
 

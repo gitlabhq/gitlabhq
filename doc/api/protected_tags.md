@@ -206,5 +206,5 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 ## Related topics
 
 - [Tags API](tags.md) for all tags
-- [Tags](../user/project/repository/tags/index.md) user documentation
+- [Tags](../user/project/repository/tags/_index.md) user documentation
 - [Protected tags](../user/project/protected_tags.md) user documentation

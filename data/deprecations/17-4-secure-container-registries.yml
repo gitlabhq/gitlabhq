@@ -26,4 +26,4 @@
     Offline deployments should review the [specific scanner instructions](https://docs.gitlab.com/ee/user/application_security/offline_deployments/#specific-scanner-instructions)
     to ensure the correct locations are being used to mirror the required scanner images.
   tiers: [Free, Premium, Ultimate]
-  documentation_url: https://docs.gitlab.com/ee/user/application_security/index.html#vulnerability-scanner-maintenance
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/#vulnerability-scanner-maintenance

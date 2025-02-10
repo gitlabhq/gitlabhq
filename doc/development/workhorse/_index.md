@@ -20,8 +20,8 @@ On many instances of GitLab, such as `gitlab.com`, a CDN like CloudFlare sits in
 
 Every Rails controller and other code that handles HTTP requests and returning HTTP responses is
 proxied through GitLab Workhorse.
-Workhorse is unlike other reverse proxies as it is very tightly
-coupled to GitLab Rails where as most reverse proxies are quite generic.
+Workhorse is unlike other reverse proxies as it is tightly coupled to GitLab Rails, whereas most reverse
+proxies are more generic.
 When required, Workhorse makes modifications to HTTP headers which GitLab Rails depends on to offload work efficiently.
 
 ## Functionality and operations
@@ -42,8 +42,8 @@ When required, Workhorse makes modifications to HTTP headers which GitLab Rails 
   predefined operations.
   This includes interacting with [Gitaly](../../administration/gitaly/_index.md), managing large data
   blobs, and altering request handling logic as required.
-- A notable functionality is its ability to manage file uploads efficiently.
-  Workhorse can hijack the file upload process, perform necessary actions as dictated by Rails
+- Workhorse can manage file uploads efficiently.
+  It can hijack the file upload process, perform necessary actions as dictated by Rails
   (such as storing files temporarily or uploading them to object storage), and update Rails when the
   process has completed.
 
@@ -51,7 +51,7 @@ When required, Workhorse makes modifications to HTTP headers which GitLab Rails 
 
 Workhorse serves as a proxy to the Rails API, especially in contexts requiring interaction with container
 registry services.
-This setup exemplifies Workhorse's ability to handle high-load services by acting as a reverse proxy,
+This setup exemplifies Workhorse's handling of high-load services by acting as a reverse proxy,
 thereby minimizing the direct load on Rails.
 
 ## Architectural considerations

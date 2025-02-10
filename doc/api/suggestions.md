@@ -52,7 +52,7 @@ Example response:
   "to_line": 10,
   "applicable": true,
   "applied": false,
-  "from_content": "This is an eaxmple\n",
+  "from_content": "This is an example\n",
   "to_content": "This is an example\n"
 }
 ```
@@ -82,7 +82,7 @@ Example response:
     "to_line": 10,
     "applicable": true,
     "applied": false,
-    "from_content": "This is an eaxmple\n",
+    "from_content": "This is an example\n",
     "to_content": "This is an example\n"
   }
   {
@@ -91,7 +91,7 @@ Example response:
     "to_line": 19,
     "applicable": true,
     "applied": false,
-    "from_content": "This is another eaxmple\n",
+    "from_content": "This is another example\n",
     "to_content": "This is another example\n"
   }
  ]

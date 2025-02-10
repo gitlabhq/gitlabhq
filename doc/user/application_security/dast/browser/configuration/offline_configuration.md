@@ -34,7 +34,7 @@ enables the use of updated scanners in your CI/CD pipelines.
 
 ## Make GitLab DAST analyzer images available inside your Docker registry
 
-For DAST, import the following default DAST analyzer image from `registry.gitlab.com` to your [local Docker container registry](../../../../packages/container_registry/index.md):
+For DAST, import the following default DAST analyzer image from `registry.gitlab.com` to your [local Docker container registry](../../../../packages/container_registry/_index.md):
 
 - `registry.gitlab.com/security-products/dast:latest`
 

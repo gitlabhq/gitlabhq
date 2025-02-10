@@ -6,7 +6,7 @@ title: Create an Azure AKS cluster
 ---
 
 You can create a cluster on Azure Kubernetes Service (AKS) through
-[Infrastructure as Code (IaC)](../../index.md). This process uses the Azure and
+[Infrastructure as Code (IaC)](../../_index.md). This process uses the Azure and
 Kubernetes Terraform providers to create AKS clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
@@ -102,7 +102,7 @@ After you provision the cluster, it is connected to GitLab and is ready for depl
 1. On the left sidebar, select **Operate > Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
-For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../index.md).
+For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).
 
 ## Remove the cluster
 

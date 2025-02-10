@@ -144,7 +144,7 @@ addr = "localhost:3443"
 ```
 
 The `certificate` file should contain the concatenation
-of the server's certificate, any intermediates, and the CA's certificate.
+of the server's certificate, any intermediates, and the certificate authority's certificate.
 
 Metrics endpoints can be configured similarly:
 

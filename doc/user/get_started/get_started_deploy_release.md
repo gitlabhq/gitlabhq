@@ -57,7 +57,7 @@ For more information, see:
 - [Deploy to Kubernetes](../clusters/agent/_index.md)
 - [Dashboard for Kubernetes](../../ci/environments/kubernetes_dashboard.md)
 - [Environments Dashboard](../../ci/environments/environments_dashboard.md)
-- [Operations Dashboard](../operations_dashboard/index.md)
+- [Operations Dashboard](../operations_dashboard/_index.md)
 - [Review apps](../../ci/review_apps/_index.md)
 
 ## Step 3: Stay compliant with continuous delivery features

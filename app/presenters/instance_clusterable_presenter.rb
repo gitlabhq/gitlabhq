@@ -60,7 +60,7 @@ class InstanceClusterablePresenter < ClusterablePresenter
 
   override :learn_more_link
   def learn_more_link
-    ApplicationController.helpers.link_to(s_('ClusterIntegration|Learn more about instance Kubernetes clusters'), help_page_path('user/instance/clusters/index.md'), target: '_blank', rel: 'noopener noreferrer')
+    ApplicationController.helpers.link_to(s_('ClusterIntegration|Learn more about instance Kubernetes clusters'), help_page_path('user/instance/clusters/_index.md'), target: '_blank', rel: 'noopener noreferrer')
   end
 end
 

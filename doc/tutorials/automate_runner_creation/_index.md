@@ -193,7 +193,7 @@ generates randomly and stores in your local file system.
 Here's an example of an automation workflow you can use to register and deploy your
 runners to Google Compute Engine:
 
-1. Use [Terraform infrastructure as code](../../user/infrastructure/iac/index.md)
+1. Use [Terraform infrastructure as code](../../user/infrastructure/iac/_index.md)
    to install the runner application to a virtual machine hosted on Google Cloud
    Platform (GCP).
 1. In the [GCP Terraform provider](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance),

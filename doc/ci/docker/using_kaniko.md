@@ -43,7 +43,7 @@ few important details:
 In the following example, kaniko is used to:
 
 1. Build a Docker image.
-1. Then push it to [GitLab container registry](../../user/packages/container_registry/index.md).
+1. Then push it to [GitLab container registry](../../user/packages/container_registry/_index.md).
 
 The job runs only when a tag is pushed. A `config.json` file is created under
 `/kaniko/.docker` with the needed GitLab container registry credentials taken from the
@@ -69,7 +69,7 @@ build:
     - if: $CI_COMMIT_TAG
 ```
 
-If you authenticate against the [Dependency Proxy](../../user/packages/dependency_proxy/index.md#authenticate-within-cicd),
+If you authenticate against the [Dependency Proxy](../../user/packages/dependency_proxy/_index.md#authenticate-within-cicd),
 you must add the corresponding CI/CD variables for authentication to the `config.json` file:
 
 ```yaml

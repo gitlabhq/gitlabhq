@@ -63,14 +63,14 @@
 
 - name: Expanded options for auto-canceling pipelines
   description: |
-    Currently, to use the [auto-cancel redundant pipeline feature](https://docs.gitlab.com/ee/ci/pipelines/settings.html#auto-cancel-redundant-pipelines), you must set jobs that can be canceled as [`interruptible: true`](https://docs.gitlab.com/ee/ci/yaml/index.html#interruptible) to determine whether or not a pipeline can be canceled. But this only applies to jobs that are actively running when GitLab tries to cancel the pipeline. Any jobs that have not yet started (are in "pending" status) are also considered safe to cancel, regardless of their `interruptible` configuration.
+    Currently, to use the [auto-cancel redundant pipeline feature](https://docs.gitlab.com/ee/ci/pipelines/settings.html#auto-cancel-redundant-pipelines), you must set jobs that can be canceled as [`interruptible: true`](https://docs.gitlab.com/ee/ci/yaml/#interruptible) to determine whether or not a pipeline can be canceled. But this only applies to jobs that are actively running when GitLab tries to cancel the pipeline. Any jobs that have not yet started (are in "pending" status) are also considered safe to cancel, regardless of their `interruptible` configuration.
 
     This lack of flexibility hinders users who want more control over which exact jobs can be canceled by the auto-cancel pipeline feature. To address this limitation, we are pleased to announce the introduction of the `auto_cancel:on_new_commit` keywords with more granular control over job cancellation. If the legacy behavior did not work for you, you now have the option to configure the pipeline to only cancel jobs that are explicitly set with `interruptible: true`, even if they haven't started yet. You can also set jobs to never be automatically canceled.
   stage: verify
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/yaml/index.html#workflowauto_cancelon_new_commit
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#workflowauto_cancelon_new_commit
   image_url: https://about.gitlab.com/images/16_9/interruptible.png
   published_at: 2024-02-15
   release: 16.9

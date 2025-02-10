@@ -126,7 +126,7 @@ include:
 ```
 
 The pipeline downloads the Docker images needed for the Security Scanners and saves them as
-[job artifacts](../../../ci/jobs/job_artifacts.md) or pushes them to the [container registry](../../packages/container_registry/index.md)
+[job artifacts](../../../ci/jobs/job_artifacts.md) or pushes them to the [container registry](../../packages/container_registry/_index.md)
 of the project where the pipeline is executed. These archives can be transferred to another location
 and [loaded](https://docs.docker.com/reference/cli/docker/image/load/) in a Docker daemon.
 This method requires a runner with access to both `gitlab.com` (including
@@ -153,7 +153,7 @@ images and resources needed to run GitLab Security features.
 
 Next, you must tell the offline instance to use these resources instead of the default ones on
 GitLab.com. To do so, set the CI/CD variable `SECURE_ANALYZERS_PREFIX` with the URL of the
-project [container registry](../../packages/container_registry/index.md).
+project [container registry](../../packages/container_registry/_index.md).
 
 You can set this variable in the projects' `.gitlab-ci.yml`, or
 in the GitLab UI in the project or group. See the [GitLab CI/CD variables page](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui)

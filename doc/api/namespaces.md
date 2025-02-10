@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [Namespaces](../user/namespace/index.md).
+Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [Namespaces](../user/namespace/_index.md).
 
 This API uses [Pagination](rest/_index.md#pagination) to filter results.
 

@@ -22,7 +22,7 @@ On GitLab Self-Managed, by default this feature is not available. To make it ava
 
 ---
 
-With the introduction of the [Kubernetes integration](../../user/infrastructure/clusters/index.md),
+With the introduction of the [Kubernetes integration](../../user/infrastructure/clusters/_index.md),
 GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to
 [web terminals](../../ci/environments/_index.md#web-terminals-deprecated) for environments.

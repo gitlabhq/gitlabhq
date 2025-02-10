@@ -23,7 +23,7 @@ replace the Pages wildcard domain on GitLab.com (`*.gitlab.io`) with your own.
 If you set up a GitLab Pages project on GitLab,
 it's automatically accessible under a
 subdomain of `namespace.example.io`.
-The [`namespace`](../../namespace/index.md)
+The [`namespace`](../../namespace/_index.md)
 is defined by your username on GitLab.com,
 or the group name you created this project under.
 For GitLab Self-Managed, replace `example.io`

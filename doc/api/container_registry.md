@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use these API endpoints to work with the [GitLab container registry](../user/packages/container_registry/index.md).
+Use these API endpoints to work with the [GitLab container registry](../user/packages/container_registry/_index.md).
 
 You can authenticate with these endpoints from a CI/CD job by passing the [`$CI_JOB_TOKEN`](../ci/jobs/ci_job_token.md)
 variable as the `JOB-TOKEN` header. The job token only has access to the container registry
@@ -38,7 +38,7 @@ Descriptions of the possible values for `container_registry_access_level`:
   to **enabled**.
 - **disabled**: The container registry is disabled.
 
-See the [container registry visibility permissions](../user/packages/container_registry/index.md#container-registry-visibility-permissions)
+See the [container registry visibility permissions](../user/packages/container_registry/_index.md#container-registry-visibility-permissions)
 for more details about the permissions that this setting grants to users.
 
 ```shell

@@ -18,7 +18,7 @@ GitLab:
 - Tracks your deployments, so you always know what is deployed on your
   servers.
 
-If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/index.md)
+If you have a deployment service like [Kubernetes](../../user/infrastructure/clusters/_index.md)
 associated with your project, you can use it to assist with your deployments.
 
 After a deployment is created, you can roll it out to users.

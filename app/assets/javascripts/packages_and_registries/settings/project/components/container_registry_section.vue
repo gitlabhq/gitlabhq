@@ -33,7 +33,7 @@ export default {
       );
     },
   },
-  containerRegistryHelpPath: helpPagePath('user/packages/container_registry/index.md'),
+  containerRegistryHelpPath: helpPagePath('user/packages/container_registry/_index.md'),
 };
 </script>
 

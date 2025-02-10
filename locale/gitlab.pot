@@ -50395,9 +50395,6 @@ msgstr ""
 msgid "ScanResultPolicy|Maximum of one license status criteria allowed"
 msgstr ""
 
-msgid "ScanResultPolicy|Maximum of one license type criteria allowed"
-msgstr ""
-
 msgid "ScanResultPolicy|Maximum of two attribute criteria allowed"
 msgstr ""
 
@@ -50545,7 +50542,7 @@ msgstr ""
 msgid "ScanResultPolicy|When this policy's criteria %{strongStart}cannot be met:%{strongEnd}"
 msgstr ""
 
-msgid "ScanResultPolicy|You can specify either a denylist or an allowlist, not both."
+msgid "ScanResultPolicy|You can specify either a deny/allowlist or license types, not both."
 msgstr ""
 
 msgid "ScanResultPolicy|You can specify either a license state (allowlist or denylist) or a license type, not both."

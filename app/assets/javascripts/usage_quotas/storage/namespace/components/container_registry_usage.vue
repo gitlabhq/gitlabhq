@@ -49,7 +49,7 @@ export default {
     <template #left-secondary-text>
       <span>
         {{ $options.i18n.containerRegistryDescription }}
-        <help-page-link href="user/packages/container_registry/index">
+        <help-page-link href="user/packages/container_registry/_index">
           {{ __('More information') }}
         </help-page-link>
       </span>

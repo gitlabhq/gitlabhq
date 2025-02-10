@@ -36,7 +36,7 @@ You must have:
 
 - A GitLab project with a Git branch containing commits that you want to update.
 - Git [installed on your local machine](../../topics/git/how_to_install_git/_index.md).
-- The ability to get to your local machine's command-line interface (CLI). In macOS,
+- Access to your local machine's command-line interface (CLI). In macOS,
   you can use Terminal. In Windows, you can use PowerShell. Linux users are probably
   already familiar with their system's CLI.
 - Familiarity with your system's default editor. This tutorial assumes your editor is Vim,

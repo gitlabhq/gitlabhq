@@ -51,7 +51,7 @@ describe('Registry Project Empty state', () => {
 
       expect(intro.exists()).toBe(true);
       expect(docLink.exists()).toBe(true);
-      expect(docLink.attributes('href')).toBe('/help/user/packages/container_registry/index');
+      expect(docLink.attributes('href')).toBe('/help/user/packages/container_registry/_index');
     });
 
     it('renders the quick start section', () => {

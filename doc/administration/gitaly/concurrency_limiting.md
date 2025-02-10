@@ -17,7 +17,7 @@ Enabling limits on your environment should be done with caution and only
 in select circumstances, such as to protect against unexpected traffic.
 When reached, limits _do_ result in disconnects that negatively impact users.
 For consistent and stable performance, you should first explore other options such as
-adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/index.md) or workloads.
+adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 
 ## Limit RPC concurrency
 
@@ -29,7 +29,7 @@ When cloning or pulling repositories, various RPCs run in the background. In par
 These RPCs can consume a large amount of resources, which can have a significant impact in situations such as:
 
 - Unexpectedly high traffic.
-- Running against [large repositories](../../user/project/repository/monorepos/index.md) that don't follow best practices.
+- Running against [large repositories](../../user/project/repository/monorepos/_index.md) that don't follow best practices.
 
 You can limit these processes from overwhelming your Gitaly server in these scenarios using the concurrency limits in the Gitaly configuration file. For
 example:
@@ -93,7 +93,7 @@ number of in-flight pack-object processes per remote IP address.
 WARNING:
 Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
 disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
-[reviewing large repositories](../../user/project/repository/monorepos/index.md) or workloads.
+[reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 
 Example configuration:
 

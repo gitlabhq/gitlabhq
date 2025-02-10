@@ -660,7 +660,7 @@ deploy-to-production:
 
 To create release instead, use the [`release`](../yaml/_index.md#release)
 keyword with the [release-cli](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs)
-tool to create releases for [Git tags](../../user/project/repository/tags/index.md).
+tool to create releases for [Git tags](../../user/project/repository/tags/_index.md).
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 

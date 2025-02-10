@@ -26,7 +26,7 @@ displaying read-only content in the Source Editor is still a valid option.
 
 ## How to use Source Editor
 
-Source Editor is framework-agnostic and can be used in any application, including both
+Source Editor is framework-independent and can be used in any application, including both
 Rails and Vue. To help with integration, we have the dedicated `<source-editor>`
 Vue component, but the integration of Source Editor is generally straightforward:
 

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Protected [tags](repository/tags/index.md):
+Protected [tags](repository/tags/_index.md):
 
 - Allow control over who has permission to create tags.
 - Prevent accidental update or deletion once created.

@@ -92,14 +92,14 @@
   release: 15.7
 - name: "Select predefined CI/CD variables values from a dropdown list"
   description: |  # Do not modify this line, instead modify the lines below.
-    Previously, you could [pre-fill CI/CD variables in the "Run pipeline" page](https://docs.gitlab.com/ee/ci/pipelines/index.html#prefill-variables-in-manual-pipelines), with a specific value. Unfortunately, if you had multiple options for the variable's value, you still had to manually input the option you wanted. This was an error-prone process because you could easily input an invalid value, or just mistype it.
+    Previously, you could [pre-fill CI/CD variables in the "Run pipeline" page](https://docs.gitlab.com/ee/ci/pipelines/#prefill-variables-in-manual-pipelines), with a specific value. Unfortunately, if you had multiple options for the variable's value, you still had to manually input the option you wanted. This was an error-prone process because you could easily input an invalid value, or just mistype it.
 
     In this release, we've added the ability to set a list of values which are surfaced in a drop-down list in the "Run pipeline" page. Now you can define the exact list of values that are valid for each CI/CD variable when running a pipeline manually, greatly simplifying your workflow when using manually-triggered pipelines.
   stage: configure
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/pipelines/index.html#prefill-variables-in-manual-pipelines
+  documentation_link: https://docs.gitlab.com/ee/ci/pipelines/#prefill-variables-in-manual-pipelines
   image_url: https://about.gitlab.com/images/15_7/prefill.png
   published_at: 2022-12-22
   release: 15.7
@@ -123,7 +123,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/ci/jobs/index.html#specifying-variables-when-running-manual-jobs
+  documentation_link: https://docs.gitlab.com/ee/ci/jobs/#specifying-variables-when-running-manual-jobs
   image_url: https://img.youtube.com/vi/YTM_BYL3gXI/hqdefault.jpg
   published_at: 2022-12-22
   release: 15.7

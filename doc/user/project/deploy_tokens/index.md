@@ -52,8 +52,8 @@ A deploy token's scope determines the actions it can perform.
 | Scope                    | Description                                                                                                  |
 |--------------------------|--------------------------------------------------------------------------------------------------------------|
 | `read_repository`        | Read-only access to the repository using `git clone`.                                                        |
-| `read_registry`          | Read-only access to the images in the project's [container registry](../../packages/container_registry/index.md). |
-| `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/index.md). You need both read and write access to push images. |
+| `read_registry`          | Read-only access to the images in the project's [container registry](../../packages/container_registry/_index.md). |
+| `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/_index.md). You need both read and write access to push images. |
 | `read_package_registry`  | Read-only access to the project's package registry.                                                          |
 | `write_package_registry` | Write access to the project's package registry.                                                              |
 
@@ -226,4 +226,4 @@ Prerequisites:
 
 - A deploy token with `read_registry` and `write_registry` scopes.
 
-Follow the dependency proxy [authentication instructions](../../packages/dependency_proxy/index.md).
+Follow the dependency proxy [authentication instructions](../../packages/dependency_proxy/_index.md).

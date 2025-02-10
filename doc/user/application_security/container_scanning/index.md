@@ -516,7 +516,7 @@ Support for custom certificate authorities for Trivy was introduced in version [
 #### Make GitLab container scanning analyzer images available inside your Docker registry
 
 For container scanning, import the following images from `registry.gitlab.com` into your
-[local Docker container registry](../../packages/container_registry/index.md):
+[local Docker container registry](../../packages/container_registry/_index.md):
 
 ```plaintext
 registry.gitlab.com/security-products/container-scanning:7
@@ -584,7 +584,7 @@ you're using a non-GitLab Docker registry, you must change the `$CI_REGISTRY` va
 To scan an image in an external private registry, you must configure access credentials so the
 container scanning analyzer can authenticate itself before attempting to access the image to scan.
 
-If you use the GitLab [Container Registry](../../packages/container_registry/index.md),
+If you use the GitLab [Container Registry](../../packages/container_registry/_index.md),
 the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables)
 are set automatically and you can skip this configuration.
 

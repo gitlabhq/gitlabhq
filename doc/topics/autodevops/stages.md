@@ -19,7 +19,7 @@ Auto Build is not supported if Docker in Docker is not available for your GitLab
 
 Auto Build creates a build of the application using an existing `Dockerfile` or
 Heroku buildpacks. The resulting Docker image is pushed to the
-[Container Registry](../../user/packages/container_registry/index.md), and tagged
+[Container Registry](../../user/packages/container_registry/_index.md), and tagged
 with the commit SHA or tag.
 
 ### Auto Build using a Dockerfile

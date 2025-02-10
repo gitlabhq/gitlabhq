@@ -128,8 +128,8 @@ You can define a devfile in the following locations, relative to your project's 
 ```plaintext
 - /.devfile.yaml
 - /.devfile.yml
-- /.devfile/.devfile.{devfile_suffix}.yaml
-- /.devfile/.devfile.{devfile_suffix}.yml
+- /.devfile/{devfile_name}.yaml
+- /.devfile/{devfile_name}.yml
 ```
 
 ### Validation rules

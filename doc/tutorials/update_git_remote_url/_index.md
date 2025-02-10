@@ -41,7 +41,7 @@ You must have:
 - A GitLab project with a Git repository and a new GitLab URL.
 - A cloned local working copy of the project that you are migrating to the new GitLab URL.
 - Git [installed on your local machine](../../topics/git/how_to_install_git/_index.md).
-- The ability to get to your local machine's command-line interface (CLI). In macOS,
+- Access to your local machine's command-line interface (CLI). In macOS,
   you can use Terminal. In Windows, you can use PowerShell. Linux users are probably
   already familiar with their system's CLI.
 - Authentication credentials for GitLab:

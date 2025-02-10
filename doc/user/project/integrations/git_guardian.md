@@ -83,9 +83,11 @@ secret detection for all commits in a push are identical to the options for
 
 ## Known issues
 
-- Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.
+- Pushes can be delayed or can time out. With the GitGuardian integration:
+  - Pushes are sent to a third-party.
+  - GitLab has no control over the connection with GitGuardian or the GitGuardian process.
 - Due to a [GitGuardian API limitation](https://api.gitguardian.com/docs#operation/multiple_scan), the integration ignores files over the size of 1 MB. They are not scanned.
-- If a pushed file has a name over 256 characters long the push won't go through.
+- If a pushed file has a name over 256 characters, the push fails.
 - For more information, see [GitGuardian API documentation](https://api.gitguardian.com/docs#operation/multiple_scan).
 
 Troubleshooting steps below show how to mitigate some of these problems.

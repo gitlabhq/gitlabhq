@@ -66,7 +66,7 @@ for an existing project to match new global push rules:
 Use these rules to validate users who make commits.
 
 NOTE:
-These push rules apply only to commits and not [tags](tags/index.md).
+These push rules apply only to commits and not [tags](tags/_index.md).
 
 - **Reject unverified users**: Users must have a [confirmed email address](../../../security/user_email_confirmation.md).
 - **Check whether the commit author is a GitLab user**: The commit author and committer must have an email address that's been verified by GitLab.

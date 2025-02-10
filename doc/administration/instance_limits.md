@@ -1117,7 +1117,7 @@ When asking for versions of a given NuGet package name, the GitLab package regis
 ## Dependency Proxy Limits
 
 The maximum file size for an image cached in the
-[Dependency Proxy](../user/packages/dependency_proxy/index.md)
+[Dependency Proxy](../user/packages/dependency_proxy/_index.md)
 varies by file type:
 
 - Image blob: 5 GB

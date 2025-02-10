@@ -47,4 +47,4 @@ are deployed to the Kubernetes cluster, see the documentation for
 ## More information
 
 For information on integrating GitLab and Kubernetes, see
-[Kubernetes clusters](../../infrastructure/clusters/index.md).
+[Kubernetes clusters](../../infrastructure/clusters/_index.md).

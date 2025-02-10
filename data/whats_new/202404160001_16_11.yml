@@ -53,7 +53,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/editor_extensions/jetbrains_ide/index.html
+  documentation_link: https://docs.gitlab.com/ee/editor_extensions/jetbrains_ide/
   image_url: https://about.gitlab.com/images/16_11/create-duo-chat-in-jetbrains.png
   published_at: 2024-04-18
   release: 16.11

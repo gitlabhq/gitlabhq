@@ -296,7 +296,7 @@ This problem is common in Git itself, due to its inability to handle large files
 - The existence of large files in the repository.
 
 If this error occurs when cloning a large repository, you can
-[decrease the cloning depth](../../user/project/repository/monorepos/index.md#shallow-cloning) to a value of `1`. For example:
+[decrease the cloning depth](../../user/project/repository/monorepos/_index.md#shallow-cloning) to a value of `1`. For example:
 
 This approach doesn't resolve the underlying cause, but you can successfully clone the repository.
 To decrease the cloning depth to `1`, run:

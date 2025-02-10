@@ -61,4 +61,4 @@ To update your branch with the latest changes in the default branch, either:
 ## Related topics
 
 - [Branches](../../user/project/repository/branches/_index.md)
-- [Tags](../../user/project/repository/tags/index.md)
+- [Tags](../../user/project/repository/tags/_index.md)

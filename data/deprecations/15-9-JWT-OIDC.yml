@@ -17,7 +17,7 @@
     - `CI_JOB_JWT_V1`
     - `CI_JOB_JWT_V2`
 
-    To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens)
+    To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
     instead of the deprecated tokens. For OIDC compliance, the `iss` claim now uses
     the fully qualified domain name, for example `https://example.com`, previously
     introduced with the `CI_JOB_JWT_V2` token.

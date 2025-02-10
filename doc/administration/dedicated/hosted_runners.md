@@ -68,9 +68,9 @@ If you use images from the Docker Hub container registry, you might run into [ra
 
 To avoid rate limits, instead use:
 
-- Images stored in the [GitLab container registry](../../user/packages/container_registry/index.md).
+- Images stored in the [GitLab container registry](../../user/packages/container_registry/_index.md).
 - Images stored in other public registries with no rate limits.
-- The [dependency proxy](../../user/packages/dependency_proxy/index.md), acting as a pull-through cache.
+- The [dependency proxy](../../user/packages/dependency_proxy/_index.md), acting as a pull-through cache.
 
 ### Docker in Docker support
 

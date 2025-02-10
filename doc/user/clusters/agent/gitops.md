@@ -65,7 +65,7 @@ You should use both Flux and `agentk` for GitOps deployments. Flux keeps the clu
 
 ### OCI for source control
 
-You should use OCI images as a source controller for Flux, instead of a Git repository. The [GitLab container registry](../../packages/container_registry/index.md) supports OCI images.
+You should use OCI images as a source controller for Flux, instead of a Git repository. The [GitLab container registry](../../packages/container_registry/_index.md) supports OCI images.
 
 | OCI registry | Git repository |
 | ---          | ---              |

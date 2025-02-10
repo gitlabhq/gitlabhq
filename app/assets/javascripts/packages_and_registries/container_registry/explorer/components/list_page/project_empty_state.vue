@@ -36,7 +36,7 @@ export default {
       'ContainerRegistry|You can add an image to this registry with the following commands:',
     ),
   },
-  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/index'),
+  containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/_index'),
   twoFactorAuthHelpUrl: helpPagePath('user/profile/account/two_factor_authentication'),
   personalAccessTokensHelpUrl: helpPagePath('user/profile/personal_access_tokens'),
 };

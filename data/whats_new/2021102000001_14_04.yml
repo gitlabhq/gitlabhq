@@ -5,7 +5,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dast/index.html#schedule-an-on-demand-scan'
+  documentation_link: 'https://docs.gitlab.com/ee/user/application_security/dast/#schedule-an-on-demand-scan'
   image_url: https://about.gitlab.com/images/14_4/dast_on_demand_schedule.png
   published_at: 2021-10-22
   release: 14.4

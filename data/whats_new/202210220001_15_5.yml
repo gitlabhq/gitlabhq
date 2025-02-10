@@ -1,11 +1,11 @@
 - name: "Deploy apps to Google Cloud with GitLab Cloud Seed"
   description: |
-    Cloud Seed allows GitLab and Google Cloud customers to migrate to the cloud using a single platform, consolidating their tech stack without slowing down their cloud adoption process. Cloud Seed is built into the GitLab web UI and leverages CI/CD pipeline capabilities. It is specifically tailored to offer a frictionless developer experience for consuming Google Cloud services, supporting [Service Accounts](https://docs.gitlab.com/ee/cloud_seed/index.html#set-up-deployment-credentials), [Regions](https://docs.gitlab.com/ee/cloud_seed/index.html#configure-your-preferred-gcp-region), [Cloud Run](https://docs.gitlab.com/ee/cloud_seed/index.html#deploy-to-google-cloud-run), and [Cloud SQL](https://docs.gitlab.com/ee/cloud_seed/index.html#provision-cloud-sql-databases).
+    Cloud Seed allows GitLab and Google Cloud customers to migrate to the cloud using a single platform, consolidating their tech stack without slowing down their cloud adoption process. Cloud Seed is built into the GitLab web UI and leverages CI/CD pipeline capabilities. It is specifically tailored to offer a frictionless developer experience for consuming Google Cloud services, supporting [Service Accounts](https://docs.gitlab.com/ee/cloud_seed/#set-up-deployment-credentials), [Regions](https://docs.gitlab.com/ee/cloud_seed/#configure-your-preferred-gcp-region), [Cloud Run](https://docs.gitlab.com/ee/cloud_seed/#deploy-to-google-cloud-run), and [Cloud SQL](https://docs.gitlab.com/ee/cloud_seed/#provision-cloud-sql-databases).
   stage: Release
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: 'https://docs.gitlab.com/ee/cloud_seed/index.html'
+  documentation_link: 'https://docs.gitlab.com/ee/cloud_seed/'
   image_url: 'https://img.youtube.com/vi/zDMGCyAgCPY/hqdefault.jpg'
   published_at: 2022-10-22
   release: 15.5

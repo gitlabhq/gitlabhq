@@ -35,7 +35,7 @@ Instead you can authenticate:
   - For Git requests over HTTP(S), a PAT with `read_repository` or `write_repository` scope is required.
   - For [GitLab container registry](../../packages/container_registry/authenticate_with_container_registry.md) requests, a PAT
     with `read_registry` or `write_registry` scope is required.
-  - For [dependency proxy](../../packages/dependency_proxy/index.md#authenticate-with-the-dependency-proxy-for-container-images) requests, a PAT with
+  - For [dependency proxy](../../packages/dependency_proxy/_index.md#authenticate-with-the-dependency-proxy-for-container-images) requests, a PAT with
     `read_registry` and `write_registry` scopes is required.
 - If you have configured LDAP, using an [LDAP password](../../../administration/auth/ldap/_index.md)
 - Using an [OAuth credential helper](../../profile/account/two_factor_authentication.md#oauth-credential-helpers).

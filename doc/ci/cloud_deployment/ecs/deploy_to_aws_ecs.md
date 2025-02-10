@@ -58,7 +58,7 @@ container registry.
 [ECS](https://aws.amazon.com/ecs/) is a container orchestration service, meaning that you must
 provide a containerized application image during the infrastructure build. To do so, you can use
 GitLab [Auto Build](../../../topics/autodevops/stages.md#auto-build)
-and [Container Registry](../../../user/packages/container_registry/index.md).
+and [Container Registry](../../../user/packages/container_registry/_index.md).
 
 1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
 1. Select **Set up CI/CD**. It brings you to a `.gitlab-ci.yml`
@@ -72,7 +72,7 @@ and [Container Registry](../../../user/packages/container_registry/index.md).
    ```
 
 1. Select **Commit Changes**. It automatically triggers a new pipeline. In this pipeline, the `build`
-   job containerizes the application and pushes the image to [GitLab container registry](../../../user/packages/container_registry/index.md).
+   job containerizes the application and pushes the image to [GitLab container registry](../../../user/packages/container_registry/_index.md).
 
 1. Visit **Deploy > Container Registry**. Make sure the application image has been
    pushed.

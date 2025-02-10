@@ -48,7 +48,7 @@ The CI/CD job token can only access the following features and API endpoints:
 | [Releases API](../../api/releases/_index.md)                                                           | `GET` requests are public by default. |
 | [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Generates changelog data based on commits in a repository. |
 | [Secure files](../secure_files/_index.md#use-secure-files-in-cicd-jobs)                                | The `download-secure-files` tool authenticates with a CI/CD job token by default. |
-| [Terraform plan](../../user/infrastructure/index.md)                                                  |         |
+| [Terraform plan](../../user/infrastructure/_index.md)                                                  |         |
 
 Other API endpoints are not accessible using a job token. There is [a proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559)
 to redesign the feature for more granular control of access permissions.

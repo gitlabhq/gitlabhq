@@ -14,7 +14,7 @@ export default {
     PromoPageLink,
   },
   inject: ['emptyStateHelpText', 'clustersEmptyStateImage'],
-  clustersHelpUrl: helpPagePath('user/infrastructure/clusters/index', {
+  clustersHelpUrl: helpPagePath('user/infrastructure/clusters/_index', {
     anchor: 'certificate-based-kubernetes-integration-deprecated',
   }),
   blogPostPath: 'blog/2021/11/15/deprecating-the-cert-based-kubernetes-integration/',

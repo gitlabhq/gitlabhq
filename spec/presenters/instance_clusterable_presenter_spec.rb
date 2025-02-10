@@ -24,6 +24,6 @@ RSpec.describe InstanceClusterablePresenter do
   describe '#learn_more_link' do
     subject { presenter.learn_more_link }
 
-    it { is_expected.to include('user/instance/clusters/index') }
+    it { is_expected.to include('user/instance/clusters/_index') }
   end
 end

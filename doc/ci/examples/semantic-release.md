@@ -178,7 +178,7 @@ npm install --save @gitlab-examples/semantic-release-npm
 
 ### Deleted Git tags reappear
 
-A [Git tag](../../user/project/repository/tags/index.md) deleted from the repository
+A [Git tag](../../user/project/repository/tags/_index.md) deleted from the repository
 can sometimes be recreated by `semantic-release` when GitLab runners use a cached
 version of the repository. If the job runs on a runner with a cached repository that
 still has the tag, `semantic-release` recreates the tag in the main repository.

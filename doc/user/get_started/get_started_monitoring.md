@@ -68,4 +68,4 @@ Use the data and insights gathered to continuously improve your application and 
 For more information, see:
 
 - [Insight dashboards](../project/insights/index.md)
-- [Executable runbooks](../project/clusters/runbooks/index.md)
+- [Executable runbooks](../project/clusters/runbooks/_index.md)

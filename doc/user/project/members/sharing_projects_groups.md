@@ -48,7 +48,7 @@ For example, you can invite:
 - A **public** group to a **public** project.
 
 If the project's top-level group does not allow the project to be shared outside the hierarchy,
-the invited group or subgroup must be in the project's [namespace](../../namespace/index.md).
+the invited group or subgroup must be in the project's [namespace](../../namespace/_index.md).
 
 ### Member access and roles
 
@@ -135,7 +135,7 @@ Private groups are:
 The **Members** tab shows:
 
 - Members who were directly added to the project.
-- Inherited members of the group [namespace](../../namespace/index.md) that the project was added to.
+- Inherited members of the group [namespace](../../namespace/_index.md) that the project was added to.
 
 The members of the invited group are not displayed on the **Members** tab unless the `webui_members_inherited_users` feature flag is enabled.
 

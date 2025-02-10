@@ -38,7 +38,7 @@
 
     Need to bypass secret push protection for testing? When you skip secret push detection, GitLab logs an audit event so you can investigate.
 
-    Secret push protection is available on GitLab.com and for Dedicated customers as a [Beta](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#beta) feature and can be enabled on a [per project basis](https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection/index.html#enable-secret-push-protection-in-a-project). You can help us improve secret push protection by providing feedback in [issue 467408](https://gitlab.com/gitlab-org/gitlab/-/issues/467408).
+    Secret push protection is available on GitLab.com and for Dedicated customers as a [Beta](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#beta) feature and can be enabled on a [per project basis](https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection/#enable-secret-push-protection-in-a-project). You can help us improve secret push protection by providing feedback in [issue 467408](https://gitlab.com/gitlab-org/gitlab/-/issues/467408).
   stage: secure
   self-managed: false
   gitlab-com: true

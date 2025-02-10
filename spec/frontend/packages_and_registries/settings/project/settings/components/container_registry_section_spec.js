@@ -55,7 +55,7 @@ describe('Container registry project settings section', () => {
 
     it('renders the help page link with correct href', () => {
       const link = findLink();
-      const docsPath = helpPagePath('/user/packages/container_registry/index.md');
+      const docsPath = helpPagePath('/user/packages/container_registry/_index.md');
 
       expect(link.attributes('href')).toBe(docsPath);
     });

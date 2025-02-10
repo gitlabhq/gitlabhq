@@ -33,7 +33,7 @@ The various GitLab integrations help you:
 
 For more information, see:
 
-- [Infrastructure as Code](../infrastructure/iac/index.md)
+- [Infrastructure as Code](../infrastructure/iac/_index.md)
 
 ## Step 2: Interact with Kubernetes clusters
 
@@ -60,4 +60,4 @@ to issues, merge requests, and other GitLab objects.
 
 For more information, see:
 
-- [How executable runbooks work in GitLab](../project/clusters/runbooks/index.md)
+- [How executable runbooks work in GitLab](../project/clusters/runbooks/_index.md)

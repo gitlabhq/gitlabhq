@@ -46,7 +46,7 @@ Before you can use commit signing for GitLab UI commits, you must
 By default, when a commit is created on GitLab, the `Author` of the commit is set as the `Committer` of the commit.
 To avoid confusion, when the commit is signed, the signature should belong to the `Committer` of the commit.
 
-This is why you should [configure](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)
+You should [configure](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)
 the `Committer` field to point to the instance itself.
 For example, when this feature becomes enabled on GitLab.com, the `Committer` field is: `GitLab <noreply@gitlab.com>`.
 

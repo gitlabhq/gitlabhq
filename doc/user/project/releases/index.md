@@ -131,7 +131,7 @@ To create a release in the Releases page:
    - [Title](release_fields.md#title).
    - [Milestones](#associate-milestones-with-a-release).
    - [Release notes](release_fields.md#release-notes-description).
-   - Whether or not to include the [Tag message](../repository/tags/index.md).
+   - Whether or not to include the [Tag message](../repository/tags/_index.md).
    - [Asset links](release_fields.md#links).
 1. Select **Create release**.
 

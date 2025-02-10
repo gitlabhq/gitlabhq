@@ -17,7 +17,7 @@ Before using the project import and export API, you might want to use the
 After using the project import and export API, you might want to use the
 [Project-level CI/CD variables API](project_level_variables.md).
 
-You must still migrate your [Container Registry](../user/packages/container_registry/index.md)
+You must still migrate your [Container Registry](../user/packages/container_registry/_index.md)
 over a series of Docker pulls and pushes. Re-run any CI/CD pipelines to retrieve any build artifacts.
 
 ## Prerequisites

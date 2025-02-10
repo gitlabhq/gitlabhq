@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can use [container scanning](../../user/application_security/container_scanning/index.md) to check for vulnerabilities
-in container images stored in the [container registry](../../user/packages/container_registry/index.md).
+in container images stored in the [container registry](../../user/packages/container_registry/_index.md).
 
 Container scanning configuration is added to the pipeline configuration of a project. In this tutorial, you:
 

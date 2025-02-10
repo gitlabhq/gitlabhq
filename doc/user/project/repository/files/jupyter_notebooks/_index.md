@@ -49,5 +49,5 @@ Cleaner notebook diffs are not generated when the notebook is too large.
 
 Jupyter can be configured as an OAuth application with repository access, acting
 on behalf of the authenticated user. See the
-[Runbooks documentation](../../../clusters/runbooks/index.md) for an
+[Runbooks documentation](../../../clusters/runbooks/_index.md) for an
 example configuration.

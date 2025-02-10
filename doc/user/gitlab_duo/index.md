@@ -32,7 +32,7 @@ To improve your workflow across the entire software development lifecycle, try t
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 - [Self-Hosted Models](../../administration/gitlab_duo_self_hosted/_index.md): Host the language models that power AI features in GitLab.
   Code Suggestions and Chat are supported. Use GitLab model vendors or self-host a supported language model.
-- [GitLab Duo Workflow](../duo_workflow/index.md): Automate tasks and help increase productivity in your development workflow.
+- [GitLab Duo Workflow](../duo_workflow/_index.md): Automate tasks and help increase productivity in your development workflow.
 - [AI Impact Dashboard](../analytics/ai_impact_analytics.md): Measure the AI effectiveness and impact on SDLC metrics.
 
 ## Planning work
@@ -101,7 +101,7 @@ To improve your security, try these features:
 | ------- | ---- | ------ | -------- | ------ |
 | [GitLab Duo Chat](../gitlab_duo_chat/index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Self-Hosted Models](../../administration/gitlab_duo_self_hosted/_index.md) | Ultimate | GitLab Duo Enterprise | Self-managed | Beta |
-| [GitLab Duo Workflow](../duo_workflow/index.md) | Ultimate | - | GitLab.com | Experiment |
+| [GitLab Duo Workflow](../duo_workflow/_index.md) | Ultimate | - | GitLab.com | Experiment |
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Code Suggestions](../project/repository/code_suggestions/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |

@@ -1112,7 +1112,7 @@ To run dependency scanning in an offline environment you must have:
 To use dependency scanning with all [supported languages and frameworks](#supported-languages-and-package-managers):
 
 1. Import the following default dependency scanning analyzer images from `registry.gitlab.com` into
-   your [local Docker container registry](../../packages/container_registry/index.md):
+   your [local Docker container registry](../../packages/container_registry/_index.md):
 
    ```plaintext
    registry.gitlab.com/security-products/gemnasium:5

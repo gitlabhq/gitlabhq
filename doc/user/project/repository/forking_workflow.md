@@ -33,7 +33,7 @@ To fork an existing project in GitLab:
 
 1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**).
 1. Optional. Edit the **Project name**.
-1. For **Project URL**, select the [namespace](../../namespace/index.md)
+1. For **Project URL**, select the [namespace](../../namespace/_index.md)
    your fork should belong to.
 1. Add a **Project slug**. This value becomes part of the URL to your fork.
    It must be unique in the namespace.

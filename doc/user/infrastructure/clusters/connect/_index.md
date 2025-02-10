@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-The [certificate-based Kubernetes integration with GitLab](../index.md)
+The [certificate-based Kubernetes integration with GitLab](../_index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 in GitLab 14.5. To connect your clusters, use the [GitLab agent](../../../clusters/agent/_index.md).
 
@@ -18,7 +18,7 @@ in GitLab 14.5. To connect your clusters, use the [GitLab agent](../../../cluste
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
-The [concept of cluster levels was deprecated](../index.md#cluster-levels)
+The [concept of cluster levels was deprecated](../_index.md#cluster-levels)
 in GitLab 14.5.
 
 Choose your cluster's level according to its purpose:
@@ -27,7 +27,7 @@ Choose your cluster's level according to its purpose:
 |--|--|
 | [Project level](../../../project/clusters/index.md) | Use your cluster for a single project. |
 | [Group level](../../../group/clusters/_index.md) | Use the same cluster across multiple projects within your group. |
-| [Instance level](../../../instance/clusters/index.md) | Use the same cluster across groups and projects within your instance. |
+| [Instance level](../../../instance/clusters/_index.md) | Use the same cluster across groups and projects within your instance. |
 
 ### View your clusters
 

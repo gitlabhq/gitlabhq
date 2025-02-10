@@ -926,7 +926,7 @@ enables the use of updated scanners in your CI/CD pipelines.
 
 For SAST with all [supported languages and frameworks](#supported-languages-and-frameworks),
 import the following default SAST analyzer images from `registry.gitlab.com` into your
-[local Docker container registry](../../packages/container_registry/index.md):
+[local Docker container registry](../../packages/container_registry/_index.md):
 
 ```plaintext
 registry.gitlab.com/security-products/gitlab-advanced-sast:1

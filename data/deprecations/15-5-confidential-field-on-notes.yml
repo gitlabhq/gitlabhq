@@ -7,4 +7,4 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371485
   body: |
     The `confidential` field for a `Note` will be deprecated and renamed to `internal`.
-  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/index.html#note
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#note

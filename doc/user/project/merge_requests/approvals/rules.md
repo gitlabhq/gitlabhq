@@ -161,8 +161,8 @@ collaborating with an external group. If you are collaborating with another grou
 you must [share access to the project](../../members/sharing_projects_groups.md)
 before assigning the group as a group approver.
 
-A user's membership in an approver group affects their individual ability to
-approve in the following ways:
+A user's membership in an approver group determines their individual approval permissions
+in the following ways:
 
 - Inherited members are not considered approvers. Only direct members can approve merge requests.
 - A user from a group approver group who is later _also_ added as an individual approver
@@ -322,7 +322,7 @@ For more information about this validation error, read
 
 A group created to handle approvals may be created in a different area of the
 project hierarchy than the project requiring review. If this happens, members of the
-group may not be able to approve the merge request as they do not have access to it.
+group may not have permission to approve the merge request as they do not have access to it.
 
 For example:
 
