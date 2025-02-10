@@ -302,7 +302,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       it 'raises an error' do
         expect(subject['errors'][0]['message']).to eq(
           'You must <a target="_blank" rel="noopener noreferrer" ' \
-            'href="http://localhost/help/user/project/repository/index.md#' \
+            'href="http://localhost/help/user/project/repository/_index.md#' \
             'add-files-to-a-repository">add at least one file to the ' \
             'repository</a> before using Security features.'
         )

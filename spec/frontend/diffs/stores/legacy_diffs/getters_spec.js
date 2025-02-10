@@ -379,6 +379,36 @@ describe('Diffs Module Getters', () => {
         },
       ]);
     });
+
+    it('assigns ids to files', () => {
+      store.treeEntries = {
+        file: {
+          type: 'blob',
+          path: 'file',
+          parentPath: '/',
+          fileHash: '111',
+          tree: [],
+        },
+      };
+      store.diffFiles = [{ id: '222', file_hash: '111' }];
+
+      expect(store.allBlobs).toEqual([
+        {
+          isHeader: true,
+          path: '/',
+          tree: [
+            {
+              parentPath: '/',
+              path: 'file',
+              tree: [],
+              type: 'blob',
+              fileHash: '111',
+              id: '222',
+            },
+          ],
+        },
+      ]);
+    });
   });
 
   describe('currentDiffIndex', () => {
@@ -526,6 +556,27 @@ describe('Diffs Module Getters', () => {
 
     it('returns null if no linked file is set', () => {
       expect(store.linkedFile).toBe(null);
+    });
+  });
+
+  describe('fileTree', () => {
+    it('returns fileTree', () => {
+      const diffFiles = [
+        { id: '111', file_hash: '222' },
+        { id: '333', file_hash: '444' },
+      ];
+      const tree = {
+        type: 'tree',
+        path: 'tree',
+        parentPath: '/',
+        fileHash: '444',
+        tree: [{ fileHash: '222', tree: [] }],
+      };
+      store.diffFiles = diffFiles;
+      store.tree = [tree];
+      expect(store.fileTree).toStrictEqual([
+        { ...tree, id: '333', tree: [{ ...tree.tree[0], id: '111' }] },
+      ]);
     });
   });
 

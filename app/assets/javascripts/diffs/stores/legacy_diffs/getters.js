@@ -159,7 +159,8 @@ export function allBlobs() {
       });
     }
 
-    acc.find((f) => f.path === parentPath).tree.push(file);
+    const id = this.diffFiles.find((diff) => diff.file_hash === file.fileHash)?.id;
+    acc.find((f) => f.path === parentPath).tree.push({ ...file, id });
 
     return acc;
   }, []);
@@ -348,4 +349,14 @@ export function diffCompareDropdownSourceVersions() {
     });
   }
   return versions;
+}
+
+export function fileTree() {
+  const diffs = this.diffFiles;
+  const mapToId = (item) => {
+    const id = diffs.find((diff) => diff.file_hash === item.fileHash)?.id;
+    const tree = item.tree.map(mapToId);
+    return { ...item, id, tree };
+  };
+  return this.tree.map(mapToId);
 }

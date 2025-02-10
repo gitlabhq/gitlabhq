@@ -58,7 +58,7 @@ To ensure GitLab maps users and their contributions correctly:
   public emails by [editing project export files](#edit-project-export-files).
 
 When the email of an existing user matches the email of an imported user, that user is added as a
-[direct member](../members/index.md) to the imported project.
+[direct member](../members/_index.md) to the imported project.
 
 If any of the previous conditions are not met, user contributions are not mapped correctly. Instead, all GitLab user
 associations are changed to the user who performed the import. That user becomes an author of merge requests created by

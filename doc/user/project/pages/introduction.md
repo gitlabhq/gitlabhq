@@ -270,12 +270,15 @@ for both the `/data` and `/data/` URL paths.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/859) in GitLab 16.1 with a Pages flag named `FF_CONFIGURABLE_ROOT_DIR`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1073) in GitLab 16.1.
 > - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/890) in GitLab 16.2.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
 
 By default, the [artifact](../../../ci/jobs/job_artifacts.md) folder
 that contains the static files of your site needs to have the name `public`.
 
-To change that folder name to any other value, add a `publish` property to your
-`deploy-pages` job configuration in `.gitlab-ci.yml`.
+To change that folder name to any other value, add a `pages.publish` property to your
+`deploy-pages` job configuration in `.gitlab-ci.yml`. The top-level `publish` keyword
+is deprecated as of GitLab 17.9 and must now be nested under the `pages` keyword.
 
 The following example publishes a folder named `dist` instead:
 
@@ -283,19 +286,21 @@ The following example publishes a folder named `dist` instead:
 deploy-pages:
   script:
     - npm run build
-  pages: true  # specifies that this is a Pages job
+  pages:  # specifies that this is a Pages job
+    publish: dist
   artifacts:
     paths:
       - dist
-  publish: dist
 ```
 
-If you're using a folder name other than `public`you must specify
+If you're using a folder name other than `public`, you must specify
 the directory to be deployed with Pages both as an artifact, and under the
-`publish` property. The reason you need both is that you can define multiple paths
+`pages.publish` property. The reason you need both is that you can define multiple paths
 as artifacts, and GitLab doesn't know which one you want to deploy.
 
 The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+
+To use variables in the `pages.publish` field, see [`pages:pages.publish`](../../../ci/yaml/_index.md#pagespagespublish).
 
 ## Regenerate unique domain for GitLab Pages
 

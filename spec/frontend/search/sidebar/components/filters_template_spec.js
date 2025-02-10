@@ -118,8 +118,8 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
         createComponent({ sidebarDirty: false });
       });
 
-      it('disables the button', () => {
-        expect(findApplyButton().attributes('disabled')).toBeDefined();
+      it('enables the button', () => {
+        expect(findApplyButton().attributes().disabled).toBeUndefined();
       });
     });
 

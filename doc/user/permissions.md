@@ -64,7 +64,7 @@ Personal [namespace](namespace/_index.md) owners:
 - For new projects in the namespace, are displayed as having the Owner role.
 
 For more information about how to manage project members, see
-[members of a project](project/members/index.md).
+[members of a project](project/members/_index.md).
 
 The following tables list the project permissions available for each role.
 
@@ -186,12 +186,12 @@ Project permissions for [compliance](compliance/_index.md) features including co
 
 ### Machine learning model registry and experiment
 
-Project permissions for [model registry](project/ml/model_registry/index.md) and [model experiments](project/ml/experiment_tracking/index.md).
+Project permissions for [model registry](project/ml/model_registry/_index.md) and [model experiments](project/ml/experiment_tracking/_index.md).
 
 | Action                                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ----------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | :---: |
-| View [models and versions](project/ml/model_registry/index.md)    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Non-members can only view models and versions in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in. |
-| View [model experiments](project/ml/experiment_tracking/index.md) |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Non-members can only view model experiments in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in. |
+| View [models and versions](project/ml/model_registry/_index.md)    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Non-members can only view models and versions in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in. |
+| View [model experiments](project/ml/experiment_tracking/_index.md) |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Non-members can only view model experiments in public projects with the **Everyone with access** visibility level. Non-members can't view internal projects, even if they're logged in. |
 | Create models, versions, and artifacts                            |       |         |          |     ✓     |     ✓      |   ✓   | You can also upload and download artifacts with the package registry API, which uses it's own set of permissions. |
 | Edit & delete models, versions, and artifacts                     |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Create experiments and candidates                                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
@@ -233,7 +233,7 @@ Project permissions for [issues](project/issues/index.md):
 | Close and reopen issues                                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can close and reopen issues that they authored or are assigned to. |
 | Manage [design management](project/issues/design_management.md) files |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage [issue boards](project/issue_board.md)                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Manage [milestones](project/milestones/index.md)                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Manage [milestones](project/milestones/_index.md)                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Archive or reopen [requirements](project/requirements/_index.md)       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can archive and reopen issues that they authored or are assigned to. |
 | Create or edit [requirements](project/requirements/_index.md)          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
 | Import or export [requirements](project/requirements/_index.md)        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -351,7 +351,7 @@ Project permissions for [GitLab Pages](project/pages/index.md):
 
 ### Repository
 
-Project permissions for [repository](project/repository/index.md) features including source code, branches, push rules, and more:
+Project permissions for [repository](project/repository/_index.md) features including source code, branches, push rules, and more:
 
 | Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -389,11 +389,11 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 
 ### User management
 
-Project permissions for [user management](project/members/index.md).
+Project permissions for [user management](project/members/_index.md).
 
 | Action                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ----------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Manage [team members](project/members/index.md) |       |         |          |           |     ✓      |   ✓   | Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests. |
+| Manage [team members](project/members/_index.md) |       |         |          |           |     ✓      |   ✓   | Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests. |
 | Share (invite) projects with groups             |       |         |          |           |     ✓      |   ✓   | When [Share Group Lock](project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
 | View 2FA status of members                      |       |         |          |           |     ✓      |   ✓   |       |
 
@@ -562,7 +562,7 @@ Group permissions for [package registry](packages/_index.md):
 
 ### Repository group permissions
 
-Group permissions for [repository](project/repository/index.md) features including merge requests, push rules, and deploy tokens.
+Group permissions for [repository](project/repository/_index.md) features including merge requests, push rules, and deploy tokens.
 
 | Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -638,7 +638,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 
 - [Custom roles](custom_roles.md)
 - [The GitLab principles behind permissions](https://handbook.gitlab.com/handbook/product/categories/gitlab-the-product/#permissions-in-gitlab)
-- [Members](project/members/index.md)
+- [Members](project/members/_index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-with-ldap)
 - [Value stream analytics permissions](group/value_stream_analytics/_index.md#access-permissions-for-value-stream-analytics)

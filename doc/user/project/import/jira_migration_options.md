@@ -54,7 +54,7 @@ To import the Jira issue data from a CSV file into your GitLab project:
    1. Review the imported issues to ensure the project migrated to GitLab successfully.
    1. Test the features of your migrated Jira project in GitLab.
 1. Adjust your workflows and settings:
-   1. Customize your GitLab [project settings](../settings/_index.md), such as [description templates](../description_templates.md), [labels](../labels.md), and [milestones](../milestones/index.md), to match your team's needs.
+   1. Customize your GitLab [project settings](../settings/_index.md), such as [description templates](../description_templates.md), [labels](../labels.md), and [milestones](../milestones/_index.md), to match your team's needs.
    1. Familiarize your team with the GitLab interface and any new workflows or processes introduced by the migration.
 1. Decommission your Jira instance:
    1. When you're satisfied with the migration, you can decommission your Jira instance and fully transition to GitLab.

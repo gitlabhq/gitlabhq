@@ -11,7 +11,7 @@ DETAILS:
 
 Notes are comments on:
 
-- [Commits](../user/project/repository/index.md#commit-changes-to-a-repository)
+- [Commits](../user/project/repository/_index.md#commit-changes-to-a-repository)
 - [Epics](../user/group/epics/_index.md)
 - [Issues](../user/project/issues/index.md)
 - [Merge requests](../user/project/merge_requests/_index.md)

@@ -43,7 +43,10 @@ module Gitlab
         # that can be used for both importing and pushing user references.
         def issue_assignee_map
           @map ||= issue.assignees.each_with_object({}) do |assignee, map|
-            map[user_finder.user_id_for(assignee)] = assignee[:id]
+            gitlab_user_id = user_finder.user_id_for(assignee, ghost: false)
+            next unless gitlab_user_id
+
+            map[gitlab_user_id] = assignee[:id]
           end
         end
 
@@ -54,7 +57,7 @@ module Gitlab
           description = wrap_mentions_in_backticks(issue.description)
           description = MarkdownText.format(description, issue.author, author_found)
 
-          assignee_ids = issue_assignee_map.keys.compact
+          assignee_ids = issue_assignee_map.keys
 
           attributes = {
             iid: issue.iid,
@@ -84,6 +87,7 @@ module Gitlab
 
           new_issue.issue_assignees.each do |issue_assignee|
             github_user_id = issue_assignee_map[issue_assignee.user_id]
+
             push_with_composite_key(
               issue_assignee,
               :user_id,

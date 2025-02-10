@@ -26,7 +26,7 @@ to release every two weeks.
 
 For more information, see:
 
-- [Milestones](../project/milestones/index.md)
+- [Milestones](../project/milestones/_index.md)
 - [Iterations](../group/iterations/_index.md)
 
 ## Step 2: Plan and organize work

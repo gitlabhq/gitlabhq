@@ -66,8 +66,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
           needs_attributes: [{ name: 'non-existent', artifacts: true }]
         }
 
-        expect(seed.errors).to contain_exactly(
-          "'invalid_job' job needs 'non-existent' job, but 'non-existent' is not in any previous stage")
+        expect(seed.errors.first).to include(
+          "'invalid_job' job needs 'non-existent' job, but 'non-existent' does not exist in the pipeline")
       end
     end
   end

@@ -1488,6 +1488,20 @@ RSpec.describe TodoService, feature_category: :notifications do
         service.resolve_todos(collection, john_doe, resolution: :done, resolved_by_action: :mark_done)
       end
     end
+
+    context 'when some to-dos were snoozed' do
+      let!(:todo1) { create(:todo, :pending, user: john_doe) }
+      let!(:todo2) { create(:todo, :pending, user: john_doe, snoozed_until: 1.hour.ago) }
+      let!(:todo3) { create(:todo, :pending, user: john_doe, snoozed_until: 1.day.from_now) }
+
+      it 'nullifies the `snoozed_until` column' do
+        service.resolve_todos(Todo.all, john_doe, resolution: :done, resolved_by_action: :mark_done)
+
+        expect(todo1.reload.snoozed_until).to be_nil
+        expect(todo2.reload.snoozed_until).to be_nil
+        expect(todo3.reload.snoozed_until).to be_nil
+      end
+    end
   end
 
   describe '#restore_todos' do
@@ -1500,12 +1514,20 @@ RSpec.describe TodoService, feature_category: :notifications do
 
   describe '#resolve_todo' do
     let!(:todo) { create(:todo, :assigned, user: john_doe) }
+    let!(:snoozed_todo) { create(:todo, :assigned, user: john_doe, snoozed_until: 1.day.from_now) }
 
     it 'marks pending todo as done' do
       expect do
         service.resolve_todo(todo, john_doe)
         todo.reload
       end.to change { todo.done? }.to(true)
+    end
+
+    it 'marks snoozed todo as done and nullifies `snoozed_until` column' do
+      service.resolve_todo(snoozed_todo, john_doe)
+      snoozed_todo.reload
+      expect(snoozed_todo.done?).to be true
+      expect(snoozed_todo.snoozed_until).to be_nil
     end
 
     it 'saves resolution mechanism' do

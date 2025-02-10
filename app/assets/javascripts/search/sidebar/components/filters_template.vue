@@ -63,7 +63,6 @@ export default {
         variant="confirm"
         type="submit"
         data-testid="search-apply-filters-btn"
-        :disabled="!sidebarDirty"
       >
         {{ __('Apply') }}
       </gl-button>

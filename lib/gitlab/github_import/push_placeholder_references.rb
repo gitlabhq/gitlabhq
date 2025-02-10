@@ -10,6 +10,7 @@ module Gitlab
         return if source_user_identifier.nil?
 
         source_user = user_mapper.find_source_user(source_user_identifier)
+        return if source_user.nil?
         return if source_user.accepted_status?
 
         ::Import::PlaceholderReferences::PushService.from_record(
@@ -30,6 +31,7 @@ module Gitlab
         ids.each do |id|
           source_user = user_mapper.find_source_user(source_user_identifier)
 
+          next if source_user.nil?
           next if source_user.accepted_status?
 
           ::Import::PlaceholderReferences::PushService.new(
@@ -49,6 +51,7 @@ module Gitlab
         return if source_user_identifier.nil?
 
         source_user = user_mapper.find_source_user(source_user_identifier)
+        return if source_user.nil?
         return if source_user.accepted_status?
 
         ::Import::PlaceholderReferences::PushService.new(

@@ -23766,7 +23766,8 @@ CREATE TABLE wiki_repository_states (
     verification_checksum bytea,
     verification_failure text,
     project_id bigint,
-    CONSTRAINT check_2933ff60dc CHECK ((char_length(verification_failure) <= 255))
+    CONSTRAINT check_2933ff60dc CHECK ((char_length(verification_failure) <= 255)),
+    CONSTRAINT check_69aed91301 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE wiki_repository_states_id_seq
@@ -27096,9 +27097,6 @@ ALTER TABLE epic_user_mentions
 
 ALTER TABLE vulnerability_findings_remediations
     ADD CONSTRAINT check_65e61a488a CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE wiki_repository_states
-    ADD CONSTRAINT check_69aed91301 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;

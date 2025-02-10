@@ -13,8 +13,8 @@ DETAILS:
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
 
 [MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning experiment tracking.
-GitLab [Model experiment tracking](index.md) and GitLab
-[Model registry](../model_registry/index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
+GitLab [Model experiment tracking](_index.md) and GitLab
+[Model registry](../model_registry/_index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
 
 GitLab plays the role of a MLflow server. Running `mlflow server` is not necessary.
 

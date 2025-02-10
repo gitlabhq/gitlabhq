@@ -1469,12 +1469,12 @@ settings with access control options can be one of:
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
+| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
+| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
+| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
@@ -1592,12 +1592,12 @@ settings with access control options can be one of:
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
+| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
+| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
+| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
@@ -1730,12 +1730,12 @@ Supported project visibility attributes:
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
 | `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
-| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/index.md). |
-| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/index.md#access-the-model-registry). |
+| `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
+| `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
-| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
+| `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |

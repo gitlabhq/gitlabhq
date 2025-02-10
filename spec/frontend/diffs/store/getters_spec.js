@@ -369,6 +369,40 @@ describe('Diffs Module Getters', () => {
         },
       ]);
     });
+
+    it('assigns ids to files', () => {
+      localState.treeEntries = {
+        file: {
+          type: 'blob',
+          path: 'file',
+          parentPath: '/',
+          fileHash: '111',
+          tree: [],
+        },
+      };
+      localState.diffFiles = [{ id: '222', file_hash: '111' }];
+
+      expect(
+        getters.allBlobs(localState, {
+          flatBlobsList: getters.flatBlobsList(localState),
+        }),
+      ).toEqual([
+        {
+          isHeader: true,
+          path: '/',
+          tree: [
+            {
+              parentPath: '/',
+              path: 'file',
+              tree: [],
+              type: 'blob',
+              fileHash: '111',
+              id: '222',
+            },
+          ],
+        },
+      ]);
+    });
   });
 
   describe('currentDiffIndex', () => {
@@ -529,6 +563,25 @@ describe('Diffs Module Getters', () => {
 
     it('returns null if no linked file is set', () => {
       expect(getters.linkedFile({}, {})).toBe(null);
+    });
+  });
+
+  describe('fileTree', () => {
+    it('returns fileTree', () => {
+      const diffFiles = [
+        { id: '111', file_hash: '222' },
+        { id: '333', file_hash: '444' },
+      ];
+      const tree = {
+        type: 'tree',
+        path: 'tree',
+        parentPath: '/',
+        fileHash: '444',
+        tree: [{ fileHash: '222', tree: [] }],
+      };
+      expect(getters.fileTree({ diffFiles, tree: [tree] })).toStrictEqual([
+        { ...tree, id: '333', tree: [{ ...tree.tree[0], id: '111' }] },
+      ]);
     });
   });
 

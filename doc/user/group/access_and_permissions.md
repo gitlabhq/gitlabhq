@@ -299,9 +299,9 @@ LDAP user permissions can be manually overridden by an administrator. To overrid
 1. Select **Manage > Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having
-     [direct membership](../project/members/index.md#display-direct-members) of the group.
+     [direct membership](../project/members/_index.md#display-direct-members) of the group.
    - The same or fewer permissions than the parent group membership, that user is displayed as having
-     [inherited membership](../project/members/index.md#membership-types) of the group.
+     [inherited membership](../project/members/_index.md#membership-types) of the group.
 1. Optional. If the user you want to edit is displayed as having inherited membership,
    [filter the subgroup to show direct members](_index.md#filter-a-group) before
    overriding LDAP user permissions.
@@ -329,7 +329,7 @@ In viewing the log entries, compare `remote.ip` with the list of [allowed IP add
 If a group Owner cannot update permissions for a group member, check which memberships
 are listed. Group Owners can only update direct memberships.
 
-Members added directly to a subgroup are still considered [inherited members](../project/members/index.md#membership-types)
+Members added directly to a subgroup are still considered [inherited members](../project/members/_index.md#membership-types)
 if they have the same or a higher role in the parent group.
 
 To view and update direct memberships, [filter the group to show direct members](_index.md#filter-a-group).

@@ -129,7 +129,11 @@ module Gitlab
 
               result = need_present?(need)
 
-              "'#{name}' job needs '#{need[:name]}' job, but '#{need[:name]}' is not in any previous stage" unless result
+              unless result
+                "'#{name}' job needs '#{need[:name]}' job, but '#{need[:name]}' does not exist in the pipeline. " \
+                  'This might be because of the only, except, or rules keywords. ' \
+                  'To need a job that sometimes does not exist in the pipeline, use needs:optional.'
+              end
             end.compact
           end
 

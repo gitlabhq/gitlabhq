@@ -179,7 +179,6 @@ Layout/ArrayAlignment:
     - 'spec/models/design_management/version_spec.rb'
     - 'spec/models/discussion_spec.rb'
     - 'spec/models/incident_management/timeline_event_tag_spec.rb'
-    - 'spec/models/integrations/irker_spec.rb'
     - 'spec/models/issue_spec.rb'
     - 'spec/models/operations/feature_flags/strategy_spec.rb'
     - 'spec/models/operations/feature_flags/user_list_spec.rb'

@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
+GitLab stores [repositories](../user/project/repository/_index.md) on repository storage. Repository
 storage is either:
 
 - Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).

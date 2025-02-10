@@ -144,5 +144,4 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/services/security/security_orchestration_policies/protected_branches_deletion_check_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/protected_branches_push_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'
-    - 'ee/app/services/vulnerabilities/bulk_dismiss_service.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'

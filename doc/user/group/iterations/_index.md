@@ -13,7 +13,7 @@ An iteration in GitLab refers to a time-boxed workflow that groups issues to be 
 a specific period of time, usually lasting 1-3 weeks.
 
 Teams can use iterations to track velocity and volatility metrics.
-For tracking the same item over multiple concurrent periods, you can use iterations with [milestones](../../project/milestones/index.md).
+For tracking the same item over multiple concurrent periods, you can use iterations with [milestones](../../project/milestones/_index.md).
 Create and manage various [iteration cadences](#iteration-cadences) in a group.
 
 For example, you can use:
@@ -317,7 +317,7 @@ To view an iteration report:
 ### Iteration burndown and burnup charts
 
 The iteration report includes [burndown and burnup charts](../../project/milestones/burndown_and_burnup_charts.md),
-similar to how they appear when viewing a [milestone](../../project/milestones/index.md):
+similar to how they appear when viewing a [milestone](../../project/milestones/_index.md):
 
 - Burndown charts help track completion progress of total scope.
 - Burnup charts track the daily total count and weight of issues added to and completed in a given timebox.

@@ -479,7 +479,7 @@ Prerequisites:
 
 NOTE:
 When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
-[redirects when renaming repositories](repository/index.md#repository-path-changes).
+[redirects when renaming repositories](repository/_index.md#repository-path-changes).
 
 To rename a repository:
 
@@ -502,7 +502,7 @@ When you leave a project:
 Prerequisites:
 
 - You can leave a project this way only when a project is part of a group under a [group namespace](../namespace/_index.md).
-- You must be a [direct member](members/index.md#membership-types) of the project.
+- You must be a [direct member](members/_index.md#membership-types) of the project.
 
 To leave a project:
 

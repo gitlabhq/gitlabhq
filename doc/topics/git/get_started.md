@@ -29,7 +29,7 @@ including the complete history of all changes made to the files.
 Git tracks changes at the file level, so you can view the modifications made to individual
 files over time.
 
-For more information, see [Repositories](../../user/project/repository/index.md).
+For more information, see [Repositories](../../user/project/repository/_index.md).
 
 ## Working directories
 

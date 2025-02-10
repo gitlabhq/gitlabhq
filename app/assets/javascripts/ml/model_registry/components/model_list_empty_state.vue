@@ -33,7 +33,7 @@ export default {
     },
   },
   mlflowDocs: s__('MlModelRegistry|Create using MLflow'),
-  helpPath: helpPagePath('user/project/ml/model_registry/index', {
+  helpPath: helpPagePath('user/project/ml/model_registry/_index', {
     anchor: 'create-machine-learning-models-and-model-versions-by-using-mlflow',
   }),
   emptySvgPath: emptySvgUrl,

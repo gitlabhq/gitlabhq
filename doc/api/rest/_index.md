@@ -240,7 +240,7 @@ In boolean arguments, you should only set `true` or `false` values (not `null`).
 > - Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578) in GitLab 16.7. Feature flag `api_redirect_moved_projects` removed.
 
-After [path changes](../../user/project/repository/index.md#repository-path-changes) the
+After [path changes](../../user/project/repository/_index.md#repository-path-changes) the
 REST API might respond with a message noting that the endpoint has moved. When this happens, used
 the endpoint specified in the `Location` header.
 

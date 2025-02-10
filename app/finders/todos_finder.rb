@@ -150,9 +150,11 @@ class TodosFinder
 
   def sort(items)
     sort_by = case params[:sort]
-                # For users with a lot of todos, sorting by created_at can be unusably slow.
-                # Given that todos have sequential ids, we can simply sort by them instead
-              when :created_desc, nil
+              # If no sort order is provided, we default to sorting by ID to bypass the custom sort
+              # by snoozed_until and created_at which could break some SQL queries.
+              when nil
+                :id_desc
+              when :created_desc
                 use_snooze_custom_sort? ? :snoozed_and_creation_dates_desc : :id_desc
               when :created_asc
                 use_snooze_custom_sort? ? :snoozed_and_creation_dates_asc : :id_asc

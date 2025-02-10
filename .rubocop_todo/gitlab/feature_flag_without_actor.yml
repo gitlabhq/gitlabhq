@@ -5,7 +5,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/controllers/concerns/integrations/actions.rb'
     - 'app/controllers/concerns/preferred_language_switcher.rb'
     - 'app/controllers/concerns/request_payload_logger.rb'
-    - 'app/controllers/concerns/verifies_with_email.rb'
     - 'app/controllers/explore/projects_controller.rb'
     - 'app/controllers/groups_controller.rb'
     - 'app/controllers/omniauth_callbacks_controller.rb'

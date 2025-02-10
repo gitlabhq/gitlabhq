@@ -235,7 +235,7 @@ class TodoService
   end
 
   def resolve_todos(todos, current_user, resolution: :done, resolved_by_action: :system_done)
-    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
+    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action, snoozed_until: nil)
 
     current_user.update_todos_count_cache
 
@@ -245,7 +245,7 @@ class TodoService
   def resolve_todo(todo, current_user, resolution: :done, resolved_by_action: :system_done)
     return if todo.done?
 
-    todo.update(state: resolution, resolved_by_action: resolved_by_action)
+    todo.update(state: resolution, resolved_by_action: resolved_by_action, snoozed_until: nil)
 
     GraphqlTriggers.issuable_todo_updated(todo.target)
 

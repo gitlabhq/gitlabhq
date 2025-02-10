@@ -49,7 +49,7 @@ RSpec.describe Security::CiConfiguration::SastCreateService, :snowplow,
         expect(result).to be_kind_of(ServiceResponse)
         expect(result.status).to eq(:error)
         expect(result.message).to eq('You must <a target="_blank" rel="noopener noreferrer" ' \
-                                     'href="http://localhost/help/user/project/repository/index.md#' \
+                                     'href="http://localhost/help/user/project/repository/_index.md#' \
                                      'add-files-to-a-repository">add at least one file to the ' \
                                      'repository</a> before using Security features.')
       end

@@ -106,14 +106,14 @@ When deleting users, you can either:
   - Merge requests.
   - Snippets.
   - [Notes and comments](../../../api/notes.md)
-    on other users' [commits](../../project/repository/index.md#commit-changes-to-a-repository),
+    on other users' [commits](../../project/repository/_index.md#commit-changes-to-a-repository),
     [epics](../../group/epics/_index.md),
     [issues](../../project/issues/index.md),
     [merge requests](../../project/merge_requests/_index.md)
     and [snippets](../../snippets.md).
 
 In both cases, commits retain [user information](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects#_git_commit_objects)
-and therefore data integrity within a [Git repository](../../project/repository/index.md).
+and therefore data integrity within a [Git repository](../../project/repository/_index.md).
 
 An alternative to deleting is [blocking a user](../../../administration/moderate_users.md#block-a-user).
 

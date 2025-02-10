@@ -31,7 +31,7 @@ a project provides a comprehensive environment for the entire development lifecy
 
 For details, see:
 
-- [Create a repository](../project/repository/index.md#create-a-repository)
+- [Create a repository](../project/repository/_index.md#create-a-repository)
 
 ## Step 2: Write your code
 
@@ -56,7 +56,7 @@ don't interfere with one another.
 
 For details, see:
 
-- [Create a file in the repository from the UI](../project/repository/index.md#add-a-file-from-the-ui)
+- [Create a file in the repository from the UI](../project/repository/_index.md#add-a-file-from-the-ui)
 - [Open a file in the Web IDE](../project/web_ide/_index.md#from-a-file-or-directory)
 - [Create a remote development environment with workspaces](../workspace/index.md)
 - [Available editor extensions](../../editor_extensions/_index.md)

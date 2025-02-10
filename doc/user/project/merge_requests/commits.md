@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-A commit records and sends the source code changes to the [repository](../repository/index.md).
+A commit records and sends the source code changes to the [repository](../repository/_index.md).
 For more information, see [Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository).
 
 ## Commit changes using the command line

@@ -1582,7 +1582,7 @@ From GitLab 18.0 and later, the runner registration methods implemented by the n
 
 Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 15 SP2 ended in December 2024.
 
-Therefore, we will longer support the SLES SP2 distribution for Linux package installs. You should upgrade to
+Therefore, we will no longer support the SLES SP2 distribution for Linux package installs. You should upgrade to
 SLES 15 SP6 for continued support.
 
 </div>
@@ -1942,7 +1942,7 @@ From GitLab 18.0 and later, the methods to register runners introduced by the ne
 
 Long term service and support (LTSS) for [openSUSE Leap ends in December 2024](https://en.opensuse.org/Lifetime#openSUSE_Leap).
 
-Therefore, we will longer support the openSUSE Leap 15.5 distribution for Linux package installs. Users should upgrade to
+Therefore, we will no longer support the openSUSE Leap 15.5 distribution for Linux package installs. Users should upgrade to
 openSUSE Leap 15.6 for continued support.
 
 </div>
@@ -1966,7 +1966,7 @@ openSUSE Leap 15.6 for continued support.
 
 Long term service and support (LTSS) for [CentOS 7 ended in June 2024](https://www.redhat.com/en/topics/linux/centos-linux-eol).
 
-Therefore, we will longer support the CentOS 7 distribution for Linux package installs. Users should upgrade to
+Therefore, we will no longer support the CentOS 7 distribution for Linux package installs. Users should upgrade to
 another operating system for continued support.
 
 </div>
@@ -1985,7 +1985,7 @@ another operating system for continued support.
 
 Long term service and support (LTSS) for [Oracle Linux 7 ends in December 2024](https://wiki.debian.org/LTS).
 
-Therefore, we will longer support the Oracle Linux 7 distribution for Linux package installs. Users should upgrade to
+Therefore, we will no longer support the Oracle Linux 7 distribution for Linux package installs. Users should upgrade to
 Oracle Linux 8 for continued support.
 
 </div>
@@ -2004,7 +2004,7 @@ Oracle Linux 8 for continued support.
 
 Long term service and support (LTSS) for Raspberry Pi OS Buster (formerly known as Raspbian Buster) ended in June 2024.
 
-Therefore, we will longer support the PiOS Buster distribution for Linux package installs. Users should upgrade to
+Therefore, we will no longer support the PiOS Buster distribution for Linux package installs. Users should upgrade to
 PiOS Bullseye for continued support.
 
 </div>
@@ -2023,7 +2023,7 @@ PiOS Bullseye for continued support.
 
 Red Hat Enterprise Linux (RHEL) 7 reached [end of maintenance support in June 2024](https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux/rhel-7-end-of-maintenance).
 
-Therefore, we will longer publish Linux packages for RHEL 7 and RHEL 7 compatible operating systems.
+Therefore, we will no longer publish Linux packages for RHEL 7 and RHEL 7 compatible operating systems.
 Users should upgrade to RHEL 8 for continued support.
 
 </div>
@@ -2042,7 +2042,7 @@ Users should upgrade to RHEL 8 for continued support.
 
 Long term service and support (LTSS) for [Scientific Linux 7 ended in June 2024](https://scientificlinux.org/downloads/sl-versions/sl7/).
 
-Therefore, we will longer support the Scientific Linux distribution for Linux package installs. Users should upgrade to
+Therefore, we will no longer support the Scientific Linux distribution for Linux package installs. Users should upgrade to
 another RHEL-compatible operating system.
 
 </div>
@@ -2094,7 +2094,7 @@ See the [GitLab 17.5 changes](https://docs.gitlab.com/ee/update/versions/gitlab_
 
 Long term service and support (LTSS) for [Debian 10 ended in June 2024](https://wiki.debian.org/LTS).
 
-Therefore, we will longer support the Debian 10 distribution for Linux package installs. Users should upgrade to
+Therefore, we will no longer support the Debian 10 distribution for Linux package installs. Users should upgrade to
 Debian 11 or Debian 12 for continued support.
 
 </div>

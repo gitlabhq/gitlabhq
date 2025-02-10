@@ -88,7 +88,7 @@ When bulk editing issues in a project, you can edit the following attributes:
 - Status (open or closed)
 - [Assignees](managing_issues.md#assignees)
 - [Epic](../../group/epics/_index.md)
-- [Milestone](../milestones/index.md)
+- [Milestone](../milestones/_index.md)
 - [Labels](../labels.md)
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
@@ -121,7 +121,7 @@ To edit multiple issues at the same time:
 When bulk editing issues in a group, you can edit the following attributes:
 
 - [Epic](../../group/epics/_index.md)
-- [Milestone](../milestones/index.md)
+- [Milestone](../milestones/_index.md)
 - [Iteration](../../group/iterations/_index.md)
 - [Labels](../labels.md)
 - [Health status](#health-status)

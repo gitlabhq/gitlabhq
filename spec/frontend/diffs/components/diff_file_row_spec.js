@@ -64,7 +64,7 @@ describe('Diff File Row component', () => {
       createComponent({
         file: {
           type: fileType,
-          fileHash: '#123456789',
+          id: '#123456789',
         },
         level: 0,
         hideFileStats: false,

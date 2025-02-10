@@ -31,7 +31,7 @@ A project transfer includes:
    unless they are also members of the target group. The project inherits
    new member permissions from the group you transfer it to.
 
-The project's [path also changes](../repository/index.md#repository-path-changes), so make sure to update the URLs to the project components where necessary.
+The project's [path also changes](../repository/_index.md#repository-path-changes), so make sure to update the URLs to the project components where necessary.
 
 New project-level labels are created for issues and merge requests if matching group labels don't already exist in the target namespace.
 
@@ -64,7 +64,7 @@ To transfer a project:
 1. Select **Transfer project**.
 1. Enter the project's name and select **Confirm**.
 
-You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [What happens when a repository path changes](../repository/index.md#repository-path-changes).
+You are redirected to the project's new page and GitLab applies a redirect. For more information about repository redirects, see [What happens when a repository path changes](../repository/_index.md#repository-path-changes).
 
 NOTE:
 If you are an administrator, you can also use the [administration interface](../../../administration/admin_area.md#administering-projects)

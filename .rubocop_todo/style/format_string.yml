@@ -65,8 +65,6 @@ Style/FormatString:
     - 'app/models/diff_viewer/base.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
     - 'app/models/integrations/datadog.rb'
-    - 'app/models/integrations/emails_on_push.rb'
-    - 'app/models/integrations/irker.rb'
     - 'app/models/integrations/pipelines_email.rb'
     - 'app/models/integrations/zentao.rb'
     - 'app/models/merge_request_diff.rb'

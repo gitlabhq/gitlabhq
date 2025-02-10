@@ -10,6 +10,7 @@ import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import getBlobSearchCountQuery from '~/search/graphql/blob_search_zoekt_count_only.query.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DEFAULT_FETCH_CHUNKS } from '~/search/results/constants';
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
 
@@ -30,9 +31,12 @@ export default {
         return {
           search: this.query.search,
           groupId: this.query?.group_id && convertToGraphQLId(TYPENAME_GROUP, this.query.group_id),
+          chunkCount: DEFAULT_FETCH_CHUNKS,
           projectId:
             this.query?.project_id && convertToGraphQLId(TYPENAME_PROJECT, this.query.project_id),
           regex: parseBoolean(this.query?.regex),
+          includeArchived: parseBoolean(this.query.include_archived),
+          includeForked: parseBoolean(this.query.include_forked),
         };
       },
       skip() {

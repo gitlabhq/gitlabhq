@@ -156,7 +156,7 @@ If you are adding a user with a custom role:
 To add a user with a custom role:
 
 - To a group, see [add users to a group](group/_index.md#add-users-to-a-group).
-- To a project, see [add users to a project](project/members/index.md#add-users-to-a-project).
+- To a project, see [add users to a project](project/members/_index.md#add-users-to-a-project).
 
 If a group or project member has a custom role, the [group or project members list](group/_index.md#view-group-members) displays **Custom Role** in the **Max role** column of the table.
 
@@ -214,7 +214,7 @@ If you are unassigning a custom role from a:
 
 You can remove a custom role from a group or project only if no group or project members have that role. To do this, you can use one of the following methods:
 
-- Remove a member with a custom role from a [group](group/_index.md#remove-a-member-from-the-group) or [project](project/members/index.md#remove-a-member-from-a-project).
+- Remove a member with a custom role from a [group](group/_index.md#remove-a-member-from-the-group) or [project](project/members/_index.md#remove-a-member-from-a-project).
 - [Use the UI to change the user role](#use-the-ui-to-change-user-role).
 - [Use the API to change the user role](#use-the-api-to-change-user-role).
 
@@ -243,7 +243,7 @@ curl --request PUT --header "Content-Type: application/json" --header "Authoriza
 ## Inheritance
 
 If a user belongs to a group, they are a direct member of the group
-and an [inherited member](project/members/index.md#membership-types)
+and an [inherited member](project/members/_index.md#membership-types)
 of any subgroups or projects. If a user is assigned a custom role
 by the top-level group, the permissions of the role are also inherited by subgroups
 and projects.

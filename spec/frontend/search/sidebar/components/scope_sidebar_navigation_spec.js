@@ -156,8 +156,11 @@ describe('ScopeSidebarNavigation', () => {
       it('makes graphql query with correct variables for group search', () => {
         expect(blobCountHandler).toHaveBeenCalledWith({
           search: 'test search',
+          chunkCount: 5,
           groupId: 'gid://gitlab/Group/123',
           projectId: undefined,
+          includeArchived: false,
+          includeForked: false,
           regex: false,
         });
       });

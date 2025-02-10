@@ -341,7 +341,7 @@ To set a start date:
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.7. Feature flag `work_items_mvc` removed.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
-You can add a task to a [milestone](project/milestones/index.md).
+You can add a task to a [milestone](project/milestones/_index.md).
 You can see the milestone title when you view a task.
 If you create a task for an issue that already belongs to a milestone,
 the new task inherits the milestone.

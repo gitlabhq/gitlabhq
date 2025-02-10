@@ -55,7 +55,7 @@ export default {
   methods: {
     openDocs() {
       visitUrl(
-        helpPagePath('user/project/ml/model_registry/index', {
+        helpPagePath('user/project/ml/model_registry/_index', {
           anchor: 'create-machine-learning-models-and-model-versions-by-using-mlflow',
         }),
         true,

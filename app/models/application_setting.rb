@@ -707,7 +707,8 @@ class ApplicationSetting < ApplicationRecord
     allow_contribution_mapping_to_admins: [:boolean, { default: false }]
 
   jsonb_accessor :sign_in_restrictions,
-    disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }]
+    disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
+    root_moved_permanently_redirection: [:boolean, { default: false }]
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 
@@ -815,9 +816,7 @@ class ApplicationSetting < ApplicationRecord
   validates :asciidoc_max_includes,
     numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
 
-  jsonb_accessor :pages,
-    pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
-
+  jsonb_accessor :pages, pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
   validates :pages, json_schema: { filename: "application_setting_pages" }
 
   validates :enforce_ci_inbound_job_token_scope_enabled,

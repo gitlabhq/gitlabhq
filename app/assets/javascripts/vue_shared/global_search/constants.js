@@ -38,6 +38,8 @@ export const MSG_MR_IM_REVIEWER = s__("GlobalSearch|Merge requests that I'm a re
 
 export const MSG_MR_IVE_CREATED = s__("GlobalSearch|Merge requests I've created");
 
+export const MSG_MR_IM_WORKING_ON = s__("GlobalSearch|Merge requests I'm working on");
+
 export const MSG_IN_ALL_GITLAB = s__('GlobalSearch|all GitLab');
 
 export const GROUPS_CATEGORY = s__('GlobalSearch|Groups');

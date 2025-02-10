@@ -164,7 +164,7 @@ To add labels to an OKR:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
-You can add an objective to a [milestone](project/milestones/index.md).
+You can add an objective to a [milestone](project/milestones/_index.md).
 You can see the milestone title when you view an objective.
 
 Prerequisites:

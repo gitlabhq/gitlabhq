@@ -323,13 +323,13 @@ To view members of a group:
 A table displays the member's:
 
 - **Account** name and username.
-- **Source** of their [membership](../project/members/index.md#membership-types).
+- **Source** of their [membership](../project/members/_index.md#membership-types).
   For transparency, GitLab displays all membership sources of group members.
   Members who have multiple membership sources are displayed and counted as separate members.
   For example, if a member has been added to the group both directly and through inheritance,
   the member is displayed twice in the **Members** table, with different sources,
   and is counted as two individual members of the group.
-- [**Role**](../project/members/index.md#which-roles-you-can-assign) in the group.
+- [**Role**](../project/members/_index.md#which-roles-you-can-assign) in the group.
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
 
@@ -459,7 +459,7 @@ To remove a member from a group:
    - **Also unassign this user from linked issues and merge requests**
 1. Select **Remove member**.
 
-GitLab administrators can also [ensure removed users cannot invite themselves back](../project/members/index.md#ensure-removed-users-cannot-invite-themselves-back).
+GitLab administrators can also [ensure removed users cannot invite themselves back](../project/members/_index.md#ensure-removed-users-cannot-invite-themselves-back).
 
 ## Add projects to a group
 

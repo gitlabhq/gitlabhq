@@ -194,7 +194,7 @@ What happens to the deploy key when it is disabled depends on the following:
 There are a few scenarios where a deploy key fails to push to a
 [protected branch](../repository/branches/protected.md).
 
-- The owner associated to a deploy key does not have [membership](../members/index.md) to the project of the protected branch.
+- The owner associated to a deploy key does not have [membership](../members/_index.md) to the project of the protected branch.
 - The owner associated to a deploy key has [project membership permissions](../../permissions.md#project-members-permissions) lower than required to **View project code**.
 - The deploy key does not have [read-write permissions for the project](#edit-project-access-permissions-of-a-deploy-key).
 - The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).

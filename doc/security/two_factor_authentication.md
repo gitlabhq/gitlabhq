@@ -86,7 +86,7 @@ DETAILS:
 You can enforce 2FA for all users in a group or subgroup.
 
 NOTE:
-2FA enforcement applies to both [direct and inherited members](../user/project/members/index.md#membership-types) group members. If 2FA is enforced on a subgroup, members of the parent group must also enroll an authentication factor.
+2FA enforcement applies to both [direct and inherited members](../user/project/members/_index.md#membership-types) group members. If 2FA is enforced on a subgroup, members of the parent group must also enroll an authentication factor.
 
 Prerequisites:
 

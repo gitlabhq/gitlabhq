@@ -73,7 +73,7 @@ To invite a user to the `My website` project:
 1. Select **Invite**.
 
 The invited user should now be a member of the project.
-You can [view, filter, and search for members](../../user/project/members/index.md#filter-and-sort-project-members) of your project.
+You can [view, filter, and search for members](../../user/project/members/_index.md#filter-and-sort-project-members) of your project.
 
 ## Create project labels
 

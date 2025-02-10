@@ -83,7 +83,9 @@ module Gitlab
         end
 
         def set_merge_request_assignees(merge_request)
-          merge_request.assignee_ids = [user_finder.assignee_id_for(pull_request)]
+          assignee_id = user_finder.user_id_for(pull_request[:assignee], ghost: false)
+
+          merge_request.assignee_ids = [assignee_id] if assignee_id
         end
 
         def insert_git_data(merge_request, already_exists)

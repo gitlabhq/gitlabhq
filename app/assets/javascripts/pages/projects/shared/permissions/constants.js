@@ -46,10 +46,10 @@ export const CVE_ID_REQUEST_BUTTON_I18N = {
 };
 
 export const modelExperimentsHelpPath = helpPagePath(
-  'user/project/ml/experiment_tracking/index.md',
+  'user/project/ml/experiment_tracking/_index.md',
 );
 
-export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/index.md');
+export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/_index.md');
 
 export const duoHelpPath = helpPagePath('user/ai_features');
 export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/index.md');

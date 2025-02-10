@@ -266,9 +266,9 @@ In the UI:
 
 ## Associate milestones with a release
 
-You can associate a release with one or more [project milestones](../milestones/index.md#project-milestones-and-group-milestones).
+You can associate a release with one or more [project milestones](../milestones/_index.md#project-milestones-and-group-milestones).
 
-[GitLab Premium](https://about.gitlab.com/pricing/) customers can specify [group milestones](../milestones/index.md#project-milestones-and-group-milestones) to associate with a release.
+[GitLab Premium](https://about.gitlab.com/pricing/) customers can specify [group milestones](../milestones/_index.md#project-milestones-and-group-milestones) to associate with a release.
 
 You can do this in the user interface, or by including a `milestones` array in your request to
 the [Releases API](../../../api/releases/_index.md#create-a-release).

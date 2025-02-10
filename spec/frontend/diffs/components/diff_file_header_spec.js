@@ -571,7 +571,7 @@ describe('DiffFileHeader component', () => {
         { file, reviewed: true },
         {},
         [
-          { type: SET_DIFF_FILE_VIEWED, payload: { id: file.file_hash, seen: true } },
+          { type: SET_DIFF_FILE_VIEWED, payload: { id: file.id, seen: true } },
           {
             type: SET_MR_FILE_REVIEWS,
             payload: { [file.file_identifier_hash]: [file.id, `hash:${file.file_hash}`] },

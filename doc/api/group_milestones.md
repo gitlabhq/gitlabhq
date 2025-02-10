@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use the group [milestones](../user/project/milestones/index.md) using the REST API.
+Use the group [milestones](../user/project/milestones/_index.md) using the REST API.
 There's a separate [project milestones API](milestones.md) page.
 
 ## List group milestones

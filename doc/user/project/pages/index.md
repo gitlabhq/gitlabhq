@@ -73,7 +73,7 @@ To use GitLab Pages, you must create a project in GitLab to upload your website'
 files to. These projects can be either public, internal, or private.
 
 GitLab always deploys your website from a specific folder called `public` in your
-repository. When you create a new project in GitLab, a [repository](../repository/index.md)
+repository. When you create a new project in GitLab, a [repository](../repository/_index.md)
 becomes available automatically.
 
 To deploy your site, GitLab uses its built-in tool called [GitLab CI/CD](../../../ci/_index.md)

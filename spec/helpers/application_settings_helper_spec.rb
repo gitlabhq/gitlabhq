@@ -114,6 +114,7 @@ RSpec.describe ApplicationSettingsHelper do
     it 'contains sign_in_restrictions values' do
       expect(visible_attributes).to include(*%i[
         disable_password_authentication_for_users_with_sso_identities
+        root_moved_permanently_redirection
       ])
     end
 

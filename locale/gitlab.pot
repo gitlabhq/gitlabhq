@@ -22137,6 +22137,9 @@ msgstr ""
 msgid "Enable authenticated web request rate limit"
 msgstr ""
 
+msgid "Enable automatic redirection from the root"
+msgstr ""
+
 msgid "Enable automatic repository housekeeping"
 msgstr ""
 
@@ -24242,6 +24245,9 @@ msgid "Failed to protect the branch"
 msgstr ""
 
 msgid "Failed to publish issue on status page."
+msgstr ""
+
+msgid "Failed to rebase. Please try again."
 msgstr ""
 
 msgid "Failed to regenerate unique domain"
@@ -26634,6 +26640,9 @@ msgid "GlobalSearch|Merge request"
 msgstr ""
 
 msgid "GlobalSearch|Merge requests"
+msgstr ""
+
+msgid "GlobalSearch|Merge requests I'm working on"
 msgstr ""
 
 msgid "GlobalSearch|Merge requests I've created"
@@ -47022,6 +47031,9 @@ msgstr ""
 msgid "Reauthenticating with SAML provider."
 msgstr ""
 
+msgid "Rebase"
+msgstr ""
+
 msgid "Rebase completed"
 msgstr ""
 
@@ -47029,6 +47041,9 @@ msgid "Rebase source branch"
 msgstr ""
 
 msgid "Rebase source branch on the target branch."
+msgstr ""
+
+msgid "Rebase source branch?"
 msgstr ""
 
 msgid "Recaptcha verified"
@@ -48605,6 +48620,9 @@ msgid "Roll up totals may reflect child items you don’t have access to."
 msgstr ""
 
 msgid "Rollback"
+msgstr ""
+
+msgid "Root Moved Permanently redirection response"
 msgstr ""
 
 msgid "Ruby"
@@ -58961,6 +58979,9 @@ msgstr ""
 msgid "This vulnerability was automatically resolved because its vulnerability type was disabled in this project or removed from GitLab's default ruleset. For details about SAST rule changes, see https://docs.gitlab.com/ee/user/application_security/sast/rules#important-rule-changes."
 msgstr ""
 
+msgid "This will rebase all commits from the source branch onto the target branch."
+msgstr ""
+
 msgid "This will remove the fork relationship between this project and %{fork_source}."
 msgstr ""
 
@@ -64479,6 +64500,9 @@ msgstr ""
 msgid "When enabled, cleanup policies execute faster but put more load on Redis."
 msgstr ""
 
+msgid "When enabled, it will send 301 Moved Permanently instead of 302 if you want web crawlers to index a different site such as the Home Page URL."
+msgstr ""
+
 msgid "When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces."
 msgstr ""
 
@@ -68850,6 +68874,9 @@ msgid "mrWidget|Revert this merge request in a new merge request"
 msgstr ""
 
 msgid "mrWidget|Revoke approval"
+msgstr ""
+
+msgid "mrWidget|Scheduled a rebase of branch %{branch}."
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to be added to the merge train when all merge checks pass"

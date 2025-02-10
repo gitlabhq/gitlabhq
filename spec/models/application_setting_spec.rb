@@ -49,6 +49,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.user_projects_api_limit).to eq(300) }
     it { expect(setting.user_starred_projects_api_limit).to eq(100) }
     it { expect(setting.disable_password_authentication_for_users_with_sso_identities).to be(false) }
+    it { expect(setting.root_moved_permanently_redirection).to be(false) }
     it { expect(setting.resource_usage_limits).to eq({}) }
     it { expect(setting.resource_access_token_notify_inherited).to be(false) }
     it { expect(setting.lock_resource_access_token_notify_inherited).to be(false) }

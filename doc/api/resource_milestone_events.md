@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Resource [milestone](../user/project/milestones/index.md) events keep track of what happens to
+Resource [milestone](../user/project/milestones/_index.md) events keep track of what happens to
 GitLab [issues](../user/project/issues/index.md) and [merge requests](../user/project/merge_requests/_index.md).
 
 Use them to track which milestone was added or removed, who did it, and when it happened.

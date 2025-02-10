@@ -8,5 +8,5 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Long term service and support (LTSS) for [CentOS 7 ended in June 2024](https://www.redhat.com/en/topics/linux/centos-linux-eol).
 
-    Therefore, we will longer support the CentOS 7 distribution for Linux package installs. Users should upgrade to
+    Therefore, we will no longer support the CentOS 7 distribution for Linux package installs. Users should upgrade to
     another operating system for continued support.

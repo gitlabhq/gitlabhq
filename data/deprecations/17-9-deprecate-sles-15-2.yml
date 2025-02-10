@@ -12,5 +12,5 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 15 SP2 ended in December 2024.
 
-    Therefore, we will longer support the SLES SP2 distribution for Linux package installs. You should upgrade to
+    Therefore, we will no longer support the SLES SP2 distribution for Linux package installs. You should upgrade to
     SLES 15 SP6 for continued support.

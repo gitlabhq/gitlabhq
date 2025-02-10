@@ -110,8 +110,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/integrations/prometheus.rb'
     - 'app/models/integrations/pumble.rb'
     - 'app/models/integrations/teamcity.rb'
-    - 'app/models/integrations/unify_circuit.rb'
-    - 'app/models/integrations/webex_teams.rb'
     - 'app/models/internal_id.rb'
     - 'app/models/issue.rb'
     - 'app/models/label_note.rb'

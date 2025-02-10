@@ -17,7 +17,7 @@ module Gitlab
 
           def execute
             review_request.users.each do |user|
-              user_id = user_finder.user_id_for(user)
+              user_id = user_finder.user_id_for(user, ghost: false)
 
               next unless user_id
 

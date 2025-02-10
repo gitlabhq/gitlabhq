@@ -238,7 +238,7 @@ role as Code Owners for `file.md`:
 ## Add a group as a Code Owner
 
 You can set **direct members** of a group or subgroup as a Code Owner.
-For more information about group membership, see [Membership types](../members/index.md#membership-types).
+For more information about group membership, see [Membership types](../members/_index.md#membership-types).
 
 To set direct members of a group or subgroup as a Code Owner:
 

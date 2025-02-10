@@ -55,8 +55,6 @@ module Gitlab
       end
 
       def allow_2fa_bypass_for_provider
-        return false if Feature.disabled?(:by_pass_two_factor_for_current_session)
-
         request.session[:provider_2FA].present? if request
       end
     end

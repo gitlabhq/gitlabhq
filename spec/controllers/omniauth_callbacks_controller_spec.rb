@@ -17,18 +17,6 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       expect(session[:provider_2FA]).to eq(true)
     end
-
-    context 'when by_pass_two_factor_for_current_session feature flag is false' do
-      before do
-        stub_feature_flags(by_pass_two_factor_for_current_session: false)
-      end
-
-      it "does not set the session variable for provider 2FA" do
-        post :saml, params: { SAMLResponse: mock_saml_response }
-
-        expect(session[:provider_2FA]).to be_nil
-      end
-    end
   end
 
   shared_examples 'omniauth sign in that remembers user' do

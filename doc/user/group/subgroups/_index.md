@@ -128,10 +128,10 @@ The member's permissions are inherited from the group into all subgroups.
 
 Subgroup members can be:
 
-1. [Direct members](../../project/members/index.md#add-users-to-a-project) of the subgroup.
-1. [Inherited members](../../project/members/index.md) of the subgroup from the subgroup's parent group.
+1. [Direct members](../../project/members/_index.md#add-users-to-a-project) of the subgroup.
+1. [Inherited members](../../project/members/_index.md) of the subgroup from the subgroup's parent group.
 1. Members of a group that was [shared with the subgroup's top-level group](../../project/members/sharing_projects_groups.md#invite-a-group-to-a-group).
-1. [Indirect members](../../project/members/index.md) include inherited members and members of a group that was [invited to the subgroup or its ancestors](../../project/members/sharing_projects_groups.md#invite-a-group-to-a-group).
+1. [Indirect members](../../project/members/_index.md) include inherited members and members of a group that was [invited to the subgroup or its ancestors](../../project/members/sharing_projects_groups.md#invite-a-group-to-a-group).
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

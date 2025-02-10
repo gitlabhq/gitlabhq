@@ -213,6 +213,6 @@ When you're creating a new issue, you can complete the following fields:
 - [Weight](issue_weight.md)
 - [Epic](../../group/epics/_index.md)
 - [Due date](due_dates.md)
-- [Milestone](../milestones/index.md)
+- [Milestone](../milestones/_index.md)
 - [Labels](../labels.md)
 - [Iteration](../../group/iterations/_index.md)

@@ -142,7 +142,7 @@ These shortcuts are available when browsing the files in a project (go to
 
 ### Repository graph
 
-These shortcuts are available when viewing the project [repository graph](project/repository/index.md#repository-history-graph)
+These shortcuts are available when viewing the project [repository graph](project/repository/_index.md#repository-history-graph)
 page (go to **Code > Repository graph**):
 
 | Keyboard shortcut                                                  | Description |

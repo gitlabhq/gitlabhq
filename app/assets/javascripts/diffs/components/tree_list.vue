@@ -43,19 +43,13 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', [
-      'tree',
-      'renderTreeList',
-      'currentDiffFileId',
-      'viewedDiffFileIds',
-      'realSize',
-    ]),
-    ...mapGetters('diffs', ['allBlobs', 'linkedFile']),
+    ...mapState('diffs', ['renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds', 'realSize']),
+    ...mapGetters('diffs', ['fileTree', 'allBlobs', 'linkedFile']),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
 
       if (search === '') {
-        return this.renderTreeList ? this.tree : this.allBlobs;
+        return this.renderTreeList ? this.fileTree : this.allBlobs;
       }
 
       const searchSplit = search.split(',').filter((t) => t);

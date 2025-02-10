@@ -11,6 +11,7 @@ import {
   GlSkeletonLoader,
 } from '@gitlab/ui';
 import { isEmpty, isNil } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
 import { createAlert } from '~/alert';
@@ -19,7 +20,8 @@ import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
-import { __, s__, n__ } from '~/locale';
+import { joinPaths } from '~/lib/utils/url_utility';
+import { __, s__, n__, sprintf } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -44,6 +46,7 @@ import CommitEdit from './commit_edit.vue';
 import CommitMessageDropdown from './commit_message_dropdown.vue';
 import SquashBeforeMerge from './squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from './merge_failed_pipeline_confirmation_dialog.vue';
+import RebaseConfirmationDialog from './rebase_confirmation_dialog.vue';
 
 const PIPELINE_PENDING_STATE = 'pending';
 const PIPELINE_SUCCESS_STATE = 'success';
@@ -152,6 +155,7 @@ export default {
     GlFormCheckbox,
     GlSkeletonLoader,
     MergeFailedPipelineConfirmationDialog,
+    RebaseConfirmationDialog,
     MergeImmediatelyConfirmationDialog: () =>
       import(
         'ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'
@@ -198,6 +202,8 @@ export default {
       skipMergeTrain: false,
       mergeTrainsSkipAllowed: this.mr.mergeTrainsSkipAllowed,
       editCommitMessage: false,
+      isRebaseInProgress: false,
+      isRebaseModalVisible: false,
     };
   },
   computed: {
@@ -354,6 +360,9 @@ export default {
     },
     displaySkipMergeTrainOptions() {
       return this.shouldDisplayMergeImmediatelyDropdownOptions && this.isSkipMergeTrainAvailable;
+    },
+    canRebase() {
+      return this.sourceHasDivergedFromTarget && this.shouldShowMergeControls;
     },
   },
   watch: {
@@ -539,6 +548,42 @@ export default {
       this.removeSourceBranch = checked;
       this.mr.setRemoveSourceBranch(checked);
     },
+    handleRebaseClick() {
+      this.isRebaseModalVisible = true;
+    },
+    async rebaseConfirmed() {
+      if (this.isRebaseDisabled) return;
+
+      try {
+        this.isRebaseInProgress = true;
+
+        const rebasePath = joinPaths(
+          gon.relative_url_root || '/',
+          this.mr.targetProjectFullPath,
+          '-',
+          'merge_requests',
+          `${this.mr.iid}`,
+          'rebase',
+        );
+        await axios.post(rebasePath);
+
+        createAlert({
+          message: sprintf(this.$options.i18n.scheduledRebase, {
+            branch: this.mr.sourceBranch,
+          }),
+          variant: 'success',
+        });
+
+        this.updateGraphqlState();
+      } catch (error) {
+        createAlert({
+          message: error.response?.data?.message || __('Failed to rebase. Please try again.'),
+          variant: 'error',
+        });
+      } finally {
+        this.isRebaseInProgress = false;
+      }
+    },
   },
   i18n: {
     mergeCommitTemplateHintText: s__(
@@ -552,6 +597,7 @@ export default {
     ),
     sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch.'),
     divergedCommits: (count) => n__('%d commit behind', '%d commits behind', count),
+    scheduledRebase: s__('mrWidget|Scheduled a rebase of branch %{branch}.'),
   },
   MT_SKIP_TRAIN,
   MT_RESTART_TRAIN,
@@ -666,35 +712,50 @@ export default {
                   </li>
                 </ul>
               </div>
-              <div class="mr-widget-merge-details gl-mb-3 gl-w-full gl-text-subtle">
+              <ul class="mr-widget-merge-details gl-mb-3 gl-w-full gl-pl-6 gl-text-subtle">
                 <template v-if="sourceHasDivergedFromTarget">
-                  <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
-                    <template #link>
-                      <gl-link :href="mr.targetBranchPath">{{
-                        $options.i18n.divergedCommits(mr.divergedCommitsCount)
-                      }}</gl-link>
-                    </template>
-                  </gl-sprintf>
-                  &middot;
+                  <li>
+                    <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                      <template #link>
+                        <gl-link :href="mr.targetBranchPath">{{
+                          $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                        }}</gl-link>
+                      </template>
+                    </gl-sprintf>
+                    <gl-button
+                      v-if="canRebase"
+                      size="small"
+                      variant="link"
+                      data-testid="rebase-button"
+                      :loading="isRebaseInProgress"
+                      :aria-label="__('Rebase source branch')"
+                      @click="handleRebaseClick"
+                    >
+                      {{ __('Rebase source branch') }}
+                    </gl-button>
+                  </li>
                 </template>
-                <added-commit-message
-                  :is-squash-enabled="squashBeforeMerge"
-                  :is-fast-forward-enabled="!shouldShowMergeEdit"
-                  :commits-count="commitsCount"
-                  :target-branch="state.targetBranch"
-                />
-                <template v-if="mr.relatedLinks">
-                  &middot;
-                  <related-links
-                    :state="mr.state"
-                    :related-links="mr.relatedLinks"
-                    :show-assign-to-me="false"
-                    :diverged-commits-count="mr.divergedCommitsCount"
-                    :target-branch-path="mr.targetBranchPath"
-                    class="mr-ready-merge-related-links gl-inline"
+                <li>
+                  <added-commit-message
+                    :is-squash-enabled="squashBeforeMerge"
+                    :is-fast-forward-enabled="!shouldShowMergeEdit"
+                    :commits-count="commitsCount"
+                    :target-branch="state.targetBranch"
                   />
+                </li>
+                <template v-if="mr.relatedLinks">
+                  <li>
+                    <related-links
+                      :state="mr.state"
+                      :related-links="mr.relatedLinks"
+                      :show-assign-to-me="false"
+                      :diverged-commits-count="mr.divergedCommitsCount"
+                      :target-branch-path="mr.targetBranchPath"
+                      class="mr-ready-merge-related-links gl-inline"
+                    />
+                  </li>
                 </template>
-              </div>
+              </ul>
               <gl-button-group class="gl-self-start">
                 <gl-button
                   size="medium"
@@ -851,6 +912,11 @@ export default {
         :iid="mr.iid"
         @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
         @cancel="isPipelineFailedModalVisibleNormalMerge = false"
+      />
+      <rebase-confirmation-dialog
+        :visible="isRebaseModalVisible"
+        @rebase-confirmed="rebaseConfirmed"
+        @cancel="isRebaseModalVisible = false"
       />
     </template>
   </div>

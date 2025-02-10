@@ -63,7 +63,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'ee/app/services/incident_management/oncall_rotations/remove_participant_service.rb'
     - 'ee/app/services/llm/generate_description_service.rb'
     - 'ee/app/services/product_analytics/initialize_stack_service.rb'
-    - 'ee/app/services/vulnerabilities/bulk_dismiss_service.rb'
     - 'ee/app/workers/active_user_count_threshold_worker.rb'
     - 'ee/app/workers/analytics/value_stream_dashboard/count_worker.rb'
     - 'ee/app/workers/arkose/blocked_users_report_worker.rb'

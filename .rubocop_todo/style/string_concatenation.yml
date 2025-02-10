@@ -9,7 +9,6 @@ Style/StringConcatenation:
     - 'app/models/concerns/routable.rb'
     - 'app/models/integrations/chat_message/merge_message.rb'
     - 'app/models/integrations/chat_message/note_message.rb'
-    - 'app/models/integrations/discord.rb'
     - 'app/models/integrations/mock_monitoring.rb'
     - 'app/models/namespace.rb'
     - 'app/models/packages/go/module_version.rb'

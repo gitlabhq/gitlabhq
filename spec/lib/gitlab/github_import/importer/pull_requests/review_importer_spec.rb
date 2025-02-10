@@ -440,8 +440,9 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
             .to change { Note.count }.by(1)
 
           last_note = merge_request.notes.last
-          expect(last_note.note).to eq('**Review:** Approved')
-          expect(last_note.author).to eq(project.creator)
+
+          expect(last_note.note).to eq('approved this merge request')
+          expect(last_note.author).to eq(Users::Internal.ghost)
           expect(last_note.created_at).to eq(submitted_at)
         end
       end

@@ -196,21 +196,21 @@ class Todo < ApplicationRecord
     end
 
     def sort_by_snoozed_and_creation_dates(direction: :desc)
-      coalesced_column = Arel.sql('COALESCE(todos.snoozed_until, todos.created_at)')
-      order_expression = direction == :asc ? coalesced_column.asc : coalesced_column.desc
+      coalesced_arel = Arel.sql('timestamp_coalesce(todos.snoozed_until, todos.created_at)')
+      attribute_name = 'coalesced_date'
 
-      order = Gitlab::Pagination::Keyset::Order.build(
-        [
-          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-            attribute_name: 'id',
-            order_expression: order_expression,
-            nullable: :not_nullable,
-            order_direction: direction
-          )
-        ]
-      )
+      order = Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: attribute_name,
+          column_expression: coalesced_arel,
+          order_expression: direction == :asc ? coalesced_arel.asc : coalesced_arel.desc,
+          reversed_order_expression: direction == :asc ? coalesced_arel.desc : coalesced_arel.asc,
+          nullable: :not_nullable,
+          order_direction: direction
+        )
+      ])
 
-      order(order)
+      select("todos.*, #{coalesced_arel} AS #{attribute_name}").order(order)
     end
 
     # Order by priority depending on which issue/merge request the Todo belongs to

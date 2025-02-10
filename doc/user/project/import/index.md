@@ -284,7 +284,7 @@ Reassigning contributions to users with administrator access is disabled by defa
 ##### Membership security considerations
 
 Because of the GitLab permissions model, when a group or project is imported into an existing parent group, members of
-the parent group are granted [inherited membership](../members/index.md#membership-types) of the imported group or project.
+the parent group are granted [inherited membership](../members/_index.md#membership-types) of the imported group or project.
 
 Selecting a user for contribution and membership reassignment who already has an
 existing inherited membership of the imported group or project can affect how memberships

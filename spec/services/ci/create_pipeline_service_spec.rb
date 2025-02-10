@@ -1691,10 +1691,10 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           it 'contains the expected errors', :aggregate_failures do
             expect(pipeline.builds).to be_empty
 
-            error_message = "'test_a' job needs 'build_a' job, but 'build_a' is not in any previous stage"
-            expect(pipeline.yaml_errors).to eq(error_message)
-            expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
-            expect(pipeline.errors[:base]).to contain_exactly(error_message)
+            error_message = "'test_a' job needs 'build_a' job, but 'build_a' does not exist in the pipeline"
+            expect(pipeline.yaml_errors).to include(error_message)
+            expect(pipeline.error_messages.map(&:content).first).to include(error_message)
+            expect(pipeline.errors[:base].first).to include(error_message)
           end
         end
 
@@ -1704,7 +1704,11 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
           it 'does create a pipeline as test_a depends on build_a', :aggregate_failures do
             expect(response).to be_error
-            expect(response.message).to eq("'test_a' job needs 'build_a' job, but 'build_a' is not in any previous stage")
+
+            expect(response.message).to include(
+              "'test_a' job needs 'build_a' job, but 'build_a' does not exist in the pipeline"
+            )
+
             expect(pipeline).to be_persisted
           end
 

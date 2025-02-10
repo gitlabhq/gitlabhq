@@ -13,7 +13,7 @@ DETAILS:
 
 If you're a data scientist or developer, you can use the model registry to manage your machine learning
 models, along with all metadata associated with their creation: parameters, performance
-metrics, artifacts, logs, and more. For more information, see the [model registry documentation](model_registry/index.md).
+metrics, artifacts, logs, and more. For more information, see the [model registry documentation](model_registry/_index.md).
 
 ## Model experiments
 
@@ -22,7 +22,7 @@ engineering to improve the performance of the model. Keeping track of all this m
 artifacts so that you can later replicate the experiment is not trivial. With machine learning experiment
 tracking, you can log parameters, metrics, and artifacts directly into GitLab, which provides easy access to these things later on.
 
-For details, see the [model experiments documentation](experiment_tracking/index.md).
+For details, see the [model experiments documentation](experiment_tracking/_index.md).
 
 ## GitLab MLOps Python client
 

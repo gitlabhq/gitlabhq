@@ -528,7 +528,9 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         include_context 'advanced validations' do
           it 'runs advanced logical validations' do
             expect(subject).not_to be_valid
-            expect(subject.errors).to eq(["'test' job needs 'build' job, but 'build' is not in any previous stage"])
+            expect(subject.errors.first).to include(
+              "'test' job needs 'build' job, but 'build' does not exist in the pipeline"
+            )
           end
         end
 

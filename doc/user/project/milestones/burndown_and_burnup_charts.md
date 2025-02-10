@@ -44,7 +44,7 @@ To view a group's burndown chart:
 
 Burndown charts are generally used for tracking and analyzing the completion of
 a milestone. Therefore, their use cases are tied to the
-[use you are assigning your milestone to](index.md).
+[use you are assigning your milestone to](_index.md).
 
 For example, suppose you lead a team of developers in a large company,
 and you follow this workflow:
@@ -66,7 +66,7 @@ A burndown chart is available for every project or group milestone that has been
 date** and a **due date**.
 
 NOTE:
-You're able to [promote project](index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
+You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 

@@ -185,7 +185,7 @@ label to the incident.
 - [Automatically close incidents via recovery alerts](manage_incidents.md#automatically-close-incidents-via-recovery-alerts)
 - [Add a to-do item](../../user/todos.md#create-a-to-do-item)
 - [Add labels](../../user/project/labels.md)
-- [Assign a milestone](../../user/project/milestones/index.md)
+- [Assign a milestone](../../user/project/milestones/_index.md)
 - [Make an incident confidential](../../user/project/issues/confidential_issues.md)
 - [Set a due date](../../user/project/issues/due_dates.md)
 - [Toggle notifications](../../user/profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics)

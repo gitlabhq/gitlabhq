@@ -89,7 +89,7 @@ export default {
     shouldShowTable() {
       return this.errors.length === 0;
     },
-    shouldShowError() {
+    shouldShowErrors() {
       return this.errors.length > 0;
     },
     shouldShowWarning() {
@@ -123,11 +123,15 @@ export default {
       </gl-sprintf>
     </gl-alert>
 
-    <pre
-      v-if="shouldShowError"
-      class="gl-mb-5"
-      data-testid="ci-lint-errors"
-    ><div v-for="error in errors" :key="error">{{ error }}</div></pre>
+    <template v-if="shouldShowErrors">
+      <pre
+        v-for="error in errors"
+        :key="error"
+        class="gl-mb-5 gl-whitespace-pre-wrap gl-break-anywhere"
+        data-testid="ci-lint-errors"
+        >{{ error }}</pre
+      >
+    </template>
 
     <ci-lint-warnings
       v-if="shouldShowWarning"

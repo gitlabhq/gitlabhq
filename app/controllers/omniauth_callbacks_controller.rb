@@ -449,11 +449,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def store_idp_two_factor_status(bypass_2fa)
-    if Feature.enabled?(:by_pass_two_factor_for_current_session)
-      session[:provider_2FA] = true if bypass_2fa
-    else
-      session.delete(:provider_2FA)
-    end
+    session[:provider_2FA] = true if bypass_2fa
   end
 
   def log_saml_response

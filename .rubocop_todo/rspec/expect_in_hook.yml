@@ -249,7 +249,6 @@ RSpec/ExpectInHook:
     - 'spec/models/design_management/version_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/models/group_spec.rb'
-    - 'spec/models/integrations/emails_on_push_spec.rb'
     - 'spec/models/member_spec.rb'
     - 'spec/models/merge_request_diff_spec.rb'
     - 'spec/models/merge_request_spec.rb'

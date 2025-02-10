@@ -258,7 +258,7 @@ RSpec.describe Ci::CreatePipelineService,
 
       it 'returns error' do
         expect(pipeline.yaml_errors)
-          .to eq("'test' job needs 'build' job, but 'build' is not in any previous stage")
+          .to include("'test' job needs 'build' job, but 'build' does not exist in the pipeline")
       end
 
       context 'when need is optional' do

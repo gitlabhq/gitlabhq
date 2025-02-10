@@ -23,7 +23,7 @@ You can view the issue weight on:
 - The right sidebar of each issue.
 - The issues page, next to a weight icon (**{weight}**).
 - [Issue boards](../issue_board.md), next to a weight icon (**{weight}**).
-- The [milestone](../milestones/index.md) page, as a total sum of issue weights.
+- The [milestone](../milestones/_index.md) page, as a total sum of issue weights.
 
 ## Set the issue weight
 

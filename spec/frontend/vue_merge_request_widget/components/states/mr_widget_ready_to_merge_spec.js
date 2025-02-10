@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import produce from 'immer';
 import { createMockSubscription as createMockApolloSubscription } from 'mock-apollo-client';
 import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
+import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -17,6 +18,7 @@ import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/co
 import { MWPS_MERGE_STRATEGY, MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
+import { joinPaths } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/simple_poll', () =>
   jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),
@@ -1001,6 +1003,74 @@ describe('ReadyToMerge', () => {
     it("doesn't show auto-merge hint when auto merge is not set", () => {
       createComponent({ mr: { autoMergeEnabled: false } });
       expect(wrapper.text()).not.toContain('Auto-merge enabled');
+    });
+  });
+
+  describe('rebase button', () => {
+    describe('when rebasing', () => {
+      let axiosSpy;
+      const rebaseModalHide = jest.fn();
+
+      const MockGlModal = {
+        template: `
+          <div>
+            <slot></slot>
+            <slot name="modal-footer"></slot>
+          </div>
+        `,
+        methods: {
+          hide: rebaseModalHide,
+        },
+      };
+
+      beforeEach(() => {
+        axiosSpy = jest.spyOn(axios, 'post').mockResolvedValue({});
+        createComponent(
+          {
+            mr: {
+              divergedCommitsCount: 2,
+              targetProjectFullPath: 'namespace/project',
+              iid: 123,
+              sourceBranch: 'feature-branch',
+              state: 'readyToMerge',
+              userPermissions: { canMerge: true },
+              availableAutoMergeStrategies: [],
+            },
+          },
+          true,
+          shallowMountExtended,
+          {},
+          {
+            stubs: {
+              GlModal: MockGlModal,
+              RebaseConfirmationDialog: true,
+            },
+          },
+        );
+      });
+
+      afterEach(() => {
+        rebaseModalHide.mockReset();
+      });
+
+      it('shows confirmation dialog when clicking rebase', async () => {
+        await wrapper.findByTestId('rebase-button').trigger('click');
+        await nextTick();
+
+        expect(wrapper.findComponent({ name: 'RebaseConfirmationDialog' }).exists()).toBe(true);
+      });
+
+      it('calls rebase endpoint when confirmed', async () => {
+        const expectedPath = joinPaths('/', 'namespace/project/-/merge_requests/123/rebase');
+
+        await wrapper.findByTestId('rebase-button').trigger('click');
+        await nextTick();
+
+        wrapper.findComponent({ name: 'RebaseConfirmationDialog' }).vm.$emit('rebase-confirmed');
+        await waitForPromises();
+
+        expect(axiosSpy).toHaveBeenCalledWith(expectedPath);
+      });
     });
   });
 

@@ -227,7 +227,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-An issue board can be associated with a [milestone](milestones/index.md),
+An issue board can be associated with a [milestone](milestones/_index.md),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/_index.md),
 which automatically filter the board issues accordingly.
 This allows you to create unique boards according to your team's need.

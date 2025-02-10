@@ -285,7 +285,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/models/ee/project_authorization_spec.rb'
     - 'ee/spec/models/ee/project_group_link_spec.rb'
     - 'ee/spec/models/ee/user_spec.rb'
-    - 'ee/spec/models/ee/vulnerability_spec.rb'
     - 'ee/spec/models/epic_issue_spec.rb'
     - 'ee/spec/models/epic_spec.rb'
     - 'ee/spec/models/instance_security_dashboard_spec.rb'

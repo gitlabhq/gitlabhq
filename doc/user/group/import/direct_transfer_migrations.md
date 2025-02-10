@@ -90,7 +90,7 @@ see [user contribution and membership mapping](../../project/import/index.md#use
 
 Users are never created during a migration. Instead, contributions and membership of users on the source instance are
 mapped to users on the destination instance. The type of mapping of a user's membership depends on the
-[membership type](../../project/members/index.md#membership-types) on source instance:
+[membership type](../../project/members/_index.md#membership-types) on source instance:
 
 - Direct memberships are mapped as direct memberships on the destination instance.
 - Inherited memberships are mapped as inherited memberships on the destination instance.
@@ -98,7 +98,7 @@ mapped to users on the destination instance. The type of mapping of a user's mem
   membership. Full support for mapping shared memberships is proposed in
   [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
 
-When mapping [inherited and shared](../../project/members/index.md#membership-types) memberships, if the user
+When mapping [inherited and shared](../../project/members/_index.md#membership-types) memberships, if the user
 has an existing membership in the destination namespace with a [higher role](../../permissions.md#roles) than
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
 elevated permissions.

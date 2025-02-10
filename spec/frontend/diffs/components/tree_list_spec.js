@@ -66,6 +66,7 @@ describe('Diffs tree list component', () => {
             allBlobs: getters.allBlobs,
             flatBlobsList: getters.flatBlobsList,
             linkedFile: getters.linkedFile,
+            fileTree: getters.fileTree,
           },
           mutations: { ...mutations },
           actions: {

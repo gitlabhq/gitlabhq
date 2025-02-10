@@ -2,17 +2,17 @@
 stage: Tenant Scale
 group: Cells Infrastructure
 info: Analysis of Application Settings for Cells 1.0.
-title: Application Settings analysis
 ---
+# Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 510
+- Number of attributes: 512
 - Number of encrypted attributes: 41 (8.0%)
 - Number of attributes documented: 311 (61.0%)
 - Number of attributes on GitLab.com different from the defaults: 233 (46.0%)
-- Number of attributes with `clusterwide` set: 510 (100.0%)
-- Number of attributes with `clusterwide: true` set: 125 (25.0%)
+- Number of attributes with `clusterwide` set: 512 (100.0%)
+- Number of attributes with `clusterwide: true` set: 127 (25.0%)
 
 ## Individual columns
 
@@ -34,6 +34,7 @@ title: Application Settings analysis
 | `allow_project_creation_for_guest_and_below` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `allow_runner_registration_token` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `allow_top_level_group_owners_to_create_service_accounts` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
+| `anti_abuse_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `archive_builds_in_seconds` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |
 | `arkose_labs_client_secret` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `arkose_labs_client_xid` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -348,7 +349,7 @@ title: Application Settings analysis
 | `plantuml_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `true`| `true` |
 | `plantuml_url` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `polling_interval_multiplier` | `false` | `numeric` | `float` | `true` | `1.0` | `false` | `false`| `true` |
-| `pre_receive_secret_detection_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
+| `pre_receive_secret_detection_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `true`| `true` |
 | `prevent_merge_requests_author_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `prevent_merge_requests_committers_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `product_analytics_configurator_connection_string` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
@@ -409,6 +410,7 @@ title: Application Settings analysis
 | `secret_detection_token_revocation_enabled` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
+| `secret_push_protection_available` | `false` | `boolean` | `` | `false` | `false` | `true` | `true`| `false` |
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |

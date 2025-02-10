@@ -1059,7 +1059,7 @@ export function reviewFile({ file, reviewed = true }) {
 
   setReviewsForMergeRequest(mrPath, reviews);
 
-  this[types.SET_DIFF_FILE_VIEWED]({ id: file.file_hash, seen: reviewed });
+  this[types.SET_DIFF_FILE_VIEWED]({ id: file.id, seen: reviewed });
   this[types.SET_MR_FILE_REVIEWS](reviews);
 }
 

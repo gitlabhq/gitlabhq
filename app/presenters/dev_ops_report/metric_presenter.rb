@@ -28,7 +28,7 @@ module DevOpsReport
           description: 'created per active user',
           feature: 'milestones',
           blog: 'http://conversationaldevelopment.com/shorten-cycle/',
-          docs: help_page_path('user/project/milestones/index.md')
+          docs: help_page_path('user/project/milestones/_index.md')
         ),
         Card.new(
           metric: metric,

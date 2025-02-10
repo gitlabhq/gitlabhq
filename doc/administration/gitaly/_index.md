@@ -34,7 +34,7 @@ Gitaly implements a client-server architecture:
 Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
 using Gitaly.
 
-GitLab accesses [repositories](../../user/project/repository/index.md) through the configured
+GitLab accesses [repositories](../../user/project/repository/_index.md) through the configured
 [repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
 repository storages based on their
 [configured weights](../repository_storage_paths.md#configure-where-new-repositories-are-stored). Each

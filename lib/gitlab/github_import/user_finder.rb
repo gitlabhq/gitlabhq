@@ -55,10 +55,6 @@ module Gitlab
         user_info = case author_key
                     when :actor
                       object[:actor]
-                    when :assignee
-                      object[:assignee]
-                    when :requested_reviewer
-                      object[:requested_reviewer]
                     when :review_requester
                       object[:review_requester]
                     else
@@ -67,7 +63,7 @@ module Gitlab
 
         # TODO when improved user mapping is released we can refactor everything below to just
         # user_id_for(user_info)
-        id = user_info ? user_id_for(user_info) : GithubImport.ghost_user_id
+        id = user_id_for(user_info, ghost: true)
 
         if id
           [id, true]
@@ -76,16 +72,18 @@ module Gitlab
         end
       end
 
-      # Returns the GitLab user ID of an issuable's assignee.
-      def assignee_id_for(issuable)
-        user_id_for(issuable[:assignee]) if issuable[:assignee]
-      end
-
-      # Returns the GitLab user ID for a GitHub user.
+      # Returns the GitLab user ID for a GitHub user. Can return nil if `ghost` is `false`.
+      # The `ghost: false` argument is used to avoid assigning ghost users as assignees or reviewers.
       #
-      # user - An instance of `Gitlab::GithubImport::Representation::User` or `Hash`.
-      def user_id_for(user)
-        return unless user.present?
+      # @param user [Gitlab::GithubImport::Representation::User, Hash]
+      # @param ghost [Boolean] Determines what to do if user is nil or is the GitHub ghost.
+      #   If `true`, ID of the GitLab ghost is returned.
+      #   If `false`, nil is returned.
+      # @return [Integer, NilClass]
+      def user_id_for(user, ghost: true)
+        if user.nil? || user[:login].nil? || user[:login] == 'ghost'
+          return ghost ? GithubImport.ghost_user_id : nil
+        end
 
         if mapper.user_mapping_enabled?
           source_user(user).mapped_user_id

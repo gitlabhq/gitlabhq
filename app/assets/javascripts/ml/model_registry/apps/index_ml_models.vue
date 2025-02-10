@@ -147,7 +147,7 @@ export default {
     ...i18n,
   },
   sortableFields: BASE_SORT_FIELDS,
-  docHref: helpPagePath('user/project/ml/model_registry/index.md'),
+  docHref: helpPagePath('user/project/ml/model_registry/_index.md'),
   emptyState: {
     title: s__('MlModelRegistry|Import your machine learning models'),
     description: s__(
