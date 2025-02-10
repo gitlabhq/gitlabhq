@@ -8,6 +8,7 @@ import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_c
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
+import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -31,7 +32,6 @@ describe('HeaderArea', () => {
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
-  const findCompareButton = () => wrapper.findByTestId('tree-compare-control');
   const findWebIdeButton = () => wrapper.findByTestId('js-tree-web-ide-link');
   const findCodeDropdown = () => wrapper.findComponent(CodeDropdown);
   const findCompactCodeDropdown = () => wrapper.findComponent(CompactCodeDropdown);
@@ -39,6 +39,7 @@ describe('HeaderArea', () => {
   const findCloneCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
   const findPageHeading = () => wrapper.findByTestId('repository-heading');
   const findFileIcon = () => wrapper.findComponent(FileIcon);
+  const findRepositoryOverflowMenu = () => wrapper.findComponent(RepositoryOverflowMenu);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -124,17 +125,6 @@ describe('HeaderArea', () => {
       });
     });
 
-    describe('Compare button', () => {
-      it('does not render Compare button for root ref', () => {
-        expect(findCompareButton().exists()).not.toBe(true);
-      });
-
-      it('renders Compare button for non-root ref', () => {
-        wrapper = createComponent({}, 'treePathDecoded', { comparePath: 'test/project/compare' });
-        expect(findCompareButton().exists()).toBe(true);
-      });
-    });
-
     describe('Edit button', () => {
       it('renders WebIdeLink component', () => {
         expect(findWebIdeButton().exists()).toBe(true);
@@ -178,6 +168,20 @@ describe('HeaderArea', () => {
         xcodeUrl: headerAppInjected.xcodeUrl,
         currentPath: defaultMockRoute.params.path,
         directoryDownloadLinks: headerAppInjected.downloadLinks,
+      });
+    });
+
+    describe('RepositoryOverflowMenu', () => {
+      it('does not render RepositoryOverflowMenu component on default ref', () => {
+        expect(findRepositoryOverflowMenu().exists()).toBe(false);
+      });
+
+      it('renders RepositoryOverflowMenu component with correct props when on ref different than default branch', () => {
+        wrapper = createComponent({}, 'treePathDecoded', { comparePath: 'test/project/compare' });
+        expect(findRepositoryOverflowMenu().exists()).toBe(true);
+        expect(findRepositoryOverflowMenu().props('comparePath')).toBe(
+          headerAppInjected.comparePath,
+        );
       });
     });
   });

@@ -199,7 +199,7 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
 1. On the left sidebar, select **Operate > Environments** and check the available [dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md).
    The `applications/nginx` environment should be healthy.
 
-### Secure the GitLab pipeline access
+## Secure the GitLab pipeline access
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -256,31 +256,31 @@ In this section, we'll restrict CI/CD access by adding an identity to every CI/C
 1. Let's enable CI/CD jobs to trigger a FluxCD reconciliation too.
    Create the `clusters/testing/gitlab-ci-job-flux-reconciler.yaml` file with the following content:
 
-    ```yaml
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: ClusterRoleBinding
-    metadata:
-        name: ci-job-admin
-    roleRef:
-        name: flux-edit-flux-system
-        kind: ClusterRole
-        apiGroup: rbac.authorization.k8s.io
-    subjects:
-        - name: gitlab:ci_job
-          kind: Group
-    ---
-    apiVersion: rbac.authorization.k8s.io/v1
-    kind: ClusterRoleBinding
-    metadata:
-        name: ci-job-view
-    roleRef:
-        name: flux-view-flux-system
-        kind: ClusterRole
-        apiGroup: rbac.authorization.k8s.io
-    subjects:
-        - name: gitlab:ci_job
-          kind: Group
-    ```
+   ```yaml
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRoleBinding
+   metadata:
+       name: ci-job-admin
+   roleRef:
+       name: flux-edit-flux-system
+       kind: ClusterRole
+       apiGroup: rbac.authorization.k8s.io
+   subjects:
+       - name: gitlab:ci_job
+         kind: Group
+   ---
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRoleBinding
+   metadata:
+       name: ci-job-view
+   roleRef:
+       name: flux-view-flux-system
+       kind: ClusterRole
+       apiGroup: rbac.authorization.k8s.io
+   subjects:
+       - name: gitlab:ci_job
+         kind: Group
+   ```
 
 For more information about CI/CD access, see [Using GitLab CI/CD with a Kubernetes cluster](ci_cd_workflow.md).
 

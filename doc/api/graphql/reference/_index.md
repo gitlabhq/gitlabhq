@@ -19135,6 +19135,7 @@ A user with add-on data.
 | <a id="addonuseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="addonuserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="addonuserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
+| <a id="addonuserlastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo activity of the user. Refreshed on Duo Chat and Code Suggestions activity. |
 | <a id="addonuserlastloginat"></a>`lastLoginAt` | [`Time`](#time) | Timestamp of the last sign in. |
 | <a id="addonuserlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="addonuserlocation"></a>`location` | [`String`](#string) | Location of the user. |
@@ -19775,7 +19776,7 @@ Pre-aggregated per-user metrics for GitLab Code Suggestions and GitLab Duo Chat.
 | ---- | ---- | ----------- |
 | <a id="aiusermetricscodesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` | [`Int`](#int) | Total count of code suggestions accepted by the user. |
 | <a id="aiusermetricsduochatinteractionscount"></a>`duoChatInteractionsCount` | [`Int`](#int) | Number of user interactions with GitLab Duo Chat. |
-| <a id="aiusermetricsuser"></a>`user` | [`UserCore!`](#usercore) | User metrics. |
+| <a id="aiusermetricsuser"></a>`user` | [`AddOnUser!`](#addonuser) | User associated with metrics. |
 
 ### `AiXrayReport`
 

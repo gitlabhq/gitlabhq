@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GraphqlController, feature_category: :integrations do
   include GraphqlHelpers
+  include Auth::DpopTokenHelper
 
   # two days is enough to make timezones irrelevant
   let_it_be(:last_activity_on) { 2.days.ago.to_date }
@@ -527,6 +528,77 @@ RSpec.describe GraphqlController, feature_category: :integrations do
           .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
 
         subject
+      end
+    end
+
+    describe 'DPoP authentication' do
+      context 'when :dpop_authentication FF is disabled' do
+        let(:user) { create(:user, last_activity_on: last_activity_on) }
+        let(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api]) }
+
+        it 'does not check for DPoP token' do
+          stub_feature_flags(dpop_authentication: false)
+
+          post :execute, params: { access_token: personal_access_token.token }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when :dpop_authentication FF is enabled' do
+        before do
+          stub_feature_flags(dpop_authentication: true)
+        end
+
+        context 'when DPoP is disabled for the user' do
+          let(:user) { create(:user, last_activity_on: last_activity_on) }
+          let(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api]) }
+
+          it 'does not check for DPoP token' do
+            post :execute, params: { access_token: personal_access_token.token }
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'when DPoP is enabled for the user' do
+          let_it_be(:user) { create(:user, last_activity_on: last_activity_on, dpop_enabled: true) }
+          let_it_be(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api]) }
+          let_it_be(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
+          let_it_be(:dpop_proof) { generate_dpop_proof_for(user) }
+
+          context 'when API is called with an OAuth token' do
+            it 'does not invoke DPoP' do
+              request.headers["Authorization"] = "Bearer #{oauth_token.plaintext_token}"
+              post :execute
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+
+          context 'with a missing DPoP token' do
+            it 'returns 401' do
+              post :execute, params: { access_token: personal_access_token.token }
+              expect(response).to have_gitlab_http_status(:unauthorized)
+              expect(json_response["errors"][0]["message"]).to eq("DPoP validation error: DPoP header is missing")
+            end
+          end
+
+          context 'with a valid DPoP token' do
+            it 'returns 200' do
+              request.headers["dpop"] = dpop_proof.proof
+              post :execute, params: { access_token: personal_access_token.token }
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+
+          context 'with a malformed DPoP token' do
+            it 'returns 401' do
+              request.headers["dpop"] = "invalid"
+              post :execute, params: { access_token: personal_access_token.token } # -- We need the entire error message
+              expect(json_response["errors"][0]["message"])
+                .to eq("DPoP validation error: Malformed JWT, unable to decode. Not enough or too many segments")
+              expect(response).to have_gitlab_http_status(:unauthorized)
+            end
+          end
+        end
       end
     end
 

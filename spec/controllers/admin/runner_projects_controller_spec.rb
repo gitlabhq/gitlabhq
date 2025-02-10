@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe Admin::RunnerProjectsController, feature_category: :fleet_visibility do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
-    sign_in(create(:admin))
+    sign_in(admin)
   end
 
   describe '#create' do
@@ -60,7 +61,8 @@ RSpec.describe Admin::RunnerProjectsController, feature_category: :fleet_visibil
   end
 
   describe '#destroy' do
-    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, project2]) }
 
     let(:project_id) { project.path }
 
@@ -84,7 +86,7 @@ RSpec.describe Admin::RunnerProjectsController, feature_category: :fleet_visibil
     end
 
     context 'when unassigning from unknown project' do
-      let(:runner_project_id) { 0 }
+      let(:runner_project_id) { non_existing_record_id }
 
       it 'shows 404 for unknown project runner relationship' do
         send_destroy

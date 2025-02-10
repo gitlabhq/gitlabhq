@@ -9,7 +9,7 @@ module Auth # rubocop:disable Gitlab/BoundedContexts -- following the same struc
     end
 
     def execute
-      raise Gitlab::Auth::DpopValidationError, 'DPoP is not enabled for the user' unless current_user.dpop_enabled
+      return ServiceResponse.success unless current_user.dpop_enabled
 
       dpop_token = Gitlab::Auth::DpopToken.new(data: extract_dpop_from_request!(request))
 

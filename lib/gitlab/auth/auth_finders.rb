@@ -224,6 +224,12 @@ module Gitlab
 
       private
 
+      def extract_personal_access_token
+        current_request.params[PRIVATE_TOKEN_PARAM].presence ||
+          current_request.env[PRIVATE_TOKEN_HEADER].presence ||
+          parsed_oauth_token
+      end
+
       def save_current_token_in_env
         ::Current.token_info = {
           token_id: access_token.id,
@@ -284,10 +290,7 @@ module Gitlab
       end
 
       def find_personal_access_token
-        token =
-          current_request.params[PRIVATE_TOKEN_PARAM].presence ||
-          current_request.env[PRIVATE_TOKEN_HEADER].presence ||
-          parsed_oauth_token
+        token = extract_personal_access_token
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`

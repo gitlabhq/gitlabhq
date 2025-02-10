@@ -162,7 +162,7 @@ To enable user impersonation:
    apiVersion: rbac.authorization.k8s.io/v1
    kind: ClusterRoleBinding
    metadata:
-      name: gitlab-developers-view
+      name: gitlab-user-view
    roleRef:
       name: view
       kind: ClusterRole

@@ -150,6 +150,7 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
           [
             [ref(:personal_access_token), lazy { personal_access_token.token }],
             [ref(:project_access_token), lazy { project_access_token.token }],
+            [ref(:impersonation_token), lazy { impersonation_token.token }],
             [ref(:group_access_token), lazy { group_access_token.token }],
             [ref(:group_deploy_token), lazy { group_deploy_token.token }],
             [ref(:project_deploy_token), lazy { project_deploy_token.token }],

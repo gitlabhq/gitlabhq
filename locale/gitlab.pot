@@ -14523,6 +14523,9 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Edit framework"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Failed to export framework"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Framework ID copied to clipboard."
 msgstr ""
 
@@ -23848,6 +23851,9 @@ msgid "Export %{requirementsCount} requirements?"
 msgstr ""
 
 msgid "Export as CSV"
+msgstr ""
+
+msgid "Export as a JSON file"
 msgstr ""
 
 msgid "Export group"
@@ -34256,6 +34262,9 @@ msgid "Manage comment templates"
 msgstr ""
 
 msgid "Manage configuration"
+msgstr ""
+
+msgid "Manage framework"
 msgstr ""
 
 msgid "Manage git repositories with fine-grained access controls that keep your code secure."
@@ -49059,6 +49068,9 @@ msgid "Runners|Export as CSV"
 msgstr ""
 
 msgid "Runners|Failed adding runner to project"
+msgstr ""
+
+msgid "Runners|Failed unassigning runner from project"
 msgstr ""
 
 msgid "Runners|Fetch GitLab Runner release version data from GitLab.com"

@@ -27,10 +27,8 @@ RSpec.describe Auth::DpopAuthenticationService, feature_category: :system_access
     context 'when DPoP is not enabled for the user' do
       let(:dpop_enabled) { false }
 
-      it 'raises a DpopValidationError' do
-        expect do
-          service.execute
-        end.to raise_error(Gitlab::Auth::DpopValidationError, /DPoP is not enabled for the user/)
+      it 'succeeds' do
+        expect(service.execute).to be_success
       end
     end
 

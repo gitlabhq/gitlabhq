@@ -356,21 +356,17 @@ module API
         params do
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
-        # rubocop: disable CodeReuse/ActiveRecord
         delete ':id/runners/:runner_id' do
           authorize! :admin_project_runners, user_project
 
-          runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
+          runner_project = user_project.runner_projects.find_by_runner_id(params[:runner_id])
           not_found!('Runner') unless runner_project
 
-          runner = runner_project.runner
-          if runner.belongs_to_one_project?
-            forbidden!("Only one project associated with the runner. Please remove the runner instead")
+          destroy_conditionally!(runner_project) do
+            response = ::Ci::Runners::UnassignRunnerService.new(runner_project, current_user).execute
+            forbidden!(response.message) if response.error?
           end
-
-          destroy_conditionally!(runner_project)
         end
-        # rubocop: enable CodeReuse/ActiveRecord
       end
 
       params do

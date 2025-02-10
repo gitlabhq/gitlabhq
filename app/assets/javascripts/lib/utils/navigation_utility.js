@@ -1,7 +1,7 @@
 import { visitUrl } from './url_utility';
 
 /**
- * Helper function that finds the href of the fiven selector and updates the location.
+ * Helper function that finds the href of the given selector and updates the location.
  *
  * @param  {String} selector
  */
@@ -11,6 +11,24 @@ export default function findAndFollowLink(selector) {
 
   if (link) {
     visitUrl(link);
+  }
+}
+
+/**
+ * Helper function that finds the href of the direct child element of given selector and updates the location.
+ *
+ * @param  {String} selector
+ */
+export function findAndFollowChildLink(selector) {
+  const element = document.querySelector(selector);
+  const parentLink = element && element.getAttribute('href');
+
+  const childLink = element?.firstElementChild && element.firstElementChild.getAttribute('href');
+
+  if (parentLink) {
+    findAndFollowLink(selector);
+  } else if (childLink) {
+    visitUrl(childLink);
   }
 }
 

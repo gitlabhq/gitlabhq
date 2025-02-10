@@ -112,7 +112,7 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
         expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry')
       end
 
-      it 'logs a RedundantCompactionEntry error' do
+      it 'logs a RedundantCompactionEntry error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/513211' do
         allow(Gitlab::Utils::TraversalIdCompactor).to receive(:compact).and_wrap_original do |original_method, *args|
           original_response = original_method.call(*args)
           original_response << original_response.last.first(2)

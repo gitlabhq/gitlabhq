@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
+  include Gitlab::Auth::AuthFinders
   extend ::Gitlab::Utils::Override
 
   # Unauthenticated users have access to the API for public data
@@ -29,6 +30,7 @@ class GraphqlController < ApplicationController
   prepend_before_action { authenticate_sessionless_user!(:graphql_api) }
 
   before_action :authorize_access_api!
+  before_action(only: [:execute]) { check_dpop! }
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :track_jetbrains_usage
@@ -78,6 +80,12 @@ class GraphqlController < ApplicationController
     end
   end
 
+  rescue_from Gitlab::Auth::DpopValidationError do |exception|
+    log_exception(exception)
+
+    render_error(exception.message, status: :unauthorized)
+  end
+
   # ApplicationController has similar rescues but we declare these again here because the
   # `rescue_from StandardError` above would prevent these from bubbling up to ApplicationController.
   # These also return errors in a JSON format similar to GraphQL errors.
@@ -119,6 +127,18 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  def check_dpop!
+    return unless current_user && Feature.enabled?(:dpop_authentication, current_user)
+
+    token = extract_personal_access_token
+    return unless PersonalAccessToken.find_by_token(token.to_s) # The token is not PAT, exit early
+
+    # For authenticated requests we check if the user has DPoP enabled
+    ::Auth::DpopAuthenticationService.new(current_user: current_user,
+      personal_access_token_plaintext: token,
+      request: current_request).execute
+  end
 
   def permitted_params
     @permitted_params ||= multiplex? ? permitted_multiplex_params : permitted_standalone_query_params

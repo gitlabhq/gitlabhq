@@ -63,6 +63,8 @@ module API
           forbidden!(api_access_denied_message(user))
         end
 
+        check_dpop!(user)
+
         user
       end
 
@@ -114,6 +116,18 @@ module API
         Gitlab::Auth::UserAccessDeniedReason.new(user).rejection_message
       end
 
+      def check_dpop!(user)
+        return unless Feature.enabled?(:dpop_authentication, user)
+        return unless api_request? && user.is_a?(User)
+
+        token = extract_personal_access_token
+        return unless PersonalAccessToken.find_by_token(token.to_s) # The token is not PAT, exit early
+
+        ::Auth::DpopAuthenticationService.new(current_user: user,
+          personal_access_token_plaintext: token,
+          request: current_request).execute
+      end
+
       def user_allowed_or_deploy_token?(user)
         Gitlab::UserAccess.new(user).allowed? || user.is_a?(DeployToken)
       end
@@ -147,7 +161,8 @@ module API
                          Gitlab::Auth::ExpiredError,
                          Gitlab::Auth::RevokedError,
                          Gitlab::Auth::ImpersonationDisabled,
-                         Gitlab::Auth::InsufficientScopeError]
+                         Gitlab::Auth::InsufficientScopeError,
+                         Gitlab::Auth::DpopValidationError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -186,6 +201,11 @@ module API
                 :insufficient_scope,
                 Rack::OAuth2::Server::Resource::ErrorMethods::DEFAULT_DESCRIPTION[:insufficient_scope],
                 { scope: e.scopes })
+
+            when Gitlab::Auth::DpopValidationError
+              Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
+                :dpop_error,
+                e)
             end
 
           status, headers, body = response.finish

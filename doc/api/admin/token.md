@@ -122,6 +122,7 @@ Revokes or resets a given token based on the token type. This endpoint supports 
 | Token type                                                                                   | Supported action   |
 |----------------------------------------------------------------------------------------------|--------------------|
 | [Personal access tokens](../../user/profile/personal_access_tokens.md)                       | Revoke             |
+| [Impersonation tokens](../../user/profile/personal_access_tokens.md)                         | Revoke             |
 | [Project access tokens](../../security/tokens/_index.md#project-access-tokens)               | Revoke             |
 | [Group access tokens](../../security/tokens/_index.md#group-access-tokens)                   | Revoke             |
 | [Deploy tokens](../../user/project/deploy_tokens/index.md)                                   | Revoke             |

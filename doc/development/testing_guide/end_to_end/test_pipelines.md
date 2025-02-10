@@ -153,6 +153,10 @@ tests against the GDK instance running in the container.
 
 This stage is responsible for [allure test report](_index.md#allure-report) generation.
 
+## Test Licenses
+
+Please see the [Test Licenses runbook](https://gitlab-org.gitlab.io/quality/runbooks/test_licenses/) for more information on the licenses used by these pipelines.
+
 ## Adding new jobs to E2E test pipelines
 
 E2E test pipelines use dynamic scaling of jobs based on their runtime. To create a mapping between job definitions in pipeline definition YAML files and

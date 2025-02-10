@@ -2350,19 +2350,20 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
   end
 
   describe 'DELETE /projects/:id/runners/:runner_id' do
-    let(:runner_id) { runner.id }
-    let(:path) { "/projects/#{project.id}/runners/#{runner_id}" }
+    let(:runner_id) { two_projects_runner.id }
+    let(:project_to_delete_from) { project2 }
+    let(:path) { "/projects/#{project_to_delete_from.id}/runners/#{runner_id}" }
 
     subject(:perform_request) { delete api(path, current_user) }
 
     context 'authorized user' do
       let(:current_user) { users.first }
 
-      context 'when runner have more than one associated projects' do
-        let(:runner) { two_projects_runner }
+      context 'when runner have more than one associated project' do
+        let(:runner_id) { two_projects_runner.id }
 
-        it "disables project's runner" do
-          expect { perform_request }.to change { project.runners.count }.by(-1)
+        it "disables project's runner", :aggregate_failures do
+          expect { perform_request }.to change { project_to_delete_from.runners.count }.by(-1)
 
           expect(response).to have_gitlab_http_status(:no_content)
         end
@@ -2378,11 +2379,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         end
       end
 
-      context 'when runner have one associated projects' do
-        let(:runner) { project_runner }
+      context 'when runner have a single associated project' do
+        let(:runner_id) { project_runner.id }
+        let(:project_to_delete_from) { project }
 
         it "does not disable project's runner" do
-          expect { perform_request }.not_to change { project.runners.count }
+          expect { perform_request }.not_to change { project_to_delete_from.runners.count }
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -2400,8 +2402,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
     end
 
     context 'authorized user without permissions' do
-      let(:current_user) { users.second }
-      let(:runner) { project_runner }
+      let(:current_user) { create(:user, developer_of: project_to_delete_from) }
 
       it "does not disable project's runner" do
         perform_request
@@ -2412,7 +2413,6 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
     context 'unauthorized user' do
       let(:current_user) { nil }
-      let(:runner) { project_runner }
 
       it "does not disable project's runner" do
         perform_request

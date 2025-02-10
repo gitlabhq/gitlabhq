@@ -14,6 +14,7 @@ import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_util
 import RefSelector from '~/ref/components/ref_selector.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
+import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
@@ -31,6 +32,7 @@ export default {
     FileIcon,
     RefSelector,
     Breadcrumbs,
+    RepositoryOverflowMenu,
     BlobControls,
     CodeDropdown,
     CompactCodeDropdown,
@@ -240,13 +242,6 @@ export default {
         <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
         <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
         <gl-button
-          v-if="comparePath"
-          data-testid="tree-compare-control"
-          :href="comparePath"
-          class="shortcuts-compare"
-          >{{ $options.i18n.compare }}</gl-button
-        >
-        <gl-button
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"
           data-testid="tree-find-file-control"
@@ -281,15 +276,17 @@ export default {
         />
         <!-- code + mobile panel -->
         <div v-if="!isReadmeView" class="project-code-holder gl-w-full sm:gl-w-auto">
-          <compact-code-dropdown
-            v-if="showCompactCodeDropdown"
-            :ssh-url="sshUrl"
-            :http-url="httpUrl"
-            :kerberos-url="kerberosUrl"
-            :xcode-url="xcodeUrl"
-            :current-path="currentPath"
-            :directory-download-links="downloadLinks"
-          />
+          <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
+            <compact-code-dropdown
+              :ssh-url="sshUrl"
+              :http-url="httpUrl"
+              :kerberos-url="kerberosUrl"
+              :xcode-url="xcodeUrl"
+              :current-path="currentPath"
+              :directory-download-links="downloadLinks"
+            />
+            <repository-overflow-menu v-if="comparePath" />
+          </div>
           <template v-else>
             <code-dropdown
               class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
@@ -311,9 +308,14 @@ export default {
                 :http-url="httpUrl"
                 :kerberos-url="kerberosUrl"
               />
+              <repository-overflow-menu v-if="comparePath" />
             </div>
           </template>
         </div>
+        <repository-overflow-menu
+          v-if="comparePath && !showCompactCodeDropdown"
+          class="gl-hidden sm:gl-inline-flex"
+        />
       </div>
 
       <!-- Blob controls -->

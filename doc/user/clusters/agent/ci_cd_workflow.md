@@ -125,8 +125,7 @@ deploy:
     - kubectl get pods
 ```
 
-If you are not sure what your agent's context is, open a terminal and connect to your cluster.
-Run `kubectl config get-contexts`.
+If you are not sure what your agent's context is, run `kubectl config get-contexts` from a CI/CD job where you want to access the agent.
 
 ### Environments that use Auto DevOps
 

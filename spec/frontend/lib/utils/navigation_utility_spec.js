@@ -26,6 +26,53 @@ describe('findAndFollowLink', () => {
   });
 });
 
+describe('findAndFollowChildLink', () => {
+  it('visits a child link when the selector exists', () => {
+    const href = '/some/path';
+
+    setHTMLFixture(`<li class="gl-disclosure-item my-shortcut"><a href="${href}">link</a></li>`);
+
+    navigationUtils.findAndFollowChildLink('.my-shortcut');
+
+    expect(visitUrl).toHaveBeenCalledWith(href);
+
+    resetHTMLFixture();
+  });
+
+  it('defaults to findAndFollowLink when the parent is a link', () => {
+    const parentHref = '/some/path';
+
+    setHTMLFixture(`<a class="my-shortcut" href="${parentHref}"><span>link</span></a>`);
+
+    navigationUtils.findAndFollowChildLink('.my-shortcut');
+
+    expect(visitUrl).toHaveBeenCalledWith(parentHref);
+
+    resetHTMLFixture();
+  });
+
+  it('prioritizes parent link over child link when both exist', () => {
+    const parentHref = '/parent/path';
+    const childHref = '/child/path';
+
+    setHTMLFixture(
+      `<a class="my-shortcut" href="${parentHref}"><a href="${childHref}">link</a></a>`,
+    );
+
+    navigationUtils.findAndFollowChildLink('.my-shortcut');
+
+    expect(visitUrl).toHaveBeenCalledWith('/parent/path');
+    expect(visitUrl).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not throw an exception when the selector does not exist', () => {
+    // this should not throw an exception
+    navigationUtils.findAndFollowChildLink('.this-selector-does-not-exist');
+
+    expect(visitUrl).not.toHaveBeenCalled();
+  });
+});
+
 describe('prefetchDocument', () => {
   it('creates a prefetch link tag', () => {
     const linkElement = document.createElement('link');

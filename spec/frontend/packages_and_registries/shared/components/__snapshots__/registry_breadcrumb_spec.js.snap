@@ -10,7 +10,7 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
     class="breadcrumb gl-breadcrumb-list"
   >
     <li
-      class="gl-breadcrumb-item"
+      class="gl-breadcrumb-item gl-breadcrumb-item-sm"
     >
       <a
         target="_self"
@@ -23,7 +23,7 @@ exports[`Registry Breadcrumb when is not rootRoute renders 1`] = `
       </a>
     </li>
     <li
-      class="gl-breadcrumb-item"
+      class="gl-breadcrumb-item gl-breadcrumb-item-sm"
     >
       <a
         aria-current="page"
@@ -51,7 +51,7 @@ exports[`Registry Breadcrumb when is rootRoute renders 1`] = `
     class="breadcrumb gl-breadcrumb-list"
   >
     <li
-      class="gl-breadcrumb-item"
+      class="gl-breadcrumb-item gl-breadcrumb-item-sm"
       style="flex-shrink: 1; text-overflow: ellipsis; overflow-x: hidden; text-wrap: nowrap;"
     >
       <a
