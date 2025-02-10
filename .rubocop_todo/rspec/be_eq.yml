@@ -489,7 +489,6 @@ RSpec/BeEq:
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/search/elastic/cluster_reindexing_service_spec.rb'
     - 'ee/spec/services/search/project_service_spec.rb'
-    - 'ee/spec/services/search/rake_task_executor_service_spec.rb'
     - 'ee/spec/services/search/zoekt/indexing_task_service_spec.rb'
     - 'ee/spec/services/security/configuration/project_set_continuous_vulnerability_scanning_service_spec.rb'
     - 'ee/spec/services/security/orchestration/create_bot_service_spec.rb'
