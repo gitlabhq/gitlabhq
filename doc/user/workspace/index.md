@@ -231,7 +231,7 @@ DETAILS:
 > - Feature flag `allow_extensions_marketplace_in_workspace` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454669) in GitLab 17.6.
 
 You can use the
-[extension marketplace](../project/web_ide/index.md#extension-marketplace) in workspaces
+[extension marketplace](../project/web_ide/_index.md#extension-marketplace) in workspaces
 when it is [enabled](../profile/preferences.md#integrate-with-the-extension-marketplace).
 
 The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).

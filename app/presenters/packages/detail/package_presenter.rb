@@ -25,7 +25,7 @@ module Packages
         }
 
         package_detail[:conan_package_name] = @package.name if @package.conan?
-        package_detail[:maven_metadatum] = @package.maven_metadatum if @package.maven_metadatum
+        package_detail[:maven_metadatum] = @package.maven_metadatum if @package.try(:maven_metadatum)
         package_detail[:nuget_metadatum] = @package.nuget_metadatum if @package.try(:nuget_metadatum)
         package_detail[:composer_metadatum] = @package.composer_metadatum if @package.try(:composer_metadatum)
         package_detail[:conan_metadatum] = @package.conan_metadatum if @package.conan? && @package.conan_metadatum

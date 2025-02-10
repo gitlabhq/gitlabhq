@@ -7,6 +7,7 @@ classes:
 - Packages::Generic::Package
 - Packages::Go::Package
 - Packages::Helm::Package
+- Packages::Maven::Package
 - Packages::MlModel::Package
 - Packages::Npm::Package
 - Packages::Nuget::Package

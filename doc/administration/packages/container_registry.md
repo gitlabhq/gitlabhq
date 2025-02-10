@@ -822,7 +822,7 @@ In the examples below we set the Registry's port to `5010`.
 ## Disable container registry per project
 
 If Registry is enabled in your GitLab instance, but you don't need it for your
-project, you can [disable it from your project's settings](../../user/project/settings/index.md#configure-project-features-and-permissions).
+project, you can [disable it from your project's settings](../../user/project/settings/_index.md#configure-project-features-and-permissions).
 
 ## Use an external container registry with GitLab as an auth endpoint
 

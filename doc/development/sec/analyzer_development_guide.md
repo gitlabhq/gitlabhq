@@ -463,7 +463,7 @@ registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep/tmp:7580d6b03
 
 In order to
 [restrict the number of people who have write access to the container registry](https://gitlab.com/gitlab-org/gitlab/-/issues/297525),
-the container registry in the development project must be [made private](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) by configuring the following [project features and permissions](../../user/project/settings/index.md) settings for the project located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER-NAME>`:
+the container registry in the development project must be [made private](https://gitlab.com/gitlab-org/gitlab/-/issues/470641) by configuring the following [project features and permissions](../../user/project/settings/_index.md) settings for the project located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER-NAME>`:
 
 - `Settings -> General -> Visibility, project features, permissions`
   - `Container Registry`

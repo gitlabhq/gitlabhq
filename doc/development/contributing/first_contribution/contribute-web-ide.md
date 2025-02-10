@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Contribute code with the Web IDE
 ---
 
-The [GitLab Web IDE](../../../user/project/web_ide/index.md) is a built-in advanced editor with commit staging.
+The [GitLab Web IDE](../../../user/project/web_ide/_index.md) is a built-in advanced editor with commit staging.
 
 The example in this section shows how to modify a line of code as part of a community contribution
 to GitLab code using the Web IDE.

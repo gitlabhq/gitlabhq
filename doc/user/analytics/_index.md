@@ -9,7 +9,7 @@ title: Analyze GitLab usage
 > - Group-level analytics moved to GitLab Premium in 13.9.
 
 GitLab provides different types of analytics insights at the instance, group, and project level.
-These insights appear on the left sidebar, under [**Analyze**](../project/settings/index.md#turn-off-project-analytics).
+These insights appear on the left sidebar, under [**Analyze**](../project/settings/_index.md#turn-off-project-analytics).
 
 ## Analytics features
 

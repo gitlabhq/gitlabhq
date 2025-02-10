@@ -119,7 +119,7 @@ Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests
 {"message":"403 Forbidden"}
 ```
 
-If you get a `403 Forbidden` error, this project might have some [GitLab features disabled](../../../user/project/settings/index.md#configure-project-features-and-permissions).
+If you get a `403 Forbidden` error, this project might have some [GitLab features disabled](../../../user/project/settings/_index.md#configure-project-features-and-permissions).
 In the previous example, the merge requests feature is disabled.
 
 To resolve the issue, enable the relevant feature:

@@ -224,7 +224,7 @@ Use the `CI_PIPELINE_SOURCE` variable to control when to add jobs for these pipe
 | `security_orchestration_policy` | For [security orchestration policy](../../user/application_security/policies/index.md) pipelines. |
 | `trigger`                       | For pipelines created by using a [trigger token](../triggers/_index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
 | `web`                           | For pipelines created by selecting **New pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
-| `webide`                        | For pipelines created by using the [Web IDE](../../user/project/web_ide/index.md). |
+| `webide`                        | For pipelines created by using the [Web IDE](../../user/project/web_ide/_index.md). |
 
 These values are the same as returned for the `source` parameter when using the
 [pipelines API endpoint](../../api/pipelines.md#list-project-pipelines).

@@ -190,7 +190,7 @@ organizations using the GraphQL API.
 
 ## Issues
 
-If you use [Service Desk](../project/service_desk/index.md) and create issues from emails,
+If you use [Service Desk](../project/service_desk/_index.md) and create issues from emails,
 issues are linked to contacts matching the email addresses in the sender and CC of the email.
 
 ### View issues linked to a contact

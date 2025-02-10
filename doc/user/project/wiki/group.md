@@ -10,9 +10,9 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 If you use GitLab groups to manage multiple projects, some of your documentation
-might span multiple groups. You can create group wikis, instead of [project wikis](index.md),
+might span multiple groups. You can create group wikis, instead of [project wikis](_index.md),
 to ensure all group members have the correct access permissions to contribute.
-Group wikis are similar to [project wikis](index.md), with a few limitations:
+Group wikis are similar to [project wikis](_index.md), with a few limitations:
 
 - [Git LFS](../../../topics/git/lfs/_index.md) is not supported.
 - Changes to group wikis don't show up in the [group's activity feed](../../group/manage.md#group-activity-analytics).

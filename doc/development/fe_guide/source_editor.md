@@ -10,7 +10,7 @@ title: Source Editor
 helpers and abstractions, and extends Monaco [using extensions](#extensions). Multiple
 GitLab features use it, including:
 
-- [Web IDE](../../user/project/web_ide/index.md)
+- [Web IDE](../../user/project/web_ide/_index.md)
 - [CI Linter](../../ci/yaml/lint.md)
 - [Snippets](../../user/snippets.md)
 - [Web Editor](../../user/project/repository/web_editor.md)

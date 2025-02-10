@@ -80,11 +80,6 @@ export const getDataZoomOption = ({
   });
 };
 
-export const removeFlash = (type = 'alert') => {
-  // flash-warning don't have dismiss button.
-  document.querySelector(`.flash-${type} .js-close`)?.click();
-};
-
 /**
  * Formats any valid number as percentage
  *

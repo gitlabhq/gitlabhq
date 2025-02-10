@@ -1166,12 +1166,6 @@ RSpec.shared_examples 'conan FIPS mode' do
   end
 end
 
-RSpec.shared_examples 'enforcing read_packages job token policy' do
-  it_behaves_like 'enforcing job token policies', :read_packages do
-    let(:headers) { job_basic_auth_header(target_job) }
-  end
-end
-
 RSpec.shared_examples 'enforcing admin_packages job token policy' do
   it_behaves_like 'enforcing job token policies', :admin_packages do
     let(:headers_with_token) { job_basic_auth_header(target_job).merge(workhorse_headers) }

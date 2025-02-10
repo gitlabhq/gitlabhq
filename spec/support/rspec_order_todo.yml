@@ -836,7 +836,6 @@
 - './ee/spec/lib/ee/gitlab/cleanup/orphan_job_artifact_files_batch_spec.rb'
 - './ee/spec/lib/ee/gitlab/cleanup/orphan_job_artifact_files_spec.rb'
 - './ee/spec/lib/ee/gitlab/database_spec.rb'
-- './ee/spec/lib/ee/gitlab/elastic/helper_spec.rb'
 - './ee/spec/lib/ee/gitlab/email/handler/service_desk_handler_spec.rb'
 - './ee/spec/lib/ee/gitlab/etag_caching/router/rails_spec.rb'
 - './ee/spec/lib/ee/gitlab/event_store_spec.rb'

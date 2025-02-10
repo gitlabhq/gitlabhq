@@ -343,7 +343,7 @@ A `_sidebar` example, formatted with Markdown:
 
 Wikis are enabled by default in GitLab. Project [administrators](../../permissions.md)
 can enable or disable a project wiki by following the instructions in
-[Sharing and permissions](../settings/index.md#configure-project-features-and-permissions).
+[Sharing and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 Administrators for GitLab Self-Managed can
 [configure additional wiki settings](../../../administration/wikis/_index.md).

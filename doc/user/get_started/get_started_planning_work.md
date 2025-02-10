@@ -134,5 +134,5 @@ range of information, like project guidelines, technical specifications, and bes
 
 For more information, see:
 
-- [Requirements](../project/requirements/index.md)
-- [Wikis](../project/wiki/index.md)
+- [Requirements](../project/requirements/_index.md)
+- [Wikis](../project/wiki/_index.md)

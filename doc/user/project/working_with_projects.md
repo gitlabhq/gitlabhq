@@ -559,5 +559,5 @@ repository. For example, if an administrator creates the alias `gitlab` for the 
 - [Import a project](import/index.md).
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/_index.md).
 - [Fork a project](repository/forking_workflow.md#create-a-fork).
-- Adjust [project visibility](../public_access.md#change-project-visibility) and [permissions](settings/index.md#configure-project-features-and-permissions).
+- Adjust [project visibility](../public_access.md#change-project-visibility) and [permissions](settings/_index.md#configure-project-features-and-permissions).
 - [Rules for project and group names](../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs)

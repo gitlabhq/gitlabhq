@@ -13,7 +13,7 @@ Prerequisites:
 
 - You must disable [GitLab internal issue tracking](../issues/index.md) in the project. For more information about the steps and consequences of disabling
   GitLab issues, see [Change project visibility](../../public_access.md#change-project-visibility), and also
-  [Configure project features and permissions](../settings/index.md#configure-project-features-and-permissions).
+  [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
 To enable the Redmine integration in a project:

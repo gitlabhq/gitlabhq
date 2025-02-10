@@ -30,7 +30,7 @@ Depending on the size of GitLab installation and background job queues, it might
 Prerequisites:
 
 - You must have an initialized Git repository.
-- There must be at least one commit in the default branch (`main` by default), excluding commits in a project's [wiki](../project/wiki/index.md#track-wiki-events), which are not included in the analysis.
+- There must be at least one commit in the default branch (`main` by default), excluding commits in a project's [wiki](../project/wiki/_index.md#track-wiki-events), which are not included in the analysis.
 
 To view repository analytics for a project:
 

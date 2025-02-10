@@ -662,9 +662,9 @@ Example response:
 ]
 ```
 
-## Enable a runner in project
+## Assign a runner to project
 
-Enable an available project runner in the project.
+Assign an available project runner to the project.
 
 Prerequisites:
 
@@ -710,9 +710,9 @@ Example response:
 }
 ```
 
-## Disable a runner from project
+## Unassign a runner from project
 
-Disable a project runner from the project. It works only if the project isn't
+Unassign a project runner from the project. It works only if the project isn't
 the only project associated with the specified runner. If so, an error is
 returned. Use the call to [delete a runner](#delete-a-runner) instead.
 

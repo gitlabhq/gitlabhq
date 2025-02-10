@@ -1213,7 +1213,6 @@ Layout/LineLength:
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/validators/schema_validator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/status/build/manual_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/elastic/helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/email/handler/service_desk_handler_spec.rb'
     - 'ee/spec/lib/ee/gitlab/etag_caching/router/rails_spec.rb'
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'

@@ -103,7 +103,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Filtering merge requests](../user/project/merge_requests/_index.md#filter-the-list-of-merge-requests) by approvers
   - [Filtering merge requests](../user/project/merge_requests/_index.md#filter-the-list-of-merge-requests) by "approved by"
   - [Advanced search (Elasticsearch)](../user/search/advanced_search.md)
-- [Service Desk](../user/project/service_desk/index.md)
+- [Service Desk](../user/project/service_desk/_index.md)
 - [Storage usage statistics](../user/storage_usage_quotas.md)
 
 The following developer features continue to be available to Starter and

@@ -205,7 +205,7 @@ v1.0, 2019-01-01
 ## Includes
 
 NOTE:
-[Wiki pages](project/wiki/index.md#create-a-new-wiki-page) created with the AsciiDoc
+[Wiki pages](project/wiki/_index.md#create-a-new-wiki-page) created with the AsciiDoc
 format are saved with the file extension `.asciidoc`. When working with AsciiDoc wiki
 pages, change the filename from `.adoc` to `.asciidoc`.
 

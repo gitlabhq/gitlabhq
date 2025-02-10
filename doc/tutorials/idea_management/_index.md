@@ -69,11 +69,11 @@ For this tutorial, suppose you've decided on the following status workflow:
 
 After you agree on the status workflow, write it all down somewhere your team mates can always access.
 
-For example, add it to a [wiki](../../user/project/wiki/index.md) in your project, or your company
+For example, add it to a [wiki](../../user/project/wiki/_index.md) in your project, or your company
 handbook published with [GitLab Pages](../../user/project/pages/index.md).
 
 <!-- Idea for expanding this tutorial:
-     Add steps for [creating a wiki page](../../user/project/wiki/index.md#create-a-new-wiki-page). -->
+     Add steps for [creating a wiki page](../../user/project/wiki/_index.md#create-a-new-wiki-page). -->
 
 ## Create scoped labels
 

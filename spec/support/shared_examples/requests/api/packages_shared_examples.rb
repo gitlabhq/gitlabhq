@@ -102,7 +102,7 @@ end
 
 RSpec.shared_examples 'enforcing read_packages job token policy' do
   it_behaves_like 'enforcing job token policies', :read_packages do
-    let(:headers) { build_token_auth_header(target_job.token) }
+    let(:headers) { job_basic_auth_header(target_job) }
   end
 end
 

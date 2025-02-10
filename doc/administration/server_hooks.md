@@ -128,7 +128,7 @@ The location to copy the scripts to depends on where repositories are stored:
 
 To create a Git hook that applies to all repositories, set a global server hook. Global server hooks also apply to:
 
-- [Project and group wiki](../user/project/wiki/index.md) repositories. Their storage directory names are in the format
+- [Project and group wiki](../user/project/wiki/_index.md) repositories. Their storage directory names are in the format
   `<id>.wiki.git`.
 - [Design management](../user/project/issues/design_management.md) repositories under a project. Their storage directory
   names are in the format `<id>.design.git`.

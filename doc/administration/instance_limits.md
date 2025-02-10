@@ -1023,7 +1023,7 @@ that only people you trust can add content.
 ## Wiki limits
 
 - [Wiki page content size limit](wikis/_index.md#wiki-page-content-size-limit).
-- [Length restrictions for file and directory names](../user/project/wiki/index.md#length-restrictions-for-file-and-directory-names).
+- [Length restrictions for file and directory names](../user/project/wiki/_index.md#length-restrictions-for-file-and-directory-names).
 
 ## Snippets limits
 

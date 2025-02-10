@@ -71,6 +71,18 @@ RSpec.describe ::Packages::Maven::Metadata::SyncService, feature_category: :pack
           end
 
           it_behaves_like 'returning a success service response', message: 'No changes for versions xml'
+
+          context 'when maven_extract_package_model is disabled' do
+            let_it_be_with_reload(:versionless_package_for_versions) do
+              # It's required to turn off the FF when using the `maven_package_legacy` factory,
+              # since its associations depend on the FF status.
+              stub_feature_flags(maven_extract_package_model: false)
+
+              create(:maven_package_legacy, name: FFaker::Lorem.word, version: nil, project: project)
+            end
+
+            it_behaves_like 'returning a success service response', message: 'No changes for versions xml'
+          end
         end
 
         context 'with changes' do

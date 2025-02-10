@@ -25,7 +25,7 @@
           = _("Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}.").html_safe % { docs_link_url: docs_link_url, docs_link_start: docs_link_start, docs_link_end: docs_link_end }
 
 .form-group.js-shown-unless-auto-ssl{ class: ("!gl-hidden" if auto_ssl_available_and_enabled) }
-  - if has_user_defined_certificate
+  - if has_user_defined_certificate & domain_presenter.persisted?
     .row.gl-mt-5
       .col-12
         = render ::Layouts::CrudComponent.new(_('Certificate'),

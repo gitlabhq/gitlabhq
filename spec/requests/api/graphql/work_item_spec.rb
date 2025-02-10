@@ -88,6 +88,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'createNote' => true,
           'adminWorkItemLink' => true,
           'markNoteAsInternal' => true,
+          'moveWorkItem' => true,
+          'cloneWorkItem' => true,
           'reportSpam' => false
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
@@ -1296,7 +1298,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           it 'avoids N + 1 queries', :use_sql_query_cache do
             # warm-up already done in the before block
-            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            control = ActiveRecord::QueryRecorder.new do
               post_graphql(query, current_user: current_user)
             end
             expect(graphql_errors).to be_blank

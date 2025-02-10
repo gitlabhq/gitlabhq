@@ -44,11 +44,11 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
         # disallowed
         expect(permissions(non_member_user, project_work_item)).to be_disallowed(
           :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam
+          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam, :move_work_item, :clone_work_item
         )
         expect(permissions(non_member_user, project_confidential_work_item)).to be_disallowed(
           :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam
+          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam, :move_work_item, :clone_work_item
         )
       end
 
@@ -81,11 +81,11 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
         # disallowed
         expect(permissions(non_member_user, project_work_item)).to be_disallowed(
           :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link, :report_spam
+          :admin_parent_link, :admin_work_item_link, :report_spam, :move_work_item, :clone_work_item
         )
         expect(permissions(non_member_user, project_confidential_work_item)).to be_disallowed(
           :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam
+          :admin_parent_link, :admin_work_item_link, :create_note, :report_spam, :move_work_item, :clone_work_item
         )
       end
 
@@ -118,11 +118,13 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
           # disallowed
           expect(permissions(non_member_user, work_item)).to be_disallowed(
             :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note
+            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note,
+            :move_work_item, :clone_work_item
           )
           expect(permissions(non_member_user, confidential_work_item)).to be_disallowed(
             :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note
+            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note,
+            :move_work_item, :clone_work_item
           )
         end
       end
@@ -154,11 +156,12 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
           # disallowed
           expect(permissions(non_member_user, work_item)).to be_disallowed(
             :admin_work_item, :update_work_item, :delete_work_item, :admin_parent_link, :set_work_item_metadata,
-            :admin_work_item_link
+            :admin_work_item_link, :move_work_item, :clone_work_item
           )
           expect(permissions(non_member_user, confidential_work_item)).to be_disallowed(
             :read_work_item, :read_issue, :read_note, :admin_work_item, :update_work_item, :delete_work_item,
-            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note
+            :admin_parent_link, :set_work_item_metadata, :admin_work_item_link, :create_note,
+            :move_work_item, :clone_work_item
           )
         end
       end

@@ -343,10 +343,10 @@ DETAILS:
 **Tier:** Ultimate
 
 The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
-artifact and existing [requirements](../../user/project/requirements/index.md) are marked as Satisfied.
+artifact and existing [requirements](../../user/project/requirements/_index.md) are marked as Satisfied.
 
 GitLab can display the results of one or more reports in the
-[project requirements](../../user/project/requirements/index.md#view-a-requirement).
+[project requirements](../../user/project/requirements/_index.md#view-a-requirement).
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 

@@ -58,7 +58,7 @@ module WebIde
       #
       # @return [String]
       def self.help_url
-        ::Gitlab::Routing.url_helpers.help_page_url('user/project/web_ide/index.md', anchor: 'extension-marketplace')
+        ::Gitlab::Routing.url_helpers.help_page_url('user/project/web_ide/_index.md', anchor: 'extension-marketplace')
       end
 
       # Returns user preferences url for changing the user's opt-in status for VSCode extensions marketplace

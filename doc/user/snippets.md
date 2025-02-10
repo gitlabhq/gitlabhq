@@ -141,7 +141,7 @@ A single snippet can support up to 10 files, which helps keep related files toge
   used to bootstrap a project and manage its dependencies.
 
 If you need more than 10 files for your snippet, you should create a
-[wiki](project/wiki/index.md) instead. Wikis are available for projects at all
+[wiki](project/wiki/_index.md) instead. Wikis are available for projects at all
 subscription levels, and [groups](project/wiki/group.md) for
 [GitLab Premium](https://about.gitlab.com/pricing/).
 

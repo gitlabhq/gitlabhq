@@ -388,7 +388,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 You can make releases accessible to non-project members while keeping repository-related information, such as [source code](release_fields.md#source-code) and [release evidence](release_evidence.md), available only to project members. These settings are ideal for
 projects that use releases to give access to new versions of software, but do not want the source code to be publicly available.
 
-To make releases available publicly, set the following [project settings](../settings/index.md#configure-project-features-and-permissions):
+To make releases available publicly, set the following [project settings](../settings/_index.md#configure-project-features-and-permissions):
 
 - **Project visibility** is set to **Public**
 - **Repository** is enabled and set to **Only Project Members**

@@ -382,7 +382,7 @@ class MergeRequest < ApplicationRecord
       :assignees, :author, :unresolved_notes, :labels, :milestone,
       :timelogs, :latest_merge_request_diff, :reviewers,
       :merge_schedule,
-      target_project: :project_feature,
+      target_project: [:project_feature, :project_setting],
       metrics: [:latest_closed_by, :merged_by]
     )
   }
@@ -1679,8 +1679,8 @@ class MergeRequest < ApplicationRecord
   end
 
   def squash_on_merge?
-    return true if target_project.squash_always?
-    return false if target_project.squash_never?
+    return true if squash_always?
+    return false if squash_never?
 
     squash?
   end
@@ -2371,7 +2371,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def missing_required_squash?
-    !squash && target_project.squash_always?
+    !squash && squash_always?
   end
 
   def current_patch_id_sha
@@ -2443,6 +2443,12 @@ class MergeRequest < ApplicationRecord
 
     diff.paginated_diffs(1, limit).diff_files
   end
+
+  def squash_option
+    target_project.project_setting
+  end
+
+  delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?, to: :squash_option
 
   private
 

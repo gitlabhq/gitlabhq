@@ -9,9 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-FLAG:
-On GitLab Self-Managed, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
+NOTE:
 On GitLab.com, this feature is available for public projects only.
 
 [Sourcegraph](https://sourcegraph.com) provides code intelligence features in the GitLab UI.

@@ -432,8 +432,8 @@ FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-You can use the [extension marketplace](../project/web_ide/index.md#extension-marketplace) to search and
-manage extensions for the [Web IDE](../project/web_ide/index.md) and [workspaces](../workspace/index.md).
+You can use the [extension marketplace](../project/web_ide/_index.md#extension-marketplace) to search and
+manage extensions for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/index.md).
 For third-party extensions, you must enable the marketplace in user preferences.
 
 To enable the extension marketplace for the Web IDE and workspaces:

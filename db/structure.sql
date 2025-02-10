@@ -20756,6 +20756,7 @@ CREATE TABLE saml_group_links (
     saml_group_name text NOT NULL,
     member_role_id bigint,
     assign_duo_seats boolean DEFAULT false NOT NULL,
+    scim_group_uid uuid,
     CONSTRAINT check_1b3fc49d1e CHECK ((char_length(saml_group_name) <= 255))
 );
 
@@ -34659,6 +34660,8 @@ CREATE UNIQUE INDEX index_routes_on_source_type_and_source_id ON routes USING bt
 CREATE UNIQUE INDEX index_saml_group_links_on_group_id_and_saml_group_name ON saml_group_links USING btree (group_id, saml_group_name);
 
 CREATE INDEX index_saml_group_links_on_member_role_id ON saml_group_links USING btree (member_role_id);
+
+CREATE INDEX index_saml_group_links_on_scim_group_uid ON saml_group_links USING btree (scim_group_uid);
 
 CREATE INDEX index_saml_providers_on_group_id ON saml_providers USING btree (group_id);
 

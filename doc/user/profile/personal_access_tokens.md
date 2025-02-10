@@ -147,7 +147,7 @@ Disabling the personal access tokens of a group's [enterprise users](../enterpri
 - Stops the enterprise users from creating new personal access tokens. This behavior applies
   even if an enterprise user is also an administrator of the group.
 - Disables the existing personal access tokens of the enterprise users.
-- Disables OAuth tokens. This prevents usage of the [Web IDE](../project/web_ide/index.md).
+- Disables OAuth tokens. This prevents usage of the [Web IDE](../project/web_ide/_index.md).
 
 NOTE:
 Disabling personal access tokens for enterprise users does not disable personal access tokens for [service accounts](service_accounts.md).

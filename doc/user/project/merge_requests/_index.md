@@ -143,7 +143,7 @@ If you have permission to add changes to a merge request, you can add your chang
 to an existing merge request in several ways. These ways depend on the complexity of your
 change, and whether you need access to a development environment:
 
-- [Edit changes in the Web IDE](../web_ide/index.md) in your browser with the
+- [Edit changes in the Web IDE](../web_ide/_index.md) in your browser with the
   <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md). Use this
   browser-based method to edit multiple files, or if you are not comfortable with Git commands.
   You cannot run tests from the Web IDE.

@@ -979,6 +979,17 @@ For self-compiled installations:
    gitlab_rails['backup_upload_remote_directory'] = '<AZURE BLOB CONTAINER>'
    ```
 
+   If you are using [a managed identity](../object_storage.md#azure-workload-and-managed-identities), omit `azure_storage_access_key`:
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'AzureRM',
+     'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
+     'azure_storage_domain' => '<AZURE STORAGE DOMAIN>' # Optional
+   }
+   gitlab_rails['backup_upload_remote_directory'] = '<AZURE BLOB CONTAINER>'
+   ```
+
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 

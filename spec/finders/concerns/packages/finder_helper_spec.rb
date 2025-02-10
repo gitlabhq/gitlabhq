@@ -14,6 +14,10 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       def respond_to_missing?
         true
       end
+
+      def packages_class
+        ::Packages::Generic::Package
+      end
     end
   end
 

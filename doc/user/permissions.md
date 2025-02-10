@@ -234,9 +234,9 @@ Project permissions for [issues](project/issues/index.md):
 | Manage [design management](project/issues/design_management.md) files |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage [issue boards](project/issue_board.md)                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Manage [milestones](project/milestones/index.md)                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Archive or reopen [requirements](project/requirements/index.md)       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can archive and reopen issues that they authored or are assigned to. |
-| Create or edit [requirements](project/requirements/index.md)          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
-| Import or export [requirements](project/requirements/index.md)        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Archive or reopen [requirements](project/requirements/_index.md)       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can archive and reopen issues that they authored or are assigned to. |
+| Create or edit [requirements](project/requirements/_index.md)          |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
+| Import or export [requirements](project/requirements/_index.md)        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Archive [test cases](../ci/test_cases/_index.md)                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create [test cases](../ci/test_cases/_index.md)                       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Move [test cases](../ci/test_cases/_index.md)                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -274,7 +274,7 @@ Project permissions for [OKRs](okrs.md):
 | Change confidentiality in OKR                                      |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Add internal note                                                  |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 
-Project permissions for [wikis](project/wiki/index.md):
+Project permissions for [wikis](project/wiki/_index.md):
 
 | Action            | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ----------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -313,7 +313,7 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Leave comments                                                            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Reposition comments on images (posted by any user)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Applies only to comments on [Design Management](project/issues/design_management.md) designs. |
 | View [Insights](project/insights/index.md)                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [Requirements](project/requirements/index.md)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Requirements](project/requirements/_index.md)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [time tracking](project/time_tracking.md) reports                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | View [snippets](snippets.md)                                              |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [project traffic statistics](../api/project_statistics.md)           |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |

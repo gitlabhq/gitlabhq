@@ -3366,7 +3366,6 @@ RSpec/FeatureCategory:
     - 'spec/models/packages/debian/project_distribution_key_spec.rb'
     - 'spec/models/packages/go/module_spec.rb'
     - 'spec/models/packages/helm/file_metadatum_spec.rb'
-    - 'spec/models/packages/maven/metadatum_spec.rb'
     - 'spec/models/packages/npm_spec.rb'
     - 'spec/models/packages/nuget/dependency_link_metadatum_spec.rb'
     - 'spec/models/packages/package_file_build_info_spec.rb'

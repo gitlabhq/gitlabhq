@@ -221,10 +221,10 @@ The supported work item types are:
 - [Tasks](../../tasks.md)
 - [Incidents](../../../operations/incident_management/incidents.md)
 - [Test cases](../../../ci/test_cases/_index.md)
-- [Requirements](../requirements/index.md)
+- [Requirements](../requirements/_index.md)
 - [Objectives and key results (OKRs)](../../okrs.md)
 
-For issues and [Service Desk](../service_desk/index.md) issues, the `object_kind` is `issue`, and the `type` is `Issue`.
+For issues and [Service Desk](../service_desk/_index.md) issues, the `object_kind` is `issue`, and the `type` is `Issue`.
 For all other work items, the `object_kind` field is `work_item`, and the `type` is the work item type.
 
 For work item type `Epic`, to get events for changes, the webhook must be registered for the group.

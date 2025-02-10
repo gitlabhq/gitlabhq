@@ -17,7 +17,7 @@ This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/e
 FLAG:
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `certificate_based_clusters`.
 
-- Read more about the non-deprecated [Web Terminals accessible through the Web IDE](../../user/project/web_ide/index.md).
+- Read more about the non-deprecated [Web Terminals accessible through the Web IDE](../../user/project/web_ide/_index.md).
 - Read more about the non-deprecated [Web Terminals accessible from a running CI job](../../ci/interactive_web_terminal/_index.md).
 
 ---

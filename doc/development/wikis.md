@@ -11,9 +11,9 @@ It's used in the [Gitaly](gitaly.md) Ruby service, and accessed from the Rails a
 
 Wikis use Git repositories as storage backend, and can be accessed through:
 
-- The [Web UI](../user/project/wiki/index.md)
+- The [Web UI](../user/project/wiki/_index.md)
 - The [REST API](../api/wikis.md)
-- [Git itself](../user/project/wiki/index.md#create-or-edit-wiki-pages-locally)
+- [Git itself](../user/project/wiki/_index.md#create-or-edit-wiki-pages-locally)
 
 ## Involved Gems
 

@@ -40,7 +40,7 @@ For more information, see:
 - [Create a project](../project/index.md)
 - [Manage projects](../project/working_with_projects.md)
 - [Project visibility](../public_access.md)
-- [Project settings](../project/settings/index.md)
+- [Project settings](../project/settings/_index.md)
 - [Description templates](../project/description_templates.md)
 
 ## Step 2: Secure and control access to projects

@@ -273,7 +273,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/ee/gitlab/ci/config/entry/needs_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/validators/schema_validator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/elastic/helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/group_search_results_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/after_export_strategies/custom_template_export_import_strategy_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/wiki_repo_saver_spec.rb'

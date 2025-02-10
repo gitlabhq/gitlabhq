@@ -1475,10 +1475,10 @@ settings with access control options can be one of:
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/index.md). |
+| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
+| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
 Example request:
 
@@ -1598,10 +1598,10 @@ settings with access control options can be one of:
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/index.md). |
+| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
+| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
 ### Edit a project
 
@@ -1736,10 +1736,10 @@ Supported project visibility attributes:
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/index.md). |
-| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/index.md). |
+| `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
-| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/index.md#enable-or-disable-a-project-wiki). |
+| `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
 ### Import members
 

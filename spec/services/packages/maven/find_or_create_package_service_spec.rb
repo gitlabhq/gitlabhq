@@ -275,7 +275,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       it 'only creates one package' do
         expect do
           with_threads { described_class.new(project, user, params).execute }
-        end.to change { Packages::Package.maven.count }.by(1)
+        end.to change { Packages::Maven::Package.count }.by(1)
       end
 
       context 'when CreatePackageService responds with a name_taken error' do

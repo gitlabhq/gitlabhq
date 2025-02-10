@@ -57,7 +57,7 @@ describe('WikiForm', () => {
     persisted: false,
     uploadsPath: '/project/path/-/wikis/attachments',
     wikiPath: '/project/path/-/wikis',
-    helpPath: '/help/user/project/wiki/index',
+    helpPath: '/help/user/project/wiki/_index',
     markdownHelpPath: '/help/user/markdown',
     markdownPreviewPath: '/project/path/-/wikis/.md/preview-markdown',
     createPath: '/project/path/-/wikis/new',

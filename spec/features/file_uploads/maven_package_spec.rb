@@ -19,7 +19,7 @@ RSpec.describe 'Upload a maven package', :api, :js, feature_category: :package_r
   shared_examples 'for a maven package' do
     it 'creates package files' do
       expect { subject }
-        .to change { Packages::Package.maven.count }.by(1)
+        .to change { ::Packages::Maven::Package.count }.by(1)
         .and change { Packages::PackageFile.count }.by(1)
     end
 

@@ -37,7 +37,7 @@ export default {
         });
     },
     helpPageUrl() {
-      return helpPagePath('user/project/web_ide/index', {
+      return helpPagePath('user/project/web_ide/_index', {
         anchor: 'update-the-oauth-callback-url',
       });
     },

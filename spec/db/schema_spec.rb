@@ -324,7 +324,14 @@ RSpec.describe 'Database schema',
                 # the only condition is for the presence of the foreign key itself
                 columns if index.where.nil? || index.where == "(#{columns.first} IS NOT NULL)"
               end
-              foreign_keys_columns = all_foreign_keys.map(&:column)
+
+              foreign_keys_columns = all_foreign_keys.filter_map do |fk|
+                conditions = fk.options[:conditions]
+                next fk.column unless conditions&.any?
+
+                [fk.column, *conditions.map { |c| c[:column] }]
+              end
+
               required_indexed_columns = to_columns(foreign_keys_columns - ignored_index_columns(table))
 
               # Add the composite primary key to the list of indexed columns because

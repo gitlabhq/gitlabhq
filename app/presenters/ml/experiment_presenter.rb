@@ -5,7 +5,7 @@ module Ml
     presents ::Ml::Experiment, as: :experiment
 
     def path
-      project_ml_experiment_path(experiment.project, experiment)
+      project_ml_experiment_path(experiment.project, experiment.iid)
     end
 
     def candidate_count

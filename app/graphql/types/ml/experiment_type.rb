@@ -19,6 +19,9 @@ module Types
       field :created_at, ::Types::TimeType, null: false,
         description: 'Timestamp of when the experiment was created.'
 
+      field :updated_at, ::Types::TimeType, null: false,
+        description: 'Timestamp of when the experiment was updated.'
+
       field :candidate_count, ::GraphQL::Types::Int, null: false,
         description: 'Number of candidates in the experiment.'
 

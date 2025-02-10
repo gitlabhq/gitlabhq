@@ -26,7 +26,9 @@ FactoryBot.define do
       last_downloaded_at { 2.days.ago }
     end
 
-    factory :maven_package do
+    # TODO: Remove with the rollout of the FF maven_extract_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
+    factory :maven_package_legacy do
       name { 'my/company/app/my-app' }
       sequence(:version) { |n| "1.#{n}-SNAPSHOT" }
       package_type { :maven }
@@ -34,7 +36,8 @@ FactoryBot.define do
       maven_metadatum do
         association(
           :maven_metadatum,
-          package: instance,
+          legacy_package: instance,
+          package: nil,
           path: instance.version? ? "#{instance.name}/#{instance.version}" : instance.name
         )
       end

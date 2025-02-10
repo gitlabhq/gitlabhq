@@ -129,6 +129,6 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Related topics
 
-- [User documentation for wikis](../../user/project/wiki/index.md)
+- [User documentation for wikis](../../user/project/wiki/_index.md)
 - [Project wikis API](../../api/wikis.md)
 - [Group wikis API](../../api/group_wikis.md)

@@ -17,7 +17,9 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:dependency_links).inverse_of(:package) }
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
-    it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
+    # TODO: Remove with the rollout of the FF maven_extract_package_model
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
+    it { is_expected.to have_one(:maven_metadatum).inverse_of(:legacy_package) }
   end
 
   describe '.sort_by_attribute' do
@@ -108,8 +110,10 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     describe '#version' do
+      # TODO: Remove with the rollout of the FF maven_extract_package_model
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
       context 'maven package' do
-        subject { build_stubbed(:maven_package) }
+        subject { build_stubbed(:maven_package_legacy) }
 
         it { is_expected.to allow_value('0').for(:version) }
         it { is_expected.to allow_value('1').for(:version) }
@@ -581,9 +585,11 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  # TODO: Remove with the rollout of the FF maven_extract_package_model
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
   describe '#sync_maven_metadata' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:package) { create(:maven_package) }
+    let_it_be(:package) { build_stubbed(:maven_package_legacy) }
 
     subject { package.sync_maven_metadata(user) }
 
@@ -610,7 +616,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     context 'with a versionless maven package' do
-      let_it_be(:package) { create(:maven_package, version: nil) }
+      let_it_be(:package) { build_stubbed(:maven_package_legacy, version: nil) }
 
       it_behaves_like 'not enqueuing a sync worker job'
     end

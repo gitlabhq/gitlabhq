@@ -66,7 +66,7 @@ For non-Code Suggestions troubleshooting for VS Code, see [Troubleshooting the G
 
 ### Suggestions not displayed in VS Code or GitLab Web IDE
 
-If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/index.md) is enabled. The same settings apply to VS Code as local IDE.
+If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.

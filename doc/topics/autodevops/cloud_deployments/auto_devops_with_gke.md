@@ -239,7 +239,7 @@ Next, create a feature branch to add content to your application:
 
 1. In your project's repository, go to the following file: `app/views/welcome/index.html.erb`.
    This file should only contain a paragraph: `<p>You're on Rails!</p>`.
-1. Open the GitLab [Web IDE](../../../user/project/web_ide/index.md) to make the change.
+1. Open the GitLab [Web IDE](../../../user/project/web_ide/_index.md) to make the change.
 1. Edit the file so it contains:
 
    ```html

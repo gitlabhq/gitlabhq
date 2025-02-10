@@ -108,7 +108,7 @@ included in a project export.
 
 GitLab is built on Git, so you can back up just the repository of a project by cloning it to another computer.
 Similarly, you can clone a project's wiki to back it up. All files
-[uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
+[uploaded after August 22, 2020](../project/wiki/_index.md#create-a-new-wiki-page)
 are included when cloning.
 
 ## Delayed group deletion

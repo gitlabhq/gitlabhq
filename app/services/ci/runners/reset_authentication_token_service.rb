@@ -3,21 +3,28 @@
 module Ci
   module Runners
     class ResetAuthenticationTokenService
-      attr_reader :runner, :current_user
+      attr_reader :runner, :current_user, :source
 
-      def initialize(runner:, current_user:)
+      PERMITTED_SOURCES = %i[runner_api].freeze
+
+      def initialize(runner:, current_user: nil, source: nil)
         @runner = runner
         @current_user = current_user
+        @source = source
       end
 
-      def execute
-        unless current_user&.can?(:update_runner, runner)
-          return ServiceResponse.error(message: 'user is not allowed to reset runner authentication token')
-        end
+      def execute!
+        return ServiceResponse.error(message: 'Not permitted to reset', reason: :forbidden) unless reset_permitted?
 
-        return ServiceResponse.success if runner.reset_token!
+        runner.reset_token!
 
-        ServiceResponse.error(message: "Couldn't reset token")
+        ServiceResponse.success
+      end
+
+      private
+
+      def reset_permitted?
+        @source&.in?(PERMITTED_SOURCES) || current_user.can?(:update_runner, runner)
       end
     end
   end

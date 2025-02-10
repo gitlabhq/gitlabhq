@@ -28309,10 +28309,12 @@ Check permissions for the current user on a issue.
 | ---- | ---- | ----------- |
 | <a id="issuepermissionsadminissue"></a>`adminIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue` on this resource. |
 | <a id="issuepermissionsadminissuerelation"></a>`adminIssueRelation` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_issue_relation` on this resource. |
+| <a id="issuepermissionscloneissue"></a>`cloneIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `clone_issue` on this resource. |
 | <a id="issuepermissionscreatedesign"></a>`createDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_design` on this resource. |
 | <a id="issuepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
 | <a id="issuepermissionsdestroydesign"></a>`destroyDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `destroy_design` on this resource. |
 | <a id="issuepermissionsmovedesign"></a>`moveDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_design` on this resource. |
+| <a id="issuepermissionsmoveissue"></a>`moveIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_issue` on this resource. |
 | <a id="issuepermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_design` on this resource. |
 | <a id="issuepermissionsreadissue"></a>`readIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_issue` on this resource. |
 | <a id="issuepermissionsreopenissue"></a>`reopenIssue` | [`Boolean!`](#boolean) | If `true`, the user can perform `reopen_issue` on this resource. |
@@ -30915,6 +30917,7 @@ Machine learning experiment in model experiments.
 | <a id="mlexperimentmodelid"></a>`modelId` | [`MlModelID`](#mlmodelid) | ID of the model. |
 | <a id="mlexperimentname"></a>`name` | [`String!`](#string) | Name of the experiment. |
 | <a id="mlexperimentpath"></a>`path` | [`String!`](#string) | Web URL of the experiment. |
+| <a id="mlexperimentupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the experiment was updated. |
 
 ### `MlModel`
 
@@ -36214,7 +36217,6 @@ JSON structure of each line in a matched chunk.
 | ---- | ---- | ----------- |
 | <a id="searchbloblinehighlights"></a>`highlights` **{warning-solid}** | [`[[Int!]!]`](#int) | **Introduced** in GitLab 17.8. **Status**: Experiment. Column numbers of the first and last highlighted characters on a line. |
 | <a id="searchbloblinelinenumber"></a>`lineNumber` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Line number of the blob. |
-| <a id="searchbloblinerichtext"></a>`richText` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Rich text of the blob. |
 | <a id="searchbloblinetext"></a>`text` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Text content of the blob. |
 
 ### `SecurityPolicyValidationError`
@@ -38854,9 +38856,11 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionsadminparentlink"></a>`adminParentLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_parent_link` on this resource. |
 | <a id="workitempermissionsadminworkitem"></a>`adminWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item` on this resource. |
 | <a id="workitempermissionsadminworkitemlink"></a>`adminWorkItemLink` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_work_item_link` on this resource. |
+| <a id="workitempermissionscloneworkitem"></a>`cloneWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `clone_work_item` on this resource. |
 | <a id="workitempermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
 | <a id="workitempermissionsdeleteworkitem"></a>`deleteWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_work_item` on this resource. |
 | <a id="workitempermissionsmarknoteasinternal"></a>`markNoteAsInternal` | [`Boolean!`](#boolean) | If `true`, the user can perform `mark_note_as_internal` on this resource. |
+| <a id="workitempermissionsmoveworkitem"></a>`moveWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_work_item` on this resource. |
 | <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_work_item` on this resource. |
 | <a id="workitempermissionsreportspam"></a>`reportSpam` | [`Boolean!`](#boolean) | If `true`, the user can perform `report_spam` on this resource. |
 | <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |

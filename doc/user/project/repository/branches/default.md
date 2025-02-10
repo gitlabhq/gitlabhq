@@ -260,7 +260,7 @@ current default branch, instead of displaying the "not found" page.
 
 ## Related topics
 
-- [Configure a default branch for your wiki](../../wiki/index.md)
+- [Configure a default branch for your wiki](../../wiki/_index.md)
 - [Discussion of default branch renaming](https://lore.kernel.org/git/pull.656.v4.git.1593009996.gitgitgadget@gmail.com/)
   on the Git mailing list
 - [March 2021 blog post: The new Git default branch name](https://about.gitlab.com/blog/2021/03/10/new-git-default-branch-name/)

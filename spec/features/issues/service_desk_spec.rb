@@ -55,7 +55,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
             aggregate_failures do
               expect(page).to have_css('[data-testid="issues-service-desk-empty-state"]')
               expect(page).to have_text('Use Service Desk to connect with your users')
-              expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/index.md'))
+              expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/_index.md'))
               expect(page).not_to have_link('Enable Service Desk')
               expect(page).to have_content(::ServiceDesk::Emails.new(project).address)
             end
@@ -74,7 +74,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
               aggregate_failures do
                 expect(page).to have_css('[data-testid="issues-service-desk-empty-state"]')
                 expect(page).to have_text('Use Service Desk to connect with your users')
-                expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/index.md'))
+                expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/_index.md'))
                 expect(page).not_to have_link('Enable Service Desk')
                 expect(page).not_to have_content(::ServiceDesk::Emails.new(project).address)
               end
@@ -96,7 +96,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
 
           it 'displays the small info box, documentation, a button to configure service desk, and the address' do
             aggregate_failures do
-              expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/index.md'))
+              expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/_index.md'))
               expect(page).not_to have_link('Enable Service Desk')
               expect(page).to have_content(::ServiceDesk::Emails.new(project).address)
             end

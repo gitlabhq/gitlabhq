@@ -108,9 +108,8 @@ module Gitlab
         params 'path/to/project [--with_notes]'
         types Issue
         condition do
-          quick_action_target.try(:supports_move_and_clone?) &&
-            quick_action_target.persisted? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+          quick_action_target.persisted? &&
+            current_user.can?(:"clone_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :clone do |params = ''|
           params = params.split(' ')
@@ -144,9 +143,8 @@ module Gitlab
         params 'path/to/project'
         types Issue
         condition do
-          quick_action_target.try(:supports_move_and_clone?) &&
-            quick_action_target.persisted? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+          quick_action_target.persisted? &&
+            current_user.can?(:"move_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :move do |target_project_path|
           target_project = Project.find_by_full_path(target_project_path)

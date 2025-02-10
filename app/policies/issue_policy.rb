@@ -53,6 +53,11 @@ class IssuePolicy < IssuablePolicy
     epics_license_available?
   end
 
+  # this is temporarily needed until we rollout implementation of move and clone for all work item types
+  condition(:supports_move_and_clone, scope: :subject) do
+    @subject.supports_move_and_clone?
+  end
+
   rule { group_issue & can?(:read_group) }.policy do
     enable :create_note
   end
@@ -147,6 +152,11 @@ class IssuePolicy < IssuablePolicy
 
   rule { planner_or_reporter_access }.policy do
     enable :mark_note_as_internal
+  end
+
+  rule { can?(:admin_issue) & supports_move_and_clone }.policy do
+    enable :move_issue
+    enable :clone_issue
   end
 
   # IMPORTANT: keep the prevent rules as last rules defined in the policy, as these are based on

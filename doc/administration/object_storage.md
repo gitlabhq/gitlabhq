@@ -375,25 +375,205 @@ The following are the valid connection parameters for Azure. For more informatio
 |------------------------------|----------------|-----------|
 | `provider`                   | Provider name. | `AzureRM` |
 | `azure_storage_account_name` | Name of the Azure Blob Storage account used to access the storage. | `azuretest` |
-| `azure_storage_access_key`   | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
+| `azure_storage_access_key`   | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. This is optional for [Azure workload and managed identities](#azure-workload-and-managed-identities). | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
 | `azure_storage_domain`       | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
 
-- For Linux package installations, this is an example of the `connection` setting in the consolidated form:
+::Tabs
 
-  ```ruby
-  gitlab_rails['object_store']['connection'] = {
-    'provider' => 'AzureRM',
-    'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
-    'azure_storage_access_key' => '<AZURE STORAGE ACCESS KEY>',
-    'azure_storage_domain' => '<AZURE STORAGE DOMAIN>'
-  }
-  ```
+:::TabTitle Linux package (Omnibus)
 
-- For self-compiled installations, Workhorse also needs to be configured with Azure
-  credentials. This isn't needed in Linux package installations because the Workhorse
-  settings are populated from the previous settings.
+1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
+   the values you want:
 
-  1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'AzureRM',
+     'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
+     'azure_storage_access_key' => '<AZURE STORAGE ACCESS KEY>',
+     'azure_storage_domain' => '<AZURE STORAGE DOMAIN>'
+   }
+   gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'gitlab-artifacts'
+   gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'gitlab-mr-diffs'
+   gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'gitlab-lfs'
+   gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'gitlab-uploads'
+   gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
+   gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
+   gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
+   gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
+   gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
+   ```
+
+   If you are using [a workload identity](#azure-workload-and-managed-identities), omit `azure_storage_access_key`:
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'AzureRM',
+     'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
+     'azure_storage_domain' => '<AZURE STORAGE DOMAIN>'
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Put the following content in a file named `object_storage.yaml` to be used as a
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
+
+   ```yaml
+   provider: AzureRM
+   azure_storage_account_name: <YOUR_AZURE_STORAGE_ACCOUNT_NAME>
+   azure_storage_access_key: <YOUR_AZURE_STORAGE_ACCOUNT_KEY>
+   azure_storage_domain: blob.core.windows.net
+   ```
+
+   If you are using [a workload or managed identity](#azure-workload-and-managed-identities), omit `azure_storage_access_key`:
+
+   ```yaml
+   provider: AzureRM
+   azure_storage_account_name: <YOUR_AZURE_STORAGE_ACCOUNT_NAME>
+   azure_storage_domain: blob.core.windows.net
+   ```
+
+1. Create the Kubernetes Secret:
+
+   ```shell
+   kubectl create secret generic -n <namespace> gitlab-object-storage --from-file=connection=object_storage.yaml
+   ```
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+        artifacts:
+          bucket: gitlab-artifacts
+        ciSecureFiles:
+          bucket: gitlab-ci-secure-files
+          enabled: true
+        dependencyProxy:
+          bucket: gitlab-dependency-proxy
+          enabled: true
+        externalDiffs:
+          bucket: gitlab-mr-diffs
+          enabled: true
+        lfs:
+          bucket: gitlab-lfs
+        object_store:
+          connection:
+            secret: gitlab-object-storage
+          enabled: true
+          proxy_download: false
+        packages:
+          bucket: gitlab-packages
+        terraformState:
+          bucket: gitlab-terraform-state
+          enabled: true
+        uploads:
+          bucket: gitlab-uploads
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           # Consolidated object storage configuration
+           gitlab_rails['object_store']['enabled'] = true
+           gitlab_rails['object_store']['proxy_download'] = false
+           gitlab_rails['object_store']['connection'] = {
+             'provider' => 'AzureRM',
+             'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
+             'azure_storage_access_key' => '<AZURE STORAGE ACCESS KEY>',
+             'azure_storage_domain' => '<AZURE STORAGE DOMAIN>'
+           }
+           gitlab_rails['object_store']['objects']['artifacts']['bucket'] = 'gitlab-artifacts'
+           gitlab_rails['object_store']['objects']['external_diffs']['bucket'] = 'gitlab-mr-diffs'
+           gitlab_rails['object_store']['objects']['lfs']['bucket'] = 'gitlab-lfs'
+           gitlab_rails['object_store']['objects']['uploads']['bucket'] = 'gitlab-uploads'
+           gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
+           gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
+           gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
+           gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
+           gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
+   ```
+
+    If you are using [a managed identity](#azure-workload-and-managed-identities), omit `azure_storage_access_key`.
+
+   ```ruby
+   gitlab_rails['object_store']['connection'] = {
+     'provider' => 'AzureRM',
+     'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
+     'azure_storage_domain' => '<AZURE STORAGE DOMAIN>'
+   }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+For self-compiled installations, Workhorse also needs to be configured with Azure
+credentials. This isn't needed in Linux package installations because the Workhorse
+settings are populated from the previous settings.
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
+
+   ```yaml
+   production: &base
+     object_store:
+       enabled: true
+       proxy_download: false
+       connection:
+         provider: AzureRM
+         azure_storage_account_name: '<AZURE STORAGE ACCOUNT NAME>'
+         azure_storage_access_key: '<AZURE STORAGE ACCESS KEY>'
+       objects:
+         artifacts:
+           bucket: gitlab-artifacts
+         external_diffs:
+           bucket: gitlab-mr-diffs
+         lfs:
+           bucket: gitlab-lfs
+         uploads:
+           bucket: gitlab-uploads
+         packages:
+           bucket: gitlab-packages
+         dependency_proxy:
+           bucket: gitlab-dependency-proxy
+         terraform_state:
+           bucket: gitlab-terraform-state
+         ci_secure_files:
+           bucket: gitlab-ci-secure-files
+         pages:
+           bucket: gitlab-pages
+   ```
+
+1. Edit `/home/git/gitlab-workhorse/config.toml` and add or amend the following lines:
 
      ```toml
      [object_storage]
@@ -404,10 +584,38 @@ The following are the valid connection parameters for Azure. For more informatio
        azure_storage_access_key = "<AZURE STORAGE ACCESS KEY>"
      ```
 
-  If you are using a custom Azure storage domain,
-  `azure_storage_domain` does **not** have to be set in the Workhorse
-  configuration. This information is exchanged in an API call between
-  GitLab Rails and Workhorse.
+   If you are using a custom Azure storage domain, `azure_storage_domain`
+   does **not** have to be set in the Workhorse configuration. This
+   information is exchanged in an API call between GitLab Rails and
+   Workhorse.
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
+#### Azure workload and managed identities
+
+> - [Introduced in GitLab 17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/242245)
+
+To use [Azure workload identities](https://azure.github.io/azure-workload-identity/docs/) or [managed identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/), omit
+`azure_storage_access_key` from the configuration. When
+`azure_storage_access_key` is blank, GitLab attempts to:
+
+1. Obtain temporary credentials with [a workload identity](https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview). `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, and `AZURE_FEDERATED_TOKEN_FILE` should be in the environment.
+1. If a workload identity is not available, request credentials from the [Azure Instance Metadata Service](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token).
+1. Get a [User Delegation Key](https://learn.microsoft.com/en-us/rest/api/storageservices/get-user-delegation-key).
+1. Generate a SAS token with that key to access a Storage Account blob.
+
+Ensure that the identity has the `Storage Blob Data Contributor` role
+assigned to it.
 
 ### Storj Gateway (SJ)
 
@@ -548,59 +756,31 @@ The following example uses AWS S3 to enable object storage for all supported ser
    ```yaml
    global:
      appConfig:
-       object_store:
-         enabled: false
-         proxy_download: false
-         storage_options: {}
-           # server_side_encryption:
-           # server_side_encryption_kms_key_id
-         connection:
-           secret: gitlab-object-storage
-       lfs:
-         enabled: true
-         proxy_download: false
-         bucket: gitlab-lfs
-         connection: {}
-           # secret:
-           # key:
-       artifacts:
-         enabled: true
-         proxy_download: false
-         bucket: gitlab-artifacts
-         connection: {}
-           # secret:
-           # key:
-       uploads:
-         enabled: true
-         proxy_download: false
-         bucket: gitlab-uploads
-         connection: {}
-           # secret:
-           # key:
-       packages:
-         enabled: true
-         proxy_download: false
-         bucket: gitlab-packages
-         connection: {}
-       externalDiffs:
-         enabled: true
-         when:
-         proxy_download: false
-         bucket: gitlab-mr-diffs
-         connection: {}
-       terraformState:
-         enabled: true
-         bucket: gitlab-terraform-state
-         connection: {}
-       ciSecureFiles:
-         enabled: true
-         bucket: gitlab-ci-secure-files
-         connection: {}
-       dependencyProxy:
-         enabled: true
-         proxy_download: false
-         bucket: gitlab-dependency-proxy
-         connection: {}
+        artifacts:
+          bucket: gitlab-artifacts
+        ciSecureFiles:
+          bucket: gitlab-ci-secure-files
+          enabled: true
+        dependencyProxy:
+          bucket: gitlab-dependency-proxy
+          enabled: true
+        externalDiffs:
+          bucket: gitlab-mr-diffs
+          enabled: true
+        lfs:
+          bucket: gitlab-lfs
+        object_store:
+          connection:
+            secret: gitlab-object-storage
+          enabled: true
+          proxy_download: false
+        packages:
+          bucket: gitlab-packages
+        terraformState:
+          bucket: gitlab-terraform-state
+          enabled: true
+        uploads:
+          bucket: gitlab-uploads
    ```
 
 1. Save the file and apply the new values:

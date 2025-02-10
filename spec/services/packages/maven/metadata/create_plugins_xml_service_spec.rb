@@ -51,6 +51,14 @@ RSpec.describe ::Packages::Maven::Metadata::CreatePluginsXmlService, feature_cat
 
     context 'with same plugins on both sides' do
       it_behaves_like 'returning no changes'
+
+      context 'when maven_extract_package_model is disabled' do
+        before do
+          stub_feature_flags(maven_extract_package_model: false)
+        end
+
+        it_behaves_like 'returning no changes'
+      end
     end
 
     context 'with more plugins' do

@@ -61,7 +61,7 @@ When working with Error Tracking, you might encounter the following issues.
 ### Error `Connection failed. Check auth token and try again`
 
 If the **Monitor** feature is disabled in the
-[project settings](../user/project/settings/index.md#configure-project-features-and-permissions),
+[project settings](../user/project/settings/_index.md#configure-project-features-and-permissions),
 you might see an error when you try to [enable Sentry integration for a project](#enable-sentry-integration-for-a-project).
 The resulting request to `/project/path/-/error_tracking/projects.json?api_host=https:%2F%2Fsentry.example.com%2F&token=<token>` returns a 404 error.
 

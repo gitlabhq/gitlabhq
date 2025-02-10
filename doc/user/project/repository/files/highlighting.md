@@ -17,7 +17,7 @@ to use based on the file extension, which most of the time is sufficient.
 The paths here use the [`.gitattributes` interface](https://git-scm.com/docs/gitattributes) in Git.
 
 NOTE:
-The [Web IDE](../../web_ide/index.md) and [Snippets](../../../snippets.md) use [Monaco Editor](https://microsoft.github.io/monaco-editor/)
+The [Web IDE](../../web_ide/_index.md) and [Snippets](../../../snippets.md) use [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 for text editing, which internally uses the [Monarch](https://microsoft.github.io/monaco-editor/monarch.html)
 library for syntax highlighting.
 

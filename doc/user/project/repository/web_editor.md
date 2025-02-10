@@ -26,7 +26,7 @@ Use the Web Editor to:
 GitLab uses your [primary email address](../../profile/index.md#change-the-email-displayed-on-your-commits)
 for Web Editor commits.
 
-For changes to multiple files, use the [Web IDE](../web_ide/index.md).
+For changes to multiple files, use the [Web IDE](../web_ide/_index.md).
 
 NOTE:
 To manage files in a [protected branch](branches/protected.md),
@@ -302,4 +302,4 @@ production releases and release candidates. To create a tag in the Web Editor:
 - [Branches](branches/_index.md)
   - [Default branch](branches/default.md)
   - [Protected branches](branches/protected.md)
-- [Web IDE](../web_ide/index.md)
+- [Web IDE](../web_ide/_index.md)

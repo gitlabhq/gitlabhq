@@ -19,7 +19,7 @@ These features include:
 
 ## Web IDE
 
-You can use the [Web IDE](../web_ide/index.md) to make, commit, and push changes to a project directly from your web browser.
+You can use the [Web IDE](../web_ide/_index.md) to make, commit, and push changes to a project directly from your web browser.
 This way, you can update any project without having to install any dependencies or clone any repositories locally.
 
 The Web IDE, however, lacks a native runtime environment where you could compile code, run tests, or generate real-time feedback.

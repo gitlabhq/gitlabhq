@@ -313,7 +313,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature).
 - When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
   If your GitLab server's external URL configuration in the `GitLab.rb` file contains uppercase letters, the Web IDE might fail to load.
-  To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/index.md#update-the-oauth-callback-url).
+  To resolve this issue, see [update the OAuth callback URL](../../user/project/web_ide/_index.md#update-the-oauth-callback-url).
 - In accordance with [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540#section-3.3),
   Gitaly and Praefect reject TLS connections that do not support ALPN.
   If you use a load balancer in front of Praefect with

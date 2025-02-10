@@ -11,7 +11,7 @@ DETAILS:
 
 Use a Confluence Cloud Workspace as your project wiki.
 
-This integration adds a link to a Confluence wiki instead of the [GitLab wiki](../wiki/index.md).
+This integration adds a link to a Confluence wiki instead of the [GitLab wiki](../wiki/_index.md).
 Any content you have in Confluence is not displayed in GitLab.
 
 When you turn on the integration:

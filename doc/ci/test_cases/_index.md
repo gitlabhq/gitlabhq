@@ -22,7 +22,7 @@ while integrating with your development workflows, see
 <!-- Video published on 2024-02-21 -->
 
 NOTE:
-[Requirements](../../user/project/requirements/index.md) and test cases are being
+[Requirements](../../user/project/requirements/_index.md) and test cases are being
 [migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
 [Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
 For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).

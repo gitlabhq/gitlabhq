@@ -17,7 +17,7 @@ DETAILS:
 
 Rich text editor is available in:
 
-- [Wikis](project/wiki/index.md)
+- [Wikis](project/wiki/_index.md)
 - Issues
 - Epics
 - Merge requests

@@ -193,7 +193,7 @@ To create an issue in the GitLab project:
 
 ## Using Service Desk
 
-To offer email support, enable [Service Desk](../service_desk/index.md) for your project.
+To offer email support, enable [Service Desk](../service_desk/_index.md) for your project.
 
 Now, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.

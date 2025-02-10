@@ -285,7 +285,6 @@ RSpec/ContextWording:
     - 'ee/spec/lib/ee/gitlab/cleanup/orphan_job_artifact_files_batch_spec.rb'
     - 'ee/spec/lib/ee/gitlab/cleanup/orphan_job_artifact_files_spec.rb'
     - 'ee/spec/lib/ee/gitlab/database_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/elastic/helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/email/handler/service_desk_handler_spec.rb'
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/group_search_results_spec.rb'

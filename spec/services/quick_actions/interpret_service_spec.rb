@@ -646,7 +646,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
 
       context "when we pass a work_item" do
-        let(:work_item) { create(:work_item, :issue) }
+        let(:work_item) { create(:work_item, :issue, project: project) }
         let(:move_command) { "/move #{project.full_path}" }
 
         it '/move execution method message' do
@@ -4134,6 +4134,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   describe '#available_commands' do
     context 'when Guest is creating a new issue' do
       let_it_be(:guest) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+
+      let(:current_user) { guest }
 
       let(:issue) { build(:issue, project: public_project) }
       let(:service) { described_class.new(container: project, current_user: guest) }
@@ -4159,7 +4162,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     context 'when target is a work item type of issue' do
-      let(:target) { create(:work_item, :issue) }
+      let(:target) { create(:work_item, :issue, project: project) }
 
       context "when work_item supports move and clone commands" do
         it 'does recognize the actions' do

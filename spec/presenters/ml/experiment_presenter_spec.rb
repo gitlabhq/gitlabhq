@@ -12,7 +12,7 @@ RSpec.describe Ml::ExperimentPresenter, feature_category: :mlops do
   describe '#path' do
     subject { presenter.path }
 
-    it { is_expected.to eq("/#{project.full_path}/-/ml/experiments/#{experiment.id}") }
+    it { is_expected.to eq("/#{project.full_path}/-/ml/experiments/#{experiment.iid}") }
   end
 
   describe '#candidate_count' do

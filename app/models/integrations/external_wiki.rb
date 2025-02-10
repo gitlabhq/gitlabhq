@@ -22,7 +22,7 @@ module Integrations
 
     def self.help
       build_help_page_url(
-        'user/project/wiki/index.md',
+        'user/project/wiki/_index.md',
         s_('Link an external wiki from the project\'s sidebar.'),
         { anchor: 'link-an-external-wiki' }
       )

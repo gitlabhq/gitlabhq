@@ -10,7 +10,7 @@ export const pageInfo = {
   slug: 'home',
   path: '/flightjs/Flight/-/wikis/home',
   wikiPath: '/flightjs/Flight/-/wikis/home',
-  helpPath: '/help/user/project/wiki/index.md',
+  helpPath: '/help/user/project/wiki/_index.md',
   markdownHelpPath: '/help/user/markdown.md',
   markdownPreviewPath: '/flightjs/Flight/-/wikis/home/preview_markdown',
   createPath: '/flightjs/Flight/-/wikis',

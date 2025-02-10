@@ -79,7 +79,7 @@ For more information, see:
 - [Set up the extension for JetBrains](../../editor_extensions/jetbrains_ide/setup.md).
 - [Set up the extension for Visual Studio](../../editor_extensions/visual_studio/setup.md).
 - [Set up the extension for Neovim](../../editor_extensions/neovim/setup.md).
-- [Use the Web IDE](../project/web_ide/index.md).
+- [Use the Web IDE](../project/web_ide/_index.md).
 
 ## Step 5: Confirm that Code Suggestions is on in your IDE
 

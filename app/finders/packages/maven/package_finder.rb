@@ -26,6 +26,15 @@ module Packages
           packages_visible_to_user_including_public_registries(@current_user, within_group: @project_or_group)
         end
       end
+
+      override :packages_class
+      def packages_class
+        if Feature.enabled?(:maven_extract_package_model, Feature.current_request)
+          ::Packages::Maven::Package
+        else
+          super
+        end
+      end
     end
   end
 end
