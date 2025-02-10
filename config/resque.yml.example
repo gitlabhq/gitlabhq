@@ -27,7 +27,7 @@ production:
   # http://redis.io/topics/sentinel
   #
   # You must specify a list of a few sentinels that will handle client connection
-  # please read here for more information: https://docs.gitlab.com/ee/administration/redis/index.html
+  # please read here for more information: https://docs.gitlab.com/ee/administration/redis/
   ##
   # url: redis://master:6379
   # sentinels:

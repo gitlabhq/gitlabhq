@@ -6,6 +6,9 @@ COLOR_GREEN="\e[32m"
 COLOR_YELLOW="\e[33m"
 COLOR_RESET="\e[39m"
 
+# Projects that are included on the Docs website besides gitlab
+EXTERNAL_DOCS_PROJECTS="omnibus charts runner operator"
+
 cd "$(dirname "$0")/.." || exit 1
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Linting documents at path $(pwd) as $(whoami)...${COLOR_RESET}\n"
@@ -252,6 +255,19 @@ fi
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Looking for Vale to lint prose, either installed locally or available in documentation linting image...${COLOR_RESET}\n"
 run_locally_or_in_container 'vale' "--minAlertLevel error --output=doc/.vale/vale.tmpl" "${MD_DOC_PATH_VALE}"
+
+# Check for restricted directory names that would conflict with other project's docs
+# shellcheck disable=2059
+printf "${COLOR_GREEN}INFO: Checking for restricted directory names...${COLOR_RESET}\n"
+for dir in $EXTERNAL_DOCS_PROJECTS; do
+  if [ -d "doc/$dir" ]; then
+    # shellcheck disable=2059
+    printf "${COLOR_RED}ERROR: Found restricted directory name '${dir}' in doc/ directory.${COLOR_RESET}\n"
+    printf "This directory name conflicts with existing documentation repositories.\n" >&2
+    ((ERRORCODE++))
+    break
+  fi
+done
 
 if [ "$ERRORCODE" -ne 0 ]
 then

@@ -1506,6 +1506,41 @@ From GitLab 18.0, the secret detection analyzer will no longer use the root user
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Subscription related API endpoints in the public API are deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251).
+
+</div>
+
+The following endpoints in the public REST API will be removed:
+
+- `POST /api/v4/namespaces/:namespace_id/minutes`
+- `GET /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
+- `POST /api/v4/namespaces/:id/gitlab_subscription`
+- `PUT /api/v4/namespaces/:id/gitlab_subscription`
+- `PUT /api/v4/user/:id/credit_card_validation`
+- `PUT /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
+- `POST /api/v4/namespaces/:namespace_id/subscription_add_on_purchase/:id`
+- `PATCH /api/v4/namespaces/:previous_namespace_id/minutes/move/:target_namespace_id`
+- `DELETE /api/v4/internal/upcoming_reconciliations`
+- `PUT /api/v4/internal/upcoming_reconciliations`
+- `PUT /api/v4/namespaces/:id`
+
+These endpoints were being used by the Subscription Portal to manage subscription information on GitLab.com. Their
+usage has been replaced by internal endpoints with JWT authentication to support the upcoming Cells architecture.
+The endpoints in the public API are being removed so that they are not accidentally used again, and to reduce
+the maintenance burden as they start to drift in functionality.
+
+You shouldn't experience any impact as a result of this change, as these are endpoints that were used internally.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 <div class="deprecation-notes">

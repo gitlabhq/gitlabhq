@@ -176,10 +176,9 @@ export default {
     markdownPreviewPath() {
       const {
         fullPath,
-        isGroup,
         workItem: { iid },
       } = this;
-      return markdownPreviewPath({ fullPath, iid, isGroup });
+      return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
     },
     autocompleteDataSources() {
       const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
