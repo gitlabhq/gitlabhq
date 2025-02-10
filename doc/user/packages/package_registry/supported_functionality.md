@@ -24,14 +24,14 @@ Packages can be published to your project, group, or instance.
 | [npm](../npm_registry/index.md)                       | Y       | N     | N        |
 | [NuGet](../nuget_repository/index.md)                 | Y       | N     | N        |
 | [PyPI](../pypi_repository/index.md)                   | Y       | N     | N        |
-| [Generic packages](../generic_packages/index.md)      | Y       | N     | N        |
+| [Generic packages](../generic_packages/_index.md)      | Y       | N     | N        |
 | [Terraform](../terraform_module_registry/index.md)    | Y       | N     | N        |
 | [Composer](../composer_repository/index.md)           | N       | Y     | N        |
 | [Conan](../conan_repository/index.md)                 | Y       | N     | Y        |
-| [Helm](../helm_repository/index.md)                   | Y       | N     | N        |
-| [Debian](../debian_repository/index.md)               | Y       | N     | N        |
-| [Go](../go_proxy/index.md)                            | Y       | N     | N        |
-| [Ruby gems](../rubygems_registry/index.md)            | Y       | N     | N        |
+| [Helm](../helm_repository/_index.md)                   | Y       | N     | N        |
+| [Debian](../debian_repository/_index.md)               | Y       | N     | N        |
+| [Go](../go_proxy/_index.md)                            | Y       | N     | N        |
+| [Ruby gems](../rubygems_registry/_index.md)            | Y       | N     | N        |
 
 ## Pulling packages
 
@@ -49,14 +49,14 @@ Packages can be pulled from your project, group, or instance.
 | [npm](../npm_registry/index.md)                       | Y       | Y     | Y        |
 | [NuGet](../nuget_repository/index.md)                 | Y       | Y     | N        |
 | [PyPI](../pypi_repository/index.md)                   | Y       | Y     | N        |
-| [Generic packages](../generic_packages/index.md)      | Y       | N     | N        |
+| [Generic packages](../generic_packages/_index.md)      | Y       | N     | N        |
 | [Terraform](../terraform_module_registry/index.md)    | N       | Y     | N        |
 | [Composer](../composer_repository/index.md)           | Y       | Y     | N        |
 | [Conan](../conan_repository/index.md)                 | Y       | N     | Y        |
-| [Helm](../helm_repository/index.md)                   | Y       | N     | N        |
-| [Debian](../debian_repository/index.md)               | Y       | N     | N        |
-| [Go](../go_proxy/index.md)                            | Y       | N     | Y        |
-| [Ruby gems](../rubygems_registry/index.md)            | Y       | N     | N        |
+| [Helm](../helm_repository/_index.md)                   | Y       | N     | N        |
+| [Debian](../debian_repository/_index.md)               | Y       | N     | N        |
+| [Go](../go_proxy/_index.md)                            | Y       | N     | Y        |
+| [Ruby gems](../rubygems_registry/_index.md)            | Y       | N     | N        |
 
 ## Forwarding requests
 
@@ -74,14 +74,14 @@ Requests for packages not found in your GitLab project are forwarded to the publ
 | [npm](../npm_registry/index.md)                       | [Yes](../../../administration/settings/continuous_integration.md#npm-forwarding) |
 | [NuGet](../nuget_repository/index.md)                 | N                           |
 | [PyPI](../pypi_repository/index.md)                   | [Yes](../../../administration/settings/continuous_integration.md#pypi-forwarding) |
-| [Generic packages](../generic_packages/index.md)      | N                           |
+| [Generic packages](../generic_packages/_index.md)      | N                           |
 | [Terraform](../terraform_module_registry/index.md)    | N                           |
 | [Composer](../composer_repository/index.md)           | N                           |
 | [Conan](../conan_repository/index.md)                 | N                           |
-| [Helm](../helm_repository/index.md)                   | N                           |
-| [Debian](../debian_repository/index.md)               | N                           |
-| [Go](../go_proxy/index.md)                            | N                           |
-| [Ruby gems](../rubygems_registry/index.md)            | N                           |
+| [Helm](../helm_repository/_index.md)                   | N                           |
+| [Debian](../debian_repository/_index.md)               | N                           |
+| [Go](../go_proxy/_index.md)                            | N                           |
+| [Ruby gems](../rubygems_registry/_index.md)            | N                           |
 
 ## Deleting packages
 
@@ -112,14 +112,14 @@ You can use GitLab pipelines to import packages from other repositories, such as
 | [npm](../npm_registry/index.md)                       | Y                   |
 | [NuGet](../nuget_repository/index.md)                 | Y                   |
 | [PyPI](../pypi_repository/index.md)                   | Y                   |
-| [Generic packages](../generic_packages/index.md)      | N                   |
+| [Generic packages](../generic_packages/_index.md)      | N                   |
 | [Terraform](../terraform_module_registry/index.md)    | N                   |
 | [Composer](../composer_repository/index.md)           | N                   |
 | [Conan](../conan_repository/index.md)                 | N                   |
-| [Helm](../helm_repository/index.md)                   | N                   |
-| [Debian](../debian_repository/index.md)               | N                   |
-| [Go](../go_proxy/index.md)                            | N                   |
-| [Ruby gems](../rubygems_registry/index.md)            | N                   |
+| [Helm](../helm_repository/_index.md)                   | N                   |
+| [Debian](../debian_repository/_index.md)               | N                   |
+| [Go](../go_proxy/_index.md)                            | N                   |
+| [Ruby gems](../rubygems_registry/_index.md)            | N                   |
 
 ## Allow or prevent duplicates
 
@@ -137,14 +137,14 @@ By default, the GitLab package registry either allows or prevents duplicates bas
 | [npm](../npm_registry/index.md)                       | N                   |
 | [NuGet](../nuget_repository/index.md)                 | Y                   |
 | [PyPI](../pypi_repository/index.md)                   | N                   |
-| [Generic packages](../generic_packages/index.md)      | Y (configurable)    |
+| [Generic packages](../generic_packages/_index.md)      | Y (configurable)    |
 | [Terraform](../terraform_module_registry/index.md)    | N                   |
 | [Composer](../composer_repository/index.md)           | N                   |
 | [Conan](../conan_repository/index.md)                 | N                   |
-| [Helm](../helm_repository/index.md)                   | Y                   |
-| [Debian](../debian_repository/index.md)               | Y                   |
-| [Go](../go_proxy/index.md)                            | N                   |
-| [Ruby gems](../rubygems_registry/index.md)            | Y                   |
+| [Helm](../helm_repository/_index.md)                   | Y                   |
+| [Debian](../debian_repository/_index.md)               | Y                   |
+| [Go](../go_proxy/_index.md)                            | N                   |
+| [Ruby gems](../rubygems_registry/_index.md)            | Y                   |
 
 ## Authentication tokens
 
@@ -164,14 +164,14 @@ The following tokens are supported:
 | [npm](../npm_registry/index.md)                       | Personal access, job tokens, deploy (project or group), project access |
 | [NuGet](../nuget_repository/index.md)                 | Personal access, job tokens, deploy (project or group), project access |
 | [PyPI](../pypi_repository/index.md)                   | Personal access, job tokens, deploy (project or group), project access |
-| [Generic packages](../generic_packages/index.md)      | Personal access, job tokens, deploy (project or group), project access |
+| [Generic packages](../generic_packages/_index.md)      | Personal access, job tokens, deploy (project or group), project access |
 | [Terraform](../terraform_module_registry/index.md)    | Personal access, job tokens, deploy (project or group), project access |
 | [Composer](../composer_repository/index.md)           | Personal access, job tokens, deploy (project or group), project access |
 | [Conan](../conan_repository/index.md)                 | Personal access, job tokens, project access                            |
-| [Helm](../helm_repository/index.md)                   | Personal access, job tokens, deploy (project or group)                 |
-| [Debian](../debian_repository/index.md)               | Personal access, job tokens, deploy (project or group)                 |
-| [Go](../go_proxy/index.md)                            | Personal access, job tokens, project access                            |
-| [Ruby gems](../rubygems_registry/index.md)            | Personal access, job tokens, deploy (project or group)                 |
+| [Helm](../helm_repository/_index.md)                   | Personal access, job tokens, deploy (project or group)                 |
+| [Debian](../debian_repository/_index.md)               | Personal access, job tokens, deploy (project or group)                 |
+| [Go](../go_proxy/_index.md)                            | Personal access, job tokens, project access                            |
+| [Ruby gems](../rubygems_registry/_index.md)            | Personal access, job tokens, deploy (project or group)                 |
 
 ## Authentication protocols
 
@@ -189,14 +189,14 @@ The following authentication protocols are supported:
 | [npm](../npm_registry/index.md)                       | OAuth                                                       |
 | [NuGet](../nuget_repository/index.md)                 | Basic auth                                                  |
 | [PyPI](../pypi_repository/index.md)                   | Basic auth                                                  |
-| [Generic packages](../generic_packages/index.md)      | Basic auth                                                  |
+| [Generic packages](../generic_packages/_index.md)      | Basic auth                                                  |
 | [Terraform](../terraform_module_registry/index.md)    | Token                                                       |
 | [Composer](../composer_repository/index.md)           | OAuth                                                       |
 | [Conan](../conan_repository/index.md)                 | OAuth, Basic auth                                           |
-| [Helm](../helm_repository/index.md)                   | Basic auth                                                  |
-| [Debian](../debian_repository/index.md)               | Basic auth                                                  |
-| [Go](../go_proxy/index.md)                            | Basic auth                                                  |
-| [Ruby gems](../rubygems_registry/index.md)            | Token                                                       |
+| [Helm](../helm_repository/_index.md)                   | Basic auth                                                  |
+| [Debian](../debian_repository/_index.md)               | Basic auth                                                  |
+| [Go](../go_proxy/_index.md)                            | Basic auth                                                  |
+| [Ruby gems](../rubygems_registry/_index.md)            | Token                                                       |
 
 1. Basic authentication for Maven packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212854) in GitLab 16.0.
 
@@ -218,10 +218,10 @@ The package registry supports the following hash types:
 | [npm](../npm_registry/index.md)                       | SHA1                             |
 | [NuGet](../nuget_repository/index.md)                 | not applicable                   |
 | [PyPI](../pypi_repository/index.md)                   | MD5, SHA256                      |
-| [Generic packages](../generic_packages/index.md)      | SHA256                           |
+| [Generic packages](../generic_packages/_index.md)      | SHA256                           |
 | [Composer](../composer_repository/index.md)           | not applicable                   |
 | [Conan](../conan_repository/index.md)                 | MD5, SHA1                        |
-| [Helm](../helm_repository/index.md)                   | not applicable                   |
-| [Debian](../debian_repository/index.md)               | MD5, SHA1, SHA256                |
-| [Go](../go_proxy/index.md)                            | MD5, SHA1, SHA256                |
-| [Ruby gems](../rubygems_registry/index.md)            | MD5, SHA1, SHA256 (gemspec only) |
+| [Helm](../helm_repository/_index.md)                   | not applicable                   |
+| [Debian](../debian_repository/_index.md)               | MD5, SHA1, SHA256                |
+| [Go](../go_proxy/_index.md)                            | MD5, SHA1, SHA256                |
+| [Ruby gems](../rubygems_registry/_index.md)            | MD5, SHA1, SHA256 (gemspec only) |

@@ -112,7 +112,7 @@ tracer:
   jaeger:
     enabled: true
     listen_address: 127.0.0.1
-    version: 1.43.0
+    version: 1.66.0
 ```
 
 After modifying the `gdk.yml` file, reconfigure your GDK by running

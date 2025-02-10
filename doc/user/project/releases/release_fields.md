@@ -153,12 +153,12 @@ This field has no effect on the URL and it's only used for visual purposes in th
 
 #### Use a generic package for attaching binaries
 
-You can use [generic packages](../../packages/generic_packages/index.md)
+You can use [generic packages](../../packages/generic_packages/_index.md)
 to store any artifacts from a release or tag pipeline,
 that can also be used for attaching binary files to an individual release entry.
 You basically need to:
 
-1. [Push the artifacts to the Generic package registry](../../packages/generic_packages/index.md#publish-a-package).
+1. [Push the artifacts to the Generic package registry](../../packages/generic_packages/_index.md#publish-a-package).
 1. [Attach the package link to the release](#links).
 
 The following example generates release assets, publishes them

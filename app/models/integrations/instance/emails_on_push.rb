@@ -3,7 +3,7 @@
 module Integrations
   module Instance
     class EmailsOnPush < Integration
-      # To be updated as part of https://gitlab.com/gitlab-org/gitlab/-/issues/474809
+      include Integrations::Base::EmailsOnPush
     end
   end
 end

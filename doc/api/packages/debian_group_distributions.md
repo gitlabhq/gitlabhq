@@ -18,7 +18,7 @@ WARNING:
 This API is under development and is not meant for production use.
 
 For more information about working with Debian packages, see the
-[Debian package registry documentation](../../user/packages/debian_repository/index.md).
+[Debian package registry documentation](../../user/packages/debian_repository/_index.md).
 
 ## Enable the Debian group API
 
@@ -26,11 +26,11 @@ Debian group repository support is still a work in progress. It's gated behind a
 **disabled by default**.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to enable it. To enable it, follow the instructions in
-[Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
+[Enable the Debian group API](../../user/packages/debian_repository/_index.md#enable-the-debian-group-api).
 
 ## Authenticate to the Debian distributions APIs
 
-See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-distributions-apis).
+See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/_index.md#authenticate-to-the-debian-distributions-apis).
 
 ## List all Debian distributions in a group
 

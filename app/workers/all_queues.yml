@@ -4153,6 +4153,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: metrics_patched_files
+  :worker_name: Metrics::PatchedFilesWorker
+  :feature_category: :delivery
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: migrate_external_diffs
   :worker_name: MigrateExternalDiffsWorker
   :feature_category: :code_review_workflow

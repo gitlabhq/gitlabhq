@@ -476,7 +476,7 @@ span.idiff {
 
   .tr {
     display: flex;
-    @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
+    @apply gl-border-b;
 
     &.last-row {
       border-bottom: 0;
@@ -558,7 +558,7 @@ span.idiff {
 
 .blame.file-content .td.line-numbers {
   float: none;
-  @apply gl-border-l gl-border-l-section;
+  @apply gl-border-l;
   border-radius: 0;
 
   .file-line-num {

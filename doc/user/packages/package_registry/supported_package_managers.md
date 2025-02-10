@@ -18,15 +18,15 @@ The package registry supports the following package manager types:
 |--------------------------------------------------|--------|
 | [Composer](../composer_repository/index.md)      | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817) |
 | [Conan](../conan_repository/index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
-| [Debian](../debian_repository/index.md)          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
-| [Generic packages](../generic_packages/index.md) | Generally available     |
-| [Go](../go_proxy/index.md)                       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
-| [Helm](../helm_repository/index.md)              | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366) |
+| [Debian](../debian_repository/_index.md)          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
+| [Generic packages](../generic_packages/_index.md) | Generally available     |
+| [Go](../go_proxy/_index.md)                       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
+| [Helm](../helm_repository/_index.md)              | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366) |
 | [Maven](../maven_repository/index.md)            | Generally available      |
 | [npm](../npm_registry/index.md)                  | Generally available      |
 | [NuGet](../nuget_repository/index.md)            | Generally available      |
 | [PyPI](../pypi_repository/index.md)              | Generally available      |
-| [Ruby gems](../rubygems_registry/index.md)       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
+| [Ruby gems](../rubygems_registry/_index.md)       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
 
 [View what each status means](../../../policy/development_stages_support.md).
 

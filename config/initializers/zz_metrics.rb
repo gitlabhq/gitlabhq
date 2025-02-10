@@ -52,4 +52,10 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
   Labkit::NetHttpPublisher.labkit_prepend!
   Labkit::ExconPublisher.labkit_prepend!
   Labkit::HTTPClientPublisher.labkit_prepend!
+
+  Rails.application.configure do
+    config.after_initialize do
+      Metrics::PatchedFilesWorker.perform_async
+    end
+  end
 end

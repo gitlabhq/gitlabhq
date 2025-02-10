@@ -18,18 +18,18 @@ WARNING:
 This API is under development and is not meant for production use.
 
 For more information about working with Debian packages, see the
-[Debian package registry documentation](../../user/packages/debian_repository/index.md).
+[Debian package registry documentation](../../user/packages/debian_repository/_index.md).
 
 ## Enable the Debian API
 
 The Debian API is behind a feature flag that is disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to enable it. To enable it, follow the instructions in
-[Enable the Debian API](../../user/packages/debian_repository/index.md#enable-the-debian-api).
+[Enable the Debian API](../../user/packages/debian_repository/_index.md#enable-the-debian-api).
 
 ## Authenticate to the Debian distributions APIs
 
-See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-distributions-apis).
+See [Authenticate to the Debian distributions APIs](../../user/packages/debian_repository/_index.md#authenticate-to-the-debian-distributions-apis).
 
 ## List all Debian distributions in a project
 

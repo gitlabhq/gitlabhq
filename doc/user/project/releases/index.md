@@ -20,7 +20,7 @@ Deleting a Git tag associated with a release also deletes the release.
 A release can include:
 
 - A snapshot of the source code of your repository.
-- [Generic packages](../../packages/generic_packages/index.md) created from job artifacts.
+- [Generic packages](../../packages/generic_packages/_index.md) created from job artifacts.
 - Other metadata associated with a released version of your code.
 - Release notes.
 
@@ -202,7 +202,7 @@ android-release:
 
 ### Release assets as Generic packages
 
-You can use [Generic packages](../../packages/generic_packages/index.md) to host your release assets.
+You can use [Generic packages](../../packages/generic_packages/_index.md) to host your release assets.
 For a complete example, see the [Release assets as Generic packages](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs/examples/release-assets-as-generic-package/)
 project.
 

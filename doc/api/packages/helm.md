@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Helm](../../user/packages/helm_repository/index.md).
+This is the API documentation for [Helm](../../user/packages/helm_repository/_index.md).
 
 WARNING:
 This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
@@ -17,11 +17,11 @@ and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install Helm packages from the GitLab
-Package Registry, see the [Helm registry documentation](../../user/packages/helm_repository/index.md).
+Package Registry, see the [Helm registry documentation](../../user/packages/helm_repository/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See the [Helm registry documentation](../../user/packages/helm_repository/index.md)
+See the [Helm registry documentation](../../user/packages/helm_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Download a chart index

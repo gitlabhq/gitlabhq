@@ -1,0 +1,19 @@
+---
+data_category: optional
+key_path: settings.patched_files
+description: Information about any GitLab files which have been patched
+product_group: distribution_deploy
+product_categories:
+  - delivery
+value_type: string
+status: active
+milestone: "17.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179243
+time_frame: none
+data_source: system
+instrumentation_class: PatchedFilesMetric
+tiers:
+  - free
+  - premium
+  - ultimate
+performance_indicator_type: []

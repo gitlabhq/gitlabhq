@@ -11,7 +11,7 @@ DETAILS:
 
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
-This is the API documentation for [Debian](../../user/packages/debian_repository/index.md).
+This is the API documentation for [Debian](../../user/packages/debian_repository/_index.md).
 
 WARNING:
 This API is used by the Debian related package clients such as [dput](https://manpages.debian.org/stable/dput-ng/dput.1.en.html)
@@ -20,11 +20,11 @@ and is generally not meant for manual consumption. This API is under development
 for production use due to limited functionality.
 
 For instructions on how to upload and install Debian packages from the GitLab
-package registry, see the [Debian registry documentation](../../user/packages/debian_repository/index.md).
+package registry, see the [Debian registry documentation](../../user/packages/debian_repository/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See the [Debian registry documentation](../../user/packages/debian_repository/index.md)
+See the [Debian registry documentation](../../user/packages/debian_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Enable the Debian API
@@ -32,18 +32,18 @@ for details on which headers and token types are supported. Undocumented authent
 The Debian API is behind a feature flag that is disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to enable it. To enable it, follow the instructions in
-[Enable the Debian API](../../user/packages/debian_repository/index.md#enable-the-debian-api).
+[Enable the Debian API](../../user/packages/debian_repository/_index.md#enable-the-debian-api).
 
 ## Enable the Debian group API
 
 The Debian group API is behind a feature flag that is disabled by default.
 [GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
 can opt to enable it. To enable it, follow the instructions in
-[Enable the Debian group API](../../user/packages/debian_repository/index.md#enable-the-debian-group-api).
+[Enable the Debian group API](../../user/packages/debian_repository/_index.md#enable-the-debian-group-api).
 
 ### Authenticate to the Debian Package Repositories
 
-See [Authenticate to the Debian Package Repositories](../../user/packages/debian_repository/index.md#authenticate-to-the-debian-package-repositories).
+See [Authenticate to the Debian Package Repositories](../../user/packages/debian_repository/_index.md#authenticate-to-the-debian-package-repositories).
 
 ## Upload a package file
 

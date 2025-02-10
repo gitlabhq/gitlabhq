@@ -19,7 +19,7 @@ Development and architectural documentation for the package registry:
   - [Composer](../../api/packages/composer.md)
   - [Conan](../../api/packages/conan.md)
   - [Debian](../../api/packages/debian.md)
-  - [Generic](../../user/packages/generic_packages/index.md)
+  - [Generic](../../user/packages/generic_packages/_index.md)
   - [Go Proxy](../../api/packages/go_proxy.md)
   - [Helm](../../api/packages/helm.md)
   - [Maven](../../api/packages/maven.md)

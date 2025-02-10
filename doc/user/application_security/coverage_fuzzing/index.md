@@ -368,4 +368,4 @@ corpus file extracts into a folder named `corpus`.
 
 If you see this error message when running the fuzzing job with `COVFUZZ_USE_REGISTRY` set to `true`,
 ensure that duplicates are allowed. For more details, see
-[duplicate Generic packages](../../packages/generic_packages/index.md#disable-publishing-duplicate-package-names).
+[duplicate Generic packages](../../packages/generic_packages/_index.md#disable-publishing-duplicate-package-names).

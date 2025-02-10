@@ -13,7 +13,7 @@ DETAILS:
 
 Prerequisites:
 
-- Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/index.md).
+- Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/_index.md).
 - To use a private project in a subgroup as a Go package, you must [authenticate Go requests](#authenticate-go-requests-to-private-projects). Go requests that are not authenticated cause
   `go get` to fail. You don't need to authenticate Go requests for projects that are not in subgroups.
 

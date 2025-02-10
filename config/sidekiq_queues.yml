@@ -585,6 +585,8 @@
   - 1
 - - merge_requests_update_head_pipeline
   - 1
+- - metrics_patched_files
+  - 1
 - - migrate_external_diffs
   - 1
 - - ml_experiment_tracking_associate_ml_candidate_to_package

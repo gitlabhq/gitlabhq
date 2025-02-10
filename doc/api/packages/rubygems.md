@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-This is the API documentation for [Ruby gems](../../user/packages/rubygems_registry/index.md).
+This is the API documentation for [Ruby gems](../../user/packages/rubygems_registry/_index.md).
 
 WARNING:
 This API is used by the [Ruby gems and Bundler package manager clients](https://maven.apache.org/)
@@ -17,11 +17,11 @@ and is generally not meant for manual consumption. This API is under development
 for production use due to limited functionality.
 
 For instructions on how to upload and install gems from the GitLab
-package registry, see the [Ruby gems registry documentation](../../user/packages/rubygems_registry/index.md).
+package registry, see the [Ruby gems registry documentation](../../user/packages/rubygems_registry/_index.md).
 
 NOTE:
 These endpoints do not adhere to the standard API authentication methods.
-See the [Ruby gems registry documentation](../../user/packages/rubygems_registry/index.md)
+See the [Ruby gems registry documentation](../../user/packages/rubygems_registry/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
 ## Enable the Ruby gems API
@@ -93,7 +93,7 @@ curl --header "Authorization:<personal_access_token>" "https://gitlab.example.co
 This endpoint returns a marshalled array of hashes for all versions of the requested gems. Since the
 response is marshalled, you can store it in a file. If Ruby is installed, you can use the following
 Ruby command to read the response. For this to work, you must
-[set your credentials in `~/.gem/credentials`](../../user/packages/rubygems_registry/index.md#authenticate-to-the-package-registry):
+[set your credentials in `~/.gem/credentials`](../../user/packages/rubygems_registry/_index.md#authenticate-to-the-package-registry):
 
 ```shell
 $ ruby -ropen-uri -rpp -e \

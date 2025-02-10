@@ -18,3 +18,4 @@ desired_sharding_key:
         sharding_key: target_project_id
         belongs_to: merge_request
 table_size: small
+desired_sharding_key_migration_job_name: BackfillMergeRequestPredictionsProjectId

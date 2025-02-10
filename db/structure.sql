@@ -1851,6 +1851,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_3f28a0bfdb16() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "target_project_id"
+  INTO NEW."project_id"
+  FROM "merge_requests"
+  WHERE "merge_requests"."id" = NEW."merge_request_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3fe922f4db67() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -3281,6 +3297,22 @@ IF NEW."protected_environment_project_id" IS NULL THEN
   INTO NEW."protected_environment_project_id"
   FROM "protected_environments"
   WHERE "protected_environments"."id" = NEW."protected_environment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_d8c2de748d8c() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "target_project_id"
+  INTO NEW."project_id"
+  FROM "merge_requests"
+  WHERE "merge_requests"."id" = NEW."merge_request_id";
 END IF;
 
 RETURN NEW;
@@ -15861,7 +15893,8 @@ CREATE TABLE merge_request_cleanup_schedules (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    failed_count integer DEFAULT 0 NOT NULL
+    failed_count integer DEFAULT 0 NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE merge_request_cleanup_schedules_merge_request_id_seq
@@ -16080,7 +16113,8 @@ CREATE TABLE merge_request_predictions (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     suggested_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL,
-    accepted_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL
+    accepted_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE merge_request_predictions_merge_request_id_seq
@@ -33411,6 +33445,8 @@ CREATE INDEX index_merge_request_metrics_on_merged_at ON merge_request_metrics U
 
 CREATE INDEX index_merge_request_metrics_on_pipeline_id ON merge_request_metrics USING btree (pipeline_id);
 
+CREATE INDEX index_merge_request_predictions_on_project_id ON merge_request_predictions USING btree (project_id);
+
 CREATE INDEX index_merge_request_requested_changes_on_merge_request_id ON merge_request_requested_changes USING btree (merge_request_id);
 
 CREATE INDEX index_merge_request_requested_changes_on_project_id ON merge_request_requested_changes USING btree (project_id);
@@ -38079,6 +38115,8 @@ CREATE TRIGGER trigger_3d1a58344b29 BEFORE INSERT OR UPDATE ON alert_management_
 
 CREATE TRIGGER trigger_3e067fa9bfe3 BEFORE INSERT OR UPDATE ON incident_management_timeline_event_tag_links FOR EACH ROW EXECUTE FUNCTION trigger_3e067fa9bfe3();
 
+CREATE TRIGGER trigger_3f28a0bfdb16 BEFORE INSERT OR UPDATE ON merge_request_cleanup_schedules FOR EACH ROW EXECUTE FUNCTION trigger_3f28a0bfdb16();
+
 CREATE TRIGGER trigger_3fe922f4db67 BEFORE INSERT OR UPDATE ON vulnerability_merge_request_links FOR EACH ROW EXECUTE FUNCTION trigger_3fe922f4db67();
 
 CREATE TRIGGER trigger_41eaf23bf547 BEFORE INSERT OR UPDATE ON release_links FOR EACH ROW EXECUTE FUNCTION trigger_41eaf23bf547();
@@ -38268,6 +38306,8 @@ CREATE TRIGGER trigger_cf646a118cbb BEFORE INSERT OR UPDATE ON milestone_release
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
 
 CREATE TRIGGER trigger_d5c895007948 BEFORE INSERT OR UPDATE ON protected_environment_approval_rules FOR EACH ROW EXECUTE FUNCTION trigger_d5c895007948();
+
+CREATE TRIGGER trigger_d8c2de748d8c BEFORE INSERT OR UPDATE ON merge_request_predictions FOR EACH ROW EXECUTE FUNCTION trigger_d8c2de748d8c();
 
 CREATE TRIGGER trigger_da5fd3d6d75c BEFORE INSERT OR UPDATE ON packages_composer_metadata FOR EACH ROW EXECUTE FUNCTION trigger_da5fd3d6d75c();
 
@@ -38914,6 +38954,9 @@ ALTER TABLE ONLY namespace_bans
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_42c3b54bed FOREIGN KEY (cache_invalidation_event_id) REFERENCES geo_cache_invalidation_events(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_predictions
+    ADD CONSTRAINT fk_42d3b3824f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT fk_43a9aa4ca8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
