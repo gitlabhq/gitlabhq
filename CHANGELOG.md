@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.8.2 (2025-02-11)
+
+### Fixed (3 changes)
+
+- [Fix storing incorrect policy index in scan_result_policies](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49e2809628b91b4200b62faf512ae73ba4bfaa27) **GitLab Enterprise Edition**
+- [Enable ai tracking even with feature flag disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/27526bdc24302c80940356e93928956ea6cb21d3) **GitLab Enterprise Edition**
+- [Fix Workhorse failing on 64-bit unaligned access on Raspberry Pi 32-bit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a026bcb6a7a0a69329ab6cc63cfe2ef51a7d2d83)
+
+### Security (8 changes)
+
+- [Security Duo Chat Escape Unknown Domain Hyperlinks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/44436a9c648b077a89efb5d2b394f36702f0e315) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4706))
+- [Hide sensitive workhorse headers and fix route confusion between web and workhorse routes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80e0601861d797ed6126b999c5830409ee5e8abf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4760))
+- [Do not allow Planner role to update or delete incidents](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3c76c42d1451fea9f74aec4ff31d17483f8c2d14) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4746))
+- [Reduce memory allocations on create PAT endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3183ac5d359b349b248dfb6d094e6791b2cf716a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4750))
+- [Prevent SSRF attacks for Workspaces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ad1ddf3353d1817d3b7eb583ea333dab0dd3f6a2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4729))
+- [Prevent read code access when repository is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/be2a9c24d18e2735f4d8e640bfd61633851da60e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4705))
+- [Fixes XSS on the target branch in the merge request widget](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3de176b1ee5c0df452d265a9ca39ae950c9553aa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4735))
+- [Unsubscribe from actioncable channel when PAT is revoked](https://gitlab.com/gitlab-org/security/gitlab/-/commit/85760efaf82d85241732360045a1763095740049) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4725))
+
 ## 17.8.1 (2025-01-22)
 
 ### Security (4 changes)
