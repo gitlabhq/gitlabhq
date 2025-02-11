@@ -20,7 +20,7 @@ Debug-level logging can help when troubleshooting. For details, see
 
 ## Changes in the CI/CD template
 
-The [GitLab-managed SAST CI/CD template](index.md#configure-sast-in-your-cicd-yaml) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
+The [GitLab-managed SAST CI/CD template](_index.md#configure-sast-in-your-cicd-yaml) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
 
 - See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
 - Experience another type of unexpected issue with your CI/CD pipeline configuration.
@@ -34,12 +34,12 @@ include:
 
 If your GitLab instance has limited network connectivity, you can also download the file and host it elsewhere.
 
-You should only use this solution temporarily, returning to [the standard template](index.md#configure-sast-in-your-cicd-yaml) as soon as possible.
+You should only use this solution temporarily, returning to [the standard template](_index.md#configure-sast-in-your-cicd-yaml) as soon as possible.
 
 ## Errors in a specific analyzer job
 
 GitLab SAST [analyzers](analyzers.md) are released as container images.
-If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](index.md#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](index.md#pinning-to-minor-image-version).
+If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](_index.md#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](_index.md#pinning-to-minor-image-version).
 
 Each [analyzer project](analyzers.md) has a `CHANGELOG.md` file listing the changes made in each available version.
 
@@ -54,7 +54,7 @@ of the error messages and recommended actions.
 exec /bin/sh: exec format error` message in job log
 ```
 
-GitLab SAST analyzers [only support](index.md#requirements) running on the `amd64` CPU architecture.
+GitLab SAST analyzers [only support](_index.md#requirements) running on the `amd64` CPU architecture.
 This message indicates that the job is being run on a different architecture, such as `arm`.
 
 ### Docker error
@@ -123,7 +123,7 @@ For Maven builds, add the following to your `pom.xml` file:
 
 If your job is failing at the build step with the message "Project couldn't be built", it's most likely because your job is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/blob/master/config/.gl-tool-versions).
 
-The solution is to use [pre-compilation](index.md#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
+The solution is to use [pre-compilation](_index.md#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
 
 ### Java out of memory error
 
@@ -131,7 +131,7 @@ When a SAST job is running you might get an error that states `java.lang.OutOfMe
 
 To try to resolve this issue you can:
 
-- Choose a lower [level of effort](index.md#security-scanner-configuration).
+- Choose a lower [level of effort](_index.md#security-scanner-configuration).
 - Set the CI/CD variable `JAVA_OPTS` to replace the default `-XX:MaxRAMPercentage=80`, e.g. `-XX:MaxRAMPercentage=90`.
 - [Tag a larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64) in your `spotbugs-sast` job.
 

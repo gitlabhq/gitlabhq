@@ -22,6 +22,6 @@ sudo gitlab-rake gitlab:spdx:import
 bundle exec rake gitlab:spdx:import RAILS_ENV=production
 ```
 
-To perform this task in the [offline environment](../user/application_security/offline_deployments/index.md#defining-offline-environments),
+To perform this task in the [offline environment](../user/application_security/offline_deployments/_index.md#defining-offline-environments),
 an outbound connection to [`licenses.json`](https://spdx.org/licenses/licenses.json) should be
 allowed.

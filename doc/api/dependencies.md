@@ -11,13 +11,13 @@ DETAILS:
 
 Every call to this endpoint requires authentication. To perform this call, user should be authorized to read repository.
 To see vulnerabilities in response, user should be authorized to read
-[Project Security Dashboard](../user/application_security/security_dashboard/index.md).
+[Project Security Dashboard](../user/application_security/security_dashboard/_index.md).
 
 ## List project dependencies
 
 Get a list of project dependencies. This API partially mirroring
-[Dependency List](../user/application_security/dependency_list/index.md) feature.
-This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/index.md#supported-languages-and-package-managers)
+[Dependency List](../user/application_security/dependency_list/_index.md) feature.
+This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
 supported by Gemnasium.
 
 ```plaintext

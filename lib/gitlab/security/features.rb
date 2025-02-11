@@ -11,9 +11,9 @@ module Gitlab
             name: _('Static Application Security Testing (SAST)'),
             short_name: _('SAST'),
             description: _('Analyze your source code for vulnerabilities.'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index.md'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/sast/index.md', anchor: 'configuration'),
+              'user/application_security/sast/_index.md', anchor: 'configuration'),
             type: 'sast'
           },
           sast_advanced: {
@@ -31,9 +31,9 @@ module Gitlab
             name: _('Infrastructure as Code (IaC) Scanning'),
             short_name: s_('ciReport|SAST IaC'),
             description: _('Analyze your infrastructure as code configuration files for known vulnerabilities.'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/iac_scanning/index.md'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/iac_scanning/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/iac_scanning/index.md',
+              'user/application_security/iac_scanning/_index.md',
               anchor: 'configuration'),
             type: 'sast_iac'
           },
@@ -55,9 +55,9 @@ module Gitlab
             description: s_('ciReport|Analyze a deployed version of your web application for known ' \
                             'vulnerabilities by examining it from the outside in. DAST works ' \
                             'by simulating external attacks on your application while it is running.'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/index.md'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/dast/index.md', anchor: 'enable-automatic-dast-run'),
+              'user/application_security/dast/_index.md', anchor: 'enable-automatic-dast-run'),
             type: 'dast',
             anchor: 'dast'
           },
@@ -65,9 +65,9 @@ module Gitlab
             name: _('Dependency Scanning'),
             description: _('Analyze your dependencies for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/dependency_scanning/index.md'),
+              'user/application_security/dependency_scanning/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/dependency_scanning/index.md', anchor: 'configuration'),
+              'user/application_security/dependency_scanning/_index.md', anchor: 'configuration'),
             type: 'dependency_scanning',
             anchor: 'dependency-scanning'
           },
@@ -75,16 +75,16 @@ module Gitlab
             name: _('Container Scanning'),
             description: _('Check your Docker images for known vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/container_scanning/index.md'),
+              'user/application_security/container_scanning/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/container_scanning/index.md', anchor: 'configuration'),
+              'user/application_security/container_scanning/_index.md', anchor: 'configuration'),
             type: 'container_scanning'
           },
           container_scanning_for_registry: {
             name: _('Container Scanning For Registry'),
             description: _('Run container scanning job whenever a container image with the latest tag is pushed.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/container_scanning/index.md', anchor: 'container-scanning-for-registry'),
+              'user/application_security/container_scanning/_index.md', anchor: 'container-scanning-for-registry'),
             type: 'container_scanning_for_registry'
           },
           secret_push_protection: {
@@ -93,32 +93,32 @@ module Gitlab
                            'Secret push protection is triggered when commits are pushed to a repository. ' \
                            'If any secrets are detected, the push is blocked.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/secret_push_protection/index.md'),
+              'user/application_security/secret_detection/secret_push_protection/_index.md'),
             type: 'secret_push_protection'
           },
           secret_detection: {
             name: _('Pipeline Secret Detection'),
             description: _('Analyze your source code and Git history for secrets by using CI/CD pipelines.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/pipeline/index.md'),
+              'user/application_security/secret_detection/pipeline/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/secret_detection/pipeline/index.md', anchor: 'configuration'),
+              'user/application_security/secret_detection/pipeline/_index.md', anchor: 'configuration'),
             type: 'secret_detection'
           },
           api_fuzzing: {
             name: _('API Fuzzing'),
             description: _('Find bugs in your code with API fuzzing.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/api_fuzzing/index.md'),
+              'user/application_security/api_fuzzing/_index.md'),
             type: 'api_fuzzing'
           },
           coverage_fuzzing: {
             name: _('Coverage Fuzzing'),
             description: _('Find bugs in your code with coverage-guided fuzzing.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/coverage_fuzzing/index.md'),
+              'user/application_security/coverage_fuzzing/_index.md'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
-              'user/application_security/coverage_fuzzing/index.md', anchor: 'enable-coverage-guided-fuzz-testing'),
+              'user/application_security/coverage_fuzzing/_index.md', anchor: 'enable-coverage-guided-fuzz-testing'),
             type: 'coverage_fuzzing',
             secondary: {
               type: 'corpus_management',

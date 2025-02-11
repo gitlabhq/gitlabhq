@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Generate test vulnerabilities
 ---
 
-You can generate test vulnerabilities for the [Vulnerability Report](../../user/application_security/vulnerability_report/index.md) to test GitLab
+You can generate test vulnerabilities for the [Vulnerability Report](../../user/application_security/vulnerability_report/_index.md) to test GitLab
 vulnerability management features without running a pipeline.
 
 1. Sign in to GitLab.

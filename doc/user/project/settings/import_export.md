@@ -307,7 +307,7 @@ To help avoid abuse, by default, users are rate limited to:
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6 and replaced by
 [migrating groups by direct transfer](../../group/import/_index.md). However, this feature is still recommended for migrating groups between
-offline systems. To follow progress on an alternative solution for [offline environments](../../application_security/offline_deployments/index.md), see
+offline systems. To follow progress on an alternative solution for [offline environments](../../application_security/offline_deployments/_index.md), see
 [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/8985).
 
 Prerequisites:

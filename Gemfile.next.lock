@@ -27,6 +27,7 @@ PATH
   remote: gems/gitlab-active-context
   specs:
     gitlab-active-context (0.0.1)
+      activerecord
       activesupport
       connection_pool
       elasticsearch

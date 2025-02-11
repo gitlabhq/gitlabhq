@@ -84,6 +84,7 @@ issues:
 - observability_metrics
 - observability_logs
 - observability_traces
+- dates_source
 work_item_type:
 - issues
 - namespace

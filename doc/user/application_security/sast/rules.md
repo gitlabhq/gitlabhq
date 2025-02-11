@@ -40,25 +40,25 @@ For details of which types of vulnerabilities GitLab Advanced SAST detects, see 
 ### Semgrep-based analyzer
 
 GitLab creates, maintains, and supports the rules that are used in the Semgrep-based GitLab SAST analyzer.
-This analyzer scans [many languages](index.md#supported-languages-and-frameworks) in a single CI/CD pipeline job.
+This analyzer scans [many languages](_index.md#supported-languages-and-frameworks) in a single CI/CD pipeline job.
 It combines:
 
 - the Semgrep open-source engine.
 - a GitLab-managed detection ruleset, which is managed in [the GitLab-managed open source `sast-rules` project](https://gitlab.com/gitlab-org/security-products/sast-rules).
-- GitLab proprietary technology for [vulnerability tracking](index.md#advanced-vulnerability-tracking).
+- GitLab proprietary technology for [vulnerability tracking](_index.md#advanced-vulnerability-tracking).
 
 ### Other analyzers
 
-GitLab SAST uses other analyzers to scan the remaining [supported languages](index.md#supported-languages-and-frameworks).
+GitLab SAST uses other analyzers to scan the remaining [supported languages](_index.md#supported-languages-and-frameworks).
 The rules for these scans are defined in the upstream projects for each scanner.
 
 ## How rule updates are released
 
 GitLab updates rules regularly based on customer feedback and internal research.
 Rules are released as part of the container image for each analyzer.
-You automatically receive updated analyzers and rules unless you [manually pin analyzers to a specific version](index.md#pinning-to-minor-image-version).
+You automatically receive updated analyzers and rules unless you [manually pin analyzers to a specific version](_index.md#pinning-to-minor-image-version).
 
-Analyzers and their rules are updated [at least monthly](../index.md#vulnerability-scanner-maintenance) if relevant updates are available.
+Analyzers and their rules are updated [at least monthly](../_index.md#vulnerability-scanner-maintenance) if relevant updates are available.
 
 ### Rule update policies
 
@@ -68,8 +68,8 @@ This means that rules may be added, removed, or updated without prior notice.
 However, to make rule changes more convenient and understandable, GitLab:
 
 - Documents [rule changes](#important-rule-changes) that are planned or completed.
-- [Automatically resolves](index.md#automatic-vulnerability-resolution) findings from rules after they are removed for Semgrep-based analyzers.
-- Enables you to [change the status on vulnerabilities where activity = "no longer detected" in bulk](../vulnerability_report/index.md#change-status-of-vulnerabilities).
+- [Automatically resolves](_index.md#automatic-vulnerability-resolution) findings from rules after they are removed for Semgrep-based analyzers.
+- Enables you to [change the status on vulnerabilities where activity = "no longer detected" in bulk](../vulnerability_report/_index.md#change-status-of-vulnerabilities).
 - Evaluates proposed rule changes for the impact they will have on existing vulnerability records.
 
 ## Configure rules in your projects
@@ -91,7 +91,7 @@ If your customization would benefit other users, consider [reporting a problem t
 
 ### Coordinate rule rollouts
 
-To control the rollout of rule changes, you can [pin SAST analyzers to a specific version](index.md#pinning-to-minor-image-version).
+To control the rollout of rule changes, you can [pin SAST analyzers to a specific version](_index.md#pinning-to-minor-image-version).
 
 If you want to make these changes at the same time across multiple projects, consider setting the variables in:
 
@@ -124,9 +124,9 @@ More details are available in release announcements and in the CHANGELOG links p
 
 Key changes to the GitLab-managed ruleset for Semgrep-based scanning include:
 
-- Beginning in GitLab 16.3, the GitLab Static Analysis and Vulnerability Research teams are working to remove rules that tend to produce too many false positive results or not enough actionable true positive results. Existing findings from these removed rules are [automatically resolved](index.md#automatic-vulnerability-resolution); they no longer appear in the [Security Dashboard](../security_dashboard/index.md#project-security-dashboard) or in the default view of the [Vulnerability Report](../vulnerability_report/index.md). This work is tracked in [epic 10907](https://gitlab.com/groups/gitlab-org/-/epics/10907).
+- Beginning in GitLab 16.3, the GitLab Static Analysis and Vulnerability Research teams are working to remove rules that tend to produce too many false positive results or not enough actionable true positive results. Existing findings from these removed rules are [automatically resolved](_index.md#automatic-vulnerability-resolution); they no longer appear in the [Security Dashboard](../security_dashboard/_index.md#project-security-dashboard) or in the default view of the [Vulnerability Report](../vulnerability_report/_index.md). This work is tracked in [epic 10907](https://gitlab.com/groups/gitlab-org/-/epics/10907).
 - In GitLab 16.0 through 16.2, the GitLab Vulnerability Research team updated the guidance that's included in each result.
-- In GitLab 15.10, the `detect-object-injection` rule was [removed by default](https://gitlab.com/gitlab-org/gitlab/-/issues/373920) and its findings were [automatically resolved](index.md#automatic-vulnerability-resolution).
+- In GitLab 15.10, the `detect-object-injection` rule was [removed by default](https://gitlab.com/gitlab-org/gitlab/-/issues/373920) and its findings were [automatically resolved](_index.md#automatic-vulnerability-resolution).
 
 For more details, see the [CHANGELOG for `sast-rules`](https://gitlab.com/gitlab-org/security-products/sast-rules/-/blob/main/CHANGELOG.md).
 

@@ -113,7 +113,7 @@ For more information, see the history.
 | `enabled`      | `boolean`                                    | true     | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules`        | `array` of rules                             | true     | List of rules that the policy applies. |
 | `actions`      | `array` of actions                           | true     | List of actions that the policy enforces. Limited to a maximum of 10 in GitLab 18.0 and later. |
-| `policy_scope` | `object` of [`policy_scope`](index.md#scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `policy_scope` | `object` of [`policy_scope`](_index.md#scope) | false    | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. |
 
 ### `skip_ci` type
@@ -334,21 +334,21 @@ Some scanners behave differently in a `scan` action than they do in a regular CI
 scan.
 
 - Static Application Security Testing (SAST): Runs only if the repository contains
-  [files supported by SAST)](../sast/index.md#supported-languages-and-frameworks).
+  [files supported by SAST)](../sast/_index.md#supported-languages-and-frameworks).
 - Secret detection:
   - Only rules with the default ruleset are supported.
-    [Custom rulesets](../secret_detection/pipeline/index.md#customize-analyzer-rulesets) are not
+    [Custom rulesets](../secret_detection/pipeline/_index.md#customize-analyzer-rulesets) are not
     supported. Instead, you can configure a
-    [remote configuration file](../secret_detection/pipeline/index.md#with-a-remote-ruleset) and set
+    [remote configuration file](../secret_detection/pipeline/_index.md#with-a-remote-ruleset) and set
     the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
   - For `scheduled` scan execution policies, secret detection by default runs first in `historic`
     mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default
     mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current
     SHA. You can override this behavior by specifying CI/CD variables in the scan
     execution policy. For more information, see
-    [Full history pipeline secret detection](../secret_detection/pipeline/index.md#full-history-pipeline-secret-detection).
+    [Full history pipeline secret detection](../secret_detection/pipeline/_index.md#full-history-pipeline-secret-detection).
   - For `triggered` scan execution policies, secret detection works just like regular scan
-    [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/index.md#edit-the-gitlab-ciyml-file-manually).
+    [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/_index.md#edit-the-gitlab-ciyml-file-manually).
 - Container scanning: A scan that is configured for the `pipeline` rule type ignores the agent
   defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the
@@ -406,12 +406,12 @@ In GitLab 16.9 and earlier:
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](index.md#scope).
+[Scope](_index.md#scope).
 
 ## Example security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](index.md#security-policy-project):
+[security policy project](_index.md#security-policy-project):
 
 ```yaml
 ---

@@ -201,7 +201,7 @@ artifacts are searched in hierarchical order from parent to child. If both paren
 have a job with the same name, the artifact from the parent pipeline is returned.
 
 The artifact file provides more detail than what is available in the
-[CSV export](../user/application_security/vulnerability_report/index.md#export-vulnerability-details).
+[CSV export](../user/application_security/vulnerability_report/_index.md#export-vulnerability-details).
 
 Prerequisites:
 

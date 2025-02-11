@@ -78,15 +78,4 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
       end
     end
   end
-
-  describe '#prefix' do
-    it 'returns default prefix when not specified' do
-      expect(client.prefix).to eq('gitlab_active_context')
-    end
-
-    it 'returns configured prefix' do
-      client = described_class.new(options.merge(prefix: 'custom'))
-      expect(client.prefix).to eq('custom')
-    end
-  end
 end

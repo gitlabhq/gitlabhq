@@ -14,7 +14,7 @@ The compliance tools provided by GitLab help you keep an eye on various aspects 
 - [Compliance center](compliance_center/_index.md).
 - [Audit events](audit_events.md).
 - [Compliance frameworks](../group/compliance_frameworks.md).
-- [Policies](../application_security/policies/index.md).
+- [Policies](../application_security/policies/_index.md).
 - [License approval policies](license_approval_policies.md).
 - [License scanning of CycloneDX files](license_scanning_of_cyclonedx_files/_index.md).
 

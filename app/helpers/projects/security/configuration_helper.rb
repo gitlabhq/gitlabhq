@@ -9,7 +9,7 @@ module Projects
 
       def vulnerability_training_docs_path
         help_page_path(
-          'user/application_security/vulnerabilities/index.md',
+          'user/application_security/vulnerabilities/_index.md',
           anchor: 'enable-security-training-for-vulnerabilities'
         )
       end

@@ -119,6 +119,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_many(:design_versions) }
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
+    it { is_expected.to have_one(:dates_source).class_name('WorkItems::DatesSource').inverse_of(:work_item) }
     it { is_expected.to have_many(:alert_management_alerts).validate(false) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }

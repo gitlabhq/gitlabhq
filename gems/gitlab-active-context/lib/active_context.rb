@@ -5,6 +5,7 @@ require 'active_support/core_ext/module/delegation'
 require 'connection_pool'
 require 'pg'
 require 'zeitwerk'
+require 'active_record'
 loader = Zeitwerk::Loader.for_gem
 loader.setup
 

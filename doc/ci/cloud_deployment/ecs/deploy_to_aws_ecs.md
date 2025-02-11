@@ -255,18 +255,18 @@ Only one Review App at a time can be deployed because this service is shared by 
 
 ### Configure SAST
 
-To use [SAST](../../../user/application_security/sast/index.md) with ECS, add the following to your `.gitlab-ci.yml` file:
+To use [SAST](../../../user/application_security/sast/_index.md) with ECS, add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
    - template: Jobs/SAST.gitlab-ci.yml
 ```
 
-For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/index.md#configuration).
+For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/_index.md#configuration).
 
 ### Configure DAST
 
-To use [DAST](../../../user/application_security/dast/index.md) on non-default branches, [set up review apps](#set-up-review-apps)
+To use [DAST](../../../user/application_security/dast/_index.md) on non-default branches, [set up review apps](#set-up-review-apps)
 and add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
@@ -288,7 +288,7 @@ include:
   - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
 ```
 
-For more details and configuration options, see the [DAST documentation](../../../user/application_security/dast/index.md).
+For more details and configuration options, see the [DAST documentation](../../../user/application_security/dast/_index.md).
 
 ## Further reading
 

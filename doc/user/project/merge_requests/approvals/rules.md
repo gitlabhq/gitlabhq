@@ -32,7 +32,7 @@ enforce a [minimum number of required approvers](settings.md) in the project's s
 Merge requests that target a different project, such as from a fork to the upstream project,
 use the default approval rules from the target (upstream) project, not the source (fork).
 
-Merge request approvals can be configured globally to apply across all (or a subset) projects with [policies](../../../application_security/policies/index.md). [Merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md) also provide additional flexibility with more granular configuration options.
+Merge request approvals can be configured globally to apply across all (or a subset) projects with [policies](../../../application_security/policies/_index.md). [Merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md) also provide additional flexibility with more granular configuration options.
 
 ## Add an approval rule
 
@@ -303,7 +303,7 @@ on the merge request to indicate which steps are needed to proceed.
 
 ![Security Approvals](img/security_approvals_v15_0.png)
 
-These policies are both created and edited in the [security policy editor](../../../application_security/policies/index.md#policy-editor).
+These policies are both created and edited in the [security policy editor](../../../application_security/policies/_index.md#policy-editor).
 
 ## Troubleshooting
 

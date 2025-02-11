@@ -81,7 +81,7 @@ In order for a service to be bundled for end-users or GitLab.com, it needs to be
 ## Handling service dependencies
 
 Dependencies should be kept up to date and be tracked for security updates. For the Rails codebase, the JavaScript and Ruby dependencies are
-scanned for vulnerabilities using GitLab [dependency scanning](../user/application_security/dependency_scanning/index.md).
+scanned for vulnerabilities using GitLab [dependency scanning](../user/application_security/dependency_scanning/_index.md).
 
 In addition, any system dependencies used in Omnibus packages or the Cloud Native images should be added to the [dependency update automation](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/systems/distribution/maintenance/dependencies.io/#adding-new-dependencies).
 

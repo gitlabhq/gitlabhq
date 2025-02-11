@@ -39,6 +39,6 @@ This page attempts to index the ways in which GitLab supports Rust. It does so w
 ## Rust Security and SBOM
 
 - [Testing Code Coverage](../../../ci/testing/code_coverage/_index.md#coverage-regex-patterns) `[GitLab Built]`
-- [GitLab SAST Scanning](../../../user/application_security/sast/index.md#supported-languages-and-frameworks)  `[GitLab Built]`- requires custom ruleset be created.
+- [GitLab SAST Scanning](../../../user/application_security/sast/_index.md#supported-languages-and-frameworks)  `[GitLab Built]`- requires custom ruleset be created.
 - [Rust License Scanning (Currently in Prerelease)](https://gitlab.com/groups/gitlab-org/-/epics/13093)  `[GitLab Built]`
 - [CodeSecure CodeSonar Embedded C Deep SAST Scanner as a GitLab CI/CD Component](https://gitlab.com/explore/catalog/codesonar/components/codesonar-ci) `[Rust Partner Built]` `[CI Solution]` - supports deep Abstract Execution analysis by watching compiles. Supports GitLabs SAST JSON which enables the findings throughout GitLab Ultimate security features. Features MISRA support and direct support for many Embedded Systems compilers.

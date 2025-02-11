@@ -89,6 +89,40 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
       end
     end
 
+    context 'when the merge request has auto merge enabled' do
+      let(:merge_request) { create(:merge_request_with_diffs, :merge_when_checks_pass, target_project: project, source_project: merge_request_source_project, allow_collaboration: false) }
+
+      context 'when the merge request is mergeable' do
+        let(:pipeline) { create(:ci_pipeline, :success) }
+
+        before do
+          merge_request.update_attribute(:head_pipeline_id, pipeline.id)
+        end
+
+        it 'calls the auto merge process worker async' do
+          expect { go }.to publish_event(MergeRequests::MergeableEvent)
+            .with(merge_request_id: merge_request.id)
+        end
+
+        context 'when process_auto_merge_on_load is off' do
+          before do
+            stub_feature_flags(process_auto_merge_on_load: false)
+          end
+
+          it 'does not call the auto merge process worker' do
+            expect { go }.not_to publish_event(MergeRequests::MergeableEvent)
+          end
+        end
+      end
+
+      context 'when the merge request is not mergeable' do
+        it 'does not call the auto merge process worker' do
+          merge_request.update!(title: "Draft: #{merge_request.title}")
+          expect { go }.not_to publish_event(MergeRequests::MergeableEvent)
+        end
+      end
+    end
+
     describe 'as html' do
       it 'sets the endpoint_metadata_url' do
         go

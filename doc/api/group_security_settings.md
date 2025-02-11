@@ -19,7 +19,7 @@ If a user isn't a member of a private group, requests to the private group retur
 
 Update the `secret_push_protection_enabled` setting for the all projects in a group to the provided value.
 
-Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/index.md) for the all projects in the group.
+Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md) for the all projects in the group.
 
 Prerequisites:
 

@@ -131,6 +131,37 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
       context 'for editing issue due date', :js do
         it_behaves_like 'date sidebar widget'
+
+        it 'ensures the due date is persisted after a reload', :sidekiq_inline do
+          # Issues with empty dates sources were not persisting the due date on edit
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/517311
+          create(:work_items_dates_source, issue_id: issue.id)
+
+          new_date = Time.zone.today
+
+          wait_for_all_requests
+
+          within_testid("sidebar-due-date") do
+            button = find_button('Edit')
+            scroll_to(button)
+            button.click
+
+            execute_script('document.querySelector(".issuable-sidebar")?.scrollBy(0, 50)')
+
+            click_button new_date.day.to_s
+
+            wait_for_all_requests
+
+            expect(find_by_testid("sidebar-date-value")).to have_content new_date.strftime('%b %-d, %Y')
+          end
+
+          visit_issue(project, issue)
+          wait_for_all_requests
+
+          within_testid("sidebar-due-date") do
+            expect(find_by_testid("sidebar-date-value")).to have_content new_date.strftime('%b %-d, %Y')
+          end
+        end
       end
 
       context 'for editing issue labels', :js do

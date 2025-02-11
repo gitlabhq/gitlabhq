@@ -7,7 +7,7 @@ title: Migrating from the DAST version 4 browser-based analyzer to DAST version 
 
 > - The [DAST proxy-based analyzer](proxy-based.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
 
-[DAST version 5](browser/index.md) replaces DAST version 4. This document serves as a guide to
+[DAST version 5](browser/_index.md) replaces DAST version 4. This document serves as a guide to
 migrate from the DAST version 4 browser-based analyzer to DAST version 5.
 
 Follow this migration guide if all the following conditions apply:
@@ -79,7 +79,7 @@ Follow the progress of the remaining check in the epic [Remaining active checks 
 ## Changes to CI/CD variables
 
 The following table outlines migration actions required for each browser-based analyzer DAST version 4 CI/CD variable.
-See [configuration](browser/configuration/index.md) for more information on configuring the browser-based analyzer.
+See [configuration](browser/configuration/_index.md) for more information on configuring the browser-based analyzer.
 
 | DAST version 4 CI/CD variable               | Required action    | Notes                                         |
 |:--------------------------------------------|:-------------------|:----------------------------------------------|

@@ -3316,7 +3316,7 @@ Make sure you have enough disk space to accommodate the upgrade. For more inform
 
 </div>
 
-As of GitLab 17.0, Proxy-based DAST will not be supported. Please migrate to Browser-based DAST to continue analyzing your projects for security findings via dynamic analysis. [Breach and Attack Simulation](https://docs.gitlab.com/ee/user/application_security/breach_and_attack_simulation/), an incubating feature which is built on top of Proxy-based DAST, is also included in this deprecation and will not be supported after 17.0.
+As of GitLab 17.0, Proxy-based DAST will not be supported. Please migrate to Browser-based DAST to continue analyzing your projects for security findings via dynamic analysis. **Breach and Attack Simulation**, an incubating feature which is built on top of Proxy-based DAST, is also included in this deprecation and will not be supported after 17.0.
 
 </div>
 
@@ -3997,7 +3997,7 @@ To prepare for GitLab 15.8 and later, you should:
 
 </div>
 
-The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
+The **Shimo Workspace integration** has been deprecated
 and will be moved to the JiHu GitLab codebase.
 
 </div>
@@ -4949,7 +4949,7 @@ Update any scripts or bookmarks that reference the legacy URLs. GitLab APIs are 
 
 </div>
 
-The [License-Check feature](https://docs.gitlab.com/ee/user/compliance/license_check_rules.html) is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the Policies tab on the License Compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [License Approval policy](https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html) instead.
+The **License-Check feature** is now deprecated and is scheduled for removal in GitLab 16.0. Additionally, the Policies tab on the License Compliance page and all APIs related to the License-Check feature are deprecated and planned for removal in GitLab 16.0. Users who wish to continue to enforce approvals based on detected licenses are encouraged to create a new [License Approval policy](https://docs.gitlab.com/ee/user/compliance/license_approval_policies.html) instead.
 
 </div>
 
@@ -5784,7 +5784,7 @@ Starting in GitLab 15.7 we started providing packages for openSUSE Leap 15.4, an
 
 </div>
 
-We are deprecating support for [uploading backups to remote storage](https://docs.gitlab.com/ee/raketasks/backup_gitlab.html#upload-backups-to-a-remote-cloud-storage) using OpenStack Swift and Rackspace APIs. The support for these APIs depends on third-party libraries that are no longer actively maintained and have not been updated for Ruby 3. GitLab is switching over to Ruby 3 prior to EOL of Ruby 2 in order to stay up to date on security patches.
+We are deprecating support for **uploading backups to remote storage** using OpenStack Swift and Rackspace APIs. The support for these APIs depends on third-party libraries that are no longer actively maintained and have not been updated for Ruby 3. GitLab is switching over to Ruby 3 prior to EOL of Ruby 2 in order to stay up to date on security patches.
 
 - If you're using OpenStack, you need to change you configuration to use the S3 API instead of Swift.
 - If you're using Rackspace storage, you need to switch to a different provider or manually upload the backup file after the backup task is complete.
@@ -6071,7 +6071,7 @@ Long term service and support (LTSS) for [Debian 9 Stretch ends in July 2022](ht
 
 </div>
 
-Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#removed-events) are now deprecated and will be removed in GitLab 15.0.
+Audit events for **repository events** are now deprecated and will be removed in GitLab 15.0.
 
 These events have always been disabled by default and had to be manually enabled with a
 feature flag. Enabling them can cause too many events to be generated which can

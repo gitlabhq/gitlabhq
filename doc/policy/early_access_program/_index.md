@@ -15,7 +15,7 @@ These features may not be ready for production use and follow the [Experimental 
 
 | Name                                                                                                                                        | Status                                                    | Included date | Provide feedback |
 |---------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|---------------|------------------|
-| [GitLab Duo Vulnerability Resolution](../../user/application_security/vulnerabilities/index.md#vulnerability-resolution)                    | [Beta](../development_stages_support.md#beta)             | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476553) |
+| [GitLab Duo Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                    | [Beta](../development_stages_support.md#beta)             | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/476553) |
 | [GitLab Duo Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | [Experiment](../development_stages_support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409844) |
 | [GitLab Duo Product Analytics](../../user/analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo)                | [Experiment](../development_stages_support.md#experiment) | 2024-10-02    | [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/455363) |
 

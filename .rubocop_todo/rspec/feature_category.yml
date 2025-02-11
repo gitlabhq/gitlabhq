@@ -806,7 +806,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/merge_request/blocking_spec.rb'
     - 'ee/spec/models/merge_requests/external_status_check_spec.rb'
     - 'ee/spec/models/milestone_release_spec.rb'
-    - 'ee/spec/models/namespace_limit_spec.rb'
     - 'ee/spec/models/path_lock_spec.rb'
     - 'ee/spec/models/preloaders/environments/protected_environment_preloader_spec.rb'
     - 'ee/spec/models/productivity_analytics_spec.rb'

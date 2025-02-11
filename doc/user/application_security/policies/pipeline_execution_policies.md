@@ -43,7 +43,7 @@ the following sections and tables provide an alternative.
 | `enabled` | `boolean` | true | Flag to enable (`true`) or disable (`false`) the policy. |
 | `content` | `object` of [`content`](#content-type) | true | Reference to the CI/CD configuration to inject into project pipelines. |
 | `pipeline_config_strategy` | `string` | false | Can either be `inject_ci` or `override_project_ci`. See [Pipeline strategies](#pipeline-strategies) for more information. |
-| `policy_scope` | `object` of [`policy_scope`](index.md#scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify. |
+| `policy_scope` | `object` of [`policy_scope`](_index.md#scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify. |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
 | `skip_ci` | `object` of [`skip_ci`](pipeline_execution_policies.md#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped. |
 
@@ -183,7 +183,7 @@ from bypassing the pipeline execution policies.
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](index.md#scope).
+[Scope](_index.md#scope).
 
 ## Pipeline strategies
 
@@ -402,7 +402,7 @@ These examples demonstrate what you can achieve with pipeline execution policies
 ### Pipeline execution policy
 
 You can use the following example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](index.md#security-policy-project):
+[security policy project](_index.md#security-policy-project):
 
 ```yaml
 ---

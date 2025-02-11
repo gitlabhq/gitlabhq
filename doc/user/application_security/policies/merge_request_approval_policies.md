@@ -108,7 +108,7 @@ Most policy changes take effect as soon as the merge request is merged. Any chan
 do not go through a merge request and are committed directly to the default branch may require up to 10 minutes
 before the policy changes take effect.
 
-The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
+The [policy editor](_index.md#policy-editor) supports YAML mode and rule mode.
 
 NOTE:
 Propagating merge request approval policies created for groups with a large number of projects take a while to complete.
@@ -143,7 +143,7 @@ the following sections and tables provide an alternative.
 | `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
 | `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
-| `policy_scope`      | `object` of [`policy_scope`](index.md#scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `policy_scope`      | `object` of [`policy_scope`](_index.md#scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
 
 ## `scan_finding` rule type
@@ -346,12 +346,12 @@ approval_policy:
 
 To customize policy enforcement, you can define a policy's scope to either include or exclude
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](index.md#scope).
+[Scope](_index.md#scope).
 
 ## Example `policy.yml` in a security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](index.md#security-policy-project):
+[security policy project](_index.md#security-policy-project):
 
 ```yaml
 ---

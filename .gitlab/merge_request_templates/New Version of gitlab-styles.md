@@ -18,7 +18,7 @@ This MR can be reused to upgrade `gitlab-styles` in this project after a new ver
     - [ ] (Optional) [Generate TODOs](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#resolving-rubocop-exceptions) for pending offenses
       - [ ] Put :new: cop rules (or if configuration is changed) in "grace period". See [docs](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#enabling-a-new-cop).
       - [ ] (Optional) Remove any offenses for disabled cops
-      - Use `grep --perl-regexp -o ":\d+\d+: \w: \[\S+\] ([\w/]+)" raw_job_output.log | awk '{print $4}' | sort | uniq -c` to get a list of cop rules with offenses. Where `raw_job_output.log` is the raw output of the `rubocop` job
+      - Use `grep --extended-regexp -o ":[0-9]+:[0-9]+: [[:alnum:]]: \[[^[:space:]]+\] ([[:alnum:]/]+)" raw_job_output.log | awk '{print $4}' | sort | uniq -c` to get a list of cop rules with offenses. Where `raw_job_output.log` is the raw output of the `rubocop` job
     - [ ] (Optional) Autocorrect offenses (only if the changeset is small)
     - [ ] Compare the total runtime of `rubocop --parallel` scan with previous runs
   - [ ] Make sure CI passes and does not have "silenced offenses" :green_heart:

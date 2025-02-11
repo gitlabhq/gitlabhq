@@ -69,12 +69,12 @@ variables.
 
 ### Requirements
 
-Like other GitLab SAST analyzers, the GitLab Advanced SAST analyzer requires a runner and a CI/CD pipeline; see [SAST requirements](index.md#requirements) for details.
+Like other GitLab SAST analyzers, the GitLab Advanced SAST analyzer requires a runner and a CI/CD pipeline; see [SAST requirements](_index.md#requirements) for details.
 
 On GitLab Self-Managed, you must also use a GitLab version that supports GitLab Advanced SAST:
 
 - You should use GitLab 17.4 or later if possible. GitLab 17.4 includes a new code-flow view, vulnerability deduplication, and further updates to the SAST CI/CD template.
-- The [SAST CI/CD templates](index.md#stable-vs-latest-sast-templates) were updated to include GitLab Advanced SAST in the following releases:
+- The [SAST CI/CD templates](_index.md#stable-vs-latest-sast-templates) were updated to include GitLab Advanced SAST in the following releases:
   - The stable template includes GitLab Advanced SAST in GitLab 17.3 or later.
   - The latest template includes GitLab Advanced SAST in GitLab 17.2 or later. Note that you [should not mix latest and stable templates](../detect/roll_out_security_scanning.md#template-editions) in a single project.
 - At a minimum, GitLab Advanced SAST requires version 17.1 or later.
@@ -89,7 +89,7 @@ You can set this variable in different ways depending on how you manage your CI/
 
 If you've already enabled GitLab SAST scanning in your project, add a new CI/CD variable to enable GitLab SAST.
 
-This minimal YAML file includes the [stable SAST template](index.md#stable-vs-latest-sast-templates) and enables GitLab Advanced SAST:
+This minimal YAML file includes the [stable SAST template](_index.md#stable-vs-latest-sast-templates) and enables GitLab Advanced SAST:
 
 ```yaml
 include:
@@ -115,7 +115,7 @@ To enable GitLab Advanced SAST by using the pipeline editor:
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
 1. Update the CI/CD configuration to:
-   - Include one of the GitLab-managed [SAST CI/CD templates](index.md#stable-vs-latest-sast-templates) if it is not [already included](index.md#configure-sast-in-your-cicd-yaml).
+   - Include one of the GitLab-managed [SAST CI/CD templates](_index.md#stable-vs-latest-sast-templates) if it is not [already included](_index.md#configure-sast-in-your-cicd-yaml).
        - In GitLab 17.3 or later, you should use the stable template, `Jobs/SAST.gitlab-ci.yml`.
        - In GitLab 17.2, GitLab Advanced SAST is only available in the latest template, `Jobs/SAST.latest.gitlab-ci.yml`. Note that you [should not mix latest and stable templates](../detect/roll_out_security_scanning.md#template-editions) in a single project.
        - In GitLab 17.1, you must manually copy the contents of the GitLab Advanced SAST job into your CI/CD pipeline definition.

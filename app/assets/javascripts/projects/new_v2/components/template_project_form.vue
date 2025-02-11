@@ -8,23 +8,24 @@ export default {
     MultiStepFormTemplate,
   },
   props: {
-    title: {
-      type: String,
-      required: true,
+    option: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
   },
 };
 </script>
 
 <template>
-  <multi-step-form-template :title="title" :current-step="2" :steps-total="3">
+  <multi-step-form-template :title="option.title" :current-step="2" :steps-total="3">
     <template #next>
       <gl-button category="primary" variant="confirm" :disabled="true">
         {{ __('Next step') }}
       </gl-button>
     </template>
     <template #back>
-      <gl-button category="primary" variant="default">
+      <gl-button category="primary" variant="default" @click="$emit('back')">
         {{ __('Go back') }}
       </gl-button>
     </template>

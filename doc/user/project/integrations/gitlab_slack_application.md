@@ -188,7 +188,7 @@ The following GitLab events can trigger notifications in Slack:
 | [Group mention](#trigger-notifications-for-group-mentions) in public  | A group is mentioned in a public channel.                     |
 | [Group mention](#trigger-notifications-for-group-mentions) in private | A group is mentioned in a private channel.                    |
 | [Incident](../../../operations/incident_management/slack.md)          | An incident is created, closed, or reopened.                  |
-| [Vulnerability](../../application_security/vulnerabilities/index.md)  | A new, unique vulnerability is recorded on the default branch.|
+| [Vulnerability](../../application_security/vulnerabilities/_index.md)  | A new, unique vulnerability is recorded on the default branch.|
 | Alert                                                                 | A new, unique alert is recorded.                              |
 
 ### Trigger notifications for group mentions

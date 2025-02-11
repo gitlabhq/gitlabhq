@@ -276,7 +276,6 @@ spec/frontend/vue_shared/components/filtered_search_bar/filtered_search_bar_root
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js
 spec/frontend/vue_shared/components/markdown/header_spec.js
 spec/frontend/vue_shared/components/markdown/markdown_editor_spec.js
-spec/frontend/vue_shared/components/markdown/suggestion_diff_row_spec.js
 spec/frontend/vue_shared/components/markdown_drawer/markdown_drawer_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/page_heading_spec.js

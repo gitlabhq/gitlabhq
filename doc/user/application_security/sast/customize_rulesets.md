@@ -28,14 +28,14 @@ You can disable predefined rules for any SAST analyzer.
 
 When you disable a rule:
 
-- Most analyzers still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](index.md#download-a-sast-report).
+- Most analyzers still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](_index.md#download-a-sast-report).
 - Findings for the disabled rule no longer appear in the [pipeline security tab](../vulnerability_report/pipeline.md).
-- Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/index.md#activity-filter) in the [vulnerability report](../vulnerability_report/index.md).
+- Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/_index.md#activity-filter) in the [vulnerability report](../vulnerability_report/_index.md).
 
 The Semgrep-based analyzer handles disabled rules differently:
 
 - To improve performance, the Semgrep-based analyzer doesn't scan for disabled rules at all.
-- If you disable a rule in the Semgrep-based analyzer, existing vulnerability findings for that rule are [automatically resolved](index.md#automatic-vulnerability-resolution) after you merge the `sast-ruleset.toml` file to the default branch.
+- If you disable a rule in the Semgrep-based analyzer, existing vulnerability findings for that rule are [automatically resolved](_index.md#automatic-vulnerability-resolution) after you merge the `sast-ruleset.toml` file to the default branch.
 
 See the [Schema](#schema) and [Examples](#examples) sections for information on how
 to configure this behavior.
@@ -91,7 +91,7 @@ optional authentication, and optional Git SHA. The variable uses the following f
 NOTE:
 If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used.
 
-The following example [enables SAST](index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file.
+The following example [enables SAST](_index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file.
 In this example, the file is committed on the default branch of `example-ruleset-project` at the path `.gitlab/sast-ruleset.toml`.
 
 ```yaml
@@ -199,7 +199,7 @@ rule that you wish to modify.
 | `value` | The value of the identifier used by the predefined rule. |
 
 You can look up the correct values for `type` and `value` by viewing the
-[`gl-sast-report.json`](index.md#download-a-sast-report) produced by the analyzer.
+[`gl-sast-report.json`](_index.md#download-a-sast-report) produced by the analyzer.
 You can download this file as a job artifact from the analyzer's CI job.
 
 For example, the snippet below shows a finding from a `semgrep` rule with three
@@ -327,8 +327,8 @@ The following example disables rules based on different criteria:
 - An GitLab Advanced SAST rule ID, which identifies a specific detection strategy used in GitLab Advanced SAST.
 - An associated Semgrep rule ID, which is included in GitLab Advanced SAST findings for compatibility. This additional metadata allows findings to be automatically transitioned when both analyzers create similar findings in the same location.
 
-These identifiers are shown in the [vulnerability details](../vulnerabilities/index.md) of each vulnerability.
-You can also see each identifier and its associated `type` in the [downloadable SAST report artifact](index.md#download-a-sast-report).
+These identifiers are shown in the [vulnerability details](../vulnerabilities/_index.md) of each vulnerability.
+You can also see each identifier and its associated `type` in the [downloadable SAST report artifact](_index.md#download-a-sast-report).
 
 ```toml
 [gitlab-advanced-sast]
@@ -590,7 +590,7 @@ rules:
 
 ### Specify a private remote configuration
 
-The following example [enables SAST](index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file. The file is:
+The following example [enables SAST](_index.md#configure-sast-in-your-cicd-yaml) and uses a shared ruleset customization file. The file is:
 
 - Downloaded from a private project that requires authentication, by using a [Group Access Token](../../group/settings/group_access_tokens.md) securely stored within a CI variable.
 - Checked out at a specific Git commit SHA instead of the default branch.

@@ -38,7 +38,7 @@ Analyzers are shipped as Docker images. For example, to run the
        registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:latest /analyzer run
    ```
 
-1. The Docker container generates a report in the mounted project directory with a report filename corresponding to the analyzer category. For example, [SAST](../../user/application_security/sast/index.md) generates a file named `gl-sast-report.json`.
+1. The Docker container generates a report in the mounted project directory with a report filename corresponding to the analyzer category. For example, [SAST](../../user/application_security/sast/_index.md) generates a file named `gl-sast-report.json`.
 
 ## Analyzers development
 
@@ -79,13 +79,13 @@ go build -o analyzer
 
 ### Execution criteria
 
-[Enabling SAST](../../user/application_security/sast/index.md#configure-sast-in-your-cicd-yaml) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
+[Enabling SAST](../../user/application_security/sast/_index.md#configure-sast-in-your-cicd-yaml) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
 
 The following independent criteria determine which analyzer needs to be run on a project:
 
 1. The SAST template uses [`rules:exists`](../../ci/yaml/_index.md#rulesexists) to determine which analyzer will be run based on the presence of certain files. For example, the Brakeman analyzer [runs when there are](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L60) `.rb` files and a `Gemfile`.
 1. Each analyzer runs a customizable [match interface](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/blob/master/search/search.go) before it performs the actual analysis. For example: [Flawfinder checks for C/C++ files](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder/-/blob/f972ac786268fb649553056a94cda05cdc1248b2/plugin/plugin.go#L14).
-1. For some analyzers that run on generic file extensions, there is a check based on a CI/CD variable. For example: Kubernetes manifests are written in YAML, so [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) runs only when [`SCAN_KUBERNETES_MANIFESTS` is set to true](../../user/application_security/sast/index.md#enabling-kubesec-analyzer).
+1. For some analyzers that run on generic file extensions, there is a check based on a CI/CD variable. For example: Kubernetes manifests are written in YAML, so [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) runs only when [`SCAN_KUBERNETES_MANIFESTS` is set to true](../../user/application_security/sast/_index.md#enabling-kubesec-analyzer).
 
 Step 1 helps prevent wastage of compute quota that would be spent running analyzers not suitable for the project. However, due to [technical limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/227632), it cannot be used for large projects. Therefore, step 2 acts as final check to ensure a mismatched analyzer is able to exit early.
 
@@ -487,7 +487,7 @@ This process only applies to the images used in versions of GitLab matching the 
 - the `MAJOR` image tag (e.g.: `4`)
 - the `latest` image tag
 
-The implementation of the rebuild process may vary [depending on the project](../../user/application_security/index.md#vulnerability-scanner-maintenance), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
+The implementation of the rebuild process may vary [depending on the project](../../user/application_security/_index.md#vulnerability-scanner-maintenance), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
 
 ## Security and Build fixes of Go
 
@@ -564,8 +564,8 @@ First, create an new issue for a release with a script from this repo: `./script
 This issue will guide you through the whole release process. In general, you have to perform the following tasks:
 
 - Check the list of supported technologies in GitLab documentation.
-  - [Supported languages in SAST](../../user/application_security/sast/index.md#supported-languages-and-frameworks)
-  - [Supported languages in DS](../../user/application_security/dependency_scanning/index.md#supported-languages-and-package-managers)
+  - [Supported languages in SAST](../../user/application_security/sast/_index.md#supported-languages-and-frameworks)
+  - [Supported languages in DS](../../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
   - [Supported languages in LS](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers)
 
 - Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.

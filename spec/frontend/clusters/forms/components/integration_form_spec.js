@@ -22,7 +22,7 @@ describe('ClusterIntegrationForm', () => {
     wrapper = shallowMount(IntegrationForm, {
       store: createStore(storeValues),
       provide: {
-        autoDevopsHelpPath: 'topics/autodevops/index',
+        autoDevopsHelpPath: 'topics/autodevops/_index',
         externalEndpointHelpPath: 'user/project/clusters/_index.md#base-domain',
       },
     });

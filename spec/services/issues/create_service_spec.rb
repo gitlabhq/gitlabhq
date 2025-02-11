@@ -539,6 +539,20 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           end
         end
       end
+
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/517311
+      context 'when creating issue with a due date' do
+        let(:due_date) { Time.zone.today }
+        let(:opts) { { title: 'With Due Date', due_date: due_date } }
+
+        it 'creates the issue with fixed start and due date', :sidekiq_inline do
+          expect(issue.due_date).to be(due_date)
+          expect(issue.dates_source).not_to be_nil
+          expect(issue.dates_source.due_date).to be(due_date)
+          expect(issue.dates_source.due_date_is_fixed).to be(true)
+          expect(issue.dates_source.start_date_is_fixed).to be(true)
+        end
+      end
     end
 
     context 'issue create service' do

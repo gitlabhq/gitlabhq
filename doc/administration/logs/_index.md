@@ -1075,7 +1075,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137812) in GitLab 16.7.
 
-The `secret_push_protection.log` file logs information related to [Secret Push Protection](../../user/application_security/secret_detection/secret_push_protection/index.md) feature.
+The `secret_push_protection.log` file logs information related to [Secret Push Protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
 
 This file is located at:
 

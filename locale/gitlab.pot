@@ -52649,6 +52649,9 @@ msgstr ""
 msgid "SecurityReports|%{firstProject}, %{secondProject}, and %{rest}"
 msgstr ""
 
+msgid "SecurityReports|A comment is required when changing the severity."
+msgstr ""
+
 msgid "SecurityReports|A comment is required when dismissing."
 msgstr ""
 
@@ -52671,6 +52674,9 @@ msgid "SecurityReports|Add or remove projects to monitor in the security area. P
 msgstr ""
 
 msgid "SecurityReports|Add projects"
+msgstr ""
+
+msgid "SecurityReports|Add reason for the severity change (required)"
 msgstr ""
 
 msgid "SecurityReports|All activity"
@@ -52959,6 +52965,9 @@ msgid "SecurityReports|Select action"
 msgstr ""
 
 msgid "SecurityReports|Select dismissal reason"
+msgstr ""
+
+msgid "SecurityReports|Select severity"
 msgstr ""
 
 msgid "SecurityReports|Select status"
@@ -59705,9 +59714,6 @@ msgid "Todos|Added approver"
 msgstr ""
 
 msgid "Todos|Alert"
-msgstr ""
-
-msgid "Todos|All"
 msgstr ""
 
 msgid "Todos|Approval required"

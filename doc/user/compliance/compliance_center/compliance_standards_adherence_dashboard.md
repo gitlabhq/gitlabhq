@@ -84,7 +84,7 @@ information, see [Merge request approval rules](../../project/merge_requests/app
 ### SAST scanner artifact
 
 To comply with the GitLab standard, you must have the SAST scanner enabled, configured, and producing an artifact in the project's pipeline. For more
-information, see [Static Application Security Testing (SAST)](../../application_security/sast/index.md).
+information, see [Static Application Security Testing (SAST)](../../application_security/sast/_index.md).
 
 ### DAST scanner artifact
 

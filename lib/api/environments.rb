@@ -215,9 +215,12 @@ module API
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :admin_environments
       post ':id/environments/:environment_id/stop' do
-        authorize! :stop_environment, user_project
+        authorize! :read_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
+
+        authorize! :stop_environment, environment
+
         ::Environments::StopService.new(user_project, current_user, declared_params(include_missing: false))
                                  .execute(environment)
 

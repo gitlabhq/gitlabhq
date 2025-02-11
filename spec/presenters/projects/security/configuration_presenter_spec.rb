@@ -36,7 +36,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
 
       it 'includes links to auto devops and secure product docs' do
         expect(html_data[:auto_devops_help_page_path]).to eq(help_page_path('topics/autodevops/_index.md'))
-        expect(html_data[:help_page_path]).to eq(help_page_path('user/application_security/index.md'))
+        expect(html_data[:help_page_path]).to eq(help_page_path('user/application_security/_index.md'))
       end
 
       it 'returns info that Auto DevOps is not enabled' do

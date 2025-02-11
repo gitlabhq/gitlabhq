@@ -331,7 +331,7 @@ DETAILS:
 You can show scanner findings in the diff. For details, see:
 
 - [Code Quality findings](../../../ci/testing/code_quality.md#merge-request-changes-view)
-- [Static Analysis findings](../../application_security/sast/index.md#merge-request-changes-view)
+- [Static Analysis findings](../../application_security/sast/_index.md#merge-request-changes-view)
 
 ## Add a comment to a merge request file
 

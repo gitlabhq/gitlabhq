@@ -43250,10 +43250,10 @@ The state of the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
-| <a id="vulnerabilitystatedetected"></a>`DETECTED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
-| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
-| <a id="vulnerabilitystateresolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/index.html#vulnerability-status-values). |
+| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
+| <a id="vulnerabilitystatedetected"></a>`DETECTED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
+| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
+| <a id="vulnerabilitystateresolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
 
 ### `WeightWildcardId`
 
@@ -43290,12 +43290,27 @@ Values for sorting work items.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="workitemsortclosed_at_asc"></a>`CLOSED_AT_ASC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Closed time by ascending order. |
+| <a id="workitemsortclosed_at_desc"></a>`CLOSED_AT_DESC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Closed time by descending order. |
 | <a id="workitemsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
 | <a id="workitemsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
-| <a id="workitemsortdue_date_asc"></a>`DUE_DATE_ASC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Due date of the corresponding WorkItemWidgetStartAndDueDate by ascending order. |
-| <a id="workitemsortdue_date_desc"></a>`DUE_DATE_DESC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Due date of the corresponding WorkItemWidgetStartAndDueDate by descending order. |
-| <a id="workitemsortstart_date_asc"></a>`START_DATE_ASC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Start date of the corresponding WorkItemWidgetStartAndDueDate by ascending order. |
-| <a id="workitemsortstart_date_desc"></a>`START_DATE_DESC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Start date of the corresponding WorkItemWidgetStartAndDueDate by descending order. |
+| <a id="workitemsortdue_date_asc"></a>`DUE_DATE_ASC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Due date by ascending order. |
+| <a id="workitemsortdue_date_desc"></a>`DUE_DATE_DESC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Due date by descending order. |
+| <a id="workitemsortescalation_status_asc"></a>`ESCALATION_STATUS_ASC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Status from triggered to resolved. |
+| <a id="workitemsortescalation_status_desc"></a>`ESCALATION_STATUS_DESC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Status from resolved to triggered. |
+| <a id="workitemsortlabel_priority_asc"></a>`LABEL_PRIORITY_ASC` | Label priority by ascending order. |
+| <a id="workitemsortlabel_priority_desc"></a>`LABEL_PRIORITY_DESC` | Label priority by descending order. |
+| <a id="workitemsortmilestone_due_asc"></a>`MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
+| <a id="workitemsortmilestone_due_desc"></a>`MILESTONE_DUE_DESC` | Milestone due date by descending order. |
+| <a id="workitemsortpopularity_asc"></a>`POPULARITY_ASC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Number of upvotes (awarded "thumbs up" emoji) by ascending order. |
+| <a id="workitemsortpopularity_desc"></a>`POPULARITY_DESC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Number of upvotes (awarded "thumbs up" emoji) by descending order. |
+| <a id="workitemsortpriority_asc"></a>`PRIORITY_ASC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Priority by ascending order. |
+| <a id="workitemsortpriority_desc"></a>`PRIORITY_DESC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Priority by descending order. |
+| <a id="workitemsortrelative_position_asc"></a>`RELATIVE_POSITION_ASC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Relative position by ascending order. |
+| <a id="workitemsortseverity_asc"></a>`SEVERITY_ASC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Severity from less critical to more critical. |
+| <a id="workitemsortseverity_desc"></a>`SEVERITY_DESC` **{warning-solid}** | **Introduced** in GitLab 17.10. **Status**: Experiment. Severity from more critical to less critical. |
+| <a id="workitemsortstart_date_asc"></a>`START_DATE_ASC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. start date by ascending order. |
+| <a id="workitemsortstart_date_desc"></a>`START_DATE_DESC` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. start date by descending order. |
 | <a id="workitemsorttitle_asc"></a>`TITLE_ASC` | Title by ascending order. |
 | <a id="workitemsorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
 | <a id="workitemsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |

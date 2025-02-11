@@ -73,13 +73,13 @@ When available, the vendor severity level takes precedence and is used by the an
 
 | GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`Browser-based DAST`](../dast/browser/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW`, `INFO` |
+| [`Browser-based DAST`](../dast/browser/_index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW`, `INFO` |
 
 ## API security testing
 
 | GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
 |------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`API security testing`](../api_security_testing/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW` |
+| [`API security testing`](../api_security_testing/_index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW` |
 
 ## Dependency Scanning
 

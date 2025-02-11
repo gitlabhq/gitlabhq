@@ -8,7 +8,7 @@ title: Sec section development guidelines
 The Sec section is responsible for GitLab application security features, the "Sec" part of
 DevSecOps. Development guides that are specific to the Sec section are listed here.
 
-See [Terminology](../../user/application_security/terminology/index.md) for an overview of our shared terminology.
+See [Terminology](../../user/application_security/terminology/_index.md) for an overview of our shared terminology.
 
 ## Architecture
 
@@ -44,21 +44,21 @@ flowchart LR
 ### Scanning
 
 The scanning part is responsible for finding vulnerabilities in given resources, and exporting results.
-The scans are executed in CI/CD jobs via several small projects called [Analyzers](../../user/application_security/terminology/index.md#analyzer), which can be found in our [Analyzers subgroup](https://gitlab.com/gitlab-org/security-products/analyzers).
-The Analyzers are wrappers around security tools called [Scanners](../../user/application_security/terminology/index.md#scanner), developed internally or externally, to integrate them into GitLab.
+The scans are executed in CI/CD jobs via several small projects called [Analyzers](../../user/application_security/terminology/_index.md#analyzer), which can be found in our [Analyzers subgroup](https://gitlab.com/gitlab-org/security-products/analyzers).
+The Analyzers are wrappers around security tools called [Scanners](../../user/application_security/terminology/_index.md#scanner), developed internally or externally, to integrate them into GitLab.
 The Analyzers are mainly written in Go.
 
 Some 3rd party integrators also make additional Scanners available by following our [integration documentation](../integrations/secure.md), which leverages the same architecture.
 
-The results of the scans are exported as JSON reports that must comply with the [Secure report format](../../user/application_security/terminology/index.md#secure-report-format) and are uploaded as [CI/CD Job Report artifacts](../../ci/jobs/job_artifacts.md) to make them available for processing after the pipelines completes.
+The results of the scans are exported as JSON reports that must comply with the [Secure report format](../../user/application_security/terminology/_index.md#secure-report-format) and are uploaded as [CI/CD Job Report artifacts](../../ci/jobs/job_artifacts.md) to make them available for processing after the pipelines completes.
 
 ### Processing, visualization, and management
 
 After the data is available as a Report Artifact it can be processed by the GitLab Rails application to enable our security features, including:
 
-- [Security Dashboards](../../user/application_security/security_dashboard/index.md), Merge Request widget, Pipeline view, and so on.
+- [Security Dashboards](../../user/application_security/security_dashboard/_index.md), Merge Request widget, Pipeline view, and so on.
 - [Security scan results](../../user/application_security/detect/security_scan_results.md).
-- [Approval rules](../../user/application_security/index.md#security-approvals-in-merge-requests).
+- [Approval rules](../../user/application_security/_index.md#security-approvals-in-merge-requests).
 
 Depending on the context, the security reports may be stored either in the database or stay as Report Artifacts for on-demand access.
 
@@ -77,7 +77,7 @@ If you are working with CI/CD templates, read the [development guide for GitLab 
 Within analyzer JSON reports, the [`identifiers` field](../integrations/secure.md#identifiers) contains a collection of types and categories by which
 a vulnerability can be described (that is, a CWE family).
 
-The first item in the `identifiers` collection is known as the [primary identifier](../../user/application_security/terminology/index.md#primary-identifier),
+The first item in the `identifiers` collection is known as the [primary identifier](../../user/application_security/terminology/_index.md#primary-identifier),
 a critical component to both describing and tracking vulnerabilities.
 
 In most other cases, the `identifiers` collection is unordered, where the remaining secondary identifiers act as metadata for grouping vulnerabilities
@@ -88,7 +88,7 @@ Because our processing logic relies on generating a delta of two different vulne
 
 ![Screenshot of primary identifier mismatch in MR widget](img/primary_identifier_changed_v15_6.png)
 
-After being [merged](../integrations/secure.md#tracking-and-merging-vulnerabilities), the previous vulnerability is listed as "remediated" and the introduced as ["detected"](../../user/application_security/vulnerabilities/index.md#vulnerability-status-values).
+After being [merged](../integrations/secure.md#tracking-and-merging-vulnerabilities), the previous vulnerability is listed as "remediated" and the introduced as ["detected"](../../user/application_security/vulnerabilities/_index.md#vulnerability-status-values).
 
 ### Guiding principles for ensuring primary identifier stability
 

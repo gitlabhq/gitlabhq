@@ -18,7 +18,7 @@ Debug-level logging can help when troubleshooting. For details, see
 
 ### Working around missing support for certain languages or package managers
 
-As noted in the ["Supported languages" section](index.md#supported-languages-and-package-managers)
+As noted in the ["Supported languages" section](_index.md#supported-languages-and-package-managers)
 some dependency definition files are not yet supported.
 However, Dependency Scanning can be achieved if
 the language, a package manager, or a third-party tool
@@ -272,7 +272,7 @@ To resolve this issue, don't use the `-e/--editable` flag when you run dependenc
 
 ## Handling out of memory errors with SBT
 
-If you encounter out of memory errors with SBT while using dependency scanning on a Scala project, you can address this by setting the [`SBT_CLI_OPTS`](index.md#analyzer-specific-settings) environment variable. An example configuration is:
+If you encounter out of memory errors with SBT while using dependency scanning on a Scala project, you can address this by setting the [`SBT_CLI_OPTS`](_index.md#analyzer-specific-settings) environment variable. An example configuration is:
 
 ```yaml
 variables:
@@ -330,9 +330,9 @@ Make the file executable by running `chmod +ux gradlew` locally and pushing it t
 
 ## Dependency Scanning scanner is no longer `Gemnasium`
 
-Historically, the scanner used by Dependency Scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/index.md).
+Historically, the scanner used by Dependency Scanning is `Gemnasium` and this is what user can see on the [vulnerability page](../vulnerabilities/_index.md).
 
-With the rollout of [Dependency Scanning by using SBOM](dependency_scanning_sbom/index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing Dependency Scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
+With the rollout of [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md), we are replacing the `Gemnasium` scanner with the built-in `GitLab SBoM Vulnerability Scanner`. This new scanner is no longer executed in a CI/CD job but rather within the GitLab platform. While the two scanners are expected to provide the same results, because the SBOM scan happens after the existing Dependency Scanning CI/CD job, existing vulnerabilities have their scanner value updated with the new `GitLab SBoM Vulnerability Scanner`.
 
 As we move forward with the rollout and ultimately replace the existing Gemnasium analyzer, the `GitLab SBoM Vulnerability Scanner` will be the only expected value for GitLab built-in Dependency Scanning feature.
 

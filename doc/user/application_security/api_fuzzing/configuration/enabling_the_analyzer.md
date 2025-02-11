@@ -897,13 +897,13 @@ Follow these steps to view details of a fuzzing fault:
 
 Fuzzing faults show up as vulnerabilities with a severity of Unknown. The Security Dashboard is a
 good place to get an overview of all the security vulnerabilities in your groups, projects and
-pipelines. For more information, see the [Security Dashboard documentation](../../security_dashboard/index.md).
+pipelines. For more information, see the [Security Dashboard documentation](../../security_dashboard/_index.md).
 
 ### Interacting with the vulnerabilities
 
 Fuzzing faults show up as vulnerabilities with a severity of Unknown.
 Once a fault is found, you can interact with it. Read more on how to
-[address the vulnerabilities](../../vulnerabilities/index.md).
+[address the vulnerabilities](../../vulnerabilities/_index.md).
 
 ## Handling False Positives
 

@@ -10,10 +10,6 @@ import { OPTIONS } from '../constants';
 import NewProjectDestinationSelect from './project_destination_select.vue';
 import Breadcrumb from './form_breadcrumb.vue';
 import CommandLine from './command_line.vue';
-import BlankProjectForm from './blank_project_form.vue';
-import TemplateProjectForm from './template_project_form.vue';
-import CiCdProjectForm from './ci_cd_project_form.vue';
-import ImportProjectForm from './import_project_form.vue';
 
 export default {
   OPTIONS,
@@ -29,10 +25,6 @@ export default {
     NewProjectDestinationSelect,
     Breadcrumb,
     CommandLine,
-    BlankProjectForm,
-    TemplateProjectForm,
-    CiCdProjectForm,
-    ImportProjectForm,
   },
   directives: {
     SafeHtml,
@@ -113,6 +105,8 @@ export default {
     return {
       selectedNamespace:
         this.namespaceId && this.canSelectNamespace ? this.namespaceId : this.userNamespaceId,
+      selectedProjectType: OPTIONS.blank.value,
+      currentStep: 1,
       rootUrl: this.rootPath,
     };
   },
@@ -149,6 +143,12 @@ export default {
         OPTIONS.transfer,
       ];
     },
+    selectedProjectOption() {
+      return this.availableProjectTypes.find((type) => type.value === this.selectedProjectType);
+    },
+    step2Component() {
+      return this.selectedProjectOption.component;
+    },
   },
 
   methods: {
@@ -158,6 +158,15 @@ export default {
     chooseGroupNamespace() {
       this.selectedNamespace = null;
     },
+    selectProjectType(value) {
+      this.selectedProjectType = value;
+    },
+    onBack() {
+      this.currentStep -= 1;
+    },
+    onNext() {
+      this.currentStep += 1;
+    },
   },
 };
 </script>
@@ -166,7 +175,12 @@ export default {
   <div>
     <breadcrumb />
 
-    <multi-step-form-template :title="__('Create new project')" :current-step="1">
+    <multi-step-form-template
+      v-if="currentStep === 1"
+      :title="__('Create new project')"
+      :current-step="1"
+      data-testid="new-project-step1"
+    >
       <template #form>
         <gl-form-group :label="s__('ProjectNew|What do you want to create?')">
           <gl-button-group class="gl-w-full">
@@ -206,7 +220,11 @@ export default {
           />
         </gl-form-group>
 
-        <single-choice-selector v-if="canChooseOption" checked="blank_project">
+        <single-choice-selector
+          v-if="canChooseOption"
+          :checked="selectedProjectType"
+          @change="selectProjectType"
+        >
           <single-choice-selector-item
             v-for="type in availableProjectTypes"
             v-bind="type"
@@ -223,7 +241,12 @@ export default {
         </gl-alert>
       </template>
       <template #next>
-        <gl-button category="primary" variant="confirm" size="medium">
+        <gl-button
+          category="primary"
+          variant="confirm"
+          data-testid="new-project-next"
+          @click="onNext"
+        >
           {{ __('Next step') }}
         </gl-button>
       </template>
@@ -233,9 +256,13 @@ export default {
       </template>
     </multi-step-form-template>
 
-    <blank-project-form :title="$options.OPTIONS.blank.title" />
-    <template-project-form :title="$options.OPTIONS.template.title" />
-    <ci-cd-project-form :title="$options.OPTIONS.ci.title" />
-    <import-project-form :title="$options.OPTIONS.import.title" />
+    <component
+      :is="step2Component"
+      v-if="currentStep === 2"
+      :key="selectedProjectOption.key"
+      :option="selectedProjectOption"
+      data-testid="new-project-step2"
+      @back="onBack"
+    />
   </div>
 </template>

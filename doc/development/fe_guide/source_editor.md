@@ -14,7 +14,7 @@ GitLab features use it, including:
 - [CI Linter](../../ci/yaml/lint.md)
 - [Snippets](../../user/snippets.md)
 - [Web Editor](../../user/project/repository/web_editor.md)
-- [Security Policies](../../user/application_security/policies/index.md)
+- [Security Policies](../../user/application_security/policies/_index.md)
 
 ## When to use Source Editor
 

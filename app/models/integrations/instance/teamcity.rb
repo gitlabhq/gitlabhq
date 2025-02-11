@@ -3,7 +3,7 @@
 module Integrations
   module Instance
     class Teamcity < Integration
-      # To be updated as part of https://gitlab.com/gitlab-org/gitlab/-/issues/474809
+      include Integrations::Base::Teamcity
     end
   end
 end

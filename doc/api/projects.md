@@ -1490,7 +1490,7 @@ settings with access control options can be one of:
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
+| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
@@ -1613,7 +1613,7 @@ settings with access control options can be one of:
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
+| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 
@@ -1751,7 +1751,7 @@ Supported project visibility attributes:
 | `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
-| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
+| `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/_index.md). |
 | `snippets_access_level`                | string | No       | Set visibility of [snippets](../user/snippets.md#change-default-visibility-of-snippets). |
 | `wiki_access_level`                    | string | No       | Set visibility of [wiki](../user/project/wiki/_index.md#enable-or-disable-a-project-wiki). |
 

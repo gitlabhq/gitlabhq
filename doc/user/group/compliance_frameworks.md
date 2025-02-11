@@ -14,7 +14,7 @@ requirements or needs additional oversight.
 
 In the Ultimate tier, the compliance framework can optionally enforce
 [compliance pipeline configuration](compliance_pipelines.md) and
-[security policies](../application_security/policies/index.md#scope) to the projects on which it is applied.
+[security policies](../application_security/policies/_index.md#scope) to the projects on which it is applied.
 
 Compliance frameworks are created on top-level groups. If a project is moved outside of its existing top-level group,
 its frameworks are removed.

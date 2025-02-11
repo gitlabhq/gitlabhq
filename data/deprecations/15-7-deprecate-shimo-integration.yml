@@ -6,7 +6,7 @@
   stage: Foundations  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377824  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
+    The **Shimo Workspace integration** has been deprecated
     and will be moved to the JiHu GitLab codebase.
 #
 # OPTIONAL END OF SUPPORT FIELDS

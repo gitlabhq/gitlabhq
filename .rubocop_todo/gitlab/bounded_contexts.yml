@@ -616,7 +616,6 @@ Gitlab/BoundedContexts:
     - 'app/graphql/types/visibility_levels_enum.rb'
     - 'app/graphql/types/visibility_pipeline_id_type_enum.rb'
     - 'app/graphql/types/work_item_id_type.rb'
-    - 'app/graphql/types/work_item_sort_enum.rb'
     - 'app/graphql/types/work_item_state_counts_type.rb'
     - 'app/graphql/types/work_item_state_enum.rb'
     - 'app/graphql/types/work_item_type.rb'

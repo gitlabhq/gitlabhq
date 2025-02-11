@@ -105,14 +105,14 @@ Unable to create pipeline
     jobs:sast config key may not be used with `rules`: only/except
 ```
 
-This error appears when the included job's `rules` configuration has been [overridden](sast/index.md#overriding-sast-jobs)
+This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#overriding-sast-jobs)
 with [the deprecated `only` or `except` syntax.](../../ci/yaml/_index.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
 - (Temporarily) [Pin your templates to the deprecated versions](#pin-your-templates-to-the-deprecated-versions)
 
-For more information, see [Overriding SAST jobs](sast/index.md#overriding-sast-jobs).
+For more information, see [Overriding SAST jobs](sast/_index.md#overriding-sast-jobs).
 
 ### Transitioning your `only/except` syntax to `rules`
 
@@ -199,7 +199,7 @@ In these circumstances, that the job succeeds is the default behavior. The job's
 success or failure of the analyzer itself. Analyzer results are displayed in the
 [job logs](../../ci/jobs/job_logs.md#expand-and-collapse-job-log-sections),
 [merge request widget](detect/security_scan_results.md#merge-request), or
-[security dashboard](security_dashboard/index.md).
+[security dashboard](security_dashboard/_index.md).
 
 ## Error: job `is used for configuration only, and its script should not be executed`
 
@@ -219,7 +219,7 @@ You can upvote the issue to help with prioritization, and
 
 If the pipeline has manual steps with a job that has the `allow_failure: false` option, and this job is not finished,
 GitLab can't populate listed pages with the data from security reports.
-In this case, [the Vulnerability Report](vulnerability_report/index.md) and [the Dependency List](dependency_list/index.md)
+In this case, [the Vulnerability Report](vulnerability_report/_index.md) and [the Dependency List](dependency_list/_index.md)
 pages are empty.
 These security pages can be populated by running the jobs from the manual step of the pipeline.
 

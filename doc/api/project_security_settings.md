@@ -55,7 +55,7 @@ Example response:
 
 Update the `pre_receive_secret_detection_enabled` setting for the project to the provided value.
 
-Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/index.md) for the project.
+Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md) for the project.
 
 Prerequisites:
 

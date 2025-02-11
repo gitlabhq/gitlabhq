@@ -127,6 +127,11 @@ class Issue < ApplicationRecord
   has_many :incident_management_timeline_events, class_name: 'IncidentManagement::TimelineEvent', foreign_key: :issue_id, inverse_of: :incident
   has_many :assignment_events, class_name: 'ResourceEvents::IssueAssignmentEvent', inverse_of: :issue
 
+  has_one :dates_source,
+    class_name: 'WorkItems::DatesSource',
+    inverse_of: :work_item,
+    autosave: true
+
   alias_attribute :escalation_status, :incident_management_issuable_escalation_status
 
   accepts_nested_attributes_for :issuable_severity, update_only: true

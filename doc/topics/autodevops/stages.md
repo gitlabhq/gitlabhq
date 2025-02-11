@@ -177,7 +177,7 @@ download and check out. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 For more information, see
-[Static Application Security Testing (SAST)](../../user/application_security/sast/index.md).
+[Static Application Security Testing (SAST)](../../user/application_security/sast/_index.md).
 
 ## Auto Secret Detection
 
@@ -188,7 +188,7 @@ After creating the report, it's uploaded as an artifact which you can later
 download and evaluate. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-For more information, see [Secret Detection](../../user/application_security/secret_detection/index.md).
+For more information, see [Secret Detection](../../user/application_security/secret_detection/_index.md).
 
 ## Auto Dependency Scanning
 
@@ -204,7 +204,7 @@ After creating the report, it's uploaded as an artifact which you can later down
 check out. The merge request widget displays any security warnings detected,
 
 For more information, see
-[Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
+[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md).
 
 ## Auto Container Scanning
 
@@ -216,7 +216,7 @@ After creating the report, it's uploaded as an artifact which you can later down
 check out. The merge request displays any detected security issues.
 
 For more information, see
-[Container Scanning](../../user/application_security/container_scanning/index.md).
+[Container Scanning](../../user/application_security/container_scanning/_index.md).
 
 ## Auto Review Apps
 
@@ -272,11 +272,11 @@ licenses other than [Ultimate](https://about.gitlab.com/pricing/).
 - On feature branches, DAST scans the [review app](#auto-review-apps).
 
 After the DAST scan completes, any security warnings are displayed
-on the [Security Dashboard](../../user/application_security/security_dashboard/index.md)
+on the [Security Dashboard](../../user/application_security/security_dashboard/_index.md)
 and the merge request widget.
 
 For more information, see
-[Dynamic Application Security Testing (DAST)](../../user/application_security/dast/index.md).
+[Dynamic Application Security Testing (DAST)](../../user/application_security/dast/_index.md).
 
 ### Overriding the DAST target
 
@@ -284,7 +284,7 @@ To use a custom target instead of the auto-deployed review apps,
 set a `DAST_WEBSITE` CI/CD variable to the URL for DAST to scan.
 
 WARNING:
-If [DAST Full Scan](../../user/application_security/dast/browser/index.md) is
+If [DAST Full Scan](../../user/application_security/dast/browser/_index.md) is
 enabled, GitLab strongly advises **not**
 to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
 actively attacks the target, which can take down your application and lead to

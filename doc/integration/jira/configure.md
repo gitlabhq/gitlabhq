@@ -183,7 +183,7 @@ To create a Jira issue for a vulnerability:
 
 The issue is created in the target Jira project with information from the vulnerability report.
 
-To create a GitLab issue, see [Create a GitLab issue for a vulnerability](../../user/application_security/vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability).
+To create a GitLab issue, see [Create a GitLab issue for a vulnerability](../../user/application_security/vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability).
 
 ## Create a Jira Cloud API token
 

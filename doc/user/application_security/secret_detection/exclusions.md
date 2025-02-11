@@ -28,7 +28,7 @@ You can define multiple exclusions for a project.
 The following restrictions apply:
 
 - Exclusions can only be defined for each project.
-- Exclusions apply only to [secret push protection](secret_push_protection/index.md).
+- Exclusions apply only to [secret push protection](secret_push_protection/_index.md).
 - The maximum number of path-based exclusions per project is 10.
 - The maximum depth for path-based exclusions is 20.
 

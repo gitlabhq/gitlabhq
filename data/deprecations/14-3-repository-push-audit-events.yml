@@ -3,7 +3,7 @@
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
-    Audit events for [repository events](https://docs.gitlab.com/ee/administration/audit_events.html#removed-events) are now deprecated and will be removed in GitLab 15.0.
+    Audit events for **repository events** are now deprecated and will be removed in GitLab 15.0.
 
     These events have always been disabled by default and had to be manually enabled with a
     feature flag. Enabling them can cause too many events to be generated which can
@@ -11,4 +11,4 @@
   stage: Foundations
   tiers: Premium
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337993
-  documentation_url: https://docs.gitlab.com/ee/administration/audit_events.html#removed-events
+  documentation_url: https://docs.gitlab.com/ee/administration/index.html

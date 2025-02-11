@@ -13,6 +13,10 @@ module ActiveContext
         def indexer_klass
           ActiveContext::Databases::Postgresql::Indexer
         end
+
+        def executor_klass
+          ActiveContext::Databases::Postgresql::Executor
+        end
       end
     end
   end

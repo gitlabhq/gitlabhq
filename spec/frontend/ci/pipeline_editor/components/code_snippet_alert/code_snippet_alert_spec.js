@@ -45,7 +45,7 @@ describe('EE - CodeSnippetAlert', () => {
     const docsLink = findDocsLink();
 
     expect(docsLink).not.toBe(null);
-    expect(docsLink.href).toBe(`${TEST_HOST}/help/user/application_security/api_fuzzing/index`);
+    expect(docsLink.href).toBe(`${TEST_HOST}/help/user/application_security/api_fuzzing/_index`);
   });
 
   it("provides a link to the feature's configuration form", () => {

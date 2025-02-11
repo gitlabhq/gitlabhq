@@ -23252,7 +23252,8 @@ CREATE TABLE vulnerability_findings_remediations (
     vulnerability_remediation_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_65e61a488a CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_findings_remediations_id_seq
@@ -27135,9 +27136,6 @@ ALTER TABLE ONLY instance_type_ci_runners_e59bb2812d
 
 ALTER TABLE ONLY project_type_ci_runners_e59bb2812d
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
-
-ALTER TABLE vulnerability_findings_remediations
-    ADD CONSTRAINT check_65e61a488a CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE p_ci_pipeline_variables
     ADD CONSTRAINT check_6e932dbabf CHECK ((project_id IS NOT NULL)) NOT VALID;

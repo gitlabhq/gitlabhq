@@ -638,6 +638,29 @@ describe('init markdown', () => {
         expect(textArea.selectionStart).toBe(selectedIndex + selected.length + 2 * tag.length);
       });
 
+      describe('removes tag for the selected value', () => {
+        it.each([{ tag: '**' }, { tag: '_' }, { tag: '~~' }, { tag: '`' }])(
+          'removes $tag',
+          ({ tag }) => {
+            const initialValue = `${tag}${text}${tag}`;
+            textArea.value = initialValue;
+            textArea.setSelectionRange(0, initialValue.length);
+
+            insertMarkdownText({
+              textArea,
+              text: textArea.value,
+              tag,
+              blockTag: null,
+              selected: initialValue,
+              wrap: true,
+            });
+
+            expect(textArea.value).toEqual(text);
+            expect(textArea.selectionStart).toBe(text.length);
+          },
+        );
+      });
+
       it('replaces the placeholder in the tag', () => {
         insertMarkdownText({
           textArea,

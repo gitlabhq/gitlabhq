@@ -30,7 +30,7 @@ export const DAST_NAME = __('Dynamic Application Security Testing (DAST)');
 export const DAST_SHORT_NAME = s__('ciReport|DAST');
 
 export const DAST_PROFILES_NAME = __('DAST profiles');
-export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/index');
+export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/_index');
 
 export const SECRET_DETECTION_NAME = __('Secret Detection');
 

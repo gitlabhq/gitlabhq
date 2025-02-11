@@ -293,10 +293,10 @@ The report is a JSON document that combines vulnerabilities with possible remedi
 This documentation gives an overview of the report JSON format, recommendations, and examples to
 help integrators set its fields.
 The format is extensively described in the documentation of
-[SAST](../../user/application_security/sast/index.md#download-a-sast-report),
-[DAST](../../user/application_security/dast/browser/index.md),
-[Dependency Scanning](../../user/application_security/dependency_scanning/index.md#output),
-and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format)
+[SAST](../../user/application_security/sast/_index.md#download-a-sast-report),
+[DAST](../../user/application_security/dast/browser/_index.md),
+[Dependency Scanning](../../user/application_security/dependency_scanning/_index.md#output),
+and [Container Scanning](../../user/application_security/container_scanning/_index.md#reports-json-format)
 
 You can find the schemas for these scanners here:
 
@@ -406,14 +406,14 @@ The `id` should not collide with any other analyzers or scanners another integra
 ##### Scan Primary Identifiers
 
 The `scan.primary_identifiers` field is an optional field containing an array of
-[primary identifiers](../../user/application_security/terminology/index.md#primary-identifier)).
+[primary identifiers](../../user/application_security/terminology/_index.md#primary-identifier)).
 This is an exhaustive list of all rulesets for which the analyzer performed the scan.
 
 Even when the [`Vulnerabilities`](#vulnerabilities) array for a given scan may be empty, this optional field
 should contain the complete list of potential identifiers to inform the Rails application of which
 rules were executed.
 
-When populated, the Rails application [may automatically resolve previously detected vulnerabilities](../../user/application_security/iac_scanning/index.md#automatic-vulnerability-resolution) as no
+When populated, the Rails application [may automatically resolve previously detected vulnerabilities](../../user/application_security/iac_scanning/_index.md#automatic-vulnerability-resolution) as no
 longer relevant when their primary identifier is not included.
 
 ##### Name, message, and description
@@ -492,7 +492,7 @@ new generic identifiers to if needed. Analyzers may also produce vendor-specific
 identifiers, which don't belong in the [common library](https://gitlab.com/gitlab-org/security-products/analyzers/common).
 
 The first item of the `identifiers` array is called the
-[primary identifier](../../user/application_security/terminology/index.md#primary-identifier), and
+[primary identifier](../../user/application_security/terminology/_index.md#primary-identifier), and
 it is used to
 [track vulnerabilities](#tracking-and-merging-vulnerabilities) as new commits are pushed to the repository.
 
@@ -644,7 +644,7 @@ and needs to be investigated.
 
 The `remediations` field of the report is an array of remediation objects.
 Each remediation describes a patch that can be applied to
-[resolve](../../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
+[resolve](../../user/application_security/vulnerabilities/_index.md#resolve-a-vulnerability)
 a set of vulnerabilities.
 
 Here is an example of a report that contains remediations.

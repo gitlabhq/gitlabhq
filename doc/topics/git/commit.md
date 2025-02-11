@@ -145,7 +145,7 @@ Git push options can perform actions for merge requests while pushing changes:
 
 ### Push options for secret push protection
 
-You can use push options to skip [secret push protection](../../user/application_security/secret_detection/secret_push_protection/index.md).
+You can use push options to skip [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md).
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|

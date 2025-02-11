@@ -61,7 +61,7 @@ In the following table, you can see:
 | [View description change history](../../user/discussions/_index.md#view-description-change-history) | GitLab 16.0 and later |
 | [Maintenance mode](../maintenance_mode/_index.md) | GitLab 16.0 and later |
 | [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
-| [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md) | GitLab 16.0 and later |
+| [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md) | GitLab 16.0 and later |
 | [Password complexity requirements](../settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
 | [Issue analytics](../../user/group/issues_analytics/_index.md) | GitLab 16.5 and later |

@@ -13,6 +13,10 @@ module ActiveContext
         def indexer_klass
           ActiveContext::Databases::Opensearch::Indexer
         end
+
+        def executor_klass
+          ActiveContext::Databases::Opensearch::Executor
+        end
       end
     end
   end

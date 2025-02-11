@@ -16,7 +16,7 @@ vulnerability. GitLab is a [CVE Numbering Authority](https://about.gitlab.com/se
 ([CNA](https://cve.mitre.org/cve/cna.html)).
 
 Assigning a CVE ID to a vulnerability in your project helps your users stay secure and informed. For
-example, [dependency scanning tools](dependency_scanning/index.md) can
+example, [dependency scanning tools](dependency_scanning/_index.md) can
 detect when vulnerable versions of your project are used as a dependency.
 
 A common vulnerability workflow is:

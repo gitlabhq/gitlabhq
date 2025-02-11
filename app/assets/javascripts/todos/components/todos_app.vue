@@ -346,11 +346,6 @@ export default {
             <span>{{ s__('Todos|Done') }}</span>
           </template>
         </gl-tab>
-        <gl-tab>
-          <template #title>
-            <span>{{ s__('Todos|All') }}</span>
-          </template>
-        </gl-tab>
       </gl-tabs>
 
       <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">

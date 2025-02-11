@@ -11,4 +11,15 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Adapter do
 
     adapter.search(query)
   end
+
+  describe '#prefix' do
+    it 'returns default prefix when not specified' do
+      expect(adapter.prefix).to eq('gitlab_active_context')
+    end
+
+    it 'returns configured prefix' do
+      adapter = described_class.new(options.merge(prefix: 'custom'))
+      expect(adapter.prefix).to eq('custom')
+    end
+  end
 end

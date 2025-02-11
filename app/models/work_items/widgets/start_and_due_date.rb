@@ -13,6 +13,27 @@ module WorkItems
         def quick_action_params
           %i[due_date]
         end
+
+        def sorting_keys
+          {
+            start_date_asc: {
+              description: 'start date by ascending order.',
+              experiment: { milestone: '17.9' }
+            },
+            start_date_desc: {
+              description: 'start date by descending order.',
+              experiment: { milestone: '17.9' }
+            },
+            due_date_asc: {
+              description: 'Due date by ascending order.',
+              experiment: { milestone: '17.9' }
+            },
+            due_date_desc: {
+              description: 'Due date by descending order.',
+              experiment: { milestone: '17.9' }
+            }
+          }
+        end
       end
 
       # rubocop:disable Gitlab/NoCodeCoverageComment -- overridden and tested in EE

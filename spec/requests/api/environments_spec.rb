@@ -623,6 +623,16 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
       end
     end
 
+    context 'as a developer' do
+      it 'returns a 200' do
+        post api("/projects/#{project.id}/environments/#{environment.id}/stop", developer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('public_api/v4/environment')
+        expect(environment.reload).to be_stopped
+      end
+    end
+
     context 'a non member' do
       it 'rejects the request' do
         post api("/projects/#{project.id}/environments/#{environment.id}/stop", non_member)

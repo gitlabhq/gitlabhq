@@ -53,10 +53,10 @@ is an internal user that cannot be accessed or modified by regular users and is 
 ## GitLab Security Bot
 
 GitLab Security Bot is an internal user responsible for commenting on merge requests that violate a
-[security policy](../user/application_security/policies/index.md).
+[security policy](../user/application_security/policies/_index.md).
 
 ## GitLab Security Policy Bot
 
 GitLab Security Policy Bot is an internal user responsible for triggering scheduled pipelines
-defined in [security policies](../user/application_security/policies/index.md). This account is
+defined in [security policies](../user/application_security/policies/_index.md). This account is
 created in every project on which a security policy is enforced.

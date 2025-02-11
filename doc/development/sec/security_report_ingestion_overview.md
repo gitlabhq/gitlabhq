@@ -59,7 +59,7 @@ An instance of the `Vulnerabilities::Remediation` class. A remediation is repres
 Assumptions:
 
 - Project uses GitLab CI
-- Project uses [security scanning tools](../../user/application_security/index.md)
+- Project uses [security scanning tools](../../user/application_security/_index.md)
 - No Vulnerabilities are present in the database
 - All pipelines perform security scans
 
@@ -119,5 +119,5 @@ This style of creation was intended to be fast and seamless, but has proven diff
 The "No longer detected" badge on the vulnerability report is displayed if the `Vulnerability` record has `resolved_on_default_branch: true`.
 This is set by `Security::Ingestion::MarkAsResolvedService` when a pipeline runs on the default branch. Vulnerabilities which have
 `resolved_on_default_branch: false` and _are not_ present in the pipeline scan results are marked as resolved.
-[Secret Detection](../../user/application_security/secret_detection/index.md) and [manual](../../user/application_security/vulnerability_report/index.md#manually-add-a-vulnerability)
+[Secret Detection](../../user/application_security/secret_detection/_index.md) and [manual](../../user/application_security/vulnerability_report/_index.md#manually-add-a-vulnerability)
 vulnerabilities are excluded from this process.

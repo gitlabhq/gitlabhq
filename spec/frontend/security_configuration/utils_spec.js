@@ -37,14 +37,14 @@ describe('augmentFeatures', () => {
     {
       name: 'DAST',
       type: 'DAST',
-      helpPath: '/help/user/application_security/dast/index',
+      helpPath: '/help/user/application_security/dast/_index',
       secondary: {
         type: 'DAST PROFILES',
         name: 'DAST PROFILES',
       },
       securityFeatures: {
         type: 'DAST',
-        helpPath: '/help/user/application_security/dast/index',
+        helpPath: '/help/user/application_security/dast/_index',
       },
     },
   ];
@@ -59,7 +59,7 @@ describe('augmentFeatures', () => {
       },
       security_features: {
         type: 'DAST',
-        help_path: '/help/user/application_security/dast/index',
+        help_path: '/help/user/application_security/dast/_index',
       },
     },
   ];

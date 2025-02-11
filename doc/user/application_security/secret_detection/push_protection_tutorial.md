@@ -37,7 +37,7 @@ Make sure you have the following before you complete this tutorial:
 - Some familiarity with command-line Git.
 
 Additionally, on GitLab Self-Managed only, ensure secret push protection is
-[enabled on the instance](secret_push_protection/index.md#allow-the-use-of-secret-push-protection-in-your-gitlab-instance).
+[enabled on the instance](secret_push_protection/_index.md#allow-the-use-of-secret-push-protection-in-your-gitlab-instance).
 
 ## Enable secret push protection
 
@@ -135,4 +135,4 @@ You only need to add `[skip secret push protection]` to one of the commit messag
 
 ## Next steps
 
-Consider enabling [pipeline secret detection](pipeline/index.md) to further improve the security of your projects.
+Consider enabling [pipeline secret detection](pipeline/_index.md) to further improve the security of your projects.

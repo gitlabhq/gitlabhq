@@ -38,7 +38,7 @@ For Auto DevOps, the following features are not supported yet:
 - [License approval policies](../../user/compliance/license_approval_policies.md)
 - Auto Browser Performance Testing
 - Auto Build
-- [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md) (Note: Pipeline [Container Scanning](../../user/application_security/container_scanning/index.md) is supported)
+- [Operational Container Scanning](../../user/clusters/agent/vulnerabilities.md) (Note: Pipeline [Container Scanning](../../user/application_security/container_scanning/_index.md) is supported)
 
 For Auto Build, there's a [possible workaround using `kaniko`](../../ci/docker/using_kaniko.md).
 You can check the progress of the implementation in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332560).

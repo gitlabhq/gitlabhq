@@ -13,6 +13,10 @@ module ActiveContext
         def indexer_klass
           ActiveContext::Databases::Elasticsearch::Indexer
         end
+
+        def executor_klass
+          ActiveContext::Databases::Elasticsearch::Executor
+        end
       end
     end
   end

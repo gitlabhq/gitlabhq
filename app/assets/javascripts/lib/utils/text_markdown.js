@@ -5,7 +5,19 @@ import { insertText } from '~/lib/utils/common_utils';
 import axios from '~/lib/utils/axios_utils';
 import { isValidURL } from '~/lib/utils/url_utility';
 
+const BOLD_TAG_PATTERN = '**';
+const INLINE_CODE_TAG_PATTERN = '`';
+const ITALIC_TAG_PATTERN = '_';
 const LINK_TAG_PATTERN = '[{text}](url)';
+const STRIKETHROUGH_TAG_PATTERN = '~~';
+
+const ALLOWED_UNDO_TAGS = [
+  BOLD_TAG_PATTERN,
+  INLINE_CODE_TAG_PATTERN,
+  ITALIC_TAG_PATTERN,
+  STRIKETHROUGH_TAG_PATTERN,
+];
+
 const INDENT_CHAR = ' ';
 const INDENT_LENGTH = 2;
 
@@ -384,7 +396,7 @@ export function insertMarkdownText({
   let editorSelectionStart;
   let editorSelectionEnd;
   let lastNewLine;
-  let textToInsert;
+  let textToUpdate;
   selected = selected.toString();
 
   if (editor) {
@@ -445,14 +457,21 @@ export function insertMarkdownText({
 
   const startChar = !wrap && !currentLineEmpty && !isBeginning ? '\n' : '';
   const textPlaceholder = '{text}';
+  const shouldRemoveTags =
+    selected.length >= tag.length * 2 &&
+    selected.startsWith(tag) &&
+    selected.endsWith(tag) &&
+    ALLOWED_UNDO_TAGS.includes(tag);
+  const getSelectedWithoutTags = () => selected.slice(tag.length, selected.length - tag.length);
+  const getSelectedWithTags = () => `${startChar}${tag}${selected}${wrap ? tag : ''}`;
 
   if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
     if (blockTag != null && blockTag !== '') {
-      textToInsert = editor
+      textToUpdate = editor
         ? editorBlockTagText(text, blockTag, selected, editor)
         : blockTagText(text, textArea, blockTag, selected);
     } else {
-      textToInsert = selectedSplit
+      textToUpdate = selectedSplit
         .map((val) => {
           if (tag.indexOf(textPlaceholder) > -1) {
             return tag.replace(textPlaceholder, val);
@@ -465,25 +484,27 @@ export function insertMarkdownText({
         .join('\n');
     }
   } else if (tag.indexOf(textPlaceholder) > -1) {
-    textToInsert = tag.replace(textPlaceholder, () =>
+    textToUpdate = tag.replace(textPlaceholder, () =>
       selected.replace(/\\n/g, '\n').replace(/%br/g, '\\n'),
     );
+  } else if (shouldRemoveTags) {
+    textToUpdate = getSelectedWithoutTags();
   } else {
-    textToInsert = String(startChar) + tag + selected + (wrap ? tag : '');
+    textToUpdate = getSelectedWithTags();
   }
 
   if (removedFirstNewLine) {
-    textToInsert = `\n${textToInsert}`;
+    textToUpdate = `\n${textToUpdate}`;
   }
 
   if (removedLastNewLine) {
-    textToInsert += '\n';
+    textToUpdate += '\n';
   }
 
   if (editor) {
-    editor.replaceSelectedText(textToInsert, select);
+    editor.replaceSelectedText(textToUpdate, select);
   } else {
-    insertText(textArea, textToInsert);
+    insertText(textArea, textToUpdate);
   }
 
   moveCursor({

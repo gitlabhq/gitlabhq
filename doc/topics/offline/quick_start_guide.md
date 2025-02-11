@@ -229,7 +229,7 @@ always fails because it uses `pool.ntp.org`. This error can be ignored but you c
 ## Enabling the Package Metadata Database
 
 Enabling the Package Metadata Database is required to enable
-[Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/index.md)
+[Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/_index.md)
 and [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md).
 This process requires the use of License and/or Advisory Data under what is collectively called the Package Metadata Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/LICENSE).
 Note the following in relation to use of the Package Metadata Database:

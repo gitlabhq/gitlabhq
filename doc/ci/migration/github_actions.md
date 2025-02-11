@@ -617,7 +617,7 @@ are not exact matches. These two examples are just to show how complex configura
 
 ### Security Scanning features
 
-GitLab provides a variety of [security scanners](../../user/application_security/index.md)
+GitLab provides a variety of [security scanners](../../user/application_security/_index.md)
 out-of-the-box to detect vulnerabilities in all parts of the SLDC. You can add these features
 to your GitLab CI/CD pipeline by using templates.
 
@@ -629,7 +629,7 @@ include:
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example
-with the [SAST scanners](../../user/application_security/sast/index.md#available-cicd-variables).
+with the [SAST scanners](../../user/application_security/sast/_index.md#available-cicd-variables).
 
 ### Secrets Management
 

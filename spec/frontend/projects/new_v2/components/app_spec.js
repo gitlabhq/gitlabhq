@@ -3,7 +3,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/projects/new_v2/components/app.vue';
 import FormBreadcrumb from '~/projects/new_v2/components/form_breadcrumb.vue';
 import CommandLine from '~/projects/new_v2/components/command_line.vue';
-import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
 
 describe('New project creation app', () => {
@@ -23,14 +22,19 @@ describe('New project creation app', () => {
         canCreateProject: true,
         ...provide,
       },
+      stubs: {
+        Component: { template: '<div></div>', props: ['option'] },
+      },
     });
   };
 
-  const findMultiStepForm = () => wrapper.findComponent(MultiStepFormTemplate);
+  const findStep1 = () => wrapper.findByTestId('new-project-step1');
   const findBreadcrumbs = () => wrapper.findComponent(FormBreadcrumb);
   const findSingleChoiceSelector = () => wrapper.findComponent(SingleChoiceSelector);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findCommandLine = () => wrapper.findComponent(CommandLine);
+  const findNextButton = () => wrapper.findByTestId('new-project-next');
+  const findStep2 = () => wrapper.findByTestId('new-project-step2');
 
   it('renders breadcrumbs', () => {
     createComponent();
@@ -38,11 +42,23 @@ describe('New project creation app', () => {
     expect(findBreadcrumbs().exists()).toBe(true);
   });
 
-  it('renders a form', () => {
+  it('renders step 1 form', () => {
     createComponent();
 
-    expect(findMultiStepForm().exists()).toBe(true);
+    expect(findStep1().exists()).toBe(true);
     expect(findAlert().exists()).toBe(false);
+  });
+
+  it('does not render step 2', () => {
+    createComponent();
+
+    expect(findStep2().exists()).toBe(false);
+  });
+
+  it('uses blank_project as default projectType', () => {
+    createComponent();
+
+    expect(findSingleChoiceSelector().props('checked')).toBe('blank_project');
   });
 
   describe('personal namespace project', () => {
@@ -89,6 +105,47 @@ describe('New project creation app', () => {
       createComponent({ namespaceId: '13' });
 
       expect(findCommandLine().exists()).toBe(false);
+    });
+  });
+
+  describe('when projectType is changed', () => {
+    beforeEach(() => {
+      createComponent();
+
+      findSingleChoiceSelector().vm.$emit('change', 'create_from_template');
+    });
+
+    it('updates the selected projectType', () => {
+      expect(findSingleChoiceSelector().props('checked')).toBe('create_from_template');
+    });
+
+    describe('and "Next" button is clicked', () => {
+      beforeEach(() => {
+        findNextButton().vm.$emit('click');
+      });
+
+      it('hides step 1', () => {
+        expect(findStep1().exists()).toBe(false);
+      });
+
+      it('shows step 2 component', () => {
+        expect(findStep2().exists()).toBe(true);
+        expect(findStep2().props('option').value).toBe('create_from_template');
+      });
+
+      describe('and "Back" event is emitted from step 2', () => {
+        beforeEach(() => {
+          findStep2().vm.$emit('back');
+        });
+
+        it('shows step 1', () => {
+          expect(findStep1().exists()).toBe(true);
+        });
+
+        it('hides step 2 component', () => {
+          expect(findStep2().exists()).toBe(false);
+        });
+      });
     });
   });
 });

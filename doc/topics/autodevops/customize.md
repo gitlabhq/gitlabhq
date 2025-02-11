@@ -116,7 +116,7 @@ These variables also affect Auto Build and Auto Container Scanning. If you don't
 
 If you use Auto Container Scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
 also update `$CS_DEFAULT_BRANCH_IMAGE`. For more information, see
-[Setting the default branch image](../../user/application_security/container_scanning/index.md#setting-the-default-branch-image).
+[Setting the default branch image](../../user/application_security/container_scanning/_index.md#setting-the-default-branch-image).
 
 Here is an example setup in your `.gitlab-ci.yml`:
 
@@ -280,7 +280,7 @@ You should now use the `KUBE_NAMESPACE` environment variable and
 
 ## Use images hosted in a local Docker registry
 
-You can configure many Auto DevOps jobs to run in an [offline environment](../../user/application_security/offline_deployments/index.md):
+You can configure many Auto DevOps jobs to run in an [offline environment](../../user/application_security/offline_deployments/_index.md):
 
 1. Copy the required Auto DevOps Docker images from Docker Hub and `registry.gitlab.com` to their local GitLab container registry.
 1. After the images are hosted and available in a local registry, edit `.gitlab-ci.yml` to point to the locally hosted images. For example:

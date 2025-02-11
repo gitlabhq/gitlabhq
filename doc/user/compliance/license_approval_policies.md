@@ -34,7 +34,7 @@ To ensure enforcement of your policies, you should enable dependency scanning on
 
 - Create a global [scan execution policy](../application_security/policies/scan_execution_policies.md) that enforces Dependency Scanning to run in all target development projects.
 - Use a [Compliance Pipeline](../group/compliance_frameworks.md) to define a Dependency Scanning job that is enforced on projects enforced by a given Compliance Framework.
-- Work with development teams to configure [Dependency Scanning](../application_security/dependency_scanning/index.md) in each of their project's `.gitlab-ci.yml` files or enable by using the [Security Configuration panel](../application_security/configuration/index.md).
+- Work with development teams to configure [Dependency Scanning](../application_security/dependency_scanning/_index.md) in each of their project's `.gitlab-ci.yml` files or enable by using the [Security Configuration panel](../application_security/configuration/_index.md).
 
 License approval policies require license information from [GitLab-supported packages](license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers).
 
@@ -44,7 +44,7 @@ Create a license approval policy to enforce license compliance.
 
 To create a license approval policy:
 
-1. [Link a security policy project](../application_security/policies/index.md#policy-implementation) to your development group, subgroup, or project (the Owner role is required).
+1. [Link a security policy project](../application_security/policies/_index.md#policy-implementation) to your development group, subgroup, or project (the Owner role is required).
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 1. Create a new [Merge request approval Policy](../application_security/policies/merge_request_approval_policies.md).

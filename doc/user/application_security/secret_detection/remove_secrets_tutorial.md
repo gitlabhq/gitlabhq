@@ -161,4 +161,4 @@ Even if you don't think many people have access to the secret, you should replac
 
 ## Next steps
 
-To improve your application security, consider enabling at least one of the [secret detection](index.md) methods in your project.
+To improve your application security, consider enabling at least one of the [secret detection](_index.md) methods in your project.

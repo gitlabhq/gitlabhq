@@ -813,12 +813,12 @@ Follow these steps to view details of a vulnerability:
 ### Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security vulnerabilities in your groups, projects and
-pipelines. For more information, see the [Security Dashboard documentation](../../security_dashboard/index.md).
+pipelines. For more information, see the [Security Dashboard documentation](../../security_dashboard/_index.md).
 
 ### Interacting with the vulnerabilities
 
 Once a vulnerability is found, you can interact with it. Read more on how to
-[address the vulnerabilities](../../vulnerabilities/index.md).
+[address the vulnerabilities](../../vulnerabilities/_index.md).
 
 ### Handling False Positives
 

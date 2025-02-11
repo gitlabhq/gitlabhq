@@ -140,7 +140,7 @@ bundle exec rake 'gitlab:seed:development_metrics[your_project_id]'
 
 #### Seed a project with vulnerabilities
 
-You can seed a project with [security vulnerabilities](../user/application_security/vulnerabilities/index.md).
+You can seed a project with [security vulnerabilities](../user/application_security/vulnerabilities/_index.md).
 
 ```shell
 # Seed all projects

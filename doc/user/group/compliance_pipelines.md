@@ -62,7 +62,7 @@ To migrate an existing compliance framework to use the pipeline execution policy
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.
 
-For more information, see [Security policy project](../application_security/policies/index.md#security-policy-project).
+For more information, see [Security policy project](../application_security/policies/_index.md#security-policy-project).
 
 If you receive a `Pipeline execution policy error: Job names must be unique` error during the migration, see the
 [relevant troubleshooting information](#error-job-names-must-be-unique).
@@ -113,7 +113,7 @@ The user running the pipeline in the labeled project must at least have the Repo
 When used to enforce scan execution, this feature has some overlap with
 [scan execution policies](../application_security/policies/scan_execution_policies.md). We have not
 [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312). For details on
-the similarities and differences between these features, see [Enforce scan execution](../application_security/index.md#enforce-scan-execution).
+the similarities and differences between these features, see [Enforce scan execution](../application_security/_index.md#enforce-scan-execution).
 
 ### Example configuration
 

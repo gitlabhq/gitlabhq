@@ -5,8 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Dependency Scanning compared to Container Scanning
 ---
 
-GitLab offers both [Dependency Scanning](dependency_scanning/index.md) and
-[Container Scanning](container_scanning/index.md) to ensure coverage for all of these
+GitLab offers both [Dependency Scanning](dependency_scanning/_index.md) and
+[Container Scanning](container_scanning/_index.md) to ensure coverage for all of these
 dependency types. To cover as much of your risk area as possible, we encourage you to use all of our
 security scanning tools:
 
@@ -29,4 +29,4 @@ The following table summarizes which types of dependencies each scanning tool ca
 | Language-specific dependencies installed on the operating system (not built by your project) | **{dotted-circle}** | **{check-circle}**              |
 
 1. Lock file must be present in the image to be detected.
-1. [Report language-specific findings](container_scanning/index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.
+1. [Report language-specific findings](container_scanning/_index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.

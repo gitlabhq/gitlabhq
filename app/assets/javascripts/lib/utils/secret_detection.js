@@ -12,7 +12,7 @@ const CONTENT_TYPE = {
 
 const defaultContentType = CONTENT_TYPE.COMMENT;
 
-const documentationHref = helpPagePath('user/application_security/secret_detection/client/index');
+const documentationHref = helpPagePath('user/application_security/secret_detection/client/_index');
 
 export const SHOW_CLIENT_SIDE_SECRET_DETECTION_WARNING =
   'show_client_side_secret_detection_warning';

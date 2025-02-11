@@ -2299,7 +2299,7 @@ Payload example for group:
 A vulnerability event is triggered when:
 
 - A vulnerability is created.
-- A vulnerability's [status is changed](../../application_security/vulnerabilities/index.md#vulnerability-status-values).
+- A vulnerability's [status is changed](../../application_security/vulnerabilities/_index.md#vulnerability-status-values).
 - An issue is linked to a vulnerability.
 
 Request header:

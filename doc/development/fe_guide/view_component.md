@@ -167,7 +167,7 @@ For example:
     = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
   - c.with_help_text do
     = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
-    = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
+    = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 ```
 
 For the full list of options, see its

@@ -586,7 +586,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/merge_requests/external_status_check_spec.rb'
     - 'ee/spec/models/merge_trains/car_spec.rb'
     - 'ee/spec/models/merge_trains/train_spec.rb'
-    - 'ee/spec/models/namespace_limit_spec.rb'
     - 'ee/spec/models/namespace_setting_spec.rb'
     - 'ee/spec/models/namespaces/free_user_cap/root_size_spec.rb'
     - 'ee/spec/models/namespaces/storage/root_size_spec.rb'

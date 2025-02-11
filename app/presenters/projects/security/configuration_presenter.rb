@@ -15,7 +15,7 @@ module Projects
           auto_devops_path: auto_devops_settings_path(project),
           can_enable_auto_devops: can_enable_auto_devops?,
           features: features,
-          help_page_path: help_page_path('user/application_security/index.md'),
+          help_page_path: help_page_path('user/application_security/_index.md'),
           latest_pipeline_path: latest_pipeline_path,
           gitlab_ci_present: project.has_ci_config_file?,
           gitlab_ci_history_path: gitlab_ci_history_path,

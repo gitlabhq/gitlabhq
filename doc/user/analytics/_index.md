@@ -63,7 +63,7 @@ Use these features to gain insights into security vulnerabilities and metrics.
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [Security Dashboards](../application_security/security_dashboard/index.md) | Collection of metrics, ratings, and charts for vulnerabilities detected by security scanners. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Security Dashboards](../application_security/security_dashboard/_index.md) | Collection of metrics, ratings, and charts for vulnerabilities detected by security scanners. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 
 ## Glossary
 

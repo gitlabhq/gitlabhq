@@ -187,7 +187,7 @@ The jobs are separated into stages:
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
-  For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).
+  For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/_index.md).
 
 - **Production** - After the tests and checks finish, the application deploys in
   Kubernetes ([Auto Deploy](../stages.md#auto-deploy)).

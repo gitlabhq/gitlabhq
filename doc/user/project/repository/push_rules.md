@@ -306,7 +306,7 @@ You can combine multiple patterns into one expression. This example combines all
 - [Signing commits with SSH](signed_commits/ssh.md)
 - [Signing commits with X.509](signed_commits/x509.md)
 - [Protected branches](branches/protected.md)
-- [Secret detection](../../application_security/secret_detection/index.md)
+- [Secret detection](../../application_security/secret_detection/_index.md)
 
 ## Troubleshooting
 

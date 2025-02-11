@@ -89,21 +89,21 @@ Project permissions for [application security](application_security/secure_your_
 
 | Action                                                                                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ---------------------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View [dependency list](application_security/dependency_list/index.md)                                                              |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View licenses in [dependency list](application_security/dependency_list/index.md)                                                  |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View [security dashboard](application_security/security_dashboard/index.md)                                                        |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View [vulnerability report](application_security/vulnerability_report/index.md)                                                    |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Create [vulnerability manually](application_security/vulnerability_report/index.md#manually-add-a-vulnerability)                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Create [issue](application_security/vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability) from vulnerability finding |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View [dependency list](application_security/dependency_list/_index.md)                                                              |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View licenses in [dependency list](application_security/dependency_list/_index.md)                                                  |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View [security dashboard](application_security/security_dashboard/_index.md)                                                        |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View [vulnerability report](application_security/vulnerability_report/_index.md)                                                    |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Create [vulnerability manually](application_security/vulnerability_report/_index.md#manually-add-a-vulnerability)                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Create [issue](application_security/vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability) from vulnerability finding |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Create [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                         |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Run [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                            |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Create [individual security policies](application_security/policies/index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Change [individual security policies](application_security/policies/index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Delete [individual security policies](application_security/policies/index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Create [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Change [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Delete [individual security policies](application_security/policies/_index.md)                                                      |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Create [CVE ID request](application_security/cve_id_request.md)                                                                    |       |         |          |           |     ✓      |   ✓   |       |
 | Change vulnerability status                                                                                                        |       |         |          |           |     ✓      |   ✓   | The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0. |
-| Create or assign [security policy project](application_security/policies/index.md)                                                 |       |         |          |           |            |   ✓   |       |
-| Manage [security configurations](application_security/configuration/index.md)                                                      |       |         |          |           |            |   ✓   |       |
+| Create or assign [security policy project](application_security/policies/_index.md)                                                 |       |         |          |           |            |   ✓   |       |
+| Manage [security configurations](application_security/configuration/_index.md)                                                      |       |         |          |           |            |   ✓   |       |
 
 ### CI/CD
 
@@ -181,7 +181,7 @@ Project permissions for [compliance](compliance/_index.md) features including co
 | ------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View [allowed and denied licenses in MR](compliance/license_scanning_of_cyclonedx_files/_index.md) |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be have at least the Reporter role, even if the project is internal. Users with the Guest role on GitLab.com are able to perform this action only on public projects because internal visibility is not available. |
 | View [audit events](compliance/audit_events.md)                                                   |       |         |          |     ✓     |     ✓      |   ✓   | Users can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
-| View licenses in [dependency list](application_security/dependency_list/index.md)                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View licenses in [dependency list](application_security/dependency_list/_index.md)                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)                                       |       |         |          |           |            |   ✓   |       |
 
 ### Machine learning model registry and experiment
@@ -435,11 +435,11 @@ Group permissions for [Application Security](application_security/secure_your_ap
 
 | Action                                                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View [dependency list](application_security/dependency_list/index.md)           |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View [vulnerability report](application_security/vulnerability_report/index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View [security dashboard](application_security/security_dashboard/index.md)     |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Create [security policy project](application_security/policies/index.md)        |       |         |          |           |            |   ✓   |       |
-| Assign [security policy project](application_security/policies/index.md)        |       |         |          |           |            |   ✓   |       |
+| View [dependency list](application_security/dependency_list/_index.md)           |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View [vulnerability report](application_security/vulnerability_report/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View [security dashboard](application_security/security_dashboard/_index.md)     |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Create [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |       |
+| Assign [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |       |
 
 ### CI/CD group permissions
 
@@ -460,7 +460,7 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 | Action                                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
-| View licenses in the [dependency list](application_security/dependency_list/index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View licenses in the [dependency list](application_security/dependency_list/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | View the [compliance center](compliance/compliance_center/_index.md)                  |       |         |          |           |            |   ✓   |       |
 | Manage [compliance frameworks](group/compliance_frameworks.md)                        |       |         |          |           |            |   ✓   |       |
 | Assign [compliance frameworks](group/compliance_frameworks.md) to projects            |       |         |          |           |            |   ✓   |       |

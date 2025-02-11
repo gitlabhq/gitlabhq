@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-[Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md#coverage-guided-fuzz-testing-process) sends unexpected, malformed, or random data to your application, and then monitors
+[Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md#coverage-guided-fuzz-testing-process) sends unexpected, malformed, or random data to your application, and then monitors
 your application for unstable behaviors and crashes.
 
 This helps you discover bugs and potential security issues that other QA processes may miss.
@@ -244,4 +244,4 @@ To create the `my-tools.js` file:
 Congratulations, you've successfully run a fuzz test and fixed the identified
 security vulnerabilities!
 
-For more information, see [coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/index.md).
+For more information, see [coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md).

@@ -90,9 +90,9 @@ To improve your testing and deployment workflow, try these features:
 
 To improve your security, try these features:
 
-- [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability): Learn more about vulnerabilities, how they can be exploited, and how to fix them.
+- [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability): Learn more about vulnerabilities, how they can be exploited, and how to fix them.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
-- [Vulnerability Resolution](../application_security/vulnerabilities/index.md#vulnerability-resolution): Generate a merge request that addresses a vulnerability.
+- [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution): Generate a merge request that addresses a vulnerability.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 ## Summary of all GitLab Duo features
@@ -115,6 +115,6 @@ To improve your security, try these features:
 | [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
 | [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Vulnerability Resolution](../application_security/vulnerabilities/index.md#vulnerability-resolution) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed | General availability |

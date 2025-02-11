@@ -92,7 +92,7 @@ Use these variables to integrate CI/CD with PostgreSQL databases.
 
 | **Job name**                           | **CI/CD variable**              | **GitLab version**    | **Description** |
 |----------------------------------------|---------------------------------|-----------------------|-----------------|
-| `.fuzz_base`                           | `COVFUZZ_DISABLED`              |                       | [Read more](../../user/application_security/coverage_fuzzing/index.md) about how `.fuzz_base` provide capability for your own jobs. The job isn't created if the value is `"true"`. |
+| `.fuzz_base`                           | `COVFUZZ_DISABLED`              |                       | [Read more](../../user/application_security/coverage_fuzzing/_index.md) about how `.fuzz_base` provide capability for your own jobs. The job isn't created if the value is `"true"`. |
 | `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          |                       | The job isn't created if the value is `"true"`. |
 | `build`                                | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
 | `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |

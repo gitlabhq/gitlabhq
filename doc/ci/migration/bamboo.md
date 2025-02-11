@@ -681,7 +681,7 @@ release_job:
 ### Security Scanning features
 
 Bamboo relies on third-party tasks provided in the Atlassian Marketplace to run security scans.
-GitLab provides [security scanners](../../user/application_security/index.md) out-of-the-box to detect
+GitLab provides [security scanners](../../user/application_security/_index.md) out-of-the-box to detect
 vulnerabilities in all parts of the SDLC. You can add these plugins in GitLab using templates, for example to add
 SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
@@ -691,7 +691,7 @@ include:
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example
-with the [SAST scanners](../../user/application_security/sast/index.md#available-cicd-variables).
+with the [SAST scanners](../../user/application_security/sast/_index.md#available-cicd-variables).
 
 ### Secrets Management
 

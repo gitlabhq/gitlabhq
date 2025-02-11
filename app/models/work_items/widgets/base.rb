@@ -37,6 +37,10 @@ module WorkItems
         nil
       end
 
+      def self.sorting_keys
+        {}
+      end
+
       def sync_data_callback_class
         self.class.sync_data_callback_class
       end
