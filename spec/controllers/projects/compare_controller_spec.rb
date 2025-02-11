@@ -563,10 +563,10 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
           let(:from_project_id) { 'the_same_project_id' }
           let(:to_project_id) { 'the_same_project_id' }
 
-          it 'does not include from_project_id in the params' do
+          it 'includes from_project_id in the params' do
             create_request
 
-            expect(response).to redirect_to(project_compare_with_two_dots_path(project, from: from_ref, to: to_ref))
+            expect(response).to redirect_to(project_compare_with_two_dots_path(project, from: from_ref, to: to_ref, from_project_id: from_project_id))
           end
         end
 

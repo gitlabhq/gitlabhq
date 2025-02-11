@@ -85,16 +85,11 @@ class Projects::CompareController < Projects::ApplicationController
   private
 
   def build_from_to_vars
-    from_to_vars = {
+    {
       from: compare_params[:from].presence,
-      to: compare_params[:to].presence
+      to: compare_params[:to].presence,
+      from_project_id: compare_params[:from_project_id].presence
     }
-
-    if compare_params[:from_project_id] != compare_params[:to_project_id]
-      from_to_vars[:from_project_id] = compare_params[:from_project_id].presence
-    end
-
-    from_to_vars
   end
 
   def validate_refs!

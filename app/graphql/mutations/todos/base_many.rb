@@ -16,11 +16,11 @@ module Mutations
         null: false,
         description: 'Updated to-do items.'
 
-      def resolve(ids:)
+      def resolve(ids:, **kwargs)
         check_update_limit!(amount: ids.size)
 
         todos = authorized_find_all_pending_by_current_user(model_ids_of(ids))
-        updated_ids = process_todos(todos)
+        updated_ids = process_todos(todos, **kwargs)
 
         {
           updated_ids: updated_ids,

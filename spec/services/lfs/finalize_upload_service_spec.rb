@@ -38,7 +38,13 @@ RSpec.describe Lfs::FinalizeUploadService, feature_category: :source_code_manage
   end
 
   subject(:service) do
-    described_class.new(oid: params[:oid], size: params[:size], uploaded_file: uploaded_file, project: project).execute
+    described_class.new(
+      oid: params[:oid],
+      size: params[:size],
+      uploaded_file: uploaded_file,
+      project: project,
+      repository_type: :project
+    ).execute
   end
 
   describe '#execute' do

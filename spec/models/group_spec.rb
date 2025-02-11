@@ -4063,6 +4063,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#continue_indented_text_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :continue_indented_text }
+      let(:feature_flag_method) { :continue_indented_text_feature_flag_enabled? }
+    end
+  end
+
   describe '#glql_integration_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :glql_integration }

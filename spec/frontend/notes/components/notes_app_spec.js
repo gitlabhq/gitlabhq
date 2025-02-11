@@ -1,7 +1,9 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
 import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -25,6 +27,9 @@ import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import noteQuery from '~/notes/graphql/note.query.graphql';
 import * as mockData from '../mock_data';
@@ -45,11 +50,14 @@ const propsData = {
   notesFilterValue: TEST_NOTES_FILTER_VALUE,
 };
 
+Vue.use(PiniaVuePlugin);
+
 describe('note_app', () => {
   let axiosMock;
   let mountComponent;
   let wrapper;
   let store;
+  let pinia;
 
   const initStore = (notesData = propsData.notesData) => {
     store.dispatch('setNotesData', notesData);
@@ -78,6 +86,10 @@ describe('note_app', () => {
     axiosMock = new AxiosMockAdapter(axios);
     Vue.use(VueApollo);
 
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+
     store = createStore();
 
     mountComponent = ({ props = {} } = {}) => {
@@ -98,6 +110,7 @@ describe('note_app', () => {
             ...props,
           },
           store,
+          pinia,
         },
       );
     };

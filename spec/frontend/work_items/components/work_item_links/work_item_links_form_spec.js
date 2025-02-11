@@ -33,7 +33,6 @@ import {
   availableWorkItemsResponse,
   createWorkItemMutationResponse,
   updateWorkItemMutationResponse,
-  mockIterationWidgetResponse,
   namespaceProjectsList,
   generateWorkItemsListWithId,
 } from '../../mock_data';
@@ -70,12 +69,11 @@ describe('WorkItemLinksForm', () => {
     .fn()
     .mockResolvedValue(namespaceProjectsList);
 
-  const mockParentIteration = mockIterationWidgetResponse;
-
   const createComponent = async ({
     parentConfidential = false,
     hasIterationsFeature = false,
     parentIteration = null,
+    parentMilestone = null,
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
@@ -98,6 +96,7 @@ describe('WorkItemLinksForm', () => {
         issuableGid: 'gid://gitlab/WorkItem/1',
         parentConfidential,
         parentIteration,
+        parentMilestone,
         parentWorkItemType,
         childrenType,
         formType,
@@ -527,61 +526,6 @@ describe('WorkItemLinksForm', () => {
 
       // Assert if error was cleared
       expect(findErrorMessageElement().exists()).toBe(false);
-    });
-  });
-
-  describe('associate iteration with task', () => {
-    it('updates when parent has an iteration associated', async () => {
-      await createComponent({
-        hasIterationsFeature: true,
-        parentIteration: mockParentIteration,
-      });
-      findInput().vm.$emit('input', 'Create task test');
-
-      findForm().vm.$emit('submit', {
-        preventDefault: jest.fn(),
-      });
-      await waitForPromises();
-      expect(createMutationResolver).toHaveBeenCalledWith({
-        input: {
-          title: 'Create task test',
-          namespacePath: 'group-a',
-          workItemTypeId: workItemTypeIdForTask,
-          hierarchyWidget: {
-            parentId: 'gid://gitlab/WorkItem/1',
-          },
-          confidential: false,
-          iterationWidget: {
-            iterationId: mockParentIteration.id,
-          },
-        },
-      });
-    });
-
-    it('does not send the iteration widget to mutation when parent has no iteration associated', async () => {
-      await createComponent({
-        hasIterationsFeature: true,
-      });
-      findInput().vm.$emit('input', 'Create task test');
-
-      findForm().vm.$emit('submit', {
-        preventDefault: jest.fn(),
-      });
-      await waitForPromises();
-      expect(createMutationResolver).not.toHaveBeenCalledWith({
-        input: {
-          title: 'Create task test',
-          namespacePath: 'group-a',
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
-          hierarchyWidget: {
-            parentId: 'gid://gitlab/WorkItem/1',
-          },
-          confidential: false,
-          iterationWidget: {
-            iterationId: mockParentIteration.id,
-          },
-        },
-      });
     });
   });
 });

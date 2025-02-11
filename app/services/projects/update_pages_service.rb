@@ -28,11 +28,7 @@ module Projects
 
       return error(deployment_validations.errors.first.full_message) unless deployment_validations.valid?
 
-      if ::Feature.enabled?(:ff_pages_use_open_file, project)
-        handle_deployment_with_open_file
-      else
-        handle_deployment_with_file
-      end
+      handle_deployment_with_open_file
     rescue StandardError => e
       error(e.message)
       raise e
@@ -149,12 +145,6 @@ module Projects
     def handle_deployment_with_open_file
       build.artifacts_file.use_open_file(unlink_early: false) do |file|
         handle_deployment(file)
-      end
-    end
-
-    def handle_deployment_with_file
-      build.artifacts_file.use_file do |artifacts_path|
-        File.open(artifacts_path) { |file| handle_deployment(file) }
       end
     end
 

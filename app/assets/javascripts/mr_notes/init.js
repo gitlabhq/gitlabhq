@@ -8,6 +8,11 @@ import { initOverviewTabCounter } from '~/mr_notes/init_count';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { getReviewsForMergeRequest } from '~/diffs/utils/file_reviews';
 import { DIFF_VIEW_COOKIE_NAME, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useBatchComments } from '~/batch_comments/store';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { pinia } from '~/pinia/instance';
 
 function setupMrNotesState(store, notesDataset, diffsDataset) {
   const noteableData = JSON.parse(notesDataset.noteableData);
@@ -45,6 +50,12 @@ function setupMrNotesState(store, notesDataset, diffsDataset) {
 }
 
 export function initMrStateLazyLoad(store = mrNotes) {
+  // Pinia stores must be initialized manually during migration, otherwise they won't sync with Vuex
+  useNotes(pinia);
+  useLegacyDiffs(pinia);
+  useBatchComments(pinia).$patch({ isMergeRequest: true });
+  useMrNotes(pinia);
+
   store.dispatch('setActiveTab', window.mrTabs.getCurrentAction());
   window.mrTabs.eventHub.$on('MergeRequestTabChange', (value) =>
     store.dispatch('setActiveTab', value),

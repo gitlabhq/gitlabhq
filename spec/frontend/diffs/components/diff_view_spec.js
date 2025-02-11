@@ -1,15 +1,26 @@
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { throttle } from 'lodash';
+import { PiniaVuePlugin } from 'pinia';
 import DiffView from '~/diffs/components/diff_view.vue';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { createCustomGetters } from 'helpers/pinia_helpers';
+
+Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
 const lodash = jest.requireActual('lodash');
 
 describe('DiffView', () => {
+  let pinia;
+
   const DiffExpansionCell = { template: `<div/>` };
   const DiffRow = { template: `<div/>` };
   const DiffCommentCell = { template: `<div/>` };
@@ -18,19 +29,6 @@ describe('DiffView', () => {
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
 
   const createWrapper = ({ props } = {}) => {
-    Vue.use(Vuex);
-
-    const batchComments = {
-      getters: {
-        shouldRenderDraftRow: () => false,
-        shouldRenderParallelDraftRow: () => () => true,
-        draftsForLine: () => false,
-        draftsForFile: () => false,
-        hasParallelDraftLeft: () => false,
-        hasParallelDraftRight: () => false,
-      },
-      namespaced: true,
-    };
     const diffs = {
       actions: { showCommentForm },
       getters: { commitId: () => 'abc123', fileLineCoverage: () => ({}) },
@@ -42,7 +40,7 @@ describe('DiffView', () => {
     };
 
     const store = new Vuex.Store({
-      modules: { diffs, notes, batchComments },
+      modules: { diffs, notes },
     });
 
     const propsData = {
@@ -53,11 +51,30 @@ describe('DiffView', () => {
     };
 
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell };
-    return shallowMount(DiffView, { propsData, store, stubs });
+    return shallowMount(DiffView, { propsData, pinia, store, stubs });
   };
 
   beforeEach(() => {
     throttle.mockImplementation(lodash.throttle);
+    pinia = createTestingPinia({
+      plugins: [
+        globalAccessorPlugin,
+        createCustomGetters(() => ({
+          legacyNotes: {},
+          legacyDiffs: {},
+          batchComments: {
+            shouldRenderDraftRow: () => false,
+            shouldRenderParallelDraftRow: () => () => true,
+            draftsForLine: () => false,
+            draftsForFile: () => false,
+            hasParallelDraftLeft: () => false,
+            hasParallelDraftRight: () => false,
+          },
+        })),
+      ],
+    });
+    useLegacyDiffs();
+    useNotes();
   });
 
   afterEach(() => {

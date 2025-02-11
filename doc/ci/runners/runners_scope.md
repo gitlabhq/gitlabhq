@@ -443,6 +443,8 @@ If you delete the owner project:
 1. GitLab assigns ownership to the project with the oldest association.
 1. If no other projects share the runner, GitLab deletes the runner automatically.
 
+You cannot unassign a runner from the owner project. Delete the runner instead.
+
 ### Create a project runner with a runner authentication token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.

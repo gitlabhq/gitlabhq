@@ -87,7 +87,7 @@ class PostReceiveService
 
   def broadcast_message
     banner = nil
-    user_access_level = if project && user && Feature.enabled?(:derisk_user_access_level_in_git_hook, project)
+    user_access_level = if project && user
                           user.max_member_access_for_project(project.id)
                         end
 

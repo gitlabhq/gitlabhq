@@ -27,10 +27,6 @@ import { __ } from '~/locale';
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
-import { useNotes } from '~/notes/store/legacy_notes';
-import { useBatchComments } from '~/batch_comments/store';
-import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   MR_TREE_SHOW_KEY,
@@ -416,12 +412,6 @@ export default {
     diffsApp.instrument();
   },
   created() {
-    // Pinia stores must be initialized manually during migration, otherwise they won't sync with Vuex
-    useNotes();
-    useLegacyDiffs();
-    useBatchComments();
-    useMrNotes();
-
     this.adjustView();
     this.subscribeToEvents();
 

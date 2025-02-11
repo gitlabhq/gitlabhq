@@ -1,8 +1,8 @@
 <script>
 import { debounce } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { contentTop } from '~/lib/utils/common_utils';
+import { useBatchComments } from '~/batch_comments/store';
 
 const MAX_ITEMS_ON_NARROW_SCREEN = 8;
 // Should be enough for the very long titles (10+ lines) on the max smallest screen
@@ -28,8 +28,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('batchComments', ['reviewBarRendered']),
-    ...mapGetters('batchComments', ['draftsCount']),
+    ...mapState(useBatchComments, ['reviewBarRendered', 'draftsCount']),
     reviewBarEnabled() {
       return this.draftsCount > 0;
     },

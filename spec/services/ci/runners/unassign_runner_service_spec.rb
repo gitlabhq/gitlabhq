@@ -46,17 +46,13 @@ RSpec.describe ::Ci::Runners::UnassignRunnerService, '#execute', :aggregate_fail
 
     it { is_expected.to be_success }
 
-    context 'when unassigning last project' do
+    context 'when unassigning from owner project' do
       let(:project_to_unassign) { owner_project }
-
-      before do
-        runner.runner_projects.where.not(project_id: project_to_unassign.id).delete_all
-        runner.reload
-      end
 
       it 'returns error response' do
         expect(execute).to be_error
-        expect(execute.message).to eq('Only one project associated with the runner. Please remove the runner instead')
+        expect(execute.message).to eq(
+          'You cannot unassign a runner from the owner project. Delete the runner instead')
       end
     end
 

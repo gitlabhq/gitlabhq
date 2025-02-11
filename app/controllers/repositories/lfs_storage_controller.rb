@@ -45,7 +45,8 @@ module Repositories
         oid: oid,
         size: size,
         uploaded_file: uploaded_file,
-        project: project
+        project: project,
+        repository_type: repo_type.name
       )
 
       response = service.execute

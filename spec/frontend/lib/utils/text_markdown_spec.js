@@ -228,11 +228,21 @@ describe('init markdown', () => {
       describe('Continuing markdown lists', () => {
         let enterEvent;
 
+        beforeAll(() => {
+          const $textArea = $(textArea);
+          $textArea.on('keydown', keypressNoteText);
+          $textArea.on('compositionstart', compositionStartNoteText);
+          $textArea.on('compositionend', compositionEndNoteText);
+        });
+
+        afterAll(() => {
+          const $textArea = $(textArea);
+          $textArea.off('keydown', keypressNoteText);
+          $textArea.off('compositionstart', compositionStartNoteText);
+          $textArea.off('compositionend', compositionEndNoteText);
+        });
         beforeEach(() => {
           enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
-          textArea.addEventListener('keydown', keypressNoteText);
-          textArea.addEventListener('compositionstart', compositionStartNoteText);
-          textArea.addEventListener('compositionend', compositionEndNoteText);
           gon.markdown_automatic_lists = true;
         });
 
@@ -241,6 +251,9 @@ describe('init markdown', () => {
           ${'- item'}                    | ${'- item\n- '}
           ${'* item'}                    | ${'* item\n* '}
           ${'+ item'}                    | ${'+ item\n+ '}
+          ${'  - item'}                  | ${'  - item\n  - '}
+          ${'  * item'}                  | ${'  * item\n  * '}
+          ${'  + item'}                  | ${'  + item\n  + '}
           ${'- [ ] item'}                | ${'- [ ] item\n- [ ] '}
           ${'- [x] item'}                | ${'- [x] item\n- [ ] '}
           ${'- [X] item'}                | ${'- [X] item\n- [ ] '}
@@ -321,8 +334,8 @@ describe('init markdown', () => {
 
         it.each`
           text                                                       | add_at | expected
-          ${'1. one\n2. two\n3. three'}                              | ${13}  | ${'1. one\n2. two\n2. \n3. three'}
-          ${'108. item\n     5. second\n     6. six\n     7. seven'} | ${36}  | ${'108. item\n     5. second\n     6. six\n     6. \n     7. seven'}
+          ${'1. one\n2. two\n3. three'}                              | ${13}  | ${'1. one\n2. two\n3. \n4. three'}
+          ${'108. item\n     5. second\n     6. six\n     7. seven'} | ${36}  | ${'108. item\n     5. second\n     6. six\n     7. \n     8. seven'}
         `(
           'adds correct numbered continuation characters when in middle of list',
           ({ text, add_at, expected }) => {
@@ -332,6 +345,26 @@ describe('init markdown', () => {
             textArea.dispatchEvent(enterEvent);
 
             expect(textArea.value).toEqual(expected);
+          },
+        );
+
+        // As the enter does not actually get propagated the line does not get deleted in the test.
+        // Check that the selection start and end is on the part which gets removed when the Enter gets propagated.
+        it.each`
+          text                                                            | addAt | expectedSelectionStart | expected
+          ${'1. one\n2. \n3. one\n4. two'}                                | ${10} | ${7}                   | ${'1. one\n2. \n1. one\n2. two'}
+          ${'108. item\n     1. one\n     2. \n     3. one\n     4. two'} | ${30} | ${22}                  | ${'108. item\n     1. one\n     2. \n     1. one\n     2. two'}
+        `(
+          'updates correct numbered continuation characters when breaking up existing list',
+          ({ text, addAt, expectedSelectionStart, expected }) => {
+            textArea.value = text;
+            textArea.setSelectionRange(addAt, addAt);
+
+            textArea.dispatchEvent(enterEvent);
+
+            expect(textArea.value).toEqual(expected);
+            expect(textArea.selectionStart).toEqual(expectedSelectionStart);
+            expect(textArea.selectionEnd).toEqual(addAt);
           },
         );
 
@@ -395,6 +428,69 @@ describe('init markdown', () => {
           textArea.dispatchEvent(enterEvent);
 
           expect(textArea.value).toEqual(text);
+        });
+      });
+
+      describe('Continuing indented text', () => {
+        let enterEvent;
+
+        beforeAll(() => {
+          const $textArea = $(textArea);
+          $textArea.on('keydown', keypressNoteText);
+          $textArea.on('compositionstart', compositionStartNoteText);
+          $textArea.on('compositionend', compositionEndNoteText);
+        });
+        afterAll(() => {
+          const $textArea = $(textArea);
+          $textArea.off('keydown', keypressNoteText);
+          $textArea.off('compositionstart', compositionStartNoteText);
+          $textArea.off('compositionend', compositionEndNoteText);
+        });
+
+        beforeEach(() => {
+          enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
+          gon.features = {
+            continueIndentedText: true,
+          };
+        });
+
+        it.each`
+          text          | markdownAutomaticLists | expected
+          ${'  nice'}   | ${true}                | ${'  nice\n  '}
+          ${'  a'}      | ${true}                | ${'  a\n  '}
+          ${'  - item'} | ${true}                | ${'  - item\n  - '}
+          ${'  - item'} | ${false}               | ${'  - item\n  '}
+        `(
+          'adds correct indentation characters with markdown_automatic_lists preference: $markdownAutomaticLists',
+          ({ text, markdownAutomaticLists, expected }) => {
+            gon.markdown_automatic_lists = markdownAutomaticLists;
+            textArea.value = text;
+            textArea.setSelectionRange(text.length, text.length);
+
+            textArea.dispatchEvent(enterEvent);
+
+            expect(textArea.value).toEqual(expected);
+            expect(textArea.selectionStart).toBe(expected.length);
+          },
+        );
+
+        it('does not duplicate a line item for IME characters', () => {
+          const text = ' 日本語';
+          const expected = ' 日本語\n ';
+
+          textArea.dispatchEvent(new CompositionEvent('compositionstart'));
+          textArea.value = text;
+
+          // Press enter to end composition
+          textArea.dispatchEvent(enterEvent);
+          textArea.dispatchEvent(new CompositionEvent('compositionend'));
+          textArea.setSelectionRange(text.length, text.length);
+
+          // Press enter to make new line
+          textArea.dispatchEvent(enterEvent);
+
+          expect(textArea.value).toEqual(expected);
+          expect(textArea.selectionStart).toBe(expected.length);
         });
       });
     });
@@ -556,6 +652,10 @@ describe('init markdown', () => {
       });
 
       describe('surrounds selected text with matching character', () => {
+        beforeAll(() => {
+          const $textArea = $(textArea);
+          $textArea.on('keydown', keypressNoteText);
+        });
         it.each`
           key    | expected
           ${'['} | ${`[${selected}]`}
@@ -571,7 +671,6 @@ describe('init markdown', () => {
           const event = new KeyboardEvent('keydown', { key });
           gon.markdown_surround_selection = true;
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);
 
           expect(textArea.value).toEqual(text.replace(selected, expected));
@@ -584,7 +683,6 @@ describe('init markdown', () => {
           const event = new KeyboardEvent('keydown', { key: '[' });
           gon.markdown_surround_selection = false;
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);
 
           expect(textArea.value).toEqual(text);
@@ -593,7 +691,6 @@ describe('init markdown', () => {
         it('does nothing if meta is set', () => {
           const event = new KeyboardEvent('keydown', { key: '[', metaKey: true });
 
-          textArea.addEventListener('keydown', keypressNoteText);
           textArea.dispatchEvent(event);
 
           expect(textArea.value).toEqual(text);

@@ -712,9 +712,9 @@ Example response:
 
 ## Unassign a runner from project
 
-Unassign a project runner from the project. It works only if the project isn't
-the only project associated with the specified runner. If so, an error is
-returned. Use the call to [delete a runner](#delete-a-runner) instead.
+Unassign a project runner from the project.
+You cannot unassign a runner from the owner project. If you attempt this action, an error occurs.
+Use the call to [delete a runner](#delete-a-runner) instead.
 
 Prerequisites:
 

@@ -577,7 +577,6 @@ group :development, :test, :monorepo do
 end
 
 group :test do
-  gem 'fuubar', '~> 2.2.0', feature_category: :tooling
   gem 'rspec-retry', '~> 0.6.2', feature_category: :tooling
   gem 'rspec_profiling', '~> 0.0.9', feature_category: :tooling
   gem 'rspec-benchmark', '~> 0.6.0', feature_category: :tooling

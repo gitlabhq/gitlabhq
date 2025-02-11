@@ -35,6 +35,7 @@ module WikiActions
     before_action do
       push_frontend_feature_flag(:preserve_markdown, container)
       push_force_frontend_feature_flag(:glql_integration, container&.glql_integration_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:continue_indented_text, container&.continue_indented_text_feature_flag_enabled?)
     end
 
     before_action only: [:show, :edit, :update] do

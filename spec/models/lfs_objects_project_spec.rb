@@ -123,11 +123,17 @@ RSpec.describe LfsObjectsProject, feature_category: :source_code_management do
   end
 
   describe '#link_to_project!' do
+    let(:repository_type) { :project }
+
     it 'does not throw error when duplicate exists' do
       lfs_objects_project
 
       expect do
-        result = described_class.link_to_project!(lfs_objects_project.lfs_object, lfs_objects_project.project)
+        result = described_class.link_to_project!(
+          lfs_objects_project.lfs_object,
+          lfs_objects_project.project,
+          repository_type
+        )
         expect(result).to be_a(described_class)
       end.not_to change { described_class.count }
     end
@@ -137,7 +143,7 @@ RSpec.describe LfsObjectsProject, feature_category: :source_code_management do
 
       allow(ProjectCacheWorker).to receive(:perform_async).and_call_original
       expect(ProjectCacheWorker).to receive(:perform_async).with(new_project.id, [], %w[lfs_objects_size])
-      expect { described_class.link_to_project!(lfs_objects_project.lfs_object, new_project) }
+      expect { described_class.link_to_project!(lfs_objects_project.lfs_object, new_project, repository_type) }
         .to change { described_class.count }
 
       expect(described_class.find_by(

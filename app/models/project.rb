@@ -3274,6 +3274,10 @@ class Project < ApplicationRecord
     group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
   end
 
+  def continue_indented_text_feature_flag_enabled?
+    group&.continue_indented_text_feature_flag_enabled? || Feature.enabled?(:continue_indented_text, self, type: :wip)
+  end
+
   def wiki_comments_feature_flag_enabled?
     group&.wiki_comments_feature_flag_enabled? || Feature.enabled?(:wiki_comments, self, type: :wip)
   end

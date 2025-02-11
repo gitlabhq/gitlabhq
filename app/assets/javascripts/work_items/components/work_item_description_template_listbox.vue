@@ -138,9 +138,16 @@ export default {
     :selected="selectedTemplateValue"
     :loading="loading"
     searchable
+    block
+    class="gl-w-30"
     @select="handleSelect"
     @search="handleSearch"
   >
+    <template #list-item="{ item }">
+      <span class="gl-break-words">
+        {{ item.text }}
+      </span>
+    </template>
     <template #footer>
       <div class="gl-border-t gl-border-t-dropdown gl-p-2 gl-pt-0">
         <gl-button

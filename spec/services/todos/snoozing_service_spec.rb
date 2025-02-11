@@ -83,4 +83,43 @@ RSpec.describe Todos::SnoozingService, feature_category: :team_planning do
       end
     end
   end
+
+  describe '#snooze_todos' do
+    let_it_be(:time) { 8.hours.from_now }
+    let_it_be(:todo1) { create(:todo, :pending, user: user) }
+    let_it_be(:todo2) { create(:todo, :pending, user: user, snoozed_until: 1.hour.ago) }
+    let(:todos) { Todo.where(id: [todo1.id, todo2.id]) }
+
+    it 'snoozes all todos until the provided time' do
+      service.snooze_todos(todos, time)
+
+      expect(todo1.reload.snoozed_until).to be_within(1.second).of(time)
+      expect(todo2.reload.snoozed_until).to be_within(1.second).of(time)
+    end
+
+    it 'responds with the updated todo ids' do
+      response = service.snooze_todos(todos, time)
+
+      expect(response).to match_array [todo1.id, todo2.id]
+    end
+  end
+
+  describe '#unsnooze_todos' do
+    let_it_be(:todo1) { create(:todo, :pending, user: user, snoozed_until: 1.day.from_now) }
+    let_it_be(:todo2) { create(:todo, :pending, user: user, snoozed_until: nil) }
+    let(:todos) { Todo.where(id: [todo1.id, todo2.id]) }
+
+    it 'unsnoozes all todos' do
+      service.unsnooze_todos(todos)
+
+      expect(todo1.reload.snoozed_until).to be_nil
+      expect(todo2.reload.snoozed_until).to be_nil
+    end
+
+    it 'responds with the updated todo ids' do
+      response = service.unsnooze_todos(todos)
+
+      expect(response).to match_array [todo1.id, todo2.id]
+    end
+  end
 end

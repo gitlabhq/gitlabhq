@@ -1,16 +1,25 @@
+import Vue from 'vue';
 import { GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 import { createStore } from '~/mr_notes/stores';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import discussionsMockData from '../mock_data/diff_discussions';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
+Vue.use(PiniaVuePlugin);
+
 describe('DiffDiscussions', () => {
   let store;
+  let pinia;
   let wrapper;
   const getDiscussionsMockData = () => [{ ...discussionsMockData }];
 
@@ -18,6 +27,7 @@ describe('DiffDiscussions', () => {
     store = createStore();
     wrapper = mount(DiffDiscussions, {
       store,
+      pinia,
       propsData: {
         discussions,
         ...props,
@@ -26,6 +36,12 @@ describe('DiffDiscussions', () => {
   };
 
   const findNoteableDiscussion = () => wrapper.findComponent(NoteableDiscussion);
+
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+  });
 
   describe('template', () => {
     it('should have notes list', () => {

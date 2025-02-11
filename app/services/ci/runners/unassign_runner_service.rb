@@ -36,9 +36,9 @@ module Ci
           return ServiceResponse.error(message: "User not allowed to manage project's runners")
         end
 
-        if runner.belongs_to_one_project?
+        if project == runner.owner
           return ServiceResponse.error(
-            message: 'Only one project associated with the runner. Please remove the runner instead'
+            message: 'You cannot unassign a runner from the owner project. Delete the runner instead'
           )
         end
 

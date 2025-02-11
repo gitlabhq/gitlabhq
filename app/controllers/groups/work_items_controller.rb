@@ -13,6 +13,7 @@ module Groups
       push_force_frontend_feature_flag(:create_group_level_work_items,
         group&.create_group_level_work_items_feature_flag_enabled?)
       push_force_frontend_feature_flag(:glql_integration, group&.glql_integration_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:continue_indented_text, group&.continue_indented_text_feature_flag_enabled?)
       push_frontend_feature_flag(:issues_list_drawer, group)
       push_frontend_feature_flag(:work_item_description_templates, group)
     end

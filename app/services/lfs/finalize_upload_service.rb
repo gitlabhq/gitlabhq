@@ -2,11 +2,12 @@
 
 module Lfs
   class FinalizeUploadService
-    def initialize(oid:, size:, uploaded_file:, project:)
+    def initialize(oid:, size:, uploaded_file:, project:, repository_type:)
       @oid = oid
       @size = size
       @uploaded_file = uploaded_file
       @project = project
+      @repository_type = repository_type
     end
 
     def execute
@@ -27,7 +28,7 @@ module Lfs
 
     private
 
-    attr_reader :oid, :size, :uploaded_file, :project
+    attr_reader :oid, :size, :uploaded_file, :project, :repository_type
 
     def service_response_error(reason, message)
       ServiceResponse.error(reason: reason, message: message)
@@ -42,7 +43,7 @@ module Lfs
         object = create_file!
       end
 
-      link_to_project!(object)
+      LfsObjectsProject.link_to_project!(object, project, repository_type)
     end
 
     def create_file!
@@ -53,13 +54,6 @@ module Lfs
       Gitlab::AppJsonLogger.info(message: "LFS file replaced because it did not exist", oid: oid, size: size)
       lfs_object.file = uploaded_file
       lfs_object.save!
-    end
-
-    def link_to_project!(object)
-      LfsObjectsProject.safe_find_or_create_by!( # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- Used in the original controller: https://gitlab.com/gitlab-org/gitlab/-/blob/3841ce47b1d6d4611067ff5b8b86dc9cbf290641/app/controllers/repositories/lfs_storage_controller.rb#L118
-        project: project,
-        lfs_object: object
-      )
     end
   end
 end

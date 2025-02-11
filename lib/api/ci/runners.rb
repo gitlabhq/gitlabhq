@@ -345,11 +345,11 @@ module API
 
         desc "Unassign a runner from project" do
           summary "Unassign a project runner from the project"
-          detail "It works only if the project isn't the only project associated with the specified runner. " \
+          detail "It is not possible to unassign a runner from the owner project. " \
                  "If so, an error is returned. Use the call to delete a runner instead."
           success Entities::Ci::Runner
           failure [[400, 'Bad Request'],
-                   [403, 'Only one project associated with the runner. Please remove the runner instead'],
+                   [403, 'You cannot unassign a runner from the owner project. Delete the runner instead'],
                    [404, 'Runner not found'], [412, 'Precondition Failed']]
           tags %w[runners projects]
         end

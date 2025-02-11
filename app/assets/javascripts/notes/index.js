@@ -4,6 +4,7 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { pinia } from '~/pinia/instance';
 import NotesApp from './components/notes_app.vue';
 import { store } from './stores';
 import { getNotesFilterData } from './utils/get_notes_filter_data';
@@ -55,6 +56,7 @@ export default ({ editorAiActions = [] } = {}) => {
       NotesApp,
     },
     store,
+    pinia,
     apolloProvider,
     provide: {
       showTimelineViewToggle,

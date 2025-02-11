@@ -1,0 +1,7 @@
+---
+name: continue_indented_text
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/23978
+milestone: '17.9'
+group: group::knowledge
+type: wip
+default_enabled: false

@@ -7,8 +7,9 @@ import {
   GlFormRadioGroup,
   GlLoadingIcon,
 } from '@gitlab/ui';
+import { mapActions, mapState } from 'pinia';
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters as mapVuexGetters, mapState as mapVuexState } from 'vuex';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -19,6 +20,7 @@ import { CLEAR_AUTOSAVE_ENTRY_EVENT, CONTENT_EDITOR_PASTE } from '~/vue_shared/c
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { updateText } from '~/lib/utils/text_markdown';
+import { useBatchComments } from '~/batch_comments/store';
 import userCanApproveQuery from '../queries/can_approve.query.graphql';
 
 export default {
@@ -78,9 +80,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getNotesData', 'getNoteableData', 'noteableType', 'getCurrentUserLastNote']),
-    ...mapState('batchComments', ['shouldAnimateReviewButton']),
-    ...mapState('diffs', ['projectPath']),
+    ...mapVuexGetters([
+      'getNotesData',
+      'getNoteableData',
+      'noteableType',
+      'getCurrentUserLastNote',
+    ]),
+    ...mapState(useBatchComments, ['shouldAnimateReviewButton']),
+    ...mapVuexState('diffs', ['projectPath']),
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
@@ -138,7 +145,7 @@ export default {
     this.noteData.noteable_id = this.getNoteableData.id;
   },
   methods: {
-    ...mapActions('batchComments', ['publishReview', 'clearDrafts']),
+    ...mapActions(useBatchComments, ['publishReview', 'clearDrafts']),
     repositionDropdown() {
       this.$refs.submitDropdown?.$refs.dropdown?.updatePopper();
     },
@@ -151,7 +158,7 @@ export default {
       try {
         const { note, reviewer_state: reviewerState } = this.noteData;
 
-        await this.publishReview(this.noteData);
+        await this.publishReview({ ...this.noteData });
 
         markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
 

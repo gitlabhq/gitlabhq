@@ -3,6 +3,8 @@ import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import MockAdapter from 'axios-mock-adapter';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -19,7 +21,10 @@ import { COMMENT_FORM } from '~/notes/i18n';
 import notesModule from '~/notes/stores/modules';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
-
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
 import {
   noteableDataMock,
   discussionMock,
@@ -30,12 +35,14 @@ import {
 import { useLocalStorageSpy } from '../../__helpers__/local_storage_helper';
 
 Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/alert');
 
 describe('noteable_discussion component', () => {
   let store;
+  let pinia;
   let wrapper;
   let axiosMock;
 
@@ -58,11 +65,16 @@ describe('noteable_discussion component', () => {
 
     wrapper = mountExtended(NoteableDiscussion, {
       store,
+      pinia,
       propsData: { discussion },
     });
   };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+    useBatchComments();
     axiosMock = new MockAdapter(axios);
     createComponent();
   });
@@ -127,6 +139,7 @@ describe('noteable_discussion component', () => {
         store.dispatch('setUserData', userDataMock);
         wrapper = mount(NoteableDiscussion, {
           store,
+          pinia,
           propsData: { discussion: discussionMock },
         });
         expect(wrapper.find('.note-edit-form').exists()).toBe(hasDraft);
@@ -290,6 +303,7 @@ describe('noteable_discussion component', () => {
 
         wrapper = mount(NoteableDiscussion, {
           store,
+          pinia,
           propsData: { discussion: discussionMock },
         });
       });
@@ -308,6 +322,7 @@ describe('noteable_discussion component', () => {
 
         wrapper = mount(NoteableDiscussion, {
           store,
+          pinia,
           propsData: { discussion: discussionMock },
         });
       });
@@ -324,6 +339,7 @@ describe('noteable_discussion component', () => {
     const mock = jest.fn();
     wrapper = mount(NoteableDiscussion, {
       store,
+      pinia,
       propsData: { discussion: discussionMock },
       stubs: { NoteForm: { methods: { append: mock }, render() {} } },
     });

@@ -1,9 +1,0 @@
----
-name: ff_pages_use_open_file
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345737
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167150
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/496324
-milestone: '17.5'
-group: group::knowledge
-type: beta
-default_enabled: true

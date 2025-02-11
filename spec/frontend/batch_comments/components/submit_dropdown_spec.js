@@ -1,8 +1,10 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
+import { createTestingPinia } from '@pinia/testing';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -11,20 +13,24 @@ import { mockTracking } from 'helpers/tracking_helper';
 import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
 
 jest.mock('~/autosave');
 jest.mock('~/vue_shared/components/markdown/eventhub');
 
 Vue.use(VueApollo);
 Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 let wrapper;
-let publishReview;
+let pinia;
 let trackingSpy;
 let getCurrentUserLastNote;
 
 function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) {
-  publishReview = jest.fn().mockResolvedValue();
   trackingSpy = mockTracking(undefined, null, jest.spyOn);
   const requestHandlers = [
     [
@@ -48,6 +54,8 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
   const apolloProvider = createMockApollo(requestHandlers);
   getCurrentUserLastNote = Vue.observable({ id: 1 });
 
+  useBatchComments().shouldAnimateReviewButton = shouldAnimateReviewButton;
+
   const store = new Vuex.Store({
     getters: {
       getNotesData: () => ({
@@ -68,18 +76,11 @@ function factory({ canApprove = true, shouldAnimateReviewButton = false } = {}) 
           projectPath: 'gitlab-org/gitlab',
         },
       },
-      batchComments: {
-        namespaced: true,
-        state: { shouldAnimateReviewButton },
-        actions: {
-          publishReview,
-          clearDrafts: jest.fn(),
-        },
-      },
     },
   });
   wrapper = mountExtended(SubmitDropdown, {
     store,
+    pinia,
     apolloProvider,
   });
 }
@@ -90,6 +91,12 @@ const findForm = () => wrapper.findByTestId('submit-gl-form');
 const findSubmitDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
 describe('Batch comments submit dropdown', () => {
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+  });
+
   afterEach(() => {
     window.mrTabs = null;
   });
@@ -97,11 +104,11 @@ describe('Batch comments submit dropdown', () => {
   it('calls publishReview with note data', async () => {
     factory();
 
-    findCommentTextarea().setValue('Hello world');
+    await findCommentTextarea().setValue('Hello world');
 
     await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
-    expect(publishReview).toHaveBeenCalledWith(expect.anything(), {
+    expect(useBatchComments().publishReview).toHaveBeenCalledWith({
       noteable_type: 'merge_request',
       noteable_id: 1,
       note: 'Hello world',
@@ -249,7 +256,7 @@ describe('Batch comments submit dropdown', () => {
 
     findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
-    expect(publishReview).toHaveBeenCalledWith(expect.anything(), {
+    expect(useBatchComments().publishReview).toHaveBeenCalledWith({
       noteable_type: 'merge_request',
       noteable_id: 1,
       note: 'Hello world',

@@ -345,22 +345,6 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
         expect(subject).to include(build_alert_message(unscoped_message.message))
       end
     end
-
-    context "with derisk feature flag disabled" do
-      before do
-        stub_feature_flags(derisk_user_access_level_in_git_hook: false)
-      end
-
-      it "does not query the user's max_member_access_for_project" do
-        expect(user).not_to receive(:max_member_access_for_project)
-      end
-
-      it "shows the unscoped message instead of any scoped" do
-        expect(subject).not_to include(build_alert_message(dev_message.message))
-        expect(subject).not_to include(build_alert_message(guest_message.message))
-        expect(subject).to include(build_alert_message(unscoped_message.message))
-      end
-    end
   end
 
   context 'with a redirected data' do

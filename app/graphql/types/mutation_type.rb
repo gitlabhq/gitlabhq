@@ -149,6 +149,8 @@ module Types
     mount_mutation Mutations::Todos::RestoreMany
     mount_mutation Mutations::Todos::Snooze, experiment: { milestone: '17.4' }
     mount_mutation Mutations::Todos::UnSnooze, experiment: { milestone: '17.4' }
+    mount_mutation Mutations::Todos::SnoozeMany, experiment: { milestone: '17.9' }
+    mount_mutation Mutations::Todos::UnsnoozeMany, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Snippets::Destroy
     mount_mutation Mutations::Snippets::Update
     mount_mutation Mutations::Snippets::Create
