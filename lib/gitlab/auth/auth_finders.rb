@@ -192,7 +192,11 @@ module Gitlab
 
         return unless access_token
 
-        access_token.reset if reset_token
+        # Originally, we tried to use `reset` here to follow the rubocop rule introduced by
+        # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/60218, but this caused a NoMethodError for OAuth tokens,
+        # leading to incident 18980 (see https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18988).
+        # We're using reload instead and disabling the rubocop rule to prevent similar incidents.
+        access_token.reload if reset_token # rubocop:disable Cop/ActiveRecordAssociationReload
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
