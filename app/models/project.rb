@@ -1623,7 +1623,9 @@ class Project < ApplicationRecord
   # - Relation import
   # - Direct Transfer
   def any_import_in_progress?
-    relation_import_trackers.last&.started? ||
+    last_relation_import_tracker = relation_import_trackers.last
+
+    (last_relation_import_tracker&.started? && !last_relation_import_tracker.stale?) ||
       import_started? ||
       BulkImports::Entity.with_status(:started).where(project_id: id).any?
   end

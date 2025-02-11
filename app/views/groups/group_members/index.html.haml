@@ -7,10 +7,10 @@
   = render ::Layouts::PageHeadingComponent.new(_('Group members')) do |c|
     - c.with_description do
       = group_member_header_subtext(@group)
-    - c.with_actions do
       - if current_appearance&.member_guidelines?
         .gl-w-full.order-md-1
         = brand_member_guidelines
+    - c.with_actions do
       .js-invite-group-trigger{ data: { classes: 'md:gl-w-auto gl-w-full', display_text: _('Invite a group') } }
       .js-invite-members-trigger{ data: { variant: 'confirm',
         classes: 'md:gl-w-auto gl-w-full',

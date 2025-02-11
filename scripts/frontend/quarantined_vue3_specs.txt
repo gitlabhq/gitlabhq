@@ -233,10 +233,8 @@ spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/app_edit_new_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
 spec/frontend/repository/components/header_area/blob_controls_spec.js
-spec/frontend/repository/components/header_area/blob_overflow_menu_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/repository/components/table/row_spec.js
-spec/frontend/repository/router_spec.js
 spec/frontend/search/sidebar/components/checkbox_filter_spec.js
 spec/frontend/search/topbar/components/app_spec.js
 spec/frontend/sessions/new/components/email_verification_spec.js

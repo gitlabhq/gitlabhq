@@ -36,22 +36,6 @@ then
   ((ERRORCODE++))
 fi
 
-# Test for non-standard spaces (NBSP, NNBSP, ZWSP) in documentation.
-# shellcheck disable=2059
-printf "${COLOR_GREEN}INFO: Checking for non-standard spaces...${COLOR_RESET}\n"
-if grep --extended-regexp --binary-file=without-match --recursive '[  ​]' doc/ >/dev/null 2>&1;
-then
-  # shellcheck disable=2059
-  printf "${COLOR_RED}ERROR: Non-standard spaces (NBSP, NNBSP, ZWSP) should not be used in documentation!${COLOR_RESET}"
-  printf " https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#spaces-between-words\n"
-  printf "Replace with standard spaces:\n" >&2
-  # Find the spaces, then add color codes with sed to highlight each NBSP or NNBSP in the output.
-  # shellcheck disable=SC1018
-  grep --extended-regexp --binary-file=without-match --recursive --color=auto '[  ]' doc \
-       | sed -e ''/ /s//"$(printf "\033[0;101m \033[0m")"/'' -e ''/ /s//"$(printf "\033[0;101m \033[0m")"/''
-  ((ERRORCODE++))
-fi
-
 # Ensure that the CHANGELOG.md does not contain duplicate versions
 DUPLICATE_CHANGELOG_VERSIONS=$(grep --extended-regexp '^## .+' CHANGELOG.md | sed -E 's| \(.+\)||' | sort -r | uniq -d)
 # shellcheck disable=2059

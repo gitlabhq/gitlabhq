@@ -145,14 +145,14 @@ export default {
       key: 'selected',
       label: '',
       thClass: 'gl-w-3 !gl-pr-3',
-      tdClass: '!gl-pr-3',
+      tdClass: '!gl-flex lg:!gl-table-cell lg:!gl-pr-3',
     },
     {
       key: 'webUrl',
       label: s__('BulkImport|Source group'),
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      thClass: '!gl-pl-0 gl-w-1/2',
-      tdClass: '!gl-pl-0',
+      thClass: 'lg:!gl-pl-0 gl-w-1/2',
+      tdClass: 'lg:!gl-pl-0',
     },
     {
       key: 'importTarget',
@@ -162,11 +162,13 @@ export default {
     {
       key: 'progress',
       label: __('Status'),
+      tdClass: '!gl-align-middle',
       tdAttr: { 'data-testid': 'import-status-indicator' },
     },
     {
       key: 'actions',
       label: '',
+      tdClass: '!gl-flex lg:!gl-table-cell',
     },
   ],
 
@@ -342,12 +344,7 @@ export default {
 
   methods: {
     rowClasses(groupTableItem) {
-      const DEFAULT_CLASSES = [
-        'gl-border-strong',
-        'gl-border-0',
-        'gl-border-b-1',
-        'gl-border-solid',
-      ];
+      const DEFAULT_CLASSES = ['gl-border-strong', 'gl-border-0', 'gl-border-b', 'gl-border-solid'];
       const result = [...DEFAULT_CLASSES];
       if (groupTableItem.flags.isUnselectable) {
         result.push('!gl-cursor-default');
@@ -675,24 +672,20 @@ export default {
           {{ s__('BulkImport|View import history') }}
         </gl-button>
       </template>
-      <template #description
-        ><span>{{ s__('BulkImport|Select the groups and projects you want to import.') }}</span>
-        <span>
-          <gl-sprintf
-            :message="
-              s__(
-                'BulkImport|Please note: importing projects is a %{docsLinkStart}beta%{docsLinkEnd} feature.',
-              )
-            "
+      <template #description>
+        {{ s__('BulkImport|Select the groups and projects you want to import.') }}
+        <gl-sprintf
+          :message="
+            s__('BulkImport|Importing projects is a %{docsLinkStart}beta%{docsLinkEnd} feature.')
+          "
+        >
+          <template #docsLink="{ content }"
+            ><gl-link :href="$options.betaFeatureHelpPath" target="_blank">{{
+              content
+            }}</gl-link></template
           >
-            <template #docsLink="{ content }"
-              ><gl-link :href="$options.betaFeatureHelpPath" target="_blank">{{
-                content
-              }}</gl-link></template
-            >
-          </gl-sprintf>
-        </span></template
-      >
+        </gl-sprintf>
+      </template>
     </page-heading>
 
     <gl-alert
@@ -728,7 +721,7 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-    <gl-alert variant="warning" :dismissible="false" class="mt-3">
+    <gl-alert variant="warning" :dismissible="false">
       <gl-sprintf
         :message="
           s__(
@@ -742,13 +735,6 @@ export default {
       </gl-sprintf>
     </gl-alert>
     <div class="gl-border-0 gl-border-b-1 gl-border-solid gl-border-b-default gl-py-5">
-      <gl-search-box-by-click
-        class="gl-mb-5"
-        data-testid="filter-groups"
-        :placeholder="s__('BulkImport|Filter by source group')"
-        @submit="filter = $event"
-        @clear="filter = ''"
-      />
       <span v-if="!$apollo.loading && hasGroups">
         <gl-sprintf :message="statusMessage">
           <template #start>
@@ -784,6 +770,15 @@ export default {
         </help-popover>
       </span>
     </div>
+    <div class="gl-flex gl-flex-col gl-gap-3 gl-bg-subtle gl-p-5 gl-pb-4">
+      <gl-search-box-by-click
+        data-testid="filter-groups"
+        :placeholder="s__('BulkImport|Filter by source group')"
+        @submit="filter = $event"
+        @clear="filter = ''"
+      />
+    </div>
+
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
       <gl-empty-state
@@ -806,9 +801,9 @@ export default {
       </gl-empty-state>
       <template v-else>
         <div
-          class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-subtle gl-px-4 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
+          class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-subtle gl-px-5 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
         >
-          <div class="gl-items-center gl-gap-4 gl-py-3 md:gl-flex">
+          <div class="gl-flex gl-w-full gl-items-center gl-gap-4 gl-pb-4">
             <span data-test-id="selection-count">
               <gl-sprintf :message="__('%{count} selected')">
                 <template #count>
@@ -834,7 +829,7 @@ export default {
                 v-gl-tooltip
                 :title="s__('BulkImport|Some groups will be imported without projects.')"
                 name="warning"
-                class="gl-text-orange-500"
+                variant="warning"
                 data-testid="import-projects-warning"
               />
             </span>
@@ -869,6 +864,7 @@ export default {
           selectable
           select-mode="multi"
           selected-variant="primary"
+          stacked="lg"
           @row-selected="preventSelectingAlreadyImportedGroups"
         >
           <template #head(selected)="{ selectAllRows, clearSelected }">
@@ -911,13 +907,13 @@ export default {
             />
           </template>
           <template #cell(progress)="{ item: group }">
-            <import-status-cell :status="group.visibleStatus" :has-failures="hasFailures(group)" />
-            <import-history-link
-              v-if="showHistoryLink(group)"
-              :id="group.progress.id"
-              :history-path="historyShowPath"
-              class="gl-mt-2 gl-inline-block"
-            />
+            <div class="gl-mt-3">
+              <import-status-cell
+                class="gl-items-end lg:gl-items-start"
+                :status="group.visibleStatus"
+                :has-failures="hasFailures(group)"
+              />
+            </div>
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
@@ -927,6 +923,12 @@ export default {
               :is-invalid="group.flags.isInvalid"
               :is-project-creation-allowed="group.flags.isProjectCreationAllowed"
               @import-group="importGroup({ group, extraArgs: $event, index })"
+            />
+            <import-history-link
+              v-if="showHistoryLink(group)"
+              :id="group.progress.id"
+              :history-path="historyShowPath"
+              class="gl-mt-3"
             />
           </template>
         </gl-table>

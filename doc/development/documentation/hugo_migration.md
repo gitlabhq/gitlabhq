@@ -12,6 +12,13 @@ While existing content will be automatically updated, any new or modified docume
 
 For the latest migration status, see [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/44).
 
+## New project
+
+The new Docs website is in the [`gitlab-org/technical-writing/docs-gitlab-com`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com) project.
+
+After launch, all issues from the [original `gitlab-org/gitlab-docs` project](https://gitlab.com/gitlab-org/gitlab-docs)
+will be moved over to the new one, or closed if they're no longer applicable.
+
 ## Formatting changes
 
 ### Page titles
@@ -120,7 +127,7 @@ With Hugo, these will no longer have any effect. They will render as plain text.
 
 **Why:** Hugo uses the Goldmark Markdown rendering engine, not Kramdown.
 
-**When:** After launch.
+**When:** At this time, avoid adding new Kramdown tags. Support for these is dropped entirely after launch.
 
 **Testing:** We are running an audit job on the CI pipeline for Kramdown tags ([example](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/jobs/8885163533)).
 These tags will be manually removed as part of launch.

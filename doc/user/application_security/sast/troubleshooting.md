@@ -121,13 +121,22 @@ For Maven builds, add the following to your `pom.xml` file:
 
 ### Project couldn't be built
 
-If your job is failing at the build step with the message "Project couldn't be built", it's most likely because your job is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/blob/master/config/.gl-tool-versions).
+If your `spotbugs-sast` job is failing at the build step with the message "Project couldn't be built", it's most likely because:
 
-The solution is to use [pre-compilation](_index.md#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
+- Your project is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/blob/master/config/.gl-tool-versions).
+- Your build needs custom configurations or additional dependencies that the analyzer's automatic build process can't accommodate.
+
+The SpotBugs-based analyzer is only used for scanning Groovy code, but it may trigger in other cases, such as [when all SAST jobs run unexpectedly](#sast-jobs-run-unexpectedly).
+
+The solution depends on whether you need to scan Groovy code:
+
+- If you don't have any Groovy code, or don't need to scan it, you should [disable the SpotBugs analyzer](analyzers.md#disable-specific-default-analyzers).
+- If you do need to scan Groovy code, you should use [pre-compilation](_index.md#pre-compilation).
+  Pre-compilation avoids these failures by scanning an artifact you've already built in your pipeline, rather than trying to compile it in the `spotbugs-sast` job.
 
 ### Java out of memory error
 
-When a SAST job is running you might get an error that states `java.lang.OutOfMemoryError`. This issue occurs when Java has run out of memory.
+When a `spotbugs-sast` job is running you might get an error that states `java.lang.OutOfMemoryError`. This issue occurs when Java has run out of memory while scanning.
 
 To try to resolve this issue you can:
 

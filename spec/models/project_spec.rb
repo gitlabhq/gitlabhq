@@ -4162,6 +4162,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it { is_expected.to be_truthy }
     end
 
+    context 'when a relation import is in progress but it is stale' do
+      before do
+        create(:relation_import_tracker, :started, :stale, project: project)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when a relation import has finished' do
+      before do
+        create(:relation_import_tracker, :finished, :stale, project: project)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
     context 'when direct transfer is in progress' do
       before do
         create(:bulk_import_entity, :project_entity, :started, project: project)

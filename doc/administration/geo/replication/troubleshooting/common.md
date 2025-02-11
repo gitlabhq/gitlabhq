@@ -484,16 +484,6 @@ See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Loca
 
 This section documents common error messages reported in the **Admin** area on the web interface, and how to fix them.
 
-### Geo database configuration file is missing
-
-GitLab cannot find or doesn't have permission to access the `database_geo.yml` configuration file.
-
-In a Linux package installation, the file should be in `/var/opt/gitlab/gitlab-rails/etc`.
-If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
-
-If this path is mounted on a remote volume, ensure your volume configuration
-has the correct permissions.
-
 ### An existing tracking database cannot be reused
 
 Geo cannot reuse an existing tracking database.

@@ -1587,6 +1587,29 @@ SLES 15 SP6 for continued support.
 
 </div>
 
+<div class="deprecation " data-milestone="18.0">
+
+### Support for project build as part of SpotBugs scans
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- End of Support in GitLab <span class="milestone">18.0</span>
+- Removal in GitLab <span class="milestone">18.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/513409).
+
+</div>
+
+The SpotBugs [SAST analyzer](https://docs.gitlab.com/ee/user/application_security/sast/index.html#supported-languages-and-frameworks)
+can perform a build when the artifacts to be scanned aren't present. While this usually works well for simple projects, it can fail on more complex builds.
+
+From GitLab 18.0, to resolve SpotBugs analyzer build failures, you should:
+
+1. [Pre-compile](https://docs.gitlab.com/ee/user/application_security/sast/#pre-compilation) the project.
+1. Pass the artifacts you want to scan to the analyzer.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="18.0">
 
 ### The GitLab legacy requirement IID is deprecated in favor of work item IID
@@ -1854,6 +1877,29 @@ Support for using `git_data_dirs` to configure Gitaly storages for Linux package
 
 For migration instructions, see
 [Migrating from `git_data_dirs`](https://docs.gitlab.com/omnibus/settings/configuration.html#migrating-from-git_data_dirs).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### `kpt`-based `agentk` is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656).
+
+</div>
+
+In GitLab 18.0, we'll remove support for the `kpt`-based installation of the agent for Kubernetes.
+Instead, you should install the agent with one of the supported installation methods:
+
+- Helm (recommended)
+- GitLab CLI
+- Flux
+
+To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/ee/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
 
 </div>
 

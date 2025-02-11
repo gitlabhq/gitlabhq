@@ -1755,6 +1755,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_36cb404f9a02() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."organization_id" IS NULL THEN
+  SELECT "organization_id"
+  INTO NEW."organization_id"
+  FROM "bulk_import_entities"
+  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_388de55cd36c() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2475,6 +2491,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_7b21c87a1f91() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "bulk_import_entities"
+  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_7b378a0c402b() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2657,6 +2689,22 @@ IF NEW."snippet_project_id" IS NULL THEN
   INTO NEW."snippet_project_id"
   FROM "snippets"
   WHERE "snippets"."id" = NEW."snippet_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_8cb8ad095bf6() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "bulk_import_entities"
+  WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
 END IF;
 
 RETURN NEW;
@@ -9836,6 +9884,9 @@ CREATE TABLE bulk_import_failures (
     source_url text,
     source_title text,
     subrelation text,
+    project_id bigint,
+    namespace_id bigint,
+    organization_id bigint,
     CONSTRAINT check_053d65c7a4 CHECK ((char_length(pipeline_class) <= 255)),
     CONSTRAINT check_6eca8f972e CHECK ((char_length(exception_message) <= 255)),
     CONSTRAINT check_721a422375 CHECK ((char_length(pipeline_step) <= 255)),
@@ -31690,6 +31741,12 @@ CREATE INDEX index_bulk_import_failures_on_bulk_import_entity_id ON bulk_import_
 
 CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_failures USING btree (correlation_id_value);
 
+CREATE INDEX index_bulk_import_failures_on_namespace_id ON bulk_import_failures USING btree (namespace_id);
+
+CREATE INDEX index_bulk_import_failures_on_organization_id ON bulk_import_failures USING btree (organization_id);
+
+CREATE INDEX index_bulk_import_failures_on_project_id ON bulk_import_failures USING btree (project_id);
+
 CREATE INDEX index_bulk_import_trackers_on_namespace_id ON bulk_import_trackers USING btree (namespace_id);
 
 CREATE INDEX index_bulk_import_trackers_on_organization_id ON bulk_import_trackers USING btree (organization_id);
@@ -38146,6 +38203,8 @@ CREATE TRIGGER trigger_2dafd0d13605 BEFORE INSERT OR UPDATE ON pages_domain_acme
 
 CREATE TRIGGER trigger_30209d0fba3e BEFORE INSERT OR UPDATE ON alert_management_alert_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_30209d0fba3e();
 
+CREATE TRIGGER trigger_36cb404f9a02 BEFORE INSERT OR UPDATE ON bulk_import_failures FOR EACH ROW EXECUTE FUNCTION trigger_36cb404f9a02();
+
 CREATE TRIGGER trigger_388de55cd36c BEFORE INSERT OR UPDATE ON ci_builds_runner_session FOR EACH ROW EXECUTE FUNCTION trigger_388de55cd36c();
 
 CREATE TRIGGER trigger_38bfee591e40 BEFORE INSERT OR UPDATE ON dependency_proxy_blob_states FOR EACH ROW EXECUTE FUNCTION trigger_38bfee591e40();
@@ -38236,6 +38295,8 @@ CREATE TRIGGER trigger_7943cb549289 BEFORE INSERT OR UPDATE ON issuable_metric_i
 
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
 
+CREATE TRIGGER trigger_7b21c87a1f91 BEFORE INSERT OR UPDATE ON bulk_import_failures FOR EACH ROW EXECUTE FUNCTION trigger_7b21c87a1f91();
+
 CREATE TRIGGER trigger_7b378a0c402b BEFORE INSERT OR UPDATE ON issue_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_7b378a0c402b();
 
 CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validations FOR EACH ROW EXECUTE FUNCTION trigger_7de792ddbc05();
@@ -38265,6 +38326,8 @@ CREATE TRIGGER trigger_8ac78f164b2d BEFORE INSERT OR UPDATE ON design_management
 CREATE TRIGGER trigger_8b39d532224c BEFORE INSERT OR UPDATE ON ci_secure_file_states FOR EACH ROW EXECUTE FUNCTION trigger_8b39d532224c();
 
 CREATE TRIGGER trigger_8ba074736a77 BEFORE INSERT OR UPDATE ON snippet_repository_storage_moves FOR EACH ROW EXECUTE FUNCTION trigger_8ba074736a77();
+
+CREATE TRIGGER trigger_8cb8ad095bf6 BEFORE INSERT OR UPDATE ON bulk_import_failures FOR EACH ROW EXECUTE FUNCTION trigger_8cb8ad095bf6();
 
 CREATE TRIGGER trigger_8d002f38bdef BEFORE INSERT OR UPDATE ON packages_debian_group_components FOR EACH ROW EXECUTE FUNCTION trigger_8d002f38bdef();
 
@@ -39281,6 +39344,9 @@ ALTER TABLE ONLY deploy_tokens
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT fk_7092424b77 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY bulk_import_failures
+    ADD CONSTRAINT fk_70f30b02fd FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_7111b68cdb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -39499,6 +39565,9 @@ ALTER TABLE ONLY protected_branch_merge_access_levels
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_8a4948b668 FOREIGN KEY (start_date_sourcing_work_item_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY bulk_import_failures
+    ADD CONSTRAINT fk_8c0911e763 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_8c6f33cebe FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -40123,6 +40192,9 @@ ALTER TABLE ONLY personal_access_tokens
 
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_daa8cee94c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_failures
+    ADD CONSTRAINT fk_dad28985ee FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_topics
     ADD CONSTRAINT fk_db13576296 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

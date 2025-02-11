@@ -500,7 +500,7 @@ Automatic compilation can fail if:
 - your project requires custom build configurations.
 - you use language versions that aren't built into the analyzer.
 
-To resolve these issues, you can skip the analyzer's compilation step and directly provide artifacts from an earlier stage in your pipeline instead.
+To resolve these issues, you should skip the analyzer's compilation step and directly provide artifacts from an earlier stage in your pipeline instead.
 This strategy is called _pre-compilation_.
 
 To use pre-compilation:

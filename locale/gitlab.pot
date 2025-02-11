@@ -10768,6 +10768,9 @@ msgstr ""
 msgid "BulkImport|Import without projects"
 msgstr ""
 
+msgid "BulkImport|Importing projects is a %{docsLinkStart}beta%{docsLinkEnd} feature."
+msgstr ""
+
 msgid "BulkImport|Importing the group failed."
 msgstr ""
 
@@ -10826,9 +10829,6 @@ msgid "BulkImport|Placeholder reassignments completed successfully"
 msgstr ""
 
 msgid "BulkImport|Placeholder reassignments completed with errors"
-msgstr ""
-
-msgid "BulkImport|Please note: importing projects is a %{docsLinkStart}beta%{docsLinkEnd} feature."
 msgstr ""
 
 msgid "BulkImport|Please select a parent group."

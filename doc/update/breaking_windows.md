@@ -67,6 +67,7 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 | [`mergeTrainIndex` and `mergeTrainsCount` GraphQL fields deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/473759) | Low | Verify | Project |
 | [RunnersRegistrationTokenReset GraphQL mutation is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/505703) | High | Verify | Instance, group, project |
 | [Behavior change for Upcoming and Started milestone filters](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) | Low | Plan | Group, project |
+| [`kpt`-based `agentk` is deprecated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656) | Low | Deploy | Project |
 
 ## Window 3
 

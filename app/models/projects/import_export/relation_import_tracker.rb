@@ -10,6 +10,8 @@ module Projects
       validates :relation, presence: true
       validate :cannot_be_created_for_importing_project, on: :create
 
+      STALE_TIMEOUT = 24.hours
+
       enum :relation, { issues: 0, merge_requests: 1, ci_pipelines: 2, milestones: 3 }
 
       state_machine :status, initial: :created do
@@ -20,6 +22,7 @@ module Projects
 
         event :start do
           transition created: :started
+          transition started: :started
         end
 
         event :finish do
@@ -34,7 +37,7 @@ module Projects
       def stale?
         return false if finished? || failed?
 
-        created_at.before?(24.hours.ago)
+        created_at.before?(STALE_TIMEOUT.ago)
       end
 
       private

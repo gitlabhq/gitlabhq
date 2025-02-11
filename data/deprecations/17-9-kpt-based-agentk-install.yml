@@ -1,0 +1,23 @@
+- title: "`kpt`-based `agentk` is deprecated"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 2
+  reporter: nagyv-gitlab
+  stage: deploy
+  issue_url: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656
+  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  # https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=minor_manual&scope=project&identification_complexity=manual&additional_complexity=no&base_impact=major&pipeline_impact=none&compliance_impact=none&availability_impact=none&authorization_impact=none&API_impact=none
+  impact: low
+  scope: project
+  resolution_role: Maintainer
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    In GitLab 18.0, we'll remove support for the `kpt`-based installation of the agent for Kubernetes.
+    Instead, you should install the agent with one of the supported installation methods:
+
+    - Helm (recommended)
+    - GitLab CLI
+    - Flux
+
+    To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/ee/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.

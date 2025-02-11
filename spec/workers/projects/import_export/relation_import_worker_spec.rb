@@ -44,12 +44,6 @@ RSpec.describe Projects::ImportExport::RelationImportWorker, feature_category: :
       allow(worker).to receive(:process_import).and_raise(StandardError, 'import_forced_to_fail')
     end
 
-    it 'marks the tracker as failed' do
-      expect { perform }
-        .to raise_error(StandardError, 'import_forced_to_fail')
-        .and change { tracker.reload.failed? }.from(false).to(true)
-    end
-
     it 'creates a record of the failure' do
       expect { perform }
         .to raise_error(StandardError, 'import_forced_to_fail')
@@ -57,6 +51,19 @@ RSpec.describe Projects::ImportExport::RelationImportWorker, feature_category: :
 
       failure = tracker.project.import_failures.last
       expect(failure.exception_message).to eq('import_forced_to_fail')
+    end
+  end
+
+  context 'when tracker can not be started' do
+    before do
+      tracker.update!(status: 2)
+    end
+
+    it 'does not start the import process' do
+      expect(Import::Framework::Logger).to receive(:info).with(message: 'Cannot start tracker', tracker_id: tracker.id,
+        tracker_status: :finished)
+
+      perform
     end
   end
 
@@ -75,4 +82,30 @@ RSpec.describe Projects::ImportExport::RelationImportWorker, feature_category: :
   end
 
   it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
+
+  describe '.sidekiq_retries_exhausted' do
+    it 'marks the tracker as failed and creates a record of the failure' do
+      job = { 'args' => [tracker.id, user.id] }
+
+      expect { described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('Error!')) }.to change {
+        tracker.reload.failed?
+      }.from(false).to(true)
+
+      failure = tracker.project.import_failures.last
+      expect(failure.exception_message).to eq('Error!')
+    end
+  end
+
+  describe '.sidekiq_interruptions_exhausted' do
+    it 'marks the tracker as failed and creates a record of the failure' do
+      job = { 'args' => [tracker.id, user.id] }
+
+      expect { described_class.interruptions_exhausted_block.call(job) }.to change {
+        tracker.reload.failed?
+      }.from(false).to(true)
+
+      failure = tracker.project.import_failures.last
+      expect(failure.exception_message).to eq('Import process reached the maximum number of interruptions')
+    end
+  end
 end

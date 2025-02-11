@@ -260,3 +260,21 @@ resources:
 | Small            | 2 vCPUs, 8 GB RAM | Single instance        | 40                              | Fixed deployment; no autoscaling.           |
 | Medium           | AWS t3.2xlarge    | Single instance     | 160                             | HPA based on CPU or latency thresholds.     |
 | Large            | Multiple t3.2xlarge | Clustered instances   | 160 per instance               | HPA + node autoscaling for high demand.     |
+
+## Support multiple GitLab instances
+
+You can deploy a single AI gateway to support multiple GitLab instances, or deploy separate AI gateways per instance or geographic region. To help decide which is appropriate, consider:
+
+- Expected traffic of approximately seven requests per second per 1,000 billable users.
+- Resource requirements based on total concurrent requests across all instances.
+- Best practice authentication configuration for each GitLab instance.
+
+## Co-locate your AI gateway and instance
+
+The AI gateway is available in multiple regions globally to ensure optimal performance for users regardless of location, through: 
+
+- Improved response times for Duo features.
+- Reduced latency for geographically distributed users.
+- Data sovereignty requirements compliance.
+
+You should locate your AI gateway in the same geographic region as your GitLab instance to help provide a frictionless developer experience, particularly for latency-sensitive features like Code Suggestions.
