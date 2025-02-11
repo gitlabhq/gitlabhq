@@ -8,7 +8,7 @@ module IncidentManagement
       attr_reader :incident
 
       def allowed?
-        current_user&.can?(:admin_issue, project)
+        current_user&.can?(:admin_issue, incident)
       end
 
       def success

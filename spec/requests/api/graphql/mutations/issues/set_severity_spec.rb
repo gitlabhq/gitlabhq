@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe 'Setting severity level of an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:incident) { create(:incident) }
+  let_it_be(:project) { incident.project }
+  let_it_be(:planner) { create(:user, planner_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
 
-  let(:incident) { create(:incident) }
-  let(:project) { incident.project }
   let(:input) { { severity: 'CRITICAL' } }
 
   let(:mutation) do
@@ -36,6 +37,8 @@ RSpec.describe 'Setting severity level of an incident', feature_category: :incid
   end
 
   context 'when the user is not allowed to update the incident' do
+    let(:user) { planner }
+
     it 'returns an error' do
       error = Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
       post_graphql_mutation(mutation, current_user: user)
@@ -46,9 +49,7 @@ RSpec.describe 'Setting severity level of an incident', feature_category: :incid
   end
 
   context 'when the user is allowed to update the incident' do
-    before do
-      project.add_developer(user)
-    end
+    let(:user) { reporter }
 
     it 'updates the issue' do
       post_graphql_mutation(mutation, current_user: user)

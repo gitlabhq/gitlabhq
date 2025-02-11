@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:planner) { create(:user, planner_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [user]) }
 
@@ -28,6 +31,8 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
   end
 
   describe 'current_user' do
+    let_it_be(:incident) { create(:issue, :incident, project: project, assignees: [user]) }
+
     it 'contains attributes related to the current user' do
       expect(entity[:current_user]).to include(
         :id, :name, :username, :state, :avatar_url, :web_url, :todo,
@@ -43,11 +48,7 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
       end
 
       context 'for an incident issue' do
-        before do
-          issue.update!(
-            work_item_type: WorkItems::Type.default_by_type(:incident)
-          )
-        end
+        let_it_be(:issue) { incident }
 
         it 'is present and true' do
           expect(entity[:current_user][:can_update_escalation_status]).to be(true)
@@ -59,6 +60,46 @@ RSpec.describe IssueSidebarBasicEntity, feature_category: :team_planning do
           it 'is present and false' do
             expect(entity[:current_user]).to have_key(:can_update_escalation_status)
             expect(entity[:current_user][:can_update_escalation_status]).to be(false)
+          end
+        end
+      end
+    end
+
+    describe 'can_edit' do
+      context 'for a standard issue' do
+        context 'with edit permissions' do
+          let(:user) { planner }
+
+          it 'is present and true' do
+            expect(entity[:current_user][:can_edit]).to be(true)
+          end
+        end
+
+        context 'without edit permissions' do
+          let(:user) { guest }
+
+          it 'is present and false' do
+            expect(entity[:current_user][:can_edit]).to be(false)
+          end
+        end
+      end
+
+      context 'for a incident issue' do
+        let_it_be(:issue) { incident }
+
+        context 'with edit permissions' do
+          let(:user) { reporter }
+
+          it 'is present and true' do
+            expect(entity[:current_user][:can_edit]).to be(true)
+          end
+        end
+
+        context 'without edit permissions' do
+          let(:user) { planner }
+
+          it 'is present and false' do
+            expect(entity[:current_user][:can_edit]).to be(false)
           end
         end
       end

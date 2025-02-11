@@ -5,8 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Unlink alert from an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:planner) { create(:user, planner_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be(:another_project) { create(:project) }
   let_it_be(:internal_alert) { create(:alert_management_alert, project: project) }
   let_it_be(:external_alert) { create(:alert_management_alert, project: another_project) }
@@ -48,7 +50,7 @@ RSpec.describe 'Unlink alert from an incident', feature_category: :incident_mana
 
     it 'returns an error' do
       error = Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR
-      post_graphql_mutation(mutation, current_user: user)
+      post_graphql_mutation(mutation, current_user: planner)
 
       expect(response).to have_gitlab_http_status(:success)
       expect(graphql_errors).to include(a_hash_including('message' => error))
@@ -56,13 +58,9 @@ RSpec.describe 'Unlink alert from an incident', feature_category: :incident_mana
   end
 
   context 'when the user is allowed to update the incident' do
-    before_all do
-      project.add_developer(user)
-    end
-
     shared_examples 'unlinking' do
       it 'unlinks the alert from the incident', :aggregate_failures do
-        post_graphql_mutation(mutation, current_user: user)
+        post_graphql_mutation(mutation, current_user: current_user)
 
         expect(response).to have_gitlab_http_status(:success)
         expected_response = visible_remainded_alerts.map { |a| { 'id' => a.to_global_id.to_s } }
@@ -73,6 +71,7 @@ RSpec.describe 'Unlink alert from an incident', feature_category: :incident_mana
     end
 
     context 'when the alert is internal' do
+      let(:current_user) { reporter }
       let(:alert_to_unlink) { internal_alert }
       let(:actual_remainded_alerts) { [external_alert] }
       let(:visible_remainded_alerts) { [] } # The user cannot fetch external alerts without reading permissions
@@ -81,6 +80,7 @@ RSpec.describe 'Unlink alert from an incident', feature_category: :incident_mana
     end
 
     context 'when the alert is external' do
+      let(:current_user) { developer }
       let(:alert_to_unlink) { external_alert }
       let(:actual_remainded_alerts) { [internal_alert] }
       let(:visible_remainded_alerts) { [internal_alert] }
