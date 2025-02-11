@@ -436,7 +436,7 @@ For the status of the ongoing development for CommonMark and GitLab Flavored Mar
 
 GitLab tracks wiki creation, deletion, and update events. These events are displayed on the following pages:
 
-- [User profile](../../profile/index.md#access-your-user-profile).
+- [User profile](../../profile/_index.md#access-your-user-profile).
 - Activity pages, depending on the type of wiki:
   - [Group activity](../../group/manage.md#view-group-activity).
   - [Project activity](../working_with_projects.md#view-project-activity).

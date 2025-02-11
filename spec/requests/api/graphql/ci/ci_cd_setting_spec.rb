@@ -33,7 +33,7 @@ RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integratio
 
     it_behaves_like 'a working graphql query'
 
-    specify { expect(settings_data).to be nil }
+    specify { expect(settings_data).to be_nil }
   end
 
   context 'with project permissions' do

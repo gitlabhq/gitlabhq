@@ -175,7 +175,7 @@ You can change how long users can remain signed in without activity.
 
 If [Remember me](#turn-remember-me-on-or-off) is enabled, users' sessions can remain active for an indefinite period of time.
 
-For details, see [cookies used for sign-in](../../user/profile/index.md#cookies-used-for-sign-in).
+For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies-used-for-sign-in).
 
 ### Turn **Remember me** on or off
 
@@ -508,7 +508,7 @@ When you turn off this setting:
   is also turned off.
 
 When you re-enable this setting, the user's
-[previously set profile visibility](../../user/profile/index.md#make-your-user-profile-page-private) is selected.
+[previously set profile visibility](../../user/profile/_index.md#make-your-user-profile-page-private) is selected.
 
 ## Set profiles of new users to private by default
 

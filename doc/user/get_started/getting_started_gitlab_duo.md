@@ -29,7 +29,7 @@ For more information, see:
 
 - [Assign seats to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - [Features included in Duo Pro and Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-- [List of GitLab Duo features and their language models](../gitlab_duo/index.md).
+- [List of GitLab Duo features and their language models](../gitlab_duo/_index.md).
 - [Self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
@@ -43,7 +43,7 @@ Try asking Chat a question or type `/` to see a list of slash commands.
 
 For more information, see:
 
-- [GitLab Duo Chat](../gitlab_duo_chat/index.md).
+- [GitLab Duo Chat](../gitlab_duo_chat/_index.md).
 
 ## Step 3: Try other GitLab Duo features
 
@@ -59,7 +59,7 @@ GitLab Duo summarizes the contents of the issue.
 
 For more information, see:
 
-- [The complete list of GitLab Duo features](../gitlab_duo/index.md).
+- [The complete list of GitLab Duo features](../gitlab_duo/_index.md).
 - [Turn on GitLab Duo features that are still in development](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 ## Step 4: Prepare to use GitLab Duo in your IDE

@@ -39,7 +39,7 @@ To revoke an active session:
 NOTE:
 When any session is revoked all **Remember me** tokens for all
 devices are revoked. For details about **Remember me**, see
-[cookies used for sign-in](index.md#cookies-used-for-sign-in).
+[cookies used for sign-in](_index.md#cookies-used-for-sign-in).
 
 <!-- ## Troubleshooting
 

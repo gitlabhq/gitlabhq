@@ -65,6 +65,11 @@ export default {
       required: false,
       default: 0,
     },
+    squashOption: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   computed: {
     isWildcard() {
@@ -99,7 +104,7 @@ export default {
     },
     squashSettingText() {
       return sprintf(this.$options.i18n.squashSetting, {
-        setting: this.branchProtection?.squashSetting,
+        setting: this.squashOption?.option,
       });
     },
     mergeAccessLevels() {
@@ -139,7 +144,7 @@ export default {
       if (this.pushAccessLevels.total > 0) {
         approvalDetails.push(this.pushAccessLevelsText);
       }
-      if (this.glFeatures.branchRuleSquashSettings && this.branchProtection?.squashSetting) {
+      if (this.glFeatures.branchRuleSquashSettings && this.squashOption) {
         approvalDetails.push(this.squashSettingText);
       }
       return approvalDetails;

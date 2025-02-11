@@ -55,7 +55,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-This configuration option sets the email hostname for [private commit emails](../../user/profile/index.md#use-an-automatically-generated-private-commit-email).
+This configuration option sets the email hostname for [private commit emails](../../user/profile/_index.md#use-an-automatically-generated-private-commit-email).
  By default it is set to `users.noreply.YOUR_CONFIGURED_HOSTNAME`.
 
 To change the hostname used in private commit emails:

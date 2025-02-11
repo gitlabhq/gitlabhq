@@ -51,7 +51,7 @@ RSpec.describe 'Snoozing a todo', feature_category: :notifications do
     it 'does not mutate the todo' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(other_user_todo.reload.snoozed_until).to be(nil)
+      expect(other_user_todo.reload.snoozed_until).to be_nil
     end
   end
 

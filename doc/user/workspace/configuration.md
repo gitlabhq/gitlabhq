@@ -14,7 +14,7 @@ DETAILS:
 > - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
-You can use [workspaces](index.md) to create and manage isolated development environments for your GitLab projects.
+You can use [workspaces](_index.md) to create and manage isolated development environments for your GitLab projects.
 Each workspace includes its own set of dependencies, libraries, and tools,
 which you can customize to meet the specific needs of each project.
 
@@ -61,8 +61,8 @@ To create a workspace:
    GitLab uses to create the workspace.
 1. From the **Devfile** dropdown list, select one of the following:
 
-   - [GitLab default devfile](index.md#gitlab-default-devfile).
-   - [Custom devfile](index.md#custom-devfile).
+   - [GitLab default devfile](_index.md#gitlab-default-devfile).
+   - [Custom devfile](_index.md#custom-devfile).
 
 1. In **Variables**, enter the keys and values of the environment variables you want to inject into the workspace.
    To add a new variable, select **Add variable**.
@@ -89,9 +89,9 @@ For more information, see [`image_pull_secrets`](settings.md#image_pull_secrets)
 
 Prerequisites:
 
-- Ensure the container images used in the devfile support [arbitrary user IDs](index.md#arbitrary-user-ids).
+- Ensure the container images used in the devfile support [arbitrary user IDs](_index.md#arbitrary-user-ids).
   Sudo access for a workspace does not mean that the container image used
-  in a [devfile](index.md#devfile) can run with a user ID of `0`.
+  in a [devfile](_index.md#devfile) can run with a user ID of `0`.
 
 A development environment often requires sudo permissions to
 install, configure, and use dependencies during runtime.
@@ -152,7 +152,7 @@ To build and run containers in a workspace, see [configure sudo access for a wor
 
 Prerequisites:
 
-- You must enable SSH access for the images specified in your [devfile](index.md#devfile).
+- You must enable SSH access for the images specified in your [devfile](_index.md#devfile).
   For more information, see [update your workspace container image](#update-your-workspace-container-image).
 - You must configure a TCP load balancer that points to the GitLab workspaces proxy.
   For more information, see [update your DNS records](set_up_gitlab_agent_and_proxies.md#update-your-dns-records).

@@ -959,7 +959,7 @@ describe('Settings Panel', () => {
 
       expect(findDuoSettings().exists()).toBe(true);
       expect(findDuoSettings().props()).toEqual({
-        helpPath: '/help/user/duo_amazon_q/index.md',
+        helpPath: '/help/user/duo_amazon_q/_index.md',
         helpText: 'This project can use Amazon Q.',
         label: 'Amazon Q',
         locked: false,

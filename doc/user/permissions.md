@@ -399,7 +399,7 @@ Project permissions for [user management](project/members/_index.md).
 
 ### GitLab Duo
 
-Project permissions for [GitLab Duo](gitlab_duo/index.md):
+Project permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 | Action                                                                                 | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | -------------------------------------------------------------------------------------- | ---------- | ----- | ------- | -------- | --------- | ---------- | ----- | ----- |
@@ -468,7 +468,7 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 
 ### GitLab Duo group permissions
 
-Group permissions for [GitLab Duo](gitlab_duo/index.md):
+Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 | Action                                                                                                    | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |

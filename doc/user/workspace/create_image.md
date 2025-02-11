@@ -7,7 +7,7 @@ title: 'Tutorial: Create a custom workspace image that supports arbitrary user I
 ---
 
 In this tutorial, you'll learn how to create a custom workspace image that supports arbitrary user IDs.
-You can then use this custom image with any [workspace](index.md) you create in GitLab.
+You can then use this custom image with any [workspace](_index.md) you create in GitLab.
 
 To create a custom workspace image that supports arbitrary user IDs, you'll:
 
@@ -107,7 +107,7 @@ components:
       image: registry.gitlab.com/your-namespace/my-gitlab-workspace:latest
 ```
 
-You're all set! You can now use this custom image with any [workspace](index.md) you create in GitLab.
+You're all set! You can now use this custom image with any [workspace](_index.md) you create in GitLab.
 
 ## Related topics
 

@@ -187,7 +187,7 @@
     - c.with_description do
       = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/_index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_body do
       .form-group
         = f.gitlab_ui_checkbox_component :enabled_following,

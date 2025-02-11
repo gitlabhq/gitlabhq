@@ -167,7 +167,7 @@ Set the limit to `0` to disable it.
 ### Search rate limit
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) in GitLab 15.9 to include issue, merge request, and epic searches in the rate limit.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/index.md#disable-global-search-scopes) for authenticated requests.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/_index.md#disable-global-search-scopes) for authenticated requests.
 
 This setting limits search requests as follows:
 

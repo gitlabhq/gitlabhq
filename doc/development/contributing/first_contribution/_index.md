@@ -28,7 +28,7 @@ You can follow this tutorial to familiarize yourself with the contribution proce
 1. We recommend you join the [GitLab Discord server](https://discord.com/invite/gitlab), where GitLab team
    members and the wider community are ready and waiting to answer your questions and offer support
    for making contributions.
-1. Once your community forks access request is approved you can start using [GitLab Duo](../../../user/gitlab_duo/index.md),
+1. Once your community forks access request is approved you can start using [GitLab Duo](../../../user/gitlab_duo/_index.md),
    our AI-powered features including Code Suggestions, Chat, Root Cause Analysis, and more.
 
 ## Choose how you want to contribute

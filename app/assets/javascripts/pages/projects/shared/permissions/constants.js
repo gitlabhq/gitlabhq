@@ -52,7 +52,7 @@ export const modelExperimentsHelpPath = helpPagePath(
 export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/_index.md');
 
 export const duoHelpPath = helpPagePath('user/ai_features');
-export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/index.md');
+export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/_index.md');
 
 export const pipelineExecutionPoliciesHelpPath = helpPagePath(
   'user/application_security/policies/pipeline_execution_policies',

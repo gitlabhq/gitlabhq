@@ -264,6 +264,11 @@
     "VulnerabilityLocationSast",
     "VulnerabilityLocationSecretDetection"
   ],
+  "WorkItemCustomFieldValue": [
+    "WorkItemNumberFieldValue",
+    "WorkItemSelectFieldValue",
+    "WorkItemTextFieldValue"
+  ],
   "WorkItemWidget": [
     "WorkItemWidgetAssignees",
     "WorkItemWidgetAwardEmoji",

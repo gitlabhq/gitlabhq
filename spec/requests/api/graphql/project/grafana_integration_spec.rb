@@ -35,7 +35,7 @@ RSpec.describe 'Getting Grafana Integration', feature_category: :observability d
 
       it_behaves_like 'a working graphql query'
 
-      specify { expect(integration_data).to be nil }
+      specify { expect(integration_data).to be_nil }
     end
 
     context 'with project admin permissions' do

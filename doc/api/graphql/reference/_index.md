@@ -38846,6 +38846,15 @@ Returns [`String!`](#string).
 | ---- | ---- | ----------- |
 | <a id="workitemlinkedresourceurl"></a>`url` | [`String!`](#string) | URL of resource. |
 
+### `WorkItemNumberFieldValue`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemnumberfieldvaluecustomfield"></a>`customField` | [`CustomField!`](#customfield) | Custom field associated with the custom field value. |
+| <a id="workitemnumberfieldvaluevalue"></a>`value` | [`Float`](#float) | Number value of the custom field. |
+
 ### `WorkItemPermissions`
 
 Check permissions for the current user on a work item.
@@ -38877,6 +38886,15 @@ Check permissions for the current user on a work item.
 | <a id="workitemrelatedbranchname"></a>`name` | [`String!`](#string) | Name of the branch. |
 | <a id="workitemrelatedbranchpipelinestatus"></a>`pipelineStatus` | [`DetailedStatus`](#detailedstatus) | Status of pipeline for the branch. |
 
+### `WorkItemSelectFieldValue`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemselectfieldvaluecustomfield"></a>`customField` | [`CustomField!`](#customfield) | Custom field associated with the custom field value. |
+| <a id="workitemselectfieldvalueselectedoptions"></a>`selectedOptions` | [`[CustomFieldSelectOption!]`](#customfieldselectoption) | Selected options of the custom field. |
+
 ### `WorkItemStateCountsType`
 
 Represents total number of work items for the represented states.
@@ -38888,6 +38906,15 @@ Represents total number of work items for the represented states.
 | <a id="workitemstatecountstypeall"></a>`all` | [`Int`](#int) | Number of work items for the project or group. |
 | <a id="workitemstatecountstypeclosed"></a>`closed` | [`Int`](#int) | Number of work items with state CLOSED for the project or group. |
 | <a id="workitemstatecountstypeopened"></a>`opened` | [`Int`](#int) | Number of work items with state OPENED for the project or group. |
+
+### `WorkItemTextFieldValue`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtextfieldvaluecustomfield"></a>`customField` | [`CustomField!`](#customfield) | Custom field associated with the custom field value. |
+| <a id="workitemtextfieldvaluevalue"></a>`value` | [`String`](#string) | Text value of the custom field. |
 
 ### `WorkItemTimelog`
 
@@ -39022,6 +39049,7 @@ Represents a custom fields widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgetcustomfieldscustomfieldvalues"></a>`customFieldValues` **{warning-solid}** | [`[WorkItemCustomFieldValue!]`](#workitemcustomfieldvalue) | **Introduced** in GitLab 17.9. **Status**: Experiment. Custom field values associated to the work item. |
 | <a id="workitemwidgetcustomfieldstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetCustomStatus`
@@ -45604,6 +45632,20 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="useruserachievementsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Indicates whether or not achievements hidden from the profile should be included in the result. |
+
+#### `WorkItemCustomFieldValue`
+
+Implementations:
+
+- [`WorkItemNumberFieldValue`](#workitemnumberfieldvalue)
+- [`WorkItemSelectFieldValue`](#workitemselectfieldvalue)
+- [`WorkItemTextFieldValue`](#workitemtextfieldvalue)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemcustomfieldvaluecustomfield"></a>`customField` | [`CustomField!`](#customfield) | Custom field associated with the custom field value. |
 
 #### `WorkItemWidget`
 

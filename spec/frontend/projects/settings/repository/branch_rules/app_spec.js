@@ -99,13 +99,21 @@ describe('Branch rules app', () => {
 
     expect(findAllBranchRules().length).toBe(nodes.length);
 
-    expect(findAllBranchRules().at(0).props('name')).toBe(nodes[0].name);
+    expect(findAllBranchRules().at(0).props()).toEqual(
+      expect.objectContaining({
+        name: nodes[0].name,
+        branchProtection: nodes[0].branchProtection,
+        squashOption: nodes[0].squashOption,
+      }),
+    );
 
-    expect(findAllBranchRules().at(0).props('branchProtection')).toEqual(nodes[0].branchProtection);
-
-    expect(findAllBranchRules().at(1).props('name')).toBe(nodes[1].name);
-
-    expect(findAllBranchRules().at(1).props('branchProtection')).toEqual(nodes[1].branchProtection);
+    expect(findAllBranchRules().at(1).props()).toEqual(
+      expect.objectContaining({
+        name: nodes[1].name,
+        branchProtection: nodes[1].branchProtection,
+        squashOption: nodes[1].squashOption,
+      }),
+    );
   });
 
   it('displays an error if branch rules query fails', async () => {

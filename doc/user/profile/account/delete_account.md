@@ -57,11 +57,11 @@ you cannot create a new account with the same email address or username.
 
 To create a new account with the same email address, before you delete your account:
 
-1. [Add a secondary email address](../index.md#add-emails-to-your-user-profile)
+1. [Add a secondary email address](../_index.md#add-emails-to-your-user-profile)
    to your account.
-1. [Change your primary email](../index.md#change-your-primary-email) to this
+1. [Change your primary email](../_index.md#change-your-primary-email) to this
    new secondary email address.
-1. [Remove the now-secondary email address](../index.md#delete-email-addresses-from-your-user-profile)
+1. [Remove the now-secondary email address](../_index.md#delete-email-addresses-from-your-user-profile)
    from your account.
 1. [Delete your own account](#delete-your-own-account).
 

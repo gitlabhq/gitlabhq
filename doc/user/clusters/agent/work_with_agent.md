@@ -215,4 +215,4 @@ To remove an agent from the UI:
 
 ## Related topics
 
-- [Manage an agent's workspaces](../../workspace/index.md#manage-workspaces-at-the-agent-level)
+- [Manage an agent's workspaces](../../workspace/_index.md#manage-workspaces-at-the-agent-level)

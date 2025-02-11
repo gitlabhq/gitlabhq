@@ -241,7 +241,7 @@ KAS proxies Kubernetes API requests to the GitLab agent with either:
 
 To authenticate with user credentials, Rails sets a cookie for the GitLab frontend.
 This cookie is called `_gitlab_kas` and it contains an encrypted
-session ID, like the [`_gitlab_session` cookie](../../user/profile/index.md#cookies-used-for-sign-in).
+session ID, like the [`_gitlab_session` cookie](../../user/profile/_index.md#cookies-used-for-sign-in).
 The `_gitlab_kas` cookie must be sent to the KAS proxy endpoint with every request
 to authenticate and authorize the user.
 

@@ -60,7 +60,7 @@ RSpec.describe 'Setting Due Date of an issue', feature_category: :team_planning 
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response['issue']['dueDate']).to be nil
+      expect(mutation_response['issue']['dueDate']).to be_nil
     end
   end
 

@@ -29,7 +29,7 @@
   %div{ class: ["gl-self-start", is_blob_page ? "gl-block": "gl-hidden sm:gl-block"] }
     = author_avatar(commit, size: 32, has_tooltip: false, css_class: 'gl-inline-block')
 
-  .commit-detail.flex-list.gl-flex.gl-justify-between.gl-items-start.gl-grow.gl-min-w-0.gl-mb-3
+  .commit-detail.flex-list.gl-flex.gl-justify-between.gl-items-start.gl-grow.gl-min-w-0
     .commit-content.gl-self-center{ data: { testid: 'commit-content' } }
       - if is_blob_page
         .gl-flex.sm:gl-hidden.gl-gap-3.gl-items-center

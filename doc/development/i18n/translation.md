@@ -58,7 +58,7 @@ When you translate a string, you can go to the relevant commit or merge request 
 ![Crowdin Editor showing a string with a link for more translation context](img/crowdin-editor-string-context.png)
 
 When you select the link, code search results appear for that string.
-You can [view Git blame from code search](../../user/search/index.md#view-git-blame-from-code-search)
+You can [view Git blame from code search](../../user/search/_index.md#view-git-blame-from-code-search)
 to see the commits that added the string.
 For a list of relevant merge requests, select a commit.
 

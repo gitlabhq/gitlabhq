@@ -108,7 +108,7 @@ Before you can use Workflow:
    - You must have at least the Developer role for the project.
    - Your project must belong to a [group namespace](../namespace/_index.md)
      with an **Ultimate** subscription and [experimental features turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-   - The project must have [GitLab Duo turned on](../gitlab_duo/index.md).
+   - The project must have [GitLab Duo turned on](../gitlab_duo/_index.md).
 1. [Install Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
 1. [Install and set up](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup) the GitLab Workflow extension for VS Code.
    Minimum version 5.16.0.

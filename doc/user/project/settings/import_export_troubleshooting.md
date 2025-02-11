@@ -42,7 +42,7 @@ Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and
 
 If users aren't imported with imported projects, see the [preserving user contributions](import_export.md#preserving-user-contributions) requirements.
 
-A common reason for missing users is that the [public email setting](../../profile/index.md#set-your-public-email) isn't configured for users.
+A common reason for missing users is that the [public email setting](../../profile/_index.md#set-your-public-email) isn't configured for users.
 To resolve this issue, ask users to configure this setting using the GitLab UI.
 
 If there are too many users for manual configuration to be feasible,

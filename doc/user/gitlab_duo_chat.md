@@ -1,11 +1,11 @@
 ---
-redirect_to: '../user/gitlab_duo_chat/index.md'
+redirect_to: '../user/gitlab_duo_chat/_index.md'
 remove_date: '2025-06-11'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](gitlab_duo_chat/index.md).
+This document was moved to [another location](gitlab_duo_chat/_index.md).
 
 <!-- This redirect file can be deleted after <2025-06-11>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

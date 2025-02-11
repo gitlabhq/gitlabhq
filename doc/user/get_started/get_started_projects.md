@@ -89,7 +89,7 @@ like build status, project health, test coverage, or version number.
 For more information, see:
 
 - [Reserved project and group names](../reserved_names.md)
-- [Search](../search/index.md)
+- [Search](../search/_index.md)
 - [Badges](../project/badges.md)
 - [Project topics](../project/project_topics.md)
 

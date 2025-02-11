@@ -23,7 +23,7 @@ Use the Web Editor to:
 - [Lock a file or a directory](../file_lock.md#lock-a-file-or-a-directory).
 - Contribute to projects without setting up Git locally.
 
-GitLab uses your [primary email address](../../profile/index.md#change-the-email-displayed-on-your-commits)
+GitLab uses your [primary email address](../../profile/_index.md#change-the-email-displayed-on-your-commits)
 for Web Editor commits.
 
 For changes to multiple files, use the [Web IDE](../web_ide/_index.md).

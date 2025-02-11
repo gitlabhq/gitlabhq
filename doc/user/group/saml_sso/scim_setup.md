@@ -267,7 +267,7 @@ existing users when synchronization is active.
 
 To link your SCIM and SAML identities:
 
-1. Update the [primary email](../../profile/index.md#change-your-primary-email) address in your GitLab.com user account
+1. Update the [primary email](../../profile/_index.md#change-your-primary-email) address in your GitLab.com user account
    to match the user profile email address in your identity provider.
 1. [Link your SAML identity](_index.md#link-saml-to-your-existing-gitlabcom-account).
 

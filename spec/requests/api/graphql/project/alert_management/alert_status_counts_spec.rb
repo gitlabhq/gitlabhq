@@ -37,7 +37,7 @@ RSpec.describe 'getting Alert Management Alert counts by status', feature_catego
       end
 
       it_behaves_like 'a working graphql query'
-      it { expect(alert_counts).to be nil }
+      it { expect(alert_counts).to be_nil }
     end
 
     context 'with project permissions' do

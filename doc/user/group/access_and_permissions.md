@@ -135,7 +135,7 @@ To restrict group access by domain:
 1. In the **Restrict membership by email** field, enter the domain names to allow.
 1. Select **Save changes**.
 
-The next time you attempt to add a user to the group, their [primary email](../profile/index.md#change-your-primary-email)
+The next time you attempt to add a user to the group, their [primary email](../profile/_index.md#change-your-primary-email)
 must match one of the allowed domains.
 
 You cannot restrict the most popular public email domains, such as:

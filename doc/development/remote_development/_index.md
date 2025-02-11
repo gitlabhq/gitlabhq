@@ -9,7 +9,7 @@ title: Remote Development developer guidelines
 
 ## Workspaces feature developer documentation
 
-Currently, the majority of the developer documentation for the [Remote Development Workspaces feature](../../user/workspace/index.md)
+Currently, the majority of the developer documentation for the [Remote Development Workspaces feature](../../user/workspace/_index.md)
 is located in the separate [`gitlab-remote-development-docs` project](https://gitlab.com/gitlab-org/remote-development/gitlab-remote-development-docs/-/blob/main/README.md).
 
 Parts of that documentation will eventually be migrated here.

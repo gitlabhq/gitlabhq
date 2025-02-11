@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 NOTE:
-Users can set their [time zone in their profile](../user/profile/index.md#set-your-time-zone).
+Users can set their [time zone in their profile](../user/profile/_index.md#set-your-time-zone).
 New users do not have a default time zone and must
 explicitly set it before it displays on their profile.
 On GitLab.com, the default time zone is UTC.

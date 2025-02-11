@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use this API to interact with email addresses for user accounts. For more information, see [User account](../user/profile/index.md).
+Use this API to interact with email addresses for user accounts. For more information, see [User account](../user/profile/_index.md).
 
 ## List all email addresses
 

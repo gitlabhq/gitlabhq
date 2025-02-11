@@ -212,7 +212,7 @@ If you have the Owner role for a top-level group, you can enable the
 [extension marketplace](../project/web_ide/_index.md#extension-marketplace) for enterprise users.
 
 To enable the extension marketplace for the
-[Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/index.md):
+[Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.

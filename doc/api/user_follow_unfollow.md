@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Use this API to perform follower actions for user accounts. For more information, see [Follow users](../user/profile/index.md#follow-users).
+Use this API to perform follower actions for user accounts. For more information, see [Follow users](../user/profile/_index.md#follow-users).
 
 ## Follow a user
 

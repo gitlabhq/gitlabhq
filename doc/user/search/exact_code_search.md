@@ -46,7 +46,7 @@ This feature is available for testing, but not ready for production use.
 
 With the Zoekt search API, you can use the [search API](../../api/search.md) for exact code search.
 If you want to use [advanced search](advanced_search.md) or basic search instead, see
-[specify a search type](index.md#specify-a-search-type).
+[specify a search type](_index.md#specify-a-search-type).
 
 By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
 To request access to this feature, contact GitLab.

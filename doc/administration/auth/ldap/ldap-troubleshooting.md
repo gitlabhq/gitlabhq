@@ -226,7 +226,7 @@ This shows you which user has this email address. One of two steps must be taken
   associates this profile to the LDAP identity.
 
 The user can do either of these steps
-[in their profile](../../../user/profile/index.md#access-your-user-profile) or an administrator can do it.
+[in their profile](../../../user/profile/_index.md#access-your-user-profile) or an administrator can do it.
 
 #### Projects limit errors
 

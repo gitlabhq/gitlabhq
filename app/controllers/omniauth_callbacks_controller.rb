@@ -298,7 +298,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_path = new_user_registration_path
       doc_pair = tag_pair(view_context.link_to(
         '',
-        help_page_path('user/profile/index.md', anchor: 'sign-in-services')),
+        help_page_path('user/profile/_index.md', anchor: 'sign-in-services')),
         :doc_start,
         :doc_end
       )

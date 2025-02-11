@@ -21,7 +21,7 @@ Explore the different areas of the documentation:
 
 |                         |                         |
 |:------------------------|:------------------------|
-| [**Use GitLab**](user/index.md)<br>Get started with GitLab features and functionality. | [**Administer GitLab**](administration/_index.md)<br/>Administer GitLab Self-Managed. |
+| [**Use GitLab**](user/_index.md)<br>Get started with GitLab features and functionality. | [**Administer GitLab**](administration/_index.md)<br/>Administer GitLab Self-Managed. |
 | [**New to Git and GitLab?**](tutorials/_index.md)<br/>Start learning about Git and GitLab. | [**Contribute to GitLab development**](#contribute-to-gitlab)<br/>Create new GitLab functionality and documentation. |
 | [**Coming to GitLab from another platform?**](#coming-to-gitlab-from-another-platform)<br/>Learn how to move to GitLab. | [**Build an integration with GitLab**](#build-an-integration-with-gitlab)<br/>Integrate with Jira and other common applications. |
 | [**Choose a subscription**](subscriptions/_index.md)<br/>Determine which subscription tier makes sense for you. | [**Install GitLab**](install/_index.md)<br/>Install GitLab on different platforms. |
@@ -48,9 +48,9 @@ Learn about GitLab account management:
 
 | Topic                                                      | Description |
 |:-----------------------------------------------------------|:------------|
-| [User account](user/profile/index.md)                      | Manage your account. |
+| [User account](user/profile/_index.md)                      | Manage your account. |
 | [Authentication](administration/auth/_index.md)           | Account security with two-factor authentication, set up your SSH keys, and deploy keys for secure access to your projects. |
-| [User settings](user/profile/index.md#access-your-user-settings) | Manage your user settings, two factor authentication, and more. |
+| [User settings](user/profile/_index.md#access-your-user-settings) | Manage your user settings, two factor authentication, and more. |
 | [User permissions](user/permissions.md)                    | Learn what each role in a project can do. |
 
 ## Coming to GitLab from another platform

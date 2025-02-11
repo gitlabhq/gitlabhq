@@ -29,7 +29,7 @@ The Web IDE, however, lacks a native runtime environment where you could compile
 DETAILS:
 **Tier:** Premium, Ultimate
 
-You can use [workspaces](../../workspace/index.md) to create a fully featured development environment directly from GitLab.
+You can use [workspaces](../../workspace/_index.md) to create a fully featured development environment directly from GitLab.
 This environment runs on a remote server and provides you with a complete IDE experience
 without having to install any dependencies or clone repositories locally.
 

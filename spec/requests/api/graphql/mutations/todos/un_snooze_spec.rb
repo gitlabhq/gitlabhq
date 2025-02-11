@@ -45,7 +45,7 @@ RSpec.describe 'Un-snoozing a todo', feature_category: :notifications do
     res = mutation_response['todo']
 
     expect(res['id']).to eq(todo.to_global_id.to_s)
-    expect(res['snoozedUntil']).to be(nil)
+    expect(res['snoozedUntil']).to be_nil
   end
 
   context 'when todo does not belong to requesting user' do

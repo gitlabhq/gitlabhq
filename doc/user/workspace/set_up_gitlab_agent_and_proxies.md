@@ -9,7 +9,7 @@ title: 'Tutorial: Set up GitLab agent and proxies'
 This tutorial shows you how to:
 
 - Set up the GitLab agent so users can create and manage workspaces in a project.
-- Set up the GitLab workspaces proxy to authenticate and authorize [workspaces](index.md)
+- Set up the GitLab workspaces proxy to authenticate and authorize [workspaces](_index.md)
   in your cluster.
 
 NOTE:

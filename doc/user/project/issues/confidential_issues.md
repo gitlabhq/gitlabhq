@@ -33,7 +33,7 @@ When you create a new issue, a checkbox right below the text area is available
 to mark the issue as confidential. Check that box and select **Create issue**
 to create the issue.
 
-When you create a confidential issue in a project, the project becomes listed in the **Contributed projects** section in your [profile](../../profile/index.md). **Contributed projects** does not show information about the confidential issue; it only shows the project name.
+When you create a confidential issue in a project, the project becomes listed in the **Contributed projects** section in your [profile](../../profile/_index.md). **Contributed projects** does not show information about the confidential issue; it only shows the project name.
 
 To create a confidential issue:
 

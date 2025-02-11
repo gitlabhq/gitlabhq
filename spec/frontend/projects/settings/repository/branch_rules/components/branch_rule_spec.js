@@ -82,11 +82,11 @@ describe('Branch rule', () => {
     it('renders squash settings when branchRuleSquashSettings is true', () => {
       const branchRuleProps = {
         ...branchRulePropsMock,
-        branchProtection: { squashSetting: 'Mock setting' },
+        squashOption: { option: 'Mock setting' },
       };
 
       createComponent(branchRuleProps, { branchRuleSquashSettings: true });
-      expect(findProtectionDetailsListItems().at(0).text()).toBe('Squash commits: Mock setting');
+      expect(findProtectionDetailsListItems().at(2).text()).toBe('Squash commits: Mock setting');
     });
   });
 });

@@ -43,7 +43,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
 
       post_graphql(query)
 
-      expect(issue_data).to be nil
+      expect(issue_data).to be_nil
     end
   end
 
@@ -125,7 +125,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
 
         post_graphql(query, current_user: current_user)
 
-        expect(graphql_errors).not_to be nil
+        expect(graphql_errors).not_to be_nil
         expect(graphql_errors.first['message']).to eq("\"#{gid}\" does not represent an instance of Issue")
       end
     end
@@ -231,7 +231,7 @@ RSpec.describe 'Query.issue(id)', feature_category: :team_planning do
       it 'returns nil' do
         post_graphql(query, current_user: current_user)
 
-        expect(issue_data).to be nil
+        expect(issue_data).to be_nil
       end
     end
 

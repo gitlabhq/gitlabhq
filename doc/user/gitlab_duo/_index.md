@@ -27,7 +27,7 @@ how and where you can access these features.
 
 To improve your workflow across the entire software development lifecycle, try these features:
 
-- [GitLab Duo Chat](../gitlab_duo_chat/index.md): Write and understand code, get up to speed on the status of projects,
+- [GitLab Duo Chat](../gitlab_duo_chat/_index.md): Write and understand code, get up to speed on the status of projects,
   and learn about GitLab by asking your questions in a chat window.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 - [Self-Hosted Models](../../administration/gitlab_duo_self_hosted/_index.md): Host the language models that power AI features in GitLab.
@@ -99,7 +99,7 @@ To improve your security, try these features:
 
 | Feature | Tier | Add-on | Offering | Status |
 | ------- | ---- | ------ | -------- | ------ |
-| [GitLab Duo Chat](../gitlab_duo_chat/index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
+| [GitLab Duo Chat](../gitlab_duo_chat/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
 | [Self-Hosted Models](../../administration/gitlab_duo_self_hosted/_index.md) | Ultimate | GitLab Duo Enterprise | Self-managed | Beta |
 | [GitLab Duo Workflow](../duo_workflow/_index.md) | Ultimate | - | GitLab.com | Experiment |
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |

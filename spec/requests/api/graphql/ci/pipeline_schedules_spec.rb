@@ -113,7 +113,7 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
     it 'does not return the edit_path for a pipeline schedule for a user that does not have permissions' do
       edit_path = pipeline_schedule_graphql_data['editPath']
 
-      expect(edit_path).to be nil
+      expect(edit_path).to be_nil
     end
 
     it 'returns the pipeline schedules data' do

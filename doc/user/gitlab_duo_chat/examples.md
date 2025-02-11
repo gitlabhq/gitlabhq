@@ -168,7 +168,7 @@ You can also add additional instructions to be considered. For example:
 - `/explain how concurrency works in this context` (Go)
 - `/explain how the request reaches the client` (REST API, database)
 
-For more information, see [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code).
+For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
 
 In the GitLab UI, you can also explain code in:
 
@@ -264,7 +264,7 @@ For example, if you are developing an e-commerce app, you can add the `cart_serv
 - `Thanks, that helps. I want to extend the checkout process by showing products related to the ones in the user's cart. I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
 
 NOTE:
-You cannot use [Quick Chat](index.md#in-gitlab-duo-quick-chat-in-the-editor-view) to add files or ask questions about files added for Chat's context.
+You cannot use [Quick Chat](_index.md#in-gitlab-duo-quick-chat-in-the-editor-view) to add files or ask questions about files added for Chat's context.
 
 ## Refactor code in the IDE
 
@@ -340,7 +340,7 @@ You can include additional instructions to be considered. For example:
 - Focus on performance, for example `/tests focus on performance`.
 - Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
 
-For more information, see [Use GitLab Duo Chat in VS Code](index.md#use-gitlab-duo-chat-in-vs-code).
+For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
 
 ## Ask about CI/CD
 

@@ -564,7 +564,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
             post :atlassian_oauth2
 
-            expect(flash[:alert]).to eq('Signing in using your Atlassian account without a pre-existing account in example.com:43/gitlab is not allowed. Create an account in example.com:43/gitlab first, and then <a href="/help/user/profile/index.md#sign-in-services">connect it to your Atlassian account</a>.')
+            expect(flash[:alert]).to eq('Signing in using your Atlassian account without a pre-existing account in example.com:43/gitlab is not allowed. Create an account in example.com:43/gitlab first, and then <a href="/help/user/profile/_index.md#sign-in-services">connect it to your Atlassian account</a>.')
           end
         end
       end
@@ -812,7 +812,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
           post :saml, params: { SAMLResponse: mock_saml_response }
 
-          expect(flash[:alert]).to eq("Signing in using your SAML account without a pre-existing account in #{Gitlab.config.gitlab.host} is not allowed. Create an account in #{Gitlab.config.gitlab.host} first, and then <a href=\"/help/user/profile/index.md#sign-in-services\">connect it to your SAML account</a>.")
+          expect(flash[:alert]).to eq("Signing in using your SAML account without a pre-existing account in #{Gitlab.config.gitlab.host} is not allowed. Create an account in #{Gitlab.config.gitlab.host} first, and then <a href=\"/help/user/profile/_index.md#sign-in-services\">connect it to your SAML account</a>.")
           expect(response).to redirect_to(new_user_registration_path)
         end
       end

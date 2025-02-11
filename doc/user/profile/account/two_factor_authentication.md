@@ -63,7 +63,7 @@ Your account email must be confirmed to enable 2FA.
 To enable 2FA with an OTP authenticator:
 
 1. **In GitLab:**
-   1. Access your [**User settings**](../index.md#access-your-user-settings).
+   1. Access your [**User settings**](../_index.md#access-your-user-settings).
    1. Select **Account**.
    1. Select **Enable Two-factor Authentication**.
 1. **On your device (usually your phone):**
@@ -299,7 +299,7 @@ WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
 To set up 2FA with a WebAuthn-compatible device:
 
 1. Optional. [Set up an OTP authenticator](#enable-a-one-time-password-authenticator).
-1. Access your [**User settings**](../index.md#access-your-user-settings).
+1. Access your [**User settings**](../_index.md#access-your-user-settings).
 1. Select **Account**.
 1. Select **Enable Two-Factor Authentication**.
 1. Plug in your WebAuthn device.
@@ -347,7 +347,7 @@ If you lose the recovery codes, or want to generate new ones, you can use either
 
 To regenerate 2FA recovery codes, you need access to a desktop browser:
 
-1. Access your [**User settings**](../index.md#access-your-user-settings).
+1. Access your [**User settings**](../_index.md#access-your-user-settings).
 1. Select **Account > Two-Factor Authentication (2FA)**.
 1. If you've already configured 2FA, select **Manage two-factor authentication**.
 1. In the **Disable two-factor authentication** section, select **Regenerate recovery codes**.
@@ -379,7 +379,7 @@ in.
 
 You can disable the OTP authenticator and WebAuthn devices individually or simultaneously. To disable them simultaneously:
 
-1. Access your [**User settings**](../index.md#access-your-user-settings).
+1. Access your [**User settings**](../_index.md#access-your-user-settings).
 1. Select **Account**.
 1. Select **Manage two-factor authentication**.
 1. In the **Disable two-factor authentication** section, select **Disable two-factor authentication**.

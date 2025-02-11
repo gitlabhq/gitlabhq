@@ -162,7 +162,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         expect(graphql_data_at(:a, :name)).to eq(composer_package.name)
 
         expect_graphql_errors_to_include [/"package" field can be requested only for 1 Query\(s\) at a time./]
-        expect(graphql_data_at(:b)).to be(nil)
+        expect(graphql_data_at(:b)).to be_nil
       end
     end
 

@@ -324,7 +324,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
     ),
     groupLink: '',
     projectLink: '',
-    docsLink: helpPagePath('user/gitlab_duo_chat/index'),
+    docsLink: helpPagePath('user/gitlab_duo_chat/_index'),
   },
 };
 

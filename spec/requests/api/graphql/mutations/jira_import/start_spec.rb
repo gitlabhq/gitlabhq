@@ -35,8 +35,8 @@ RSpec.describe 'Starting a Jira Import', feature_category: :importers do
       it 'does not start the Jira import' do
         post_graphql_mutation(mutation, current_user: current_user)
 
-        expect(project.reload.import_state).to be nil
-        expect(project.reload.import_data).to be nil
+        expect(project.reload.import_state).to be_nil
+        expect(project.reload.import_data).to be_nil
       end
     end
 

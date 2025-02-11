@@ -303,4 +303,4 @@ Finally, see the following resources for more information about Flux and the Git
 
 - [Enterprise considerations](enterprise_considerations.md) for the Kubernetes integration
 - Use the agent for [operational container scanning](vulnerabilities.md)
-- Use the agent to provide [remote workspaces](../../workspace/index.md) for your engineers
+- Use the agent to provide [remote workspaces](../../workspace/_index.md) for your engineers

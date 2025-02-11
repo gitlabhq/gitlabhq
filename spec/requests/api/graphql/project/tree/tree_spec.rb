@@ -220,7 +220,7 @@ RSpec.describe 'getting a tree in a project', feature_category: :source_code_man
     it 'returns empty project' do
       post_graphql(query, current_user: nil)
 
-      expect(graphql_data['project']).to be(nil)
+      expect(graphql_data['project']).to be_nil
     end
   end
 end

@@ -192,4 +192,4 @@ Consider working through the follow-up tutorial, [Get started deploying to Kuber
 
 - [Best practices for using the GitLab integration with Kubernetes](enterprise_considerations.md)
 - Using the agent for [operational container scanning](vulnerabilities.md)
-- Providing [remote workspaces](../../workspace/index.md) for your engineers
+- Providing [remote workspaces](../../workspace/_index.md) for your engineers

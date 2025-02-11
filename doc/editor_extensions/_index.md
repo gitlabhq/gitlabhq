@@ -53,7 +53,7 @@ an integrated GitLab workflow experience.
 
 ### GitLab Duo Chat
 
-Use [GitLab Duo Chat](../user/gitlab_duo_chat/index.md) to interact with an AI assistant directly in your development environment.
+Use [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md) to interact with an AI assistant directly in your development environment.
 
 - **Ask about GitLab**: Get answers about how GitLab works, concepts, and step-by-step instructions.
 - **Code-related queries**: Ask for explanations of code snippets, generate tests, or refactor selected code in your IDE.

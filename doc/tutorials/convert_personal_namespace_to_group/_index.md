@@ -72,7 +72,7 @@ You can keep on using the personal namespace for other personal projects, or [de
 
 From the moment you rename the personal namespace, the username becomes available, so it's possible that someone else registers an account with it. To avoid this, you should [rename the new group](#rename-the-new-group-namespace-to-the-original-username) as soon as possible.
 
-To [change a user's username](../../user/profile/index.md#change-your-username):
+To [change a user's username](../../user/profile/_index.md#change-your-username):
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.

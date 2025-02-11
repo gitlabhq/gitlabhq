@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can [manage your account](../user/profile/index.md) and
+You can [manage your account](../user/profile/_index.md) and
 [manage other users](../user/profile/account/create_accounts.md) by using the REST API.
 
 ## List users

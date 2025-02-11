@@ -229,7 +229,7 @@ To change identity providers:
 
 To migrate users to a new email domain, tell users to:
 
-1. [Add their new email](../../profile/index.md#change-your-primary-email) as the primary email to their accounts and verify it.
+1. [Add their new email](../../profile/_index.md#change-your-primary-email) as the primary email to their accounts and verify it.
 1. Optional. Remove their old email from the account.
 
 If the **NameID** is configured with the email address, [change the **NameID** for users](#manage-user-saml-identity).

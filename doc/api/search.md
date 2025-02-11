@@ -21,7 +21,7 @@ these additional scopes are available for the [advanced search](#advanced-search
 - `notes`
 
 If you want to use basic search instead, see
-[specify a search type](../user/search/index.md#specify-a-search-type).
+[specify a search type](../user/search/_index.md#specify-a-search-type).
 
 ## Advanced search API
 
@@ -448,7 +448,7 @@ Example response:
 
 ## Group search API
 
-Search for a [term](../user/search/index.md) in the specified group.
+Search for a [term](../user/search/_index.md) in the specified group.
 
 If a user is not a member of a group and the group is private, a `GET` request on that group results in a `404 Not Found` status code.
 
@@ -843,7 +843,7 @@ Example response:
 
 ## Project search API
 
-Search for a [term](../user/search/index.md) in the specified project.
+Search for a [term](../user/search/_index.md) in the specified project.
 
 If a user is not a member of a project and the project is private, a `GET` request on that project results in a `404` status code.
 

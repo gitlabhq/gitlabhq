@@ -41,7 +41,7 @@ RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_ma
 
       it_behaves_like 'a working graphql query'
 
-      it { expect(alerts).to be nil }
+      it { expect(alerts).to be_nil }
     end
 
     context 'with project permissions' do
