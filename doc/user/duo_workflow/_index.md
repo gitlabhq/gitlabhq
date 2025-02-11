@@ -136,12 +136,17 @@ The automated setup script:
 You can run the script with the `--dry-run` flag to check the dependencies
 that get installed with the script.
 
-1. Download the [setup script](https://gitlab.com/-/snippets/3745948).
+1. Download the [setup script](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/-/blob/main/scripts/install-runtime).
+
+   ```shell
+   wget https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/-/raw/main/scripts/install-runtime
+   ```
+
 1. Run the script.
 
    ```shell
-   chmod +x duo_workflow_runtime.sh
-   ./duo_workflow_runtime.sh
+   chmod +x install-runtime
+   ./install-runtime
    ```
 
 #### Manual setup

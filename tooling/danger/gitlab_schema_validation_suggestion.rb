@@ -17,7 +17,7 @@ module Tooling
 
         Please see the [guidelines on choosing gitlab schema](https://docs.gitlab.com/ee/development/cells/index.html#guidelines-on-choosing-between-gitlab_main_cell-and-gitlab_main_clusterwide-schema) for more information.
 
-        Please consult with ~"group::tenant scale" if you believe that the clusterwide schema is the best fit for this table.
+        Please consult with `@gitlab-com/gl-infra/tenant-scale/organizations` if you believe that the clusterwide schema is the best fit for this table.
       MESSAGE_MARKDOWN
 
       def add_suggestions_on_using_clusterwide_schema
