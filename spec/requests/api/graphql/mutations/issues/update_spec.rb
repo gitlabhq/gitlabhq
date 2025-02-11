@@ -8,6 +8,9 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:planner) { create(:user, planner_of: project) }
+  let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:label1) { create(:label, title: "a", project: project) }
   let_it_be(:label2) { create(:label, title: "b", project: project) }
 
@@ -28,13 +31,21 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
   let(:mutation_response) { graphql_mutation_response(:update_issue) }
 
   context 'the user is not allowed to update issue' do
+    let(:current_user) { guest }
+
     it_behaves_like 'a mutation that returns a top-level access error'
+
+    context 'when issue type is incident' do
+      let_it_be(:issue) { create(:issue, :incident, project: project) }
+
+      let(:current_user) { planner }
+
+      it_behaves_like 'a mutation that returns a top-level access error'
+    end
   end
 
   context 'when user has permissions to update issue' do
-    before do
-      project.add_developer(current_user)
-    end
+    let(:current_user) { reporter }
 
     it 'updates the issue' do
       post_graphql_mutation(mutation, current_user: current_user)

@@ -28,7 +28,9 @@ class IssuableSidebarBasicEntity < Grape::Entity
     end
 
     expose :can_edit do |issuable|
-      can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
+      subject = issuable.try(:incident_type_issue?) ? issuable : issuable.project
+
+      can?(current_user, :"admin_#{issuable.to_ability_name}", subject)
     end
 
     expose :can_move do |issuable|
