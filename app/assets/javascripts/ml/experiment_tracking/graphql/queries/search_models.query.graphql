@@ -1,0 +1,17 @@
+query searchModels($fullPath: ID!, $name: String) {
+  project(fullPath: $fullPath) {
+    id
+    mlModels(name: $name) {
+      count
+      nodes {
+        id
+        name
+        createdAt
+        latestVersion {
+          id
+          version
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
   let_it_be(:model) { create(:ml_models) }
+  let_it_be(:experiment) { create(:ml_experiments, project: model.project) }
   let_it_be(:project) { model.project }
   let_it_be(:user) { project.owner }
 
@@ -103,6 +104,41 @@ RSpec.describe ::Ml::CreateModelVersionService, feature_category: :mlops do
 
         expect(model.latest_version.package.version).to eq('1.0.2')
         expect(model.latest_version.package.name).to eq(model.name)
+
+        expect(Gitlab::InternalEvents).to have_received(:track_event).with(
+          'model_registry_ml_model_version_created',
+          { project: model.project, user: user }
+        )
+        expect(Gitlab::Audit::Auditor).to have_received(:audit).with(audit_context)
+      end
+    end
+
+    context 'when a candidate_id in a standalone experiment with a package is given for promotion' do
+      let_it_be(:candidate) do
+        create(:ml_candidates, experiment: experiment, project: model.project, package: package)
+      end
+
+      let_it_be(:package) do
+        create(:ml_model_package, name: candidate.package_name, version: candidate.package_version,
+          project: model.project)
+      end
+
+      let(:params) { { user: user, candidate_id: candidate.to_global_id } }
+
+      before do
+        candidate.update!(package: package)
+      end
+
+      it 'creates a model version' do
+        expect { service }.to change { Ml::ModelVersion.count }.by(1)
+                                                               .and not_change { Ml::Candidate.count }
+                                                               .and not_change { Packages::MlModel::Package.count }
+
+        expect(service).to be_success
+        expect(model.reload.latest_version.version).to eq('1.0.3')
+        expect(model.latest_version.package.version).to eq('1.0.3')
+        expect(model.latest_version.package.name).to eq(model.name)
+        expect(model.latest_version.candidate).to eq(candidate)
 
         expect(Gitlab::InternalEvents).to have_received(:track_event).with(
           'model_registry_ml_model_version_created',

@@ -316,7 +316,7 @@ gem 're2', '~> 2.15', feature_category: :shared
 
 # Misc
 
-gem 'semver_dialects', '~> 3.0', feature_category: :software_composition_analysis
+gem 'semver_dialects', '~> 3.6', feature_category: :software_composition_analysis
 gem 'version_sorter', '~> 2.3', feature_category: :shared
 gem 'csv_builder', path: 'gems/csv_builder', feature_category: :shared
 

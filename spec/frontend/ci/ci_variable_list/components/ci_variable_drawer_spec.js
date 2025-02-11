@@ -100,12 +100,15 @@ describe('CI Variable Drawer', () => {
   const findVisibilityRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findProtectedCheckbox = () => wrapper.findByTestId('ci-variable-protected-checkbox');
   const findValueField = () => wrapper.findByTestId('ci-variable-value');
-  const findValueLabel = () => wrapper.findByTestId('ci-variable-value-label');
+  const findInvalidMaskedValueErrorsWrapper = () => wrapper.find('.invalid-feedback');
+  const findInvalidMaskedValueErrorList = () => findInvalidMaskedValueErrorsWrapper().find('ul');
   const findHiddenVariableTip = () => wrapper.findByTestId('hidden-variable-tip');
   const findTitle = () => findDrawer().find('h2');
   const findTypeDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findVariablesPrecedenceDocsLink = () =>
     wrapper.findByTestId('ci-variable-precedence-docs-link');
+  const findVariablesMaskedValueDocsLink = () =>
+    wrapper.findByTestId('ci-variable-masked-value-docs-link');
   const findVisibilityLabelHelpContainer = () =>
     wrapper.findByTestId('visibility-popover-container');
   const findVisibilityLabelHelpPopover = () =>
@@ -120,9 +123,17 @@ describe('CI Variable Drawer', () => {
       createComponent({ stubs: { GlFormGroup, GlLink, GlSprintf } });
     });
 
-    it('renders docs link for variables precendece', () => {
+    it('renders docs link for variables precedence', () => {
       expect(findVariablesPrecedenceDocsLink().attributes('href')).toBe(
         helpPagePath('ci/variables/_index', { anchor: 'cicd-variable-precedence' }),
+      );
+    });
+
+    it('renders docs link for masked CI/CD variable requirements', () => {
+      createComponent({ mountFn: mountExtended });
+
+      expect(findVariablesMaskedValueDocsLink().attributes('href')).toBe(
+        helpPagePath('ci/variables/_index', { anchor: 'mask-a-cicd-variable' }),
       );
     });
 
@@ -496,26 +507,22 @@ describe('CI Variable Drawer', () => {
         shortAndMultiLineAndUnsupportedChar: 'short\n!',
         multiLineAndUnsupportedChar: 'multiline\nvalue!',
       };
+      const maskedValidationIssuesTitle = 'Unable to create masked variable because:';
       const maskedValidationIssuesText = {
-        short: 'The value must have at least 8 characters.',
-        multiLine:
-          'This value cannot be masked because it contains the following characters: whitespace characters.',
-        unsupportedChar:
-          'This value cannot be masked because it contains the following characters: |.',
-        unsupportedDollarChar:
-          'This value cannot be masked because it contains the following characters: $.',
-        twoUnsupportedChars:
-          'This value cannot be masked because it contains the following characters: |, !.',
-        threeUnsupportedChars:
-          'This value cannot be masked because it contains the following characters: %, |, !.',
+        short: 'The value must have 8 characters.',
+        multiLine: 'The value cannot contain the following characters: whitespace characters.',
+        unsupportedChar: 'The value cannot contain the following characters: |.',
+        unsupportedDollarChar: 'The value cannot contain the following characters: $.',
+        twoUnsupportedChars: 'The value cannot contain the following characters: |, !.',
+        threeUnsupportedChars: 'The value cannot contain the following characters: %, |, !.',
         shortAndMultiLine:
-          'This value cannot be masked because it contains the following characters: whitespace characters. The value must have at least 8 characters.',
+          'The value cannot contain the following characters: whitespace characters.The value must have 8 characters.',
         shortAndUnsupportedChar:
-          'This value cannot be masked because it contains the following characters: !. The value must have at least 8 characters.',
+          'The value cannot contain the following characters: !.The value must have 8 characters.',
         shortAndMultiLineAndUnsupportedChar:
-          'This value cannot be masked because it contains the following characters: ! and whitespace characters. The value must have at least 8 characters.',
+          'The value cannot contain the following characters: ! and whitespace characters.The value must have 8 characters.',
         multiLineAndUnsupportedChar:
-          'This value cannot be masked because it contains the following characters: ! and whitespace characters.',
+          'The value cannot contain the following characters: ! and whitespace characters.',
       };
 
       describe.each`
@@ -536,7 +543,7 @@ describe('CI Variable Drawer', () => {
         'masking requirements',
         ({ value, canSubmit, trackingErrorProperty, validationIssueKey }) => {
           beforeEach(() => {
-            createComponent();
+            createComponent({ mountFn: mountExtended });
 
             trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
             findKeyField().vm.$emit('input', 'NEW_VARIABLE');
@@ -546,7 +553,7 @@ describe('CI Variable Drawer', () => {
 
           itif(canSubmit)(`can submit when value is ${value}`, () => {
             /* eslint-disable jest/no-standalone-expect */
-            expect(findValueLabel().attributes('invalid-feedback')).toBe('');
+            expect(findInvalidMaskedValueErrorList().text()).toBe('');
             expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
             /* eslint-enable jest/no-standalone-expect */
           });
@@ -555,9 +562,10 @@ describe('CI Variable Drawer', () => {
             `shows validation errors and disables submit button when value is ${value}`,
             () => {
               const validationIssueText = maskedValidationIssuesText[validationIssueKey] || '';
+              const errorText = findInvalidMaskedValueErrorsWrapper().text();
 
               /* eslint-disable jest/no-standalone-expect */
-              expect(findValueLabel().attributes('invalid-feedback')).toBe(validationIssueText);
+              expect(errorText).toBe(`${maskedValidationIssuesTitle} ${validationIssueText}`);
               expect(findConfirmBtn().attributes('disabled')).toBeDefined();
               /* eslint-enable jest/no-standalone-expect */
             },
@@ -609,7 +617,7 @@ describe('CI Variable Drawer', () => {
       });
 
       it('when creating a hidden variable, value field behaves like a masked variable', async () => {
-        createComponent();
+        createComponent({ mountFn: mountExtended });
 
         findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         findValueField().vm.$emit('input', '~v@lid:symbols.');
@@ -618,7 +626,7 @@ describe('CI Variable Drawer', () => {
         await nextTick();
 
         expect(findHiddenVariableTip().exists()).toBe(false);
-        expect(findValueLabel().attributes('invalid-feedback')).toBe('');
+        expect(findInvalidMaskedValueErrorList().text()).toBe('');
         expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
 
         findValueField().vm.$emit('input', 'dollar$ign');
@@ -626,7 +634,7 @@ describe('CI Variable Drawer', () => {
         await nextTick();
 
         expect(findHiddenVariableTip().exists()).toBe(false);
-        expect(findValueLabel().attributes('invalid-feedback')).not.toBe('');
+        expect(findInvalidMaskedValueErrorList().text()).not.toBe('');
         expect(findConfirmBtn().attributes('disabled')).toBeDefined();
       });
 

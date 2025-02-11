@@ -394,7 +394,7 @@ describe('ProjectsListItem', () => {
       it('displays confirmation modal with correct props', () => {
         expect(wrapper.findComponent(DeleteModal).props()).toMatchObject({
           visible: true,
-          confirmPhrase: project.name,
+          confirmPhrase: project.fullPath,
           nameWithNamespace: project.nameWithNamespace,
           isFork: true,
           issuesCount: '0',

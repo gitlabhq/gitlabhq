@@ -1,0 +1,17 @@
+---
+description: Usage of only keyword in CICD Yaml
+internal_events: true
+action: use_only_keyword_in_cicd_yaml
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_authoring
+product_categories:
+- pipeline_composition
+milestone: '17.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180899
+tiers:
+- free
+- premium
+- ultimate

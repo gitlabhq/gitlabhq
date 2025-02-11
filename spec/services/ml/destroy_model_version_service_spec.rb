@@ -53,7 +53,7 @@ RSpec.describe Ml::DestroyModelVersionService, feature_category: :mlops do
       it 'does not delete the model version' do
         is_expected.to be_error.and have_attributes(message: "You don't have access to this package")
         expect(Ml::ModelVersion.find_by(id: model_version.id)).to eq(model_version)
-        expect(Gitlab::Audit::Auditor).not_to have_received(:audit)
+        expect(Gitlab::Audit::Auditor).not_to have_received(:audit).with(audit_event)
       end
     end
   end

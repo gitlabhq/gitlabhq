@@ -34,6 +34,7 @@ module Ml
           can_write_model_experiments: current_user&.can?(:write_model_experiments, candidate.project),
           markdown_preview_path: url_helpers.project_preview_markdown_path(candidate.project),
           model_gid: candidate.experiment.model&.to_global_id.to_s,
+          model_name: candidate.experiment.model&.name,
           latest_version: candidate.experiment.model&.latest_version&.version
         }
       }
@@ -108,7 +109,7 @@ module Ml
 
     def can_promote
       candidate.model_version_id.nil? &&
-        candidate.experiment.model_id.present? &&
+        candidate.package&.ml_model? &&
         current_user&.can?(:write_model_registry, candidate.project)
     end
   end

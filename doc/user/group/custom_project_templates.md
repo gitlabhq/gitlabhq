@@ -21,7 +21,7 @@ use as templates.
 
 You can also configure [custom templates for the instance](../../administration/custom_project_templates.md).
 
-## Set up group-level project templates
+## Set up project templates for a group
 
 Prerequisites:
 
@@ -79,7 +79,7 @@ gitlab.com/myorganization/
 
 ## What is copied from the templates
 
-The entire custom instance-level project templates repository is copied, including:
+The entire custom project templates repository configured for your instance is copied, including:
 
 - Branches
 - Commits
@@ -87,9 +87,9 @@ The entire custom instance-level project templates repository is copied, includi
 
 If the user:
 
-- Has the Owner role on the custom instance-level project templates project or is a GitLab administrator,
+- Has the Owner role on the project that contains the custom templates for the instance, or is a GitLab administrator:
   all project settings, including project members, are copied over to the new project.
-- Doesn't have the Owner role or is not a GitLab administrator,
+- Doesn't have the Owner role, or is not a GitLab administrator:
   project deploy keys and project webhooks aren't copied over because they contain sensitive data.
 
 To learn more about what is migrated, see
@@ -108,8 +108,8 @@ and tags. For example, if the template contains a protected branch:
 
 ## Troubleshooting
 
-### Administrator cannot see custom group-level project templates when creating a project
+### Administrator cannot see custom project templates for the group when creating a project
 
-Custom group-level project templates are only available to group members.
+Custom project templates for a group are available only to group members.
 If the administrator account you are using is not a member of a group,
 you can't access the templates.

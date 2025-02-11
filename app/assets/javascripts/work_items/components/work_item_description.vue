@@ -94,6 +94,11 @@ export default {
       required: false,
       default: false,
     },
+    isCreateFlow: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -230,9 +235,16 @@ export default {
     },
   },
   mounted() {
-    if (this.isNewWorkItemRoute) {
+    const DEFAULT_TEMPLATE_NAME = 'default';
+    if (this.isCreateFlow) {
+      const templateName = !this.isNewWorkItemRoute
+        ? DEFAULT_TEMPLATE_NAME
+        : this.$route.query[paramName] ||
+          this.$route.query[oldParamNameFromPreWorkItems] ||
+          DEFAULT_TEMPLATE_NAME;
+
       this.selectedTemplate = {
-        name: this.$route.query[paramName] || this.$route.query[oldParamNameFromPreWorkItems],
+        name: templateName,
         projectId: null,
         category: null,
       };
@@ -377,7 +389,7 @@ export default {
       const params = new URLSearchParams(this.$route.query);
       params.delete(paramName);
       params.delete(oldParamNameFromPreWorkItems);
-      if (this.selectedTemplate) {
+      if (this.selectedTemplate && this.isNewWorkItemRoute) {
         params.set(paramName, this.selectedTemplate.name);
       }
 

@@ -32,6 +32,8 @@ module QA
 
           mr_page.rebase!
 
+          mr_page.refresh
+
           expect { mr_page.has_merge_button? }.to eventually_be_truthy.within(max_duration: 60, reload_page: mr_page)
 
           mr_page.merge!

@@ -62,6 +62,7 @@ describe('WorkItemDescription', () => {
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
+    isCreateFlow = false,
     canUpdate = true,
     workItemResponse = workItemByIidResponseFactory({ canUpdate }),
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse),
@@ -95,6 +96,7 @@ describe('WorkItemDescription', () => {
         workItemTypeName,
         editMode,
         showButtonsBelowField,
+        isCreateFlow,
       },
       provide: {
         isGroup,
@@ -409,6 +411,26 @@ describe('WorkItemDescription', () => {
         });
       });
 
+      describe('when there is a default template on the new work item route', () => {
+        beforeEach(async () => {
+          await createComponent({
+            routeName: ROUTES.new,
+            isEditing: true,
+            isCreateFlow: true,
+          });
+          await nextTick();
+          await waitForPromises();
+        });
+
+        it('sets selected template from URL on mount', () => {
+          expect(findDescriptionTemplateListbox().props().template).toMatchObject({
+            name: 'default',
+            category: null,
+            projectId: null,
+          });
+        });
+      });
+
       describe('URL param handling', () => {
         describe('when on new work item route', () => {
           describe('description_template param', () => {
@@ -417,6 +439,7 @@ describe('WorkItemDescription', () => {
                 routeName: ROUTES.new,
                 routeQuery: { description_template: 'bug', other_param: 'some_value' },
                 isEditing: true,
+                isCreateFlow: true,
               });
             });
 
@@ -472,6 +495,7 @@ describe('WorkItemDescription', () => {
                 routeName: ROUTES.new,
                 routeQuery: { issuable_template: 'my issue template', other_param: 'some_value' },
                 isEditing: true,
+                isCreateFlow: true,
               });
             });
 

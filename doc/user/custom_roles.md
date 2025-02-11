@@ -332,6 +332,15 @@ You can use the API to [create](../api/graphql/reference/_index.md#mutationmembe
 
 For information on available permissions, see [custom permissions](custom_roles/abilities.md).
 
+## Contribute new permissions
+
+If a permission doesn't exist, you can:
+
+If a permission does not exist, you can:
+
+- Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%2520Proposal).
+- Contribute to GitLab and [add the permission](../development/permissions/custom_roles.md).
+
 ## Known issues
 
 - If a user with a custom role is shared with a group or project, their custom

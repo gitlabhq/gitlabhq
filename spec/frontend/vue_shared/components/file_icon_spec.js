@@ -38,6 +38,23 @@ describe('File Icon component', () => {
     expect(getIconName()).toBe(iconName);
   });
 
+  it.each`
+    fileName                | language    | iconName
+    ${'test-objective-c.m'} | ${''}       | ${'c'}
+    ${'test-matlab.m'}      | ${'matlab'} | ${'matlab'}
+  `('should render a $iconName icon based on file language', ({ fileName, language, iconName }) => {
+    createComponent({ fileName, language });
+    expect(getIconName()).toBe(iconName);
+  });
+
+  it('should render a file name icon, if a language is not specified', () => {
+    createComponent({
+      fileName: 'package.js',
+      language: 'something-random',
+    });
+    expect(getIconName()).toBe('javascript');
+  });
+
   it('should render a standard folder icon', () => {
     createComponent({
       fileName: 'js',

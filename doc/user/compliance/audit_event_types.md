@@ -443,6 +443,12 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`experiment_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) | Enabling experiment AI features setting is toggled | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/404856/) | Group |
 
+### Package registry
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`package_registry_package_published`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178181) | A package was published to GitLab package registry. Available only when the feature flag `package_registry_audit_events` is enabled. | **{check-circle}** Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) | Project, Group |
+
 ### Permissions
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

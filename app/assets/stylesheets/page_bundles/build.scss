@@ -252,29 +252,6 @@
   }
 }
 
-.rca-bar-component {
-  --rca-bar-height: calc(2rem + 16px);
-  bottom: $calc-application-footer-height;
-  z-index: $zindex-dropdown-menu;
-  height: var(--rca-bar-height);
-  padding-left: $super-sidebar-width;
-  padding-right: $right-sidebar-collapsed-width;
-  background: var(--gl-background-color-default);
-  border-top: 1px solid var(--gl-border-color-default);
-  @apply gl-transition-padding;
-
-  @media (max-width: map-get($grid-breakpoints, sm)-1) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.rca-bar-content {
-  max-width: $limited-layout-width;
-  padding: 0 $container-margin;
-  margin: 0 auto;
-}
-
 .loader-animation {
   @include build-loader-animation;
 }

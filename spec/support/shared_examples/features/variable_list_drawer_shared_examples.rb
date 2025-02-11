@@ -198,8 +198,8 @@ RSpec.shared_examples 'variable list drawer' do
     set_masked
     fill_variable('EMPTY_MASK_KEY', '???')
 
-    expect(page).to have_content('This value cannot be masked because it contains the following characters: ?.')
-    expect(page).to have_content('The value must have at least 8 characters.')
+    expect(page).to have_content('The value cannot contain the following characters: ?.')
+    expect(page).to have_content('The value must have 8 characters.')
 
     page.within('[data-testid="ci-variable-drawer"]') do
       expect(find_button('Add variable', disabled: true)).to be_present

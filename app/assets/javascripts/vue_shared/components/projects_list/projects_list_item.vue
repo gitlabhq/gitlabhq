@@ -307,7 +307,7 @@ export default {
       <delete-modal
         v-if="hasActionDelete"
         v-model="isDeleteModalVisible"
-        :confirm-phrase="project.name"
+        :confirm-phrase="project.fullPath"
         :name-with-namespace="project.nameWithNamespace"
         :is-fork="project.isForked"
         :confirm-loading="isDeleteLoading"

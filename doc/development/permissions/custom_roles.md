@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-title: Custom Roles
+title: Custom role development guidelines
 ---
 
 Ultimate customers can create custom roles and define those roles by assigning specific abilities.

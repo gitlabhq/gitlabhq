@@ -81,38 +81,27 @@ To learn more about enterprise best practices, see [enterprise considerations](e
 
 In this section, you'll build a simple Kubernetes manifest as an OCI artifact, then deploy it to your cluster.
 
-1. Add the following YAML to `clusters/testing/nginx.yaml`. This lets Flux know to retrieve the specified OCI image and deploy its content.
+1. Run the following `flux` CLI commands to tell Flux where to retrieve the specified OCI image and deploy its content.
+   Adjust the `--url` value for your GitLab instance. You can find the container registry URL under **Deploy > Container registry**.
+   You can inspect the created `clusters/testing/nginx.yaml` file to better understand how Flux finds the manifests to deploy.
 
-   ```yaml
-   apiVersion: source.toolkit.fluxcd.io/v1beta2
-   kind: OCIRepository
-   metadata:
-      name: nginx-example
-      namespace: flux-system
-   spec:
-      interval: 1m
-      url: oci://registry.gitlab.example.org/my-group/optional-subgroup/my-repository/nginx-example
-      ref:
-         tag: latest
-      secretRef:
-         name: gitlab-registry-auth
-   ---
-   apiVersion: kustomize.toolkit.fluxcd.io/v1
-   kind: Kustomization
-   metadata:
-      name: nginx-example
-      namespace: flux-system
-   spec:
-      interval: 1m
-      targetNamespace: default
-      path: "."
-      sourceRef:
-         kind: OCIRepository
-         name: nginx-example
-      prune: true
+   ```shell
+   flux create source oci nginx-example \
+    --url oci://registry.gitlab.example.org/my-group/optional-subgroup/my-repository/nginx-example \
+    --tag latest \
+    --secret-ref gitlab-registry-auth \
+    --interval 1m \
+    --namespace flux-system \
+    --export > clusters/testing/nginx.yaml
+    flux create kustomization nginx-example \
+    --source OCIRepository/nginx-example \
+    --path "." \
+    --prune true \
+    --target-namespace default \
+    --interval 1m \
+    --namespace flux-system \
+    --export >> clusters/testing/nginx.yaml
    ```
-
-    You can find the container registry URL for your GitLab instance on the left sidebar, under **Deploy > Container registry**.
 
 1. We'll deploy NGINX as an example. Add the following YAML to `clusters/applications/nginx/nginx.yaml`:
 
@@ -196,6 +185,7 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
             - flux reconcile source oci -n ${NAMESPACE} ${FLUX_OCI_REPO_NAME}
    ```
 
+1. Commit and push the changes to your project, and wait for the build pipeline to finish.
 1. On the left sidebar, select **Operate > Environments** and check the available [dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md).
    The `applications/nginx` environment should be healthy.
 

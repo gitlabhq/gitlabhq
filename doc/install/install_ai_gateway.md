@@ -32,23 +32,23 @@ Find the GitLab official Docker image at:
   - [Nightly](https://hub.docker.com/r/gitlab/model-gateway-self-hosted/tags)
 - [Release process for self-hosted AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
-Use the image tag that corresponds to your GitLab version. For example, if your GitLab version is `v17.6.0`, use the `self-hosted-17.6.0-ee` tag. It is critical to ensure that the image version matches your GitLab version to avoid compatibility issues. Nightly builds are available to have access to newer features, but backwards compatibility is not guaranteed.
+Use the image tag that corresponds to your GitLab version. For example, if your GitLab version is `v17.9.0`, use the `self-hosted-17.9.0-ee` tag. It is critical to ensure that the image version matches your GitLab version to avoid compatibility issues. Nightly builds are available to have access to newer features, but backwards compatibility is not guaranteed.
 
 NOTE:
 Using the `:latest` tag is **not recommended** as it can cause incompatibility if your GitLab version lags behind or jumps ahead of the AI Gateway release. Always use an explicit version tag.
 
 ### Start a Container from the Image
 
-1. For Docker images with version `self-hosted-v17.6.0-ee` and later, run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
+1. Run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
 
    ```shell
    docker run -d -p 5052:5052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
-    registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:self-hosted-v17.6.0-ee \
+    registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
     ```
 
-   Replace `self-hosted-v17.6.0-ee` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.7.0`, use `self-hosted-v17.7.0-ee`.
+   Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.9.0`, use `self-hosted-v17.9.0-ee`.
    From the container host, accessing `http://localhost:5052/docs` should open the AI gateway API documentation.
 
 1. Ensure that port `5052` is forwarded to the container from the host and is included in the `AI_GATEWAY_URL` environment variable.

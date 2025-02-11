@@ -41,6 +41,10 @@ module Gitlab
         end
       end
 
+      def feature_categories
+        database_entries.find_by_table_name(table_name)&.feature_categories
+      end
+
       def alert_report_hash
         {
           identifier: identifier,
@@ -50,8 +54,15 @@ module Gitlab
           table_size: table_size,
           index_size: index_size,
           size_in_bytes: size_in_bytes,
-          classification: size_classification
+          classification: size_classification,
+          feature_categories: feature_categories
         }
+      end
+
+      private
+
+      def database_entries
+        @database_entries ||= Gitlab::Database::Dictionary.entries
       end
     end
   end

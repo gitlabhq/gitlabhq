@@ -9,12 +9,12 @@ title: GitLab Duo Self-Hosted
 DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab Self-Managed
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 > - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 > - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 > - Feature flag `ai_custom_model` removed in GitLab 17.8
+> - Generally available in GitLab 17.9
 
 To maintain full control over your data privacy, security, and the deployment of large language models (LLMs) in your own infrastructure, use GitLab Duo Self-Hosted.
 
@@ -58,6 +58,7 @@ Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 - A [supported serving platform](../gitlab_duo_self_hosted/supported_llm_serving_platforms.md) (either cloud-based or on-premises).
 - A [locally hosted AI gateway](../../install/install_ai_gateway.md).
 - [Ultimate with GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
+- GitLab 17.9 or later.
 
 ## Decide on your configuration type
 

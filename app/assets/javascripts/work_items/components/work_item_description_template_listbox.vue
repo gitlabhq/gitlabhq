@@ -52,7 +52,9 @@ export default {
       return this.$apollo.queries.descriptionTemplates.loading;
     },
     toggleText() {
-      return this.template?.name || s__('WorkItem|Choose a template');
+      return (
+        (this.selectedTemplateValue && this.template?.name) || s__('WorkItem|Choose a template')
+      );
     },
     hasTemplates() {
       return this.descriptionTemplates.length > 0;
@@ -67,7 +69,7 @@ export default {
       if (this.template.name && this.template.projectId === null) {
         const closestMatch = this.items
           .flatMap((group) => group.options)
-          .find((option) => option.text === this.template.name);
+          .find((option) => option.text.toLowerCase() === this.template.name.toLowerCase());
         return closestMatch?.value;
       }
       return undefined;

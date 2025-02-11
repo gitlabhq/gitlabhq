@@ -19,6 +19,8 @@ module Gitlab
 
           def track_keyword_usage
             track_keyword_usage_for('run', command.yaml_processor_result.uses_keyword?(:run))
+            track_keyword_usage_for('only', command.yaml_processor_result.uses_keyword?(:only))
+            track_keyword_usage_for('except', command.yaml_processor_result.uses_keyword?(:except))
           end
 
           def track_keyword_usage_for(keyword, used)

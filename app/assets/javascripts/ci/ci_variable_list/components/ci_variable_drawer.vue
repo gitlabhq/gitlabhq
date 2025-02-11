@@ -72,22 +72,26 @@ export const i18n = {
     'CiVariables|Masked in job logs, and can never be revealed in the CI/CD settings after the variable is saved.',
   ),
   maskedDescription: s__(
-    'CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet regular expressions requirements.',
+    'CiVariables|Masked in job logs but value can be revealed in CI/CD settings. Requires values to meet %{linkStart}regular expressions requirements%{linkEnd}.',
   ),
   visibleDescription: s__('CiVariables|Can be seen in job logs.'),
-  maskedValueMinLengthValidationText: s__(
-    'CiVariables|The value must have at least %{charsAmount} characters.',
-  ),
   modalDeleteMessage: s__('CiVariables|Do you want to delete the variable %{key}?'),
   protectedField: s__('CiVariables|Protect variable'),
   protectedDescription: s__(
     'CiVariables|Export variable to pipelines running on protected branches and tags only.',
   ),
+  maskedValueValidationErrorsTitle: s__('CiVariables|Unable to create masked variable because:'),
+  maskedValueMinLengthValidationText: s__(
+    'CiVariables|The value must have %{charsAmount} characters.',
+  ),
   unsupportedCharsValidationText: s__(
-    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars}.',
+    'CiVariables|The value cannot contain the following characters: %{unsupportedChars}.',
+  ),
+  whitespaceCharsValidationText: s__(
+    'CiVariables|The value cannot contain the following characters: whitespace characters.',
   ),
   unsupportedAndWhitespaceCharsValidationText: s__(
-    'CiVariables|This value cannot be masked because it contains the following characters: %{unsupportedChars} and whitespace characters.',
+    'CiVariables|The value cannot contain the following characters: %{unsupportedChars} and whitespace characters.',
   ),
   valueFeedback: {
     rawHelpText: s__('CiVariables|Variable value will be evaluated as raw string.'),
@@ -96,9 +100,6 @@ export const i18n = {
   variableReferenceTitle: s__('CiVariables|Value might contain a variable reference'),
   variableReferenceDescription: s__(
     'CiVariables|Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
-  ),
-  whitespaceCharsValidationText: s__(
-    'CiVariables|This value cannot be masked because it contains the following characters: whitespace characters.',
   ),
   environmentsLabelHelpText: s__(
     'CiVariables|You can use a specific environment name like %{codeStart}production%{codeEnd}, or include a wildcard (%{codeStart}*%{codeEnd}) to match multiple environments, like %{codeStart}review*%{codeEnd}.',
@@ -259,7 +260,7 @@ export default {
       return [
         ...new Set(
           this.variable.value
-            .replace(WHITESPACE_REG_EX, '')
+            .replace(new RegExp(WHITESPACE_REG_EX, 'g'), '')
             .replace(this.maskedSupportedCharsRegEx, '')
             .split(''),
         ),
@@ -286,26 +287,26 @@ export default {
         false,
       );
     },
-    maskedValidationIssuesText() {
+    maskedValueValidationErrors() {
+      const errors = [];
+
       if (this.isMaskedReqsMet) {
-        return '';
+        return errors;
       }
 
-      let validationIssuesText = '';
-
       if (this.unsupportedCharsList.length && !this.isMaskedValueContainsWhitespaceChars) {
-        validationIssuesText = this.unsupportedCharsValidationText;
+        errors.push(this.unsupportedCharsValidationText);
       } else if (this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
-        validationIssuesText = this.unsupportedAndWhitespaceCharsValidationText;
+        errors.push(this.unsupportedAndWhitespaceCharsValidationText);
       } else if (!this.unsupportedCharsList.length && this.isMaskedValueContainsWhitespaceChars) {
-        validationIssuesText = this.$options.i18n.whitespaceCharsValidationText;
+        errors.push(this.$options.i18n.whitespaceCharsValidationText);
       }
 
       if (this.variable.value.length < MASKED_VALUE_MIN_LENGTH) {
-        validationIssuesText += ` ${this.maskedValueMinLengthValidationText}`;
+        errors.push(this.maskedValueMinLengthValidationText);
       }
 
-      return validationIssuesText.trim();
+      return errors;
     },
     modalTitle() {
       return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
@@ -428,6 +429,9 @@ export default {
   }),
   visibilityLabelHelpLink: helpPagePath('ci/variables/_index', {
     anchor: 'hide-a-cicd-variable',
+  }),
+  maskedValueDocsLink: helpPagePath('ci/variables/_index', {
+    anchor: 'mask-a-cicd-variable',
   }),
   environmentsPopoverContainerId: 'environments-popover-container',
   environmentsPopoverTargetId: 'environments-popover-target',
@@ -580,7 +584,17 @@ export default {
           </gl-form-radio>
           <gl-form-radio :value="$options.VISIBILITY_MASKED" data-testid="ci-variable-masked-radio">
             {{ $options.i18n.maskedField }}
-            <template #help>{{ $options.i18n.maskedDescription }}</template>
+            <template #help>
+              <gl-sprintf :message="$options.i18n.maskedDescription">
+                <template #link="{ content }">
+                  <gl-link
+                    :href="$options.maskedValueDocsLink"
+                    data-testid="ci-variable-masked-value-docs-link"
+                    >{{ content }}</gl-link
+                  >
+                </template>
+              </gl-sprintf>
+            </template>
           </gl-form-radio>
           <gl-form-radio
             v-if="areHiddenVariablesAvailable"
@@ -666,7 +680,6 @@ export default {
         label-for="ci-variable-value"
         class="-gl-mb-2 gl-border-none"
         data-testid="ci-variable-value-label"
-        :invalid-feedback="maskedValidationIssuesText"
         :state="isValueValid"
       >
         <p v-if="isEditingHiddenVariable" class="gl-mb-0 gl-mt-2" data-testid="hidden-variable-tip">
@@ -689,6 +702,12 @@ export default {
         >
           {{ $options.i18n.valueFeedback.rawHelpText }}
         </p>
+        <template #invalid-feedback>
+          <p class="gl-mb-0">{{ $options.i18n.maskedValueValidationErrorsTitle }}</p>
+          <ul class="gl-mb-0 gl-pl-6">
+            <li v-for="error in maskedValueValidationErrors" :key="error">{{ error }}</li>
+          </ul>
+        </template>
       </gl-form-group>
       <gl-alert
         v-if="hasVariableReference"

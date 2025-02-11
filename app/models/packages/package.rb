@@ -309,3 +309,5 @@ class Packages::Package < ApplicationRecord
     connection.execute("SELECT pg_advisory_xact_lock(#{lock_expression})")
   end
 end
+
+Packages::Package.prepend_mod

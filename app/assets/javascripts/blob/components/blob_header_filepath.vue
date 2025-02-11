@@ -62,7 +62,13 @@ export default {
     <slot name="filepath-prepend"></slot>
 
     <template v-if="fileName">
-      <file-icon :file-name="fileName" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
+      <file-icon
+        :file-name="fileName"
+        :language="blob.language"
+        :size="16"
+        aria-hidden="true"
+        css-classes="gl-mr-3"
+      />
       <component
         :is="showAsLink ? 'gl-link' : 'strong'"
         v-bind="linkHref"

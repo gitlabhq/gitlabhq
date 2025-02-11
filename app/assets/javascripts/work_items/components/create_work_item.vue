@@ -794,6 +794,7 @@ export default {
           <section>
             <work-item-description
               edit-mode
+              is-create-flow
               :autofocus="false"
               :description="description"
               :full-path="fullPath"
