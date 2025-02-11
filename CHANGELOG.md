@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.7.4 (2025-02-11)
+
+### Security (8 changes)
+
+- [Security Duo Chat Escape Unknown Domain Hyperlinks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d3eafa571712e6891f16ecccaaefd82b147b75f6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4691))
+- [Hide sensitive workhorse headers and fix route confusion between web and workhorse routes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af871eb34f21f862bce699839af69c88826a3420) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4762))
+- [Do not allow Planner role to update or delete incidents](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5ae9423dbd353f571ffbea5a8ffe2ac77b587d6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4747))
+- [Reduce memory allocations on create PAT endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d443ded9eaed1300b888594125684db884c88e4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4751))
+- [Prevent SSRF attacks for Workspaces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/03fbdbe7b80e1028098df6bb10abc749b4f4b968) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4730))
+- [Prevent read code access when repository is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fb3eb2135770abcea4951ffe432cebb2065e7d3c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4700))
+- [Fixes XSS on the target branch in the merge request widget](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f4fd06e3450f686817104895eb6aca42af4fab11) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4736))
+- [Unsubscribe from actioncable channel when PAT is revoked](https://gitlab.com/gitlab-org/security/gitlab/-/commit/972f392e7daa6b60ed8ff03e6651944e1d045b40) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4726))
+
 ## 17.7.3 (2025-01-22)
 
 ### Fixed (1 change)
