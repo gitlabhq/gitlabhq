@@ -53,7 +53,7 @@ To create redirects, create a configuration file named `_redirects` in the
   /project-slug/wardrobe.html /project-slug/narnia.html 302
   ```
 
-- If your GitLab Pages site uses [custom domains](custom_domains_ssl_tls_certification/index.md),
+- If your GitLab Pages site uses [custom domains](custom_domains_ssl_tls_certification/_index.md),
   no project path prefix is needed. For example, if your custom domain is `example.com`,
   your `_redirects` file would look like:
 

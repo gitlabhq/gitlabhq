@@ -16,7 +16,7 @@ The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-c
 is a command-line tool for managing releases from the command line or from a CI/CD pipeline.
 You can use the release CLI to create, update, modify, and delete releases.
 
-When you [use a CI/CD job to create a release](index.md#creating-a-release-by-using-a-cicd-job),
+When you [use a CI/CD job to create a release](_index.md#creating-a-release-by-using-a-cicd-job),
 the `release` keyword entries are transformed into Bash commands and sent to the Docker
 container containing the `release-cli` tool. The tool then creates the release.
 

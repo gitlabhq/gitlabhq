@@ -8,7 +8,7 @@ title: 'Tutorials: Extend with GitLab'
 
 ## Integrate with GitLab
 
-GitLab [integrates](../user/project/integrations/index.md) with a number of third-party services,
+GitLab [integrates](../user/project/integrations/_index.md) with a number of third-party services,
 enabling you to work with those services directly from GitLab.
 
 | Topic | Description | Good for beginners |

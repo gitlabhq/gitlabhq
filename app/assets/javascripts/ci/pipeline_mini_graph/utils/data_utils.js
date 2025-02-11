@@ -1,4 +1,5 @@
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { TYPENAME_CI_PIPELINE, TYPENAME_CI_STAGE } from '~/graphql_shared/constants';
 
 const hasDetailedStatus = (item) => {
@@ -17,12 +18,15 @@ export const normalizeDownstreamPipelines = (pipelines) => {
       return p;
     }
 
-    const { id, details, path, project } = p;
+    const { id, iid, details, name, path, project } = p;
     return {
       id: convertToGraphQLId(TYPENAME_CI_PIPELINE, id),
+      iid,
       detailedStatus: details?.status,
+      name,
       path,
       project: {
+        fullPath: cleanLeadingSeparator(project.full_path),
         name: project.name,
       },
     };
@@ -51,5 +55,20 @@ export const normalizeStages = (stages) => {
       },
       name,
     };
+  });
+};
+
+/**
+ * sorts jobs by status
+ * failed > manual > everything else > success
+ *
+ * @param {Array} jobs - The jobs to sort
+ * @returns {Array} - The sorted jobs
+ */
+export const sortJobsByStatus = (jobs) => {
+  if (!jobs) return [];
+  return [...jobs].sort((a, b) => {
+    const order = { failed: -3, manual: -2, success: 1 };
+    return (order[a.detailedStatus.group] || 0) - (order[b.detailedStatus.group] || 0);
   });
 };

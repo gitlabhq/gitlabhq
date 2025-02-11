@@ -343,7 +343,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       Starting from GitLab #{starting_from_milestone}, we expect all new tables to define a `sharding_key`.
 
       To choose an appropriate sharding_key for this table please refer
-      to our guidelines at https://docs.gitlab.com/ee/development/cells/index.html#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
+      to our guidelines at https://docs.gitlab.com/ee/development/cells/#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
     HEREDOC
   end
 

@@ -28,7 +28,7 @@ To authenticate, you can use:
 
 - A [personal access token](../../profile/personal_access_tokens.md)
   with the scope set to `api`.
-- A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
+- A [deploy token](../../project/deploy_tokens/_index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
@@ -523,7 +523,7 @@ npm install @scope/package@my-tag              # Install a specific tag
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
 
-You can use a [`CI_JOB_TOKEN`](../../../ci/jobs/ci_job_token.md) or [deploy token](../../project/deploy_tokens/index.md)
+You can use a [`CI_JOB_TOKEN`](../../../ci/jobs/ci_job_token.md) or [deploy token](../../project/deploy_tokens/_index.md)
 to run `npm dist-tag` commands in a GitLab CI/CD job.
 
 Prerequisites:
@@ -583,7 +583,7 @@ The npm log is copied to `/root/.npm/_logs/` as an artifact.
 Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. You need to authenticate with a token that has access to the package and all its dependencies.
 
 If the package and its dependencies are in separate projects but in the same group, you can use a
-[group deploy token](../../project/deploy_tokens/index.md#create-a-deploy-token):
+[group deploy token](../../project/deploy_tokens/_index.md#create-a-deploy-token):
 
 ```ini
 //gitlab.example.com/api/v4/packages/npm/:_authToken=<group-token>

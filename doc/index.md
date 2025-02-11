@@ -59,8 +59,8 @@ If you are coming to GitLab from another platform:
 
 | Topic                                                                                  | Description |
 |:---------------------------------------------------------------------------------------|:------------|
-| [Import to GitLab](user/project/import/index.md)                                       | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
-| [Migrate from SVN](user/project/import/index.md#import-repositories-from-subversion)   | Convert a SVN repository to Git and GitLab. |
+| [Import to GitLab](user/project/import/_index.md)                                       | Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz, and SVN into GitLab. |
+| [Migrate from SVN](user/project/import/_index.md#import-repositories-from-subversion)   | Convert a SVN repository to Git and GitLab. |
 
 ## Build an integration with GitLab
 

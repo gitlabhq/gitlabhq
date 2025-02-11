@@ -15640,7 +15640,16 @@ msgstr ""
 msgid "ContainerRegistry|Disabled - tags will not be automatically deleted."
 msgstr ""
 
+msgid "ContainerRegistry|Docker build command"
+msgstr ""
+
 msgid "ContainerRegistry|Docker connection error"
+msgstr ""
+
+msgid "ContainerRegistry|Docker login command"
+msgstr ""
+
+msgid "ContainerRegistry|Docker push command"
 msgstr ""
 
 msgid "ContainerRegistry|Edit cleanup rules"
@@ -17091,6 +17100,9 @@ msgstr ""
 msgid "CreateValueStreamForm|End event"
 msgstr ""
 
+msgid "CreateValueStreamForm|End event is required"
+msgstr ""
+
 msgid "CreateValueStreamForm|End event label"
 msgstr ""
 
@@ -17104,6 +17116,9 @@ msgid "CreateValueStreamForm|Enter value stream name"
 msgstr ""
 
 msgid "CreateValueStreamForm|Issue stage end"
+msgstr ""
+
+msgid "CreateValueStreamForm|Label is required"
 msgstr ""
 
 msgid "CreateValueStreamForm|Maximum length %{maxLength} characters"
@@ -17125,15 +17140,6 @@ msgid "CreateValueStreamForm|New value stream"
 msgstr ""
 
 msgid "CreateValueStreamForm|Plan stage start"
-msgstr ""
-
-msgid "CreateValueStreamForm|Please select a start event"
-msgstr ""
-
-msgid "CreateValueStreamForm|Please select a start event first"
-msgstr ""
-
-msgid "CreateValueStreamForm|Please select an end event"
 msgstr ""
 
 msgid "CreateValueStreamForm|Recover hidden stage"
@@ -17167,6 +17173,9 @@ msgid "CreateValueStreamForm|Start event"
 msgstr ""
 
 msgid "CreateValueStreamForm|Start event changed, please select a valid end event"
+msgstr ""
+
+msgid "CreateValueStreamForm|Start event is required"
 msgstr ""
 
 msgid "CreateValueStreamForm|Start event label"
@@ -27509,9 +27518,6 @@ msgid "Group by:"
 msgstr ""
 
 msgid "Group can't be be deleted"
-msgstr ""
-
-msgid "Group cannot be deleted because one of its projects is linked as Security Policy Project"
 msgstr ""
 
 msgid "Group comment templates"
@@ -42496,6 +42502,9 @@ msgstr ""
 msgid "Pipelines|There are no merge trains for the %{branch} target branch in %{projectName}. Merge requests added to a merge train are displayed on this page. Go to a merge request to %{linkStart}start a merge train.%{linkEnd}"
 msgstr ""
 
+msgid "Pipelines|There was a problem fetching the downstream pipeline jobs."
+msgstr ""
+
 msgid "Pipelines|There was a problem fetching the pipeline iid."
 msgstr ""
 
@@ -51882,6 +51891,9 @@ msgstr ""
 msgid "SecurityOrchestration|Group ID: %{id}"
 msgstr ""
 
+msgid "SecurityOrchestration|Group cannot be deleted because it has projects that are linked as a security policy project"
+msgstr ""
+
 msgid "SecurityOrchestration|Groups"
 msgstr ""
 
@@ -52353,6 +52365,9 @@ msgid "SecurityOrchestration|Turn off default mode to edit scope."
 msgstr ""
 
 msgid "SecurityOrchestration|Unlink project"
+msgstr ""
+
+msgid "SecurityOrchestration|Unlink the following projects from the following containers:"
 msgstr ""
 
 msgid "SecurityOrchestration|Unlink the project from the following containers:"
@@ -63132,6 +63147,9 @@ msgid "Versions"
 msgstr ""
 
 msgid "View File Metadata"
+msgstr ""
+
+msgid "View Pipeline: %{title}"
 msgstr ""
 
 msgid "View Stage: %{title}"

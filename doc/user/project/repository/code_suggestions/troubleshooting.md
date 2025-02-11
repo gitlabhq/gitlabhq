@@ -205,7 +205,7 @@ To fix this problem, install the **IntelliCode** component:
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension#setup).
 1. From the **Tools > Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.
-1. Open the extension log in **View > Output** and change the dropdown list to **GitLab Extension** as the log filter.
+1. In **View > Output**, open the extension log. Change the dropdown list to **GitLab Extension** as the log filter.
 1. Verify that the debug log contains similar output:
 
 ```shell

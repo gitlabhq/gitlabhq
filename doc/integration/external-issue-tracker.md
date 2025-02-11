@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-GitLab has its own [issue tracker](../user/project/issues/index.md),
+GitLab has its own [issue tracker](../user/project/issues/_index.md),
 but you can also configure an external issue tracker per GitLab project.
 You can then use:
 

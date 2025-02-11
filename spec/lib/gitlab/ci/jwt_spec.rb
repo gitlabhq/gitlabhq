@@ -98,6 +98,16 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
           end
         end
 
+        context 'when feature flag is enabled for root namespace' do
+          before do
+            stub_feature_flags(ci_jwt_groups_direct: project.root_namespace)
+          end
+
+          it 'has correct values for the sorted direct group full paths' do
+            expect(payload[:groups_direct]).to eq(expected_groups)
+          end
+        end
+
         context 'when feature flag is disabled' do
           before do
             stub_feature_flags(ci_jwt_groups_direct: false)

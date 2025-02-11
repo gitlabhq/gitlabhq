@@ -25,7 +25,7 @@ The creation or deletion of a tag can be used as a trigger for automation, inclu
 - Signaling a [repository mirror](../mirror/_index.md) to update.
 - Running a CI/CD pipeline with [`if: $CI_COMMIT_TAG`](../../../../ci/jobs/job_rules.md#common-if-clauses-with-predefined-variables).
 
-When you [create a release](../../releases/index.md),
+When you [create a release](../../releases/_index.md),
 GitLab also creates a tag to mark the release point.
 Many projects combine an annotated release tag with a stable branch. Consider
 setting deployment or release tags automatically.
@@ -41,7 +41,7 @@ In the GitLab UI, each tag displays:
 - Optional. A link to the release (**{rocket}**).
 - Optional. If a pipeline has been run, the current pipeline status.
 - Download links to the source code and artifacts linked to the tag.
-- A [**Create release**](../../releases/index.md#create-a-release) (**{pencil}**) link.
+- A [**Create release**](../../releases/_index.md#create-a-release) (**{pencil}**) link.
 - A link to delete the tag.
 
 ## View tags for a project

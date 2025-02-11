@@ -10,7 +10,7 @@ Cron syntax is used to schedule when jobs should run.
 You may need to use a cron syntax string to
 create a [pipeline schedule](../../ci/pipelines/schedules.md),
 or to prevent unintentional releases by setting a
-[deploy freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
+[deploy freeze](../../user/project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 
 ## Cron syntax
 

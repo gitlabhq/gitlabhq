@@ -280,7 +280,7 @@ export default {
       this.sort = sort;
     },
   },
-  helpUrl: helpPagePath('user/project/import/index', {
+  helpUrl: helpPagePath('user/project/import/_index', {
     anchor: 'security-considerations',
   }),
   uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,

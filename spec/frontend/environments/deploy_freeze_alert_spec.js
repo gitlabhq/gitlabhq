@@ -88,7 +88,7 @@ describe('~/environments/components/deploy_freeze_alert.vue', () => {
     it('shows a link to the docs', () => {
       const link = alert.findComponent(GlLink);
       expect(link.attributes('href')).toBe(
-        '/help/user/project/releases/index#prevent-unintentional-releases-by-setting-a-deploy-freeze',
+        '/help/user/project/releases/_index#prevent-unintentional-releases-by-setting-a-deploy-freeze',
       );
       expect(link.text()).toBe('deploy freeze documentation');
     });

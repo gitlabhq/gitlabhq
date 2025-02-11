@@ -46,8 +46,8 @@ on where to fetch (or push) the large file.
 
 Your Git repository remains smaller, which helps you adhere to repository size limits.
 For more information, see repository size limits
-[for self-managed](../../../administration/settings/account_and_limit_settings.md#repository-size-limit) and
-[for GitLab.com](../../../user/gitlab_com/_index.md#account-and-limit-settings).
+[for GitLab Self-Managed](../../../administration/settings/account_and_limit_settings.md#repository-size-limit) and
+[for GitLab SaaS](../../../user/gitlab_com/_index.md#account-and-limit-settings).
 
 ## Understand how Git LFS works with forks
 
@@ -66,7 +66,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-GitLab enables Git LFS by default for both self-managed instances and GitLab.com.
+GitLab enables Git LFS by default for both GitLab Self-Managed and GitLab SaaS.
 It offers both server settings and project-specific settings.
 
 - To configure Git LFS on your instance, such as setting up remote object storage, see
@@ -82,13 +82,13 @@ It offers both server settings and project-specific settings.
 
 ## Enable or disable Git LFS for a project
 
-Git LFS is enabled by default for both self-managed instances and GitLab.com.
+Git LFS is enabled by default for both GitLab Self-Managed and GitLab SaaS.
 
 Prerequisites:
 
 - You must have at least the Developer role for the project.
 
-To enable or disable Git LFS at the project level:
+To enable or disable Git LFS for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
@@ -152,6 +152,6 @@ the total size of your repository, see
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Git LFS with Git](../../git/file_management.md#git-lfs)
 - [Git LFS developer information](../../../development/lfs.md)
-- [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/_index.md) for self-managed instances
+- [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/_index.md) for GitLab Self-Managed
 - [Troubleshooting Git LFS](troubleshooting.md)
 - [The `.gitattributes` file](../../../user/project/repository/files/git_attributes.md)

@@ -149,7 +149,7 @@ In GitLab 16.8 and later, with the introduction of bulk import and export of rel
 the number of available workers on the destination instance has become more critical.
 
 For more information about how to add Sidekiq workers to the destination instance,
-see [Sidekiq configuration](../../project/import/index.md#sidekiq-configuration).
+see [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).
 
 ### Redistribute large projects or start separate migrations
 

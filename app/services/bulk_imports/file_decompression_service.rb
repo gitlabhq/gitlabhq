@@ -30,8 +30,8 @@ module BulkImports
 
       filepath
     rescue StandardError => e
-      File.delete(filepath) if File.exist?(filepath)
-      File.delete(decompressed_filepath) if File.exist?(decompressed_filepath)
+      FileUtils.rm_f(filepath)
+      FileUtils.rm_f(decompressed_filepath)
 
       raise e
     end

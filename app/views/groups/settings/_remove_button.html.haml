@@ -1,5 +1,6 @@
 - remove_form_id = local_assigns.fetch(:remove_form_id, nil)
 - button_text = local_assigns.fetch(:button_text, nil)
+- group ||= local_assigns.fetch(:group)
 
 - if group.linked_to_subscription?
   = render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5', data: { testid: 'group-has-linked-subscription-alert' }}) do |c|

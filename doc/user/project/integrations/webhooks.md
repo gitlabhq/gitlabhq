@@ -90,7 +90,7 @@ To create a webhook:
 1. Optional. Enter a **Name** and **Description** for the webhook.
 1. Optional. In **Secret token**, enter a token to validate requests.
 1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
-1. Optional. To disable [SSL verification](index.md#ssl-verification), clear the **Enable SSL verification** checkbox.
+1. Optional. To disable [SSL verification](_index.md#ssl-verification), clear the **Enable SSL verification** checkbox.
 1. Select **Add webhook**.
 
 The secret token is sent with the webhook request in the `X-Gitlab-Token` HTTP header.

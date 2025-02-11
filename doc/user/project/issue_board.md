@@ -524,7 +524,7 @@ The steps depend on the scope of the list:
 ### Filter issues
 
 You can use the filters on top of your issue board to show only
-the results you want. It's similar to the filtering used in the [issue tracker](issues/index.md).
+the results you want. It's similar to the filtering used in the [issue tracker](issues/_index.md).
 
 Prerequisites:
 

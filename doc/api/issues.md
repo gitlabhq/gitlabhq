@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Interact with [GitLab Issues](../user/project/issues/index.md) using the REST API.
+Interact with [GitLab Issues](../user/project/issues/_index.md) using the REST API.
 
 If a user is not a member of a private project, a `GET`
 request on that project results in a `404` status code.

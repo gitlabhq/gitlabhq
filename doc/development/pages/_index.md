@@ -116,7 +116,7 @@ FIPS_MODE=1 make && ./gitlab-pages -config=gitlab-pages.conf
 To build a GitLab Pages site locally you must
 [configure `gitlab-runner`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/runner.md).
 
-For more information, refer to the [user manual](../../user/project/pages/index.md).
+For more information, refer to the [user manual](../../user/project/pages/_index.md).
 
 ### Enabling access control
 

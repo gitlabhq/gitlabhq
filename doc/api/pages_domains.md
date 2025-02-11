@@ -9,9 +9,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed
 
-Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](../user/project/pages/index.md).
+Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](../user/project/pages/_index.md).
 
-The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/index.md) the feature.
+The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/_index.md) the feature.
 
 ## List all Pages domains
 

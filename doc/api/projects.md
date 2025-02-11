@@ -21,7 +21,7 @@ The Projects API contains endpoints that:
 - Transfer projects between namespaces
 - Manage deployment and container registry settings
 
-This page explains how to use the Projects REST API endpoints to interact with [GitLab projects](../user/project/index.md).
+This page explains how to use the Projects REST API endpoints to interact with [GitLab projects](../user/project/_index.md).
 
 ## Permissions
 
@@ -1456,7 +1456,7 @@ Supported general project attributes:
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                    | string  | No                             | One of `never`, `always`, `default_on`, or `default_off`. |
 | `tag_list`                                         | array   | No                             | The list of tags for a project; put array of tags, that should be finally assigned to a project. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0. Use `topics` instead. |
-| `template_name`                                    | string  | No                             | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
+| `template_name`                                    | string  | No                             | When used without `use_custom_template`, name of a [built-in project template](../user/project/_index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
 | `template_project_id`                              | integer | No                             | When used with `use_custom_template`, project ID of a custom project template. Using a project ID is preferable to using `template_name` because `template_name` can be ambiguous. Premium and Ultimate only. |
 | `topics`                                           | array   | No                             | The list of topics for a project; put array of topics, that should be finally assigned to a project. |
 | `use_custom_template`                              | boolean | No                             | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
@@ -1481,13 +1481,13 @@ settings with access control options can be one of:
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
+| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
+| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
@@ -1580,7 +1580,7 @@ Supported general project attributes:
 | `squash_option`                                    | string  | No       | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                        | string  | No       | The commit message used to apply merge request [suggestions](../user/project/merge_requests/reviews/suggestions.md). |
 | `tag_list`                                         | array   | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
-| `template_name`                                    | string  | No       | When used without `use_custom_template`, name of a [built-in project template](../user/project/index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
+| `template_name`                                    | string  | No       | When used without `use_custom_template`, name of a [built-in project template](../user/project/_index.md#create-a-project-from-a-built-in-template). When used with `use_custom_template`, name of a custom project template. |
 | `topics`                                           | array   | No       | The list of topics for the project. |
 | `use_custom_template`                              | boolean | No       | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
 | `visibility`                                       | string  | No       | See [project visibility level](#project-visibility-level). |
@@ -1604,13 +1604,13 @@ settings with access control options can be one of:
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
+| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
+| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |
@@ -1742,13 +1742,13 @@ Supported project visibility attributes:
 | `feature_flags_access_level`           | string | No       | Set visibility of [feature flags](../operations/feature_flags.md). |
 | `forking_access_level`                 | string | No       | Set visibility of [forks](../user/project/repository/forking_workflow.md). |
 | `infrastructure_access_level`          | string | No       | Set visibility of [infrastructure management](../user/infrastructure/_index.md). |
-| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/index.md). |
+| `issues_access_level`                  | string | No       | Set visibility of [issues](../user/project/issues/_index.md). |
 | `merge_requests_access_level`          | string | No       | Set visibility of [merge requests](../user/project/merge_requests/_index.md). |
 | `model_experiments_access_level`       | string | No       | Set visibility of [machine learning model experiments](../user/project/ml/experiment_tracking/_index.md). |
 | `model_registry_access_level`          | string | No       | Set visibility of [machine learning model registry](../user/project/ml/model_registry/_index.md#access-the-model-registry). |
 | `monitor_access_level`                 | string | No       | Set visibility of [application performance monitoring](../operations/_index.md). |
 | `pages_access_level`                   | string | No       | Set visibility of [GitLab Pages](../user/project/pages/pages_access_control.md). |
-| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/index.md). |
+| `releases_access_level`                | string | No       | Set visibility of [releases](../user/project/releases/_index.md). |
 | `repository_access_level`              | string | No       | Set visibility of [repository](../user/project/repository/_index.md). |
 | `requirements_access_level`            | string | No       | Set visibility of [requirements management](../user/project/requirements/_index.md). |
 | `security_and_compliance_access_level` | string | No       | Set visibility of [security and compliance](../user/application_security/index.md). |

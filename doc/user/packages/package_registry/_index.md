@@ -52,10 +52,10 @@ For most package types, the following credential types are valid:
 
 - [Personal access token](../../profile/personal_access_tokens.md):
   authenticates with your user permissions. Good for personal and local use of the package registry.
-- [Project deploy token](../../project/deploy_tokens/index.md):
+- [Project deploy token](../../project/deploy_tokens/_index.md):
   allows access to all packages in a project. Good for granting and revoking project access to many
   users.
-- [Group deploy token](../../project/deploy_tokens/index.md):
+- [Group deploy token](../../project/deploy_tokens/_index.md):
   allows access to all packages in a group and its subgroups. Good for granting and revoking access
   to a large number of packages to sets of users.
 - [Job token](../../../ci/jobs/ci_job_token.md):

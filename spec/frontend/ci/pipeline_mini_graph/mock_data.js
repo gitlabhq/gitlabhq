@@ -241,17 +241,20 @@ export const mockPipelineStageJobs = {
 
 export const singlePipeline = {
   id: 'gid://gitlab/Ci::Pipeline/610',
-  project: {
-    id: 'gid://gitlab/Project/21',
-    name: 'trigger-downstream',
-    __typename: 'Project',
-  },
+  iid: 234,
   detailedStatus: {
     id: 'success-610-610',
     detailsPath: '/root/trigger-downstream/-/pipelines/610',
     icon: 'status_success',
     label: 'passed',
     __typename: 'DetailedStatus',
+  },
+  path: '/path/to/pipeline',
+  project: {
+    id: 'gid://gitlab/Project/21',
+    name: 'trigger-downstream',
+    fullPath: 'full/path',
+    __typename: 'Project',
   },
   __typename: 'Pipeline',
 };

@@ -25,7 +25,7 @@ for your GitLab project. This guide uses the `GitLab.com` instance.
 Prerequisites:
 
 - You must have a project for which you want to enable error tracking.
-  See how to [create a project](../user/project/index.md).
+  See how to [create a project](../user/project/_index.md).
 
 To enable error tracking with GitLab as the backend:
 

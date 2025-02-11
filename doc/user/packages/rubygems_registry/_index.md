@@ -30,7 +30,7 @@ To do this, you can use:
 
 - A [personal access token](../../profile/personal_access_tokens.md)
   with the scope set to `api`.
-- A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
+- A [deploy token](../../project/deploy_tokens/_index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 

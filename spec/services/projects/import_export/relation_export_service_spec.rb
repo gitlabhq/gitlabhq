@@ -19,15 +19,15 @@ RSpec.describe Projects::ImportExport::RelationExportService, feature_category: 
 
     allow(project_export_job.project.import_export_shared).to receive(:export_path).and_return(export_path)
     allow(project_export_job.project.import_export_shared).to receive(:archive_path).and_return(archive_path)
-    allow(FileUtils).to receive(:remove_entry).with(any_args).and_call_original
+    allow(FileUtils).to receive(:rm_rf).with(any_args).and_call_original
   end
 
   describe '#execute' do
     let(:relation) { 'labels' }
 
     it 'removes temporary paths used to export files' do
-      expect(FileUtils).to receive(:remove_entry).with(export_path)
-      expect(FileUtils).to receive(:remove_entry).with(archive_path)
+      expect(FileUtils).to receive(:rm_rf).with(export_path)
+      expect(FileUtils).to receive(:rm_rf).with(archive_path)
 
       service.execute
     end

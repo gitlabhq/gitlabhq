@@ -43,12 +43,12 @@ You have two options:
 - The plain text editor, called the Web Editor, which you can use to edit a single file.
 - A more full-featured editor, called the Web IDE, which you can use to edit multiple files.
 
-If you'd prefer to work locally, you can use Git to clone the repository to your computer
+Prefer to work locally? Use Git to clone the repository to your computer,
 and develop in the IDE of your choice.
 Then you can use one of the GitLab editor extensions to assist in interacting with GitLab.
 
-And finally, if you don't want to use either of the first two options,
-you can launch a remote development environment and work from the cloud.
+Don't want to use either of the first two options?
+Launch a remote development environment, and work from the cloud.
 
 You can further split your development environment by creating separate workspaces.
 Workspaces are separate development environments you use to ensure different projects
@@ -108,8 +108,10 @@ For details, see:
 
 Before your changes can be merged, the merge request usually needs to be approved by other people,
 and to have a passing CI/CD pipeline. The requirements are custom to your organization, but
-usually they include ensuring the code changes adhere to your organization's guidelines and
-that the commit message is clear and links to related issues.
+usually they include ensuring:
+
+- The code changes adhere to your organization's guidelines.
+- The commit messages are clear, and link to related issues.
 
 Merge conflicts can occur if someone else edits a file after you created your branch,
 but before you merged it into the target branch. You must resolve any conflicts before you can merge.

@@ -40,7 +40,7 @@ To maximize the chance of a successful and performant migration, you should:
   For more information, see [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036).
 - Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
   as possible to take advantage of bug fixes and improvements added over time.
-- [Configure Sidekiq](../../project/import/index.md#sidekiq-configuration) properly.
+- [Configure Sidekiq](../../project/import/_index.md#sidekiq-configuration) properly.
 
 We have successfully tested migrations between a source instance running GitLab 16.2 and a destination instance running
 GitLab 16.8.
@@ -79,14 +79,14 @@ DETAILS:
 > - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
 > - Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
-> - Removed from direct transfer on GitLab.com in GitLab 17.5 in favor of [the alternative](../../project/import/index.md#user-contribution-and-membership-mapping).
-> - Removed as the default direct transfer method on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7 in favor of [the alternative](../../project/import/index.md#user-contribution-and-membership-mapping).
+> - Removed from direct transfer on GitLab.com in GitLab 17.5 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
+> - Removed as the default direct transfer method on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
 
 This method of user contribution and membership mapping is available for
 GitLab Self-Managed when `importer_user_mapping` and `bulk_import_importer_user_mapping` are disabled.
 These feature flags are enabled by default.
 For information on the default method available for GitLab Self-Managed and GitLab.com,
-see [user contribution and membership mapping](../../project/import/index.md#user-contribution-and-membership-mapping).
+see [user contribution and membership mapping](../../project/import/_index.md#user-contribution-and-membership-mapping).
 
 Users are never created during a migration. Instead, contributions and membership of users on the source instance are
 mapped to users on the destination instance. The type of mapping of a user's membership depends on the

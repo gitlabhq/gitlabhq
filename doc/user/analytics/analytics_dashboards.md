@@ -13,6 +13,7 @@ DETAILS:
 > - `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
 > - `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
 > - `filters` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505317) in GitLab 17.9. Disabled by default.
+> - Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
 
 Analytics dashboards help you visualize the collected data.
 You can use built-in dashboards by GitLab or create your own dashboards with custom visualizations.
@@ -42,8 +43,8 @@ You can create custom dashboards with the dashboard designer.
 
 - Each project can have an unlimited number of dashboards.
   The only limitation might be the [repository size limit](../project/repository/repository_size.md#size-and-storage-limits).
-- Each dashboard can reference one or more [visualizations](#define-a-chart-visualization).
-- Visualizations are shared across dashboards.
+- Each dashboard can reference one or more [visualizations](#define-a-chart-visualization-template).
+- Visualizations can be shared across dashboards.
 
 Project maintainers can enforce approval rules on dashboard changes with features such as [code owners](../project/codeowners/_index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
 Your dashboard files are versioned in source control with the rest of a project's code.
@@ -267,7 +268,7 @@ To define a dashboard:
 1. In the new directory, create a `.yaml` file with the same name as the directory, for example `.gitlab/analytics/dashboards/my_dashboard/my_dashboard.yaml`.
 
    This file contains the dashboard definition. It must conform to the JSON schema defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
-1. Optional. To create new visualizations to add to your dashboard, see [defining a chart visualization](#define-a-chart-visualization).
+1. Optional. To create new visualizations to add to your dashboard, see [defining a chart visualization template](#define-a-chart-visualization-template).
 
 For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml), if you want to create three dashboards (Conversion funnels, Demographic breakdown, and North star metrics)
 and one visualization (line chart) that applies to all dashboards, the file structure looks like this:
@@ -305,7 +306,7 @@ filters:
 
 See a complete [dashboard configuration example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml).
 
-### Define a chart visualization
+### Define an inline chart visualization
 
 You can define different charts and add visualization options to some of them, such as:
 
@@ -314,7 +315,30 @@ You can define different charts and add visualization options to some of them, s
 - Data table.
 - Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
 
-To define a chart visualization for your dashboards:
+To add an inline chart visualization to a dashboard, see our [Create a built-in dashboard](../../development/fe_guide/analytics_dashboards.md#create-a-built-in-dashboard) guide.
+This process can also be followed for user-created dashboards. Each visualization must be written with the following
+required fields:
+
+- version
+- type
+- data
+- options
+
+To contribute, see [adding a new visualization render type](../../development/fe_guide/analytics_dashboards.md#adding-a-new-visualization-render-type).
+
+### Define a chart visualization template
+
+NOTE:
+We recommend using visualization templates sparingly. Visualization templates can lead to long visualization
+selection lists in the dashboard editor UI if not managed, which may lead to visualizations being missed or duplicated.
+Generally, visualization templates should be reserved for visualizations that will be used identically
+across several dashboards.
+
+If you need a visualization to be used by multiple dashboards, you might store them as separate template files.
+When added to a dashboard, the visualization template will be copied over to the dashboard. Visualization templates
+copied to dashboards are not updated when the visualization template is updated.
+
+To define a chart visualization template for your dashboards:
 
 1. In the `.gitlab/analytics/dashboards/visualizations/` directory, create a `.yaml` file.
    The filename should be descriptive of the visualization it defines.
@@ -328,8 +352,6 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
-
-To contribute, see [adding a new visualization render type](../../development/fe_guide/analytics_dashboards.md#adding-a-new-visualization-render-type).
 
 ## Troubleshooting
 
@@ -347,11 +369,11 @@ If the dashboard displays a global error message that the configuration is inval
 ### `Invalid visualization configuration`
 
 If a dashboard panel displays a message that the visualization configuration is invalid,
-check that your visualization configurations match the [visualization JSON schema](#define-a-chart-visualization)
+check that your visualization configurations match the [visualization JSON schema](#define-a-chart-visualization-template)
 defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
 
 ### Dashboard panel error
 
 If a dashboard panel displays an error message:
 
-- Make sure your [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization) configuration is set up correctly.
+- Make sure your [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization-template) configuration is set up correctly.

@@ -144,7 +144,7 @@ as a [Load Performance report artifact](../yaml/artifacts_reports.md#artifactsre
 The latest Load Performance artifact available is always used, using the
 summary values from the test.
 
-If [GitLab Pages](../../user/project/pages/index.md) is enabled, you can view the report directly in your browser.
+If [GitLab Pages](../../user/project/pages/_index.md) is enabled, you can view the report directly in your browser.
 
 ### Load Performance testing in review apps
 

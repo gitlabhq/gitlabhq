@@ -23,7 +23,7 @@ The agent for Kubernetes [integrates with GitLab CI/CD pipelines](ci_cd_workflow
 
 In this section, you'll use the GitLab pipeline integration to create a secret in the cluster and use it to access the GitLab container registry. The rest of this tutorial will use the deployed secret.
 
-1. [Create a deploy token](../../project/deploy_tokens/index.md#create-a-deploy-token) with the `read_registry` scope.
+1. [Create a deploy token](../../project/deploy_tokens/_index.md#create-a-deploy-token) with the `read_registry` scope.
 1. Save your deploy token and username as CI/CD variables called `CONTAINER_REGISTRY_ACCESS_TOKEN` and `CONTAINER_REGISTRY_ACCESS_USERNAME`.
    - For both variables, set the environment to `container-registry-secret*`.
    - For `CONTAINER_REGISTRY_ACCESS_TOKEN`:

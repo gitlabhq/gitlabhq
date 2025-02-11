@@ -102,9 +102,10 @@ You might get an HTTP `500` error.
 
 This issue occurs for when requests time out for commits with a lot of changed files.
 
-If this happens with a commit with more than 50 files changed,
-the workaround is to break down your changes into smaller commits and push
-them one by one.
+If this issue happens when you change more than 50 files in a commit:
+
+1. Split your changes into smaller commits.
+1. Push the smaller commits one by one.
 
 ### Error: `Filename: ensure this value has at most 256 characters`
 

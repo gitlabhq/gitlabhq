@@ -276,7 +276,7 @@ Alternatively:
 
 ## Other actions
 
-Because incidents in GitLab are built on top of [issues](../../user/project/issues/index.md),
+Because incidents in GitLab are built on top of [issues](../../user/project/issues/_index.md),
 they have the following actions in common:
 
 - [Add a to-do item](../../user/todos.md#create-a-to-do-item)

@@ -642,7 +642,7 @@ happens when GitLab can't establish an HTTPS connection to the remote host. This
 can be caused if the remote host has rate limits to prevent overloading the server
 with requests.
 
-For example, the [GitLab Pages](../../user/project/pages/index.md) server for GitLab.com
+For example, the [GitLab Pages](../../user/project/pages/_index.md) server for GitLab.com
 is rate limited. Repeated attempts to fetch CI/CD configuration files hosted on GitLab Pages
 can cause the rate limit to be reached and cause the error. You should avoid hosting
 CI/CD configuration files on a GitLab Pages site.

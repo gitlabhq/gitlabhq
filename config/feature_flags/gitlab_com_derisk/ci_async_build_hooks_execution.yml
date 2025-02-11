@@ -1,9 +1,0 @@
----
-name: ci_async_build_hooks_execution
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/499290
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177706
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512832
-milestone: '17.9'
-group: group::pipeline authoring
-type: gitlab_com_derisk
-default_enabled: false

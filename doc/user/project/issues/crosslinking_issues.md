@@ -9,10 +9,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-There are several ways to mention an issue or make [issues](index.md) appear in each other's
+There are several ways to mention an issue or make [issues](_index.md) appear in each other's
 [Linked issues](related_issues.md) section.
 
-For more information on GitLab Issues, read the [issues documentation](index.md).
+For more information on GitLab Issues, read the [issues documentation](_index.md).
 
 ## From commit messages
 

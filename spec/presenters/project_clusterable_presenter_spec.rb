@@ -76,6 +76,6 @@ RSpec.describe ProjectClusterablePresenter, feature_category: :environment_manag
   describe '#learn_more_link' do
     subject { presenter.learn_more_link }
 
-    it { is_expected.to include('user/project/clusters/index') }
+    it { is_expected.to include('user/project/clusters/_index') }
   end
 end

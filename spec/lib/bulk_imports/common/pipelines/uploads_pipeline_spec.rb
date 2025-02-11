@@ -166,22 +166,12 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
       end
 
       it 'removes tmp dir' do
-        allow(FileUtils).to receive(:remove_entry).and_call_original
-        expect(FileUtils).to receive(:remove_entry).with(tmpdir).and_call_original
+        allow(FileUtils).to receive(:rm_rf).and_call_original
+        expect(FileUtils).to receive(:rm_rf).with(tmpdir).and_call_original
 
         pipeline.after_run(nil)
 
         expect(Dir.exist?(tmpdir)).to eq(false)
-      end
-
-      context 'when dir does not exist' do
-        it 'does not attempt to remove tmpdir' do
-          FileUtils.remove_entry(tmpdir)
-
-          expect(FileUtils).not_to receive(:remove_entry).with(tmpdir)
-
-          pipeline.after_run(nil)
-        end
       end
     end
   end

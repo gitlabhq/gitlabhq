@@ -155,7 +155,7 @@ running tests:
 GITALY_REPO_URL=https://gitlab.com/nick.thomas/gitaly bundle exec rspec spec/lib/gitlab/git/repository_spec.rb
 ```
 
-If your fork of Gitaly is private, you can generate a [Deploy Token](../user/project/deploy_tokens/index.md)
+If your fork of Gitaly is private, you can generate a [Deploy Token](../user/project/deploy_tokens/_index.md)
 and specify it in the URL:
 
 ```shell

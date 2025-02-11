@@ -19,7 +19,7 @@ The diagram editor is available in both the plain text editor and the rich text 
 On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
 
 On GitLab Self-Managed, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
-website, or use a self-managed diagrams.net site in offline environments.
+website, or host your own diagrams.net site in offline environments.
 
 To set up the integration, you must:
 
@@ -55,5 +55,5 @@ For more information, see [Run your own diagrams.net server with Docker](https:/
 1. Select the **Enable Diagrams.net** checkbox.
 1. Enter the Diagrams.net URL. To connect to:
    - The free public instance: enter `https://embed.diagrams.net`.
-   - A self-managed diagrams.net instance: enter the URL you [configured earlier](#configure-your-diagramsnet-server).
+   - A locally hosted diagrams.net instance: enter the URL you [configured earlier](#configure-your-diagramsnet-server).
 1. Select **Save changes**.

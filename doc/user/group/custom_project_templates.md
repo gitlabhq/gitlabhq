@@ -10,12 +10,12 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-When you create a project, you can [choose from a list of templates](../project/index.md).
+When you create a project, you can [choose from a list of templates](../project/_index.md).
 These templates, for things like GitLab Pages or Ruby, populate the new project with a copy of the files contained in the
 template. This information is identical to the information used by [GitLab project import/export](../project/settings/import_export.md)
 and can help you start a new project more quickly.
 
-You can [customize the list](../project/index.md) of available templates, so
+You can [customize the list](../project/_index.md) of available templates, so
 that all projects in your group have the same list. To do this, you populate a subgroup with the projects you want to
 use as templates.
 

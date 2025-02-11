@@ -282,7 +282,7 @@ Tokens that can be used to authenticate:
 | Header          | Value |
 |-----------------|-------|
 | `PRIVATE-TOKEN` | A [personal access token](../../user/profile/personal_access_tokens.md) with `api` scope. |
-| `DEPLOY-TOKEN`  | A [deploy token](../../user/project/deploy_tokens/index.md) with `write_package_registry` scope. |
+| `DEPLOY-TOKEN`  | A [deploy token](../../user/project/deploy_tokens/_index.md) with `write_package_registry` scope. |
 | `JOB-TOKEN`     | A [job token](../../ci/jobs/ci_job_token.md). |
 
 Example response:

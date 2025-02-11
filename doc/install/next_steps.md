@@ -32,7 +32,7 @@ installation.
 
 ## Pages
 
-- [GitLab Pages](../user/project/pages/index.md): Publish static websites directly from a repository in GitLab
+- [GitLab Pages](../user/project/pages/_index.md): Publish static websites directly from a repository in GitLab
 
 ## Security
 

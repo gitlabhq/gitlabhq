@@ -175,7 +175,7 @@ This step introduces:
   pipeline configurations group jobs into stages. Jobs in the same stage can run in parallel,
   while jobs in later stages wait for jobs in earlier stages to complete. If a job fails,
   the whole stage is considered failed and jobs in later stages do not start running.
-- [GitLab Pages](../../user/project/pages/index.md): To host your static site, you
+- [GitLab Pages](../../user/project/pages/_index.md): To host your static site, you
   will use GitLab Pages.
 
 In this step:
@@ -226,7 +226,7 @@ To view your site:
 - Under **Access pages**, select the link. The URL format should be similar to: `https://<my-username>.gitlab.io/<project-name>`. For more information, see [GitLab Pages default domain names](../../user/project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names).
 
 NOTE:
-If you need to [use unique domains](../../user/project/pages/index.md#unique-domains), in `docusaurus.config.js`, set `baseUrl`: to `/`.
+If you need to [use unique domains](../../user/project/pages/_index.md#unique-domains), in `docusaurus.config.js`, set `baseUrl`: to `/`.
 
 ## Add test jobs
 

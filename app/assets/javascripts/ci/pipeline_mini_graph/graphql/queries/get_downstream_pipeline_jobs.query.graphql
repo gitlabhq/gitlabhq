@@ -3,12 +3,6 @@ query getDownstreamPipelineJobs($fullPath: ID!, $iid: ID!) {
     id
     pipeline(iid: $iid) {
       id
-      path
-      name
-      project {
-        id
-        name
-      }
       jobs {
         nodes {
           id

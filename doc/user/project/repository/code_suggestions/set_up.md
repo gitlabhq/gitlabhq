@@ -19,7 +19,7 @@ To use Code Suggestions, you need:
 
 ## Configure editor extension
 
-Code Suggestions is part of an editor extension. To use Code Suggestions, you will:
+Code Suggestions is part of an editor extension. To use Code Suggestions:
 
 1. Install the extension in your IDE.
 1. Authenticate with GitLab from the IDE. You can use either OAuth or a personal access token.

@@ -120,5 +120,4 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
 
 ## Related topics
 
-- [Import custom models into Amazon Bedrock](https://www.youtube.com/watch?v=CA2AXfWWdpA)
 - [Troubleshooting](../gitlab_duo_self_hosted/troubleshooting.md)

@@ -51,7 +51,7 @@ and evaluate the impact of your work on the broader organization's objectives.
 For more information, see:
 
 - [Epics](../group/epics/_index.md)
-- [Issues](../project/issues/index.md)
+- [Issues](../project/issues/_index.md)
 - [Tasks](../tasks.md)
 - [OKRs](../okrs.md)
 

@@ -380,7 +380,7 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 
 ### GitLab deploy tokens
 
-[GitLab Deploy Tokens](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
+[GitLab Deploy Tokens](../../user/project/deploy_tokens/_index.md#gitlab-deploy-token)
 are created for internal and private projects when Auto DevOps is enabled, and the
 Auto DevOps settings are saved. You can use a Deploy Token for permanent access to
 the registry. After you manually revoke the GitLab Deploy Token, it isn't

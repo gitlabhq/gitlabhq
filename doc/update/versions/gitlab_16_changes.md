@@ -868,7 +868,7 @@ Specific information applies to installations using Geo:
 
   - [Container registry](../../administration/packages/container_registry.md)
   - [Gitaly](../../administration/gitaly/tls_support.md)
-  - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates)
+  - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manual-addition-of-ssltls-certificates)
   - [Workhorse](../../development/workhorse/configuration.md#tls-support)
 
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)

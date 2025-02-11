@@ -14,8 +14,8 @@ GitLab Pages offers.
 
 To familiarize yourself with GitLab Pages first:
 
-- Read an [introduction to GitLab Pages](index.md).
-- Learn [how to get started with Pages](index.md#getting-started).
+- Read an [introduction to GitLab Pages](_index.md).
+- Learn [how to get started with Pages](_index.md#getting-started).
 - Learn how to enable GitLab Pages
   across your GitLab instance on the [administrator documentation](../../../administration/pages/_index.md).
 
@@ -126,7 +126,7 @@ deploy-pages:
     - if: $CI_COMMIT_BRANCH == "main"
 ```
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ### `.gitlab-ci.yml` for a static site generator
 
@@ -174,7 +174,7 @@ See an example that has different files in the [`main` branch](https://gitlab.co
 and the source files for Jekyll are in a [`pages` branch](https://gitlab.com/pages/jekyll-branched/tree/pages) which
 also includes `.gitlab-ci.yml`.
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ### Serving compressed assets
 
@@ -222,7 +222,7 @@ By pre-compressing the files and including both versions in the artifact, Pages
 can serve requests for both compressed and uncompressed content without
 needing to compress files on-demand.
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ### Resolving ambiguous URLs
 
@@ -298,7 +298,7 @@ the directory to be deployed with Pages both as an artifact, and under the
 `pages.publish` property. The reason you need both is that you can define multiple paths
 as artifacts, and GitLab doesn't know which one you want to deploy.
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 To use variables in the `pages.publish` field, see [`pages:pages.publish`](../../../ci/yaml/_index.md#pagespagespublish).
 
@@ -314,7 +314,7 @@ If anyone tries to access the old URL, they'll receive a `404` error.
 Prerequisites
 
 - You must have at least the Maintainer role for the project.
-- The **Use unique domain** setting [must be enabled](index.md#unique-domains) in your project's Pages settings.
+- The **Use unique domain** setting [must be enabled](_index.md#unique-domains) in your project's Pages settings.
 
 To regenerate a unique domain for your GitLab Pages site:
 
@@ -375,7 +375,7 @@ deploy-pages:
 
 The `FF_USE_FASTZIP` variable enables the [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) which is needed for [`ARTIFACT_COMPRESSION_LEVEL`](../../../ci/runners/configure_runners.md#artifact-and-cache-settings).
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ### `401` error when accessing private GitLab Pages sites in multiple browser tabs
 

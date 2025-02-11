@@ -44,7 +44,7 @@ integration in GitLab.
 1. Select **Atlassian Bamboo**.
 1. Ensure the **Active** checkbox is selected.
 1. Enter the base URL of your Bamboo server. For example, `https://bamboo.example.com`.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#ssl-verification).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](_index.md#ssl-verification).
 1. Enter the [build key](#identify-the-bamboo-build-plan-build-key) from your Bamboo
    build plan.
 1. If necessary, enter a username and password for a Bamboo user that has

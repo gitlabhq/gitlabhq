@@ -21,7 +21,7 @@ For other information, see [Advanced tips and tricks](#advanced-tips-and-tricks)
 
 ## Set up groups and projects
 
-Follow the corresponding steps to [create your groups](../../user/group/_index.md#create-a-group) and [projects](../../user/project/index.md)
+Follow the corresponding steps to [create your groups](../../user/group/_index.md#create-a-group) and [projects](../../user/project/_index.md)
 
 If your team is working across multiple repositories, create a project for each repository in your group.
 

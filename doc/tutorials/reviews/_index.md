@@ -45,7 +45,7 @@ To review a merge request:
 
 ## Understand the structure of merge requests
 
-Merge requests have a secondary menu with four options. You'll use these areas of a
+Merge requests have a secondary menu with four options. You use these areas of a
 merge request at different times during your review:
 
 ![Screenshot of the top area of a merge request, with four main tabs](img/top_bar_v17_0.png)
@@ -77,7 +77,7 @@ Start by looking at the description of the merge request. It should be the solut
 to a problem or a feature request in an issue.
 
 - **Who is the author?** Are you familiar with this person's work? If you're familiar with
-  this person, what part of the codebase do they normally work on? Later, your
+  this person, what part of the codebase do they usually work on? Later, your
   knowledge of the author helps you gauge how to scrutinize their changes.
 - **What's the goal?** Read the description to understand the author's intent.
 - **Is it a draft?** Drafts are often incomplete or theoretical solutions. A draft merge request might require
@@ -260,7 +260,7 @@ In this example, multiple jobs have failed:
 
 Sometimes merge request reviews are not straightforward and require a back-and-forth between the assignee and reviewers. If you're re-reviewing work, go to
 the **Commits** page for this merge request, and read the contents of the commits
-added since your last review.
+added after your last review.
 
 Do these commits address your concerns from your initial review?
 
@@ -276,7 +276,7 @@ is trying to do, and how it's doing it.
   ask yourself if the work should be simplified, or broken apart into multiple
   merge requests. Be honest about your own scope of knowledge, and your limitations.
 - **Do you detect [code smells](https://martinfowler.com/bliki/CodeSmell.html)?**
-  If something you see isn't quite a bug, but it points to future quality, maintainability,
+  If something you see isn't a bug, but it points to future quality, maintainability,
   or security problems, pay attention. Trust your instincts if something about the
   changes feels off, obfuscated, or poorly done. The code might be technically correct,
   but contain weaknesses that could cause problems in the future.

@@ -88,7 +88,7 @@ You can authenticate using:
 
 - Your GitLab username and password.
 - A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`, or to `api`.
-- A [group deploy token](../../project/deploy_tokens/index.md) with the scope set to `read_registry` and `write_registry`.
+- A [group deploy token](../../project/deploy_tokens/_index.md) with the scope set to `read_registry` and `write_registry`.
 - A [group access token](../../group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`, or to `api`.
 
 Users accessing the dependency proxy for container images with a personal access token or username and password must

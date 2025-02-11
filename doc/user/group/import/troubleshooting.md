@@ -65,7 +65,7 @@ grep `BulkImports::RelationBatchExportWorker` sidekiq.log | grep "interrupted_co
 If Sidekiq restarts are causing the issue:
 
 - Configure a separate Sidekiq process for export jobs.
-  For more information, see [Sidekiq configuration](../../project/import/index.md#sidekiq-configuration).
+  For more information, see [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).
   If the problem persists, reduce Sidekiq concurrency to limit the number of jobs processed simultaneously.
 - Increase Sidekiq memory limits:
   If your instance has available memory, [increase the maximum RSS limit](../../../administration/sidekiq/sidekiq_memory_killer.md#configuring-the-limits) for Sidekiq processes.

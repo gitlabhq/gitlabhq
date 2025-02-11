@@ -254,7 +254,7 @@ To disable GitLab CI/CD in your project:
 1. In the **Repository** section, turn off **CI/CD**.
 1. Select **Save changes**.
 
-These changes do not apply to projects in an [external integration](../../user/project/integrations/index.md#available-integrations).
+These changes do not apply to projects in an [external integration](../../user/project/integrations/_index.md#available-integrations).
 
 ## Automatic pipeline cleanup
 

@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Confidential issues are [issues](index.md) visible only to members of a project with
+Confidential issues are [issues](_index.md) visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-issues).
 Confidential issues can be used by open source projects and companies alike to
 keep security vulnerabilities private or prevent surprises from leaking out.

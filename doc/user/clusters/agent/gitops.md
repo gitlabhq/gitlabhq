@@ -163,7 +163,7 @@ The token does not need write access.
 
 You should use project deploy tokens if `http` access is possible.
 If you require `git+ssh` access, you should use deploy keys.
-To compare deploy keys and deploy tokens, see [Deploy keys](../../project/deploy_keys/index.md).
+To compare deploy keys and deploy tokens, see [Deploy keys](../../project/deploy_keys/_index.md).
 
 Support for automating deploy token creation, rotation, and reporting is proposed in [issue 389393](https://gitlab.com/gitlab-org/gitlab/-/issues/389393).
 

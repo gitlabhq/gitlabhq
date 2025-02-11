@@ -111,7 +111,7 @@ curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" 
 
 #### Permanent links to latest release assets
 
-You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](index.md#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
+You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](_index.md#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
 
 The format of the URL is:
 

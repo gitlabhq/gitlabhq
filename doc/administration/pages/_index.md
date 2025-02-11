@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed
 
 GitLab Pages allows for hosting of static sites. It must be configured by an
-administrator. Separate [user documentation](../../user/project/pages/index.md) is available.
+administrator. Separate [user documentation](../../user/project/pages/_index.md) is available.
 
 NOTE:
 This guide is for Linux package installations. If you have a self-compiled GitLab installation, see
@@ -255,7 +255,7 @@ are accessible only on single-domain.
 Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
-- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).
+- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manual-addition-of-ssltls-certificates).
 
 NGINX proxies all requests to the daemon. Pages daemon doesn't listen to the
 public internet.
@@ -509,7 +509,7 @@ The resulting URL schemes are `http://<namespace>.example.io/<project_slug>` and
 Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
-- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).
+- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manual-addition-of-ssltls-certificates).
 - Secondary IP
 
 In that case, the Pages daemon is running, NGINX still proxies requests to
@@ -550,7 +550,7 @@ The resulting URL schemes are `https://<namespace>.example.io/<project_slug>` an
 ### Custom domain verification
 
 To prevent malicious users from hijacking domains that don't belong to them,
-GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#steps).
+GitLab supports [custom domain verification](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#steps).
 When adding a custom domain, users are required to prove they own it by
 adding a GitLab-controlled verification code to the DNS records for that domain.
 
@@ -952,7 +952,7 @@ Prerequisites:
 - You must have administrator access to the instance.
 
 To configure the default duration for the instance after which
-[parallel deployments](../../user/project/pages/index.md#parallel-deployments)
+[parallel deployments](../../user/project/pages/_index.md#parallel-deployments)
 are deleted:
 
 1. On the left sidebar, at the bottom, select **Admin**.

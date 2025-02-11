@@ -14,13 +14,13 @@ RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
   subject { described_class.new(relation: 'labels') }
 
   before do
-    allow(FileUtils).to receive(:remove_entry).with(any_args).and_call_original
+    allow(FileUtils).to receive(:rm_rf).with(any_args).and_call_original
 
     subject.instance_variable_set(:@tmpdir, tmpdir)
   end
 
   after(:all) do
-    FileUtils.remove_entry(tmpdir) if File.directory?(tmpdir)
+    FileUtils.rm_rf(tmpdir)
   end
 
   describe '#extract' do
@@ -54,7 +54,7 @@ RSpec.describe BulkImports::Common::Extractors::NdjsonExtractor do
 
   describe '#remove_tmpdir' do
     it 'removes tmp dir' do
-      expect(FileUtils).to receive(:remove_entry).with(tmpdir).once
+      expect(FileUtils).to receive(:rm_rf).with(tmpdir).once
 
       subject.remove_tmpdir
     end

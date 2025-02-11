@@ -126,7 +126,7 @@ The improved pipeline flow **after** enabling Prevent outdated deployment jobs:
 ## Prevent deployments during deploy freeze windows
 
 If you want to prevent deployments for a particular period, for example during a planned
-vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
+vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 During a deploy freeze period, no deployment can be executed. This is helpful to
 ensure that deployments do not happen unexpectedly.
 

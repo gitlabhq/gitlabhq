@@ -126,7 +126,7 @@ GitLab Dedicated uses the [advanced search functionality](../../integration/adva
 
 #### GitLab Pages
 
-You can use [GitLab Pages](../../user/project/pages/index.md) on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
+You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
 
 NOTE:
 Custom domains for GitLab Pages are not supported. For example, if you added a custom domain named `gitlab.my-company.com`, the URL to access the Pages site for your GitLab Dedicated instance would still be `tenant_name.gitlab-dedicated.site`.
@@ -242,9 +242,9 @@ To migrate your data to GitLab Dedicated:
   - Use [direct transfer](../../user/group/import/_index.md).
   - Use the [direct transfer API](../../api/bulk_imports.md).
 - From third-party services:
-  - Use [the import sources](../../user/project/import/index.md#supported-import-sources).
+  - Use [the import sources](../../user/project/import/_index.md#supported-import-sources).
 - For complex migrations:
-  - Engage [Professional Services](../../user/project/import/index.md#migrate-by-engaging-professional-services).
+  - Engage [Professional Services](../../user/project/import/_index.md#migrate-by-engaging-professional-services).
 
 ## Get started
 

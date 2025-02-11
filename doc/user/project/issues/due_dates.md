@@ -16,7 +16,7 @@ shipped on time.
 
 Due dates are supported in:
 
-- [Issues](index.md)
+- [Issues](_index.md)
 - [Epics](../../group/epics/_index.md)
 - [Tasks](../../tasks.md)
 - [Objectives and key results](../../okrs.md)

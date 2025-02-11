@@ -97,7 +97,7 @@ permissions if you want to control who is allowed to create, update, and delete 
 
 For more information, see:
 
-- [Releases](../project/releases/index.md)
+- [Releases](../project/releases/_index.md)
 
 ## Step 5: Roll out changes safely
 
@@ -128,7 +128,7 @@ GitLab automatically builds and deploys your website whenever you push changes t
 
 For more information, see:
 
-- [GitLab Pages](../project/pages/index.md)
+- [GitLab Pages](../project/pages/_index.md)
 
 ## Step 7: Go opinionated with Auto Deploy
 

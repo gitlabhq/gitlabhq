@@ -26,7 +26,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | Use case                      | Resource |
 |-------------------------------|----------|
 | Deployment with Dpl           | [Using `dpl` as deployment tool](deployment/_index.md). |
-| GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/index.md) documentation for a complete example of deploying a static site. |
+| GitLab Pages                  | See the [GitLab Pages](../../user/project/pages/_index.md) documentation for a complete example of deploying a static site. |
 | Multi project pipeline        | [Build, test deploy using multi project pipeline](https://gitlab.com/gitlab-examples/upstream-project). |
 | npm with semantic-release     | [Publish npm packages to the GitLab package registry using semantic-release](semantic-release.md). |
 | PHP with npm, SCP             | [Running Composer and npm scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md). |

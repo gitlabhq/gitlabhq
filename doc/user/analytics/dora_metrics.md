@@ -52,7 +52,7 @@ GitLab calculates the deployment frequency from the number of finished deploymen
 
 The calculation takes into account the production `environment tier` or the environments named `production/prod`. The environment must be part of the production deployment tier for its deployment information to appear on the graphs.
 
-You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/index.md#insights-configuration-file).
+You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#insights-configuration-file).
 
 NOTE:
 Deployment frequency is calculated as the **average (mean)**, unlike the other DORA metrics that use the median, which is preferred because it provides a more accurate and reliable view of performance.
@@ -225,7 +225,7 @@ DORA metrics are displayed in the following analytics features:
 
 - [Value Streams Dashboard](value_streams_dashboard.md) includes the [DORA metrics comparison panel](value_streams_dashboard.md#devsecops-metrics-comparison-panels) and [DORA Performers score panel](value_streams_dashboard.md#dora-performers-score-panel).
 - [CI/CD analytics charts](ci_cd_analytics.md) show the history of DORA metrics over time.
-- [Insights reports](../project/insights/index.md) provide the option to create custom charts with [DORA query parameters](../project/insights/index.md#dora-query-parameters).
+- [Insights reports](../project/insights/_index.md) provide the option to create custom charts with [DORA query parameters](../project/insights/_index.md#dora-query-parameters).
 - [GraphQL API](../../api/graphql/reference/_index.md) (with the interactive [GraphQL explorer](../../api/graphql/_index.md#interactive-graphql-explorer)) and [REST API](../../api/dora/metrics.md) support the retrieval of metrics data.
 
 ## Project and group availability
@@ -245,7 +245,7 @@ The following table provides an overview of the DORA metrics' availability in pr
 
 The following table provides an overview of the DORA metrics' data aggregation in different charts.
 
-| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../project/insights/index.md#dora-query-parameters) |
+| Metric name | Measured values | Data aggregation in the [Value Streams Dashboard](value_streams_dashboard.md) | Data aggregation in [CI/CD analytics charts](ci_cd_analytics.md) | Data aggregation in [Custom insights reporting](../project/insights/_index.md#dora-query-parameters) |
 |---------------------------|-------------------|-----------------------------------------------------|------------------------|----------|
 | Deployment frequency | Number of successful deployments | daily average per month | daily average | `day` (default) or `month` |
 | Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  `day` (default) or `month` |

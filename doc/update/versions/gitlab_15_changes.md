@@ -19,7 +19,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## 15.11.1
 
-- Many [project importers](../../user/project/import/index.md) and [group importers](../../user/group/import/_index.md) now
+- Many [project importers](../../user/project/import/_index.md) and [group importers](../../user/group/import/_index.md) now
   require the Maintainer role instead of only requiring the Developer role. For more information, see the documentation
   for any importers you use.
 
@@ -96,7 +96,7 @@ if you can't upgrade to 15.11.12 and later.
   - This issue may not manifest immediately as it can take up to a week before the Sidekiq is saturated enough.
   - Elasticsearch does not need to be enabled for this to occur.
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
-- Many [project importers](../../user/project/import/index.md) and [group importers](../../user/group/import/_index.md) now
+- Many [project importers](../../user/project/import/_index.md) and [group importers](../../user/group/import/_index.md) now
   require the Maintainer role instead of only requiring the Developer role. For more information, see the documentation
   for any importers you use.
 

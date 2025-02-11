@@ -194,7 +194,7 @@ export default {
       this.$emit('confirm', item);
     },
   },
-  placeholderUsersHelpPath: helpPagePath('user/project/import/index', {
+  placeholderUsersHelpPath: helpPagePath('user/project/import/_index', {
     anchor: 'placeholder-users',
   }),
 };

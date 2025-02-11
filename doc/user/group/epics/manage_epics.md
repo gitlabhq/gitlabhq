@@ -424,7 +424,7 @@ In GitLab 15.6 and later, you can also use the `/confidential` [quick action](..
 
 ## Manage issues assigned to an epic
 
-This section collects instructions for all the things you can do with [issues](../../project/issues/index.md)
+This section collects instructions for all the things you can do with [issues](../../project/issues/_index.md)
 in relation to epics.
 
 ### View issues assigned to an epic

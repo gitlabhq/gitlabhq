@@ -39,7 +39,7 @@ To create and use an SSH key in GitLab CI/CD:
    the private key.
 1. Copy the public key to the servers you want to have access to (usually in `~/.ssh/authorized_keys`).
    If you are accessing a private GitLab repository, you also need to add the public key as
-   a [deploy key](../../user/project/deploy_keys/index.md).
+   a [deploy key](../../user/project/deploy_keys/_index.md).
 
 In the following example, the `ssh-add -` command does not display the value of
 `$SSH_PRIVATE_KEY` in the job log, though it could be exposed if you enable
@@ -108,7 +108,7 @@ to access it. In this case, you can use an SSH key pair.
 1. As a final step, add the _public_ key from the one you created in the first
    step to the services that you want to have an access to from inside the build
    environment. If you are accessing a private GitLab repository you must add
-   it as a [deploy key](../../user/project/deploy_keys/index.md).
+   it as a [deploy key](../../user/project/deploy_keys/_index.md).
 
 That's it! You can now have access to private servers or repositories in your
 build environment.
@@ -137,7 +137,7 @@ on, and use that key for all projects that are run on this machine.
 1. As a final step, add the _public_ key from the one you created earlier to the
    services that you want to have an access to from inside the build environment.
    If you are accessing a private GitLab repository you must add it as a
-   [deploy key](../../user/project/deploy_keys/index.md).
+   [deploy key](../../user/project/deploy_keys/_index.md).
 
 After generating the key, try to sign in to the remote server to accept the
 fingerprint:

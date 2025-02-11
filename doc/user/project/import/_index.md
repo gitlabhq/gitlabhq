@@ -514,8 +514,8 @@ To view project import history:
 1. In the upper-right corner, select the **History** link.
 1. If there are any errors for a particular import, select **Details** to see them.
 
-The history also includes projects created from [built-in](../index.md#create-a-project-from-a-built-in-template)
-or [custom](../index.md#create-a-project-from-a-custom-template)
+The history also includes projects created from [built-in](../_index.md#create-a-project-from-a-built-in-template)
+or [custom](../_index.md#create-a-project-from-a-custom-template)
 templates. GitLab uses [import repository by URL](repo_by_url.md)
 to create a new project from a template.
 

@@ -644,7 +644,7 @@ Production:
 ```
 
 In GitLab CI/CD, You can create a [deployment job](../jobs/_index.md#deployment-jobs)
-that deploys to an [environment](../environments/_index.md) or creates a [release](../../user/project/releases/index.md).
+that deploys to an [environment](../environments/_index.md) or creates a [release](../../user/project/releases/_index.md).
 
 For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 
@@ -764,7 +764,7 @@ Before doing any migration work, you should first:
 #### Migration Steps
 
 1. Migrate projects from your SCM solution to GitLab.
-   - (Recommended) You can use the available [importers](../../user/project/import/index.md)
+   - (Recommended) You can use the available [importers](../../user/project/import/_index.md)
      to automate mass imports from external SCM providers.
    - You can [import repositories by URL](../../user/project/import/repo_by_url.md).
 1. Create a `.gitlab-ci.yml` file in each project.

@@ -572,8 +572,8 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
 1. Check your [exceptions_json.log](../logs/_index.md#exceptions_jsonlog) file for the following error message:
 
    ```plaintext
-   "error_message": "Unable to fork project 12345 for repository 
-   @hashed/11/22/encoded-path -> @hashed/33/44/encoded-new-path: 
+   "error_message": "Unable to fork project 12345 for repository
+   @hashed/11/22/encoded-path -> @hashed/33/44/encoded-new-path:
    Source project has too many LFS objects"
    ```
 

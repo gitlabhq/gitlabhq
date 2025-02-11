@@ -138,7 +138,7 @@ when group access tokens are nearly expired.
 
 ## Deploy tokens
 
-[Deploy tokens](../../user/project/deploy_tokens/index.md) allow you
+[Deploy tokens](../../user/project/deploy_tokens/_index.md) allow you
 to clone, push, and pull packages and container registry images of a
 project without a user and a password. Deploy tokens cannot be used
 with the GitLab API.
@@ -148,7 +148,7 @@ the Maintainer role.
 
 ## Deploy keys
 
-[Deploy keys](../../user/project/deploy_keys/index.md) allow read-only
+[Deploy keys](../../user/project/deploy_keys/_index.md) allow read-only
 or read-write access to your repositories by importing an SSH public key
 into your GitLab instance. Deploy keys cannot be used with the
 GitLab API or the registry.

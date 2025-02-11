@@ -13,11 +13,11 @@ DETAILS:
 > - Flag `group_protected_branches` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116779) [flag](../administration/feature_flags.md) to `allow_protected_branches_for_group` GitLab 15.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
 
-Use the Group-level protected branches API to manage protected branch rules.
-It provides endpoints to list, create, update, and delete protected branch rules that apply to projects within a group.
+Use the protected branches API for groups to manage protected branch rules.
+It provides endpoints to list, create, update, and delete protected branch rules that apply to projects belonging to a group.
 
 WARNING:
-Group-level protected branch settings are restricted to top-level groups only.
+Protected branch settings for groups are restricted to top-level groups only.
 
 ## Valid access levels
 

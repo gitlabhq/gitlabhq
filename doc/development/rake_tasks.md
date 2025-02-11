@@ -54,7 +54,7 @@ DETAILS:
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 You can seed issues specifically for working with the
-[Insights charts](../user/project/insights/index.md) with the
+[Insights charts](../user/project/insights/_index.md) with the
 `gitlab:seed:insights:issues` task:
 
 ```shell

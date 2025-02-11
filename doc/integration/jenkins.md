@@ -139,7 +139,7 @@ with your Jenkins server URL and authentication information.
    - Merge request
    - Tag push
 1. Enter the **Jenkins server URL**.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/index.md#ssl-verification).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
 1. Enter the **Project name**.
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure
    the project name is valid, copy it from your browser's address bar while viewing the Jenkins

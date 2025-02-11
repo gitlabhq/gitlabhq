@@ -6,7 +6,7 @@ description: "GitLab's development guidelines for Integrations"
 title: Integration development guidelines
 ---
 
-This page provides development guidelines for implementing [GitLab integrations](../../user/project/integrations/index.md),
+This page provides development guidelines for implementing [GitLab integrations](../../user/project/integrations/_index.md),
 which are part of our [main Rails project](https://gitlab.com/gitlab-org/gitlab).
 
 Also see our [direction page](https://about.gitlab.com/direction/manage/import_and_integrate/integrations/) for an overview of our strategy around integrations.
@@ -395,7 +395,7 @@ When developing a new integration, we also recommend you gate the availability b
 Add documentation for the integration:
 
 - Add a page in `doc/user/project/integrations`.
-- Link it from the [Integrations overview](../../user/project/integrations/index.md).
+- Link it from the [Integrations overview](../../user/project/integrations/_index.md).
 - After the documentation has merged, [add an entry](../documentation/site_architecture/global_nav.md#add-a-navigation-entry)
   to the documentation navigation under the [Integrations category title](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/24c8ab629383b47a6d6351a9d48325cb43ed5287/content/_data/navigation.yaml?page=3#L2822).
 

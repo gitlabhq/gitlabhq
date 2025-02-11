@@ -87,7 +87,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-If closing a merge request doesn't work through the UI or API, you might want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+If closing a merge request doesn't work through the UI or API, try closing it in a
+[Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
@@ -105,7 +106,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
-If deleting a merge request doesn't work through the UI or API, you might want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+If deleting a merge request doesn't work through the UI or API, try deleting it in a
+[Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
 Any command that changes data directly could be damaging if not run correctly,
@@ -260,7 +262,7 @@ All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) 
 This error can happen if the GitLab cache does not reflect the actual state of the
 Git repository. This can happen if the Git data folder is mounted with `noexec` flag.
 
-Prerequisite:
+Prerequisites:
 
 - You must be an administrator.
 

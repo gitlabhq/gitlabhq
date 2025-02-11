@@ -113,6 +113,10 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
     end
 
     it "#{fixtures_path}get_downstream_pipeline_jobs.query.graphql.json" do
+      stage = create(:ci_stage, name: 'test', pipeline: base_pipeline, project: base_pipeline.project)
+      create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'test_job')
+      create(:ci_build, pipeline: base_pipeline, ci_stage: stage, name: 'another_test_job')
+
       post_graphql(
         queries[:downstream_jobs],
         current_user: user,

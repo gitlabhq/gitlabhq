@@ -34,7 +34,7 @@ To enable observability features, you need administrator or the Owner role for t
 
 For more information, see:
 
-- [Create a project](../project/index.md)
+- [Create a project](../project/_index.md)
 
 ## Step 2: Track application errors with error tracking
 
@@ -67,5 +67,5 @@ Use the data and insights gathered to continuously improve your application and 
 
 For more information, see:
 
-- [Insight dashboards](../project/insights/index.md)
+- [Insight dashboards](../project/insights/_index.md)
 - [Executable runbooks](../project/clusters/runbooks/_index.md)

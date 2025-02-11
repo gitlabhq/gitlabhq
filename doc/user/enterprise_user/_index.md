@@ -71,7 +71,7 @@ Prerequisites:
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up a DNS `TXT` record to verify your domain's ownership.
 - A project in the group. This project will be linked to the verified domains, and should not be deleted. This project also needs to have the pages component enabled in its settings (**General** -> **Visibility, project features, permissions** -> **Pages**). If the pages component is disabled in its settings, a `500` error will be generated during domain verification.
-- Ensure that [GitLab Pages](../project/pages/index.md) is enabled for the project. If GitLab Pages is disabled, adding the domain might result in an error.
+- Ensure that [GitLab Pages](../project/pages/_index.md) is enabled for the project. If GitLab Pages is disabled, adding the domain might result in an error.
 - You must have the Owner role for the top-level group.
 
 Domain verification applies at the top-level group and to all subgroups and projects
@@ -81,7 +81,7 @@ You cannot verify a domain for more than one group. For example, if a group name
 'group1' has a verified domain named 'domain1', you cannot also verify 'domain1'
 for a different group named 'group2'.
 
-Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/index.md). However, you:
+Setting up a verified domain is similar to [setting up a custom domain on GitLab Pages](../project/pages/custom_domains_ssl_tls_certification/_index.md). However, you:
 
 - Do not need to have a GitLab Pages website.
 - Must link the domain to a single project, despite domain verification applying
@@ -171,7 +171,7 @@ To edit or remove a domain:
    This group must be at the top level.
 1. Select **Settings > Domain Verification**.
 1. When viewing **Domain Verification**, select the project listed next to the relevant domain.
-1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/index.md) instructions.
+1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/_index.md) instructions.
 
 ## Manage enterprise users in a namespace
 

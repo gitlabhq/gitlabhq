@@ -76,7 +76,7 @@ To create a system hook:
 1. In the **Trigger** section, select the checkbox for each GitLab
    [event](../user/project/integrations/webhook_events.md) you want to trigger the webhook.
 1. Optional. Clear the **Enable SSL verification** checkbox
-   to disable [SSL verification](../user/project/integrations/index.md#ssl-verification).
+   to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
 1. Select **Add system hook**.
 
 ## Hooks request example

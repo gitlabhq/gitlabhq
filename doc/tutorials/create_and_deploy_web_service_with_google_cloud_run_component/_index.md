@@ -54,7 +54,7 @@ Learn how to use the [Google Cloud Run component](https://gitlab.com/google-gitl
 After you have set up the Google IAM for the integration for your organization or group, you can
 reuse the integration in new projects in that organization or group:
 
-1. [Create a new GitLab project](../../user/project/index.md) in your organization or group.
+1. [Create a new GitLab project](../../user/project/_index.md) in your organization or group.
 1. In your GitLab project, select **Settings > Integrations**.
 1. Select **Google Cloud IAM**.
 1. In the **Google Cloud project** section, enter the following:

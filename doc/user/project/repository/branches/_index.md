@@ -12,7 +12,7 @@ DETAILS:
 
 A branch is a version of a project's working tree. Branches are the
 foundation of development in a project. When you create a new
-[project](../../index.md), GitLab creates a [default branch](default.md)
+[project](../../_index.md), GitLab creates a [default branch](default.md)
 for your repository. Default branch settings are configured in a project,
 subgroup, group, or instance.
 
@@ -75,7 +75,7 @@ To create a new branch from the GitLab UI:
 
 ### In a blank project
 
-A [blank project](../../index.md#create-a-blank-project) does not contain a branch, but
+A [blank project](../../_index.md#create-a-blank-project) does not contain a branch, but
 you can add one.
 
 Prerequisites:

@@ -125,7 +125,7 @@ You can configure your project to require a complete and successful pipeline bef
 merge. This configuration works for both:
 
 - GitLab CI/CD pipelines.
-- Pipelines run from an [external CI integration](../integrations/index.md#available-integrations).
+- Pipelines run from an [external CI integration](../integrations/_index.md#available-integrations).
 
 As a result, [disabling GitLab CI/CD pipelines](../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines)
 does not disable this feature, but you can use pipelines from external

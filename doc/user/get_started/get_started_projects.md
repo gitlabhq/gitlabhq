@@ -37,7 +37,7 @@ When you create the project, review and configure the following settings to alig
 
 For more information, see:
 
-- [Create a project](../project/index.md)
+- [Create a project](../project/_index.md)
 - [Manage projects](../project/working_with_projects.md)
 - [Project visibility](../public_access.md)
 - [Project settings](../project/settings/_index.md)
@@ -54,8 +54,8 @@ Use the following tools to manage secure access to your projects:
 For more information, see:
 
 - [Project access tokens](../project/settings/project_access_tokens.md)
-- [Deploy keys](../project/deploy_keys/index.md)
-- [Deploy tokens](../project/deploy_tokens/index.md)
+- [Deploy keys](../project/deploy_keys/_index.md)
+- [Deploy tokens](../project/deploy_tokens/_index.md)
 
 ## Step 3: Collaborate and share projects
 
@@ -126,6 +126,6 @@ so its members have access or ownership.
 
 For more information, see:
 
-- [Migrate projects by using file exports](../project/import/index.md)
+- [Migrate projects by using file exports](../project/import/_index.md)
 - [Project aliases](../project/working_with_projects.md#project-aliases)
 - [Transfer a project to another namespace](../project/settings/migrate_projects.md)

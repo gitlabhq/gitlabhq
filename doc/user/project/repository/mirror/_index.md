@@ -124,7 +124,7 @@ You can also manually trigger an update:
 
 - At most once every five minutes on GitLab.com.
 - According to [the pull mirroring interval limit](../../../../administration/instance_limits.md#pull-mirroring-interval)
-  set by the administrator on self-managed instances.
+  set by the administrator on GitLab Self-Managed instances.
 
 NOTE:
 [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables both push and pull updates.
@@ -145,8 +145,7 @@ Prerequisites:
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
-1. Select **Update now** (**{retry}**):
-   ![Repository mirroring force update user interface](img/repository_mirroring_force_update_v11_5.png)
+1. Select **Update now** (**{retry}**).
 
 ## Authentication methods for mirrors
 
@@ -175,7 +174,7 @@ If you're mirroring over SSH (using an `ssh://` URL), you can authenticate using
 
 - Password-based authentication, just as over HTTPS.
 - Public key authentication. This method is often more secure than password authentication,
-  especially when the other repository supports [deploy keys](../../deploy_keys/index.md).
+  especially when the other repository supports [deploy keys](../../deploy_keys/_index.md).
 
 ### Get your SSH public key
 
@@ -190,7 +189,7 @@ needs this key to establish trust with your GitLab repository. To copy your SSH 
 1. Identify the correct repository, and select **Copy SSH public key** (**{copy-to-clipboard}**).
 1. Add the public SSH key to the other repository's configuration:
    - If the other repository is hosted on GitLab, add the public SSH key
-     as a [deploy key](../../deploy_keys/index.md).
+     as a [deploy key](../../deploy_keys/_index.md).
    - If the other repository is hosted elsewhere, add the key to
      your user's `authorized_keys` file. Paste the entire public SSH key into the
      file on its own line and save it.

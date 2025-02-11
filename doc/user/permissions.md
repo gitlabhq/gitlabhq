@@ -221,7 +221,7 @@ Project permissions for monitoring including [error tracking](../operations/erro
 
 ### Project planning
 
-Project permissions for [issues](project/issues/index.md):
+Project permissions for [issues](project/issues/_index.md):
 
 | Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -312,14 +312,14 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Download project                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | Leave comments                                                            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Reposition comments on images (posted by any user)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Applies only to comments on [Design Management](project/issues/design_management.md) designs. |
-| View [Insights](project/insights/index.md)                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Insights](project/insights/_index.md)                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [Requirements](project/requirements/_index.md)                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [time tracking](project/time_tracking.md) reports                    |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | On GitLab Self-Managed, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
 | View [snippets](snippets.md)                                              |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [project traffic statistics](../api/project_statistics.md)           |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Create [snippets](snippets.md)                                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [releases](project/releases/index.md)                                |       |    ✓    |          |     ✓     |     ✓      |   ✓   | Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets). |
-| Manage [releases](project/releases/index.md)                              |       |         |          |           |     ✓      |   ✓   | If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers. |
+| View [releases](project/releases/_index.md)                                |       |    ✓    |          |     ✓     |     ✓      |   ✓   | Guest users can access GitLab [**Releases**](project/releases/_index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/_index.md#view-a-release-and-download-assets). |
+| Manage [releases](project/releases/_index.md)                              |       |         |          |           |     ✓      |   ✓   | If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers. |
 | Configure [webhooks](project/integrations/webhooks.md)                    |       |         |          |           |     ✓      |   ✓   |       |
 | Manage [project access tokens](project/settings/project_access_tokens.md) |       |         |          |           |     ✓      |   ✓   | For GitLab Self-Managed, project access tokens are available in all tiers. For GitLab.com, project access tokens are supported in the Premium and Ultimate tier (excluding [trial licenses](https://about.gitlab.com/free-trial/)). |
 | [Export project](project/settings/import_export.md)                       |       |         |          |           |     ✓      |   ✓   |       |
@@ -327,9 +327,9 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Edit project badges                                                       |       |         |          |           |     ✓      |   ✓   |       |
 | Edit project settings                                                     |       |         |          |           |     ✓      |   ✓   |       |
 | Change [project features visibility](public_access.md) level              |       |         |          |           |     ✓      |   ✓   | A Maintainer or Owner can't change project features visibility level if [project visibility](public_access.md) is set to private. |
-| Change custom settings for [project integrations](project/integrations/index.md) |       |         |          |           |     ✓      |   ✓   |       |
+| Change custom settings for [project integrations](project/integrations/_index.md) |       |         |          |           |     ✓      |   ✓   |       |
 | Edit comments (posted by any user)                                        |       |         |          |           |     ✓      |   ✓   |       |
-| Add [deploy keys](project/deploy_keys/index.md)                           |       |         |          |           |     ✓      |   ✓   |       |
+| Add [deploy keys](project/deploy_keys/_index.md)                           |       |         |          |           |     ✓      |   ✓   |       |
 | Manage [Project Operations](../operations/_index.md)                      |       |         |          |           |     ✓      |   ✓   |       |
 | View [Usage Quotas](storage_usage_quotas.md) page                         |       |         |          |           |     ✓      |   ✓   |       |
 | Globally delete [snippets](snippets.md)                                   |       |         |          |           |     ✓      |   ✓   |       |
@@ -340,7 +340,7 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Disable notification emails                                               |       |         |          |           |            |   ✓   |       |
 | Transfer project                                                          |       |         |          |           |            |   ✓   |       |
 
-Project permissions for [GitLab Pages](project/pages/index.md):
+Project permissions for [GitLab Pages](project/pages/_index.md):
 
 | Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
@@ -419,8 +419,8 @@ Group permission for [analytics](analytics/_index.md) features including value s
 
 | Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View [Insights](project/insights/index.md)                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [Insights](project/insights/index.md) charts                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Insights](project/insights/_index.md)                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Insights](project/insights/_index.md) charts                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View [Issue analytics](group/issues_analytics/_index.md)           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View Contribution analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | View value stream analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
@@ -488,7 +488,7 @@ Group permissions for [group features](group/_index.md):
 | View group [audit events](compliance/audit_events.md)                                      |       |         |          |     ✓     |     ✓      |   ✓   | Developers and Maintainers can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
 | Create project in group                                                                    |       |         |          |     ✓     |     ✓      |   ✓   | Developers, Maintainers and Owners: Only if the project creation role is set [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group).<br><br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". |
 | Create subgroup                                                                            |       |         |          |           |     ✓      |   ✓   | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/_index.md#change-who-can-create-subgroups). |
-| Change custom settings for the [project integrations](project/integrations/index.md)       |       |         |          |           |     ✓      |   ✓   |       |
+| Change custom settings for the [project integrations](project/integrations/_index.md)       |       |         |          |           |     ✓      |   ✓   |       |
 | Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |    ✓    |          |           |     ✓      |   ✓   |       |
 | Fork project into a group                                                                  |       |         |          |           |     ✓      |   ✓   |       |
 | View [Billing](../subscriptions/gitlab_com/_index.md#view-gitlabcom-subscription)          |       |         |          |           |            |   ✓   | Does not apply to subgroups |
@@ -566,7 +566,7 @@ Group permissions for [repository](project/repository/_index.md) features includ
 
 | Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Manage [deploy tokens](project/deploy_tokens/index.md)                                 |       |         |          |           |            |   ✓   |       |
+| Manage [deploy tokens](project/deploy_tokens/_index.md)                                 |       |         |          |           |            |   ✓   |       |
 | Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |         |          |           |            |   ✓   |       |
 | Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |         |          |           |            |   ✓   |       |
 
@@ -646,5 +646,5 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)
 - [Container registry permissions](packages/container_registry/_index.md#container-registry-visibility-permissions)
-- [Release permissions](project/releases/index.md#release-permissions)
+- [Release permissions](project/releases/_index.md#release-permissions)
 - [Read-only namespaces](read_only_namespaces.md)

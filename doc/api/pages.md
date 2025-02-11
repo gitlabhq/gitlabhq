@@ -9,9 +9,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Endpoints for managing [GitLab Pages](../user/project/pages/index.md).
+Endpoints for managing [GitLab Pages](../user/project/pages/_index.md).
 
-The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/index.md) the feature.
+The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/_index.md) and [using](../user/project/pages/_index.md) the feature.
 
 ## Unpublish Pages
 
@@ -70,7 +70,7 @@ response attributes:
 | ----------------------------------------- | ---------- |-------------------------------------------------------------------------------------------------------------------------------|
 | `created_at`                              | date       | Date deployment was created.                                                                                                  |
 | `url`                                     | string     | URL for this deployment.                                                                                                      |
-| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/index.md#parallel-deployments). |
+| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/_index.md#parallel-deployments). |
 | `root_directory`                          | string     | Root directory.                                                                                                               |
 
 Example request:
@@ -143,7 +143,7 @@ response attributes:
 | ----------------------------------------- | ---------- |-------------------------------------------------------------------------------------------------------------------------------|
 | `created_at`                              | date       | Date deployment was created.                                                                                                  |
 | `url`                                     | string     | URL for this deployment.                                                                                                      |
-| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/index.md#parallel-deployments). |
+| `path_prefix`                             | string     | Path prefix of this deployment when using [parallel deployments](../user/project/pages/_index.md#parallel-deployments). |
 | `root_directory`                          | string     | Root directory.                                                                                                               |
 
 Example request:

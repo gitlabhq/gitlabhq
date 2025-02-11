@@ -165,7 +165,7 @@ Host gitlab.com
 
 ## GitLab Pages
 
-Some settings for [GitLab Pages](../project/pages/index.md) differ from the
+Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
 [defaults for self-managed instances](../../administration/pages/_index.md):
 
 | Setting                                           | GitLab.com             |
@@ -270,7 +270,7 @@ this limit. Repository limits apply to both public and private projects.
 
 ## Default import sources
 
-The [import sources](../project/import/index.md#supported-import-sources) that are available to you by default depend on
+The [import sources](../project/import/_index.md#supported-import-sources) that are available to you by default depend on
 which GitLab you use:
 
 - GitLab.com: All available import sources are enabled by default.
@@ -279,9 +279,9 @@ which GitLab you use:
 
 ## Import placeholder user limits
 
-The number of [placeholder users](../project/import/index.md#placeholder-users) created during an import on GitLab.com is limited per top-level namespace. The limits
+The number of [placeholder users](../project/import/_index.md#placeholder-users) created during an import on GitLab.com is limited per top-level namespace. The limits
 differ depending on your plan and seat count.
-For more information, see the [table of placeholder user limits for GitLab.com](../project/import/index.md#placeholder-user-limits).
+For more information, see the [table of placeholder user limits for GitLab.com](../project/import/_index.md#placeholder-user-limits).
 
 ## IP range
 
@@ -334,7 +334,7 @@ The limit varies depending on your plan and the number of seats in your subscrip
 | Number of webhooks                                             | 100 per project, 50 per group (subgroup webhooks are not counted towards parent group limits ) |
 | Maximum payload size                                           | 25 MB                  |
 | Timeout                                                        | 10 seconds             |
-| [Multiple Pages deployments](../project/pages/index.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |
+| [Multiple Pages deployments](../project/pages/_index.md#limits) | 100 extra deployments (Premium tier), 500 extra deployments (Ultimate tier) |
 
 For self-managed instance limits, see:
 

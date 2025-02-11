@@ -27,7 +27,7 @@ class ProjectClusterablePresenter < ClusterablePresenter
 
   override :learn_more_link
   def learn_more_link
-    ApplicationController.helpers.link_to(s_('ClusterIntegration|Learn more about Kubernetes.'), help_page_path('user/project/clusters/index.md'), target: '_blank', rel: 'noopener noreferrer')
+    ApplicationController.helpers.link_to(s_('ClusterIntegration|Learn more about Kubernetes.'), help_page_path('user/project/clusters/_index.md'), target: '_blank', rel: 'noopener noreferrer')
   end
 end
 

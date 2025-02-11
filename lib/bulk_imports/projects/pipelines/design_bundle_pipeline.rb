@@ -33,7 +33,7 @@ module BulkImports
         end
 
         def after_run(_)
-          FileUtils.remove_entry(tmpdir) if Dir.exist?(tmpdir)
+          FileUtils.rm_rf(tmpdir)
         end
 
         private

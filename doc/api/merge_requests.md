@@ -300,7 +300,7 @@ response attributes:
 | `[].labels`                        | array    | Labels of the merge request. |
 | `[].merge_commit_sha`              | string   | SHA of the merge request commit. Returns `null` until merged. |
 | `[].merge_status`                  | string   | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
-| `[].merge_user`                    | object   | User who merged this merge request, the user who set it to auto-merge, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
+| `[].merge_user`                    | object   | User who merged this merge request, the user who set it to auto-merge, or `null`. |
 | `[].merge_when_pipeline_succeeds`  | boolean  | Indicates if the merge has been set to merge when its pipeline succeeds. |
 | `[].merged_at`                     | datetime | Timestamp of when the merge request was merged. |
 | `[].merged_by`                     | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. |
@@ -316,7 +316,7 @@ response attributes:
 | `[].source_project_id`             | integer  | ID of the merge request source project. Equal to `target_project_id`, unless the merge request originates from a fork. |
 | `[].squash`                        | boolean  | If `true`, squash all commits into a single commit on merge. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) might override this value. Use `squash_on_merge` instead to take project squash options into account. |
 | `[].squash_commit_sha`             | string   | SHA of the squash commit. Empty until merged. |
-| `[].squash_on_merge`               | boolean  | Indicates if the merge request will be squashed when merged. |
+| `[].squash_on_merge`               | boolean  | Indicates whether to squash the merge request when merging. |
 | `[].state`                         | string   | State of the merge request. Can be `opened`, `closed`, `merged`, `locked`. |
 | `[].target_branch`                 | string   | Target branch of the merge request. |
 | `[].target_project_id`             | integer  | ID of the merge request target project. |

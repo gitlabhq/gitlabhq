@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Every API call to [project](../user/project/index.md) statistics must be authenticated.
+Every API call to [project](../user/project/_index.md) statistics must be authenticated.
 Retrieving these statistics requires read access to the repository.
 
 For use with a [personal access token](../user/profile/personal_access_tokens.md),

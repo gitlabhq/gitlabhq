@@ -74,6 +74,7 @@ describe('availableVisualizationsValidator', () => {
 describe('getDashboardConfig', () => {
   it('maps dashboard to expected value', () => {
     const result = getDashboardConfig(dashboard);
+    const visualization = createVisualization();
 
     expect(result).toMatchObject({
       id: 'analytics_overview',
@@ -86,7 +87,7 @@ describe('getDashboardConfig', () => {
           },
           queryOverrides: {},
           title: 'Test A',
-          visualization: 'test_visualization',
+          visualization,
         },
         {
           gridAttributes: {
@@ -97,7 +98,7 @@ describe('getDashboardConfig', () => {
             limit: 200,
           },
           title: 'Test B',
-          visualization: 'test_visualization',
+          visualization,
         },
       ],
       title: 'Analytics Overview',

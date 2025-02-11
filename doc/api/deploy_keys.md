@@ -192,7 +192,7 @@ Example response:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88917) in GitLab 15.1.
 
-Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
+Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/_index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
 
 ```plaintext
 GET /users/:id_or_username/project_deploy_keys

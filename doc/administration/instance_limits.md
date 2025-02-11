@@ -339,7 +339,7 @@ Blocked recursive webhook calls are logged in `auth.log` with the message `"Recu
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455903) in GitLab 17.4.
 
-The number of [placeholder users](../user/project/import/index.md#placeholder-users) created during an import can be limited per top-level namespace.
+The number of [placeholder users](../user/project/import/_index.md#placeholder-users) created during an import can be limited per top-level namespace.
 
 The default limit for [GitLab Self-Managed](../subscriptions/self_managed/_index.md) is `0` (unlimited).
 
@@ -693,7 +693,7 @@ To set a limit on your instance, use the
 
 ### Number of parallel Pages deployments
 
-When using [parallel Pages deployments](../user/project/pages/index.md#parallel-deployments), the total number
+When using [parallel Pages deployments](../user/project/pages/_index.md#parallel-deployments), the total number
 of parallel Pages deployments permitted for a top-level namespace is 1000.
 
 ### Number of registered runners per scope
@@ -1049,7 +1049,7 @@ than the specified limit, hooks are not executed.
 For more information, see:
 
 - [Webhook push events](../user/project/integrations/webhook_events.md#push-events)
-- [Push hook limit for project integrations](../user/project/integrations/index.md#push-hook-limit)
+- [Push hook limit for project integrations](../user/project/integrations/_index.md#push-hook-limit)
 
 ### Activities
 

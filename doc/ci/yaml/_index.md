@@ -65,7 +65,7 @@ A GitLab CI/CD pipeline configuration includes:
   | [`needs`](#needs)                             | Execute jobs earlier than the stage ordering.                                                               |
   | [`pages`](#pages)                             | Upload the result of a job to use with GitLab Pages.                                                        |
   | [`parallel`](#parallel)                       | How many instances of a job should be run in parallel.                                                      |
-  | [`release`](#release)                         | Instructs the runner to generate a [release](../../user/project/releases/index.md) object.                  |
+  | [`release`](#release)                         | Instructs the runner to generate a [release](../../user/project/releases/_index.md) object.                  |
   | [`resource_group`](#resource_group)           | Limit job concurrency.                                                                                      |
   | [`retry`](#retry)                             | When and how many times a job can be auto-retried in case of a failure.                                     |
   | [`rules`](#rules)                             | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
@@ -3428,7 +3428,7 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 
 ### `pages`
 
-Use `pages` to define a [GitLab Pages](../../user/project/pages/index.md) job that
+Use `pages` to define a [GitLab Pages](../../user/project/pages/_index.md) job that
 uploads static content to GitLab. The content is then published as a website.
 
 You must:
@@ -3523,7 +3523,7 @@ DETAILS:
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in GitLab 17.8.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/487161) in GitLab 17.9. Feature flag `pages_multiple_versions_setting` removed.
 
-Use `pages.path_prefix` to configure a path prefix for [parallel deployments](../../user/project/pages/index.md#parallel-deployments) of GitLab Pages.
+Use `pages.path_prefix` to configure a path prefix for [parallel deployments](../../user/project/pages/_index.md#parallel-deployments) of GitLab Pages.
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
@@ -3565,7 +3565,7 @@ Use `expire_in` to specify how long a deployment should be available before
 it expires. After the deployment is expired, it's deactivated by a cron
 job running every 10 minutes.
 
-By default, [parallel deployments](../../user/project/pages/index.md#parallel-deployments) expire
+By default, [parallel deployments](../../user/project/pages/_index.md#parallel-deployments) expire
 automatically after 24 hours.
 To disable this behavior, set the value to `never`.
 
@@ -3725,7 +3725,7 @@ deploystacks: [vultr, processing]
 
 ### `release`
 
-Use `release` to create a [release](../../user/project/releases/index.md).
+Use `release` to create a [release](../../user/project/releases/_index.md).
 
 The release job must have access to the [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs),
 which must be in the `$PATH`.
@@ -3788,9 +3788,9 @@ This example creates a release:
 
 **Related topics**:
 
-- [CI/CD example of the `release` keyword](../../user/project/releases/index.md#creating-a-release-by-using-a-cicd-job).
-- [Create multiple releases in a single pipeline](../../user/project/releases/index.md#create-multiple-releases-in-a-single-pipeline).
-- [Use a custom SSL CA certificate authority](../../user/project/releases/index.md#use-a-custom-ssl-ca-certificate-authority).
+- [CI/CD example of the `release` keyword](../../user/project/releases/_index.md#creating-a-release-by-using-a-cicd-job).
+- [Create multiple releases in a single pipeline](../../user/project/releases/_index.md#create-multiple-releases-in-a-single-pipeline).
+- [Use a custom SSL CA certificate authority](../../user/project/releases/_index.md#use-a-custom-ssl-ca-certificate-authority).
 
 #### `release:tag_name`
 

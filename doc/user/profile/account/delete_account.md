@@ -108,7 +108,7 @@ When deleting users, you can either:
   - [Notes and comments](../../../api/notes.md)
     on other users' [commits](../../project/repository/_index.md#commit-changes-to-a-repository),
     [epics](../../group/epics/_index.md),
-    [issues](../../project/issues/index.md),
+    [issues](../../project/issues/_index.md),
     [merge requests](../../project/merge_requests/_index.md)
     and [snippets](../../snippets.md).
 

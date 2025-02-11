@@ -42,7 +42,7 @@ Prerequisites:
 - The project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - One of the following token types:
   - A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.
-  - A [deploy token](../../project/deploy_tokens/index.md)
+  - A [deploy token](../../project/deploy_tokens/_index.md)
     with the scope set to `write_package_registry`.
 
 To publish the package with a personal access token:
@@ -130,7 +130,7 @@ Prerequisites:
 - One of the following token types:
   - A [personal access token](../../profile/personal_access_tokens.md)
     with the scope set to, at minimum, `api`.
-  - A [deploy token](../../project/deploy_tokens/index.md)
+  - A [deploy token](../../project/deploy_tokens/_index.md)
     with the scope set to `read_package_registry`, `write_package_registry`, or both.
   - A [CI/CD Job token](../../../ci/jobs/ci_job_token.md)
 

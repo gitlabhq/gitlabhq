@@ -754,18 +754,18 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     let_it_be(:group) { create(:group, path: "foo") }
 
     fake_form_id = "fake_form_id"
-    where(:prevent_delete_response, :is_button_disabled, :form_value_id, :permanently_remove, :button_text) do
-      true      | "true"      | nil           |  false  | "Delete"
-      true      | "true"      | fake_form_id  |  true   | nil
-      false     | "false"     | nil           |  false  | "Delete group"
-      false     | "false"     | fake_form_id  |  true   | nil
+    where(:prevent_delete_response, :is_button_disabled, :form_value_id, :permanently_remove, :button_text, :has_security_policy_project) do
+      true      | "true"      | nil           |  false  | "Delete" | true
+      true      | "true"      | fake_form_id  |  true   | nil | false
+      false     | "true" | nil | false | "Delete group" | true
+      false     | "false" | fake_form_id | true | nil | false
     end
 
     with_them do
       it "returns expected parameters" do
         allow(group).to receive(:linked_to_subscription?).and_return(prevent_delete_response)
 
-        expected = helper.group_confirm_modal_data(group: group, remove_form_id: form_value_id, button_text: button_text)
+        expected = helper.group_confirm_modal_data(group: group, remove_form_id: form_value_id, button_text: button_text, has_security_policy_project: has_security_policy_project)
         expect(expected).to eq({
           button_text: button_text.nil? ? "Delete group" : button_text,
           confirm_danger_message: remove_group_message(group, permanently_remove),

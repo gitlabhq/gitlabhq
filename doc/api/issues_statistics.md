@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Every API call to the [issues](../user/project/issues/index.md) statistics API must be authenticated.
+Every API call to the [issues](../user/project/issues/_index.md) statistics API must be authenticated.
 
 If a user is not a member of a project and the project is private, a `GET`
 request on that project results in a `404` status code.

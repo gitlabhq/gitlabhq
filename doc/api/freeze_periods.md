@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-You can use the Freeze Periods API to manipulate GitLab [Freeze Period](../user/project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze) entries.
+You can use the Freeze Periods API to manipulate GitLab [Freeze Period](../user/project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze) entries.
 
 ## Permissions and security
 

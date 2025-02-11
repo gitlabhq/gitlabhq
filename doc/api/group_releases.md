@@ -12,7 +12,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351703) in GitLab 14.10 [with a flag](../administration/feature_flags.md) named `group_releases_finder_inoperator`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355463) in GitLab 15.0. Feature flag `group_releases_finder_inoperator` removed.
 
-Review your groups' [releases](../user/project/releases/index.md) with the REST API.
+Review your groups' [releases](../user/project/releases/_index.md) with the REST API.
 
 NOTE:
 For more information about the project releases API, see [Releases API](releases/_index.md).

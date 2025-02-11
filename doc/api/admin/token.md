@@ -39,7 +39,7 @@ Gets information for a given token. This endpoint supports the following tokens:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Impersonation tokens](../rest/authentication.md#impersonation-tokens)
-- [Deploy tokens](../../user/project/deploy_tokens/index.md)
+- [Deploy tokens](../../user/project/deploy_tokens/_index.md)
 - [Feed tokens](../../security/tokens/_index.md#feed-token)
 - [OAuth application secrets](../../integration/oauth_provider.md)
 - [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)
@@ -125,7 +125,7 @@ Revokes or resets a given token based on the token type. This endpoint supports 
 | [Impersonation tokens](../../user/profile/personal_access_tokens.md)                         | Revoke             |
 | [Project access tokens](../../security/tokens/_index.md#project-access-tokens)               | Revoke             |
 | [Group access tokens](../../security/tokens/_index.md#group-access-tokens)                   | Revoke             |
-| [Deploy tokens](../../user/project/deploy_tokens/index.md)                                   | Revoke             |
+| [Deploy tokens](../../user/project/deploy_tokens/_index.md)                                   | Revoke             |
 | [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)          | Revoke             |
 | [Feed tokens](../../security/tokens/_index.md#feed-token)                                    | Reset              |
 | [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens) | Reset              |

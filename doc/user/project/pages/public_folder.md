@@ -125,7 +125,7 @@ deploy-pages:
       - public
 ```
 
-The previous YAML example uses [user-defined job names](index.md#user-defined-job-names).
+The previous YAML example uses [user-defined job names](_index.md#user-defined-job-names).
 
 ## Nuxt.js
 

@@ -23,7 +23,7 @@ describe('ClusterIntegrationForm', () => {
       store: createStore(storeValues),
       provide: {
         autoDevopsHelpPath: 'topics/autodevops/index',
-        externalEndpointHelpPath: 'user/project/clusters/index.md#base-domain',
+        externalEndpointHelpPath: 'user/project/clusters/_index.md#base-domain',
       },
     });
   };

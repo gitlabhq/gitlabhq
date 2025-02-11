@@ -16,7 +16,7 @@ This is the administration documentation. For information about Git abuse rate l
 
 Git abuse rate limiting is a feature to automatically [ban users](../moderate_users.md#ban-and-unban-users) who download, clone, or fork more than a specified number of repositories in any project in the instance in a given time frame. Banned users cannot sign in to the instance and cannot access any non-public group via HTTP or SSH. The rate limit also applies to users who authenticate with a [personal](../../user/profile/personal_access_tokens.md) or [group access token](../../user/group/settings/group_access_tokens.md).
 
-Git abuse rate limiting does not apply to instance administrators, [deploy tokens](../../user/project/deploy_tokens/index.md), or [deploy keys](../../user/project/deploy_keys/index.md).
+Git abuse rate limiting does not apply to instance administrators, [deploy tokens](../../user/project/deploy_tokens/_index.md), or [deploy keys](../../user/project/deploy_keys/_index.md).
 
 How GitLab determines a user's rate limit is under development.
 GitLab team members can view more information in this confidential epic:

@@ -36,8 +36,8 @@ and that users who pull from the cache have the necessary authentication:
    is disabled, enable it. It is enabled by default.
 1. [Add an authentication method](#configure-a-client). The dependency proxy supports the same [authentication methods](../_index.md#authenticate-with-the-registry) as the package registry:
    - [Personal access token](../../../profile/personal_access_tokens.md)
-   - [Project deploy token](../../../project/deploy_tokens/index.md)
-   - [Group deploy token](../../../project/deploy_tokens/index.md)
+   - [Project deploy token](../../../project/deploy_tokens/_index.md)
+   - [Group deploy token](../../../project/deploy_tokens/_index.md)
    - [Job token](../../../../ci/jobs/ci_job_token.md)
 
 ## Advanced caching

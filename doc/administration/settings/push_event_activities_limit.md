@@ -17,11 +17,10 @@ bulk push event instead.
 For example, if 4 branches are pushed and the limit is set to 3,
 the activity feed displays:
 
-![The activity feed displays that a user pushed to 4 branches with a single event.](img/bulk_push_event_v12_4.png)
+![The activity feed, showing a push to 4 branches with a single event.](img/bulk_push_event_v12_4.png)
 
-With this feature, when a single push includes a lot of changes (for example, 1,000
-branches), only 1 bulk push event is created instead of 1,000 push
-events. This helps in maintaining good system performance and preventing spam on
+With this feature, a single push changing 1,000 branches creates one bulk push event
+instead of 1,000 push events. This helps maintain good system performance and prevents spam on
 the activity feed.
 
 To modify this setting:

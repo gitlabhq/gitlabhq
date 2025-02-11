@@ -120,7 +120,7 @@ In the meantime, you can start creating an Insights report for your project.
 ## Create an Insights report
 
 While Value Stream Analytics give an overview of the entire development process,
-[Insights](../../user/project/insights/index.md) provide a more granular view of a project's
+[Insights](../../user/project/insights/_index.md) provide a more granular view of a project's
 issues created and closed, and average merge time of merge requests.
 This data visualization can help you triage issues at a glance.
 

@@ -22,8 +22,8 @@ WARNING:
 These settings are experimental. An increased maximum increases resource
 consumption of your instance. Keep this in mind when adjusting the maximum.
 
-To speed the loading time of merge request views and branch comparison views
-on your instance, you can configure three instance-level maximum values for diffs:
+To speed the loading of merge request views and branch comparison views
+on your instance, configure these maximum values for diffs:
 
 | Value | Definition | Default value | Maximum value |
 | ----- | ---------- | :-----------: | :-----------: |

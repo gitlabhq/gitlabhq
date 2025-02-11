@@ -28,8 +28,8 @@ module Projects
         end
 
       ensure
-        FileUtils.remove_entry(shared.export_path) if File.exist?(shared.export_path)
-        FileUtils.remove_entry(shared.archive_path) if File.exist?(shared.archive_path)
+        FileUtils.rm_rf(shared.export_path)
+        FileUtils.rm_rf(shared.archive_path)
       end
 
       private

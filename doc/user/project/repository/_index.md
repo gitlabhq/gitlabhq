@@ -12,20 +12,20 @@ DETAILS:
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 is where you store your code, make changes, and track changes using version control.
-Each [project](../index.md) contains a repository and a repository cannot exist without a project.
+Each [project](../_index.md) contains a repository and a repository cannot exist without a project.
 
 ## Create a repository
 
 To create a repository:
 
-- [Create a project](../index.md) or
+- [Create a project](../_index.md) or
 - [Fork an existing project](forking_workflow.md).
 
 ## Add files to a repository
 
 You can add files to a repository:
 
-- When you [create a project](../index.md), or
+- When you [create a project](../_index.md), or
 - After you create a project, using the following options:
   - [Web editor](web_editor.md#upload-a-file).
   - [User Interface (UI)](#add-a-file-from-the-ui).
@@ -130,11 +130,11 @@ For more information, see [Contributor analytics](../../analytics/contributor_an
 ## Repository history graph
 
 A repository graph displays a visual history of the repository network, including branches and merges.
-This graph can help you visualize the Git flow strategy used in the repository.
+This graph helps you see the flow of changes in the repository.
 
 To view the repository history graph, go to your project's **Code > Repository graph**.
 
-![repository Git flow](img/repo_graph_v9_4.png)
+![A graph showing the flow of commits in a repository.](img/repo_graph_v17_9.png)
 
 ## Repository path changes
 

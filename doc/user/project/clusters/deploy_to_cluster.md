@@ -29,8 +29,8 @@ A Kubernetes cluster can be the destination for a deployment job. If
 
 ## Deployment variables
 
-Deployment variables require a valid [Deploy Token](../deploy_tokens/index.md) named
-[`gitlab-deploy-token`](../deploy_tokens/index.md#gitlab-deploy-token), and the
+Deployment variables require a valid [Deploy Token](../deploy_tokens/_index.md) named
+[`gitlab-deploy-token`](../deploy_tokens/_index.md#gitlab-deploy-token), and the
 following command in your deployment job script, for Kubernetes to access the registry:
 
 - Using Kubernetes 1.18+:

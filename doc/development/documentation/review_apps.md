@@ -65,7 +65,7 @@ Documentation review apps follow this process:
    - For `nanoc` builds, the HTML files are uploaded as [artifacts](../../ci/yaml/_index.md#artifacts) to a GCP bucket.
      For implementation details, see
      [issue `gitlab-com/gl-infra/reliability#11021`](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11021).
-   - For `hugo` builds, a [parallel deployment](../../user/project/pages/index.md#parallel-deployments) is deployed.
+   - For `hugo` builds, a [parallel deployment](../../user/project/pages/_index.md#parallel-deployments) is deployed.
 
 ## Troubleshooting
 

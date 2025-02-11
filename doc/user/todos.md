@@ -75,7 +75,7 @@ You can manually add an item to your To-Do List.
 
 1. Go to your:
 
-   - [Issue](project/issues/index.md)
+   - [Issue](project/issues/_index.md)
    - [Merge request](project/merge_requests/_index.md)
    - [Epic](group/epics/_index.md)
    - [Design](project/issues/design_management.md)

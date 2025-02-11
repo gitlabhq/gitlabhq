@@ -139,4 +139,4 @@ you don't need to set a `baseurl`.
 ## Custom domains
 
 GitLab Pages supports custom domains and subdomains, served under HTTP or HTTPS.
-See [GitLab Pages custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/index.md) for more information.
+See [GitLab Pages custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/_index.md) for more information.

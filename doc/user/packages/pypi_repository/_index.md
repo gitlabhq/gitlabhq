@@ -32,7 +32,7 @@ You can authenticate with:
 
 - A [personal access token](../../profile/personal_access_tokens.md)
   with the scope set to `api`.
-- A [deploy token](../../project/deploy_tokens/index.md) with the scope set to
+- A [deploy token](../../project/deploy_tokens/_index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
@@ -339,6 +339,6 @@ If you use the same domain name (such as `gitlab.example.com`) multiple times wi
 tokens, `pip` may not be able to find your packages. This problem is due to how `pip`
 [registers and stores your tokens](https://github.com/pypa/pip/pull/10904#issuecomment-1126690115) during commands executions.
 
-To workaround this issue, you can use a [group deploy token](../../project/deploy_tokens/index.md) with the
+To workaround this issue, you can use a [group deploy token](../../project/deploy_tokens/_index.md) with the
 scope `read_package_registry` from a common parent group for all projects or groups targeted by the
 `index-url` and `extra-index-url` values.

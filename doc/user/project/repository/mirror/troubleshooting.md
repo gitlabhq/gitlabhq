@@ -62,7 +62,7 @@ If you receive this error after creating a new project using
   terminal prompts disabled\n": exit status 128."
   ```
 
-- In Bitbucket Server (self-managed):
+- In Bitbucket Server (self-hosted):
 
   ```plaintext
   "2:fetch remote: "fatal: could not read Username for 'https://lab.example.com':
@@ -83,13 +83,13 @@ Check if the repository owner is specified in the URL of your mirrored repositor
      https://OWNER@bitbucket.org/ACCOUNTNAME/REPONAME.git
      ```
 
-   - In Bitbucket Server (self-managed):
+   - In Bitbucket Server (self-hosted):
 
      ```plaintext
      https://OWNER@lab.example.com/PATH_TO_REPO/REPONAME.git
      ```
 
-When connecting to the Cloud or self-managed Bitbucket repository for mirroring, the repository owner is required in the string.
+When connecting to the Cloud or self-hosted Bitbucket repository for mirroring, the repository owner is required in the string.
 
 ## Pull mirror is missing LFS files
 

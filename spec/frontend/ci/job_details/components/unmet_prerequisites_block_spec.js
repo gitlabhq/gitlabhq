@@ -4,7 +4,7 @@ import UnmetPrerequisitesBlock from '~/ci/job_details/components/unmet_prerequis
 
 describe('Unmet Prerequisites Block Job component', () => {
   let wrapper;
-  const helpPath = '/user/project/clusters/index.html#troubleshooting-failed-deployment-jobs';
+  const helpPath = '/user/project/clusters/_index.html#troubleshooting-failed-deployment-jobs';
 
   const createComponent = () => {
     wrapper = shallowMount(UnmetPrerequisitesBlock, {

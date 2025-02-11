@@ -59,7 +59,7 @@ module Gitlab
         }
 
         if Feature.enabled?(:ci_jwt_groups_direct, project, type: :ops) ||
-            Feature.enabled?(:ci_jwt_groups_direct, project.group, type: :ops)
+            Feature.enabled?(:ci_jwt_groups_direct, project.root_namespace, type: :ops)
           direct_groups = user&.first_group_paths
           fields[:groups_direct] = direct_groups if direct_groups
         end

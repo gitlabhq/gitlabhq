@@ -89,7 +89,7 @@ The above example:
 The template uses the [GitLab plugin for sitespeed.io](https://gitlab.com/gitlab-org/gl-performance),
 and it saves the full HTML sitespeed.io report as a [Browser Performance report artifact](../yaml/artifacts_reports.md#artifactsreportsbrowser_performance)
 that you can later download and analyze. This implementation always takes the latest
-Browser Performance artifact available. If [GitLab Pages](../../user/project/pages/index.md) is enabled,
+Browser Performance artifact available. If [GitLab Pages](../../user/project/pages/_index.md) is enabled,
 you can view the report directly in your browser.
 
 You can also customize the jobs with CI/CD variables:

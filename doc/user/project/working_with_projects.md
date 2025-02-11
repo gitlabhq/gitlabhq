@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Most work in GitLab is done in a [project](index.md). Files and
+Most work in GitLab is done in a [project](_index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
 
 ## Project overview
@@ -556,7 +556,7 @@ repository. For example, if an administrator creates the alias `gitlab` for the 
 
 ## Related topics
 
-- [Import a project](import/index.md).
+- [Import a project](import/_index.md).
 - [Connect an external repository to GitLab CI/CD](../../ci/ci_cd_for_external_repos/_index.md).
 - [Fork a project](repository/forking_workflow.md#create-a-fork).
 - Adjust [project visibility](../public_access.md#change-project-visibility) and [permissions](settings/_index.md#configure-project-features-and-permissions).

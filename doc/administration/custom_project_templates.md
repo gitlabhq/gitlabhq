@@ -12,7 +12,7 @@ DETAILS:
 
 As an administrator, you can configure a group that contains projects available for
 use as the source of project templates on your instance. You can then
-[create a new project](../user/project/index.md#create-a-project-from-a-custom-template),
+[create a new project](../user/project/_index.md#create-a-project-from-a-custom-template),
 that starts from the template project's contents.
 
 To learn more about what is copied from the template project, see
@@ -63,4 +63,4 @@ identical to the data exported with the [GitLab Project Import/Export](../user/p
 
 ## Related topics
 
-- [Custom group-level project templates](../user/group/custom_project_templates.md).
+- [Custom project templates for groups](../user/group/custom_project_templates.md).

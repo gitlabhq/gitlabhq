@@ -27,11 +27,11 @@ Milestones can be used to track releases. To do so:
 1. Add issues to your release by selecting the milestone from the issue's right sidebar.
 
 Additionally, to automatically generate release evidence when you create your release, integrate
-milestones with the [Releases feature](../releases/index.md#associate-milestones-with-a-release).
+milestones with the [Releases feature](../releases/_index.md#associate-milestones-with-a-release).
 
 ## Project milestones and group milestones
 
-A milestone can belong to [project](../index.md) or [group](../../group/_index.md).
+A milestone can belong to [project](../_index.md) or [group](../../group/_index.md).
 
 You can assign **project milestones** to issues or merge requests in that project only.
 You can assign **group milestones** to any issue or merge request of any project in that group.

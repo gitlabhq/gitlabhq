@@ -113,7 +113,7 @@ module Projects
           # when it is added to the project's lfs files.
           # Nevertheless if any exception raises the file would remain
           # in the file system. Here we ensure to remove it
-          File.unlink(file) if File.exist?(file)
+          FileUtils.rm_f(file)
 
           raise e
         end
@@ -124,7 +124,7 @@ module Projects
       end
 
       def create_tmp_storage_dir
-        FileUtils.makedirs(tmp_storage_dir) unless Dir.exist?(tmp_storage_dir)
+        FileUtils.makedirs(tmp_storage_dir)
       end
 
       def tmp_storage_dir

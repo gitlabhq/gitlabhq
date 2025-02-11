@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
 NOTE:
-This page contains administrator documentation for project and group integrations. For user documentation, see [Project integrations](../../user/project/integrations/index.md).
+This page contains administrator documentation for project and group integrations. For user documentation, see [Project integrations](../../user/project/integrations/_index.md).
 
 Project and group administrators can configure and enable integrations.
 As an instance administrator, you can:
@@ -52,7 +52,7 @@ When you make further changes to the instance defaults:
 - Groups and projects with custom settings selected for the integration are not immediately affected and may
   choose to use the latest defaults at any time.
 
-If [group-level settings](../../user/project/integrations/index.md#manage-group-default-settings-for-a-project-integration) have also
+If [group-level settings](../../user/project/integrations/_index.md#manage-group-default-settings-for-a-project-integration) have also
 been configured for the same integration, projects in that group inherit the group-level settings
 instead of the instance-level settings.
 
@@ -80,7 +80,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-To view projects in your instance that [use custom settings](../../user/project/integrations/index.md#use-custom-settings-for-a-project-or-group-integration):
+To view projects in your instance that [use custom settings](../../user/project/integrations/_index.md#use-custom-settings-for-a-project-or-group-integration):
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Integrations**.

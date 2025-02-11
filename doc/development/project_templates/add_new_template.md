@@ -6,7 +6,7 @@ title: Contribute to built-in project templates
 ---
 
 GitLab provides some
-[built-in project templates](../../user/project/index.md#create-a-project-from-a-built-in-template)
+[built-in project templates](../../user/project/_index.md#create-a-project-from-a-built-in-template)
 that you can use when creating a new project.
 
 Built-in templates are sourced from the following groups:

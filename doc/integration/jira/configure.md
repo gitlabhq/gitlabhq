@@ -38,7 +38,7 @@ Prerequisites:
 
 You can enable the Jira issues integration by configuring your project settings in GitLab.
 You can also configure the integration for a specific
-[group](../../user/project/integrations/index.md#manage-group-default-settings-for-a-project-integration) or an entire
+[group](../../user/project/integrations/_index.md#manage-group-default-settings-for-a-project-integration) or an entire
 [instance](../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration)
 on GitLab Self-Managed.
 

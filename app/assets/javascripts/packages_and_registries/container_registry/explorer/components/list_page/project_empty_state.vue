@@ -75,6 +75,7 @@ export default {
           :value="dockerLoginCommand"
           readonly
           type="text"
+          :aria-label="s__('ContainerRegistry|Docker login command')"
           class="!gl-font-monospace"
         />
         <template #append>
@@ -93,6 +94,7 @@ export default {
           :value="dockerBuildCommand"
           readonly
           type="text"
+          :aria-label="s__('ContainerRegistry|Docker build command')"
           class="!gl-font-monospace"
         />
         <template #append>
@@ -104,7 +106,13 @@ export default {
         </template>
       </gl-form-input-group>
       <gl-form-input-group>
-        <gl-form-input :value="dockerPushCommand" readonly type="text" class="!gl-font-monospace" />
+        <gl-form-input
+          :value="dockerPushCommand"
+          readonly
+          type="text"
+          :aria-label="s__('ContainerRegistry|Docker push command')"
+          class="!gl-font-monospace"
+        />
         <template #append>
           <clipboard-button
             :text="dockerPushCommand"

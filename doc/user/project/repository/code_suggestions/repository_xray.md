@@ -24,7 +24,9 @@ To do this, Repository X-Ray gives the code assistant more insight into the proj
 - Extracting a list of libraries from their content.
 - Providing the extracted list as additional context to be used by GitLab Duo Code Suggestions in code generation, refactor code, fix code, and write test requests.
 
-By understanding the libraries and other dependencies in use, Repository X-Ray helps the code assistant tailor suggestions to match the coding patterns, styles and technologies used in the project. This results in code suggestions that integrate more seamlessly and follow best practices for the given stack.
+By understanding the libraries and other dependencies in use, Repository X-Ray helps the code assistant
+tailor suggestions to match the coding patterns, styles, and technologies used in the project. This results
+in code suggestions that integrate more seamlessly and follow best practices for the given stack.
 
 NOTE:
 Repository X-Ray only enhances code generation requests and not code completion requests.
@@ -33,9 +35,12 @@ Repository X-Ray only enhances code generation requests and not code completion 
 
 > - Maximum number of libraries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500365) in GitLab 17.6.
 
-When a new commit is pushed to your project's default branch, the Repository X-Ray triggers a background job that scans and parses the applicable configuration files in your repository automatically.
+When you push a new commit to your project's default branch, Repository X-Ray triggers a background job.
+This job scans and parses the applicable configuration files in your repository.
 
-Typically, only one scanning job runs at a time in each project. This means that if a second scan is triggered while a scan is already in progress, that second scan waits until the first scan is complete before executing. This could result in a small delay before the latest configuration file data is parsed and updated in the database.
+Typically, only one scanning job runs at a time in each project. If a second scan is triggered while a
+scan is already in progress, that second scan waits until the first scan is complete before executing.
+This could result in a small delay before the latest configuration file data is parsed and updated in the database.
 
 When a code generation request is made, a maximum of 300 libraries from the parsed data is included in the prompt as additional context.
 

@@ -102,10 +102,9 @@ You can do this by editing your `settings.json` file directly, or from the VS Co
    1. Search for **GitLab Workflow** in the list, and select **Manage** (**{settings}**).
    1. Select **Extension Settings**.
 1. In your **User** settings, find the section titled **AI Assisted Code Suggestions: Enabled Supported Languages**.
-1. You will see a list of all supported languages with checkboxes next to each language.
-1. To enable Code Suggestions for a language, ensure its checkbox is checked.
-1. To disable Code Suggestions for a language, uncheck its checkbox.
-1. Your changes are automatically saved and will take effect immediately.
+1. To enable Code Suggestions for a language, select its checkbox.
+1. To disable Code Suggestions for a language, clear its checkbox.
+1. Your changes are automatically saved, and take effect immediately.
 
 When you disable Code Suggestions for a language, the Duo icon changes to show that suggestions are disabled
 for this language. On hover, it shows **Code Suggestions are disabled for this language**.

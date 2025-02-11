@@ -67,7 +67,7 @@ When the build is complete, you can test the image locally:
 docker run -ti my-gitlab-workspace sh
 ```
 
-You should now be able to run commands as the `gitlab-workspaces` user.
+You should now have permission to run commands as the `gitlab-workspaces` user.
 
 ## Push the custom workspace image to the GitLab container registry
 

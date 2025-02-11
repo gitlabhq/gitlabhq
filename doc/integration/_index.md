@@ -10,7 +10,7 @@ You can integrate GitLab with external applications for enhanced functionality.
 
 ## Project integrations
 
-Applications like Jenkins, Jira, and Slack are available as [project integrations](../user/project/integrations/index.md).
+Applications like Jenkins, Jira, and Slack are available as [project integrations](../user/project/integrations/_index.md).
 
 ## Issue trackers
 

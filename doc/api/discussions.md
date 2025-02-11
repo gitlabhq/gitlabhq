@@ -32,7 +32,7 @@ Not all discussion types are equally available in the API:
 - **Discussion**: A collection, often called a _thread_, of `DiscussionNotes` in
   an issue, merge request, commit, or snippet.
 - **DiscussionNote**: An individual item in a discussion on an issue, merge request,
-  commit, or snippet. These are not returned as part of the Note API.
+  commit, or snippet. Items of type `DiscussionNote` are not returned as part of the Note API.
   Not available in the [Events API](events.md).
 
 ## Discussions pagination

@@ -7,7 +7,7 @@ title: Documentation deployments
 
 ## Deployment environments
 
-The [GitLab documentation site](https://docs.gitlab.com/) is a static site hosted by [GitLab Pages](../../../user/project/pages/index.md). The deployment is done by the [Pages deploy job](#pages-deploy-job).
+The [GitLab documentation site](https://docs.gitlab.com/) is a static site hosted by [GitLab Pages](../../../user/project/pages/_index.md). The deployment is done by the [Pages deploy job](#pages-deploy-job).
 
 The website hosts documentation only for the [currently supported](../../../policy/maintenance.md) GitLab versions. Documentation for older versions is built and uploaded as Docker images to be downloaded from [GitLab Docs archives](https://docs.gitlab.com/archives/).
 
@@ -124,7 +124,7 @@ graph TD
 
 ## Pages deploy job
 
-[GitLab Docs](https://docs.gitlab.com) is a [Pages site](../../../user/project/pages/index.md) and documentation updates
+[GitLab Docs](https://docs.gitlab.com) is a [Pages site](../../../user/project/pages/_index.md) and documentation updates
 for it must be deployed to become available.
 
 The [`pages`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/4c18963fe0a414ad62f55b9e18f922588b2dd155/.gitlab-ci.yml#L491)

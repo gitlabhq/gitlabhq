@@ -65,8 +65,8 @@ including but not limited to:
 - [API fuzzing](../user/application_security/api_fuzzing/index.md)
 - [Coverage-guided fuzz testing](../user/application_security/coverage_fuzzing/index.md)
 
-Beyond the CI/CD pipeline, GitLab provides [detailed guidance on how to configure releases](../user/project/releases/index.md).
-Releases can be created with a CI/CD pipeline and take a snapshot of any branch of source code in a repository. Instructions for creating releases are included in [Create a Release](../user/project/releases/index.md#create-a-release).
+Beyond the CI/CD pipeline, GitLab provides [detailed guidance on how to configure releases](../user/project/releases/_index.md).
+Releases can be created with a CI/CD pipeline and take a snapshot of any branch of source code in a repository. Instructions for creating releases are included in [Create a Release](../user/project/releases/_index.md#create-a-release).
 An important consideration for NIST 800-53 or
 FedRAMP compliance is that released code may need to be signed to verify
 authenticity of code and satisfy requirements in the System and Information Integrity (SI) control family.

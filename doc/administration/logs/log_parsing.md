@@ -197,7 +197,7 @@ You can also use `fast-stats top` (see top of page) to extract performance stati
 ### Parsing `gitlab-rails/importer.log`
 
 To troubleshoot [project imports](../raketasks/project_import_export.md) or
-[migrations](../../user/project/import/index.md), run this command:
+[migrations](../../user/project/import/_index.md), run this command:
 
 ```shell
 jq 'select(.project_path == "<namespace>/<project>").error_messages' importer.log

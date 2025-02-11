@@ -83,7 +83,7 @@
       id: 'js-deploy-freeze-settings',
       expanded: expanded) do |c|
       - c.with_description do
-        - freeze_period_docs = help_page_path('user/project/releases/index.md', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
+        - freeze_period_docs = help_page_path('user/project/releases/_index.md', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
         - freeze_period_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: freeze_period_docs }
         = html_escape(s_('DeployFreeze|Add a freeze period to prevent unintended releases during a period of time for a given environment. You must update the deployment jobs in %{filename} according to the deploy freezes added here. %{freeze_period_link_start}Learn more.%{freeze_period_link_end}')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('.gitlab-ci.yml') }
 

@@ -308,8 +308,8 @@ To decrease the cloning depth to `1`, run:
 
 ## Password expired error on Git fetch with SSH for LDAP user
 
-If `git fetch` returns this `HTTP 403 Forbidden` error on a self-managed instance of
-GitLab, the password expiration date (`users.password_expires_at`) for this user in the
+If `git fetch` returns this `HTTP 403 Forbidden` error on GitLab Self-Managed,
+the password expiration date (`users.password_expires_at`) for this user in the
 GitLab database is a date in the past:
 
 ```plaintext
@@ -453,5 +453,5 @@ If your IP address has been blocked, a corresponding log entry exists in the
 ```
 
 The failed authentication ban limits differ depending if you are using a
-[self-managed instance](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
-or [GitLab.com](../../user/gitlab_com/_index.md#ip-blocks).
+[GitLab Self-Managed](../../security/rate_limits.md#failed-authentication-ban-for-git-and-container-registry)
+or [GitLab SaaS](../../user/gitlab_com/_index.md#ip-blocks).

@@ -27,7 +27,7 @@ the upstream repository instead. Changes in the remote repository are pulled int
 
 UI and API updates are subject to default
 [pull mirroring intervals](../../../../administration/instance_limits.md#pull-mirroring-interval)
-of 5 minutes. This interval can be configured by self-managed instances.
+of 5 minutes. This interval can be configured on GitLab Self-Managed instances.
 
 By default, if any branch or tag on the downstream pull mirror diverges from the
 local repository, GitLab stops updating the branch. This prevents data loss.

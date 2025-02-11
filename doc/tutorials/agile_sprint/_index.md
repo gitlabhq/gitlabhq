@@ -31,7 +31,7 @@ Membership automatically cascades down to all subgroups and projects.
 
 ## Create a project
 
-Now [create one or more projects](../../user/project/index.md) in your group.
+Now [create one or more projects](../../user/project/_index.md) in your group.
 There are several different ways to create a project. A project contains
 your code and pipelines, but also the issues that are used for planning your upcoming code changes.
 
@@ -73,7 +73,7 @@ or epic such as `type::feature`, `type::defect`, and `type::maintenance`.
 
 Now you can get started planning your iterations. Start by creating [epics](../../user/group/epics/_index.md)
 in the group where you created your iteration cadence,
-then create child [issues](../../user/project/issues/index.md) in one or more of your projects.
+then create child [issues](../../user/project/issues/_index.md) in one or more of your projects.
 Add labels to each as needed.
 
 ## Create an issue board

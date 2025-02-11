@@ -12,7 +12,7 @@ module Gitlab
 
         RELEASE_CLI_REQUIRED_VERSION = '0.21.0'
         GLAB_REQUIRED_VERSION = '1.52.0'
-        TROUBLE_SHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/index.md', anchor: 'gitlab-cli-version-requirement')
+        TROUBLE_SHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/_index.md', anchor: 'gitlab-cli-version-requirement')
 
         GLAB_COMMAND_CHECK_COMMAND = <<~BASH.freeze
         if ! command -v glab &> /dev/null; then

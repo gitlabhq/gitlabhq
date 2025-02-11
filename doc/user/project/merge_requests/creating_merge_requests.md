@@ -76,7 +76,7 @@ If your Git repository is empty, GitLab:
 - Creates a default branch.
 - Commits a blank `README.md` file to it.
 - Creates and redirects you to a new branch based on the issue title.
-- If your project is [configured with a deployment service](../integrations/index.md) like Kubernetes,
+- If your project is [configured with a deployment service](../integrations/_index.md) like Kubernetes,
   GitLab prompts you to set up [auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
   by helping you create a `.gitlab-ci.yml` file.
 
@@ -141,7 +141,7 @@ If your Git repository is empty, GitLab:
 - Creates a default branch.
 - Commits a blank `README.md` file to it.
 - Creates and redirects you to a new branch based on the issue title.
-- If your project is [configured with a deployment service](../integrations/index.md) like Kubernetes,
+- If your project is [configured with a deployment service](../integrations/_index.md) like Kubernetes,
   GitLab prompts you to set up [auto deploy](../../../topics/autodevops/stages.md#auto-deploy)
   by helping you create a `.gitlab-ci.yml` file.
 

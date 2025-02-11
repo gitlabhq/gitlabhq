@@ -84,6 +84,6 @@ but you can [change the project's visibility](../../user/public_access.md#change
 
 ## Related topics
 
-- [Create a blank project](../../user/project/index.md)
-- [Create a project from a template](../../user/project/index.md#create-a-project-from-a-built-in-template)
+- [Create a blank project](../../user/project/_index.md)
+- [Create a project from a template](../../user/project/_index.md#create-a-project-from-a-built-in-template)
 - [Clone a repository to your local machine](clone.md)

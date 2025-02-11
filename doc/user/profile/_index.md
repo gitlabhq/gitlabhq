@@ -38,7 +38,7 @@ Prerequisites:
 
 - Your namespace must not:
   - Contain a project with [Container Registry](../packages/container_registry/_index.md) tags.
-  - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
+  - Have a project that hosts [GitLab Pages](../project/pages/_index.md). For more information,
     see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
 - Your username:
   - Must be between 2 and 255 characters in length.
@@ -75,7 +75,7 @@ You can update your [primary email address](#change-your-primary-email).
 
 NOTE:
 [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,
-[project imports](../project/import/index.md), and [group migrations](../group/import/_index.md).
+[project imports](../project/import/_index.md), and [group migrations](../group/import/_index.md).
 
 ## Delete email addresses from your user profile
 

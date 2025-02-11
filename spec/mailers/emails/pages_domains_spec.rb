@@ -35,7 +35,7 @@ RSpec.describe Emails::PagesDomains do
 
     it 'has the expected content' do
       is_expected.to have_body_text domain.url
-      is_expected.to have_body_text help_page_url('user/project/pages/custom_domains_ssl_tls_certification/index.md', anchor: link_anchor)
+      is_expected.to have_body_text help_page_url('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: link_anchor)
     end
   end
 

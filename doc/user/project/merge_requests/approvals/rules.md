@@ -23,7 +23,7 @@ You can define approval rules:
 
 You can configure approval rules:
 
-- [At the instance level](../../../../administration/merge_requests_approvals.md).
+- [For the entire instance](../../../../administration/merge_requests_approvals.md).
 
 If you don't define a [default approval rule](#add-an-approval-rule),
 any user can approve a merge request. Even if you don't define a rule, you can still
@@ -312,7 +312,7 @@ These policies are both created and edited in the [security policy editor](../..
 As a workaround for this validation error, you can delete the approval rule through
 the API.
 
-1. [GET a project-level rule](../../../../api/merge_request_approvals.md#get-a-single-project-level-rule).
+1. [GET a rule set for a project](../../../../api/merge_request_approvals.md#get-a-single-project-level-rule).
 1. [DELETE the rule](../../../../api/merge_request_approvals.md#delete-project-level-rule).
 
 For more information about this validation error, read
@@ -330,8 +330,8 @@ In the group structure below, project 1 belongs to subgroup 1 and subgroup 4 has
 
 ![Example scenario - project and group hierarchy](img/group_access_example_01_v16_8.png)
 
-Project 1 has a project level approval rule which assigns subgroup 4 as approvers.
-When a merge request is created approvers from subgroup 4 appear in the eligible approvers list.
+Project 1 has configured an approval rule for the project, which assigns subgroup 4 as approvers.
+When a merge request is created, approvers from subgroup 4 appear in the eligible approvers list.
 However, as users from subgroup 4 do not have permission to view the merge request, the `404` error is returned.
 To grant membership, the group must be invited as a project member. It is now possible for users from subgroup 4 to approve.
 

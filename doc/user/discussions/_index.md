@@ -52,7 +52,7 @@ instance with `@username` or `@groupname`. GitLab notifies all mentioned users w
 Users can change this setting for themselves in the [notification settings](../profile/notifications.md).
 
 You can quickly see which comments involve you, because GitLab highlights
-mentions for yourself (the signed-in user) in a different color.
+mentions for yourself (the current, authenticated user) in a different color.
 
 ### Mentioning all members
 
@@ -315,7 +315,10 @@ To resolve a thread:
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
 
 Additionally, in merge requests, you can [do more with threads](../project/merge_requests/_index.md#resolve-a-thread),
-such as move unresolved threads to an issue or prevent merging until all threads are resolved.
+such as:
+
+- Move unresolved threads to a new issue.
+- Prevent merging until all threads are resolved.
 
 ## Summarize issue discussions with Duo Chat
 

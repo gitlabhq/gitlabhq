@@ -55,7 +55,7 @@ To update a GitLab Pages website:
 |----------|-------------|
 | [GitLab Pages domain names, URLs, and base URLs](getting_started_part_one.md) | Learn about GitLab Pages default domains. |
 | [Explore GitLab Pages](introduction.md) | Requirements, technical aspects, specific GitLab CI/CD configuration options, Access Control, custom 404 pages, limitations, and FAQ. |
-| [Custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/index.md) | Custom domains and subdomains, DNS records, and SSL/TLS certificates. |
+| [Custom domains and SSL/TLS Certificates](custom_domains_ssl_tls_certification/_index.md) | Custom domains and subdomains, DNS records, and SSL/TLS certificates. |
 | [Let's Encrypt integration](custom_domains_ssl_tls_certification/lets_encrypt_integration.md) | Secure your Pages sites with Let's Encrypt certificates, which are automatically obtained and renewed by GitLab. |
 | [Redirects](redirects.md) | Set up HTTP redirects to forward one page to another. |
 
@@ -188,7 +188,7 @@ selected primary domain. Browsers might cache this redirect.
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
-- A [custom domain](custom_domains_ssl_tls_certification/index.md#set-up-a-custom-domain) must be set up.
+- A [custom domain](custom_domains_ssl_tls_certification/_index.md#set-up-a-custom-domain) must be set up.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.

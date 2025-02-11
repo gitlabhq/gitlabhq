@@ -31,7 +31,7 @@ This calculation is similar to executing `du --summarize --bytes` on your reposi
 ## Size and storage limits
 
 Administrators can set a [repository size limit](../../../administration/settings/account_and_limit_settings.md#repository-size-limit)
-for self-managed instances. For GitLab.com, size limits are [pre-defined](../../gitlab_com/_index.md#account-and-limit-settings).
+for GitLab Self-Managed. For GitLab SaaS, size limits are [pre-defined](../../gitlab_com/_index.md#account-and-limit-settings).
 
 When a project reaches its size limit, certain operations like pushing, creating merge requests,
 and uploading LFS objects are restricted.

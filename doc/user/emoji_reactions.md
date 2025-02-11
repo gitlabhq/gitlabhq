@@ -16,7 +16,7 @@ DETAILS:
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. React with emoji on:
 
-- [Issues](project/issues/index.md).
+- [Issues](project/issues/_index.md).
 - [Tasks](tasks.md).
 - [Merge requests](project/merge_requests/_index.md), [snippets](snippets.md).
 - [Epics](group/epics/_index.md).

@@ -149,7 +149,7 @@ export default {
   },
 
   helpPath: helpPagePath('/user/project/import/github'),
-  membershipsHelpPath: helpPagePath('user/project/import/index', {
+  membershipsHelpPath: helpPagePath('user/project/import/_index', {
     anchor: 'user-contribution-and-membership-mapping',
   }),
 };

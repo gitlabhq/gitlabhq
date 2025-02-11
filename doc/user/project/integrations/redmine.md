@@ -11,7 +11,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must disable [GitLab internal issue tracking](../issues/index.md) in the project. For more information about the steps and consequences of disabling
+- You must disable [GitLab internal issue tracking](../issues/_index.md) in the project. For more information about the steps and consequences of disabling
   GitLab issues, see [Change project visibility](../../public_access.md#change-project-visibility), and also
   [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 

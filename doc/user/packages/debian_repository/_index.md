@@ -89,7 +89,7 @@ To create, read, update, or delete a distribution, you need one of the following
 
 - [Personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
   using `--header "PRIVATE-TOKEN: <personal_access_token>"`
-- [Deploy token](../../project/deploy_tokens/index.md)
+- [Deploy token](../../project/deploy_tokens/_index.md)
   using `--header "Deploy-Token: <deploy_token>"`
 - [CI/CD job token](../../../ci/jobs/ci_job_token.md)
   using `--header "Job-Token: <job_token>"`
@@ -101,7 +101,7 @@ with one of the following:
 
 - [Personal access token](../../../api/rest/authentication.md#personalprojectgroup-access-tokens),
   using `<username>:<personal_access_token>`
-- [Deploy token](../../project/deploy_tokens/index.md)
+- [Deploy token](../../project/deploy_tokens/_index.md)
   using `<deploy_token_name>:<deploy_token>`
 - [CI/CD job token](../../../ci/jobs/ci_job_token.md)
   using `gitlab-ci-token:<job_token>`

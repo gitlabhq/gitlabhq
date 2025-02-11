@@ -42,7 +42,7 @@ There are several benefits to using OCI containers:
   For example, if you use semantic versioning, Flux can deploy all the minor and patch changes automatically, while major versions require a manual update.
 - OCI images can be signed, and the signature can be verified by Flux.
 - OCI repositories can be scanned by the container registry, even after the image is built.
-- The job that builds the OCI container enables using well-known release management features that regular GitOps tools doesn't support, like [protected environments](../../../ci/environments/protected_environments.md), [deployment approvals](../../../ci/environments/deployment_approvals.md), and [deployment freeze windows](../../project/releases/index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
+- The job that builds the OCI container enables using well-known release management features that regular GitOps tools doesn't support, like [protected environments](../../../ci/environments/protected_environments.md), [deployment approvals](../../../ci/environments/deployment_approvals.md), and [deployment freeze windows](../../project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 
 ## Pipeline-based deployments
 

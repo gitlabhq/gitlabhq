@@ -913,7 +913,7 @@ Use these settings to specify the size of the archive produced by a job.
 - On a slow network, uploads might be faster for smaller archives.
 - On a fast network where bandwidth and storage are not a concern, uploads might be faster using the fastest compression ratio, despite the archive produced being larger.
 
-For [GitLab Pages](../../user/project/pages/index.md) to serve
+For [GitLab Pages](../../user/project/pages/_index.md) to serve
 [HTTP Range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests), artifacts
 should use the `ARTIFACT_COMPRESSION_LEVEL: fastest` setting, as only uncompressed zip archives
 support this feature.

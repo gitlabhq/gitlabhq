@@ -2,7 +2,7 @@
 
 module ReleasesHelper
   IMAGE_PATH = 'illustrations/rocket-launch-md.svg'
-  DOCUMENTATION_PATH = 'user/project/releases/index'
+  DOCUMENTATION_PATH = 'user/project/releases/_index'
 
   # This needs to be kept in sync with the constant in
   # app/assets/javascripts/releases/constants.js

@@ -9,7 +9,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Resource weight events keep track of what happens to GitLab [issues](../user/project/issues/index.md).
+Resource weight events keep track of what happens to GitLab [issues](../user/project/issues/_index.md).
 
 Use them to track which weight was set, who did it, and when it happened.
 

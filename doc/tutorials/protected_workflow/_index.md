@@ -98,7 +98,7 @@ three subgroups, like this:
 ## Add users to the subgroups
 
 In the previous step, when you added your subgroups to the parent group (`engineering`), you limited
-members of the subgroups to the Maintainer role. This is the highest role they can inherit
+members of the subgroups to the Maintainer role. This role is the highest role they can inherit
 for projects owned by `engineering`. As a result:
 
 - User 1 is added to the `manager` subgroup with the Guest role, and receives

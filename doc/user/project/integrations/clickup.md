@@ -35,7 +35,7 @@ For example, this is a configuration for a project named `gitlab-ci`:
 - Project URL: `https://app.clickup.com/1234567`
 - Issue URL: `https://app.clickup.com/t/1234567/:id`
 
-You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
+You can also disable [GitLab internal issue tracking](../issues/_index.md) in this project.
 For more information about the steps and consequences of disabling GitLab issues, see
 Configure project [visibility](../../public_access.md#change-project-visibility), [features, and permissions](../settings/_index.md#configure-project-features-and-permissions).
 

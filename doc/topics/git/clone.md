@@ -75,7 +75,7 @@ Clone with HTTPS using a token if:
 You can use any of these tokens to authenticate when cloning over HTTPS:
 
 - [Personal access tokens](../../user/profile/personal_access_tokens.md).
-- [Deploy tokens](../../user/project/deploy_tokens/index.md).
+- [Deploy tokens](../../user/project/deploy_tokens/_index.md).
 - [Project access tokens](../../user/project/settings/project_access_tokens.md).
 - [Group access tokens](../../user/group/settings/group_access_tokens.md).
 

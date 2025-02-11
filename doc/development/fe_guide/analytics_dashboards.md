@@ -6,6 +6,7 @@ title: Analytics dashboards
 ---
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [experiment](../../policy/development_stages_support.md#experiment).
+> - Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
 
 Analytics dashboards provide a configuration-based [dashboard](https://design.gitlab.com/patterns/dashboards)
 structure, which is used to render and modify dashboard configurations created by GitLab or users.
@@ -104,62 +105,101 @@ To create a built-in analytics dashboard:
    panels: []
    ```
 
-1. Optionally enable dashboard filters, by setting the filter's `enabled` option to `true` in the `.yaml` configuration file :
+1. Optional. Enable dashboard filters by setting the filter's `enabled` option to `true` in the `.yaml` configuration file :
 
    ```yaml
    # cool_dashboard/dashboard.yaml
    ---
    title: My dashboard
-   filters: 
-     excludeAnonymousUsers: 
+   filters:
+     excludeAnonymousUsers:
        enabled: true
-     dateRange: 
+     dateRange:
        enabled: true
    ```
 
-  Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json) for a list of supported filters.
+   Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json) for a list of supported filters.
 
-1. Create a folder for your visualizations (for example `visualizations/`) in your dashboard directory and add configuration files for each visualization. Each file must conform to the JSON schema defined in [`ee/app/validators/json_schemas/analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json). Example:
+1. Optional. Create visualization templates by creating a folder for your templates (for example `visualizations/`) in your dashboard directory and
+   add configuration files for each template.
+
+   Visualization templates might be used when a visualization will be used by multiple dashboards. Use a template to
+   prevent duplicating the same YAML block multiple times. For built-in dashboards, the dashboard
+   will automatically update when the visualization template is changed. For user-defined dashboards, the visualization
+   template is copied rather than referenced. Visualization templates copied to dashboards are not updated when the
+   visualization template is updated.
+
+   Each file must conform to the JSON schema defined in [`ee/app/validators/json_schemas/analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
+   Example:
 
    ```yaml
    # cool_dashboard/visualizations/cool_viz.yaml
    ---
    version: 1
-   type: LineChart    # The render type of the visualization. 
+   type: LineChart    # The render type of the visualization.
    data:
      type: my_datasource    # The name of the datasource
      query: {}
    options: {}
    ```
 
-Both `query` and `options` objects will be passed to the data source and used to build the proper query.
+   Both `query` and `options` objects will be passed to the data source and used to build the proper query.
 
-Refer to [Data source](#data-source) for a list of supported data sources, and [Visualization](#visualization) for a list of supported visualization render types.
+   Refer to [Data source](#data-source) for a list of supported data sources, and [Visualization](#visualization) for a list of supported visualization render types.
 
-1. Add panels to your dashboard that reference your visualizations:
+1. To add panels to your dashboard that reference your visualizations, use either:
+   - Recommended. Use an inline visualization within the dashboard configuration file:
 
-   ```yaml
-   # cool_dashboard/dashboard.yaml
-   ---
-   title:  My dashboard
-   description: My cool dashboard
-   
-   panels:
-     - title: "My cool panel"
-       visualization: cool_viz    # Must match the visualization config filename
-       gridAttributes:
-         yPos: 0
-         xPos: 0
-         width: 3
-         height: 1
-   ```
+      ```yaml
+      # cool_dashboard/dashboard.yaml
+      ---
+      title: My dashboard
+      description: My cool dashboard
+      panels:
+        - title: "My cool panel"
+          visualization:
+            version: 1
+            slug: 'cool_viz' # Recommended to define a slug when a visualization is inline
+            type: LineChart    # The render type of the visualization.
+            data:
+              type: my_datasource    # The name of the datasource
+              query: {}
+            options: {}
+          gridAttributes:
+            yPos: 0
+            xPos: 0
+            width: 3
+            height: 1
+      ```
+
+      Both `query` and `options` objects will be passed to the data source and used to build the proper query.
+
+      Refer to [Data source](#data-source) for a list of supported data sources, and [Visualization](#visualization) for a list of supported visualization render types.
+
+   - Use a visualization template:
+
+      ```yaml
+      # cool_dashboard/dashboard.yaml
+      ---
+      title:  My dashboard
+      description: My cool dashboard
+
+      panels:
+        - title: "My cool panel"
+          visualization: cool_viz    # Must match the visualization config filename
+          gridAttributes:
+            yPos: 0
+            xPos: 0
+            width: 3
+            height: 1
+      ```
 
    The `gridAttributes` position the panel within a 12x12 dashboard grid, powered by [gridstack](https://github.com/gridstack/gridstack.js/tree/master/doc#item-options).
 
 1. Register the dashboard by adding it to `builtin_dashboards` in [ee/app/models/product_analytics/dashboard.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/product_analytics/dashboard.rb).
    Here you can make your dashboard available at project-level or group-level (or both), restrict access based on feature flags, license or user role etc.
 
-1. Register the visualization by adding it to `get_path_for_visualization` in [ee/app/models/product_analytics/visualization.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/product_analytics/visualization.rb).
+1. Optional. Register visualization templates by adding them to `get_path_for_visualization` in [ee/app/models/product_analytics/visualization.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/product_analytics/visualization.rb).
 
 For a complete example, refer to the AI Impact [dashboard config](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/ai_impact_dashboard/dashboard.yaml).
 

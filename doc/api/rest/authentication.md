@@ -42,7 +42,7 @@ status code of `401`:
 
 NOTE:
 Deploy tokens can't be used with the GitLab public API. For details, see
-[Deploy Tokens](../../user/project/deploy_tokens/index.md).
+[Deploy Tokens](../../user/project/deploy_tokens/_index.md).
 
 ## OAuth 2.0 tokens
 

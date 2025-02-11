@@ -78,7 +78,7 @@ The following procedure uses these sample project names:
 
    NOTE:
    Use either a [personal access token](../../profile/personal_access_tokens.md) or a
-   [deploy token](../../project/deploy_tokens/index.md) to authenticate your user account.
+   [deploy token](../../project/deploy_tokens/_index.md) to authenticate your user account.
 
 1. Rename the images to match the new project name:
 

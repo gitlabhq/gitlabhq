@@ -54,7 +54,7 @@ Prerequisites:
   - You can generate a [personal access token](../../profile/personal_access_tokens.md).
     - To install packages from the repository, the scope of the token must include `read_api` or `api`.
     - To publish packages to the repository, the scope of the token must include `api`.
-  - You can generate a [deploy token](../../project/deploy_tokens/index.md).
+  - You can generate a [deploy token](../../project/deploy_tokens/_index.md).
     - To install packages from the repository, the scope of the token must include `read_package_registry`.
     - To publish packages to the repository, the scope of the token must include `write_package_registry`.
 - A name for your source.

@@ -18,7 +18,7 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
 A task in GitLab is a planning item that can be created in an issue.
-Use tasks to break down user stories captured in [issues](project/issues/index.md) into
+Use tasks to break down user stories captured in [issues](project/issues/_index.md) into
 smaller, trackable items.
 
 When planning an issue, you need a way to capture and break down technical
