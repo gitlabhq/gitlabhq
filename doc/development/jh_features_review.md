@@ -38,10 +38,10 @@ the reference from being misidentified as a missing partial and subsequently del
 
 Read the following process guides:
 
-- [Contribution review process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-process/)
-- [Database change process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process/)
-- [Security review process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-security-review-process/)
-- [Merge request process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-process/#merge-request-review-process)
+- [Contribution review process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-contribution-process/)
+- [Database change process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-database-change-process/)
+- [Security review process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-security-review-process/)
+- [Merge request process](https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/jihu-support/jihu-contribution-process/#merge-request-review-process)
 
 ## Act as EE when `jh/` does not exist or when `EE_ONLY=1`
 

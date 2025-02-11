@@ -269,7 +269,7 @@ and set this column to `false`. The old servers were still updating the old colu
 that updated the new column from the old one. For the new servers though, they were only updating the new column and that same trigger
 was now working against us and setting it back to the wrong value.
 
-For more information, see [the relevant issue](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/9176).
+For more information, see [the relevant issue](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/9176).
 
 ### Sidebar wasn't loading for some users
 
@@ -314,7 +314,7 @@ variable `CI_NODE_TOTAL` being an integer failed. This was caused because after 
    instead of sending an integer value (for example, 9), it sent a serialized
    `Hash` value (`{:number=>9, :total=>9}`).
 
-If you look at the [deployment pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/deployer/-/pipelines/202212),
+If you look at the [deployment pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/deployer),
 you see all nodes were updated in parallel:
 
 ![GitLab.com deployment pipeline](img/deployment_pipeline_v13_3.png)

@@ -9,7 +9,21 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Manage [projects](../user/project/index.md) by using the REST API.
+The Projects API provides programmatic access to manage GitLab projects and configure their key settings. A project is a central hub for collaboration where you store code, track issues, and organize team activities.
+
+The Projects API contains endpoints that:
+
+- Retrieve project information and metadata
+- Create, edit, and remove projects
+- Control project visibility, access permissions, and security settings
+- Manage project features like issue tracking, merge requests, and CI/CD
+- Archive and unarchive projects
+- Transfer projects between namespaces
+- Manage deployment and container registry settings
+
+This page explains how to use the Projects REST API endpoints to interact with [GitLab projects](../user/project/index.md).
+
+## Permissions
 
 Users with:
 

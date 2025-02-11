@@ -447,9 +447,11 @@ actions:
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
 
-For merge request approval policies that are scoped to newly detected findings (`new_needs_triage` or `new_dismissed` statuses), it's important to understand the implications of this vulnerability state. A finding is considered newly detected if it exists on the merge request's branch but not on the target branch. When a merge request with a branch that contains newly detected findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities is detected after this time, the status would be `detected`, so it would not be out of scope of a policy aimed at `new_needs_triage` or `new_dismissed` findings. For example:
+For merge request approval policies that are scoped to newly detected findings (`new_needs_triage` or `new_dismissed` statuses), it's important to understand the implications of this vulnerability state. A finding is considered newly detected if it exists on the merge request's branch but not on the target branch. When a merge request with a branch that contains newly detected findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities is detected after this time, the status would be `detected` and thus ignored by a policy configured to consider `new_needs_triage` or `new_dismissed` findings. For example:
 
 - A merge request approval policy is created to block critical SAST findings. If a SAST finding for CVE-1234 is approved, future merge requests with the same violation will not require approval in the project.
+
+When using `new_needs_triage` and `new_dismissed` vulnerability states, the policy will block MRs for any findings matching policy rules if they are new and not yet triaged, even if they have been dismissed. If you want to ignore vulnerabilities newly detected and then dismissed within the merge request, you may use only the `new_needs_triage` status.
 
 When using license approval policies, the combination of project, component (dependency), and license are considered in the evaluation. If a license is approved as an exception, future merge requests don't require approval for the same combination of project, component (dependency), and license. The component's version is not be considered in this case. If a previously approved package is updated to a new version, approvers will not need to re-approve. For example:
 

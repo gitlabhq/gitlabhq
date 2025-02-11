@@ -282,7 +282,7 @@ sudo apt-get install -y nodejs
 npm install --global yarn
 ```
 
-Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
+Visit the official websites for [node](https://nodejs.org/en/download) and [yarn](https://classic.yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
 ## 6. System users
 

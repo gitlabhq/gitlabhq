@@ -145,13 +145,13 @@ A [build matrix definition](../ci/yaml/_index.md#parallelmatrix) can do this eff
 When upgrading Ruby, consider updating the repositories in the [`ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/) as well.
 For reference, here is a list of merge requests that have updated Ruby for some of these projects in the past:
 
-- [GitLab LabKit](https://gitlab.com/gitlab-org/labkit-ruby) ([example](https://gitlab.com/gitlab-org/labkit-ruby/-/merge_requests/79))
+- [GitLab LabKit](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby) ([example](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/merge_requests/79))
 - [GitLab Exporter](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter/-/merge_requests/150))
 - [GitLab Experiment](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-experiment/-/merge_requests/128))
-- [Gollum Lib](https://gitlab.com/gitlab-org/gollum-lib) ([example](https://gitlab.com/gitlab-org/gollum-lib/-/merge_requests/21))
-- [GitLab Sidekiq fetcher](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch) ([example](https://gitlab.com/gitlab-org/sidekiq-reliable-fetch/-/merge_requests/33))
-- [Prometheus Ruby Mmap Client](https://gitlab.com/gitlab-org/prometheus-client-mmap) ([example](https://gitlab.com/gitlab-org/prometheus-client-mmap/-/merge_requests/59))
-- [GitLab-mail_room](https://gitlab.com/gitlab-org/gitlab-mail_room) ([example](https://gitlab.com/gitlab-org/gitlab-mail_room/-/merge_requests/16))
+- [Gollum Lib](https://gitlab.com/gitlab-org/ruby/gems/gollum-lib) ([example](https://gitlab.com/gitlab-org/ruby/gems/gollum-lib/-/merge_requests/21))
+- [GitLab Sidekiq fetcher](https://gitlab.com/gitlab-org/ruby/gems/sidekiq-reliable-fetch) ([example](https://gitlab.com/gitlab-org/ruby/gems/sidekiq-reliable-fetch/-/merge_requests/33))
+- [Prometheus Ruby Mmap Client](https://gitlab.com/gitlab-org/ruby/gems/prometheus-client-mmap) ([example](https://gitlab.com/gitlab-org/ruby/gems/prometheus-client-mmap/-/merge_requests/59))
+- [GitLab-mail_room](https://gitlab.com/gitlab-org/ruby/gems/gitlab-mail_room) ([example](https://gitlab.com/gitlab-org/ruby/gems/gitlab-mail_room/-/merge_requests/16))
 
 To assess which of these repositories are critical to be updated alongside the main GitLab application consider:
 

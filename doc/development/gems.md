@@ -213,7 +213,7 @@ They MUST be always published to RubyGems.
 
 At GitLab we use a number of external gems:
 
-- [LabKit Ruby](https://gitlab.com/gitlab-org/labkit-ruby)
+- [LabKit Ruby](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby)
 - [GitLab Ruby Gems](https://gitlab.com/gitlab-org/ruby/gems)
 
 ### Potential disadvantages
@@ -263,7 +263,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    gem owner <gem-name> --add gitlab_rubygems
    ```
 
-   - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the [Rubygems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
+   - Ping [Rémy Coutable](https://gitlab.com/rymai) to confirm the ownership in the private [Rubygems committee project](https://gitlab.com/gitlab-dependency-committees/rubygems-committee/-/issues/).
 1. Optional. Add some or all of the following users as co-owners:
    - [Marin Jankovski](https://rubygems.org/profiles/marinjankovski)
    - [Rémy Coutable](https://rubygems.org/profiles/rymai)

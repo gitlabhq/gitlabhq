@@ -19,8 +19,8 @@ For each of the vulnerabilities listed in this document, AppSec aims to have a S
 | [Regular Expressions](#regular-expressions-guidelines)  | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_regex.yml)  | ✅ |
 | [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_2.yml)  | ✅ |
 | [JWT](#json-web-tokens-jwt) | Pending | ❌ |
-| [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_url.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
-| [XSS](#xss-guidelines) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/tree/main/secure-coding-guidelines/ruby/ruby_xss_redirect.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/tree/main/secure-coding-guidelines/ruby/ruby_xss_html_safe.yml)  | ✅ |
+| [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_url-1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
+| [XSS](#xss-guidelines) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_redirect.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_html_safe.yml)  | ✅ |
 | [XXE](#xml-external-entities) | Pending | ❌ |
 | [Path traversal](#path-traversal-guidelines) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_path_traversal.yml?ref_type=heads) | ✅ |
 | [Path traversal](#path-traversal-guidelines) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/39)  | ✅ |
@@ -244,7 +244,7 @@ Hardcoded regular expressions with backtracking issues:
 - [Repository name validation](https://gitlab.com/gitlab-org/gitlab/-/issues/220019)
 - [Link validation](https://gitlab.com/gitlab-org/gitlab/-/issues/218753), and [a bypass](https://gitlab.com/gitlab-org/gitlab/-/issues/273771)
 - [Entity name validation](https://gitlab.com/gitlab-org/gitlab/-/issues/289934)
-- [Validating color codes](https://gitlab.com/gitlab-org/gitlab/commit/717824144f8181bef524592eab882dd7525a60ef)
+- [Validating color codes](https://gitlab.com/gitlab-org/gitlab/-/commit/717824144f8181bef524592eab882dd7525a60ef)
 
 Consider the following example application, which defines a check using a regular expression. A user entering `user@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!.com` as the email on a form will hang the web server.
 
@@ -417,7 +417,7 @@ Use a strong, unique secret key for signing tokens. Prefer asymmetric algorithms
 
 ### Description
 
-A [Server-side Request Forgery (SSRF)](https://www.hackerone.com/application-security/how-server-side-request-forgery-ssrf) is an attack in which an attacker
+A Server-side Request Forgery (SSRF) is an attack in which an attacker
 is able coerce a application into making an outbound request to an unintended
 resource. This resource is usually internal. In GitLab, the connection most
 commonly uses HTTP, but an SSRF can be performed with any protocol, such as
@@ -1440,7 +1440,7 @@ end
 
 ##### Go
 
-You are encouraged to use the secure archive utilities provided by [LabSec](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/labsec) which will handle Zip Slip and symlink vulnerabilities for you. The LabSec utilities are also context aware which makes it possible to cancel or timeout extractions.
+You are encouraged to use the secure archive utilities provided by [LabSec](https://gitlab.com/gitlab-com/gl-security/appsec/labsec) which will handle Zip Slip and symlink vulnerabilities for you. The LabSec utilities are also context aware which makes it possible to cancel or timeout extractions.
 
 In case the LabSec utilities do not fit your needs, here is an example for extracting a zip file with protection against symlink attacks:
 
@@ -1567,7 +1567,7 @@ In the event of credential leak through an MR, issue, or any other medium, [reac
 
 ### Token prefixes
 
-User error or software bugs can lead to tokens leaking. Consider prepending a static prefix to the beginning of secrets and adding that prefix to our secrets detection capabilities. For example, GitLab personal access tokens have a prefix so that the plaintext is `glpat-1234567890abcdefghij`. <!-- gitleaks:allow -->
+User error or software bugs can lead to tokens leaking. Consider prepending a static prefix to the beginning of secrets and adding that prefix to our secrets detection capabilities. For example, GitLab personal access tokens have a prefix so that the plaintext begins with `glpat-`. <!-- gitleaks:allow -->
 
 The prefix pattern should be:
 
@@ -1688,7 +1688,7 @@ Be aware of the following risks when training models:
 - Model Inversion: Reconstructing training data from the model.
 - Membership Inference: Determining if specific data was used in training.
 - Model Theft: Stealing model outputs to create a labeled dataset.
-- Be familiar with the GitLab [AI strategy and legal restrictions](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/) (GitLab team members only) and the [Data Classification Standard](https://handbook.gitlab.com/handbook/security/data-classification-standard/)
+- Be familiar with the GitLab [AI strategy and legal restrictions](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/) (GitLab team members only) and the [Data Classification Standard](https://handbook.gitlab.com/handbook/security/data-classification-standard/)
 - Ensure compliance for the data used in model training.
 - Set security benchmarks based on the product's readiness level.
 - Focus on data preparation, as it constitutes the majority of AI system code.

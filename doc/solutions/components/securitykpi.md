@@ -151,8 +151,9 @@ The script sends vulnerabilities as events to Splunk.
 1. Create a new index named `gitlab_vulns` in Splunk
 
 1. When creating your HEC token:
-   - Set the default index to `gitlab_vulns`
+   - Set the default **index** to `gitlab_vulns` (this index is referenced in the base search of the provided Splunk dashboard)
    - Ensure the token has permissions to write to this index
+   - Ensure that the token has a **sourcetype** that allows event data to be parsed correctly as JSON
 
 Each event includes:
 

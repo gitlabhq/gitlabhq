@@ -206,7 +206,7 @@ license count. GitLab [bills you for the overage](../quarterly_reconciliation.md
 You cannot add seats to your subscription if either:
 
 - You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
-- You have a multi-year subscription. Contact the [sales team](https://about.gitlab.com/sales/) to add more seats.
+- You have a multi-year subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) to add more seats.
 
 To add seats to a subscription:
 
@@ -416,7 +416,7 @@ you want to either:
 
 Before your subscription renewal date, you should review your account.
 
-Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need help accessing the Customers Portal or changing the contact person who manages your subscription. Contact the [sales team](https://about.gitlab.com/sales/) if you need help renewing your subscription.
+Contact the [support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) if you need help accessing the Customers Portal or changing the contact person who manages your subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) if you need help renewing your subscription.
 
 ### Review your account
 
@@ -449,7 +449,7 @@ If you want to renew with fewer seats, you can do either of the following:
 
 - [Manually renew your subscription](#renew-subscription-manually).
 - [Cancel your subscription](#enable-or-disable-automatic-subscription-renewal)
-  and contact the Sales team to specify how many seats you need in your subscription
+  and contact the [Sales team](https://customers.gitlab.com/contact_us) to specify how many seats you need in your subscription
   going forward.
 
 ### Renew subscription manually
@@ -491,7 +491,7 @@ To manually renew your subscription:
    a copy of the renewal term activation code.
 1. [Add the activation code](../../administration/license.md) to your instance.
 
-To add or remove products from your subscription, or to upgrade your subscription tier, please [contact the sales team](https://about.gitlab.com/sales/).
+To add or remove products from your subscription, or to upgrade your subscription tier, please [contact the sales team](https://customers.gitlab.com/contact_us).
 
 ### Automatic subscription renewal
 

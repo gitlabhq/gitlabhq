@@ -61,7 +61,7 @@ There are two ways to deal with this:
 
 Partitioning is a built-in PostgreSQL feature and requires minimal changes
 in the application. However, it
-[requires PostgreSQL 11](https://www.2ndquadrant.com/en/blog/partitioning-evolution-postgresql-11/).
+[requires PostgreSQL 11](https://www.enterprisedb.com/blog/postgresql-11-partitioning-evolution-postgres-96-11).
 
 For example, a natural way to partition is to
 [partition tables by dates](https://gitlab.com/groups/gitlab-org/-/epics/2023). For example,

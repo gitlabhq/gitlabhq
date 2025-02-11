@@ -163,6 +163,52 @@ Configuration example:
     ...
 ```
 
+### Custom rule format
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/511321) in GitLab 17.9.
+
+When creating custom rules, you can use both [Gitleaks' standard rule format](https://github.com/gitleaks/gitleaks?tab=readme-ov-file#configuration) and additional GitLab-specific fields. The following settings are available for each rule:
+
+| Setting | Description |
+|---------|-------------|
+| `title` | (Optional) A GitLab-specific field that sets a custom title for the rule. |
+| `description` | A detailed description of what the rule detects. |
+| `remediation` | (Optional) A GitLab-specific field that provides remediation guidance when the rule is triggered. |
+| `regex` | The regular expression pattern used to detect secrets. |
+| `keywords` | A list of keywords to pre-filter content before applying the regex. |
+| `id` | A unique identifier for the rule. |
+
+Example of a custom rule with all available fields:
+
+```toml
+[[rules]]
+title = "API Key Detection Rule"
+description = "Detects potential API keys in the codebase"
+remediation = "Rotate the exposed API key and store it in a secure credential manager"
+id = "custom_api_key"
+keywords = ["apikey", "api_key"]
+regex = '''api[_-]key[_-][a-zA-Z0-9]{16,}'''
+```
+
+When you create a custom rule that shares the same ID as a rule in the extended ruleset, your custom rule takes precedence. All properties of your custom rule replace the corresponding values from the extended rule.
+
+Example of extending default rules with a custom rule:
+
+```toml
+title = "Extension of GitLab's default Gitleaks config"
+
+[extend]
+path = "/gitleaks.toml"
+
+[[rules]]
+title = "Custom API Key Rule"
+description = "Detects custom API key format"
+remediation = "Rotate the exposed API key"
+id = "custom_api_123"
+keywords = ["testing"]
+regex = '''testing-key-[1-9]{3}'''
+```
+
 ### The `[[secrets.passthrough]]` section
 
 The `[[secrets.passthrough]]` section allows you to synthesize a custom configuration for an

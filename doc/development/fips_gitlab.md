@@ -10,7 +10,7 @@ module is set of hardware, software, and/or firmware that implements approved se
 and is contained within a cryptographic boundary.
 
 At GitLab, a cryptographic module almost always referrs to an embedded software component of another product or package release and is specific to a particular
-version of a binary. For example, a particular version of Ubuntu Kernel Crypto API cryptographic module or the OpenSSL project's FIPS Provider. 
+version of a binary. For example, a particular version of Ubuntu Kernel Crypto API cryptographic module or the OpenSSL project's FIPS Provider.
 
 A module is validated after it completes testing by a NIST-certified laboratory and has an active certificate listed in the
 [Cryptographic Module Validation Program](https://csrc.nist.gov/projects/cryptographic-module-validation-program). A cryptographic module must be compiled,
@@ -35,7 +35,7 @@ with obtaining validation for a new version means it is impractical to consisten
 
 - Use of validated modules.
 - The timely mitigation of vulnerabilities.
- 
+
 The regulatory environment and policymaking in this area is dynamic and requires close monitoring by GitLab.
 
 ## Terms to avoid
@@ -54,7 +54,7 @@ These phases are used extensively at GitLab and among software providers. Howeve
 The following [official terms and phrases](https://csrc.nist.gov/Projects/cryptographic-module-validation-program/use-of-fips-140-2-logo-and-phrases) are approved for use by the CMVP.
 
 - "FIPS 140-2 Validated" or "FIPS-validated" when referring to cryptographic modules that have a CMVP certificate and number.
-- "FIPS 140-2 Inside" or "FIPS inside" when referring to a product that embeds FIPS-validated modules, such as GitLab, a GitLab software component, or GitLab-distributed software. If a product has a FIPS 140-2 module internal to the product and uses a FIPS official logo, "FIPS 140-2 Inside" and the certificate number must also accompany the logo. 
+- "FIPS 140-2 Inside" or "FIPS inside" when referring to a product that embeds FIPS-validated modules, such as GitLab, a GitLab software component, or GitLab-distributed software. If a product has a FIPS 140-2 module internal to the product and uses a FIPS official logo, "FIPS 140-2 Inside" and the certificate number must also accompany the logo.
 - "CMVP-approved security functions" or "FIPS-approved algorithms": While technically the latter is not an official phrase, it communicates the same thing and provides additional context to those who are unfamiliar with NIST terminology. This is referring to [NIST SP 800-140C](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-140Cr2.pdf) which specifies the CMVP-approved cryptographic algorithms and their authorized use cases.
 
 ## GitLab implementation of FIPS 140
@@ -336,7 +336,7 @@ You can find more information on FIPS performance benchmarking in the following 
 ## Setting up a FIPS-enabled development environment
 
 The simplest approach is to set up a virtual machine running
-[Red Hat Enterprise Linux 8](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening#switching-the-system-to-fips-mode_using-the-system-wide-cryptographic-policies).
+[Red Hat Enterprise Linux 8](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/security_hardening/using-the-system-wide-cryptographic-policies_security-hardening#switching-the-system-to-fips-mode_using-the-system-wide-cryptographic-policies).
 
 Red Hat provide free licenses to developers, and permit the CD image to be
 downloaded from the [Red Hat developer's portal](https://developers.redhat.com).
@@ -547,7 +547,7 @@ The Cloud Native GitLab CI pipeline generates images using several base images:
 
 UBI images ship with the same OpenSSL package as those used by
 RHEL. This makes it possible to build FIPS-compliant binaries without
-needing RHEL. RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/articles/compliance_activities_and_gov_standards), but 8.5 is in
+needing RHEL. RHEL 8.2 ships a [FIPS-validated OpenSSL](https://access.redhat.com/compliance/fips), but 8.5 is in
 review for FIPS validation.
 
 [This merge request](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/981)

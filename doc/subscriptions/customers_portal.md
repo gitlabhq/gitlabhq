@@ -144,7 +144,7 @@ multiple credit cards to your account, so that purchases for different products 
 correct card.
 
 If you would like to use an alternative method to pay,
-[contact our Sales team](https://about.gitlab.com/sales/).
+[contact our Sales team](https://customers.gitlab.com/contact_us).
 
 To change your payment method:
 

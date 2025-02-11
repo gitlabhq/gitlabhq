@@ -74,7 +74,7 @@ This issue occurs when you have an active subscription that:
 - Was [purchased through a reseller](../customers_portal.md#customers-that-purchased-through-a-reseller).
 - Is a multi-year subscription.
 
-To resolve this issue, contact your [GitLab sales representative](https://about.gitlab.com/sales/) to assist you with the purchase.
+To resolve this issue, contact your [GitLab sales representative](https://customers.gitlab.com/contact_us) to assist you with the purchase.
 
 ## No purchases listed in the Customers Portal account
 

@@ -229,4 +229,4 @@ avoid exceeding project quota limits.
 
 - Learn how to [Optimize GitLab CI/CD configuration files](../../ci/yaml/yaml_optimization.md).
 - Read about how the GitLab on Google Cloud integration uses IAM with
-  workload identity federation to control access to Google Cloud in [Access control with IAM](https://cloud.google.com/docs/gitlab/access-control).
+  workload identity federation to control access to Google Cloud in [Access control with IAM](https://cloud.google.com/docs/gitlab).

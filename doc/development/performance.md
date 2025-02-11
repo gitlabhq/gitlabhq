@@ -953,7 +953,7 @@ Assuming you are working with ActiveRecord models, you might also find these lin
 
 ### Examples
 
-You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946).
+You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/-/snippets/33946).
 
 ## ExclusiveLease
 

@@ -331,7 +331,7 @@ When adding new attributes, make sure they're exposed within the context of the 
 - Pass them within the hash to the `with_context` (or `push`) method (make sure to pass a Proc if the
   method or variable shouldn't be evaluated right away)
 - Change `Gitlab::ApplicationContext` to accept these new values
-- Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/labkit-ruby/blob/master/lib/labkit/context.rb)
+- Make sure the new attributes are accepted at [`Labkit::Context`](https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/lib/labkit/context.rb)
 
 See our <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [HOWTO: Use Sidekiq metadata logs](https://www.youtube.com/watch?v=_wDllvO_IY0) for further knowledge on
 creating visualizations in Kibana.

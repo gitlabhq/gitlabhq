@@ -91,7 +91,7 @@ To manually renew your subscription for fewer seats, you can either:
 - [Manually renew](../self_managed/_index.md#renew-subscription-manually) within 15 days of the
   subscription renewal date. Ensure that you specify the seat quantity when you renew.
 - [Disable automatic renewal of your subscription](../self_managed/_index.md#enable-or-disable-automatic-subscription-renewal),
-  and contact the [sales team](https://about.gitlab.com/sales/) to renew it for the number of seats you want.
+  and contact the [sales team](https://customers.gitlab.com/contact_us) to renew it for the number of seats you want.
 
 ### Automatic subscription renewal
 
@@ -314,7 +314,7 @@ Your subscription cost is based on the maximum number of seats you use during th
 You cannot add seats to your subscription if either:
 
 - You purchased your subscription through an [authorized reseller](../customers_portal.md#customers-that-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
-- You have a multi-year subscription. Contact the [sales team](https://about.gitlab.com/sales/) to add more seats.
+- You have a multi-year subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) to add more seats.
 
 To add seats to a subscription:
 
@@ -399,7 +399,7 @@ workflows, measure software delivery velocity and impact with Value Stream Analy
 executive dashboards to drive organizational visibility.
 
 To purchase additional Enterprise Agile Planning seats, contact your
-[GitLab sales representative](https://about.gitlab.com/sales/) for more information.
+[GitLab sales representative](https://customers.gitlab.com/contact_us) for more information.
 
 ## Purchase more storage
 
