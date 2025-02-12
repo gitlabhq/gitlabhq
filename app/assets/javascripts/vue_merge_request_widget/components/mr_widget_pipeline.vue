@@ -134,6 +134,11 @@ export default {
       type: String,
       required: true,
     },
+    isPostMerge: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -339,11 +344,13 @@ export default {
                 <template v-if="showSourceBranch">
                   {{ s__('Pipeline|on') }}
                   <tooltip-on-truncate
-                    v-safe-html="sourceBranchLink"
                     :title="sourceBranch"
                     truncate-target="child"
                     class="label-branch label-truncate ref-container"
-                  />
+                  >
+                    <template v-if="isPostMerge">{{ sourceBranchLink }}</template>
+                    <span v-else v-safe-html="sourceBranchLink"></span>
+                  </tooltip-on-truncate>
                 </template>
                 <template v-if="finishedAt">
                   <time-ago-tooltip

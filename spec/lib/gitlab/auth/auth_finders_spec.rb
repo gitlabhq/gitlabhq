@@ -1095,6 +1095,88 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  describe '#validate_and_save_access_token!' do
+    context 'when token is a personal access token' do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
+
+      before do
+        allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
+      end
+
+      context 'when reset_token is true' do
+        it 'reloads the access token before validation' do
+          expect(personal_access_token).to receive(:reload)
+
+          validate_and_save_access_token!(reset_token: true)
+        end
+
+        it 'uses the reloaded token for validation' do
+          allow(personal_access_token).to receive(:reload) do
+            personal_access_token.expires_at = 1.day.ago
+          end
+
+          expect { validate_and_save_access_token!(reset_token: true) }.to raise_error(Gitlab::Auth::ExpiredError)
+        end
+      end
+
+      context 'when reset_token is false' do
+        it 'does not reload the access token before validation' do
+          expect(personal_access_token).not_to receive(:reload)
+
+          validate_and_save_access_token!(reset_token: false)
+        end
+      end
+
+      context 'when reset_token is not specified' do
+        it 'does not reload the access token before validation' do
+          expect(personal_access_token).not_to receive(:reload)
+
+          validate_and_save_access_token!
+        end
+      end
+    end
+
+    context 'when token is a OAuth access token' do
+      let!(:oauth_access_token) { create(:oauth_access_token, resource_owner: user) }
+
+      before do
+        allow_any_instance_of(described_class).to receive(:access_token).and_return(oauth_access_token)
+      end
+
+      context 'when reset_token is true' do
+        it 'reloads the access token before validation' do
+          expect(oauth_access_token).to receive(:reload)
+
+          validate_and_save_access_token!(reset_token: true)
+        end
+
+        it 'uses the reloaded token for validation' do
+          allow(oauth_access_token).to receive(:reload) do
+            allow(oauth_access_token).to receive(:expired?).and_return(true)
+          end
+
+          expect { validate_and_save_access_token!(reset_token: true) }.to raise_error(Gitlab::Auth::ExpiredError)
+        end
+      end
+
+      context 'when reset_token is false' do
+        it 'does not reload the access token before validation' do
+          expect(oauth_access_token).not_to receive(:reload)
+
+          validate_and_save_access_token!(reset_token: false)
+        end
+      end
+
+      context 'when reset_token is not specified' do
+        it 'does not reload the access token before validation' do
+          expect(oauth_access_token).not_to receive(:reload)
+
+          validate_and_save_access_token!
+        end
+      end
+    end
+  end
+
   describe '#find_user_from_job_token' do
     let(:token) { job.token }
 

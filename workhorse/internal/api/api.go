@@ -455,6 +455,13 @@ func copyAuthHeader(httpResponse *http.Response, w http.ResponseWriter) {
 	}
 }
 
+// These are internal headers that may be returned by the rails backend. They should not be passed back to the client.
+var sensitiveHeaders = map[string]bool{
+	"gitlab-workhorse-send-data": true,
+	"gitlab-sv":                  true,
+	"gitlab-lb":                  true,
+}
+
 func passResponseBack(httpResponse *http.Response, w http.ResponseWriter, r *http.Request) {
 	// NGINX response buffering is disabled on this path (with
 	// X-Accel-Buffering: no) but we still want to free up the Puma thread
@@ -474,7 +481,7 @@ func passResponseBack(httpResponse *http.Response, w http.ResponseWriter, r *htt
 		// Accommodate broken clients that do case-sensitive header lookup
 		if k == "Www-Authenticate" {
 			w.Header()["WWW-Authenticate"] = v
-		} else {
+		} else if !sensitiveHeaders[k] {
 			w.Header()[k] = v
 		}
 	}

@@ -6,7 +6,7 @@ RSpec.describe IncidentManagement::LinkAlerts::DestroyService, feature_category:
   let_it_be(:project) { create(:project) }
   let_it_be(:another_project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
-  let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:planner) { create(:user, planner_of: project) }
   let_it_be(:incident) { create(:incident, project: project) }
   let_it_be(:another_incident) { create(:incident, project: project) }
   let_it_be(:internal_alert) { create(:alert_management_alert, project: project, issue: incident) }
@@ -18,8 +18,8 @@ RSpec.describe IncidentManagement::LinkAlerts::DestroyService, feature_category:
 
     let(:alert) { internal_alert }
 
-    context 'when current user is a guest' do
-      let(:current_user) { guest }
+    context 'when current user is a planner' do
+      let(:current_user) { planner }
 
       it 'responds with error', :aggregate_failures do
         response = execute

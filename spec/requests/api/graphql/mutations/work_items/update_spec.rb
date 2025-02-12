@@ -11,6 +11,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
   let_it_be(:developer) { create(:user, developer_of: group) }
   let_it_be(:reporter) { create(:user, reporter_of: group) }
   let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:planner) { create(:user, planner_of: group) }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: author) }
 
   let(:input) { { 'stateEvent' => 'CLOSE', 'title' => 'updated title' } }
@@ -28,6 +29,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
   let(:mutation) { graphql_mutation(:workItemUpdate, input.merge('id' => mutation_work_item.to_gid.to_s), fields) }
 
   let(:mutation_response) { graphql_mutation_response(:work_item_update) }
+  let(:widgets_response) { mutation_response['workItem']['widgets'] }
 
   shared_examples 'request with error' do |message|
     it 'ignores update and returns an error' do
@@ -40,13 +42,20 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
   end
 
   context 'the user is not allowed to update a work item' do
-    let(:current_user) { create(:user) }
+    let(:current_user) { guest }
 
     it_behaves_like 'a mutation that returns a top-level access error'
+
+    context 'with incident type' do
+      let(:work_item) { create(:work_item, :incident, project: project) }
+      let(:current_user) { planner }
+
+      it_behaves_like 'a mutation that returns a top-level access error'
+    end
   end
 
   context 'when user has permissions to update a work item' do
-    let(:current_user) { developer }
+    let(:current_user) { planner }
 
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::WorkItems::Update }
@@ -557,7 +566,6 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'with hierarchy widget input' do
-      let(:widgets_response) { mutation_response['workItem']['widgets'] }
       let(:fields) do
         <<~FIELDS
           workItem {
@@ -589,10 +597,6 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       let(:child1_ref) { { adjacentWorkItemId: valid_child1.to_global_id.to_s } }
       let(:child2_ref) { { adjacentWorkItemId: valid_child2.to_global_id.to_s } }
       let(:relative_range) { [valid_child1, valid_child2].map(&:parent_link).map(&:relative_position) }
-
-      let(:invalid_relative_position_error) do
-        WorkItems::Callbacks::Hierarchy::INVALID_RELATIVE_POSITION_ERROR
-      end
 
       shared_examples 'updates work item parent and sets the relative position' do
         it do
@@ -632,7 +636,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end.to not_change(work_item, :work_item_parent)
 
           expect(mutation_response['workItem']).to be_nil
-          expect(mutation_response['errors']).to match_array([invalid_relative_position_error])
+          expect(mutation_response['errors'])
+            .to match_array([WorkItems::Callbacks::Hierarchy::INVALID_RELATIVE_POSITION_ERROR])
         end
       end
 
@@ -1600,7 +1605,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
 
       context 'when user has permissions to update the work item' do
-        let(:current_user) { reporter }
+        let(:current_user) { planner }
 
         it 'updates work item discussion locked attribute on notes widget' do
           expect do
