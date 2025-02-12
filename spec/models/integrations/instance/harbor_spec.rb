@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Harbor, feature_category: :integrations do
+RSpec.describe Integrations::Instance::Harbor, feature_category: :integrations do
   it_behaves_like Integrations::Base::Harbor
 end

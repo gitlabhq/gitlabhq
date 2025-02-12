@@ -38,8 +38,8 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :webh
         expect(page).to have_content('SSL Verification: enabled')
         expect(page).to have_content('Push events')
         expect(page).to have_content('Tag push events')
-        expect(page).to have_content('Issues events')
-        expect(page).to have_content('Confidential issues events')
+        expect(page).to have_content('Issue events')
+        expect(page).to have_content('Confidential issue events')
         expect(page).to have_content('Comment')
         expect(page).to have_content('Merge request events')
         expect(page).to have_content('Pipeline events')
@@ -60,7 +60,7 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :webh
         click_button 'Add webhook'
 
         expect(page).to have_content(url)
-        expect(page).to have_content('Webhook was created')
+        expect(page).to have_content('Webhook created')
         expect(page).to have_content('SSL Verification: enabled')
         expect(page).to have_content('Tag push events')
         expect(page).to have_content('Job events')

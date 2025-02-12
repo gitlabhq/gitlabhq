@@ -19206,7 +19206,7 @@ A user with add-on data.
 | <a id="addonuseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="addonuserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="addonuserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
-| <a id="addonuserlastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo activity of the user. Refreshed on Duo Chat and Code Suggestions activity. |
+| <a id="addonuserlastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo activity of the user. Refreshed on any GitLab Duo activity. |
 | <a id="addonuserlastloginat"></a>`lastLoginAt` | [`Time`](#time) | Timestamp of the last sign in. |
 | <a id="addonuserlinkedin"></a>`linkedin` | [`String`](#string) | LinkedIn profile name of the user. |
 | <a id="addonuserlocation"></a>`location` | [`String`](#string) | Location of the user. |
@@ -27392,7 +27392,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="groupvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="groupvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="groupvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
-| <a id="groupvulnerabilityseveritiescountidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on project level when feature flag `vulnerability_identifier_name_filter` is enabled. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance securitydashboard queries. |
+| <a id="groupvulnerabilityseveritiescountidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
 | <a id="groupvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="groupvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="groupvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -28163,7 +28163,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
-| <a id="instancesecuritydashboardvulnerabilityseveritiescountidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on project level when feature flag `vulnerability_identifier_name_filter` is enabled. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance securitydashboard queries. |
+| <a id="instancesecuritydashboardvulnerabilityseveritiescountidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -34958,7 +34958,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="projectvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
 | <a id="projectvulnerabilityseveritiescounthasresolution"></a>`hasResolution` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a resolution. |
-| <a id="projectvulnerabilityseveritiescountidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on project level when feature flag `vulnerability_identifier_name_filter` is enabled. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance securitydashboard queries. |
+| <a id="projectvulnerabilityseveritiescountidentifiername"></a>`identifierName` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Filter vulnerabilities by identifier name. Applicable on group level when feature flag `vulnerability_filtering_by_identifier_group` is enabled. Ignored when applied on instance security dashboard queries. |
 | <a id="projectvulnerabilityseveritiescountimage"></a>`image` | [`[String!]`](#string) | Filter vulnerabilities by location image. When this filter is present, the response only matches entries for a `reportType` that includes `container_scanning`, `cluster_image_scanning`. |
 | <a id="projectvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 category. Wildcard value "NONE" also supported and it cannot be combined with other OWASP top 10 values. |
 | <a id="projectvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
@@ -41607,11 +41607,11 @@ Member role admin permission.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="memberroleadminpermissionread_admin_cicd"></a>`READ_ADMIN_CICD` | Read CI/CD details including runners and jobs. |
-| <a id="memberroleadminpermissionread_admin_dashboard"></a>`READ_ADMIN_DASHBOARD` | Read-only access to admin dashboard. |
-| <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Allows read access to system monitoring including system info, background migrations, health checks, audit logs, and gitaly in the Admin Area. |
-| <a id="memberroleadminpermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` | Read subscription details in the Admin area. |
-| <a id="memberroleadminpermissionread_admin_users"></a>`READ_ADMIN_USERS` | Allows read access to the user list and user details in the Admin area. |
+| <a id="memberroleadminpermissionread_admin_cicd"></a>`READ_ADMIN_CICD` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Read CI/CD details including runners and jobs. |
+| <a id="memberroleadminpermissionread_admin_dashboard"></a>`READ_ADMIN_DASHBOARD` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Read-only access to admin dashboard. |
+| <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Allows read access to system monitoring including system info, background migrations, health checks, audit logs, and gitaly in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Read subscription details in the Admin area. |
+| <a id="memberroleadminpermissionread_admin_users"></a>`READ_ADMIN_USERS` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Allows read access to the user list and user details in the Admin area. |
 
 ### `MemberRolePermission`
 
@@ -41665,10 +41665,10 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionadmin_integrations"></a>`ADMIN_INTEGRATIONS` | Create, read, update, and delete integrations with external applications. |
 | <a id="memberrolestandardpermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows approval of merge requests. |
 | <a id="memberrolestandardpermissionadmin_protected_branch"></a>`ADMIN_PROTECTED_BRANCH` | Create, read, update, and delete protected branches for a project. |
-| <a id="memberrolestandardpermissionadmin_protected_environments"></a>`ADMIN_PROTECTED_ENVIRONMENTS` | Create, read, update, and delete environments. |
+| <a id="memberrolestandardpermissionadmin_protected_environments"></a>`ADMIN_PROTECTED_ENVIRONMENTS` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Create, read, update, and delete environments. |
 | <a id="memberrolestandardpermissionadmin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolestandardpermissionadmin_runners"></a>`ADMIN_RUNNERS` | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
-| <a id="memberrolestandardpermissionadmin_security_testing"></a>`ADMIN_SECURITY_TESTING` | Edit and manage security testing configurations and settings. |
+| <a id="memberrolestandardpermissionadmin_security_testing"></a>`ADMIN_SECURITY_TESTING` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Edit and manage security testing configurations and settings. |
 | <a id="memberrolestandardpermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolestandardpermissionadmin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the vulnerability object, including the status and linking an issue. Includes the `read_vulnerability` permission actions. |
 | <a id="memberrolestandardpermissionadmin_web_hook"></a>`ADMIN_WEB_HOOK` | Manage webhooks. |
@@ -41677,7 +41677,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermissionmanage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
 | <a id="memberrolestandardpermissionmanage_merge_request_settings"></a>`MANAGE_MERGE_REQUEST_SETTINGS` | Configure merge request settings at the group or project level. Group actions include managing merge checks and approval settings. Project actions include managing MR configurations, approval rules and settings, and branch targets. In order to enable Suggested reviewers, the "Manage project access tokens" custom permission needs to be enabled. |
 | <a id="memberrolestandardpermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
-| <a id="memberrolestandardpermissionmanage_protected_tags"></a>`MANAGE_PROTECTED_TAGS` | Create, read, update, and delete protected tags. |
+| <a id="memberrolestandardpermissionmanage_protected_tags"></a>`MANAGE_PROTECTED_TAGS` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Create, read, update, and delete protected tags. |
 | <a id="memberrolestandardpermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
 | <a id="memberrolestandardpermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |
 | <a id="memberrolestandardpermissionread_compliance_dashboard"></a>`READ_COMPLIANCE_DASHBOARD` | Read compliance capabilities including adherence, violations, and frameworks for groups and projects. |

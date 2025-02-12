@@ -280,14 +280,14 @@ The value of `pages.path_prefix` is:
 
 Consider a project such as `https://gitlab.example.com/namespace/project`. By default, its main Pages deployment can be accessed through:
 
-- When using a [unique domain](#unique-domains): `https://project-namespace-123456.gitlab.io/`.
+- When using a [unique domain](#unique-domains): `https://project-123456.gitlab.io/`.
 - When not using a unique domain: `https://namespace.gitlab.io/project`.
 
 If a `pages.path_prefix` is configured to the project branch names,
 like `path_prefix = $CI_COMMIT_BRANCH`, and there's a
 branch named `username/testing_feature`, this parallel Pages deployment would be accessible through:
 
-- When using a [unique domain](#unique-domains): `https://project-namespace-123456.gitlab.io/username-testing-feature`.
+- When using a [unique domain](#unique-domains): `https://project-123456.gitlab.io/username-testing-feature`.
 - When not using a unique domain: `https://namespace.gitlab.io/project/username-testing-feature`.
 
 ### Limits

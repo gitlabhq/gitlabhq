@@ -3713,16 +3713,10 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|An error occurred while loading the AI feature settings. Please try again."
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|An error occurred while loading the current license. Please try again."
-msgstr ""
-
 msgid "AdminAIPoweredFeatures|Compatible models"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Disabled"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|GitLab AI Vendor"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Main feature"
@@ -13981,6 +13975,9 @@ msgid "CodeownersValidation|Less than 1 required approvals"
 msgstr ""
 
 msgid "CodeownersValidation|Line"
+msgstr ""
+
+msgid "CodeownersValidation|Malformed owners"
 msgstr ""
 
 msgid "CodeownersValidation|Missing section name"
@@ -57621,7 +57618,7 @@ msgstr ""
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr ""
 
-msgid "The hook URL has changed, and this log entry cannot be retried"
+msgid "The hook URL has changed. This log entry cannot be retried."
 msgstr ""
 
 msgid "The hostname of your PlantUML server."
@@ -64151,9 +64148,6 @@ msgstr ""
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
-msgid "WebHooks|The current user is not authorized to resend a hook event"
-msgstr ""
-
 msgid "WebIDE|Fork project"
 msgstr ""
 
@@ -64193,25 +64187,25 @@ msgstr ""
 msgid "Webhook"
 msgstr ""
 
-msgid "Webhook Logs"
+msgid "Webhook created"
 msgstr ""
 
-msgid "Webhook Settings"
+msgid "Webhook deleted"
 msgstr ""
 
-msgid "Webhook events will be displayed here."
+msgid "Webhook events are displayed here."
 msgstr ""
 
-msgid "Webhook was created"
+msgid "Webhook logs"
 msgstr ""
 
-msgid "Webhook was deleted"
+msgid "Webhook scheduled for deletion"
 msgstr ""
 
-msgid "Webhook was scheduled for deletion"
+msgid "Webhook settings"
 msgstr ""
 
-msgid "Webhook was updated"
+msgid "Webhook updated"
 msgstr ""
 
 msgid "Webhook:"
@@ -64220,7 +64214,7 @@ msgstr ""
 msgid "Webhooks"
 msgstr ""
 
-msgid "Webhooks Help"
+msgid "Webhooks help"
 msgstr ""
 
 msgid "Webhooks|+ Mask another portion of URL"
@@ -64268,10 +64262,10 @@ msgstr ""
 msgid "Webhooks|A vulnerability is created or updated."
 msgstr ""
 
-msgid "Webhooks|A webhook in this group was automatically disabled after being retried multiple times."
+msgid "Webhooks|A webhook in this group was automatically disabled after it was retried multiple times."
 msgstr ""
 
-msgid "Webhooks|A webhook in this project was automatically disabled after being retried multiple times."
+msgid "Webhooks|A webhook in this project was automatically disabled after it was retried multiple times."
 msgstr ""
 
 msgid "Webhooks|A wiki page is created or updated."
@@ -64280,7 +64274,7 @@ msgstr ""
 msgid "Webhooks|Add custom header"
 msgstr ""
 
-msgid "Webhooks|An access token is going to expire in the next 7 days. %{help_link}?"
+msgid "Webhooks|An access token expires in the next 7 days. %{help_link}?"
 msgstr ""
 
 msgid "Webhooks|An emoji is awarded or revoked. %{help_link}?"
@@ -64301,7 +64295,7 @@ msgstr ""
 msgid "Webhooks|Confidential comments"
 msgstr ""
 
-msgid "Webhooks|Confidential issues events"
+msgid "Webhooks|Confidential issue events"
 msgstr ""
 
 msgid "Webhooks|Custom headers"
@@ -64361,7 +64355,7 @@ msgstr ""
 msgid "Webhooks|How to create a custom webhook template?"
 msgstr ""
 
-msgid "Webhooks|Issues events"
+msgid "Webhooks|Issue events"
 msgstr ""
 
 msgid "Webhooks|Job events"
@@ -64409,16 +64403,13 @@ msgstr ""
 msgid "Webhooks|Response body is empty"
 msgstr ""
 
-msgid "Webhooks|Response headers data is empty"
+msgid "Webhooks|Response headers are empty"
 msgstr ""
 
 msgid "Webhooks|SSL verification"
 msgstr ""
 
 msgid "Webhooks|Secret token"
-msgstr ""
-
-msgid "Webhooks|Secret token will be cleared on save unless token is updated."
 msgstr ""
 
 msgid "Webhooks|Sensitive portion of URL"
@@ -64439,16 +64430,22 @@ msgstr ""
 msgid "Webhooks|Tag push events"
 msgstr ""
 
-msgid "Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end}, and will retry in %{retry_time}. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below."
+msgid "Webhooks|The URL must be percent-encoded if it contains one or more special characters."
 msgstr ""
 
-msgid "Webhooks|The webhook failed to connect, and is disabled. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below."
+msgid "Webhooks|The current user is not authorized to resend a hook event."
+msgstr ""
+
+msgid "Webhooks|The secret token is cleared on save unless it is updated."
+msgstr ""
+
+msgid "Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end} and is scheduled to retry in %{retry_time}. To re-enable the webhook, see %{strong_start}Recent events%{strong_end} for more information about the error, then test your settings."
+msgstr ""
+
+msgid "Webhooks|The webhook failed to connect and is now disabled. To re-enable the webhook, see %{strong_start}Recent events%{strong_end} for more information about the error, then test your settings."
 msgstr ""
 
 msgid "Webhooks|Trigger"
-msgstr ""
-
-msgid "Webhooks|URL must be percent-encoded if it contains one or more special characters."
 msgstr ""
 
 msgid "Webhooks|URL preview"
@@ -64472,7 +64469,7 @@ msgstr ""
 msgid "Webhooks|Webhook rate limit has been reached"
 msgstr ""
 
-msgid "Webhooks|Webhooks for %{root_namespace} are now disabled because they've been triggered more than %{limit} times per minute. They'll be automatically re-enabled in the next minute."
+msgid "Webhooks|Webhooks for %{root_namespace} are now disabled because they've been triggered more than %{limit} times per minute. These webhooks are re-enabled automatically in the next minute."
 msgstr ""
 
 msgid "Webhooks|Wiki page events"

@@ -132,7 +132,7 @@ class CleanupEpicsWithNullDescription < Gitlab::Database::Migration[2.1]
 
   disable_ddl_transaction!
 
-  class Epic < ActiveRecord::Base
+  class Epic < MigrationRecord
     include EachBatch
 
     self.table_name = 'epics'
@@ -431,6 +431,16 @@ CREATE TABLE labels (
 
 ## Dropping a `NOT NULL` constraint on a column in an existing table
 
+Dropping a `NOT NULL` constraint from an existing database column requires a multistep migration process:
+
+1. A schema migration to drop the `NOT NULL` constraint.
+1. A separate data migration to ensure data integrity after a potential rollback. This migration may:
+   - Remove invalid records.
+   - Update invalid records with a default value.
+
+Multiple migrations are required as combining data modifications (DML) and schema changes (DDL) in a single migration is not
+allowed.
+
 ### Dropping a `NOT NULL` constraint with a check constraint on the column
 
 First, please verify there's a constraint in place on the column. You can do this in several ways:
@@ -448,23 +458,54 @@ CREATE TABLE labels (
 
 #### Example
 
+NOTE:
+The milestone number is just an example. Please use the correct version.
+
 ```ruby
 # frozen_string_literal: true
-class DropNotNullConstraintFromTableColumn< Gitlab::Database::Migration[2.2]
+
+class DropNotNullConstraintFromLabelsProjectView< Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
   milestone '16.7'
 
   def up
-    remove_not_null_constraint :table_name, :column_name
+    remove_not_null_constraint :labels, :project_view
   end
 
   def down
-    add_not_null_constraint :table_name, :column_name
+    add_not_null_constraint :labels, :project_view
   end
 end
 ```
 
-<b>NOTE:</b> The milestone number is just an example. Please use the correct version.
+```ruby
+# frozen_string_literal: true
+
+class CleanupRecordsWithNullProjectViewValuesFromLabels < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+  milestone '16.7'
+
+  BATCH_SIZE = 1000
+
+  class Label < MigrationRecord
+    include EachBatch
+
+    self.table_name = 'labels'
+  end
+
+  def up
+    # no-op - this migration is required to allow a rollback of `DropNotNullConstraintFromLabelsProjectView`
+  end
+
+  def down
+    Label.each_batch(of: BATCH_SIZE) do |relation|
+      relation.
+        where('project_view IS NULL').
+        delete_all
+    end
+  end
+end
+```
 
 ### Dropping a `NOT NULL` constraint without a check constraint on the column
 
@@ -481,22 +522,53 @@ CREATE TABLE labels (
 
 #### Example
 
+NOTE:
+The milestone number is just an example. Please use the correct version.
+
 ```ruby
 # frozen_string_literal: true
-class DropNotNullConstraintFromTableColumn < Gitlab::Database::Migration[2.2]
+
+class DropNotNullConstraintFromLabelsProjectsLimit < Gitlab::Database::Migration[2.2]
   milestone '16.7'
 
   def up
-    change_column_null :table_name, :column_name, true
+    change_column_null :labels, :projects_limit, true
   end
 
   def down
-    change_column_null :table_name, :column_name, false
+    change_column_null :labels, :projects_limit, false
   end
 end
 ```
 
-<b>NOTE:</b> The milestone number is just an example. Please use the correct version.
+```ruby
+# frozen_string_literal: true
+
+class CleanupRecordsWithNullProjectsLimitValuesFromLabels < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+  milestone '16.7'
+
+  BATCH_SIZE = 1000
+
+  class Label < MigrationRecord
+    include EachBatch
+
+    self.table_name = 'labels'
+  end
+
+  def up
+    # no-op - this migration is required to allow a rollback of `DropNotNullConstraintFromLabelsProjectsLimit`
+  end
+
+  def down
+    Label.each_batch(of: BATCH_SIZE) do |relation|
+      relation.
+        where('projects_limit IS NULL').
+        delete_all
+    end
+  end
+end
+```
 
 ### Dropping a `NOT NULL` constraint on a partition table
 

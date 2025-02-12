@@ -214,6 +214,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:owner_access) }.policy do
     enable :destroy_user_achievement
+    enable :set_issue_created_at
+    enable :set_issue_updated_at
   end
 
   rule { ~public_group & ~has_access }.prevent :read_counts

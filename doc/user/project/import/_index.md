@@ -333,7 +333,8 @@ Prerequisites:
 
 For a large number of placeholder users, you might want to
 reassign contributions and memberships by using a CSV file.
-You can download a prefilled CSV template with the following information.
+If placeholder users are awaiting reassignment, you can download
+a prefilled CSV template with the following information.
 For example:
 
 | Source host          | Import type | Source user identifier | Source user name | Source username |

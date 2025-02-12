@@ -478,9 +478,9 @@ Supported attributes:
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
 | `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events. |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
+| `issues_events`              | boolean        | no       | Trigger hook on issue events. |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issue events. |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge request events. |
 | `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
 | `note_events`                | boolean        | no       | Trigger hook on note events. |
 | `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
@@ -565,9 +565,9 @@ Supported attributes:
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
 | `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events. |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
+| `issues_events`              | boolean        | no       | Trigger hook on issue events. |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issue events. |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge request events. |
 | `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
 | `note_events`                | boolean        | no       | Trigger hook on note events. |
 | `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |

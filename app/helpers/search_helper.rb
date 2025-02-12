@@ -319,7 +319,7 @@ module SearchHelper
       },
       {
         category: "Help",
-        label: _("Webhooks Help"),
+        label: _("Webhooks help"),
         url: help_page_path("user/project/integrations/webhooks.md")
       }
     ]

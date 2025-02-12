@@ -342,15 +342,16 @@ export default {
           </gl-form-group>
         </div>
       </div>
-
-      <gl-button
-        v-if="showEditDashboardButton"
-        icon="pencil"
-        class="gl-mr-2"
-        data-testid="dashboard-edit-btn"
-        @click="startEdit"
-        >{{ s__('Analytics|Edit') }}</gl-button
-      >
+      <div>
+        <gl-button
+          v-if="showEditDashboardButton"
+          icon="pencil"
+          class="gl-mr-2"
+          data-testid="dashboard-edit-btn"
+          @click="startEdit"
+          >{{ s__('Analytics|Edit') }}</gl-button
+        >
+      </div>
     </section>
     <div class="-gl-mx-3">
       <div class="gl-flex">

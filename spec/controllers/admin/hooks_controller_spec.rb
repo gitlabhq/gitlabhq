@@ -110,7 +110,7 @@ RSpec.describe Admin::HooksController, feature_category: :webhooks do
       hook.reload
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include('was updated')
+      expect(flash[:notice]).to include('updated')
       expect(hook).to have_attributes(hook_params.except(:url_variables))
       expect(hook).to have_attributes(
         url_variables: { 'token' => 'some secret value', 'bar' => 'qux' }

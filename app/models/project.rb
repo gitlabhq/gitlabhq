@@ -2623,7 +2623,6 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: pages_url) if Feature.disabled?(:fix_pages_ci_variables, self)
     end
   end
 

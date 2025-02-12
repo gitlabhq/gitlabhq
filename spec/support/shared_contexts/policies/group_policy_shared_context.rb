@@ -105,6 +105,8 @@ RSpec.shared_context 'GroupPolicy context' do
       view_edit_page
       manage_merge_request_settings
       admin_integrations
+      set_issue_updated_at
+      set_issue_created_at
     ]
   end
 

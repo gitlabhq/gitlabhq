@@ -161,7 +161,7 @@ module Issues
       return unless timestamp_params.any?
 
       timestamp_params.each do |param|
-        params.delete(param) unless current_user.can?(:"set_issue_#{param}", project)
+        params.delete(param) unless current_user.can?(:"set_issue_#{param}", container)
       end
     end
   end

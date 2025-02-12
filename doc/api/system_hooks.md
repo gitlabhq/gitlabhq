@@ -106,7 +106,7 @@ POST /hooks
 | `token`                     | string  | no       | Secret token to validate received payloads; this isn't returned in the response |
 | `push_events`               | boolean | no       | When true, the hook fires on push events |
 | `tag_push_events`           | boolean | no       | When true, the hook fires on new tags being pushed |
-| `merge_requests_events`     | boolean | no       | Trigger hook on merge requests events |
+| `merge_requests_events`     | boolean | no       | Trigger hook on merge request events |
 | `repository_update_events`  | boolean | no       | Trigger hook on repository update events |
 | `enable_ssl_verification`   | boolean | no       | Do SSL verification when triggering the hook |
 | `push_events_branch_filter` | string  | no       | Trigger hook on push events for matching branches only |
@@ -153,7 +153,7 @@ PUT /hooks/:hook_id
 | `token`                     | string  | no       | Secret token to validate received payloads; this isn't returned in the response |
 | `push_events`               | boolean | no       | When true, the hook fires on push events |
 | `tag_push_events`           | boolean | no       | When true, the hook fires on new tags being pushed |
-| `merge_requests_events`     | boolean | no       | Trigger hook on merge requests events |
+| `merge_requests_events`     | boolean | no       | Trigger hook on merge request events |
 | `repository_update_events`  | boolean | no       | Trigger hook on repository update events |
 | `enable_ssl_verification`   | boolean | no       | Do SSL verification when triggering the hook |
 | `push_events_branch_filter` | string  | no       | Trigger hook on push events for matching branches only |

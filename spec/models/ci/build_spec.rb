@@ -4427,18 +4427,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           )
         end
 
-        context 'and fix_pages_ci_variables FF is disabled' do
-          before do
-            stub_feature_flags(fix_pages_ci_variables: false)
-          end
-
-          it "includes the expected variables" do
-            expect(build.variables.to_runner_variables).to include(
-              { key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(project).pages_url, public: true, masked: false }
-            )
-          end
-        end
-
         it "calls pages worker" do
           expect(PagesWorker).to receive(:perform_async).with(:deploy, build.id)
 

@@ -216,3 +216,7 @@ See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-
 ## Token availability
 
 More than one project access token is only available in paid subscriptions. In Premium and Ultimate trial subscriptions, only one project access token is included. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).
+
+## Related topics
+
+- [Project access tokens API](../../../api/project_access_tokens.md)

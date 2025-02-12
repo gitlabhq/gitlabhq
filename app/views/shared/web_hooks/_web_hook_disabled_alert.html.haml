@@ -6,7 +6,7 @@
     alert_options: { class: 'gl-my-4 js-web-hook-disabled-callout',
                       data: { feature_id: Users::CalloutsHelper::WEB_HOOK_DISABLED, dismiss_endpoint: project_callouts_path, project_id: @project.id, defer_links: 'true'} }) do |c|
     - c.with_body do
-      = s_('Webhooks|A webhook in this project was automatically disabled after being retried multiple times.')
+      = s_('Webhooks|A webhook in this project was automatically disabled after it was retried multiple times.')
       = succeed '.' do
         = link_to _('Learn more'), help_page_path('user/project/integrations/webhooks_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
     - c.with_actions do

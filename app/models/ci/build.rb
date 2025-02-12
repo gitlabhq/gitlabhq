@@ -646,8 +646,6 @@ module Ci
 
     def pages_variables
       ::Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        next variables unless Feature.enabled?(:fix_pages_ci_variables, project)
-
         variables
           .append(key: 'CI_PAGES_HOSTNAME', value: project.pages_hostname)
           .append(key: 'CI_PAGES_URL', value: project.pages_url(pages))

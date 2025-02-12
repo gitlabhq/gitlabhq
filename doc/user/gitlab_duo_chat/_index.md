@@ -55,7 +55,7 @@ In the GitLab UI, GitLab Duo Chat knows about these areas:
 |----------------|-----------------|
 | Epics          | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
 | Issues         | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
-| Code files     | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL. |
+| Code files     | From the single file, ask about `this code` or `this file`. |
 | Merge requests | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
 | Commits        | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
 | Pipeline jobs  | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |

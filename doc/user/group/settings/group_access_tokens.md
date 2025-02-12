@@ -249,3 +249,7 @@ All other properties are similar to [bot users for projects](../../project/setti
 ## Token availability
 
 Group access tokens are only available in paid subscriptions, and not available in trial subscriptions. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).
+
+## Related topics
+
+- [Group access tokens API](../../../api/group_access_tokens.md)

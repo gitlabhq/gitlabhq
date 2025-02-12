@@ -402,14 +402,14 @@ Supported attributes:
 | `url`                          | string            | Yes      | Project webhook URL. |
 | `name`                         | string            | No       | Name of the project webhook. |
 | `description`                  | string            | No       | Description of the webhook. |
-| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issues events. |
+| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issue events. |
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the webhook. |
 | `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
-| `issues_events`                | boolean           | No       | Trigger project webhook on issues events. |
+| `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
-| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge requests events. |
+| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge request events. |
 | `note_events`                  | boolean           | No       | Trigger project webhook on note events. |
 | `pipeline_events`              | boolean           | No       | Trigger project webhook on pipeline events. |
 | `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
@@ -442,14 +442,14 @@ Supported attributes:
 | `url`                          | string            | Yes      | Project webhook URL. |
 | `name`                         | string            | No       | Name of the project webhook. |
 | `description`                  | string            | No       | Description of the project webhook. |
-| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issues events. |
+| `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issue events. |
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the hook. |
 | `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
-| `issues_events`                | boolean           | No       | Trigger project webhook on issues events. |
+| `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
-| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge requests events. |
+| `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge request events. |
 | `note_events`                  | boolean           | No       | Trigger project webhook on note events. |
 | `pipeline_events`              | boolean           | No       | Trigger project webhook on pipeline events. |
 | `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |

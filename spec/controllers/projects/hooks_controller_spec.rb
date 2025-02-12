@@ -59,7 +59,7 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
       put :update, params: params
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include('was updated')
+      expect(flash[:notice]).to include('updated')
 
       expect(hook.reload.url_variables).to eq(
         'a' => 'updated',
@@ -80,7 +80,7 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
       put :update, params: params
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include('was updated')
+      expect(flash[:notice]).to include('updated')
 
       expect(hook.reload.custom_headers).to eq(
         'a' => 'updated',
@@ -101,7 +101,7 @@ RSpec.describe Projects::HooksController, feature_category: :webhooks do
       put :update, params: params
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include('was updated')
+      expect(flash[:notice]).to include('updated')
 
       expect(hook.reload.custom_headers).to eq(
         'a' => 'bar',
