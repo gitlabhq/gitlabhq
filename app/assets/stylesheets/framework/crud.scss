@@ -113,3 +113,7 @@ $crud-header-min-height: px-to-rem(49px);
     margin-bottom: 0;
   }
 }
+
+.crud-body .gl-alert {
+  @apply dark:gl-bg-strong;
+}

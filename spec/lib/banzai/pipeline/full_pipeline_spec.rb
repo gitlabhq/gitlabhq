@@ -306,7 +306,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :markdown do
     it 'renders PlanUML' do
       stub_application_setting(plantuml_enabled: true, plantuml_url: "http://localhost:8080")
 
-      is_expected.to include 'http://localhost:8080/png/U9npA2v9B2efpStXSifFKj2rKmXEB4fKi5BmICt9oUToICrB0Sa10FOW35C0'
+      is_expected.to include 'http://localhost:8080/png/U9npA2v9B2efpStXSifFKj2rKmXEB4fKi5BmICt9oUToICrB0Se10EdD34a0'
     end
 
     it 'renders code' do

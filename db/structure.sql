@@ -16937,6 +16937,7 @@ CREATE TABLE namespace_settings (
     lock_resource_access_token_notify_inherited boolean DEFAULT false NOT NULL,
     pipeline_variables_default_role smallint DEFAULT 2 NOT NULL,
     force_pages_access_control boolean DEFAULT false NOT NULL,
+    extended_grat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -19977,6 +19978,7 @@ CREATE TABLE project_settings (
     spp_repository_pipeline_access boolean,
     max_number_of_vulnerabilities integer,
     pages_primary_domain text,
+    extended_prat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),

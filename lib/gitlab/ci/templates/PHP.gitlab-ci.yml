@@ -26,7 +26,7 @@ before_script:
   - curl -sS https://getcomposer.org/installer | php
   - php composer.phar install
 
-# Bring in any services we need https://docs.gitlab.com/ee/ci/services/index.html
+# Bring in any services we need https://docs.gitlab.com/ee/ci/services/
 # See http://docs.gitlab.com/ee/ci/services/README.html for examples.
 services:
   - mysql:5.7

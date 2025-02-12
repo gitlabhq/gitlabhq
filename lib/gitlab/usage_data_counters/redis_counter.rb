@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # WARNING: This module has been deprecated and will be removed in the future
-# Use InternalEvents.track_event instead https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/index.html
+# Use InternalEvents.track_event instead https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/
 
 module Gitlab
   module UsageDataCounters

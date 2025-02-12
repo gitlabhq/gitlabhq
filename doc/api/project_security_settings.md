@@ -47,13 +47,13 @@ Example response:
     "auto_fix_sast": true,
     "continuous_vulnerability_scans_enabled": true,
     "container_scanning_for_registry_enabled": false,
-    "pre_receive_secret_detection_enabled": true
+    "secret_push_protection_enabled": true
 }
 ```
 
-## Update `pre_receive_secret_detection_enabled` setting
+## Update `secret_push_protection_enabled` setting
 
-Update the `pre_receive_secret_detection_enabled` setting for the project to the provided value.
+Update the `secret_push_protection_enabled` setting for the project to the provided value.
 
 Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md) for the project.
 
@@ -64,10 +64,10 @@ Prerequisites:
 | Attribute           | Type              | Required   | Description                                                                                                                  |
 | ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
 | `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) which the authenticated user is a member of  |
-| `pre_receive_secret_detection_enabled`        | boolean | yes        | The value to update `pre_receive_secret_detection_enabled` to  |
+| `secret_push_protection_enabled`        | boolean | yes        | The value to update `secret_push_protection_enabled` to  |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings?pre_receive_secret_detection_enabled=false"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings?secret_push_protection_enabled=false"
 ```
 
 Example response:
@@ -83,6 +83,6 @@ Example response:
     "auto_fix_sast": true,
     "continuous_vulnerability_scans_enabled": true,
     "container_scanning_for_registry_enabled": false,
-    "pre_receive_secret_detection_enabled": false
+    "secret_push_protection_enabled": false
 }
 ```

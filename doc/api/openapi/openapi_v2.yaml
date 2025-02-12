@@ -42543,7 +42543,7 @@ definitions:
         type: string
       security_and_compliance_enabled:
         type: string
-      pre_receive_secret_detection_enabled:
+      secret_push_protection_enabled:
         type: boolean
       compliance_frameworks:
         type: string
@@ -56069,7 +56069,7 @@ definitions:
         type: string
       security_and_compliance_enabled:
         type: string
-      pre_receive_secret_detection_enabled:
+      secret_push_protection_enabled:
         type: boolean
       compliance_frameworks:
         type: string

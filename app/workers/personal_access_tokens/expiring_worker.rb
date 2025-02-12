@@ -129,9 +129,12 @@ module PersonalAccessTokens
               # project bot does not have more than 1 token
               expiring_user_token = project_bot.personal_access_tokens.first
 
-              # webhooks do not include information about when the token expires, so
-              # only trigger on seven_days interval to avoid changing existing behavior
-              execute_web_hooks(project_bot, expiring_user_token) if interval == :seven_days
+              # If feature flag is not enabled webhooks will only execute if interval is seven_days
+              resource_namespace = bot_resource_namepace(project_bot.resource_bot_resource)
+              if Feature.enabled?(:extended_expiry_webhook_execution_setting, resource_namespace) ||
+                  interval == :seven_days
+                execute_web_hooks(project_bot, expiring_user_token, { interval: interval })
+              end
 
               interval_days = PersonalAccessToken.notification_interval(interval)
               deliver_bot_notifications(project_bot, expiring_user_token.name, days_to_expire: interval_days)
@@ -204,13 +207,13 @@ module PersonalAccessTokens
       )
     end
 
-    def execute_web_hooks(bot_user, token)
+    def execute_web_hooks(bot_user, token, data = {})
       resource = bot_user.resource_bot_resource
 
       return unless resource
       return if resource.is_a?(Project) && !resource.has_active_hooks?(:resource_access_token_hooks)
 
-      hook_data = Gitlab::DataBuilder::ResourceAccessToken.build(token, :expiring, resource)
+      hook_data = Gitlab::DataBuilder::ResourceAccessTokenPayload.build(token, :expiring, resource, data)
       resource.execute_hooks(hook_data, :resource_access_token_hooks)
     end
 
@@ -218,5 +221,13 @@ module PersonalAccessTokens
       NotificationService.new
     end
     strong_memoize_attr :notification_service
+
+    def bot_resource_namepace(resource)
+      if resource.is_a?(Project)
+        resource.namespace
+      else
+        resource
+      end
+    end
   end
 end

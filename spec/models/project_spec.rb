@@ -2286,7 +2286,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#builds_enabled' do
-    let(:project) { create(:project) }
+    let_it_be_with_reload(:project) { create(:project) }
 
     subject { project.builds_enabled }
 
@@ -4396,6 +4396,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#extended_prat_expiry_webhooks_execute?' do
+    let(:project) { build(:project, extended_prat_expiry_webhooks_execute: true) }
+
+    it "is the value of extended_prat_expiry_webhooks_execute" do
+      expect(project.extended_prat_expiry_webhooks_execute?).to eq(true)
+    end
+  end
+
   describe '#lfs_enabled?' do
     let(:namespace) { create(:namespace) }
     let(:project) { build(:project, namespace: namespace) }
@@ -6346,18 +6354,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#execute_hooks' do
     let(:data) { { ref: 'refs/heads/master', data: 'data' } }
+    let(:hook_scope) { :push_hooks }
+    let(:hook) { create(:project_hook, merge_requests_events: false, push_events: true) }
+    let_it_be_with_reload(:project) { create(:project) }
 
-    it 'executes active projects hooks with the specified scope' do
-      hook = create(:project_hook, merge_requests_events: false, push_events: true)
-      expect(ProjectHook).to receive(:select_active)
-        .with(:push_hooks, data)
+    shared_examples 'webhook is added to execution list' do
+      it 'executes webhook succesfully' do
+        expect(ProjectHook).to receive(:select_active)
+        .with(hook_scope, data)
         .and_return([hook])
-      project = create(:project, hooks: [hook])
 
-      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+        expect_any_instance_of(ProjectHook).to receive(:async_execute).once
 
-      project.execute_hooks(data, :push_hooks)
+        project.execute_hooks(data, hook_scope)
+      end
     end
+
+    it_behaves_like 'webhook is added to execution list'
 
     it 'does not execute project hooks that dont match the specified scope' do
       hook = create(:project_hook, merge_requests_events: true, push_events: false)
@@ -6414,6 +6427,72 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           project.execute_hooks(data, :merge_request_hooks)
         end
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
+    end
+
+    context 'when resource access token hooks for expiry notification' do
+      let_it_be_with_reload(:project) { create(:project) }
+      let!(:hook) { create(:project_hook, project: project, resource_access_token_events: true) }
+      let!(:hook_scope) { :resource_access_token_hooks }
+
+      context 'when interval is seven days' do
+        let(:data) { { interval: :seven_days } }
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when feature flag is disabled' do
+        let(:data) { { interval: :thirty_days } }
+
+        before do
+          stub_feature_flags(extended_expiry_webhook_execution_setting: false)
+        end
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when setting extended_prat_expiry_webhooks_execute is disabled' do
+        before do
+          project.update!(extended_prat_expiry_webhooks_execute: false)
+        end
+
+        context 'when interval is thirty days' do
+          let(:data) { { interval: :thirty_days } }
+
+          it 'does not execute the hook' do
+            expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+            project.execute_hooks(data, :resource_access_token_hooks)
+          end
+        end
+
+        context 'when interval is sixty days' do
+          let(:data) { { interval: :sixty_days } }
+
+          it 'does not execute the hook' do
+            expect_any_instance_of(ProjectHook).not_to receive(:async_execute).once
+
+            project.execute_hooks(data, :resource_access_token_hooks)
+          end
+        end
+      end
+
+      context 'when setting extended_prat_expiry_webhooks_execute is enabled' do
+        before do
+          project.update!(extended_prat_expiry_webhooks_execute: true)
+        end
+
+        context 'when interval is thirty days' do
+          let(:data) { { interval: :thirty_days } }
+
+          it_behaves_like 'webhook is added to execution list'
+        end
+
+        context 'when interval is sixty days' do
+          let(:data) { { interval: :sixty_days } }
+
+          it_behaves_like 'webhook is added to execution list'
+        end
+      end
     end
   end
 
@@ -6934,7 +7013,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject(:pages_url) { project.pages_url(pages_url_config) }
 
     it "lets URL builder handle the URL resolution" do
-      expect(::Gitlab::Pages::UrlBuilder).to receive(:new).with(project, pages_url_config).and_return(url_builder)
+      expect(::Gitlab::Pages::UrlBuilder)
+        .to receive(:new)
+        .with(project, pages_url_config)
+        .and_return(url_builder)
+
       expect(url_builder).to receive(:pages_url).and_return('http://namespace1.example.com/project-1/foo')
       expect(pages_url).to eq('http://namespace1.example.com/project-1/foo')
     end
@@ -6943,7 +7026,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:pages_url_config) { { path_prefix: 'foo' } }
 
       it "lets URL builder handle the URL resolution" do
-        expect(::Gitlab::Pages::UrlBuilder).to receive(:new).with(project, pages_url_config).and_return(url_builder)
+        expect(::Gitlab::Pages::UrlBuilder)
+          .to receive(:new)
+          .with(project, pages_url_config)
+          .and_return(url_builder)
+
         expect(url_builder).to receive(:pages_url).and_return('http://namespace1.example.com/project-1/foo')
         expect(pages_url).to eq('http://namespace1.example.com/project-1/foo')
       end

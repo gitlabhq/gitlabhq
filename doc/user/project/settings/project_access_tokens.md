@@ -86,8 +86,6 @@ The inactive project access tokens table displays revoked and expired tokens for
 
 Tokens that belong to [an active token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
 
-### Use the UI
-
 To revoke or rotate a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.

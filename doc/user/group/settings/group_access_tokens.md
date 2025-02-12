@@ -41,7 +41,7 @@ You cannot use group access tokens to create other group, project, or personal a
 Group access tokens inherit the [default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
 
-## Create a group access token using UI
+## Create a group access token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
 > - Ability to create non-expiring group access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
@@ -54,6 +54,8 @@ For more information, see the history.
 
 WARNING:
 The ability to create group access tokens without an expiry date was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0. For more information on expiry dates added to existing tokens, see the documentation on [access token expiration](#access-token-expiration).
+
+### With the UI
 
 To create a group access token:
 
@@ -79,7 +81,7 @@ Group access tokens are treated as [internal users](../../../administration/inte
 If an internal user creates a group access token, that token is able to access
 all projects that have visibility level set to [Internal](../../public_access.md).
 
-## Create a group access token using Rails console
+### With the Rails console
 
 If you are an administrator, you can create group access tokens in the Rails console:
 
@@ -132,8 +134,6 @@ access tokens on the access tokens page.
 The inactive group access tokens table displays revoked and expired tokens for 30 days after they became inactive.
 
 Tokens that belong to [an active token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
-
-### Use the UI
 
 To revoke or rotate a group access token:
 

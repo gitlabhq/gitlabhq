@@ -151,3 +151,20 @@ To set this default:
 1. Select **Settings > Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
+
+## Add additional webhook triggers for project access token expiration
+
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+GitLab sends multiple [expiry emails](project_access_tokens.md#project-access-token-expiry-emails) and triggers a related [webhook](../integrations/webhook_events.md#project-and-group-access-token-events) before a project token expires. By default, GitLab only triggers these webhooks 7 days before the token expires. When this feature is enabled, GitLab also triggers these webhooks 60 days and 30 days before the token expires.
+
+To enable additional triggers for these webhooks:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand the **Visibility, project features, permissions** section.
+1. Select the **Extended Group Access Tokens Expiry Webhook execution** checkbox.
+1. Select **Save changes**.

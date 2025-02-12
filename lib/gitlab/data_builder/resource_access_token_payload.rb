@@ -2,10 +2,10 @@
 
 module Gitlab
   module DataBuilder
-    module ResourceAccessToken
+    module ResourceAccessTokenPayload
       extend self
 
-      def build(resource_access_token, event, resource)
+      def build(resource_access_token, event, resource, data = {})
         base_data = {
           object_kind: 'access_token'
         }
@@ -13,7 +13,7 @@ module Gitlab
         base_data[resource.model_name.param_key.to_sym] = resource.hook_attrs
         base_data[:object_attributes] = resource_access_token.hook_attrs
         base_data[:event_name] = event_data(event)
-        base_data
+        base_data.merge(data)
       end
 
       private

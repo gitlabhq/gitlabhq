@@ -237,7 +237,7 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
       let(:trigger_key) { :resource_access_token_hooks }
 
       it 'executes hook' do
-        allow(Gitlab::DataBuilder::ResourceAccessToken).to receive(:build).and_return(sample_data)
+        allow(Gitlab::DataBuilder::ResourceAccessTokenPayload).to receive(:build).and_return(sample_data)
 
         expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
         expect(service.execute).to include(success_result)

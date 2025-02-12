@@ -107,7 +107,7 @@ module Integrations
         expires_at: 2.days.from_now
       )
 
-      Gitlab::DataBuilder::ResourceAccessToken.build(resource_access_token, :expiring, project)
+      Gitlab::DataBuilder::ResourceAccessTokenPayload.build(resource_access_token, :expiring, project)
     end
 
     def vulnerability_events_data

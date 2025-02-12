@@ -960,12 +960,13 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'crm filtering' do
-        let_it_be(:root_group) { create(:group) }
-        let_it_be(:group) { create(:group, parent: root_group) }
+        let_it_be(:crm_group) { create(:group) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:crm_settings) { create(:crm_settings, group: group, source_group: crm_group) }
         let_it_be(:project_crm) { create(:project, :public, group: group) }
-        let_it_be(:crm_organization) { create(:crm_organization, group: root_group) }
-        let_it_be(:contact1) { create(:contact, group: root_group, organization: crm_organization) }
-        let_it_be(:contact2) { create(:contact, group: root_group, organization: crm_organization) }
+        let_it_be(:crm_organization) { create(:crm_organization, group: crm_group) }
+        let_it_be(:contact1) { create(:contact, group: crm_group, organization: crm_organization) }
+        let_it_be(:contact2) { create(:contact, group: crm_group, organization: crm_organization) }
 
         let_it_be(:contact1_item1) { create(factory, project: project_crm) }
         let_it_be(:contact1_item2) { create(factory, project: project_crm) }
@@ -977,7 +978,9 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         before do
-          create(:crm_settings, group: root_group, enabled: true)
+          create(:crm_settings, group: crm_group, enabled: true)
+
+          group.add_developer(user)
 
           create(:issue_customer_relations_contact, issue: contact1_item1, contact: contact1)
           create(:issue_customer_relations_contact, issue: contact1_item2, contact: contact1)
@@ -989,7 +992,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
           context 'when the user can read crm contacts' do
             it 'returns for that contact' do
-              root_group.add_reporter(user)
+              crm_group.add_reporter(user)
 
               expect(items).to contain_exactly(contact1_item1, contact1_item2)
             end
@@ -1007,7 +1010,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
           context 'when the user can read crm organization' do
             it 'returns for that crm organization' do
-              root_group.add_reporter(user)
+              crm_group.add_reporter(user)
 
               expect(items).to contain_exactly(contact1_item1, contact1_item2, contact2_item1)
             end

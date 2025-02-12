@@ -71,8 +71,8 @@ class WikiPage
     set_attributes if persisted?
   end
 
-  def meta
-    WikiPage::Meta.find_by_canonical_slug(slug, container)
+  def find_or_create_meta
+    WikiPage::Meta.find_or_create(slug, self)
   end
 
   # The escaped URL path of this page.

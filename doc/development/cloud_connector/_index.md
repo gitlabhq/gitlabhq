@@ -84,34 +84,6 @@ For backward compatibility where instances are still using the old [legacy struc
 
 Follow our [release checklist](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/blob/main/.gitlab/merge_request_templates/Release.md#checklist) for publishing the new version of the library and using it in GitLab project.
 
-#### Transition from old configuration
-
-We are transitioning away from separate [CustomersDot](configuration.md#customersdot-configuration) and [GitLab.com](configuration.md#gitlabcom-configuration) configurations, as outlined in our [ADR-003 Migration Path](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/decisions/003_unit_primitives/).
-
-##### Current state and ongoing changes
-
-- New features are added as **unit primitives** in the [`gitlab-cloud-connector` configuration](configuration.md#configuration-format-and-structure).
-- Migration to the `gitlab-cloud-connector` gem as the Single Source of Truth (SSoT) is in progress in [epic 15949](https://gitlab.com/groups/gitlab-org/-/epics/15949).
-
-  - `access_data.yml` was removed in [issue 507518](https://gitlab.com/gitlab-org/gitlab/-/issues/507518).
-  - `cloud_connector.yml` file is slated for deprecation and removal, as detailed in [issue 11268](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/11268).
-
-##### Transition period guidelines
-
-- Maintain both [new](configuration.md#configuration-format-and-structure) and [CustomersDot configuration](configuration.md#customersdot-configuration) configurations.
-
-##### Register new features
-
-###### Process
-
-After adding a [new unit primitive to `gitlab-cloud-connector`](#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers),
-open a separate merge request to update [CustomersDot configuration](configuration.md#customersdot-configuration) for GitLab Dedicated and self-managed instances.
-
-1. Make sure that merge request for adding [new unit primitive to `gitlab-cloud-connector`](#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers) has been merged.
-1. Download the latest generated [`cloud-connector.yml` file](https://gitlab.com/api/v4/projects/58733651/jobs/artifacts/main/raw/config/cloud_connector.yml?job=generate_cloud_connector_yml)
-1. Replace the [`cloud-connector.yml` file](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml)
-1. Ensure that the generated file reflects the changes you have made. Additionally, carefully verify that no changes have been inadvertently removed in the file.
-
 #### Implement Permission checks in GitLab Rails
 
 ##### New feature is delivered as stand-alone service

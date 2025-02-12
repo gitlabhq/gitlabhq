@@ -52,7 +52,7 @@ To configure a Jenkins integration with GitLab:
    - [Create a project access token](../user/project/settings/project_access_tokens.md#create-a-project-access-token)
      to use the token at the project level only. For instance, you can revoke
      the token in a project without affecting Jenkins integrations in other projects.
-   - [Create a group access token](../user/group/settings/group_access_tokens.md#create-a-group-access-token-using-ui)
+   - [Create a group access token](../user/group/settings/group_access_tokens.md#create-a-group-access-token)
      to use the token for all Jenkins integrations in all projects of that group.
 
 1. Set the access token scope to **API**.

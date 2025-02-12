@@ -349,7 +349,6 @@ info: Analysis of Application Settings for Cells 1.0.
 | `plantuml_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `true`| `true` |
 | `plantuml_url` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `polling_interval_multiplier` | `false` | `numeric` | `float` | `true` | `1.0` | `false` | `false`| `true` |
-| `pre_receive_secret_detection_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `true`| `true` |
 | `prevent_merge_requests_author_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `prevent_merge_requests_committers_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `product_analytics_configurator_connection_string` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
@@ -410,7 +409,7 @@ info: Analysis of Application Settings for Cells 1.0.
 | `secret_detection_token_revocation_enabled` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
-| `secret_push_protection_available` | `false` | `boolean` | `` | `false` | `false` | `true` | `true`| `false` |
+| `secret_push_protection_available` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |

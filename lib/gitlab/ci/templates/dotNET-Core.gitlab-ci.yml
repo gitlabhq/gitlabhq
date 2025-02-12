@@ -82,7 +82,7 @@ cache:
 # for 'dotnet restore' command. In this example, a temporary directory is created
 # in the root of project repository, so its content can be cached.
 #
-# Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
+# Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/
 before_script:
   - 'dotnet restore --packages $NUGET_PACKAGES_DIRECTORY'
 

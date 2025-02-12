@@ -995,6 +995,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         containerRegistryEnabled: !!project.container_registry_enabled,
         lfsEnabled: !!project.lfs_enabled,
         emailsEnabled: project.emails_enabled?,
+        extendedPratExpiryWebhooksExecute: project.extended_prat_expiry_webhooks_execute?,
         showDefaultAwardEmojis: project.show_default_award_emojis?,
         securityAndComplianceAccessLevel: project.security_and_compliance_access_level,
         containerRegistryAccessLevel: project.project_feature.container_registry_access_level,

@@ -80,7 +80,7 @@ To replace the token:
      or [User tokens API](../../api/user_tokens.md#create-a-personal-access-token).
    - For a project access token, [use the UI](../../user/project/settings/project_access_tokens.md#create-a-project-access-token)
      or [project access tokens API](../../api/project_access_tokens.md#create-a-project-access-token).
-   - For a group access token, [use the UI](../../user/group/settings/group_access_tokens.md#create-a-group-access-token-using-ui)
+   - For a group access token, [use the UI](../../user/group/settings/group_access_tokens.md#create-a-group-access-token)
      or [group access tokens API](../../api/group_access_tokens.md#create-a-group-access-token).
 1. Replace the old access token with the new access token. This process varies
    depending on how you use the token, for example if configured as a secret or

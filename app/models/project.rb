@@ -580,6 +580,7 @@ class Project < ApplicationRecord
     delegate :mr_default_target_self, :mr_default_target_self=
     delegate :previous_default_branch, :previous_default_branch=
     delegate :squash_option, :squash_option=
+    delegate :extended_prat_expiry_webhooks_execute, :extended_prat_expiry_webhooks_execute=
 
     with_options allow_nil: true do
       delegate :merge_commit_template, :merge_commit_template=
@@ -1233,6 +1234,10 @@ class Project < ApplicationRecord
 
   def warn_about_potentially_unwanted_characters?
     !!project_setting&.warn_about_potentially_unwanted_characters?
+  end
+
+  def extended_prat_expiry_webhooks_execute?
+    !!project_setting&.extended_prat_expiry_webhooks_execute?
   end
 
   def no_import?
@@ -1980,7 +1985,19 @@ class Project < ApplicationRecord
 
   def triggered_hooks(hooks_scope, data)
     triggered = ::Projects::TriggeredHooks.new(hooks_scope, data)
-    triggered.add_hooks(hooks)
+
+    # By default the webhook resource_access_token_hooks will execute for
+    # seven_days interval but we have a setting to allow webhook execution
+    # for thirty_days and sixty_days interval too.
+    if hooks_scope == :resource_access_token_hooks &&
+        ::Feature.enabled?(:extended_expiry_webhook_execution_setting, self.namespace) &&
+        data[:interval] != :seven_days &&
+        !self.extended_prat_expiry_webhooks_execute?
+
+      triggered
+    else
+      triggered.add_hooks(hooks)
+    end
   end
 
   def execute_integrations(data, hooks_scope = :push_hooks, skip_ci: false)

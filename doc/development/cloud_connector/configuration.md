@@ -214,25 +214,3 @@ services:
 | `min_gitlab_version` | string | Minimum required GitLab version (for example, `17.8`). If not set, available for all versions.                                                                |
 | `min_gitlab_version_for_free_access` | string | Minimum version for free access period (for example, `17.8`). If not set, available for all versions.                                                         |
 | `backend` | string | Name of the backend service hosting this feature, used as token audience claim (for example, `gitlab-ai-gateway`).                                          |
-
-#### GitLab.com configuration
-
-Because the GitLab.com deployment enjoys special trust, it can [self-sign and create Instance JSON Web Tokens (IJWTs)](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
-
-To issue tokens with the proper scopes, GitLab.com needs access to the configuration.
-
-Configuration is stored in the `gitlab-cloud-connector` gem using a [unit primitive configuration format and structure](#configuration-format-and-structure).
-GitLab.com still uses the [legacy `available_services` structure](#legacy-structure).
-The `Gitlab::CloudConnector::AvailableServicesGenerator` generates legacy structure for compatibility.
-
-To add a new unit primitive, follow [Register new feature for Self-Managed, Dedicated and GitLab.com customers](_index.md#register-new-feature-for-self-managed-dedicated-and-gitlabcom-customers)
-
-#### CustomersDot configuration
-
-For GitLab Dedicated and GitLab Self-Managed we are delegating trust to the CustomersDot, the access token issuer.
-
-The configuration is located in [`cloud_connector.yml`](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/config/cloud_connector.yml),
-and represents an almost exact copy of the GitLab.com configuration.
-
-We are in the process of removing `cloud_connector.yml` as part of our effort to use the `gitlab-cloud-connector` gem as the Single Source of Truth (SSoT) for unit primitive configuration.
-To add a new unit primitive during this transition period, follow the [Transition period from old configuration process](_index.md#transition-from-old-configuration).

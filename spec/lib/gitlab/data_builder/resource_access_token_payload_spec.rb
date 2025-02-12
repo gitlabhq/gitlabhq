@@ -2,15 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DataBuilder::ResourceAccessToken, feature_category: :system_access do
+RSpec.describe Gitlab::DataBuilder::ResourceAccessTokenPayload, feature_category: :system_access do
   let_it_be_with_reload(:user) { create(:user, :project_bot) }
   let(:event) { :expiring }
   let(:personal_access_token) { create(:personal_access_token, user: user) }
-  let(:data) { described_class.build(personal_access_token, event, resource) }
+  let(:data) { described_class.build(personal_access_token, event, resource, { interval: :thirty_days }) }
 
   shared_examples 'includes standard data' do
     specify do
       expect(data[:object_attributes]).to eq(personal_access_token.hook_attrs)
+      expect(data[:interval]).to eq(:thirty_days)
       expect(data[:object_kind]).to eq('access_token')
     end
   end

@@ -294,6 +294,7 @@ export default {
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
         isProject: this.isProject,
         isSignedIn: this.isSignedIn,
+        searchByEpic: Boolean(this.apiFilterParams.epicId),
         sort: this.sortKey,
         state: this.state,
         ...this.pageParams,

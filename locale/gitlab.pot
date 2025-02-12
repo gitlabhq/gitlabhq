@@ -27937,6 +27937,9 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
+msgid "GroupSettings|Add additional webhook triggers for group access token expiration"
+msgstr ""
+
 msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}."
 msgstr ""
 
@@ -28070,6 +28073,9 @@ msgid "GroupSettings|How do I manage group SSH certificates?"
 msgstr ""
 
 msgid "GroupSettings|If enabled, enterprise user accounts will not be able to use personal access tokens."
+msgstr ""
+
+msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires."
 msgstr ""
 
 msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
@@ -45063,6 +45069,9 @@ msgstr ""
 msgid "ProjectSettings|A default branch cannot be chosen for an empty project."
 msgstr ""
 
+msgid "ProjectSettings|Add additional webhook triggers for project access token expiry."
+msgstr ""
+
 msgid "ProjectSettings|Add badges to display information about this project."
 msgstr ""
 
@@ -45265,6 +45274,9 @@ msgid "ProjectSettings|How do they differ?"
 msgstr ""
 
 msgid "ProjectSettings|If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{link_start}Learn more about data retention policy%{link_end}."
+msgstr ""
+
+msgid "ProjectSettings|If enabled, project access tokens expiry webhooks execute 60, 30, and 7 days before the token expires. If disabled, these webhooks only execute 7 days before the token expires. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."

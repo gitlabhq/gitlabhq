@@ -248,14 +248,36 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
 
         it 'executes access token webhook' do
-          hook_data = {}
+          hook_data = { interval: :seven_days }
           project_hook = create(:project_hook, project: project, resource_access_token_events: true)
 
-          expect(Gitlab::DataBuilder::ResourceAccessToken).to receive(:build).and_return(hook_data)
+          expect(Gitlab::DataBuilder::ResourceAccessTokenPayload).to receive(:build).and_return(hook_data)
           expect(fake_wh_service).to receive(:async_execute).once
 
           expect(WebHookService)
             .to receive(:new)
+            .with(
+              project_hook,
+              { interval: :seven_days },
+              'resource_access_token_hooks',
+              idempotency_key: anything
+            ) { fake_wh_service }
+
+          worker.perform
+        end
+
+        context 'when feature flag extended_expiry_webhook_execution_setting is disabled' do
+          before do
+            stub_feature_flags(extended_expiry_webhook_execution_setting: false)
+          end
+
+          it "does not call execute_web_hooks for interval 30 days" do
+            expiring_token.update!(expires_at: 30.days.from_now)
+            project_hook = create(:project_hook, project: project, resource_access_token_events: true)
+
+            expect(Gitlab::DataBuilder::ResourceAccessTokenPayload).not_to receive(:build)
+            expect(WebHookService)
+            .not_to receive(:new)
             .with(
               project_hook,
               {},
@@ -263,7 +285,8 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
               idempotency_key: anything
             ) { fake_wh_service }
 
-          worker.perform
+            worker.perform
+          end
         end
 
         context 'with multiple batches of tokens' do

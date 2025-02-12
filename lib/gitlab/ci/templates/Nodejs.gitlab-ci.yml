@@ -12,14 +12,14 @@ image: node:latest
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
-# Check out: https://docs.gitlab.com/ee/ci/services/index.html
+# Check out: https://docs.gitlab.com/ee/ci/services/
 services:
   - mysql:latest
   - redis:latest
   - postgres:latest
 
 # This folder is cached between builds
-# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
+# https://docs.gitlab.com/ee/ci/yaml/#cache
 cache:
   paths:
     - node_modules/

@@ -304,7 +304,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_link(href: 'http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd9vm80EtS5lW00')
+      expect(actual).to have_link(href: 'http://localhost:8080/png/U9npoazIqBLJ24uiIbImKl18pSd91m0rkGMq')
     end
   end
 
@@ -313,7 +313,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_link(href: 'http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KzhUlCITkpNLEqJ1dWNLkgsKsoviUUSs7KLTssvzVHIzS8tyYjliuUCAE_tHdw=')
+      expect(actual).to have_link(href: 'http://localhost:8000/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KzhUlCITkpNLEqJ1dWNLkgsKsoviUUSs7KLTssvzVHIzS8tyYjligUAMhEd0g==')
     end
   end
 end

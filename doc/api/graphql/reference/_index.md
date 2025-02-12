@@ -11677,7 +11677,7 @@ Input type: `vulnerabilitiesSeverityOverrideInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitiesseverityoverrideclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilitiesseverityoverridecomment"></a>`comment` | [`String`](#string) | Comment why vulnerability severity was changed (maximum 50,000 characters). |
+| <a id="mutationvulnerabilitiesseverityoverridecomment"></a>`comment` | [`String!`](#string) | Comment why vulnerability severity was changed (maximum 50,000 characters). |
 | <a id="mutationvulnerabilitiesseverityoverrideseverity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | New severity value for the severities. |
 | <a id="mutationvulnerabilitiesseverityoverridevulnerabilityids"></a>`vulnerabilityIds` | [`[VulnerabilityID!]!`](#vulnerabilityid) | IDs of the vulnerabilities for which severity needs to be changed (maximum 100 entries). |
 

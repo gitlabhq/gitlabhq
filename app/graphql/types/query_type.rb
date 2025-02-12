@@ -196,7 +196,8 @@ module Types
       null: true,
       resolver: Resolvers::Wikis::WikiPageResolver,
       experiment: { milestone: '17.6' },
-      description: 'Find a wiki page.'
+      description: 'Find a wiki page.',
+      calls_gitaly: true
     field :work_item, Types::WorkItemType,
       null: true,
       resolver: Resolvers::WorkItemResolver,

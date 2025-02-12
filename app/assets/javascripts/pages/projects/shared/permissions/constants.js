@@ -51,6 +51,11 @@ export const modelExperimentsHelpPath = helpPagePath(
 
 export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/_index.md');
 
+export const extendedPratExpiryWebhooksExecuteHelpPath = helpPagePath(
+  'user/project/settings/_index.md',
+  { anchor: 'add-additional-webhook-triggers-for-project-access-token-expiration' },
+);
+
 export const duoHelpPath = helpPagePath('user/ai_features');
 export const amazonQHelpPath = helpPagePath('user/duo_amazon_q/_index.md');
 

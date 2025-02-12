@@ -54,6 +54,8 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
+    # FF to enable setting to allow webhook execution on 30D and 60D notification delivery too
+    push_frontend_feature_flag(:extended_expiry_webhook_execution_setting, @project&.namespace)
     push_frontend_feature_flag(:work_item_description_templates, @project&.group)
   end
 
@@ -460,7 +462,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_setting_attributes
-    %i[
+    attributes = %i[
       show_default_award_emojis
       show_diff_preview_in_email
       squash_option
@@ -469,6 +471,13 @@ class ProjectsController < Projects::ApplicationController
       enforce_auth_checks_on_uploads
       emails_enabled
     ]
+
+    if ::Feature.enabled?(:extended_expiry_webhook_execution_setting, @project&.namespace) &&
+        can?(current_user, :admin_project, project)
+      attributes << :extended_prat_expiry_webhooks_execute
+    end
+
+    attributes
   end
 
   def project_params_attributes

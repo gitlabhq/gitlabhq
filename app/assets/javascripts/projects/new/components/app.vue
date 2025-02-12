@@ -1,8 +1,4 @@
 <script>
-import PROJECT_CREATE_FROM_TEMPLATE_SVG_URL from '@gitlab/svgs/dist/illustrations/project-create-from-template-sm.svg?url';
-import PROJECT_CREATE_NEW_SVG_URL from '@gitlab/svgs/dist/illustrations/project-create-new-sm.svg?url';
-import PROJECT_IMPORT_SVG_URL from '@gitlab/svgs/dist/illustrations/project-import-sm.svg?url';
-import PROJECT_RUN_CICD_PIPELINES_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-devops-md.svg?url';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
@@ -19,7 +15,6 @@ const PANELS = [
     description: s__(
       'ProjectsNew|Create a blank project to store your files, plan your work, and collaborate on code, among other things.',
     ),
-    imageSrc: PROJECT_CREATE_NEW_SVG_URL,
   },
   {
     key: 'template',
@@ -29,7 +24,6 @@ const PANELS = [
     description: s__(
       'ProjectsNew|Create a project pre-populated with the necessary files to get you started quickly.',
     ),
-    imageSrc: PROJECT_CREATE_FROM_TEMPLATE_SVG_URL,
   },
   {
     key: 'import',
@@ -39,7 +33,6 @@ const PANELS = [
     description: s__(
       'ProjectsNew|Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab.',
     ),
-    imageSrc: PROJECT_IMPORT_SVG_URL,
   },
   {
     key: 'ci',
@@ -47,7 +40,6 @@ const PANELS = [
     selector: '#ci-cd-project-pane',
     title: s__('ProjectsNew|Run CI/CD for external repository'),
     description: s__('ProjectsNew|Connect your external repository to GitLab CI/CD.'),
-    imageSrc: PROJECT_RUN_CICD_PIPELINES_SVG_URL,
   },
 ];
 

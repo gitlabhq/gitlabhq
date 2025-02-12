@@ -38,16 +38,16 @@ RSpec.describe 'projects/blob/viewers/_graph.html.haml', feature_category: :sour
     end
 
     it_behaves_like 'render file with expectation', 'puml', "@startuml\nBob -> Alice : hello\n@enduml",
-      'http://localhost:8080/png/U9npA2v9B2efpStXSifFKj2rKt3CoKnELR1Io4ZDoSddSaZDIm590W04uWpA'
+      'http://localhost:8080/png/U9npA2v9B2efpStXSifFKj2rKt3CoKnELR1Io4ZDoSddSaZDIm5A0W3u2Gp0'
 
     it_behaves_like 'render file with expectation', 'mermaid', "graph TD;\nA-->B;",
       'js-render-mermaid'
 
     it_behaves_like 'render file with expectation', 'dot', "graph {\na -- b;\n}",
-      'http://localhost:8080/graphviz/svg/eNpLL0osyFCo5kpU0NVVSLLmquUCADVJBOE='
+      'http://localhost:8080/graphviz/svg/eNpLL0osyFCo5kpU0NVVSLLmqgUAMGgE1w=='
 
     it_behaves_like 'render file with expectation', 'noml',
       "[Pirate|eyeCount: Int|raid();pillage()|\n  [beard]--[parrot]\n  [beard]-:>[foul mouth]\n]",
-      'http://localhost:8080/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KzhUlCITkpNLEqJ1dWNLkgsKsoviUUSs7KLTssvzVHIzS8tyYjliuUCAE_tHdw='
+      'http://localhost:8080/nomnoml/svg/eNqLDsgsSixJrUmtTHXOL80rsVLwzCupKUrMTNHQtC7IzMlJTE_V0KzhUlCITkpNLEqJ1dWNLkgsKsoviUUSs7KLTssvzVHIzS8tyYjligUAMhEd0g=='
   end
 end

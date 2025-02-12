@@ -16,7 +16,6 @@ describe('Experimental new namespace creation app', () => {
   const findLegacyContainer = () => wrapper.findComponent(LegacyContainer);
   const findTopBar = () => wrapper.findByTestId('top-bar');
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
-  const findImage = () => wrapper.find('img');
   const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
   const findSuperSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
@@ -25,8 +24,8 @@ describe('Experimental new namespace creation app', () => {
     title: 'Create something',
     initialBreadcrumbs: [{ text: 'Something', href: '#' }],
     panels: [
-      { name: 'panel1', selector: '#some-selector1', imageSrc: 'panel1.svg' },
-      { name: 'panel2', selector: '#some-selector2', imageSrc: 'panel2.svg' },
+      { name: 'panel1', selector: '#some-selector1' },
+      { name: 'panel2', selector: '#some-selector2' },
     ],
     persistenceKey: 'DEMO-PERSISTENCE-KEY',
   };
@@ -88,10 +87,6 @@ describe('Experimental new namespace creation app', () => {
       const breadcrumb = findBreadcrumb();
       expect(breadcrumb.exists()).toBe(true);
       expect(breadcrumb.props().items[0].text).toBe(DEFAULT_PROPS.initialBreadcrumbs[0].text);
-    });
-
-    it('renders images', () => {
-      expect(findImage().element.src).toBe(DEFAULT_PROPS.panels[1].imageSrc);
     });
   });
 
