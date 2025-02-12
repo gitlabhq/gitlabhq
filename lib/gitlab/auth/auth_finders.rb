@@ -187,7 +187,7 @@ module Gitlab
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)
       end
 
-      def validate_and_save_access_token!(scopes: [], save_auth_context: true)
+      def validate_and_save_access_token!(scopes: [], save_auth_context: true, reset_token: false)
         # return early if we've already authenticated via a job token
         return if @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -195,6 +195,12 @@ module Gitlab
         return if @current_authenticated_deploy_token.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         return unless access_token
+
+        # Originally, we tried to use `reset` here to follow the rubocop rule introduced by
+        # gitlab-org/gitlab-foss#60218, but this caused a NoMethodError for OAuth tokens,
+        # leading to incident 18980 (see gitlab-com/gl-infra/production#18988).
+        # We're using reload instead and disabling the rubocop rule to prevent similar incidents.
+        access_token.reload if reset_token # rubocop:disable Cop/ActiveRecordAssociationReload
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE

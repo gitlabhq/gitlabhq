@@ -149,6 +149,15 @@ class IssuePolicy < IssuablePolicy
     enable :mark_note_as_internal
   end
 
+  rule { is_incident & ~can?(:reporter_access) }.policy do
+    prevent :admin_issue
+    prevent :update_issue
+  end
+
+  rule { is_incident & ~can?(:owner_access) }.policy do
+    prevent :destroy_issue
+  end
+
   # IMPORTANT: keep the prevent rules as last rules defined in the policy, as these are based on
   # all abilities defined up to this point.
   rule { group_issue & ~group_level_issues_license_available }.policy do

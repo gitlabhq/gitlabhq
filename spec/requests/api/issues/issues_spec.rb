@@ -13,7 +13,9 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   let_it_be(:user2) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let_it_be(:guest)       { create(:user, guest_of: [project, private_mrs_project]) }
+  let_it_be(:guest) { create(:user, guest_of: [project, private_mrs_project]) }
+  let_it_be(:planner) { create(:user, planner_of: [project]) }
+  let_it_be(:owner) { create(:user, owner_of: [project]) }
   let_it_be(:author)      { create(:author) }
   let_it_be(:assignee)    { create(:assignee) }
   let_it_be(:admin) { create(:user, :admin) }
@@ -1213,6 +1215,26 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid' do
+    context 'when user has insufficient permissions' do
+      let(:params) { { title: 'new title' } }
+
+      it 'returns forbidden status for guest' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", guest), params: params
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      context 'when issue_type is incident' do
+        let_it_be(:incident) { create(:issue, :incident, project: project) }
+
+        it 'returns forbidden status for planner' do
+          put api("/projects/#{project.id}/issues/#{incident.iid}", planner), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+    end
+
     it_behaves_like 'issuable update endpoint' do
       let(:entity) { issue }
     end
@@ -1285,9 +1307,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     context 'when the user is project owner' do
-      let(:owner)     { create(:user) }
-      let(:project)   { create(:project, namespace: owner.namespace) }
-
       it 'deletes the issue if an admin requests it' do
         delete api("/projects/#{project.id}/issues/#{issue_for_deletion.iid}", owner)
 
@@ -1311,6 +1330,25 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       delete api("/projects/#{project.id}/issues/#{issue_for_deletion.id}", user)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when issue type is incident' do
+      let_it_be(:incident) { create(:issue, :incident, author: author, assignees: [assignee], project: project) }
+
+      where(:current_user) { [ref(:planner), ref(:author), ref(:assignee)] }
+
+      with_them do
+        it 'rejects user from deleting an incident' do
+          delete api("/projects/#{project.id}/issues/#{incident.iid}", current_user)
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      it 'allows an owner to delete an incident' do
+        delete api("/projects/#{project.id}/issues/#{incident.iid}", owner)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
     end
   end
 
