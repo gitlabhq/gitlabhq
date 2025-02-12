@@ -35615,7 +35615,7 @@ Pypi metadata.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querycomplexitylimit"></a>`limit` | [`Int`](#int) | GraphQL query complexity limit. See [GitLab documentation on this limit](https://docs.gitlab.com/ee/api/graphql/index.html#max-query-complexity). |
+| <a id="querycomplexitylimit"></a>`limit` | [`Int`](#int) | GraphQL query complexity limit. See [GitLab documentation on this limit](https://docs.gitlab.com/ee/api/graphql/#maximum-query-complexity). |
 | <a id="querycomplexityscore"></a>`score` | [`Int`](#int) | GraphQL query complexity score. |
 
 ### `QueueingDelayHistory`

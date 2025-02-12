@@ -104,6 +104,32 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
     end
   end
 
+  shared_examples 'work item of type issue hook data' do
+    let(:data) { described_class.new(work_item).build(user: user, action: 'updated') }
+
+    it 'returns correct hook data', :aggregate_failures do
+      # To prevent a breaking change, ensure we use `issue` for work items of type issue.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/517947
+      expect(data[:object_kind]).to eq('issue')
+      expect(data[:event_type]).to eq('issue')
+      expect(data.dig(:object_attributes, :id)).to eq(work_item.id)
+      expect(data.dig(:object_attributes, :iid)).to eq(work_item.iid)
+      expect(data.dig(:object_attributes, :type)).to eq(work_item.work_item_type.name)
+    end
+  end
+
+  shared_examples 'work item hook data' do
+    let(:data) { described_class.new(work_item).build(user: user, action: 'updated') }
+
+    it 'returns correct hook data', :aggregate_failures do
+      expect(data[:object_kind]).to eq('work_item')
+      expect(data[:event_type]).to eq('work_item')
+      expect(data.dig(:object_attributes, :id)).to eq(work_item.id)
+      expect(data.dig(:object_attributes, :iid)).to eq(work_item.iid)
+      expect(data.dig(:object_attributes, :type)).to eq(work_item.work_item_type.name)
+    end
+  end
+
   describe '#build' do
     it_behaves_like 'issuable hook data', 'issue', Gitlab::HookData::IssueBuilder do
       let_it_be(:issuable) { create(:issue, description: 'A description', project: reusable_project) }
@@ -115,7 +141,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       let(:builder) { described_class.new(issuable) }
     end
 
-    context 'issue is assigned' do
+    context 'when issue is assigned' do
       let(:issue) { create(:issue, assignees: [user], project: reusable_project) }
       let(:data) { described_class.new(issue).build(user: user, action: 'updated') }
 
@@ -127,21 +153,31 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       end
     end
 
-    context 'when issuable is a group level work item' do
-      let(:work_item) { create(:work_item, namespace: group, description: 'work item description') }
+    context 'when issuable is a group level work item of type epic' do
+      let(:work_item) { create(:work_item, :epic, namespace: group, description: 'work item description') }
 
-      it 'returns correct hook data', :aggregate_failures do
-        data = described_class.new(work_item).build(user: user, action: 'updated')
-
-        expect(data[:object_kind]).to eq('work_item')
-        expect(data[:event_type]).to eq('work_item')
-        expect(data.dig(:object_attributes, :id)).to eq(work_item.id)
-        expect(data.dig(:object_attributes, :iid)).to eq(work_item.iid)
-        expect(data.dig(:object_attributes, :type)).to eq(work_item.work_item_type.name)
-      end
+      it_behaves_like 'work item hook data'
     end
 
-    context 'merge_request is assigned' do
+    context 'when issuable is a group level work item of type issue' do
+      let(:work_item) { create(:work_item, :issue, namespace: group, description: 'work item description') }
+
+      it_behaves_like 'work item of type issue hook data'
+    end
+
+    context 'when issuable is a work item of type issue' do
+      let(:work_item) { create(:work_item, :issue, project: reusable_project, description: 'work item description') }
+
+      it_behaves_like 'work item of type issue hook data'
+    end
+
+    context 'when issuable is work item of type task' do
+      let(:work_item) { create(:work_item, :task, project: reusable_project, description: 'work item description') }
+
+      it_behaves_like 'work item hook data'
+    end
+
+    context 'when merge_request is assigned' do
       let(:merge_request) { create(:merge_request, assignees: [user], source_project: reusable_project) }
       let(:data) { described_class.new(merge_request).build(user: user, action: 'updated') }
 
@@ -152,7 +188,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       end
     end
 
-    context 'merge_request is assigned reviewers' do
+    context 'when merge_request is assigned reviewers' do
       let(:merge_request) { create(:merge_request, reviewers: [user], source_project: reusable_project) }
       let(:data) { described_class.new(merge_request).build(user: user, action: 'updated') }
 

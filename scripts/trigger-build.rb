@@ -256,7 +256,7 @@ module Trigger
     %<app_url>s
 
     => For more information, see the documentation
-    => https://docs.gitlab.com/ee/development/documentation/index.html#previewing-the-changes-live
+    => https://docs.gitlab.com/ee/development/documentation/review_apps.html
 
     => If something doesn't work, drop a line in the #docs chat channel.
     MSG

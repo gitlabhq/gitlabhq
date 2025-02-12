@@ -22264,6 +22264,7 @@ CREATE TABLE terraform_state_versions (
     verification_state smallint DEFAULT 0 NOT NULL,
     project_id bigint,
     CONSTRAINT check_0824bb7bbd CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_84142902f6 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT tf_state_versions_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -27195,9 +27196,6 @@ ALTER TABLE p_ci_pipeline_variables
 
 ALTER TABLE ONLY group_type_ci_runners_e59bb2812d
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
-
-ALTER TABLE terraform_state_versions
-    ADD CONSTRAINT check_84142902f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE approval_merge_request_rules
     ADD CONSTRAINT check_90caab37e0 CHECK ((project_id IS NOT NULL)) NOT VALID;

@@ -3,6 +3,9 @@ redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/desi
 remove_date: '2025-07-08'
 ---
 
+<!-- markdownlint-disable -->
+<!-- vale off -->
+
 This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/002_gcp_project_boundary/).
 
 <!-- This redirect file can be deleted after <2025-07-08>. -->

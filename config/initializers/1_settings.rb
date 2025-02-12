@@ -1104,9 +1104,18 @@ end
 Gitlab.ee do
   Settings['duo_workflow'] ||= {}
   executor_version = Rails.root.join('DUO_WORKFLOW_EXECUTOR_VERSION').read.chomp
+  # The os/arch for which duo-workflow-executor binary is build: https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/-/packages/35054593
+  executor_binary_urls = %w[
+    linux/arm linux/amd64 linux/arm64 linux/386 linux/ppc64le darwin/arm64 darwin/amd64
+    freebsd/arm freebsd/386 freebsd/amd64 windows/amd64 windows/386
+  ].index_with do |os_info|
+    "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/#{os_info.sub('/', '-')}-duo-workflow-executor.tar.gz"
+  end
+
   Settings.duo_workflow.reverse_merge!(
     secure: true,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
+    executor_binary_urls: executor_binary_urls,
     executor_version: executor_version
   )
 

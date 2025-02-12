@@ -64,7 +64,7 @@ function cng() {
 
 ### Helm deployment
 
-Because `cng` tool essentially wraps `helm upgrade --install` command, official [Troubleshooting the GitLab chart](https://docs.gitlab.com/charts/troubleshooting/index.html) guide can be used for troubleshooting deployment failures.
+Because `cng` tool essentially wraps `helm upgrade --install` command, official [Troubleshooting the GitLab chart](https://docs.gitlab.com/charts/troubleshooting) guide can be used for troubleshooting deployment failures.
 
 ### CI setup
 

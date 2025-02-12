@@ -84,7 +84,7 @@ yourself as a reviewer if it's not ready for merge yet.
   - All links must be full URLs, as the deprecation YAML files are used in two different projects. Do not use relative links. The generated doc is an exception to the relative link rule and currently uses absolute links only.
   - Make sure all links and anchors are correct. Do not link to the H1 (top) anchor on a docs page.
 - [ ] Code. Make sure any included code is wrapped in code blocks.
-- [ ] Capitalization. Make sure to capitalize feature names. Stay consistent with the Documentation Style Guidance on [Capitalization](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#capitalization).
+- [ ] Capitalization. Make sure to capitalize feature names. Stay consistent with the Documentation Style Guidance on [Capitalization](https://docs.gitlab.com/ee/development/documentation/styleguide/#capitalization).
 
 </details>
 

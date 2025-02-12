@@ -58,7 +58,7 @@ release-environments-update-resource-group:
   stage: prepare
   script:
     # Make sure pipelines run in order
-    # See https://docs.gitlab.com/ee/ci/resource_groups/index.html#change-the-process-mode
+    # See https://docs.gitlab.com/ee/ci/resource_groups/#change-the-process-mode
     - |
       curl --request PUT --data "process_mode=oldest_first" --header "PRIVATE-TOKEN:${ENVIRONMENT_API_TOKEN}" \
       "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/resource_groups/release-environment-${CI_COMMIT_REF_SLUG}"

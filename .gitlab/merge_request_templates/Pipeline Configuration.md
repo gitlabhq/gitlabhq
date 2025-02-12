@@ -15,7 +15,7 @@
 
 Consider the effect of the changes in this merge request on the following:
 
-- [ ] Different [pipeline types](https://docs.gitlab.com/ee/development/pipelines/index.html#pipelines-types-for-merge-requests)
+- [ ] Different [pipeline types](https://docs.gitlab.com/ee/development/pipelines/#pipelines-types-for-merge-requests)
 - Non-canonical projects:
   - [ ] `gitlab-foss`
   - [ ] `security`

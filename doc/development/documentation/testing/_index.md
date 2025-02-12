@@ -44,8 +44,6 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 
 - Curl (`curl`) commands must use long-form options (`--header`) instead of short options, like `-h`.
 - Documentation pages must contain front matter indicating ownership of the page.
-- Non-standard Unicode space characters (NBSP, NNBSP, ZWSP) must not be used in documentation,
-  because they can cause irregularities in search indexing and grepping.
 - `CHANGELOG.md` must not contain duplicate versions.
 - No files in the `doc/` directory may be executable.
 - Use `index.md` instead of `README.md`.

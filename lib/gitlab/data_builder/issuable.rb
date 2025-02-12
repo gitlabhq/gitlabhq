@@ -41,7 +41,13 @@ module Gitlab
       private
 
       def object_kind
-        issuable.class.name.underscore
+        # To prevent a breaking change, ensure we use `issue` for work items of type issue.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/517947
+        if issuable.is_a?(WorkItem) && issuable.work_item_type.issue?
+          "issue"
+        else
+          issuable.class.name.underscore
+        end
       end
 
       def event_type

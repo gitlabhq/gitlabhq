@@ -10,11 +10,11 @@ module Projects
         when 'never'
           'Squashing is never performed and the checkbox is hidden.'
         when 'always'
-          'Checkbox is visible and unselected by default.'
+          'Squashing is always performed. Checkbox is visible and selected, and users cannot change it.'
         when 'default_on'
           'Checkbox is visible and selected by default.'
         when 'default_off'
-          'Squashing is always performed. Checkbox is visible and selected, and users cannot change it.'
+          'Checkbox is visible and unselected by default.'
         end
       end
     end

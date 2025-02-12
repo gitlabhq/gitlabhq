@@ -34,6 +34,16 @@ For an overview of GitLab Advanced SAST and how it works, see [GitLab Advanced S
 
 For a product tour, see the [GitLab Advanced SAST product tour](https://gitlab.navattic.com/advanced-sast).
 
+## Feature comparison
+
+| Feature                                                                      | SAST                                                                                                                                      | Advanced SAST                                                                                                                               |
+|------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| Depth of Analysis                                                            | Limited ability to detect complex vulnerabilities; analysis is limited to a single file, and (with limited exceptions) a single function. | Detects complex vulnerabilities using cross-file, cross-function taint analysis.                                                            |
+| Accuracy                                                                     | More likely to create false-positive results due to limited context.                                                                      | Creates fewer false-positive results by using cross-file, cross-function taint analysis to focus on truly exploitable vulnerabilities.      |
+| Remediation Guidance                                                         | Vulnerability findings are identified by line number.                                                                                     | Detailed [code flow view](#vulnerability-code-flow) shows how the vulnerability flows through the program, allowing for faster remediation. |
+| Works with GitLab Duo Vulnerability Explanation and Vulnerability Resolution | Yes.                                                                                                                                      | Yes.                                                                                                                                        |
+| Language coverage                                                            | [More expansive](_index.md#supported-languages-and-frameworks).                                                                            | [More limited](#supported-languages).                                                                                                       |
+
 ## When vulnerabilities are reported
 
 GitLab Advanced SAST uses cross-file, cross-function scanning with taint analysis to trace the flow of user input into the program.

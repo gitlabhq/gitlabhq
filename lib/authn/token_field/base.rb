@@ -73,7 +73,7 @@ module Authn
       end
 
       def expired?(token_owner_record)
-        return false unless expirable? && token_expiration_enforced?
+        return false unless expirable?
 
         exp = expires_at(token_owner_record)
         !!exp && exp.past?
@@ -157,16 +157,10 @@ module Authn
         raise NotImplementedError
       end
 
-      def token_expiration_enforced?
-        return true unless @options[:expiration_enforced?]
-
-        @options[:expiration_enforced?].to_proc.call(@klass)
-      end
-
       def not_expired
-        if expirable? && token_expiration_enforced? # rubocop:disable Style/GuardClause -- We don't want `unless` with multiple conditions, not multiple `if` guard clauses
-          Arel.sql("#{@expires_at_field} IS NULL OR #{@expires_at_field} >= NOW()")
-        end
+        return unless expirable?
+
+        Arel.sql("#{@expires_at_field} IS NULL OR #{@expires_at_field} >= NOW()")
       end
     end
   end

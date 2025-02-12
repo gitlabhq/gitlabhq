@@ -3,6 +3,9 @@ redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/desi
 remove_date: '2025-07-08'
 ---
 
+<!-- markdownlint-disable -->
+<!-- vale off -->
+
 This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/decisions/002_store_the_secret_detection_gem_in_the_same_repository/).
 
 <!-- This redirect file can be deleted after <2025-07-08>. -->

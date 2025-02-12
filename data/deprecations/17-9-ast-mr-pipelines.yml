@@ -1,0 +1,23 @@
+- title: "API Discovery will use branch pipelines by default"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 1
+  reporter: connorgilbert
+  stage: application_security_testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515487
+  # Impact calculation: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=minor_manual&scope=group_project_inheriting&identification_complexity=automatable&additional_complexity=no&base_impact=minor&pipeline_impact=none&compliance_impact=minor&availability_impact=none&authorization_impact=none&API_impact=none
+  # Scope is assigned because this can be set in a project, but also can be configured at higher levels via CI/CD variable inheritance.
+  impact: low
+  scope: project
+  resolution_role: Developer
+  manual_task: true
+  body: |  # (required) Don't change this line.
+    In GitLab 18.0, we'll update the default behavior of the CI/CD template for API Discovery (`API-Discovery.gitlab-ci.yml`).
+
+    Before GitLab 18.0, this template configures jobs to run in [merge request (MR) pipelines](https://docs.gitlab.com/ee/ci/pipelines/merge_request_pipelines.html) by default when an MR is open.
+    Starting in GitLab 18.0, we'll align this template's behavior with the behavior of the [Stable template editions](https://docs.gitlab.com/ee/user/application_security/detect/roll_out_security_scanning.html#template-editions) for other AST scanners:
+
+    - By default, the template will run scan jobs in branch pipelines.
+    - You'll be able to set the CI/CD variable `AST_ENABLE_MR_PIPELINES: true` to use MR pipelines instead when an MR is open. The implementation of this new variable is tracked in [issue 410880](https://gitlab.com/gitlab-org/gitlab/-/issues/410880).
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/detect/roll_out_security_scanning.html#use-security-scanning-tools-with-merge-request-pipelines

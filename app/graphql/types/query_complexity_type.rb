@@ -14,7 +14,7 @@ module Types
       method: :max_complexity,
       see: {
         'GitLab documentation on this limit' =>
-          'https://docs.gitlab.com/ee/api/graphql/index.html#max-query-complexity'
+          'https://docs.gitlab.com/ee/api/graphql/#maximum-query-complexity'
       },
       description: 'GraphQL query complexity limit.'
 

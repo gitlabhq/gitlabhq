@@ -3,6 +3,9 @@ redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/desi
 remove_date: '2025-09-10'
 ---
 
+<!-- markdownlint-disable -->
+<!-- vale off -->
+
 This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/automated_query_analysis/).
 
 <!-- This redirect file can be deleted after <2025-09-10>. -->

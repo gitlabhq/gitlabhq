@@ -345,6 +345,28 @@ This is one small step towards moving away from CI/CD templates in preference of
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### API Discovery will use branch pipelines by default
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/515487).
+
+</div>
+
+In GitLab 18.0, we'll update the default behavior of the CI/CD template for API Discovery (`API-Discovery.gitlab-ci.yml`).
+
+Before GitLab 18.0, this template configures jobs to run in [merge request (MR) pipelines](https://docs.gitlab.com/ee/ci/pipelines/merge_request_pipelines.html) by default when an MR is open.
+Starting in GitLab 18.0, we'll align this template's behavior with the behavior of the [Stable template editions](https://docs.gitlab.com/ee/user/application_security/detect/roll_out_security_scanning.html#template-editions) for other AST scanners:
+
+- By default, the template will run scan jobs in branch pipelines.
+- You'll be able to set the CI/CD variable `AST_ENABLE_MR_PIPELINES: true` to use MR pipelines instead when an MR is open. The implementation of this new variable is tracked in [issue 410880](https://gitlab.com/gitlab-org/gitlab/-/issues/410880).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Amazon S3 Signature Version 2
 
 <div class="deprecation-notes">
@@ -388,7 +410,7 @@ If you are not using the default included templates, or have pinned your analyze
 must update your CI/CD job definition to either remove the pinned version or update
 the latest major version.
 
-Users of GitLab 17.0 to GitLab 15.11 will continue to experience analyzer updates until the
+Users of GitLab 17.0 to GitLab 17.11 will continue to experience analyzer updates until the
 release of GitLab 18.0, after which all newly fixed bugs and released features will be
 released only in the new major version of the analyzers.
 
@@ -698,6 +720,39 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 The `name` field in the `ProjectMonthlyUsageType` of the GitLab GraphQL API will be removed in GitLab 18.0.
 
 To prepare for this change, we recommend reviewing and updating your GraphQL queries that interact with the `ProjectMonthlyUsageType`. Replace any references to the `name` field with `project.name`.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### End-of-Support SAST jobs will be removed from the CI/CD template
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519133).
+
+</div>
+
+In GitLab 18.0, we will update the SAST CI/CD template to remove analyzer jobs that have reached End of Support in previous releases.
+The following jobs will be removed from `SAST.gitlab-ci.yml` and `SAST.latest.gitlab-ci.yml`:
+
+- `bandit-sast`, which [reached End of Support in 15.4](#sast-analyzer-consolidation-and-cicd-template-changes)
+- `brakeman-sast`, which [reached End of Support in 17.0](#sast-analyzer-coverage-changing-in-gitlab-170)
+- `eslint-sast`, which [reached End of Support in 15.4](#sast-analyzer-consolidation-and-cicd-template-changes)
+- `flawfinder-sast`, which [reached End of Support in 17.0](#sast-analyzer-coverage-changing-in-gitlab-170)
+- `gosec-sast`, which [reached End of Support in 15.4](#sast-analyzer-consolidation-and-cicd-template-changes)
+- `mobsf-android-sast`, which [reached End of Support in 17.0](#sast-analyzer-coverage-changing-in-gitlab-170)
+- `mobsf-ios-sast`, which [reached End of Support in 17.0](#sast-analyzer-coverage-changing-in-gitlab-170)
+- `nodejs-scan-sast`, which [reached End of Support in 17.0](#sast-analyzer-coverage-changing-in-gitlab-170)
+- `phpcs-security-audit-sast`, which [reached End of Support in 17.0](#sast-analyzer-coverage-changing-in-gitlab-170)
+- `security-code-scan-sast`, which [reached End of Support in 16.0](#sast-analyzer-coverage-changing-in-gitlab-160)
+
+At the time when each analyzer reached End of Support, we updated its job `rules` to cause it not to run by default and stopped releasing updates.
+However, you might have customized the template to continue to use these jobs or depend on them existing in your pipelines.
+If you have any customization that depends on the jobs above, perform the [actions required](https://gitlab.com/gitlab-org/gitlab/-/issues/519133#actions-required) before
+upgrading to 18.0 to avoid disruptions to your CI/CD pipelines.
 
 </div>
 
