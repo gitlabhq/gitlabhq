@@ -57,8 +57,8 @@ type routeOptions struct {
 
 const (
 	apiPattern           = `^/api/`
-	gitProjectPattern    = `^/.+\.git/`
-	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
+	gitProjectPattern    = `^/([^/]|[^-]/)+\.git/` // Prevent matching web routes by checking for the presence of /-/
+	geoGitProjectPattern = `^/[^-].+\.git/`        // Prevent matching routes like /-/push_from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
 	apiProjectPattern    = apiPattern + `v4/projects/[^/]+` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
 	apiGroupPattern      = apiPattern + `v4/groups/[^/]+`
@@ -66,6 +66,13 @@ const (
 	snippetUploadPattern = `^/uploads/personal_snippet`
 	userUploadPattern    = `^/uploads/user`
 	importPattern        = `^/import/`
+
+	gitInfoRefsPattern    = gitProjectPattern + `info/refs\z`
+	gitUploadPackPattern  = gitProjectPattern + `git-upload-pack\z`
+	gitReceivePackPattern = gitProjectPattern + `git-receive-pack\z`
+	gitLfsObjectsPattern  = gitProjectPattern + `gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`
+	sshUploadPackPattern  = gitProjectPattern + `ssh-upload-pack\z`
+	sshReceivePackPattern = gitProjectPattern + `ssh-receive-pack\z`
 
 	selfBackend       routeBackend = "self"
 	railsBackend      routeBackend = "rails"
@@ -271,22 +278,22 @@ func configureRoutes(u *upstream) {
 	u.Routes = []routeEntry{
 		// Git Clone
 		u.route("GET",
-			newRoute(gitProjectPattern+`info/refs\z`, "git_info_refs", gitalyBackend),
+			newRoute(gitInfoRefsPattern, "git_info_refs", gitalyBackend),
 			git.GetInfoRefsHandler(api)),
 		u.route("POST",
-			newRoute(gitProjectPattern+`git-upload-pack\z`, "git_upload_pack", gitalyBackend),
+			newRoute(gitUploadPackPattern, "git_upload_pack", gitalyBackend),
 			contentEncodingHandler(git.UploadPack(api)), withMatcher(isContentType("application/x-git-upload-pack-request"))),
 		u.route("POST",
-			newRoute(gitProjectPattern+`git-receive-pack\z`, "git_receive_pack", gitalyBackend),
+			newRoute(gitReceivePackPattern, "git_receive_pack", gitalyBackend),
 			contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
 		u.route("PUT",
-			newRoute(gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, "git_lfs_objects", railsBackend),
+			newRoute(gitLfsObjectsPattern, "git_lfs_objects", railsBackend),
 			requestBodyUploader, withMatcher(isContentType("application/octet-stream"))),
 		u.route("POST",
-			newRoute(gitProjectPattern+`ssh-upload-pack\z`, "ssh_upload_pack", gitalyBackend),
+			newRoute(sshUploadPackPattern, "ssh_upload_pack", gitalyBackend),
 			git.SSHUploadPack(api)),
 		u.route("POST",
-			newRoute(gitProjectPattern+`ssh-receive-pack\z`, "ssh_receive_pack", gitalyBackend),
+			newRoute(sshReceivePackPattern, "ssh_receive_pack", gitalyBackend),
 			git.SSHReceivePack(api)),
 
 		// CI Artifacts

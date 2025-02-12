@@ -215,6 +215,21 @@ describe('MrWidgetPipelineContainer', () => {
       expect(wrapper.findComponent(MrWidgetPipeline).props().sourceBranchLink).toBe('Foo');
     });
 
+    it('sanitizes the targetBranch output', () => {
+      createComponent({
+        props: {
+          isPostMerge: true,
+          mr: {
+            ...mockStore,
+            targetBranch:
+              "x<i/class='js-unsanitized-code'/data-context-commits-path=/$PROJECT_PATH/-/raw/main/data.json>",
+          },
+        },
+      });
+
+      expect(wrapper.find('.js-unsanitized-code').exists()).toBe(false);
+    });
+
     it('renders deployments', () => {
       const expectedProps = mockStore.postMergeDeployments.map((dep) =>
         expect.objectContaining({

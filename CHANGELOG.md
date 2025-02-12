@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.6.5 (2025-02-11)
+
+### Security (7 changes)
+
+- [Security Duo Chat Escape Unknown Domain Hyperlinks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdb737c04cdf611b2f6818a294b7157039adcce8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4692))
+- [Hide sensitive workhorse headers and fix route confusion between web and workhorse routes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dd5fb5b4e217868aa8602acee276883ae8e42126) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4763))
+- [Reduce memory allocations on create PAT endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d86c90fdfee1aef2eaa958ddc9e0ba379f8e221e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4752))
+- [Prevent SSRF attacks for Workspaces](https://gitlab.com/gitlab-org/security/gitlab/-/commit/16659a9efb33ec22055b927fd716f5acc80361e9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4731))
+- [Prevent read code access when repository is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ff08db2dd2efa55e4e868591c61c144ec3febe32) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4701))
+- [Fixes XSS on the target branch in the merge request widget](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1cc0ad7a4f3f0ab44dd959a58b3ed63786037a06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4737))
+- [Unsubscribe from actioncable channel when PAT is revoked](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26fff506ff66eedea4dc911eb1c9f4686d643650) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4727))
+
 ## 17.6.4 (2025-01-22)
 
 ### Fixed (2 changes)
