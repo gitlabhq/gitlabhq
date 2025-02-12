@@ -1,0 +1,9 @@
+---
+name: gitlab_managed_cluster_resources
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/507268
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178824
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514901
+milestone: '17.9'
+group: group::environments
+type: beta
+default_enabled: false

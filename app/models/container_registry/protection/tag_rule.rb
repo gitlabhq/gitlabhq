@@ -7,6 +7,7 @@ module ContainerRegistry
 
       ACCESS_LEVELS = Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin).freeze
       MAX_TAG_RULES_PER_PROJECT = 5
+      DELETE_ACTIONS = ['delete'].freeze
 
       enum :minimum_access_level_for_delete, ACCESS_LEVELS, prefix: true
       enum :minimum_access_level_for_push, ACCESS_LEVELS, prefix: true
@@ -25,6 +26,14 @@ module ContainerRegistry
 
         where(conditions.reduce(:or))
       }
+
+      scope :for_delete_and_access, ->(access_level) do
+        for_actions_and_access(DELETE_ACTIONS, access_level)
+      end
+
+      scope :tag_name_patterns_for_project, ->(project_id) do
+        select(:tag_name_pattern).where(project_id: project_id)
+      end
 
       def push_restricted?(access_level)
         Gitlab::Access.sym_options_with_admin[minimum_access_level_for_push.to_sym] > access_level

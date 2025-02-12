@@ -19,7 +19,8 @@ module ContainerRegistry
     CLEANUP_TAGS_SERVICE_PARAMS = {
       'name_regex_delete' => '.*',
       'keep_latest' => false,
-      'container_expiration_policy' => true # to avoid permissions checks
+      'container_expiration_policy' => true, # to avoid permissions checks
+      'skip_protected_tags' => true
     }.freeze
 
     def perform_work

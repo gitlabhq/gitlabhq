@@ -194,6 +194,28 @@ RSpec.shared_examples 'when running a container_expiration_policy' do
   end
 end
 
+RSpec.shared_examples 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$' do
+  |delete_expectations:, service_response_extra: {}, supports_caching: false,
+   minimum_access_level_for_delete: :maintainer|
+  let_it_be(:rule) do
+    create(
+      :container_registry_protection_tag_rule,
+      tag_name_pattern: '^\d{1,2}-\d{1,2}-stable$',
+      project: project,
+      minimum_access_level_for_delete: minimum_access_level_for_delete
+    )
+  end
+
+  let(:params) do
+    { 'name_regex_delete' => '.*' }
+  end
+
+  it_behaves_like 'removing the expected tags',
+    service_response_extra: service_response_extra,
+    supports_caching: supports_caching,
+    delete_expectations: delete_expectations
+end
+
 RSpec.shared_examples 'not removing anything' do |service_response_extra: {}, supports_caching: false|
   it 'does not remove anything' do
     expect(Projects::ContainerRepository::DeleteTagsService).not_to receive(:new)

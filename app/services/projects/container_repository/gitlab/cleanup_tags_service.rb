@@ -34,6 +34,9 @@ module Projects
           tags = filter_by_keep_n(tags)
           tags = filter_by_older_than(tags)
 
+          # As a most expensive operation it should follow after the other filters.
+          filter_out_protected!(tags) unless skip_protected_tags?
+
           overall_result[:before_delete_size] += tags.size
           overall_result[:original_size] += original_size
 
@@ -75,6 +78,10 @@ module Projects
 
         def timeout_disabled?
           params['disable_timeout'] || false
+        end
+
+        def skip_protected_tags?
+          !!params['skip_protected_tags']
         end
       end
     end

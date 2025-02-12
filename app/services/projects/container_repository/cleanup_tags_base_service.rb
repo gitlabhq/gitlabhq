@@ -21,6 +21,29 @@ module Projects
         end
       end
 
+      def filter_out_protected!(tags)
+        return if Feature.disabled?(:container_registry_protected_tags, project)
+
+        tag_rules = ::ContainerRegistry::Protection::TagRule.tag_name_patterns_for_project(project.id)
+
+        if current_user
+          return if current_user.can_admin_all_resources?
+
+          user_access_level = current_user.max_member_access_for_project(project.id)
+          tag_rules = tag_rules.for_delete_and_access(user_access_level)
+        end
+
+        return if tag_rules.blank?
+
+        patterns = tag_rules.map { |rule| ::Gitlab::UntrustedRegexp.new(rule.tag_name_pattern) }
+
+        tags.reject! do |tag|
+          patterns.detect do |pattern|
+            pattern.match?(tag.name)
+          end
+        end
+      end
+
       # Should return [tags_to_delete, tags_to_keep]
       def partition_by_keep_n(tags)
         return [tags, []] unless keep_n

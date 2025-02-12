@@ -73,7 +73,8 @@ RSpec.describe Ci::CreatePipelineService,
       it 'creates a pipeline without builds' do
         expect(pipeline).to be_persisted
         expect(pipeline.builds).to be_empty
-        expect(pipeline.yaml_errors).to eq("!reference [\"job-3\", \"script\"] is part of a circular chain")
+        expect(pipeline.error_messages[0].content).to eq(
+          "!reference [\"job-3\", \"script\"] is part of a circular chain")
       end
     end
   end

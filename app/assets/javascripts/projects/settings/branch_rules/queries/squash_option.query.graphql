@@ -1,0 +1,16 @@
+query getBranchRulesSquashOptions($projectPath: ID!) {
+  project(fullPath: $projectPath) {
+    id
+    branchRules {
+      nodes {
+        id
+        name
+        squashOption {
+          option
+          helpText
+          __typename
+        }
+      }
+    }
+  }
+}

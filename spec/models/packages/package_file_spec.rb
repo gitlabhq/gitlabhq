@@ -129,17 +129,6 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
   end
 
-  describe '.with_conan_package_reference' do
-    let_it_be(:non_matching_package_file) { create(:package_file, :nuget) }
-    let_it_be(:metadatum) { create(:conan_file_metadatum, :package_file) }
-    let_it_be(:reference) { metadatum.conan_package_reference }
-
-    it 'returns matching packages' do
-      expect(described_class.with_conan_package_reference(reference))
-        .to eq([metadatum.package_file])
-    end
-  end
-
   describe '.for_rubygem_with_file_name' do
     let_it_be(:non_ruby_package) { create(:nuget_package, project: project, package_type: :nuget) }
     let_it_be(:ruby_package) { create(:rubygems_package, project: project, package_type: :rubygems) }
@@ -151,6 +140,95 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
 
     it 'returns the matching gem file only for ruby packages' do
       expect(described_class.for_rubygem_with_file_name(project, file_name)).to contain_exactly(gem_file2)
+    end
+  end
+
+  context 'Conan scopes' do
+    let_it_be(:package) { create(:conan_package, without_package_files: true) }
+
+    describe '.with_conan_package_reference' do
+      let_it_be(:package_reference) { create(:conan_package_reference, package: package) }
+      let_it_be(:other_package_reference) { create(:conan_package_reference, package: package) }
+
+      let_it_be(:matching_package_file) do
+        create(:conan_package_file, :conan_package,
+          package: package,
+          conan_package_reference: package_reference)
+      end
+
+      let_it_be(:package_file_with_other_reference) do
+        create(:conan_package_file, :conan_package,
+          package: package,
+          conan_package_reference: other_package_reference)
+      end
+
+      subject { described_class.with_conan_package_reference(reference) }
+
+      context 'with existing reference' do
+        let(:reference) { matching_package_file.conan_file_metadatum.conan_package_reference }
+
+        it 'returns package files with matching reference' do
+          expect(subject).to contain_exactly(matching_package_file)
+        end
+      end
+
+      context 'when reference does not exist' do
+        let(:reference) { non_existing_record_id.to_s }
+
+        it 'returns empty relation' do
+          expect(subject).to be_empty
+        end
+      end
+    end
+
+    context 'recipe revision scopes' do
+      let_it_be(:recipe_revision) { package.conan_recipe_revisions.first }
+      let_it_be(:other_revision) { create(:conan_recipe_revision, package: package) }
+
+      let_it_be(:package_file_with_revision) do
+        create(:conan_package_file, :conan_recipe_file,
+          package: package,
+          conan_recipe_revision: recipe_revision)
+      end
+
+      let_it_be(:package_file_with_other_revision) do
+        create(:conan_package_file, :conan_recipe_file,
+          package: package,
+          conan_recipe_revision: other_revision)
+      end
+
+      let_it_be(:package_file_without_revision) do
+        create(:conan_package_file, :conan_recipe_file,
+          package: package, conan_recipe_revision: nil)
+      end
+
+      describe '.with_conan_recipe_revision' do
+        subject { described_class.with_conan_recipe_revision(revision) }
+
+        context 'with existing revision' do
+          let(:revision) { recipe_revision.revision }
+
+          it 'returns package files with matching recipe revision' do
+            expect(subject).to contain_exactly(package_file_with_revision)
+          end
+        end
+
+        context 'when revision does not exist' do
+          let(:revision) { 'nonexistent' }
+
+          it 'returns empty relation' do
+            expect(subject).to be_empty
+          end
+        end
+      end
+
+      describe '.without_conan_recipe_revision' do
+        subject { described_class.without_conan_recipe_revision }
+
+        it 'returns only package files without recipe revision' do
+          expect(subject).to contain_exactly(package_file_without_revision)
+        end
+      end
     end
   end
 

@@ -1,17 +1,29 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
+import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import {
   branchRuleProvideMock,
   branchRulePropsMock,
   branchRuleWithoutDetailsPropsMock,
+  squashOptionMockResponse,
 } from '../mock_data';
+
+Vue.use(VueApollo);
 
 describe('Branch rule', () => {
   let wrapper;
+  const squashOptionMockRequestHandler = jest.fn().mockResolvedValue(squashOptionMockResponse);
 
-  const createComponent = (props = {}, features = { branchRuleSquashSettings: false }) => {
+  const createComponent = async (props = {}, features = { branchRuleSquashSettings: false }) => {
+    const fakeApollo = createMockApollo([[squashOptionQuery, squashOptionMockRequestHandler]]);
+
     wrapper = shallowMountExtended(BranchRule, {
+      apolloProvider: fakeApollo,
       provide: {
         ...branchRuleProvideMock,
         glFeatures: features,
@@ -21,6 +33,7 @@ describe('Branch rule', () => {
       },
       propsData: { ...branchRulePropsMock, ...props },
     });
+    await waitForPromises();
   };
 
   const findDefaultBadge = () => wrapper.findByText('default');
@@ -79,14 +92,13 @@ describe('Branch rule', () => {
   });
 
   describe('squash settings', () => {
-    it('renders squash settings when branchRuleSquashSettings is true', () => {
+    it('renders squash settings when branchRuleSquashSettings is true', async () => {
       const branchRuleProps = {
         ...branchRulePropsMock,
-        squashOption: { option: 'Mock setting' },
       };
 
-      createComponent(branchRuleProps, { branchRuleSquashSettings: true });
-      expect(findProtectionDetailsListItems().at(2).text()).toBe('Squash commits: Mock setting');
+      await createComponent(branchRuleProps, { branchRuleSquashSettings: true });
+      expect(findProtectionDetailsListItems().at(2).text()).toBe('Squash commits: Encourage');
     });
   });
 });

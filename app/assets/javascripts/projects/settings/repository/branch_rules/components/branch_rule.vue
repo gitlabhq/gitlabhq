@@ -1,9 +1,11 @@
 <script>
 import { GlBadge, GlButton } from '@gitlab/ui';
+import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
 import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/view/constants';
+import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import { getAccessLevels } from '../../../utils';
 
 export default {
@@ -27,6 +29,26 @@ export default {
     ProtectedBadge,
   },
   mixins: [glFeatureFlagsMixin()],
+  apollo: {
+    squashOption: {
+      query: squashOptionQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+        };
+      },
+      update({ project }) {
+        const squashOptions = project?.branchRules?.nodes || [];
+        return squashOptions.find((option) => option.name === this.name)?.squashOption;
+      },
+      skip() {
+        return !this.glFeatures.branchRuleSquashSettings;
+      },
+      error(error) {
+        createAlert({ message: error });
+      },
+    },
+  },
   inject: {
     branchRulesPath: {
       default: '',
@@ -37,6 +59,10 @@ export default {
   },
   props: {
     name: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
       type: String,
       required: true,
     },
@@ -65,11 +91,11 @@ export default {
       required: false,
       default: 0,
     },
-    squashOption: {
-      type: Object,
-      required: false,
-      default: () => {},
-    },
+  },
+  data() {
+    return {
+      squashOption: null,
+    };
   },
   computed: {
     isWildcard() {

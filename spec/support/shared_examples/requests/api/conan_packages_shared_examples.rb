@@ -779,6 +779,7 @@ RSpec.shared_examples 'recipe file download endpoint' do
   it_behaves_like 'an internal project with packages'
   it_behaves_like 'a private project with packages'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'package not found download'
 end
 
 RSpec.shared_examples 'package file download endpoint' do
@@ -787,6 +788,7 @@ RSpec.shared_examples 'package file download endpoint' do
   it_behaves_like 'an internal project with packages'
   it_behaves_like 'a private project with packages'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'package not found download'
 
   context 'tracking the conan_package.tgz download' do
     let(:package_file) { package.package_files.find_by(file_name: ::Packages::Conan::FileMetadatum::PACKAGE_BINARY) }
@@ -1169,5 +1171,29 @@ end
 RSpec.shared_examples 'enforcing admin_packages job token policy' do
   it_behaves_like 'enforcing job token policies', :admin_packages do
     let(:headers_with_token) { job_basic_auth_header(target_job).merge(workhorse_headers) }
+  end
+end
+
+RSpec.shared_examples 'accept get request on private project with access to package registry for everyone' do
+  subject { get api(url) }
+
+  before do
+    project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+  end
+
+  it_behaves_like 'returning response status', :ok
+end
+
+RSpec.shared_examples 'package not found download' do
+  context 'when package does not exist' do
+    let(:recipe_path) { "missing/0.1.0/#{project.full_path.tr('/', '+')}/stable" }
+
+    it 'returns 404 not found' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(json_response['message']).to eq('404 Package Not Found')
+    end
   end
 end

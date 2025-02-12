@@ -168,6 +168,9 @@ export default {
         this.fluxKustomization?.metadata?.namespace || this.fluxHelmRelease?.metadata?.namespace
       );
     },
+    agentProjectPath() {
+      return this.clusterAgent.project?.fullPath || '';
+    },
   },
   methods: {
     handleError(message) {
@@ -317,7 +320,7 @@ export default {
 
       <connect-to-agent-modal
         :agent-id="clusterAgent.id"
-        :project-path="clusterAgent.project.fullPath"
+        :project-path="agentProjectPath"
         :is-configured="true"
       />
     </div>

@@ -10,9 +10,8 @@ module Gitlab
           DEFAULT_TEMPLATE_NAME = "default"
 
           def unmet?
-            return false unless resource_management_enabled?
-
             return false unless valid_for_managed_resources?(environment:, build:)
+            return false unless resource_management_enabled?
 
             !managed_resource&.completed?
           end
@@ -33,9 +32,13 @@ module Gitlab
 
           private
 
-          # TODO: Check "resource_management.enabled" flag in the follow-up MR.
           def resource_management_enabled?
-            false
+            return false unless environment.cluster_agent.resource_management_enabled?
+
+            authorization = ::Clusters::Agents::Authorizations::CiAccess::Finder
+                              .new(build.project, agent: environment.cluster_agent).execute.first
+
+            authorization.present? && authorization.config.dig('resource_management', 'enabled') == true
           end
 
           def ensure_environment

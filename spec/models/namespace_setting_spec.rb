@@ -73,8 +73,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       let(:charset) { [*'a'..'z'] + [*0..9] }
       let(:value) { Array.new(byte_size) { charset.sample }.join }
 
-      it { expect(described_class).to validate_jsonb_schema(['default_branch_protection_defaults']) }
-
       context 'when json is more than 1kb' do
         let(:byte_size) { 1.1.kilobytes }
 

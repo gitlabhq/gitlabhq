@@ -4,19 +4,23 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_category: :continuous_integration do
   describe '#unmet?' do
-    let_it_be(:agent_management_project) { create(:project, :private, :repository) }
+    let_it_be(:organization) { create(:group) }
+    let_it_be(:agent_management_project) { create(:project, :private, :repository, group: organization) }
     let_it_be(:cluster_agent) { create(:cluster_agent, project: agent_management_project) }
 
-    let_it_be(:deployment_project) { create(:project, :private, :repository) }
-    let_it_be_with_reload(:environment) do
+    let_it_be(:deployment_project) { create(:project, :private, :repository, group: organization) }
+    let_it_be(:environment) do
       create(:environment, project: deployment_project, cluster_agent: cluster_agent)
     end
 
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, developer_of: deployment_project) }
     let_it_be(:deployment) { create(:deployment, environment: environment, user: user) }
-    let_it_be_with_reload(:build) { create(:ci_build, environment: environment, user: user, deployment: deployment) }
+    let_it_be(:build) do
+      create(:ci_build, project: deployment_project, environment: environment, user: user, deployment: deployment)
+    end
+
     let(:status) { :processing }
-    let!(:managed_resource) do
+    let(:managed_resource) do
       create(:managed_resource,
         build: build,
         project: deployment_project,
@@ -29,42 +33,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
 
     subject(:execute_unmet) { instance.unmet? }
 
-    context 'when resource_management is not enabled' do
-      it 'returns false' do
-        expect(execute_unmet).to be_falsey
-      end
-    end
-
-    context 'when resource_management is enabled' do
-      before do
-        allow(instance).to receive(:resource_management_enabled?).and_return(true)
-      end
-
-      context 'when the build is valid for managed resources' do
-        context 'when the managed resource record does not exist' do
-          let!(:managed_resource) { nil }
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when managed resources completed successfully' do
-          let!(:status) { :completed }
-
-          it 'returns false`' do
-            expect(execute_unmet).to be_falsey
-          end
-        end
-
-        context 'when managed resources failed' do
-          let!(:status) { :failed }
-
-          it 'returns true' do
-            managed_resource.reload
-            expect(execute_unmet).to be_truthy
-          end
-        end
-      end
-
+    context 'when not valid for managed resources' do
       context 'when the build does not have a deployment' do
         let_it_be(:build) { create(:ci_build, deployment: nil) }
 
@@ -83,6 +52,73 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
         end
 
         it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when valid for managed resources' do
+      context 'when agent\'s resource management is disabled' do
+        before do
+          allow_next_instance_of(Clusters::Agent) do |instance|
+            allow(instance).to receive(:resource_management_enabled?).and_return(false)
+          end
+        end
+
+        it 'returns false' do
+          expect(execute_unmet).to be_falsey
+        end
+      end
+
+      context 'when agent\'s resource management is enabled' do
+        before do
+          environment.reload
+          allow(environment.cluster_agent).to receive(:resource_management_enabled?).and_return(true)
+        end
+
+        context 'when authorization exists' do
+          context 'when the resource_management is not enabled' do
+            let_it_be(:agent_ci_access_group_authorization) do
+              create(:agent_ci_access_group_authorization, agent: cluster_agent, group: organization)
+            end
+
+            context 'when the managed resource record has failed status' do
+              let!(:status) { :failed }
+
+              it 'returns false' do
+                expect(execute_unmet).to be_falsey
+              end
+            end
+          end
+
+          context 'when authorization exists with resource_management enabled' do
+            let_it_be(:agent_ci_access_group_authorization) do
+              create(:agent_ci_access_group_authorization, agent: cluster_agent, group: organization,
+                config: { resource_management: { enabled: true } })
+            end
+
+            context 'when the managed resource record does not exist' do
+              let(:managed_resource) { nil }
+
+              it { is_expected.to be_truthy }
+            end
+
+            context 'when the managed resource record has completed status' do
+              let(:status) { :completed }
+
+              it 'returns false`' do
+                managed_resource.reload
+                expect(execute_unmet).to be_falsey
+              end
+            end
+
+            context 'when the managed resource record has failed status' do
+              let(:status) { :failed }
+
+              it 'returns true' do
+                expect(execute_unmet).to be_truthy
+              end
+            end
+          end
+        end
       end
     end
   end

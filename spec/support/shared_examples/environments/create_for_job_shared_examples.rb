@@ -149,6 +149,115 @@ RSpec.shared_examples 'create environment for job' do
       end
     end
 
+    context 'when job has a cluster agent attribute' do
+      let_it_be(:agent) { create(:cluster_agent, project: project) }
+
+      let(:environment_name) { 'production' }
+      let(:agent_path) { "#{project.full_path}:#{agent.name}" }
+      let(:attributes) do
+        {
+          environment: environment_name,
+          options: {
+            environment: {
+              name: environment_name,
+              kubernetes: {
+                agent: agent_path
+              }
+            }
+          }
+        }
+      end
+
+      let(:authorizations) { [ci_access_authorization] }
+      let(:ci_access_authorization) do
+        create(:agent_ci_access_project_authorization,
+          resource_management_enabled: true,
+          project: project,
+          agent: agent
+        )
+      end
+
+      before do
+        allow_next_instance_of(Clusters::Agents::Authorizations::CiAccess::Finder, project) do |finder|
+          allow(finder).to receive(:execute).and_return(authorizations)
+        end
+      end
+
+      context 'when the agent has resource management enabled' do
+        before do
+          allow(agent).to receive(:resource_management_enabled?).and_return(true)
+        end
+
+        it 'creates an environment with the specified cluster agent' do
+          expect { subject }.to change { Environment.count }.by(1)
+
+          expect(subject).to be_a(Environment)
+          expect(subject).to be_persisted
+          expect(subject.cluster_agent).to eq(agent)
+        end
+
+        context 'when the gitlab_managed_cluster_resources feature flag is disabled' do
+          before do
+            stub_feature_flags(gitlab_managed_cluster_resources: false)
+          end
+
+          it 'creates an environment without the specified cluster agent' do
+            expect(Clusters::Agents::Authorizations::CiAccess::Finder).not_to receive(:new)
+
+            expect { subject }.to change { Environment.count }.by(1)
+
+            expect(subject).to be_a(Environment)
+            expect(subject).to be_persisted
+            expect(subject.cluster_agent).to be_nil
+          end
+        end
+
+        context 'when the agent is not configured for resource_management' do
+          let(:ci_access_authorization) do
+            create(:agent_ci_access_project_authorization,
+              project: project,
+              agent: agent,
+              config: {} # resource_management is not enabled
+            )
+          end
+
+          it 'creates an environment without the specified cluster agent' do
+            expect { subject }.to change { Environment.count }.by(1)
+
+            expect(subject).to be_a(Environment)
+            expect(subject).to be_persisted
+            expect(subject.cluster_agent).to be_nil
+          end
+        end
+
+        context 'when the agent is not authorized for this project' do
+          let(:authorizations) { [] }
+
+          it 'creates an environment without the specified cluster agent' do
+            expect { subject }.to change { Environment.count }.by(1)
+
+            expect(subject).to be_a(Environment)
+            expect(subject).to be_persisted
+            expect(subject.cluster_agent).to be_nil
+          end
+        end
+      end
+
+      context 'when the agent does not have resource management enabled' do
+        before do
+          allow(agent).to receive(:resource_management_enabled).and_return(false)
+        end
+
+        it 'creates an environment without the specified cluster agent' do
+          expect { subject }.to change { Environment.count }.by(1)
+
+          expect(subject).to be_a(Environment)
+          expect(subject).to be_persisted
+          expect(subject.cluster_agent).to be_nil
+        end
+      end
+    end
+
     context 'when job starts a review app' do
       let(:environment_name) { 'review/$CI_COMMIT_REF_NAME' }
       let(:expected_environment_name) { "review/#{job.ref}" }

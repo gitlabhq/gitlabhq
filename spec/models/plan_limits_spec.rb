@@ -271,7 +271,6 @@ RSpec.describe PlanLimits do
         enforcement_limit
         notification_limit
         project_access_token_limit
-        active_versioned_pages_deployments_limit_by_namespace
       ] + disabled_max_artifact_size_columns
     end
 

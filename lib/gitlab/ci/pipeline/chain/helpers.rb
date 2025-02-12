@@ -6,10 +6,7 @@ module Gitlab
       module Chain
         module Helpers
           def error(message, failure_reason: nil)
-            sanitized_message = ActionController::Base.helpers.sanitize(message, tags: [])
-
-            pipeline.yaml_errors = sanitized_message if failure_reason == :config_error
-
+            sanitized_message = sanitize_message(message)
             pipeline.add_error_message(sanitized_message)
 
             drop_pipeline!(failure_reason)
@@ -23,11 +20,14 @@ module Gitlab
           end
 
           def warning(message)
-            sanitized_message = ActionController::Base.helpers.sanitize(message, tags: [])
-            pipeline.add_warning_message(sanitized_message)
+            pipeline.add_warning_message(sanitize_message(message))
           end
 
           private
+
+          def sanitize_message(message)
+            ActionController::Base.helpers.sanitize(message, tags: [])
+          end
 
           def drop_pipeline!(failure_reason)
             if pipeline.readonly?

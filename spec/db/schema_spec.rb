@@ -456,39 +456,68 @@ RSpec.describe 'Database schema',
     let(:ignored_jsonb_columns_map) do
       {
         "Ai::Conversation::Message" => %w[extras error_details],
-        "ApplicationSetting" => %w[repository_storages_weighted],
+        "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
+        "ApplicationSetting" => %w[repository_storages_weighted oauth_provider rate_limits_unauthenticated_git_http],
         "AlertManagement::Alert" => %w[payload],
-        "Ci::BuildMetadata" => %w[config_options config_variables],
+        "AlertManagement::HttpIntegration" => %w[payload_example],
+        "Ci::BuildMetadata" => %w[config_options config_variables runtime_runner_features],
         "Ci::Runner" => %w[config],
         "ExperimentSubject" => %w[context],
         "ExperimentUser" => %w[context],
         "Geo::Event" => %w[payload],
         "GeoNodeStatus" => %w[status],
+        "GitlabSubscriptions::UserAddOnAssignmentVersion" => %w[object], # Managed by paper_trail gem
         "Operations::FeatureFlagScope" => %w[strategies],
         "Operations::FeatureFlags::Strategy" => %w[parameters],
         "Organizations::OrganizationSetting" => %w[settings], # Custom validations
         "Packages::Composer::Metadatum" => %w[composer_json],
         "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "Sbom::Occurrence" => %w[ancestors],
+        "Security::ApprovalPolicyRule" => %w[content],
+        "Security::Policy" => %w[metadata],
         "ServicePing::NonSqlServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
         "ServicePing::QueriesServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "Security::ScanExecutionPolicyRule" => %w[content],
+        "Security::VulnerabilityManagementPolicyRule" => %w[content],
         "Releases::Evidence" => %w[summary],
-        "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
-        "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata], # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
         "RemoteDevelopment::WorkspacesAgentConfigVersion" => %w[object object_changes], # Managed by paper_trail gem
-        "GitlabSubscriptions::UserAddOnAssignmentVersion" => %w[object] # Managed by paper_trail gem
+        "RemoteDevelopment::WorkspacesAgentConfig" => %w[annotations labels],
+        "RemoteDevelopment::RemoteDevelopmentAgentConfig" => %w[annotations image_pull_secrets labels],
+        "Vulnerabilities::Finding" => %w[location],
+        "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
       }.freeze
     end
 
-    it 'uses json schema validator', :eager_load, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
-      columns_name_with_jsonb.each do |hash|
-        next if models_by_table_name[hash["table_name"]].nil?
+    def failure_message(model, column)
+      <<~FAILURE_MESSAGE
+              Expected #{model.name} to validate the schema of #{column}.
 
-        models_by_table_name[hash["table_name"]].each do |model|
+              Use JsonSchemaValidator in your model when using a jsonb column.
+              See doc/development/migration_style_guide.html#storing-json-in-database for more information.
+
+              To fix this, please add `validates :#{column}, json_schema: { filename: "filename" }` in your model file, for example:
+
+              class #{model.name}
+                validates :#{column}, json_schema: { filename: "filename" }
+              end
+      FAILURE_MESSAGE
+    end
+
+    it 'uses json schema validator', :eager_load, :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
+      columns_name_with_jsonb.each do |jsonb_column|
+        column_name = jsonb_column["column_name"]
+        models = models_by_table_name[jsonb_column["table_name"]] || []
+
+        models.each do |model|
           # Skip migration models
           next if model.name.include?('Gitlab::BackgroundMigration')
+          next if ignored_jsonb_columns(model.name).include?(column_name)
 
-          jsonb_columns = [hash["column_name"]] - ignored_jsonb_columns(model.name)
-          expect(model).to validate_jsonb_schema(jsonb_columns)
+          has_validator = model.validators.any? do |v|
+            v.is_a?(JsonSchemaValidator) && v.attributes.include?(column_name.to_sym)
+          end
+
+          expect(has_validator).to be(true), failure_message(model, column_name)
         end
       end
     end

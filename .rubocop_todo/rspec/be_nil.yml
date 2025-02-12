@@ -4,7 +4,6 @@ RSpec/BeNil:
   Exclude:
     - 'ee/spec/services/app_sec/dast/profiles/update_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
-    - 'ee/spec/services/search/zoekt/callback_service_spec.rb'
     - 'ee/spec/workers/concerns/geo/skip_secondary_spec.rb'
     - 'ee/spec/workers/repository_update_mirror_worker_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/10_govern/scan_execution_policy_vulnerabilities_spec.rb'

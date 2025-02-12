@@ -22,9 +22,11 @@ module MergeRequests
     end
 
     def create_detached_merge_request_pipeline(merge_request)
-      Ci::CreatePipelineService.new(pipeline_project(merge_request),
+      project, ref = detached_pipeline_project_and_ref(merge_request)
+
+      Ci::CreatePipelineService.new(project,
         current_user,
-        ref: pipeline_ref_for_detached_merge_request_pipeline(merge_request),
+        ref: ref,
         push_options: params[:push_options],
         pipeline_creation_request: params[:pipeline_creation_request]
       ).execute(:merge_request_event, merge_request: merge_request)
@@ -46,34 +48,32 @@ module MergeRequests
 
     private
 
-    def pipeline_project(merge_request)
+    def detached_pipeline_project_and_ref(merge_request)
       if can_create_pipeline_in_target_project?(merge_request)
-        merge_request.target_project
+        [merge_request.target_project, merge_request.ref_path]
       else
-        merge_request.source_project
-      end
-    end
-
-    def pipeline_ref_for_detached_merge_request_pipeline(merge_request)
-      if can_create_pipeline_in_target_project?(merge_request)
-        merge_request.ref_path
-      else
-        merge_request.source_branch
+        [merge_request.source_project, merge_request.source_branch]
       end
     end
 
     def can_create_pipeline_in_target_project?(merge_request)
-      if merge_request.for_fork? && !merge_request.target_project.ci_allow_fork_pipelines_to_run_in_parent_project?
-        return false
+      target_project = merge_request.target_project
+
+      return false unless can?(current_user, :create_pipeline, target_project)
+
+      if merge_request.for_fork?
+        return false unless target_project.ci_allow_fork_pipelines_to_run_in_parent_project?
+
+        # skip the branch protection check for forks since the source_branch is not in the target_project
+        return true if Feature.enabled?(:allow_merge_request_pipelines_from_fork, project)
       end
 
-      can?(current_user, :create_pipeline, merge_request.target_project) &&
-        can_update_source_branch_in_target_project?(merge_request)
+      can_update_source_branch_in_target_project?(merge_request)
     end
 
     def can_update_source_branch_in_target_project?(merge_request)
       ::Gitlab::UserAccess.new(current_user, container: merge_request.target_project)
-        .can_update_branch?(merge_request.source_branch_ref)
+        .can_update_branch?(merge_request.source_branch)
     end
 
     def cannot_create_pipeline_error

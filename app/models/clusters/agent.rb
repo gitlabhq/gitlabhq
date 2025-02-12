@@ -93,6 +93,10 @@ module Clusters
       ).select('config').compact.first
     end
 
+    def resource_management_enabled?
+      false # Overridden in EE
+    end
+
     private
 
     def all_ci_access_authorized_projects_for(user)

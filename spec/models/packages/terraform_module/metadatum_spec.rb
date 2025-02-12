@@ -13,8 +13,6 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:fields) }
 
-    it { expect(described_class).to validate_jsonb_schema(['terraform_module_metadata']) }
-
     describe '#metadata' do
       let_it_be(:metadata_fields) do
         {

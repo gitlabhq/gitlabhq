@@ -2712,6 +2712,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_8cf1745cf163() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "design_management_repositories"
+  WHERE "design_management_repositories"."id" = NEW."design_management_repository_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_8d002f38bdef() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12967,6 +12983,7 @@ CREATE TABLE design_management_repository_states (
     verification_retry_count smallint DEFAULT 0 NOT NULL,
     verification_checksum bytea,
     verification_failure text,
+    namespace_id bigint,
     CONSTRAINT check_bf1387c28b CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -18692,7 +18709,7 @@ CREATE TABLE plan_limits (
     file_size_limit_mb double precision DEFAULT 100.0 NOT NULL,
     audit_events_amazon_s3_configurations integer DEFAULT 5 NOT NULL,
     ci_max_artifact_size_repository_xray bigint DEFAULT 1073741824 NOT NULL,
-    active_versioned_pages_deployments_limit_by_namespace integer DEFAULT 0 NOT NULL,
+    active_versioned_pages_deployments_limit_by_namespace integer DEFAULT 1000 NOT NULL,
     ci_max_artifact_size_jacoco bigint DEFAULT 0 NOT NULL,
     import_placeholder_user_limit_tier_1 integer DEFAULT 0 NOT NULL,
     import_placeholder_user_limit_tier_2 integer DEFAULT 0 NOT NULL,
@@ -31110,6 +31127,10 @@ CREATE INDEX idx_pipeline_execution_schedules_security_policy_id_and_id ON secur
 
 CREATE INDEX idx_pkgs_conan_file_metadata_on_pkg_file_id_when_recipe_file ON packages_conan_file_metadata USING btree (package_file_id) WHERE (conan_file_type = 1);
 
+CREATE INDEX idx_pkgs_conan_metadata_on_pkg_file_id_when_null_rec_rev ON packages_conan_file_metadata USING btree (package_file_id) WHERE (recipe_revision_id IS NULL);
+
+CREATE INDEX idx_pkgs_conan_recipe_rev_on_id_and_revision ON packages_conan_recipe_revisions USING btree (id, revision);
+
 CREATE INDEX idx_pkgs_debian_group_distribution_keys_on_distribution_id ON packages_debian_group_distribution_keys USING btree (distribution_id);
 
 CREATE INDEX idx_pkgs_debian_project_distribution_keys_on_distribution_id ON packages_debian_project_distribution_keys USING btree (distribution_id);
@@ -32643,6 +32664,8 @@ CREATE UNIQUE INDEX index_design_management_repositories_on_project_id ON design
 CREATE INDEX index_design_management_repository_states_failed_verification ON design_management_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
 CREATE INDEX index_design_management_repository_states_needs_verification ON design_management_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_design_management_repository_states_on_namespace_id ON design_management_repository_states USING btree (namespace_id);
 
 CREATE INDEX index_design_management_repository_states_on_verification_state ON design_management_repository_states USING btree (verification_state);
 
@@ -38326,6 +38349,8 @@ CREATE TRIGGER trigger_8ba074736a77 BEFORE INSERT OR UPDATE ON snippet_repositor
 
 CREATE TRIGGER trigger_8cb8ad095bf6 BEFORE INSERT OR UPDATE ON bulk_import_failures FOR EACH ROW EXECUTE FUNCTION trigger_8cb8ad095bf6();
 
+CREATE TRIGGER trigger_8cf1745cf163 BEFORE INSERT OR UPDATE ON design_management_repository_states FOR EACH ROW EXECUTE FUNCTION trigger_8cf1745cf163();
+
 CREATE TRIGGER trigger_8d002f38bdef BEFORE INSERT OR UPDATE ON packages_debian_group_components FOR EACH ROW EXECUTE FUNCTION trigger_8d002f38bdef();
 
 CREATE TRIGGER trigger_8d17725116fe BEFORE INSERT OR UPDATE ON merge_request_reviewers FOR EACH ROW EXECUTE FUNCTION trigger_8d17725116fe();
@@ -39418,6 +39443,9 @@ ALTER TABLE ONLY analytics_devops_adoption_snapshots
 
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_79296ff8c6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY design_management_repository_states
+    ADD CONSTRAINT fk_794c47b7ba FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY wiki_page_meta_user_mentions
     ADD CONSTRAINT fk_7954f34107 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

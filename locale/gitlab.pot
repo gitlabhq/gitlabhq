@@ -9645,9 +9645,6 @@ msgstr ""
 msgid "BlobViewer|View on %{environmentName}"
 msgstr ""
 
-msgid "BlobViewer|You can %{linkStart}download it%{linkEnd}."
-msgstr ""
-
 msgid "BlobViewer|You can either %{rawLinkStart}view the raw file%{rawLinkEnd} or %{downloadLinkStart}download it%{downloadLinkEnd}."
 msgstr ""
 
@@ -14946,6 +14943,9 @@ msgid "ComplianceReport|Update result"
 msgstr ""
 
 msgid "ComplianceReport|View the framework details"
+msgstr ""
+
+msgid "ComplianceReport|You are viewing the compliance centre for %{project}. To see information for all projects, go to %{linkStart}group%{linkEnd}."
 msgstr ""
 
 msgid "ComplianceReport|and %{count} more"

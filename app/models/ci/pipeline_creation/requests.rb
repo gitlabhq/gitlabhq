@@ -74,15 +74,15 @@ module Ci
         end
 
         def pipeline_creating_for_merge_request?(merge_request)
+          for_merge_request(merge_request).any? { |request| request['status'] == IN_PROGRESS }
+        end
+
+        def for_merge_request(merge_request)
           key = merge_request_key(merge_request)
 
-          requests = Gitlab::Redis::SharedState.with { |redis| redis.hvals(key) }
-
-          return false unless requests.present?
-
-          requests
+          Gitlab::Redis::SharedState
+            .with { |redis| redis.hvals(key) }
             .map { |request| Gitlab::Json.parse(request) }
-            .any? { |request| request['status'] == IN_PROGRESS }
         end
 
         def get_request(project, request_id)

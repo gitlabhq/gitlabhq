@@ -103,7 +103,6 @@ describe('Branch rules app', () => {
       expect.objectContaining({
         name: nodes[0].name,
         branchProtection: nodes[0].branchProtection,
-        squashOption: nodes[0].squashOption,
       }),
     );
 
@@ -111,7 +110,6 @@ describe('Branch rules app', () => {
       expect.objectContaining({
         name: nodes[1].name,
         branchProtection: nodes[1].branchProtection,
-        squashOption: nodes[1].squashOption,
       }),
     );
   });

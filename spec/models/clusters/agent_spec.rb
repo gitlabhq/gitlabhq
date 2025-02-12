@@ -317,4 +317,8 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
       end
     end
   end
+
+  describe '#resource_management_enabled?' do
+    it { expect(subject.resource_management_enabled?).to be_falsey }
+  end
 end

@@ -161,13 +161,16 @@ export default {
       return Boolean(this.viewer.renderError);
     },
     isTooLarge() {
-      if (this.isUnsupportedLanguage(this.blobInfo.language)) {
-        // If the languages is not supported by HLJS then check if the backend indicated the file is too large
-        const { tooLarge, renderError } = this.viewer || {};
-        return tooLarge || renderError === 'collapsed';
-      }
+      const isSimpleViewer = this.activeViewerType === SIMPLE_BLOB_VIEWER;
+      const { tooLarge, renderError } = this.viewer || {};
+      const isTooLarge = tooLarge || renderError === 'collapsed' || renderError === 'too_large';
 
-      return this.blobInfo.size >= this.$options.HLJS_MAX_SIZE;
+      if (isSimpleViewer)
+        return this.isUnsupportedLanguage(this.blobInfo.language)
+          ? isTooLarge // If the languages is not supported by HLJS then check if the backend indicated the file is too large
+          : this.blobInfo.size >= this.$options.HLJS_MAX_SIZE; // For languages supported by HLJS, check the file size against the threshold
+
+      return isTooLarge; // If the backend indicates the rich viewer is too large, return true
     },
     blobViewer() {
       const { fileType } = this.viewer;

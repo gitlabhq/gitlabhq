@@ -13,6 +13,7 @@ import {
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
+import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
@@ -124,6 +125,24 @@ export default {
         createAlert({ message: error });
       },
     },
+    squashOption: {
+      query: squashOptionQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+        };
+      },
+      update({ project }) {
+        const squashOptions = project?.branchRules?.nodes || [];
+        return squashOptions.find((option) => option.name === this.branch)?.squashOption || {};
+      },
+      skip() {
+        return !this.showSquashSetting;
+      },
+      error(error) {
+        createAlert({ message: error });
+      },
+    },
   },
   data() {
     return {
@@ -138,6 +157,7 @@ export default {
       isRuleUpdating: false,
       isAllowForcePushLoading: false,
       isCodeOwnersLoading: false,
+      squashOption: null,
     };
   },
   computed: {
@@ -227,9 +247,6 @@ export default {
     },
     showSquashSetting() {
       return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
-    },
-    squashOption() {
-      return this.branchRule?.squashOption;
     },
   },
   methods: {

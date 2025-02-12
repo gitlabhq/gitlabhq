@@ -17,6 +17,46 @@ export const accessLevelsMockResponse = [
   },
 ];
 
+export const squashOptionMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/6',
+      __typename: 'Project',
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes: [
+          {
+            __typename: 'BranchRule',
+            name: 'main',
+            id: 'gid://gitlab/Projects/BranchRule/1',
+            squashOption: {
+              option: 'Encourage',
+              helpText: 'Checkbox is visible and selected by default.',
+              __typename: 'SquashOption',
+            },
+          },
+          {
+            __typename: 'BranchRule',
+            name: '*',
+            id: 'gid://gitlab/Projects/BranchRule/2',
+            squashOption: null,
+          },
+          {
+            __typename: 'BranchRule',
+            name: 'branch-with-$speci@l-#-chars',
+            id: 'gid://gitlab/Projects/BranchRule/3',
+            squashOption: {
+              option: 'Encourage',
+              helpText: 'Checkbox is visible and selected by default.',
+              __typename: 'SquashOption',
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const branchRulesMockResponse = {
   data: {
     project: {
@@ -132,6 +172,7 @@ export const branchRulePropsMock = {
   },
   approvalRulesTotal: 0,
   statusChecksTotal: 0,
+  projectPath: 'some/project/path',
 };
 
 export const branchRuleWithoutDetailsPropsMock = {

@@ -352,6 +352,7 @@ if successful, and performs the following operations:
 - It keeps N latest matching tags (if `keep_n` is specified).
 - It only removes tags that are older than X amount of time (if `older_than` is
   specified).
+- It excludes [protected tags](../user/packages/container_registry/protected_container_tags.md).
 - It schedules the asynchronous job to be executed in the background.
 
 These operations are executed asynchronously and can take time to get executed.

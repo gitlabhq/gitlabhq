@@ -66,7 +66,7 @@ To set up SSO with Azure as your identity provider:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-microsoft-entra-id-formerly-azure-active-directory) instead.
 
-For more information, see an [example configuration page](example_saml_config.md#azure-active-directory).
+For more information, see the [Azure configuration example](example_saml_config.md#azure-active-directory).
 
 ### Google Workspace
 
@@ -107,7 +107,7 @@ To set up Google Workspace as your identity provider:
 On the GitLab SAML SSO page, when you select **Verify SAML Configuration**, disregard
 the warning that recommends setting the **NameID** format to `persistent`.
 
-For more information, see an [example configuration page](example_saml_config.md#google-workspace).
+For more information, see the [Google Workspace configuration example](example_saml_config.md#google-workspace).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 View a demo of [how to configure SAML with Google Workspaces and set up Group Sync](https://youtu.be/NKs0FSQVfCY).
@@ -147,7 +147,7 @@ for SAML is proposed in [issue 216173](https://gitlab.com/gitlab-org/gitlab/-/is
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the Okta SAML setup including SCIM, see [Demo: Okta Group SAML & SCIM setup](https://youtu.be/0ES9HsZq0AQ).
 
-For more information, see an [example configuration page](example_saml_config.md#okta)
+For more information, see the [Okta configuration example](example_saml_config.md#okta).
 
 ### OneLogin
 
@@ -176,6 +176,8 @@ To set up OneLogin as your identity provider:
 1. Configure [required and supported attributes](#configure-assertions).
 1. Make sure the identity provider is set to have provider-initiated calls
    to link existing GitLab accounts.
+
+For more information, see the [OneLogin configuration example](example_saml_config.md#onelogin).
 
 ### Configure assertions
 

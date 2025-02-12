@@ -31,13 +31,14 @@ export default {
     CodeBlockHighlighted,
   },
   props: {
-    projectPath: {
-      type: String,
-      required: true,
-    },
     agentId: {
       type: String,
       required: true,
+    },
+    projectPath: {
+      type: String,
+      required: false,
+      default: '',
     },
     isConfigured: {
       type: Boolean,
@@ -78,7 +79,9 @@ export default {
       - id: <current project path>`;
     },
     glabCommand() {
-      const baseCommand = `glab cluster agent update-kubeconfig --repo ${this.projectPath} --agent ${this.agentIdNumber} --use-context`;
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      const repo = this.projectPath ? ` --repo ${this.projectPath}` : '';
+      const baseCommand = `glab cluster agent update-kubeconfig${repo} --agent ${this.agentIdNumber} --use-context`;
       const hostVar = 'GITLAB_HOST';
 
       const hostPrefix = this.isRunningOnGitlabDotCom ? '' : `${hostVar}=${this.currentHost} `;

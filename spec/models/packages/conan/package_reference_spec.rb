@@ -35,7 +35,7 @@ RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category
 
     describe 'uniqueness of reference' do
       let_it_be(:conan_package) { create(:conan_package, without_package_files: true) }
-      let_it_be(:existing_reference) { create(:conan_package_reference, package: conan_package) }
+      let_it_be(:existing_reference) { conan_package.conan_package_references.first }
 
       context 'when recipe_revision_id is not nil' do
         it 'validates uniqueness scoped to package_id and recipe_revision_id', :aggregate_failures do

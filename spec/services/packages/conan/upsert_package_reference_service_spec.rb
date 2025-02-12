@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::UpsertPackageReferenceService, feature_category: :package_registry do
-  let_it_be(:package) { create(:conan_package, without_package_files: true, package_references: []) }
+  let_it_be(:package) { create(:conan_package, without_package_files: true) }
   let_it_be(:conan_package_reference) { '1234567890abcdef1234567890abcdef12345678' }
 
   describe '#execute!', :aggregate_failures do

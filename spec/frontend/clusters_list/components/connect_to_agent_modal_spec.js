@@ -7,7 +7,6 @@ import CodeBlockHighlighted from '~/vue_shared/components/code_block_highlighted
 import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import { stubComponent } from 'helpers/stub_component';
 
-const projectPath = 'path/to/project';
 const agentId = '123';
 const selfManagedHost = 'https://gitlab.example.com';
 
@@ -17,6 +16,7 @@ const modalDescriptionNoConfiguredAgent =
   'You can connect to your cluster from the command line. To use this feature, configure user_access in the agent configuration project.';
 const glabCommand =
   'glab cluster agent update-kubeconfig --repo path/to/project --agent 123 --use-context';
+const glabCommandNoRepo = 'glab cluster agent update-kubeconfig --agent 123 --use-context';
 const glabCommandSelfManaged = `GITLAB_HOST=${selfManagedHost} ${glabCommand}`;
 const yamlCommand = `user_access:
   access_as:
@@ -34,7 +34,7 @@ describe('ConnectToAgentModal', () => {
   const findDocsLink = () => wrapper.findComponent(GlLink);
   const findCloseButton = () => wrapper.findComponent(GlButton);
 
-  const createWrapper = ({ isConfigured = false } = {}) => {
+  const createWrapper = ({ isConfigured = false, projectPath = 'path/to/project' } = {}) => {
     const propsData = {
       projectPath,
       agentId,
@@ -129,6 +129,20 @@ describe('ConnectToAgentModal', () => {
       expect(findModalCopyButton().props()).toMatchObject({
         text: glabCommandSelfManaged,
         modalId: CONNECT_MODAL_ID,
+      });
+    });
+  });
+
+  describe('when the agent project is not available', () => {
+    beforeEach(() => {
+      gon.dot_com = true;
+      createWrapper({ isConfigured: true, projectPath: '' });
+    });
+
+    it('renders code block without the repo in the command', () => {
+      expect(findCodeBlock().props()).toMatchObject({
+        language: 'shell',
+        code: glabCommandNoRepo,
       });
     });
   });

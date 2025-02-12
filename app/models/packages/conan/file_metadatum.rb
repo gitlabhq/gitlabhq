@@ -14,8 +14,7 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   validates :package_reference, absence: true, if: :recipe_file?
   validates :package_reference, presence: true, if: :package_file?, on: :create
   validate :conan_package_type
-  # recipe_revision and package_revision are not supported yet
-  validates :recipe_revision, absence: true
+  # package_revision is not supported yet
   validates :package_revision, absence: true
 
   enum conan_file_type: { recipe_file: 1, package_file: 2 }
@@ -26,7 +25,7 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   CONAN_MANIFEST = 'conanmanifest.txt'
 
   def recipe_revision_value
-    DEFAULT_REVISION
+    recipe_revision&.revision || DEFAULT_REVISION
   end
 
   def package_revision_value

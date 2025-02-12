@@ -9,7 +9,7 @@ title: AI features based on 3rd-party integrations
 
 ### Required: Install AI gateway
 
-**Why:** All Duo features route LLM requests through the AI gateway.
+**Why:** Duo features (except for Duo Workflow) route LLM requests through the AI gateway.
 
 **How:**
 Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#install)
@@ -39,10 +39,9 @@ and check the subscription plan.
 
 ### Set up and run GDK
 
-#### Option A: in SaaS (GitLab.com) Mode
+#### Option A: in GitLab.com Mode
 
-**Why:** Most Duo features are available on GitLab.com first, so running in SaaS
-mode will ensure that you can access most features.
+**Why:** Most Duo features are available on GitLab.com first, so emulating a multi-tenant environment.
 
 **How:**
 
@@ -63,7 +62,7 @@ one.
 Make sure the script succeeds. It prints error messages with links on how
 to resolve any errors. You can re-run the script until it succeeds.
 
-In SaaS mode, membership to a group with Duo features enabled is what enables
+In multi-tennent mode, membership to a group with Duo features enabled is what enables
 many AI features. Make sure that your test user is a member of the group with
 Duo features enabled (`test-group-name`).
 
@@ -77,10 +76,12 @@ GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[test-group-name,duo_pr
 
 Duo Pro add-on serves smaller scope of features. Usage of add-on depends on what features you want to use.
 
+This Rake task will assign Duo Add-on seat to the 'root' user.
+
 #### Option B: in Self-managed Mode
 
-**Why:** If you want to test something specific to self-managed, such as Custom
-Models.
+**Why:** If you want to test something specific to self-managed setups or validate that a Duo feature
+also works for our self-managed customers.
 
 **How:**
 
@@ -104,12 +105,19 @@ GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup_instance[duo_pro]'
 
 Duo Pro add-on serves smaller scope of features. Usage of add-on depends on what features you want to use.
 
-### Recommended: Set `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` environment variable
+This Rake task will assign Duo Add-on seat to the 'root' user.
+
+### Optional: Set `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` environment variable
 
 **Why:** Setting this environment variable will allow the local GitLab instance to
-issue tokens itself, without syncing with CustomersDot first.
+issue tokens itself, without syncing with CustomersDot first, which simplifies your local setup.
 With this set, you can skip the
-[CustomersDot setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#option-2-use-your-customersdot-instance-as-a-provider).
+CustomersDot setup. However, note that this now requires the AI gateway to fetch token validation keys from your
+GitLab instance instead of CustomersDot, as explained [here](#option-1-use-your-gitlab-instance-as-a-provider).
+
+**Caveat:** Setting `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` during local development creates a configuration that differs from
+the production customer environment.
+This divergence could mask potential issues that would only surface in the customer's setup.
 
 **How:** The following should be set in the `env.runit` file in your GDK root:
 
@@ -121,55 +129,19 @@ export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
 
 You need to restart GDK to apply the change.
 
-If you use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1`, the `root`/`admin` user must
-have a [seat assigned](../../subscriptions/subscription-add-ons.md#for-gitlabcom)
-to receive a "Code completion test was successful" notification from the health check
-on the `http://localhost:3000/admin/code_suggestions` page.
+### Testing the setup
 
-Our customers (production environment) do not need to do that to run a Code
-Suggestions health check.
+In the Admin Area, you can run [a health check](../../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo)
+to see if Duo is correctly set up.
 
-### Recommended: Test clients in Rails console
-
-**Why:** you've completed all of the setup steps, now it's time to confirm that
-GitLab Duo is actually working.
-
-**How:**
-
-After the setup is complete, you can test clients in GitLab-Rails to see if it can
-correctly reach to AI gateway:
-
-1. Run `gdk start`.
-1. Login to Rails console with `gdk rails console`.
-1. Talk to a model:
-
-   ```ruby
-   # Talk to Anthropic model
-   Gitlab::Llm::Anthropic::Client.new(User.first, unit_primitive: 'duo_chat').complete(prompt: "\n\nHuman: Hi, How are you?\n\nAssistant:")
-
-   # Talk to Vertex AI model
-   Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'documentation_search').text_embeddings(content: "How can I create an issue?")
-
-   # Test `/v1/chat/agent` endpoint
-   Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request({prompt: [{role: "user", content: "Hi, how are you?"}]})
-   ```
-
-NOTE:
-See [this doc](../cloud_connector/_index.md) for registering unit primitives in Cloud Connector.
-
-### Optional: Enable authentication and authorization in AI gateway
+### Enabled by default: Authentication and authorization in AI gateway
 
 **Why:** The AI gateway has [authentication and authorization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md)
 flow to verify if clients have permission to access the features. Auth is
-enforced in any live environments hosted by GitLab infra team. You may want to
-test this flow in your local development environment.
+enforced in any live environments hosted by GitLab infra team.
 
-NOTE:
-In development environments (for example: GDK), this process is disabled by default.
-
-To enable authorization checks, set `AIGW_AUTH__BYPASS_EXTERNAL` to `false` in the
-[application setting file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md)
-(`<GDK-root>/gitlab-ai-gateway/.env`) in AI gateway.
+To disable authorization checks (for debugging purposes only), set `AIGW_AUTH__BYPASS_EXTERNAL` to `true` in the
+`<GDK-root>/env.runit` file in GDK.
 
 #### Option 1: Use your GitLab instance as a provider
 
@@ -183,15 +155,9 @@ apply the following configuration to GDK:
 # <GDK-root>/env.runit
 
 export GITLAB_SIMULATE_SAAS=1
-```
-
-Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI gateway:
-
-```shell
-# <GDK-root>/gitlab-ai-gateway/.env
-
-AIGW_AUTH__BYPASS_EXTERNAL=false
-AIGW_GITLAB_URL=<your-gdk-url>
+export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
+export AIGW_AUTH__BYPASS_EXTERNAL=false
+export AIGW_GITLAB_URL=<your-gdk-url>
 ```
 
 and `gdk restart`.
@@ -199,14 +165,14 @@ and `gdk restart`.
 #### Option 2: Use your customersDot instance as a provider
 
 **Why**: CustomersDot setup is required when you want to test or update functionality
-related to [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/)
-or if you are running GDK in non-SaaS mode.
+related to [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+This is the configuration that all self-managed customers use who do not self-host the AI gateway
+but rely on our cloud-hosted AI gateway instances instead.
 
 NOTE:
 This setup is challenging. There is [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463341)
 for discussing how to make it easier to test the customersDot integration locally.
-Until that is addressed, this setup process is time consuming and should be
-avoided if possible.
+Until that is addressed, this setup process is time-consuming.
 
 If you need to get customersDot working for your local GitLab Rails instance for
 any reason, reach out to `#s_fulfillment_engineering` in Slack. For questions around the integration of CDot with other systems to deliver AI use cases, reach out to `#g_cloud_connector`.

@@ -1,23 +1,27 @@
+/* eslint-disable global-require, import/no-dynamic-require */
 const { spawnSync } = require('child_process');
-const { join } = require('path');
-const { readFileSync, existsSync } = require('fs');
+const { join, resolve } = require('path');
+const { existsSync } = require('fs');
 const chalk = require('chalk');
 const semver = require('semver');
+
+const ROOT_PATH = resolve(__dirname, '../../');
 
 // Check duo-ui peer dependency
 function checkDuoUiPeerDependency() {
   try {
-    const duoUiPkgPath = join('node_modules', '@gitlab', 'duo-ui', 'package.json');
+    const duoUiPkgPath = join(ROOT_PATH, 'node_modules', '@gitlab', 'duo-ui', 'package.json');
+    const gitlabUiPkgPath = join(ROOT_PATH, 'node_modules', '@gitlab', 'ui', 'package.json');
 
     if (!existsSync(duoUiPkgPath)) {
       console.error(`${chalk.red('error')} Could not find @gitlab/duo-ui package.json`);
       return false;
     }
 
-    const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
-    const duoUiPkgJson = JSON.parse(readFileSync(duoUiPkgPath, 'utf8'));
+    const packageJson = require(gitlabUiPkgPath);
+    const duoUiPkgJson = require(duoUiPkgPath);
 
-    const installedUiVersion = packageJson.dependencies['@gitlab/ui'];
+    const installedUiVersion = packageJson.version;
     const requiredUiVersion = duoUiPkgJson.peerDependencies?.['@gitlab/ui'];
 
     if (!installedUiVersion) {

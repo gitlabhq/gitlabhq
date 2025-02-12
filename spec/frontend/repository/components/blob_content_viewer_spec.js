@@ -442,6 +442,27 @@ describe('Blob content viewer component', () => {
         expect(loadViewer).toHaveBeenCalledWith('text', false, expectedTooLarge);
       },
     );
+
+    it.each`
+      language  | size    | tooLarge | renderError    | expectedTooLarge
+      ${'nyan'} | ${null} | ${true}  | ${null}        | ${true}
+      ${'nyan'} | ${null} | ${false} | ${'collapsed'} | ${true}
+      ${'nyan'} | ${null} | ${false} | ${'too_large'} | ${true}
+      ${'nyan'} | ${null} | ${false} | ${null}        | ${false}
+    `(
+      'correctly handles file size limits when language=$language, size=$size, tooLarge=$tooLarge, renderError=$renderError',
+      async ({ tooLarge, renderError, expectedTooLarge }) => {
+        await createComponent({
+          blob: {
+            ...richViewerMock,
+            richViewer: { ...richViewerMock.richViewer, tooLarge, renderError },
+          },
+        });
+
+        await waitForPromises();
+        expect(loadViewer).toHaveBeenCalledWith('markup', false, expectedTooLarge);
+      },
+    );
   });
 
   describe('BlobHeader action slot', () => {

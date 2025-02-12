@@ -26,7 +26,6 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:package_file) }
-    it { is_expected.to validate_absence_of(:recipe_revision) }
     it { is_expected.to validate_absence_of(:package_revision) }
 
     describe '#conan_package_reference' do
@@ -138,11 +137,24 @@ RSpec.describe Packages::Conan::FileMetadatum, type: :model do
   end
 
   describe '#recipe_revision_value' do
-    let(:conan_file_metadatum) { build(:conan_file_metadatum, :recipe_file, package_file: package_file) }
+    context 'when recipe_revision is present' do
+      let(:revision) { 'some-revision-value' }
 
-    it 'returns the default recipe revision value' do
-      expect(conan_file_metadatum.recipe_revision_value).to eq(
-        Packages::Conan::FileMetadatum::DEFAULT_REVISION)
+      let(:file_metadatum) do
+        build(:conan_file_metadatum, recipe_revision: build(:conan_recipe_revision, revision: revision))
+      end
+
+      it 'returns the revision value' do
+        expect(file_metadatum.recipe_revision_value).to eq(revision)
+      end
+    end
+
+    context 'when recipe_revision is nil' do
+      let(:file_metadatum) { build(:conan_file_metadatum) }
+
+      it 'returns DEFAULT_REVISION' do
+        expect(file_metadatum.recipe_revision_value).to eq(described_class::DEFAULT_REVISION)
+      end
     end
   end
 

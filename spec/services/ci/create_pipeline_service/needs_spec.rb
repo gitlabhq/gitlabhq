@@ -173,7 +173,7 @@ RSpec.describe Ci::CreatePipelineService,
       it { expect(pipeline.builds.any?).to be_falsey }
 
       it 'assigns an error to the pipeline' do
-        expect(pipeline.yaml_errors)
+        expect(pipeline.error_messages[0].content)
           .to eq('jobs:test_a:needs:need artifacts should be a boolean value')
       end
     end
@@ -235,7 +235,7 @@ RSpec.describe Ci::CreatePipelineService,
       end
 
       it 'raises error' do
-        expect(pipeline.yaml_errors)
+        expect(pipeline.error_messages[0].content)
           .to eq('jobs:invalid_dag_job:needs config can not be an empty hash')
       end
     end
@@ -257,7 +257,7 @@ RSpec.describe Ci::CreatePipelineService,
       end
 
       it 'returns error' do
-        expect(pipeline.yaml_errors)
+        expect(pipeline.error_messages[0].content)
           .to include("'test' job needs 'build' job, but 'build' does not exist in the pipeline")
       end
 

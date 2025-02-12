@@ -28,6 +28,7 @@ import {
   EDIT_RULE_MODAL_ID,
 } from '~/projects/settings/branch_rules/components/view/constants';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
+import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import deleteBranchRuleMutation from '~/projects/settings/branch_rules/mutations/branch_rule_delete.mutation.graphql';
 import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
 import {
@@ -35,6 +36,7 @@ import {
   deleteBranchRuleMockResponse,
   branchProtectionsMockResponse,
   branchProtectionsNoPushAccessMockResponse,
+  squashOptionMockResponse,
   predefinedBranchRulesMockResponse,
   matchingBranchesCount,
   protectableBranchesMockResponse,
@@ -66,6 +68,7 @@ describe('View branch rules', () => {
   const protectedBranchesPath = 'protected/branches';
   const branchRulesPath = '/-/settings/repository#branch_rules';
   const branchRulesMockRequestHandler = jest.fn().mockResolvedValue(branchProtectionsMockResponse);
+  const squashOptionMockRequestHandler = jest.fn().mockResolvedValue(squashOptionMockResponse);
   const predefinedBranchRulesMockRequestHandler = jest
     .fn()
     .mockResolvedValue(predefinedBranchRulesMockResponse);
@@ -82,11 +85,13 @@ describe('View branch rules', () => {
     glFeatures = { editBranchRules: true, branchRuleSquashSettings: true },
     canAdminProtectedBranches = true,
     branchRulesQueryHandler = branchRulesMockRequestHandler,
+    squashOptionQueryHandler = squashOptionMockRequestHandler,
     deleteMutationHandler = deleteBranchRuleSuccessHandler,
     editMutationHandler = editBranchRuleSuccessHandler,
   } = {}) => {
     fakeApollo = createMockApollo([
       [branchRulesQuery, branchRulesQueryHandler],
+      [squashOptionQuery, squashOptionQueryHandler],
       [getProtectableBranches, protectableBranchesMockRequestHandler],
       [deleteBranchRuleMutation, deleteMutationHandler],
       [editBranchRuleMutation, editMutationHandler],
@@ -146,6 +151,7 @@ describe('View branch rules', () => {
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findNoDataTitle = () => wrapper.findByText(I18N.noData);
   const findAccessLevelsDrawer = () => wrapper.findComponent(AccessLevelsDrawer);
+  const findSquashSettingSection = () => wrapper.findByTestId('squash-setting-content');
 
   const findMatchingBranchesLink = () =>
     wrapper.findByText(
@@ -155,8 +161,6 @@ describe('View branch rules', () => {
       }),
     );
 
-  const findSquashSettingSection = () => wrapper.findByTestId('squash-setting-content');
-
   describe('Squash settings', () => {
     it('does not render squash settings section when feature flag is disabled', async () => {
       await createComponent({ glFeatures: { branchRuleSquashSettings: false } });
@@ -165,26 +169,28 @@ describe('View branch rules', () => {
     });
 
     it('renders squash settings section', () => {
-      expect(findSquashSettingSection().exists()).toBe(true);
+      const content = findSquashSettingSection();
+      expect(content.text()).toContain('Encourage');
+      expect(content.text()).toContain('Checkbox is visible and selected by default.');
     });
 
     it('renders squash heading and content with an empty state', async () => {
-      const branchRulesQueryHandler = jest.fn().mockResolvedValue({
+      const mockResponse = {
         data: {
           project: {
+            id: 'gid://gitlab/Project/6',
+            __typename: 'Project',
             branchRules: {
-              nodes: [
-                {
-                  ...branchProtectionsMockResponse.data.project.branchRules.nodes[0],
-                  squashOption: null,
-                },
-              ],
+              __typename: 'BranchRuleConnection',
+              nodes: [],
             },
           },
         },
-      });
+      };
 
-      await createComponent({ branchRulesQueryHandler });
+      const squashOptionQueryMock = jest.fn().mockResolvedValue(mockResponse);
+
+      await createComponent({ squashOptionQueryHandler: squashOptionQueryMock });
       const content = findSquashSettingSection().text();
 
       expect(content).toContain('Squash commits when merging');

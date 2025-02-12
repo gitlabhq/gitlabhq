@@ -18,10 +18,7 @@ RSpec.shared_context 'conan api setup' do
 
   let_it_be(:job, freeze: true) { create(:ci_build, :running, user: user, project: project) }
 
-  let_it_be(:conan_package_reference) { '1234567890abcdef1234567890abcdef12345678' }
-  let_it_be_with_reload(:package) do
-    create(:conan_package, project: project, package_references: [conan_package_reference])
-  end
+  let(:conan_package_reference) { package.conan_package_references.first.reference }
 
   let(:job_token) { job.token }
   let(:auth_token) { personal_access_token.token }
@@ -63,8 +60,9 @@ RSpec.shared_context 'conan file download endpoints' do
   let(:headers) { build_token_auth_header(jwt.encoded) }
   let(:recipe_path) { package.conan_recipe_path }
   let(:package_file) { package.package_files.find_by(file_name: 'conaninfo.txt') }
-  let(:recipe_file) { package.package_files.find_by(file_name: 'conanfile.py') }
-  let(:metadata) { package_file.conan_file_metadatum }
+  let(:recipe_file) { package.package_files.find_by!(file_name: 'conanfile.py') }
+  let(:package_file_metadata) { package_file.conan_file_metadatum }
+  let(:recipe_file_metadata) { recipe_file.conan_file_metadatum }
 end
 
 RSpec.shared_context 'conan file upload endpoints' do

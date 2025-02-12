@@ -53,7 +53,11 @@ export default {
   },
   watch: {
     authors(newAuthors) {
-      if (newAuthors.length > 0 && this.selectedAuthorValue) {
+      if (
+        newAuthors.length > 0 &&
+        this.selectedAuthorValue &&
+        this.authorExist(this.selectedAuthorValue)
+      ) {
         this.selectedAuthorName = this.convertValueToName(this.selectedAuthorValue);
       }
       this.handleSelected(this.selectedAuthorValue);
@@ -118,8 +122,10 @@ export default {
       this.setQuery({ key: AUTHOR_PARAM, value: '' });
     },
     convertValueToName(selectedAuthorValue) {
-      const authorObj = this.authors.find((item) => item.value === selectedAuthorValue);
-      return authorObj?.text || selectedAuthorValue;
+      return this.authors.find((item) => item.value === selectedAuthorValue)?.text;
+    },
+    authorExist(selectedAuthorValue) {
+      return this.authors.some((item) => item.value === selectedAuthorValue);
     },
     changeCheckboxInput(state) {
       this.toggleState = state;

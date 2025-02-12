@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_registry do
+  include_context 'conan api setup'
+
+  let_it_be_with_reload(:package) { create(:conan_package, project: project, without_recipe_revisions: true) }
   let(:snowplow_gitlab_standard_context) do
     { user: user, project: project, namespace: project.namespace, property: 'i_package_conan_user' }
   end
-
-  include_context 'conan api setup'
 
   describe 'GET /api/v4/packages/conan/v1/ping' do
     let_it_be(:url) { '/packages/conan/v1/ping' }
@@ -130,7 +131,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
     describe 'GET /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel' \
       '/:recipe_revision/export/:file_name' do
       subject(:request) do
-        get api("/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision_value}/export/" \
+        get api("/packages/conan/v1/files/#{recipe_path}/#{recipe_file_metadata.recipe_revision_value}/export/" \
           "#{recipe_file.file_name}"),
           headers: headers
       end
@@ -142,8 +143,9 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
     describe 'GET /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel' \
       '/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name' do
       subject(:request) do
-        get api("/packages/conan/v1/files/#{recipe_path}/#{metadata.recipe_revision_value}/package" \
-          "/#{metadata.conan_package_reference}/#{metadata.package_revision_value}/#{package_file.file_name}"),
+        get api("/packages/conan/v1/files/#{recipe_path}/#{package_file_metadata.recipe_revision_value}/package" \
+          "/#{package_file_metadata.conan_package_reference}/#{package_file_metadata.package_revision_value}" \
+          "/#{package_file.file_name}"),
           headers: headers
       end
 
