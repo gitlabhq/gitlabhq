@@ -90,7 +90,7 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
         result = service.execute
 
         expect(result).to be_error
-        expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError')
+        expect(result.message).to eq('CompactionLimitCannotBeAchievedError')
 
         expect(Ci::JobToken::GroupScopeLink.count).to be(0)
         expect(Ci::JobToken::ProjectScopeLink.count).to be(0)
@@ -109,7 +109,7 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
         result = service.execute
 
         expect(result).to be_error
-        expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry')
+        expect(result.message).to eq('UnexpectedCompactionEntry')
       end
 
       it 'logs a RedundantCompactionEntry error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/513211' do
@@ -121,7 +121,7 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
         result = service.execute
 
         expect(result).to be_error
-        expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::RedundantCompactionEntry')
+        expect(result.message).to eq('RedundantCompactionEntry')
       end
     end
 
@@ -148,13 +148,13 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
 
         it 'raises when the limit cannot be achieved' do
           expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-            kind_of(Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError),
+            kind_of(Ci::JobToken::AuthorizationsCompactor::Error),
             { project_id: accessed_project.id, user_id: maintainer.id }
           )
           result = service.execute
 
           expect(result).to be_error
-          expect(result.message).to eq('Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError')
+          expect(result.message).to eq('CompactionLimitCannotBeAchievedError')
 
           expect(Ci::JobToken::GroupScopeLink.count).to be(0)
           expect(Ci::JobToken::ProjectScopeLink.count).to be(0)
@@ -173,6 +173,14 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
           )
         end
       end
+    end
+  end
+
+  describe '#unsafe_execute!' do
+    let(:service) { described_class.new(accessed_project, maintainer) }
+
+    it 'does not raise an access denied error' do
+      expect { service.unsafe_execute! }.not_to raise_error
     end
   end
 end

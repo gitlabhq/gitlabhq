@@ -19,24 +19,20 @@ module API
         expose :contacted_at
         expose :maintenance_note
 
-        # rubocop: disable CodeReuse/ActiveRecord
         expose :projects, with: Entities::BasicProjectDetails do |runner, options|
           if options[:current_user].can_read_all_resources?
             runner.projects
           else
-            options[:current_user].authorized_projects.where(id: runner.runner_projects.pluck(:project_id))
+            options[:current_user].authorized_projects.id_in(runner.project_ids)
           end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
-        # rubocop: disable CodeReuse/ActiveRecord
         expose :groups, with: Entities::BasicGroupDetails do |runner, options|
           if options[:current_user].can_read_all_resources?
             runner.groups
           else
-            options[:current_user].authorized_groups.where(id: runner.runner_namespaces.pluck(:namespace_id))
+            options[:current_user].authorized_groups.id_in(runner.namespace_ids)
           end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         def latest_runner_manager(runner)
           strong_memoize_with(:latest_runner_manager, runner) do

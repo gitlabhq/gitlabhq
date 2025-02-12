@@ -7,7 +7,7 @@ export default {
   title: 'vue_shared/tooltip_on_truncate/tooltip_on_truncate.vue',
 };
 
-const createStory = ({ ...options }) => {
+const createStory = ({ ...options } = {}) => {
   return (_, { argTypes }) => {
     const comp = {
       components: { TooltipOnTruncate },

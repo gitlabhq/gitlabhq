@@ -937,4 +937,17 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
     end
   end
+
+  context 'with incident issue type' do
+    let_it_be(:project) { create(:project, group: group, guests: guest, planners: planner, reporters: reporter, owners: owner) }
+    let_it_be(:incident) { create(:issue, :incident, project: project) }
+
+    it 'allows accessing an incident' do
+      expect(permissions(guest, incident)).to be_disallowed(:update_issue, :admin_issue)
+      expect(permissions(planner, incident)).to be_disallowed(:update_issue, :admin_issue, :destroy_issue)
+      expect(permissions(reporter, incident)).to be_allowed(:update_issue, :admin_issue)
+      expect(permissions(reporter, incident)).to be_disallowed(:destroy_issue)
+      expect(permissions(owner, incident)).to be_allowed(:update_issue, :admin_issue, :destroy_issue)
+    end
+  end
 end

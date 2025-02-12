@@ -73,12 +73,12 @@ RSpec.describe Import::SourceUsers::GenerateCsvService, feature_category: :impor
 
         subject(:service) { described_class.new(namespace, current_user: namespace.owner) }
 
-        it 'only returns the headers' do
+        it 'returns an error response and empty payload' do
           result = service.execute
-          csv_data = CSV.parse(result.payload)
-
-          expect(csv_data.size).to eq(1)
-          expect(csv_data[0]).to match_array(described_class::COLUMN_MAPPING.keys)
+          expect(result).not_to be_success
+          expect(result.status).to eq(:error)
+          expect(result.payload).to be_empty
+          expect(result.message).to eq('No placeholder users are awaiting reassignment.')
         end
       end
 

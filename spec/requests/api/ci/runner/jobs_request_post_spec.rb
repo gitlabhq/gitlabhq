@@ -203,19 +203,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                   expect(response).to have_gitlab_http_status(:forbidden)
                   expect(response.body).to eq({ message: '403 Forbidden - Runner is orphaned' }.to_json)
                 end
-
-                # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
-                context 'with reject_orphaned_runners FF disabled' do
-                  before do
-                    stub_feature_flags(reject_orphaned_runners: false)
-                  end
-
-                  it 'returns unprocessable entity status code', :aggregate_failures do
-                    expect { request }.not_to change { Ci::RunnerManager.count }.from(0)
-                    expect(response).to have_gitlab_http_status(:unprocessable_entity)
-                    expect(response.body).to eq({ message: 'Runner is orphaned' }.to_json)
-                  end
-                end
               end
 
               private

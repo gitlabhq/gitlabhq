@@ -102,7 +102,7 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
 
     it "builds a PAT with name, description and scopes from params" do
       name = 'My PAT'
-      scopes = 'api,read_user'
+      scopes = 'api,read_user,invalid'
       description = 'My PAT description'
 
       get :index, params: { name: name, scopes: scopes, description: description }

@@ -15,7 +15,21 @@ module UserSettings
 
     def index
       set_index_vars
-      scopes = params[:scopes].split(',').map(&:squish).select(&:present?).map(&:to_sym) unless params[:scopes].nil?
+
+      unless params[:scopes].nil?
+        scopes = []
+        # An over engineered solution to generate scopes array without extra object allocations
+        params[:scopes].split(",", Gitlab::Auth.all_available_scopes.count + 1) do |scope|
+          scope = scope.squish
+          next if scope.empty?
+
+          scope = scope.to_sym
+          next if Gitlab::Auth.all_available_scopes.exclude?(scope)
+
+          scopes << scope
+        end
+      end
+
       @personal_access_token = finder.build(
         name: params[:name],
         description: params[:description],

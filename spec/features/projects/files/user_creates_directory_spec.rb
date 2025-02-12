@@ -14,6 +14,7 @@ RSpec.describe 'Projects > Files > User creates a directory', :js, feature_categ
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(blob_overflow_menu: false)
     project.add_developer(user)
     sign_in(user)
     visit project_tree_path(project, 'master')

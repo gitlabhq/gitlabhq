@@ -3,7 +3,7 @@
 module Integrations
   module Instance
     class Pivotaltracker < Integration
-      # To be updated as part of https://gitlab.com/gitlab-org/gitlab/-/issues/474809
+      include Integrations::Base::Pivotaltracker
     end
   end
 end

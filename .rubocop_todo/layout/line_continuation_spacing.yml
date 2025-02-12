@@ -72,7 +72,6 @@ Layout/LineContinuationSpacing:
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/create_external_issue_link_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/destroy_external_issue_link_spec.rb'
     - 'ee/spec/services/boards/epic_lists/destroy_service_spec.rb'
-    - 'ee/spec/services/epic_issues/create_service_spec.rb'
     - 'ee/spec/services/phone_verification/telesign_client/risk_score_service_spec.rb'
     - 'ee/spec/services/phone_verification/telesign_client/send_verification_code_service_spec.rb'
     - 'ee/spec/workers/ee/issuable_export_csv_worker_spec.rb'

@@ -186,7 +186,6 @@ Style/RedundantSelf:
     - 'ee/app/models/push_rule.rb'
     - 'ee/app/models/security/orchestration_policy_configuration.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
-    - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/lib/api/dependencies.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/groups.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/proxy.rb'

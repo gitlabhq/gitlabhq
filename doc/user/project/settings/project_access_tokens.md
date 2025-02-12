@@ -116,7 +116,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 | `manage_runner`    | Grants permission to manage runners in the project.                                                                                                                                                                                                                                      |
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                                                                                                                         |
-| `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#use-a-request-header). Does not allow rotation of other tokens. |
+| `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 
 ## Restrict the creation of project access tokens
 

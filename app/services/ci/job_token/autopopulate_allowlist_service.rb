@@ -13,32 +13,34 @@ module Ci
         @user = user
       end
 
-      def execute
-        raise Gitlab::Access::AccessDeniedError unless authorized?
-
+      def unsafe_execute!
         allowlist = Ci::JobToken::Allowlist.new(@project)
         groups = compactor.allowlist_groups
         projects = compactor.allowlist_projects
 
         ApplicationRecord.transaction do
-          allowlist.bulk_add_groups!(groups, user: @user, autopopulated: true)
-          allowlist.bulk_add_projects!(projects, user: @user, autopopulated: true)
+          allowlist.bulk_add_groups!(groups, user: @user, autopopulated: true) if groups.any?
+          allowlist.bulk_add_projects!(projects, user: @user, autopopulated: true) if projects.any?
         end
 
+        enable_enforcement!
+
         ServiceResponse.success
-      rescue Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError,
-        Gitlab::Utils::TraversalIdCompactor::RedundantCompactionEntry,
-        Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry,
-        Ci::JobToken::AuthorizationsCompactor::UnexpectedCompactionEntry,
-        Ci::JobToken::AuthorizationsCompactor::RedundantCompactionEntry => e
+      rescue Ci::JobToken::AuthorizationsCompactor::Error => e
         Gitlab::ErrorTracking.log_exception(e, { project_id: @project.id, user_id: @user.id })
         ServiceResponse.error(message: e.message)
+      end
+
+      def execute
+        raise Gitlab::Access::AccessDeniedError unless authorized?
+
+        unsafe_execute!
       end
 
       private
 
       def compactor
-        Ci::JobToken::AuthorizationsCompactor.new(@project.id).tap do |compactor|
+        Ci::JobToken::AuthorizationsCompactor.new(@project).tap do |compactor|
           compactor.compact(COMPACTION_LIMIT)
         end
       end
@@ -46,6 +48,10 @@ module Ci
 
       def authorized?
         @user.can?(:admin_project, @project)
+      end
+
+      def enable_enforcement!
+        @project.ci_cd_settings.update!(inbound_job_token_scope_enabled: true)
       end
     end
   end

@@ -2,6 +2,7 @@
 
 class ProjectCiCdSetting < ApplicationRecord
   include ChronicDurationAttribute
+  include EachBatch
 
   belongs_to :project, inverse_of: :ci_cd_settings
 

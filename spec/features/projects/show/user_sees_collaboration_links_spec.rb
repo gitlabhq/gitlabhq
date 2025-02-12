@@ -18,6 +18,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
 
   context 'with developer user' do
     before_all do
+      stub_feature_flags(blob_overflow_menu: false)
       project.add_developer(user)
     end
 

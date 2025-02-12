@@ -19202,7 +19202,7 @@ A user with add-on data.
 | <a id="addonusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="addonusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="addonuserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="addonuserid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="addonuserid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="addonuseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="addonuserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="addonuserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -20234,7 +20234,7 @@ Core representation of a GitLab user.
 | <a id="autocompletedusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="autocompletedusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="autocompleteduserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="autocompleteduserid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="autocompleteduserid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="autocompleteduseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="autocompleteduserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="autocompleteduserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -22914,7 +22914,7 @@ The currently authenticated GitLab user.
 | <a id="currentusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="currentusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="currentuserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="currentuserid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="currentuserid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="currentuseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="currentuserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="currentuserlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -29085,7 +29085,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneegroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestassigneegroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneehuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="mergerequestassigneeid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestassigneeid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="mergerequestassigneeide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestassigneejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestassigneelastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -29495,7 +29495,7 @@ The author of the merge request.
 | <a id="mergerequestauthorgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestauthorgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="mergerequestauthorid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestauthorid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="mergerequestauthoride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestauthorjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestauthorlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -29956,7 +29956,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestparticipantgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipanthuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="mergerequestparticipantid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestparticipantid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="mergerequestparticipantide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestparticipantjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestparticipantlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -30385,7 +30385,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestreviewergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="mergerequestreviewerid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="mergerequestreviewerid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="mergerequestrevieweride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestreviewerjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="mergerequestreviewerlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -37447,7 +37447,7 @@ Core representation of a GitLab user.
 | <a id="usercoregroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usercoregroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="usercorehuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="usercoreid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="usercoreide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="usercorejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="usercorelastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |
@@ -45390,7 +45390,7 @@ Implementations:
 | <a id="usergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="userhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
-| <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
+| <a id="userid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
 | <a id="useride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="userjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
 | <a id="userlastactivityon"></a>`lastActivityOn` | [`Date`](#date) | Date the user last performed any actions. |

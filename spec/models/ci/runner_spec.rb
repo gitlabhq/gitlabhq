@@ -545,8 +545,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         expect(assign_to).to be_truthy
 
         expect(runner).to be_project_type
-        expect(runner.runner_projects.pluck(:project_id))
-          .to contain_exactly(project.id, owner_project.id, fallback_owner_project.id)
+        expect(runner.project_ids).to contain_exactly(project.id, owner_project.id, fallback_owner_project.id)
       end
 
       it 'does not change sharding_key_id or owner' do

@@ -99,6 +99,8 @@ class SyncFkReferencingPCiPipelines < Gitlab::Database::Migration[2.2]
 
   def up
     FOREIGN_KEYS.each do |options|
+      next unless foreign_key_exists?(options[:source_table], name: options[:name])
+
       with_lock_retries do
         validate_foreign_key(options[:source_table], options[:column], name: options[:name])
       end
@@ -106,6 +108,9 @@ class SyncFkReferencingPCiPipelines < Gitlab::Database::Migration[2.2]
     end
 
     P_FOREIGN_KEYS.each do |options|
+      new_name = options[:name].to_s.gsub('_tmp', '')
+      next if foreign_key_exists?(options[:source_table], NEW_REFERENCING_TABLE, name: new_name)
+
       add_concurrent_partitioned_foreign_key(
         options[:source_table], NEW_REFERENCING_TABLE,
         **with_defaults(options, validate: true)

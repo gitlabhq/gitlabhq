@@ -48,28 +48,28 @@ class KeysFinder
     keys.for_user(params[:users])
   end
 
-  def by_created_before(tokens)
-    return tokens unless params[:created_before]
+  def by_created_before(keys)
+    return keys unless params[:created_before]
 
-    tokens.created_before(params[:created_before])
+    keys.created_before(params[:created_before])
   end
 
-  def by_created_after(tokens)
-    return tokens unless params[:created_after]
+  def by_created_after(keys)
+    return keys unless params[:created_after]
 
-    tokens.created_after(params[:created_after])
+    keys.created_after(params[:created_after])
   end
 
-  def by_expires_before(tokens)
-    return tokens unless params[:expires_before]
+  def by_expires_before(keys)
+    return keys unless params[:expires_before]
 
-    tokens.expires_before(params[:expires_before])
+    keys.expires_before(params[:expires_before])
   end
 
-  def by_expires_after(tokens)
-    return tokens unless params[:expires_after]
+  def by_expires_after(keys)
+    return keys unless params[:expires_after]
 
-    tokens.expires_after(params[:expires_after])
+    keys.expires_after(params[:expires_after])
   end
 
   def by_fingerprint(keys)

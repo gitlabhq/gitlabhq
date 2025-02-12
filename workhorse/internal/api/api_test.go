@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -232,4 +233,32 @@ func TestSendGitAuditEvent(t *testing.T) {
 	require.NotEmpty(t, requestHeaders)
 	require.NotEmpty(t, requestHeaders["Gitlab-Workhorse-Api-Request"])
 	require.Equal(t, auditRequest, requestBody)
+}
+
+func Test_passResponseBack(t *testing.T) {
+	t.Run("filters out sensitive headers", func(t *testing.T) {
+		sensitiveData := []string{"sensitive-data"}
+		safeData := "safe-data"
+
+		httpResp := &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       io.NopCloser(bytes.NewBufferString("")),
+			Header: http.Header{
+				"gitlab-workhorse-send-data": sensitiveData,
+				"gitlab-sv":                  sensitiveData,
+				"gitlab-lb":                  sensitiveData,
+				"Safe-Header":                []string{safeData},
+			},
+		}
+
+		w := httptest.NewRecorder()
+		r := httptest.NewRequest("GET", "/", nil)
+
+		passResponseBack(httpResp, w, r)
+
+		require.Empty(t, w.Header().Get("gitlab-workhorse-send-data"))
+		require.Empty(t, w.Header().Get("gitlab-sv"))
+		require.Empty(t, w.Header().Get("gitlab-lb"))
+		require.Equal(t, safeData, w.Header().Get("Safe-Header"))
+	})
 }

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlDisclosureDropdown, GlModalDirective, GlLink } from '@gitlab/ui';
+import { GlBreadcrumb, GlDisclosureDropdown, GlModalDirective, GlLink } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/repository/permissions.query.graphql';
 import { joinPaths, escapeFileUrl, buildURLwithRefType } from '~/lib/utils/url_utility';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
@@ -12,6 +12,7 @@ import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { logError } from '~/lib/logger';
 
 const UPLOAD_BLOB_MODAL_ID = 'modal-upload-blob';
 const NEW_DIRECTORY_MODAL_ID = 'modal-new-directory';
@@ -19,6 +20,7 @@ const NEW_DIRECTORY_MODAL_ID = 'modal-new-directory';
 export default {
   components: {
     ClipboardButton,
+    GlBreadcrumb,
     GlDisclosureDropdown,
     UploadBlobModal,
     NewDirectoryModal,
@@ -40,7 +42,10 @@ export default {
       },
       update: (data) => data.project?.userPermissions,
       error(error) {
-        throw error;
+        logError(
+          `Failed to fetch user permissions. See exception details for more information.`,
+          error,
+        );
       },
     },
   },
@@ -303,8 +308,11 @@ export default {
     gfmCopyText() {
       return `\`${this.currentPath}\``;
     },
-    showCopyButton() {
-      return this.glFeatures.blobOverflowMenu && this.currentPath?.trim().length;
+    doesCurrentPathExist() {
+      return this.currentPath?.trim().length;
+    },
+    crumbs() {
+      return this.pathLinks.map(({ name, url, ...rest }) => ({ text: name, to: url, ...rest }));
     },
   },
   methods: {
@@ -317,6 +325,7 @@ export default {
 
 <template>
   <nav
+    v-if="!glFeatures.blobOverflowMenu"
     :aria-label="__('Files breadcrumb')"
     :data-current-path="currentDirectoryPath"
     class="js-repo-breadcrumbs gl-flex"
@@ -339,14 +348,6 @@ export default {
         />
       </li>
     </ol>
-    <clipboard-button
-      v-if="showCopyButton"
-      :text="currentPath"
-      :gfm="gfmCopyText"
-      :title="__('Copy file path')"
-      category="tertiary"
-      css-class="gl-mx-2"
-    />
     <upload-blob-modal
       v-if="showUploadModal"
       :modal-id="$options.uploadBlobModalId"
@@ -367,4 +368,21 @@ export default {
       :path="newDirectoryPath"
     />
   </nav>
+  <div v-else class="gl-flex gl-w-full gl-justify-between sm:gl-w-auto">
+    <gl-breadcrumb
+      :items="crumbs"
+      :data-current-path="currentDirectoryPath"
+      :aria-label="__('Files breadcrumb')"
+      size="md"
+      class="breadcrumb-item"
+    />
+    <clipboard-button
+      v-if="doesCurrentPathExist"
+      :text="currentPath"
+      :gfm="gfmCopyText"
+      :title="__('Copy file path')"
+      category="tertiary"
+      css-class="gl-mx-2"
+    />
+  </div>
 </template>

@@ -32,6 +32,7 @@ module Import
         # We use :owner_access here because it's shared between GroupPolicy and
         # NamespacePolicy.
         return error_invalid_permissions unless current_user.can?(:owner_access, namespace)
+        return error_no_source_users if import_source_users.empty?
 
         ServiceResponse.success(payload: csv_data)
       end
@@ -53,6 +54,13 @@ module Import
         ServiceResponse.error(
           message: s_('Import|You do not have permission to view import source users for this namespace'),
           reason: :forbidden
+        )
+      end
+
+      def error_no_source_users
+        ServiceResponse.error(
+          message: s_('No placeholder users are awaiting reassignment.'),
+          reason: :no_source_users
         )
       end
     end

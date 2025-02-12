@@ -501,3 +501,22 @@ The record can be deleted once the MR is deployed to all the environments:
 ```shell
 /chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production
 ```
+
+## Checking feature flag status
+
+You can use the following ChatOps command to see a feature flag's current state:
+
+```shell
+/chatops run feature get <feature-flag-name>
+```
+
+Since this is a read-only command, you can avoid cluttering the production channels by either:
+
+- Running it in the `#chatops-ops-test` Slack channel
+- Sending it as a direct message to the ChatOps bot
+
+The result of this command will display:
+
+- Whether the feature flag exists
+- Its current state (enabled/disabled)
+- Any percentage rollouts or actor-based gates that are configured

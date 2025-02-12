@@ -23,7 +23,7 @@
 
 <!-- If you can, link to the line of code that might be responsible for the problem. -->
 
-<!-- Please add a label for the type of bug as per https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification -->
+<!-- Please add a label for the type of bug as per https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification -->
 /label ~"type::bug"
 /label ~"group::global search"
 /label ~"workflow::solution validation" 

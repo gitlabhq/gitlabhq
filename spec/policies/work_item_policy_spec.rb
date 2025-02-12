@@ -38,6 +38,8 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       let(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
       let(:not_persisted_project_work_item) { build(:work_item, project: private_project) }
 
+      let_it_be(:incident_work_item) { create(:work_item, :incident, project: private_project) }
+
       it_behaves_like 'checks abilities for project level work items'
 
       it 'checks non-member abilities' do
@@ -69,6 +71,8 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       let(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
       let(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
       let(:not_persisted_project_work_item) { build(:work_item, project: public_project) }
+
+      let_it_be(:incident_work_item) { create(:work_item, :incident, project: public_project) }
 
       it_behaves_like 'checks abilities for project level work items'
 

@@ -7,6 +7,7 @@ RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public, owners: user) }
+  let_it_be(:source_user) { create(:import_source_user, namespace: group) }
   let(:file) { fixture_file_upload('spec/fixtures/import/user_mapping/user_mapping_upload.csv') }
 
   describe 'GET /groups/*group_id/-/group_members/bulk_reassignment_file' do

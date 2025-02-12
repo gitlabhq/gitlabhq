@@ -2,7 +2,7 @@
 - include_private = local_assigns.fetch(:include_private, false)
 - params[:scope] ||= []
 
-= gl_tabs_nav({ class: 'js-snippets-nav-tabs gl-border-b-0 gl-overflow-x-auto gl-grow gl-flex-nowrap' }) do
+= gl_tabs_nav({ class: 'js-snippets-nav-tabs gl-border-b-0 gl-grow gl-flex-nowrap' }) do
   = gl_tab_link_to subject_snippets_path(subject), { item_active: params[:scope].empty? } do
     = _('All')
     = gl_tab_counter_badge(include_private ? counts[:total] : counts[:are_public_or_internal])

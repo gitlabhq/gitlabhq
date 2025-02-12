@@ -39,7 +39,6 @@ Layout/ArrayAlignment:
     - 'ee/spec/serializers/user_analytics_entity_spec.rb'
     - 'ee/spec/services/audit_events/export_csv_service_spec.rb'
     - 'ee/spec/services/ee/boards/issues/list_service_spec.rb'
-    - 'ee/spec/services/epic_issues/create_service_spec.rb'
     - 'ee/spec/services/incident_management/issuable_resource_links/zoom_link_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/create_pipeline_service_spec.rb'
     - 'ee/spec/services/security/token_revocation_service_spec.rb'

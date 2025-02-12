@@ -197,6 +197,7 @@ The following metrics are available:
 | `gitlab_rack_attack_throttle_limit` | Gauge | 17.6 | Reports the maximum number of requests that a client can make before Rack Attack throttles them. | `event_name` |
 | `gitlab_rack_attack_throttle_period_seconds` | Gauge | 17.6 | Reports the duration over which requests for a client are counted before Rack Attack throttles them. | `event_name` |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio` | Histogram | 17.6 | Utilization ratio of a throttle in GitLab Application Rate Limiter. | `throttle_key`, `peek`, `feature_category` |
+| `search_zoekt_task_processing_queue_size` | Gauge | 17.9 | Number of tasks waiting to be processed by Zoekt. | |
 
 ## Metrics controlled by a feature flag
 

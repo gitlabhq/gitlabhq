@@ -3203,7 +3203,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/elastic/index_projects_by_range_service.rb'
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/app/services/elastic/process_initial_bookkeeping_service.rb'
-    - 'ee/app/services/epic_issues/create_service.rb'
     - 'ee/app/services/epic_issues/destroy_service.rb'
     - 'ee/app/services/epic_issues/list_service.rb'
     - 'ee/app/services/epic_issues/update_service.rb'

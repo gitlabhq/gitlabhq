@@ -7,11 +7,10 @@ module Ci
 
       attr_reader :allowlist_groups, :allowlist_projects
 
-      UnexpectedCompactionEntry = Class.new(StandardError)
-      RedundantCompactionEntry = Class.new(StandardError)
+      Error = Class.new(StandardError)
 
-      def initialize(project_id)
-        @project_id = project_id
+      def initialize(project)
+        @project = project
         @allowlist_groups = []
         @allowlist_projects = []
       end
@@ -23,7 +22,7 @@ module Ci
 
           # Collecting id batches to avoid cross-database transactions.
           Ci::JobToken::Authorization.where(
-            accessed_project_id: @project_id
+            accessed_project_id: @project.id
           ).each_batch(column: :origin_project_id) do |batch|
             origin_project_id_batches << batch.pluck(:origin_project_id) # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- pluck limited by batch size
           end
@@ -55,6 +54,12 @@ module Ci
             @allowlist_groups << namespace
           end
         end
+
+      rescue Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError,
+        Gitlab::Utils::TraversalIdCompactor::RedundantCompactionEntry,
+        Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry => error
+
+        raise Error, error.class.name.demodulize
       end
 
       def path_already_allowlisted?(namespace_path)
@@ -65,7 +70,7 @@ module Ci
       end
 
       def existing_links_traversal_ids
-        allowlist = Ci::JobToken::Allowlist.new(Project.find(@project_id))
+        allowlist = Ci::JobToken::Allowlist.new(@project)
         allowlist.group_link_traversal_ids + allowlist.project_link_traversal_ids
       end
       strong_memoize_attr :existing_links_traversal_ids

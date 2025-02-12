@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe SyncFkReferencingPCiPipelines, migration: :gitlab_ci, feature_category: :continuous_integration do
-  let(:all_tmp_fk_names) do
+  let!(:all_tmp_fk_names) do
     (described_class::FOREIGN_KEYS + described_class::P_FOREIGN_KEYS).pluck(:name)
   end
 
@@ -13,6 +13,27 @@ RSpec.describe SyncFkReferencingPCiPipelines, migration: :gitlab_ci, feature_cat
   end
 
   it 'validates and renames the fks' do
+    reversible_migration do |migration|
+      migration.before -> {
+        expect(fk_count_for(:p_ci_pipelines, all_tmp_fk_names, is_valid: false)).to eq(16)
+        expect(fk_count_for(:p_ci_pipelines, all_fk_names)).to eq(0)
+        expect(fk_count_for(:ci_pipelines, all_fk_names)).to eq(16)
+      }
+      migration.after -> {
+        expect(fk_count_for(:p_ci_pipelines, all_tmp_fk_names, is_valid: false)).to eq(0)
+        expect(fk_count_for(:p_ci_pipelines, all_fk_names)).to eq(16)
+        expect(fk_count_for(:ci_pipelines, all_fk_names)).to eq(0)
+      }
+    end
+  end
+
+  it 'is idempotent' do
+    original_foreign_keys = described_class::FOREIGN_KEYS
+    original_p_foreign_keys = described_class::P_FOREIGN_KEYS
+
+    stub_const("#{described_class}::FOREIGN_KEYS", original_foreign_keys + original_foreign_keys)
+    stub_const("#{described_class}::P_FOREIGN_KEYS", original_p_foreign_keys + original_p_foreign_keys)
+
     reversible_migration do |migration|
       migration.before -> {
         expect(fk_count_for(:p_ci_pipelines, all_tmp_fk_names, is_valid: false)).to eq(16)

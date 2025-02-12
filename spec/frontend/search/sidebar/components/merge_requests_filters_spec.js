@@ -20,14 +20,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
     hasMissingProjectContext: () => true,
   };
 
-  const createComponent = (
-    initialState = {},
-    provide = {
-      glFeatures: {
-        searchMrFilterSourceBranch: true,
-      },
-    },
-  ) => {
+  const createComponent = (initialState = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -42,7 +35,6 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
     wrapper = shallowMount(MergeRequestsFilters, {
       store,
-      provide,
     });
   };
 
@@ -101,16 +93,6 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
     it('will not render AuthorFilter', () => {
       expect(findAuthorFilter().exists()).toBe(false);
-    });
-  });
-
-  describe('When feature flag search_mr_filter_source_branch is disabled', () => {
-    beforeEach(() => {
-      createComponent(null, { glFeatures: { searchMrFilterSourceBranch: false } });
-    });
-
-    it(`will not render SourceBranchFilter`, () => {
-      expect(findSourceBranchFilter().exists()).toBe(false);
     });
   });
 

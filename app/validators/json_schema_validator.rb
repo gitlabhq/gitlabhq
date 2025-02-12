@@ -29,13 +29,17 @@ class JsonSchemaValidator < ActiveModel::EachValidator
     value = Gitlab::Json.parse(value.to_s) if options[:parse_json] == true && !value.nil?
 
     if options[:detail_errors]
-      validator.validate(value).each do |error|
+      schema.validate(value).each do |error|
         message = format_error_message(error)
         record.errors.add(attribute, message)
       end
     else
       record.errors.add(attribute, error_message) unless valid_schema?(value)
     end
+  end
+
+  def schema
+    @schema ||= JSONSchemer.schema(Pathname.new(schema_path))
   end
 
   private
@@ -69,11 +73,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   end
 
   def valid_schema?(value)
-    validator.valid?(value)
-  end
-
-  def validator
-    @validator ||= JSONSchemer.schema(Pathname.new(schema_path))
+    schema.valid?(value)
   end
 
   def schema_path

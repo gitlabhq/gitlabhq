@@ -402,7 +402,7 @@ export const mockStore = {
       },
     },
     flags: {},
-    ref: {},
+    ref: { branch: '1' },
   },
   mergePipeline: {
     id: 1,
@@ -422,7 +422,7 @@ export const mockStore = {
       },
     },
     flags: {},
-    ref: {},
+    ref: { branch: '1' },
   },
   pipelineEtag: '/etag',
   pipelineIid: '12',

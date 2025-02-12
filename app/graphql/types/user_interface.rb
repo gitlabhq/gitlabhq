@@ -16,9 +16,9 @@ module Types
       method: :itself
 
     field :id,
-      type: GraphQL::Types::ID,
+      type: Types::GlobalIDType[::User],
       null: false,
-      description: 'ID of the user.'
+      description: 'Global ID of the user.'
     field :bot,
       type: GraphQL::Types::Boolean,
       null: false,

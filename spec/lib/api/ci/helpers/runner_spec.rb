@@ -167,42 +167,6 @@ RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
         expect(current_runner_manager.sharding_key_id).to eq(runner.sharding_key_id)
       end
     end
-
-    context 'when project runner is missing sharding_key_id' do
-      let(:runner) { Ci::Runner.project_type.last }
-      let(:connection) { Ci::Runner.connection }
-
-      before do
-        connection.execute(<<~SQL)
-          ALTER TABLE ci_runners DISABLE TRIGGER ALL;
-
-          INSERT INTO ci_runners(created_at, runner_type, token, sharding_key_id) VALUES(NOW(), 3, 'foo', NULL);
-
-          ALTER TABLE ci_runners ENABLE TRIGGER ALL;
-        SQL
-      end
-
-      it 'fails to create a new runner manager', :aggregate_failures do
-        allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
-        expect(helper.current_runner).to eq(runner)
-
-        expect { current_runner_manager }.to raise_error described_class::UnknownRunnerOwnerError
-      end
-
-      # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
-      context 'with reject_orphaned_runners FF disabled' do
-        before do
-          stub_feature_flags(reject_orphaned_runners: false)
-        end
-
-        it 'fails to create a new runner manager', :aggregate_failures do
-          allow(helper).to receive(:params).and_return(token: runner.token, system_id: 'new_system_id')
-          expect(helper.current_runner).to eq(runner)
-
-          expect { current_runner_manager }.to raise_error described_class::UnknownRunnerOwnerError
-        end
-      end
-    end
   end
 
   describe '#track_runner_authentication', :prometheus, feature_category: :runner do

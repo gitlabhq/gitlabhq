@@ -57,7 +57,7 @@ entry:
 
 `meta.auth_fail_token_id` indicates that an access token of ID 12 was used.
 
-To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#get-single-personal-access-token).
+To find more information about this token, use the [personal access token API](../../api/personal_access_tokens.md#get-details-on-a-personal-access-token).
 You can also use the API to [rotate the token](../../api/personal_access_tokens.md#rotate-a-personal-access-token).
 
 ### Replace expired access tokens
@@ -66,7 +66,7 @@ To replace the token:
 
 1. Check where this token may have been used previously, and remove it from any
    automation might still use the token.
-   - For personal access tokens, use the [API](../../api/personal_access_tokens.md#list-personal-access-tokens)
+   - For personal access tokens, use the [API](../../api/personal_access_tokens.md#list-all-personal-access-tokens)
      to list tokens that have expired recently. For example, go to `https://gitlab.com/api/v4/personal_access_tokens`,
      and locate tokens with a specific `expires_at` date.
    - For project access tokens, use the

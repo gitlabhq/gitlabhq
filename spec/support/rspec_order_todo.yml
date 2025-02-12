@@ -2051,7 +2051,6 @@
 - './ee/spec/services/elastic/process_initial_bookkeeping_service_spec.rb'
 - './ee/spec/services/emails/create_service_spec.rb'
 - './ee/spec/services/emails/destroy_service_spec.rb'
-- './ee/spec/services/epic_issues/create_service_spec.rb'
 - './ee/spec/services/epic_issues/destroy_service_spec.rb'
 - './ee/spec/services/epic_issues/list_service_spec.rb'
 - './ee/spec/services/epic_issues/update_service_spec.rb'

@@ -6,7 +6,6 @@ Performance/FlatMap:
     - 'ee/app/models/burndown.rb'
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/serializers/dashboard_environments_serializer.rb'
-    - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/spec/requests/api/members_spec.rb'
     - 'ee/spec/support/helpers/license_scanning_report_helpers.rb'
     - 'lib/gitlab/ci/pipeline/chain/ensure_environments.rb'

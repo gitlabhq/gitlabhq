@@ -800,6 +800,11 @@ msgstr ""
 msgid "%{count} total weight"
 msgstr ""
 
+msgid "%{count} vulnerability set to %{severity} severity"
+msgid_plural "%{count} vulnerabilities set to %{severity} severity"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{days} days until tags are automatically removed"
 msgstr ""
 
@@ -16744,9 +16749,6 @@ msgid "Could not update wiki template"
 msgstr ""
 
 msgid "Could not upload your designs as one or more files uploaded are not supported."
-msgstr ""
-
-msgid "Couldn't add issue due to an internal error."
 msgstr ""
 
 msgid "Couldn't assign policy to project or group"
@@ -38119,6 +38121,9 @@ msgid "No parent group"
 msgstr ""
 
 msgid "No phone number data for matching"
+msgstr ""
+
+msgid "No placeholder users are awaiting reassignment."
 msgstr ""
 
 msgid "No plan"
@@ -63717,6 +63722,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Something went wrong, could not get user."
 msgstr ""
 
+msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability severity."
+msgstr ""
+
 msgid "VulnerabilityManagement|Something went wrong, could not update vulnerability state."
 msgstr ""
 
@@ -63733,6 +63741,9 @@ msgid "VulnerabilityManagement|Verified as fixed or mitigated"
 msgstr ""
 
 msgid "VulnerabilityManagement|Vulnerability name or type. Ex: Cross-site scripting"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr ""
 
 msgid "VulnerabilityManagement|Will not fix or a false-positive"

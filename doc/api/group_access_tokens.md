@@ -17,17 +17,21 @@ Use this API to interact with group access tokens. For more information, see [Gr
 
 Lists all group access tokens for a group.
 
-In GitLab 17.2 and later, you can use the `state` attribute to limit the response to group access tokens with a specified state.
-
 ```plaintext
 GET /groups/:id/access_tokens
 GET /groups/:id/access_tokens?state=inactive
 ```
 
-| Attribute | Type              | required | Description |
-| --------- | ----------------- | -------- | ----------- |
-| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
-| `state`   | string            | No       | If defined, only returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| Attribute          | Type                | required | Description |
+| ------------------ | ------------------- | -------- | ----------- |
+| `id`               | integer or string   | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a group. |
+| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
+| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
 
 ```shell
 curl --request GET \
@@ -156,13 +160,13 @@ curl --request POST \
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
 > - `expires_at` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6.
 
-Rotates a group access token. This immediately revokes the previous token and creates a new token. Generally, this endpoint rotates a specific group access token by authenticating with a personal access token. You can also use a group access token to rotate itself. For more information, see [Self-rotation](#self-rotation).
+Rotates a group access token. This immediately revokes the previous token and creates a new token. Generally, this endpoint rotates a specific group access token by authenticating with a personal access token. You can also use a group access token to rotate itself. For more information, see [Self-rotate](#self-rotate).
 
 If you attempt to use the revoked token later, GitLab immediately revokes the new token. For more information, see [Automatic reuse detection](personal_access_tokens.md#automatic-reuse-detection).
 
 Prerequisites:
 
-- A personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes) or a group access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes). See [Self-rotation](#self-rotation).
+- A personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes) or a group access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes). See [Self-rotate](#self-rotate).
 
 ```plaintext
 POST /groups/:id/access_tokens/:token_id/rotate
@@ -209,14 +213,14 @@ Other possible responses:
   - The token has expired.
   - The token was revoked.
   - You do not have access to the specified token.
-  - You're using a group access token to rotate another group access token. See [Self-rotate a project access token](#self-rotation) instead.
+  - You're using a group access token to rotate another group access token. See [Self-rotate](#self-rotate) instead.
 - `403: Forbidden` if the token is not allowed to rotate itself.
-- `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
+- `404: Not Found` if the user is an administrator but the token does not exist.
 - `405: Method Not Allowed` if the token is not an access token.
 
-### Self-rotation
+### Self-rotate
 
-Instead of rotating a specific group access token, you can instead rotate the same group access token you used to authenticate the request. To self-rotate a group access token, you must:
+Instead of rotating a specific group access token, you can rotate the same group access token you used to authenticate the request. To self-rotate a group access token, you must:
 
 - Rotate a group access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
 - Use the `self` keyword in the request URL.

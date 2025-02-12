@@ -8,12 +8,12 @@ RSpec.describe 'Setting the escalation status of an incident', feature_category:
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:incident, project: project) }
   let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue) }
-  let_it_be(:user) { create(:user, developer_of: project) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:status) { 'ACKNOWLEDGED' }
   let(:input) { { project_path: project.full_path, iid: issue.iid.to_s, status: status } }
+  let(:current_user) { developer }
 
-  let(:current_user) { user }
   let(:mutation) do
     graphql_mutation(:issue_set_escalation_status, input) do
       <<~QL
@@ -30,13 +30,16 @@ RSpec.describe 'Setting the escalation status of an incident', feature_category:
   let(:mutation_response) { graphql_mutation_response(:issue_set_escalation_status) }
 
   context 'when user does not have permission to edit the escalation status' do
-    let(:current_user) { create(:user) }
+    let_it_be(:planner) { create(:user, planner_of: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
 
-    before_all do
-      project.add_reporter(user)
+    where(:user) { [ref(:planner), ref(:reporter)] }
+
+    with_them do
+      let(:current_user) { user }
+
+      it_behaves_like 'a mutation that returns a top-level access error'
     end
-
-    it_behaves_like 'a mutation that returns a top-level access error'
   end
 
   context 'with non-incident issue is provided' do

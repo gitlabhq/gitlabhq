@@ -20,7 +20,7 @@
 <!-- Any further tasks that need to be completed after the main work of the issue is done, such as announcing the changes. -->
 <!-- This section is optional. -->
 
-<!-- Make sure to add one of the type labels (as per https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification):-->
+<!-- Make sure to add one of the type labels (as per https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification):-->
 <!-- /label ~"type::bug" ~"type::feature" ~"type::tooling" ~"type::maintenance" -->
 
 /label ~devops::analytics ~"group::analytics instrumentation"

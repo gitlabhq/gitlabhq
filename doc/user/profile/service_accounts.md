@@ -165,8 +165,8 @@ Prerequisites:
 
 To revoke a personal access token, use the [personal access tokens API](../../api/personal_access_tokens.md#revoke-a-personal-access-token). You can use either of the following methods:
 
-- Use a [personal access token ID](../../api/personal_access_tokens.md#using-a-personal-access-token-id-1). The token used to perform the revocation must have the [`admin_mode`](personal_access_tokens.md#personal-access-token-scopes) scope.
-- Use a [request header](../../api/personal_access_tokens.md#using-a-request-header-1). The token used to perform the request is revoked.
+- Use a [personal access token ID](../../api/personal_access_tokens.md#revoke-a-personal-access-token). The token used to perform the revocation must have the [`admin_mode`](personal_access_tokens.md#personal-access-token-scopes) scope.
+- Use a [request header](../../api/personal_access_tokens.md#self-revoke). The token used to perform the request is revoked.
 
 ### Delete a service account
 

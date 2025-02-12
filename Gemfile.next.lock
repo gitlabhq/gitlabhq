@@ -1993,7 +1993,7 @@ GEM
       activesupport
       faraday (~> 2.0)
       faraday-follow_redirects
-    webmock (3.24.0)
+    webmock (3.25.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -2384,7 +2384,7 @@ DEPENDENCIES
   vmstat (~> 2.3.0)
   warning (~> 1.3.0)
   webauthn (~> 3.0)
-  webmock (~> 3.24.0)
+  webmock (~> 3.25.0)
   webrick (~> 1.8.1)
   wikicloth (= 0.8.1)
   yajl-ruby (~> 1.4.3)

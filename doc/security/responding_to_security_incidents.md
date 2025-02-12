@@ -40,7 +40,7 @@ Security incidents related to credentials exposure can vary in severity from low
 
 - Determine the type and scope of the token.
 - Identify the token owner and the relevant team based on the token information.
-  - For personal access tokens, you might be able to use the [personal access token API](../api/personal_access_tokens.md#using-a-request-header) to quickly retrieve token details.
+  - For personal access tokens, you can use the [personal access token API](../api/personal_access_tokens.md#get-details-on-a-personal-access-token) to quickly retrieve token details.
 - [Revoke](../api/personal_access_tokens.md#revoke-a-personal-access-token) or [rotate](../api/group_access_tokens.md#rotate-a-group-access-token) the token after you have assessed its scope and potential impact. Revoking a production token is a balance between the security risk posed by the exposed token, and the availability risk revoking a token might cause. Only revoke the token if you are:
   - Confident in your understanding of the potential impact of token revocation.
   - Following your company's security incident response guidelines.

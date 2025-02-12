@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets_management do
   let_it_be(:accessed_project) { create(:project) }
   let(:excluded_namespace_paths) { [] }
-  let(:compactor) { described_class.new(accessed_project.id) }
+  let(:compactor) { described_class.new(accessed_project) }
 
   # [1, 21],            ns1, p1
   # [1, 2, 3],          ns1, ns2, p2
@@ -61,7 +61,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
     it 'raises when the limit cannot be achieved' do
       expect do
         compactor.compact(1)
-      end.to raise_error(Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError)
+      end.to raise_error(described_class::Error, "CompactionLimitCannotBeAchievedError")
     end
 
     it 'raises when an unexpected compaction entry is found' do
@@ -70,7 +70,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
         original_response << [1, 2, 3]
       end
 
-      expect { compactor.compact(5) }.to raise_error(Gitlab::Utils::TraversalIdCompactor::UnexpectedCompactionEntry)
+      expect { compactor.compact(5) }.to raise_error(described_class::Error, "UnexpectedCompactionEntry")
     end
 
     it 'raises when a redundant compaction entry is found' do
@@ -80,7 +80,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
         original_response << (last_item.size > 1 ? last_item[0...-1] : last_item)
       end
 
-      expect { compactor.compact(5) }.to raise_error(Gitlab::Utils::TraversalIdCompactor::RedundantCompactionEntry)
+      expect { compactor.compact(5) }.to raise_error(described_class::Error, "RedundantCompactionEntry")
     end
 
     context 'with three top-level namespaces' do
@@ -104,7 +104,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
       it 'raises when the limit cannot be achieved' do
         expect do
           compactor.compact(2)
-        end.to raise_error(Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError)
+        end.to raise_error(described_class::Error, "CompactionLimitCannotBeAchievedError")
       end
 
       it 'does not raise when the limit cannot be achieved' do
@@ -128,13 +128,13 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
         end
       end
 
-      describe 'when a multiple groups exist' do
+      describe 'when multiple groups exist' do
         before do
           create(:ci_job_token_group_scope_link, source_project: accessed_project, target_group: ns6)
           create(:ci_job_token_group_scope_link, source_project: accessed_project, target_group: ns2)
         end
 
-        it 'removes it from the compaction process' do
+        it 'removes them from the compaction process' do
           compactor.compact(4)
 
           expect(compactor.allowlist_groups).to match_array([ns4])
@@ -159,7 +159,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
       end
     end
 
-    describe 'when a multiple projects exist' do
+    describe 'when multiple projects exist' do
       before do
         create(:ci_job_token_project_scope_link, source_project: accessed_project, direction: :inbound,
           target_project: pns8.project)
@@ -167,7 +167,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
           target_project: pns2.project)
       end
 
-      it 'removes it from the compaction process' do
+      it 'removes them from the compaction process' do
         compactor.compact(6)
 
         expect(compactor.allowlist_groups).to match_array([ns2, ns4])
@@ -183,7 +183,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
         target_project: pns8.project)
     end
 
-    it 'removes it from the compaction process' do
+    it 'removes them from the compaction process' do
       compactor.compact(4)
 
       expect(compactor.allowlist_groups).to match_array([ns4])
@@ -196,7 +196,7 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
       accessed_project_control = create(:project)
       create(:ci_job_token_authorization, origin_project: pns1.project, accessed_project: accessed_project_control,
         last_authorized_at: 1.day.ago)
-      compactor_control = described_class.new(accessed_project_control.id)
+      compactor_control = described_class.new(accessed_project_control)
       control = ActiveRecord::QueryRecorder.new do
         compactor_control.origin_project_traversal_ids
       end

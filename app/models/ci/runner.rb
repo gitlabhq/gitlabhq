@@ -331,14 +331,6 @@ module Ci
       end
     end
 
-    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
-    def self.sharded_table_proxy_model
-      @sharded_table_proxy_class ||= Class.new(self) do
-        self.table_name = :ci_runners_e59bb2812d
-        self.primary_key = :id
-      end
-    end
-
     def self.taggings_join_model
       ::Ci::RunnerTagging
     end
@@ -445,14 +437,6 @@ module Ci
       tag_list.any?
     end
 
-    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/516929 is closed.
-    def ensure_partitioned_runner_record_exists
-      self.class.sharded_table_proxy_model.insert_all(
-        [attributes.except('tag_list')], unique_by: [:id, :runner_type],
-        returning: false, record_timestamps: false
-      )
-    end
-
     def predefined_variables
       Gitlab::Ci::Variables::Collection.new
         .append(key: 'CI_RUNNER_ID', value: id.to_s)
@@ -539,10 +523,6 @@ module Ci
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
-        # Avoid inserting partitioned runner managers that refer to a missing ci_runners partitioned record, since
-        # the backfill is not yet finalized.
-        ensure_partitioned_runner_record_exists if Feature.disabled?(:reject_orphaned_runners, Feature.current_request)
-
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
       end
@@ -633,7 +613,7 @@ module Ci
     end
 
     def any_project
-      errors.add(:runner, 'needs to be assigned to at least one project') unless runner_projects.any?
+      errors.add(:runner, 'needs to be assigned to at least one project') if runner_projects.empty?
     end
 
     def exactly_one_group

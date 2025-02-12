@@ -1279,7 +1279,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/services/ee/users/update_service.rb'
     - 'ee/app/services/elastic/index_projects_by_range_service.rb'
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
-    - 'ee/app/services/epic_issues/create_service.rb'
     - 'ee/app/services/epics/strategies/base_dates_strategy.rb'
     - 'ee/app/services/epics/strategies/due_date_inherited_strategy.rb'
     - 'ee/app/services/epics/strategies/start_date_inherited_strategy.rb'
