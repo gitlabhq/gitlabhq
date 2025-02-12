@@ -232,7 +232,6 @@ Style/FormatString:
     - 'spec/support/helpers/javascript_fixtures_helpers.rb'
     - 'spec/support/shared_contexts/bulk_imports_requests_shared_context.rb'
     - 'spec/support/shared_examples/features/wiki/user_views_wiki_page_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/conan_packages_shared_examples.rb'
     - 'spec/support/shared_examples/services/jira/requests/base_shared_examples.rb'
     - 'spec/support/shared_examples/views/registration_features_prompt_shared_examples.rb'
     - 'spec/validators/any_field_validator_spec.rb'

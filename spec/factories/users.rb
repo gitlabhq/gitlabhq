@@ -136,6 +136,10 @@ FactoryBot.define do
       user_type { :llm_bot }
     end
 
+    trait :ci_pipeline_bot do
+      user_type { :ci_pipeline_bot }
+    end
+
     trait :duo_code_review_bot do
       user_type { :duo_code_review_bot }
     end

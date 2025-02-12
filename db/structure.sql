@@ -16347,6 +16347,23 @@ CREATE TABLE merge_requests_approval_rules (
     CONSTRAINT check_c7c36145b7 CHECK ((char_length(name) <= 255))
 );
 
+CREATE TABLE merge_requests_approval_rules_groups (
+    id bigint NOT NULL,
+    approval_rule_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE merge_requests_approval_rules_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_requests_approval_rules_groups_id_seq OWNED BY merge_requests_approval_rules_groups.id;
+
 CREATE SEQUENCE merge_requests_approval_rules_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -16355,6 +16372,41 @@ CREATE SEQUENCE merge_requests_approval_rules_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_requests_approval_rules_id_seq OWNED BY merge_requests_approval_rules.id;
+
+CREATE TABLE merge_requests_approval_rules_merge_requests (
+    id bigint NOT NULL,
+    approval_rule_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE merge_requests_approval_rules_merge_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_requests_approval_rules_merge_requests_id_seq OWNED BY merge_requests_approval_rules_merge_requests.id;
+
+CREATE TABLE merge_requests_approval_rules_projects (
+    id bigint NOT NULL,
+    approval_rule_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE merge_requests_approval_rules_projects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_requests_approval_rules_projects_id_seq OWNED BY merge_requests_approval_rules_projects.id;
 
 CREATE TABLE merge_requests_closing_issues (
     id bigint NOT NULL,
@@ -25606,6 +25658,12 @@ ALTER TABLE ONLY merge_requests ALTER COLUMN id SET DEFAULT nextval('merge_reque
 
 ALTER TABLE ONLY merge_requests_approval_rules ALTER COLUMN id SET DEFAULT nextval('merge_requests_approval_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_requests_approval_rules_groups ALTER COLUMN id SET DEFAULT nextval('merge_requests_approval_rules_groups_id_seq'::regclass);
+
+ALTER TABLE ONLY merge_requests_approval_rules_merge_requests ALTER COLUMN id SET DEFAULT nextval('merge_requests_approval_rules_merge_requests_id_seq'::regclass);
+
+ALTER TABLE ONLY merge_requests_approval_rules_projects ALTER COLUMN id SET DEFAULT nextval('merge_requests_approval_rules_projects_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_requests_closing_issues ALTER COLUMN id SET DEFAULT nextval('merge_requests_closing_issues_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_requests_compliance_violations ALTER COLUMN id SET DEFAULT nextval('merge_requests_compliance_violations_id_seq'::regclass);
@@ -28167,8 +28225,17 @@ ALTER TABLE ONLY merge_request_reviewers
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT merge_request_user_mentions_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY merge_requests_approval_rules_groups
+    ADD CONSTRAINT merge_requests_approval_rules_groups_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_requests_approval_rules_merge_requests
+    ADD CONSTRAINT merge_requests_approval_rules_merge_requests_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY merge_requests_approval_rules
     ADD CONSTRAINT merge_requests_approval_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_requests_approval_rules_projects
+    ADD CONSTRAINT merge_requests_approval_rules_projects_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT merge_requests_closing_issues_pkey PRIMARY KEY (id);
@@ -33579,6 +33646,8 @@ CREATE INDEX index_merge_request_reviewers_on_user_id ON merge_request_reviewers
 
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
+CREATE INDEX index_merge_requests_approval_rules_groups_on_group_id ON merge_requests_approval_rules_groups USING btree (group_id);
+
 CREATE INDEX index_merge_requests_approval_rules_on_group_id ON merge_requests_approval_rules USING btree (group_id);
 
 CREATE INDEX index_merge_requests_approval_rules_on_project_id ON merge_requests_approval_rules USING btree (project_id);
@@ -33756,6 +33825,18 @@ CREATE UNIQUE INDEX index_mr_context_commits_on_merge_request_id_and_sha ON merg
 CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_nulls_last ON merge_request_metrics USING btree (target_project_id, merged_at DESC NULLS LAST, id DESC);
 
 CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_time_to_merge ON merge_request_metrics USING btree (target_project_id, merged_at, created_at) WHERE (merged_at > created_at);
+
+CREATE INDEX index_mrs_approval_rules_mrs_on_mr_id ON merge_requests_approval_rules_merge_requests USING btree (merge_request_id);
+
+CREATE INDEX index_mrs_approval_rules_mrs_on_project_id ON merge_requests_approval_rules_merge_requests USING btree (project_id);
+
+CREATE INDEX index_mrs_approval_rules_projects_on_project_id ON merge_requests_approval_rules_projects USING btree (project_id);
+
+CREATE UNIQUE INDEX index_mrs_ars_groups_on_ar_id_and_group_id ON merge_requests_approval_rules_groups USING btree (approval_rule_id, group_id);
+
+CREATE UNIQUE INDEX index_mrs_ars_mrs_on_ar_id_and_mr_id ON merge_requests_approval_rules_merge_requests USING btree (approval_rule_id, merge_request_id);
+
+CREATE UNIQUE INDEX index_mrs_ars_projects_on_ar_id_and_project_id ON merge_requests_approval_rules_projects USING btree (approval_rule_id, project_id);
 
 CREATE INDEX index_namespace_admin_notes_on_namespace_id ON namespace_admin_notes USING btree (namespace_id);
 
@@ -38628,6 +38709,9 @@ ALTER TABLE ONLY observability_traces_issues_connections
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_requests_approval_rules_groups
+    ADD CONSTRAINT fk_094b4086a3 FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY catalog_resource_component_last_usages
     ADD CONSTRAINT fk_094c686785 FOREIGN KEY (component_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -38786,6 +38870,9 @@ ALTER TABLE ONLY agent_project_authorizations
 
 ALTER TABLE ONLY ai_agent_version_attachments
     ADD CONSTRAINT fk_1d4253673b FOREIGN KEY (ai_vectorizable_file_id) REFERENCES ai_vectorizable_files(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_requests_approval_rules_merge_requests
+    ADD CONSTRAINT fk_1d49645a27 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY design_management_versions
     ADD CONSTRAINT fk_1dccb304f8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -39108,6 +39195,9 @@ ALTER TABLE ONLY incident_management_timeline_events
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_45054f9c45 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_requests_approval_rules_projects
+    ADD CONSTRAINT fk_451a9dfe93 FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY security_policy_requirements
     ADD CONSTRAINT fk_458f7f5ad5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -39225,6 +39315,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 ALTER TABLE ONLY deploy_keys_projects
     ADD CONSTRAINT fk_58a901ca7e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_requests_approval_rules_groups
+    ADD CONSTRAINT fk_59068f09e5 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY oauth_access_grants
     ADD CONSTRAINT fk_59cdb2323c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -39257,6 +39350,9 @@ ALTER TABLE ONLY dast_scanner_profiles_builds
 
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_5d9b05a7e9 FOREIGN KEY (protected_environment_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_requests_approval_rules_merge_requests
+    ADD CONSTRAINT fk_5ddc4a2f7b FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_assignees
     ADD CONSTRAINT fk_5e0c8d9154 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -39398,6 +39494,9 @@ ALTER TABLE ONLY index_statuses
 
 ALTER TABLE ONLY abuse_report_notes
     ADD CONSTRAINT fk_74e1990397 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_requests_approval_rules_merge_requests
+    ADD CONSTRAINT fk_74e3466397 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT fk_74f6d8328a FOREIGN KEY (custom_software_license_id) REFERENCES custom_software_licenses(id) ON DELETE CASCADE;
@@ -39845,6 +39944,9 @@ ALTER TABLE ONLY ml_experiments
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_ae440388cc FOREIGN KEY (latest_closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY merge_requests_approval_rules_projects
+    ADD CONSTRAINT fk_af4078336f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_analytics_cycle_analytics_group_stages_group_value_stream_id FOREIGN KEY (group_value_stream_id) REFERENCES analytics_cycle_analytics_group_value_streams(id) ON DELETE CASCADE;

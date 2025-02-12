@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_registry do
-  include_context 'conan api setup'
+  include_context 'with conan api setup'
 
   let_it_be_with_reload(:package) { create(:conan_package, project: project) }
   let(:project_id) { project.id }
@@ -30,7 +30,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
     ':package_channel/revisions/:recipe_revision/files/:file_name' do
-    include_context 'conan file download endpoints'
+    include_context 'for conan file download endpoints'
 
     let(:file_name) { recipe_file.file_name }
     let(:recipe_revision) { recipe_file_metadata.recipe_revision_value }

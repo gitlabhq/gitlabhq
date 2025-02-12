@@ -21,7 +21,8 @@ module HasUserType
     llm_bot: 14,
     placeholder: 15,
     duo_code_review_bot: 16,
-    import_user: 17
+    import_user: 17,
+    ci_pipeline_bot: 18
   }.with_indifferent_access.freeze
 
   BOT_USER_TYPES = %w[
@@ -38,6 +39,7 @@ module HasUserType
     service_account
     llm_bot
     duo_code_review_bot
+    ci_pipeline_bot
   ].freeze
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations

@@ -3,6 +3,7 @@ import { GlDrawer, GlButton, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import { findSelectedOptionValueByLabel } from './utils';
 import {
   SQUASH_SETTING_DO_NOT_ALLOW,
   SQUASH_SETTING_ALLOW,
@@ -59,15 +60,18 @@ export default {
   },
   data() {
     return {
-      selected: this.selectedOption,
+      selected: findSelectedOptionValueByLabel(this.$options.OPTIONS, this.selectedOption),
     };
   },
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
+    selectedOptionValue() {
+      return findSelectedOptionValueByLabel(this.$options.OPTIONS, this.selectedOption);
+    },
     hasChanged() {
-      return this.selected !== this.selectedOption;
+      return this.selected !== this.selectedOptionValue;
     },
   },
   methods: {

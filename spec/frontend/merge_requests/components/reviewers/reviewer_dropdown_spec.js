@@ -5,11 +5,14 @@ import { shallowMount } from '@vue/test-utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 import UpdateReviewers from '~/merge_requests/components/reviewers/update_reviewers.vue';
 import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import setReviewersMutation from '~/merge_requests/components/reviewers/queries/set_reviewers.mutation.graphql';
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 let wrapper;
 let autocompleteUsersMock;
@@ -208,6 +211,70 @@ describe('Reviewer dropdown component', () => {
           reviewerUsernames: ['root'],
         }),
       );
+    });
+
+    describe('tracking when the dropdown is closed', () => {
+      let trackEventSpy;
+
+      beforeEach(async () => {
+        createComponent(true, {
+          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+        });
+
+        await waitForPromises();
+
+        ({ trackEventSpy } = bindInternalEventDocument(wrapper.element));
+      });
+
+      it('tracks which position any selected users were in as a telemetry event', () => {
+        findDropdown().vm.$emit('select', ['root']);
+        findDropdown().vm.$emit('hidden');
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'user_selects_reviewer_from_mr_sidebar',
+          {
+            value: 1,
+            selectable_reviewers_count: 2,
+          },
+          undefined,
+        );
+      });
+
+      it('tracks which position any selected users were in - discounting already selected reviewers - as a telemetry event', async () => {
+        createComponent(true, {
+          users: [createMockUser(), createMockUser({ id: 2, name: 'Nonadmin', username: 'bob' })],
+          selectedReviewers: [createMockUser()],
+        });
+
+        await waitForPromises();
+
+        findDropdown().vm.$emit('select', ['bob']);
+        findDropdown().vm.$emit('hidden');
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'user_selects_reviewer_from_mr_sidebar',
+          {
+            value: 1,
+            selectable_reviewers_count: 1,
+          },
+          undefined,
+        );
+      });
+
+      it('tracks which position any selected users were in after a search as a telemetry event', () => {
+        findDropdown().vm.$emit('search', 'bob');
+        findDropdown().vm.$emit('select', ['bob']);
+        findDropdown().vm.$emit('hidden');
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'user_selects_reviewer_from_mr_sidebar_after_search',
+          {
+            value: 2,
+            selectable_reviewers_count: 2,
+          },
+          undefined,
+        );
+      });
     });
   });
 

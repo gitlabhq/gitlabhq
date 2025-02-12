@@ -4129,7 +4129,6 @@ Layout/LineLength:
     - 'spec/support/shared_examples/quick_actions/issue/clone_quick_action_shared_examples.rb'
     - 'spec/support/shared_examples/quick_actions/issue/move_quick_action_shared_examples.rb'
     - 'spec/support/shared_examples/quick_actions/merge_request/rebase_quick_action_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/conan_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/custom_attributes_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/debian_distributions_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/debian_packages_shared_examples.rb'

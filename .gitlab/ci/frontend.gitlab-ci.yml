@@ -22,22 +22,29 @@
   stage: prepare
   needs: []
   script:
-    - yarn_install_script
-    - export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
-    - 'echo "CACHE_ASSETS_AS_PACKAGE: ${CACHE_ASSETS_AS_PACKAGE}"'
-    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
     - |
-      if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
-        source scripts/gitlab_component_helpers.sh
+      function compile_assets() {
+        yarn_install_script
+        export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
+        echo "CACHE_ASSETS_AS_PACKAGE: ${CACHE_ASSETS_AS_PACKAGE}"
 
-        if ! gitlab_assets_archive_doesnt_exist; then
-          # We remove all assets from the native cache as they could pollute the fresh assets from the package
-          rm -rf public/assets/ app/assets/javascripts/locale/**/app.js
-          run_timed_command "retry download_and_extract_gitlab_assets"
+        # The new strategy to cache assets as generic packages is experimental and
+        # can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
+        if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
+          source scripts/gitlab_component_helpers.sh
+
+          if ! gitlab_assets_archive_doesnt_exist; then
+            # We remove all assets from the native cache as they could pollute the fresh assets from the package
+            rm -rf public/assets/ app/assets/javascripts/locale/**/app.js
+            run_timed_command "retry download_and_extract_gitlab_assets"
+          fi
         fi
-      fi
-    - assets_compile_script
-    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
+
+        assets_compile_script
+        echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
+      }
+
+      run_with_custom_exit_code compile_assets
 
 .update-cache-base:
   after_script:
@@ -123,12 +130,18 @@ retrieve-frontend-fixtures:
   script:
     - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
-    - install_gitlab_gem
-    - export_fixtures_sha_for_download
     - |
-      if check_fixtures_download; then
-        run_timed_command "download_and_extract_fixtures"
-      fi
+      function retrieve_frontend_fixtures() {
+        install_gitlab_gem
+        export_fixtures_sha_for_download
+
+        if check_fixtures_download; then
+          run_timed_command "download_and_extract_fixtures"
+        fi
+      }
+
+      run_with_custom_exit_code retrieve_frontend_fixtures
+
   artifacts:
     expire_in: 30 days
     paths:
@@ -203,9 +216,14 @@ upload-frontend-fixtures:
   script:
     - source scripts/gitlab_component_helpers.sh
     - export_fixtures_sha_for_upload
-    - 'fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
-    - run_timed_command "create_fixtures_package"
-    - run_timed_command "upload_fixtures_package"
+    - |
+      function upload_frontend_fixtures() {
+        fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
+        run_timed_command "create_fixtures_package"
+        run_timed_command "upload_fixtures_package"
+      }
+
+      run_with_custom_exit_code upload_frontend_fixtures
 
 graphql-schema-dump:
   variables:

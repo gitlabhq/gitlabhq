@@ -53,7 +53,9 @@ module QA
           end
 
           def has_no_runner?(runner)
-            has_no_element?("runner-row-#{runner.id}")
+            retry_until(reload: true, sleep_interval: 2, max_attempts: 6, message: "Retry for runner removal") do
+              has_no_element?("runner-row-#{runner.id}")
+            end
           end
 
           def go_to_runner_managers_page(runner)

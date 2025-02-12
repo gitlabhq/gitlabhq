@@ -15,6 +15,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import RuleView from '~/projects/settings/branch_rules/components/view/index.vue';
 import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/view/access_levels_drawer.vue';
+import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/view/squash_settings_drawer.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
@@ -31,6 +32,7 @@ import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import deleteBranchRuleMutation from '~/projects/settings/branch_rules/mutations/branch_rule_delete.mutation.graphql';
 import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
+import editBranchRuleSquashOptionMutation from '~/projects/settings/branch_rules/mutations/edit_squash_option.mutation.graphql';
 import {
   editBranchRuleMockResponse,
   deleteBranchRuleMockResponse,
@@ -74,6 +76,7 @@ describe('View branch rules', () => {
     .mockResolvedValue(predefinedBranchRulesMockResponse);
   const deleteBranchRuleSuccessHandler = jest.fn().mockResolvedValue(deleteBranchRuleMockResponse);
   const editBranchRuleSuccessHandler = jest.fn().mockResolvedValue(editBranchRuleMockResponse);
+  const editSquashOptionSuccessHandler = jest.fn().mockResolvedValue(editBranchRuleMockResponse);
   const protectableBranchesMockRequestHandler = jest
     .fn()
     .mockResolvedValue(protectableBranchesMockResponse);
@@ -84,10 +87,12 @@ describe('View branch rules', () => {
   const createComponent = async ({
     glFeatures = { editBranchRules: true, branchRuleSquashSettings: true },
     canAdminProtectedBranches = true,
+    allowEditSquashSetting = true,
     branchRulesQueryHandler = branchRulesMockRequestHandler,
     squashOptionQueryHandler = squashOptionMockRequestHandler,
     deleteMutationHandler = deleteBranchRuleSuccessHandler,
     editMutationHandler = editBranchRuleSuccessHandler,
+    editSquashOptionMutationHandler = editSquashOptionSuccessHandler,
   } = {}) => {
     fakeApollo = createMockApollo([
       [branchRulesQuery, branchRulesQueryHandler],
@@ -95,6 +100,7 @@ describe('View branch rules', () => {
       [getProtectableBranches, protectableBranchesMockRequestHandler],
       [deleteBranchRuleMutation, deleteMutationHandler],
       [editBranchRuleMutation, editMutationHandler],
+      [editBranchRuleSquashOptionMutation, editSquashOptionMutationHandler],
     ]);
 
     wrapper = shallowMountExtended(RuleView, {
@@ -105,6 +111,7 @@ describe('View branch rules', () => {
         branchRulesPath,
         glFeatures,
         canAdminProtectedBranches,
+        allowEditSquashSetting,
       },
       stubs: {
         ApprovalRulesApp: true,
@@ -152,6 +159,7 @@ describe('View branch rules', () => {
   const findNoDataTitle = () => wrapper.findByText(I18N.noData);
   const findAccessLevelsDrawer = () => wrapper.findComponent(AccessLevelsDrawer);
   const findSquashSettingSection = () => wrapper.findByTestId('squash-setting-content');
+  const findSquashSettingsDrawer = () => wrapper.findComponent(SquashSettingsDrawer);
 
   const findMatchingBranchesLink = () =>
     wrapper.findByText(
@@ -166,6 +174,88 @@ describe('View branch rules', () => {
       await createComponent({ glFeatures: { branchRuleSquashSettings: false } });
 
       expect(findSquashSettingSection().exists()).toBe(false);
+    });
+
+    it.each`
+      scenario                           | canAdminProtectedBranches | expectedIsEditAvailable | description
+      ${'user has permission'}           | ${true}                   | ${true}                 | ${'shows edit button'}
+      ${'user does not have permission'} | ${false}                  | ${false}                | ${'hides edit button'}
+    `(
+      '$description when $scenario',
+      async ({ canAdminProtectedBranches, expectedIsEditAvailable }) => {
+        await createComponent({
+          glFeatures: { branchRuleSquashSettings: true },
+          canAdminProtectedBranches,
+        });
+
+        expect(findSquashSettingSection().props('isEditAvailable')).toBe(expectedIsEditAvailable);
+      },
+    );
+
+    it('opens squash settings drawer when edit is clicked', async () => {
+      await createComponent();
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      expect(findSquashSettingsDrawer().props('isOpen')).toBe(true);
+    });
+
+    it('calls mutation with correct data when drawer emits submit', async () => {
+      const mutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionUpdate: { errors: [] } },
+      });
+
+      await createComponent({
+        editSquashOptionMutationHandler: mutationSpy,
+      });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      findSquashSettingsDrawer().vm.$emit('submit', 'always');
+      await waitForPromises();
+
+      expect(mutationSpy).toHaveBeenCalledWith({
+        input: {
+          branchRuleId: 'gid://gitlab/Projects/BranchRule/1',
+          squashOption: 'always',
+        },
+      });
+    });
+
+    it('shows error alert if mutation fails', async () => {
+      const mutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionUpdate: { errors: ['error'] } },
+      });
+
+      await createComponent({
+        editSquashOptionMutationHandler: mutationSpy,
+      });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      const drawer = wrapper.findComponent(SquashSettingsDrawer);
+      drawer.vm.$emit('submit', 'always');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while updating branch rule.',
+      });
+    });
+
+    it('closes drawer after successful update', async () => {
+      await createComponent();
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      const drawer = findSquashSettingsDrawer();
+      drawer.vm.$emit('submit', 'always');
+      await waitForPromises();
+
+      expect(drawer.props('isOpen')).toBe(false);
     });
 
     it('renders squash settings section', () => {

@@ -31,9 +31,11 @@ import {
   CHANGED_REQUIRE_CODEOWNER_APPROVAL,
 } from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
+import editSquashOptionMutation from '../../mutations/edit_squash_option.mutation.graphql';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import AccessLevelsDrawer from './access_levels_drawer.vue';
+import SquashSettingsDrawer from './squash_settings_drawer.vue';
 import ProtectionToggle from './protection_toggle.vue';
 import {
   I18N,
@@ -70,12 +72,14 @@ export default {
     GlButton,
     BranchRuleModal,
     AccessLevelsDrawer,
+    SquashSettingsDrawer,
     PageHeading,
     CrudComponent,
     SettingsSection,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
+    allowEditSquashSetting: { default: false },
     projectPath: {
       default: '',
     },
@@ -154,10 +158,11 @@ export default {
       matchingBranchesCount: null,
       isAllowedToMergeDrawerOpen: false,
       isAllowedToPushAndMergeDrawerOpen: false,
+      isSquashSettingsDrawerOpen: false,
       isRuleUpdating: false,
       isAllowForcePushLoading: false,
       isCodeOwnersLoading: false,
-      squashOption: null,
+      squashOption: {},
     };
   },
   computed: {
@@ -247,6 +252,11 @@ export default {
     },
     showSquashSetting() {
       return this.glFeatures.branchRuleSquashSettings && !this.branch?.includes('*'); // Squash settings are not available for wildcards
+    },
+    showEditSquashSetting() {
+      return (
+        this.canAdminProtectedBranches && this.allowEditSquashSetting && !this.isAllBranchesRule
+      );
     },
   },
   methods: {
@@ -342,6 +352,29 @@ export default {
           trackEvent: CHANGED_ALLOWED_TO_PUSH_AND_MERGE,
         });
       }
+    },
+    onEditSquashSettings(selectedOption) {
+      this.isRuleUpdating = true;
+      const branchRuleId = this.branchRule.id;
+
+      this.$apollo
+        .mutate({
+          mutation: editSquashOptionMutation,
+          variables: { input: { branchRuleId, squashOption: selectedOption } },
+        })
+        .then(({ data: { branchRuleSquashOptionUpdate } }) => {
+          if (branchRuleSquashOptionUpdate?.errors.length) {
+            createAlert({ message: this.$options.i18n.updateBranchRuleError });
+            return;
+          }
+
+          this.$apollo.queries.project.refetch();
+        })
+        .catch(() => createAlert({ message: this.$options.i18n.updateBranchRuleError }))
+        .finally(() => {
+          this.isSquashSettingsDrawerOpen = false;
+          this.isRuleUpdating = false;
+        });
     },
     editBranchRule({
       name = this.branchRule.name,
@@ -570,10 +603,11 @@ export default {
           v-if="showSquashSetting"
           :header="$options.i18n.squashSettingHeader"
           :empty-state-copy="$options.i18n.squashSettingEmptyState"
-          :is-edit-available="false"
+          :is-edit-available="showEditSquashSetting"
           :icon="null"
           class="gl-mt-5"
           data-testid="squash-setting-content"
+          @edit="isSquashSettingsDrawerOpen = true"
         >
           <template #description>
             <gl-sprintf :message="$options.i18n.squashSettingHelpText">
@@ -592,6 +626,14 @@ export default {
           </template>
         </protection>
       </settings-section>
+
+      <squash-settings-drawer
+        :is-open="isSquashSettingsDrawerOpen"
+        :is-loading="isRuleUpdating"
+        :selected-option="squashOption.option"
+        @submit="onEditSquashSettings"
+        @close="isSquashSettingsDrawerOpen = false"
+      />
 
       <!-- Status checks -->
       <settings-section

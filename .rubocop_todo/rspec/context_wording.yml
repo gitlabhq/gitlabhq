@@ -2611,7 +2611,6 @@ RSpec/ContextWording:
     - 'spec/support/shared_contexts/prometheus/alert_shared_context.rb'
     - 'spec/support/shared_contexts/rack_attack_shared_context.rb'
     - 'spec/support/shared_contexts/read_ci_configuration_shared_context.rb'
-    - 'spec/support/shared_contexts/requests/api/conan_packages_shared_context.rb'
     - 'spec/support/shared_contexts/requests/api/debian_repository_shared_context.rb'
     - 'spec/support/shared_contexts/requests/api/go_modules_shared_context.rb'
     - 'spec/support/shared_contexts/requests/api/graphql/group_and_project_boards_query_shared_context.rb'

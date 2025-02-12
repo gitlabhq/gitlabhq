@@ -1,6 +1,6 @@
 <script>
 /**
- * Falls back to the code used in `copy_to_clipboard.js`
+ * Falls back to the code used in `javascripts/behaviors/copy_to_clipboard.js`
  *
  * Renders a button with a clipboard icon that copies the content of `data-clipboard-text`
  * when clicked.

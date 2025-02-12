@@ -112,7 +112,7 @@ export const accessLevelsConfig = {
   },
 };
 
-export const SQUASH_SETTING_DO_NOT_ALLOW = 'do_not_allow';
-export const SQUASH_SETTING_ALLOW = 'allow';
-export const SQUASH_SETTING_ENCOURAGE = 'encourage';
-export const SQUASH_SETTING_REQUIRE = 'require';
+export const SQUASH_SETTING_DO_NOT_ALLOW = 'NEVER';
+export const SQUASH_SETTING_ALLOW = 'ALLOWED';
+export const SQUASH_SETTING_ENCOURAGE = 'ENCOURAGED';
+export const SQUASH_SETTING_REQUIRE = 'ALWAYS';

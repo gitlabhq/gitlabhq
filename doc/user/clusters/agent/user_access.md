@@ -18,7 +18,7 @@ DETAILS:
 As an administrator of Kubernetes clusters in an organization, you can grant Kubernetes access to members
 of a specific project or group.
 
-Granting access also activates the Dashboard for Kubernetes for a project or group.
+Granting access also activates [the Dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md) for a project or group.
 
 For self-managed instances, make sure you either:
 

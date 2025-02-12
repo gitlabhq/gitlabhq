@@ -110,6 +110,9 @@ export default {
         ...action,
       }));
     },
+    isEnvironmentStopping() {
+      return this.environment?.state === 'stopping';
+    },
     canStop() {
       return this.environment?.canStop;
     },
@@ -233,7 +236,7 @@ export default {
           />
 
           <stop-component
-            v-if="canStop"
+            v-if="canStop || isEnvironmentStopping"
             :environment="environment"
             data-track-action="click_button"
             data-track-label="environment_stop"

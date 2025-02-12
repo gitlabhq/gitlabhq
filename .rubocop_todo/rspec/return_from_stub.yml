@@ -176,7 +176,6 @@ RSpec/ReturnFromStub:
     - 'spec/support/shared_examples/lib/gitlab/middleware/read_only_gitlab_instance_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/sidekiq_middleware/strategy_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/can_move_repository_storage_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/conan_packages_shared_examples.rb'
     - 'spec/support/shared_examples/services/boards/boards_create_service_shared_examples.rb'
     - 'spec/support/shared_examples/services/boards/create_service_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/object_storage_shared_examples.rb'

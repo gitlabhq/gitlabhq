@@ -115,7 +115,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     const assistiveElement = lastUsed.find('.gl-sr-only');
     expect(anchor.exists()).toBe(true);
     expect(anchor.attributes('href')).toBe(
-      '/help/user/profile/personal_access_tokens.md#view-the-time-at-and-ips-where-a-token-was-last-used',
+      '/help/user/profile/personal_access_tokens.md#view-token-usage-information',
     );
     expect(assistiveElement.text()).toBe('The last time a token was used');
   });

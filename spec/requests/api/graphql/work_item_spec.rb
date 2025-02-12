@@ -90,7 +90,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'markNoteAsInternal' => true,
           'moveWorkItem' => true,
           'cloneWorkItem' => true,
-          'reportSpam' => false
+          'reportSpam' => false,
+          'summarizeComments' => false
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )

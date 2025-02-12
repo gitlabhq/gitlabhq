@@ -256,6 +256,9 @@ merge_requests:
 - approver_users
 - approver_groups
 - approved_by_users
+- v2_approval_rules
+- v2_approval_rules_projects
+- v2_approval_rules_merge_requests
 - draft_notes
 - merge_train_car
 - blocks_as_blocker
@@ -770,6 +773,9 @@ project:
 - approval_merge_request_rules
 - approval_merge_request_rule_sources
 - approval_project_rules
+- v2_approval_rules
+- v2_approval_rules_projects
+- v2_approval_rules_merge_requests
 - approvers
 - approver_users
 - audit_events

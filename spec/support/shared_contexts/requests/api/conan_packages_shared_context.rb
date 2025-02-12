@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'conan api setup' do
+RSpec.shared_context 'with conan api setup' do
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers
 
@@ -44,7 +44,7 @@ RSpec.shared_context 'conan api setup' do
   end
 end
 
-RSpec.shared_context 'conan recipe endpoints' do
+RSpec.shared_context 'for conan recipe endpoints' do
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers
 
@@ -52,7 +52,7 @@ RSpec.shared_context 'conan recipe endpoints' do
   let(:headers) { build_token_auth_header(jwt.encoded) }
 end
 
-RSpec.shared_context 'conan file download endpoints' do
+RSpec.shared_context 'for conan file download endpoints' do
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers
 
@@ -65,7 +65,7 @@ RSpec.shared_context 'conan file download endpoints' do
   let(:recipe_file_metadata) { recipe_file.conan_file_metadatum }
 end
 
-RSpec.shared_context 'conan file upload endpoints' do
+RSpec.shared_context 'for conan file upload endpoints' do
   include PackagesManagerApiSpecHelpers
   include WorkhorseHelpers
   include HttpBasicAuthHelpers

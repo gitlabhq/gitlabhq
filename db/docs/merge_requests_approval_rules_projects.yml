@@ -1,0 +1,12 @@
+---
+table_name: merge_requests_approval_rules_projects
+classes:
+  - MergeRequests::ApprovalRulesProject
+feature_categories:
+  - code_review_workflow
+description: Stores relationship between approval rules v2 and projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179861
+milestone: '17.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

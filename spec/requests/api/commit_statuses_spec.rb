@@ -14,14 +14,14 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:master) do
+      let_it_be(:master) do
         project.ci_pipelines.build(source: :push, sha: commit.id, ref: 'master', protected: false).tap do |p|
           p.ensure_project_iid! # Necessary to avoid cross-database modification error
           p.save!
         end
       end
 
-      let!(:develop) do
+      let_it_be(:develop) do
         project.ci_pipelines.build(source: :push, sha: commit.id, ref: 'develop', protected: false).tap do |p|
           p.ensure_project_iid! # Necessary to avoid cross-database modification error
           p.save!
@@ -35,12 +35,12 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
           create(:commit_status, { pipeline: pipeline, ref: pipeline.ref }.merge(opts))
         end
 
-        let!(:status1) { create_status(master, status: 'running', retried: true) }
-        let!(:status2) { create_status(master, name: 'coverage', status: 'pending', retried: true) }
-        let!(:status3) { create_status(develop, status: 'running', allow_failure: true) }
-        let!(:status4) { create_status(master, name: 'coverage', status: 'success') }
-        let!(:status5) { create_status(develop, name: 'coverage', status: 'success') }
-        let!(:status6) { create_status(master, status: 'success', stage: 'deploy') }
+        let_it_be(:status1) { create_status(master, status: 'running', retried: true) }
+        let_it_be(:status2) { create_status(master, name: 'coverage', status: 'pending', retried: true) }
+        let_it_be(:status3) { create_status(develop, status: 'running', allow_failure: true) }
+        let_it_be(:status4) { create_status(master, name: 'coverage', status: 'success') }
+        let_it_be(:status5) { create_status(develop, name: 'coverage', status: 'success') }
+        let_it_be(:status6) { create_status(master, status: 'success', stage: 'deploy') }
 
         context 'latest commit statuses' do
           before do
@@ -52,8 +52,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
-            expect(statuses_id).to contain_exactly(status3.id, status4.id, status5.id, status6.id)
-            json_response.sort_by! { |status| status['id'] }
+            expect(statuses_id).to eq([status3.id, status4.id, status5.id, status6.id].sort)
             expect(json_response.map { |status| status['allow_failure'] }).to eq([true, false, false, false])
           end
         end
@@ -73,7 +72,7 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
         context 'Get all commit statuses' do
           let(:params) { { all: 1 } }
-          let(:expected_statuses) { [status1.id, status2.id, status3.id, status4.id, status5.id, status6.id] }
+          let(:expected_statuses) { (develop.statuses.ids + master.statuses.ids).sort }
 
           it_behaves_like 'get commit statuses'
         end
@@ -93,42 +92,42 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
         context 'latest commit statuses for specific ref' do
           let(:params) { { ref: 'develop' } }
-          let(:expected_statuses) { [status3.id, status5.id] }
+          let(:expected_statuses) { [status3.id, status5.id].sort }
 
           it_behaves_like 'get commit statuses'
         end
 
         context 'latest commit statues for specific name' do
           let(:params) { { name: 'coverage' } }
-          let(:expected_statuses) { [status4.id, status5.id] }
+          let(:expected_statuses) { [status4.id, status5.id].sort }
 
           it_behaves_like 'get commit statuses'
         end
 
         context 'latest commit statuses for specific pipeline' do
           let(:params) { { pipeline_id: develop.id } }
-          let(:expected_statuses) { [status3.id, status5.id] }
+          let(:expected_statuses) { [status3.id, status5.id].sort }
 
           it_behaves_like 'get commit statuses'
         end
 
         context 'return commit statuses sort by desc id' do
           let(:params) { { all: 1, sort: "desc" } }
-          let(:expected_statuses) { [status6.id, status5.id, status4.id, status3.id, status2.id, status1.id] }
+          let(:expected_statuses) { (develop.statuses.ids + master.statuses.ids).sort.reverse }
 
           it_behaves_like 'get commit statuses'
         end
 
         context 'return commit statuses sort by desc pipeline_id' do
           let(:params) { { all: 1, order_by: "pipeline_id", sort: "desc" } }
-          let(:expected_statuses) { [status3.id, status5.id, status1.id, status2.id, status4.id, status6.id] }
+          let(:expected_statuses) { develop.statuses.order(id: :asc).ids + master.statuses.order(id: :asc).ids }
 
           it_behaves_like 'get commit statuses'
         end
 
         context 'return commit statuses sort by asc pipeline_id' do
           let(:params) { { all: 1, order_by: "pipeline_id" } }
-          let(:expected_statuses) { [status1.id, status2.id, status4.id, status6.id, status3.id, status5.id] }
+          let(:expected_statuses) { master.statuses.order(id: :asc).ids + develop.statuses.order(id: :asc).ids }
 
           it_behaves_like 'get commit statuses'
         end

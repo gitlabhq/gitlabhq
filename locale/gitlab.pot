@@ -22805,6 +22805,9 @@ msgstr ""
 msgid "Environments|Stop unused environments"
 msgstr ""
 
+msgid "Environments|Stopping environment"
+msgstr ""
+
 msgid "Environments|Synced"
 msgstr ""
 
@@ -26743,6 +26746,9 @@ msgstr ""
 msgid "GlobalSearch|Projects"
 msgstr ""
 
+msgid "GlobalSearch|Projects not indexed"
+msgstr ""
+
 msgid "GlobalSearch|Recent epics"
 msgstr ""
 
@@ -26903,9 +26909,6 @@ msgid "GlobalSearch|all GitLab"
 msgstr ""
 
 msgid "GlobalSearch|in %{scope}"
-msgstr ""
-
-msgid "GlobalSearch|projects not indexed"
 msgstr ""
 
 msgid "GlobalShortcuts|Copied reference to clipboard."
@@ -33547,7 +33550,7 @@ msgstr ""
 msgid "Learn more about seats owed"
 msgstr ""
 
-msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced Search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
+msgid "Learn more about shards and replicas in the %{configuration_link_start}advanced search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
 msgstr ""
 
 msgid "Learn more."
@@ -39051,7 +39054,7 @@ msgstr ""
 msgid "Now, personalize your GitLab experience"
 msgstr ""
 
-msgid "Number of Elasticsearch shards and replicas per index:"
+msgid "Number of Elasticsearch shards and replicas per index"
 msgstr ""
 
 msgid "Number of Git pushes after which Gitaly is asked to optimize a repository."
@@ -53539,6 +53542,33 @@ msgid "Service account token expiration"
 msgstr ""
 
 msgid "Service accounts"
+msgstr ""
+
+msgid "ServiceAccounts|Add Service Account"
+msgstr ""
+
+msgid "ServiceAccounts|An error occurred while fetching the service accounts."
+msgstr ""
+
+msgid "ServiceAccounts|Delete Account"
+msgstr ""
+
+msgid "ServiceAccounts|Delete Account and Contributions"
+msgstr ""
+
+msgid "ServiceAccounts|Edit"
+msgstr ""
+
+msgid "ServiceAccounts|Manage Access Tokens"
+msgstr ""
+
+msgid "ServiceAccounts|Name"
+msgstr ""
+
+msgid "ServiceAccounts|Service Accounts"
+msgstr ""
+
+msgid "ServiceAccounts|Service accounts are non-human accounts that allow interactions between software applications, systems, or services. %{learnMore}"
 msgstr ""
 
 msgid "ServiceAccount|No more seats are available to create Service Account User"

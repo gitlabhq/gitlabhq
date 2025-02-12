@@ -63,7 +63,10 @@ RSpec.shared_examples 'conan search endpoint' do
       end
 
       it { expect(response).to have_gitlab_http_status(:bad_request) }
-      it { expect(json_response['message']).to eq('400 Bad request - Search term length must be less than 200 characters.') }
+
+      it 'returns an error message' do
+        expect(json_response['message']).to eq('400 Bad request - Search term length must be less than 200 characters.')
+      end
     end
 
     context 'returns error when search term has too many wildcards' do
@@ -74,7 +77,10 @@ RSpec.shared_examples 'conan search endpoint' do
       end
 
       it { expect(response).to have_gitlab_http_status(:bad_request) }
-      it { expect(json_response['message']).to eq('400 Bad request - Too many wildcards in search term. Maximum is 5.') }
+
+      it 'returns an error message' do
+        expect(json_response['message']).to eq('400 Bad request - Too many wildcards in search term. Maximum is 5.')
+      end
     end
   end
 
@@ -365,7 +371,8 @@ end
 RSpec.shared_examples 'empty recipe for not found package' do
   context 'with invalid recipe url' do
     let(:recipe_path) do
-      'aa/bb/%{project}/ccc' % { project: ::Packages::Conan::Metadatum.package_username_from(full_path: project.full_path) }
+      format('aa/bb/%{project}/ccc',
+        project: ::Packages::Conan::Metadatum.package_username_from(full_path: project.full_path))
     end
 
     let(:presenter) { double('::Packages::Conan::PackagePresenter') }
@@ -384,8 +391,7 @@ RSpec.shared_examples 'empty recipe for not found package' do
           project,
           any_args
         ).and_return(presenter)
-      allow(presenter).to receive(:recipe_snapshot) { {} }
-      allow(presenter).to receive(:package_snapshot) { {} }
+      allow(presenter).to receive_messages(recipe_snapshot: {}, package_snapshot: {})
 
       subject
 
@@ -412,13 +418,14 @@ end
 
 RSpec.shared_examples 'recipe download_urls' do
   let(:recipe_path) { package.conan_recipe_path }
+  let(:base_url_with_recipe_path) { "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}" }
 
   it_behaves_like 'enforcing read_packages job token policy'
 
   it 'returns the download_urls for the recipe files' do
     expected_response = {
-      'conanfile.py' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanfile.py",
-      'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
+      'conanfile.py' => "#{base_url_with_recipe_path}/0/export/conanfile.py",
+      'conanmanifest.txt' => "#{base_url_with_recipe_path}/0/export/conanmanifest.txt"
     }
 
     subject
@@ -431,14 +438,15 @@ end
 
 RSpec.shared_examples 'package download_urls' do
   let(:recipe_path) { package.conan_recipe_path }
+  let(:base_url_with_recipe_path) { "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}" }
 
   it_behaves_like 'enforcing read_packages job token policy'
 
   it 'returns the download_urls for the package files' do
     expected_response = {
-      'conaninfo.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conaninfo.txt",
-      'conanmanifest.txt' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conanmanifest.txt",
-      'conan_package.tgz' => "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/#{conan_package_reference}/0/conan_package.tgz"
+      'conaninfo.txt' => "#{base_url_with_recipe_path}/0/package/#{conan_package_reference}/0/conaninfo.txt",
+      'conanmanifest.txt' => "#{base_url_with_recipe_path}/0/package/#{conan_package_reference}/0/conanmanifest.txt",
+      'conan_package.tgz' => "#{base_url_with_recipe_path}/0/package/#{conan_package_reference}/0/conan_package.tgz"
     }
 
     subject
@@ -537,6 +545,7 @@ end
 
 RSpec.shared_examples 'recipe upload_urls endpoint' do
   let(:recipe_path) { package.conan_recipe_path }
+  let(:base_url_with_recipe_path) { "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}" }
 
   let(:params) do
     { 'conanfile.py': 24,
@@ -553,8 +562,8 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
     subject
 
     expected_response = {
-      'conanfile.py': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanfile.py",
-      'conanmanifest.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
+      'conanfile.py': "#{base_url_with_recipe_path}/0/export/conanfile.py",
+      'conanmanifest.txt': "#{base_url_with_recipe_path}/0/export/conanmanifest.txt"
     }
 
     expect(response.body).to eq(expected_response.to_json)
@@ -571,9 +580,9 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
       subject
 
       expected_response = {
-        'conan_sources.tgz': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conan_sources.tgz",
-        'conan_export.tgz': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conan_export.tgz",
-        'conanmanifest.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
+        'conan_sources.tgz': "#{base_url_with_recipe_path}/0/export/conan_sources.tgz",
+        'conan_export.tgz': "#{base_url_with_recipe_path}/0/export/conan_export.tgz",
+        'conanmanifest.txt': "#{base_url_with_recipe_path}/0/export/conanmanifest.txt"
       }
 
       expect(response.body).to eq(expected_response.to_json)
@@ -590,7 +599,7 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
       subject
 
       expected_response = {
-        'conanmanifest.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/export/conanmanifest.txt"
+        'conanmanifest.txt': "#{base_url_with_recipe_path}/0/export/conanmanifest.txt"
       }
 
       expect(response.body).to eq(expected_response.to_json)
@@ -600,6 +609,7 @@ end
 
 RSpec.shared_examples 'package upload_urls endpoint' do
   let(:recipe_path) { package.conan_recipe_path }
+  let(:base_url_with_recipe_path) { "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}" }
 
   let(:params) do
     { 'conaninfo.txt': 24,
@@ -615,9 +625,9 @@ RSpec.shared_examples 'package upload_urls endpoint' do
 
   it 'returns a set of upload urls for the files requested' do
     expected_response = {
-      'conaninfo.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt",
-      'conanmanifest.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conanmanifest.txt",
-      'conan_package.tgz': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conan_package.tgz"
+      'conaninfo.txt': "#{base_url_with_recipe_path}/0/package/123456789/0/conaninfo.txt",
+      'conanmanifest.txt': "#{base_url_with_recipe_path}/0/package/123456789/0/conanmanifest.txt",
+      'conan_package.tgz': "#{base_url_with_recipe_path}/0/package/123456789/0/conan_package.tgz"
     }
 
     subject
@@ -633,7 +643,7 @@ RSpec.shared_examples 'package upload_urls endpoint' do
 
     it 'returns upload urls only for the valid requested files' do
       expected_response = {
-        'conaninfo.txt': "#{url_prefix}/packages/conan/v1/files/#{package.conan_recipe_path}/0/package/123456789/0/conaninfo.txt"
+        'conaninfo.txt': "#{base_url_with_recipe_path}/0/package/123456789/0/conaninfo.txt"
       }
 
       subject
@@ -1010,10 +1020,13 @@ RSpec.shared_examples 'uploads a package file' do
       end
 
       context 'with existing package' do
-        let!(:existing_package) { create(:conan_package, name: recipe_path_name, version: recipe_path_version, project: project) }
+        let!(:existing_package) do
+          create(:conan_package, name: recipe_path_name, version: recipe_path_version, project: project)
+        end
 
         before do
-          existing_package.conan_metadatum.update!(package_username: recipe_path_username, package_channel: recipe_path_channel)
+          existing_package.conan_metadatum.update!(package_username: recipe_path_username,
+            package_channel: recipe_path_channel)
         end
 
         it 'does not create a new package' do
@@ -1044,7 +1057,7 @@ RSpec.shared_examples 'uploads a package file' do
       end
 
       let(:tmp_object) do
-        fog_connection.directories.new(key: 'packages').files.create( # rubocop:disable Rails/SaveBang
+        fog_connection.directories.new(key: 'packages').files.create( # rubocop:disable Rails/SaveBang -- Method #create! is undefined for class Fog::AWS::Storage::Files
           key: "tmp/uploads/#{file_name}",
           body: 'content'
         )

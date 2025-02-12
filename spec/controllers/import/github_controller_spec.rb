@@ -518,7 +518,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
         post :cancel_all
 
-        expect(json_response).to eq([
+        expect(json_response).to match_array([
           {
             'id' => project.id,
             'status' => 'success'

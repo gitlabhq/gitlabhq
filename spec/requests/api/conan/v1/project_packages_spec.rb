@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_registry do
-  include_context 'conan api setup'
+  include_context 'with conan api setup'
 
   let_it_be_with_reload(:package) { create(:conan_package, project: project, without_recipe_revisions: true) }
   let(:project_id) { project.id }
@@ -55,7 +55,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
   end
 
   context 'with recipe endpoints' do
-    include_context 'conan recipe endpoints'
+    include_context 'for conan recipe endpoints'
 
     let(:url_prefix) { "#{Settings.gitlab.base_url}/api/v4/projects/#{project_id}" }
     let(:recipe_path) { package.conan_recipe_path }
@@ -150,7 +150,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
   end
 
   context 'with file download endpoints' do
-    include_context 'conan file download endpoints'
+    include_context 'for conan file download endpoints'
 
     subject(:request) { get api(url), headers: headers }
 
@@ -181,7 +181,7 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
   end
 
   context 'with file upload endpoints' do
-    include_context 'conan file upload endpoints'
+    include_context 'for conan file upload endpoints'
 
     describe 'PUT /api/v4/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username' \
       '/:package_channel/:recipe_revision/export/:file_name/authorize' do

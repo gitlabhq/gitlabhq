@@ -128,6 +128,7 @@ module Types
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Projects::Star, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::Projects::BranchRules::SquashOptions::Update, experiment: { milestone: '17.9' }
     mount_mutation Mutations::BranchRules::Update, experiment: { milestone: '16.7' }
     mount_mutation Mutations::BranchRules::Create, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Releases::Create

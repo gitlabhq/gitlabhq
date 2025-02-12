@@ -271,6 +271,8 @@
   - 1
 - - compliance_management_standards_soc2_at_least_one_non_author_approval_group
   - 1
+- - compliance_management_timeout_pending_external_controls
+  - 1
 - - compliance_management_update_default_framework
   - 1
 - - compliance_management_violation_export_mailer

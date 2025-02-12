@@ -2405,7 +2405,6 @@ Style/InlineDisableAnnotation:
     - 'spec/support/shared_examples/models/member_shared_examples.rb'
     - 'spec/support/shared_examples/models/packages/debian/component_file_shared_example.rb'
     - 'spec/support/shared_examples/requests/api/award_emoji_todo_shared_examples.rb'
-    - 'spec/support/shared_examples/requests/api/conan_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/graphql/group_and_project_boards_query_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/helm_packages_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/ml_model_packages_shared_examples.rb'

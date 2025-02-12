@@ -4,6 +4,12 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/view/squash_settings_drawer.vue';
+import {
+  SQUASH_SETTING_DO_NOT_ALLOW,
+  SQUASH_SETTING_ALLOW,
+  SQUASH_SETTING_ENCOURAGE,
+  SQUASH_SETTING_REQUIRE,
+} from '~/projects/settings/branch_rules/components/view/constants';
 
 jest.mock('~/lib/utils/dom_utils', () => ({ getContentWrapperHeight: jest.fn() }));
 
@@ -14,7 +20,7 @@ describe('Squash Settings Drawer', () => {
   const defaultProps = {
     isOpen: false,
     isLoading: false,
-    selectedOption: 'do_not_allow',
+    selectedOption: SQUASH_SETTING_DO_NOT_ALLOW,
   };
 
   const findDrawer = () => wrapper.findComponent(GlDrawer);
@@ -50,9 +56,12 @@ describe('Squash Settings Drawer', () => {
     );
 
     it.each([
-      ['encourage', 'encourage'],
-      [undefined, 'do_not_allow'],
-    ])('sets correct initial selection for %s', async (input, expected) => {
+      [undefined, SQUASH_SETTING_DO_NOT_ALLOW],
+      ['Allow', SQUASH_SETTING_ALLOW],
+      ['Encourage', SQUASH_SETTING_ENCOURAGE],
+      ['Require', SQUASH_SETTING_REQUIRE],
+      ['Do not allow', SQUASH_SETTING_DO_NOT_ALLOW],
+    ])('sets correct selection for %s', async (input, expected) => {
       createComponent({ selectedOption: input });
       await nextTick();
       findSaveButton().vm.$emit('click');

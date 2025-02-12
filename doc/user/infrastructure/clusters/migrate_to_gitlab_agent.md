@@ -33,28 +33,132 @@ This workflow uses an agent to connect to your cluster. The agent:
 
 NOTE:
 The certificate-based integration was used for popular GitLab features like
-GitLab Managed Apps, GitLab-managed clusters, and Auto DevOps.
-Some features are currently available only when using certificate-based integration.
+GitLab-managed Apps, GitLab-managed clusters, and Auto DevOps.
 
-## Migrate cluster application deployments
+## Find certificate-based clusters
 
-### Migrate from GitLab-managed clusters
+You can find all the certificate-based clusters within a GitLab instance or group, including subgroups and projects, using [a dedicated API](../../../api/cluster_discovery.md#discover-certificate-based-clusters). Querying the API with a group ID returns all the certificate-based clusters defined at or below the provided group.
 
-With GitLab-managed clusters, GitLab creates separate service accounts and namespaces
-for every branch and deploys by using these resources.
+Clusters defined in parent groups are not returned in this case. This behavior helps group Owners find all the clusters they need to migrate.
 
-The GitLab agent uses [impersonation](../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation)
-strategies to deploy to your cluster with restricted account access. To do so:
+Disabled clusters are returned as well to avoid accidentally leaving clusters behind.
 
-1. Choose the impersonation strategy that suits your needs.
-1. Use Kubernetes RBAC rules to manage impersonated account permissions in Kubernetes.
-1. Use the `access_as` attribute in your agent configuration file to define the impersonation.
+NOTE:
+The cluster discovery API does not work for personal namespaces.
 
-### Migrate from Auto DevOps
+## Migrate generic deployments
+
+To migrate generic deployments:
+
+1. Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
+1. Follow the CI/CD workflow to [authorize the agent to access](../../clusters/agent/ci_cd_workflow.md#authorize-the-agent) groups and projects, or to [secure access with impersonation].(../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
+1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
+1. Select the **Details** tab and turn off the cluster.
+
+## Migrate from GitLab-managed clusters to Kubernetes resources
+
+With GitLab-managed clusters, GitLab creates separate service accounts and namespaces for every branch and deploys by using these resources.
+
+Now, you can use [GitLab-managed Kubernetes resources](../../clusters/agent/managed_kubernetes_resources.md) to self-serve resources with enhanced security controls.
+
+With GitLab-managed Kubernetes resources, you can:
+
+- Set up environments securely without manual intervention.
+- Control resource creation and access without giving developers administrative cluster permissions.
+- Provide self-service capabilities for [developers](https://handbook.gitlab.com/handbook/product/personas/#sasha-software-developer) when they create a new project or environment.
+- Allow developers to deploy testing and development versions in dedicated or shared namespaces.
+
+Prerequisites:
+
+- Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
+- [Authorize the agent](../../clusters/agent/ci_cd_workflow.md#authorize-the-agent) to access relevant projects or groups.
+- Check the status of the **Namespace per environment** checkbox in your certificate-based cluster integration page.
+
+To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
+
+1. Configure the agent to turn on resource management in your agent configuration file:
+
+   ```yaml
+   ci_access:
+      projects:
+        - id: <your_group/your_project>
+          access_as:
+            ci_job: {}
+          resource_management:
+            enabled: true
+      groups:
+        - id: <your_other_group>
+          access_as:
+            ci_job: {}
+          resource_management:
+            enabled: true
+   ```
+
+1. Create an environment template under `.gitlab/agents/<agent-name>/environment_templates/default.yaml`. Check the status of the **Namespace per environment** checkbox in your certificate-based cluster integration page.
+
+   If **Namespace per environment** was checked, use the following template:
+
+   ```yaml
+   objects:
+     - apiVersion: v1
+       kind: Namespace
+       metadata:
+         name: {{ .project.slug }}-{{ .project.id }}-{{ .environment.slug }}
+     - apiVersion: rbac.authorization.k8s.io/v1
+       kind: RoleBinding
+       metadata:
+         name: bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}
+         namespace: {{ .project.slug }}-{{ .project.id }}-{{ .environment.slug }}
+       subjects:
+         - kind: Group
+           apiGroup: rbac.authorization.k8s.io
+           name: gitlab:project_env:{{ .project.id }}:{{ .environment.slug }}
+       roleRef:
+         apiGroup: rbac.authorization.k8s.io
+         kind: ClusterRole
+         name: admin
+   ```
+
+   If **Namespace per environment** was unchecked, use the following template:
+
+   ```yaml
+   objects:
+     - apiVersion: v1
+       kind: Namespace
+       metadata:
+         name: {{ .project.slug }}-{{ .project.id }}
+     - apiVersion: rbac.authorization.k8s.io/v1
+       kind: RoleBinding
+       metadata:
+         name: bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}
+         namespace: {{ .project.slug }}-{{ .project.id }}
+       subjects:
+         - kind: Group
+           apiGroup: rbac.authorization.k8s.io
+           name: gitlab:project_env:{{ .project.id }}:{{ .environment.slug }}
+       roleRef:
+         apiGroup: rbac.authorization.k8s.io
+         kind: ClusterRole
+         name: admin
+   ```
+
+1. In your CI/CD configuration, use the agent with the `environment.kubernetes.agent: <path/to/agent/project:agent-name>` syntax.
+1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
+1. Select the **Details** tab and turn off the cluster.
+
+## Migrate from Auto DevOps
 
 In your Auto DevOps project, you can use the GitLab agent to connect with your Kubernetes cluster.
 
-1. [Install an agent](../../clusters/agent/install/_index.md) in your cluster.
+Prerequisites
+
+- Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
+- [Authorize the agent](../../clusters/agent/ci_cd_workflow.md#authorize-the-agent) to access relevant projects or groups.
+
+To migrate from Auto DevOps:
+
 1. In GitLab, go to the project where you use Auto DevOps.
 1. Add three variables. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value.
@@ -92,17 +196,13 @@ In your Auto DevOps project, you can use the GitLab agent to connect with your K
 
 For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service).
 
-### Migrate generic deployments
+## Migrate from GitLab-managed applications
 
-Follow the process for the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
-
-## Migrate from GitLab Managed applications
-
-GitLab Managed Apps (GMA) were deprecated in GitLab 14.0, and removed in GitLab 15.0.
+GitLab-managed Apps (GMA) were deprecated in GitLab 14.0, and removed in GitLab 15.0.
 The agent for Kubernetes does not support them. To migrate from GMA to the
 agent, go through the following steps:
 
-1. [Migrate from GitLab Managed Apps to a cluster management project](../../clusters/migrating_from_gma_to_project_template.md).
+1. [Migrate from GitLab-managed Apps to a cluster management project](../../clusters/migrating_from_gma_to_project_template.md).
 1. [Migrate the cluster management project to use the agent](../../clusters/management_project_template.md).
 
 ## Migrate a cluster management project
@@ -111,4 +211,4 @@ See [how to use a cluster management project with the GitLab agent](../../cluste
 
 ## Migrate cluster monitoring features
 
-Cluster monitoring features are not yet supported by the GitLab agent for Kubernetes.
+Once you connect a Kubernetes cluster to GitLab using the agent for Kubernetes, you can use [the dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md) after enabling [user access](../../clusters/agent/user_access.md).

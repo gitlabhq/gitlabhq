@@ -162,7 +162,7 @@ To disable the enterprise users' personal access tokens:
 
 When you delete or block an enterprise user account, their personal access tokens are automatically revoked.
 
-## View the time at and IPs where a token was last used
+## View token usage information
 
 > - In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
 > - The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
