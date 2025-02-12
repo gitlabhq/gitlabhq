@@ -98,7 +98,7 @@
 {"name":"css_parser","version":"1.14.0","platform":"ruby","checksum":"f2ce6148cd505297b07bdbe7a5db4cce5cf530071f9b732b9a23538d6cdc0113"},
 {"name":"cssbundling-rails","version":"1.4.1","platform":"ruby","checksum":"4b21273d627b21890da9155c88c67efc9274373d8b0add09149c262cf56c7ce1"},
 {"name":"csv","version":"3.3.0","platform":"ruby","checksum":"0bbd1defdc31134abefed027a639b3723c2753862150f4c3ee61cab71b20d67d"},
-{"name":"cvss-suite","version":"3.0.1","platform":"ruby","checksum":"b5ca9e9e94032a42fd0dc28c1e305378b62c949e35ed7111fc4a1d76f68ad3f9"},
+{"name":"cvss-suite","version":"3.3.0","platform":"ruby","checksum":"54199fc1e0d5d833b1cb161453439143665c644cd3be2d21c2eee57fa06ed843"},
 {"name":"danger","version":"9.4.2","platform":"ruby","checksum":"43e552c6731030235a30fdeafe703d2e2ab9c30917154489cb0ecd9ad3259d80"},
 {"name":"danger-gitlab","version":"8.0.0","platform":"ruby","checksum":"497dd7d0f6513913de651019223d8058cf494df10acbd17de92b175dfa04a3a8"},
 {"name":"database_cleaner-active_record","version":"2.2.0","platform":"ruby","checksum":"3228d6d8ec1f2103fd6ab468dae923424318bcfabcf5dd5b02e5fcb0c486e1c7"},

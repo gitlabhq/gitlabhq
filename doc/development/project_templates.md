@@ -4,6 +4,7 @@ remove_date: '2025-04-17'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](project_templates/add_new_template.md).
 

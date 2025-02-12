@@ -4,6 +4,7 @@ remove_date: '2025-04-29'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](fips_gitlab.md).
 

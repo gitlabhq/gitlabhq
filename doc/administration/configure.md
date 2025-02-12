@@ -47,4 +47,4 @@ Customize and configure GitLab Self-Managed.
 - [Snippets](snippets/_index.md)
 - [Host the product documentation](docs_self_host.md)
 - [Custom HTML header tags](custom_html_header_tags.md)
-- [Self-hosted models](gitlab_duo_self_hosted/_index.md)
+- [GitLab Duo Self-Hosted](gitlab_duo_self_hosted/_index.md)

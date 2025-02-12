@@ -4,6 +4,7 @@ remove_date: '2025-04-24'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../mobile_devops/_index.md).
 

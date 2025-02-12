@@ -4,6 +4,7 @@ remove_date: '2025-03-10'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../development/metrics.md).
 

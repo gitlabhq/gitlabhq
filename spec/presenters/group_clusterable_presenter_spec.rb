@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupClusterablePresenter do
+RSpec.describe GroupClusterablePresenter, feature_category: :environment_management do
   include Gitlab::Routing.url_helpers
 
   let(:presenter) { described_class.new(group) }
@@ -59,6 +59,12 @@ RSpec.describe GroupClusterablePresenter do
     subject { presenter.clear_cluster_cache_path(cluster) }
 
     it { is_expected.to eq(clear_cache_group_cluster_path(group, cluster)) }
+  end
+
+  describe '#create_cluster_migration_path' do
+    subject { presenter.create_cluster_migration_path(cluster) }
+
+    it { is_expected.to eq(migrate_group_cluster_path(group, cluster)) }
   end
 
   describe '#cluster_path' do

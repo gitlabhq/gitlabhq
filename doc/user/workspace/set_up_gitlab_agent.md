@@ -4,6 +4,7 @@ remove_date: '2025-04-20'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](set_up_gitlab_agent_and_proxies.md).
 

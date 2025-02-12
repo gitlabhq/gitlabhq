@@ -8,6 +8,7 @@
 .bundle
 .chef
 .directory
+.history
 .eslintcache
 /.envrc
 eslint-report.html

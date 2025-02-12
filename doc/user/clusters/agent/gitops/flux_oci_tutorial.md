@@ -4,6 +4,7 @@ remove_date: '2025-02-07'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../getting_started_deployments.md).
 

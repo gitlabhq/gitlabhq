@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ClusterablePresenter do
+RSpec.describe ClusterablePresenter, feature_category: :deployment_management do
   include Gitlab::Routing.url_helpers
 
   describe '.fabricate' do
@@ -110,6 +110,14 @@ RSpec.describe ClusterablePresenter do
     let(:cluster) { create(:cluster_for_group, groups: [clusterable]) }
 
     it { is_expected.to be_nil }
+  end
+
+  describe '#create_cluster_migration_path' do
+    subject { described_class.new(double).create_cluster_migration_path(double) }
+
+    it 'raises NotImplementedError' do
+      expect { subject }.to raise_error(NotImplementedError)
+    end
   end
 
   describe '#index_path' do

@@ -4,6 +4,7 @@ remove_date: '2025-06-11'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](gitlab_duo_chat/turn_on_off.md).
 

@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started connecting a Kubernetes cluster to GitLab
 ---
-
-# Get started connecting a Kubernetes cluster to GitLab
 
 This page guides you through setting up a basic Kubernetes integration in a single project. If you're new to the GitLab agent for Kubernetes, pull-based deployment, or Flux, you should start here.
 

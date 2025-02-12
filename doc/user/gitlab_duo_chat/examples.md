@@ -28,8 +28,9 @@ You can ask questions about how GitLab works. Things like:
 - `Explain the concept of a 'fork' in a concise manner.`
 - `Provide step-by-step instructions on how to reset a user's password.`
 
-GitLab Duo Chat uses the GitLab documentation as source. To keep Chat up to date with the documentation,
-its knowledge base is updated daily.
+GitLab Duo Chat uses the GitLab documentation from the [GitLab repository](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc) as source.
+
+To keep Chat up to date with the documentation, its knowledge base is updated daily.
 
 - On GitLab.com, the most recent version of the documentation is used.
 - On Self-managed and GitLab Dedicated, the documentation for the version of the instance is used.

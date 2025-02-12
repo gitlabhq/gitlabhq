@@ -23,6 +23,11 @@ class InstanceClusterablePresenter < ClusterablePresenter
     cluster_status_admin_cluster_path(cluster, params)
   end
 
+  override :create_cluster_migration_path
+  def create_cluster_migration_path(cluster)
+    migrate_admin_cluster_path(cluster)
+  end
+
   override :clear_cluster_cache_path
   def clear_cluster_cache_path(cluster)
     clear_cache_admin_cluster_path(cluster)

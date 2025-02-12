@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Best practices for using the GitLab integration with Kubernetes
 ---
-
-# Best practices for using the GitLab integration with Kubernetes
 
 The agent for Kubernetes and Flux together offer the best experience when deploying to Kubernetes through GitOps.
 GitLab recommends using GitOps (also known as pull-based deployment) for deployments.

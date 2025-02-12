@@ -3,12 +3,11 @@ stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
+title: 'GitLab: The DevSecOps platform'
 ---
 
-# GitLab: The DevSecOps platform
-
- DevSecOps is a combination of development, security, and operations.
- It is an approach to software development that integrates security throughout the development lifecycle.
+DevSecOps is a combination of development, security, and operations.
+It is an approach to software development that integrates security throughout the development lifecycle.
 
 ## DevSecOps compared to DevOps
 

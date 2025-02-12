@@ -2,11 +2,10 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Using a Geo Site
 ---
 
 <!-- Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved) -->
-
-# Using a Geo Site
 
 DETAILS:
 **Tier:** Premium, Ultimate

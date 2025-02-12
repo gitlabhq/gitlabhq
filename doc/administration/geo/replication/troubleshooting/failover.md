@@ -4,6 +4,7 @@ remove_date: '2025-08-02'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../../disaster_recovery/failover_troubleshooting.md).
 

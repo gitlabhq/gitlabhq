@@ -1121,7 +1121,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
     let(:source) { project }
 
     before do
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
     end
   end
 

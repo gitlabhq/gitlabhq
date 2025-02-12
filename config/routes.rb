@@ -268,6 +268,7 @@ InitializerConnections.raise_if_new_database_connection do
           get :metrics_dashboard
           get :cluster_status, format: :json
           delete :clear_cache
+          post :migrate
         end
       end
     end

@@ -4,6 +4,7 @@ remove_date: '2025-04-30'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [Cobertura coverage report](../code_coverage/cobertura.md).
 

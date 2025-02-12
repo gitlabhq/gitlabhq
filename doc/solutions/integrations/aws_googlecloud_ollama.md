@@ -15,7 +15,7 @@ virtual machines and can be easily followed along on AWS or GCP. Of course, the 
 This guide is a comprehensive, end-to-end set of instructions for getting the desired setup working. It calls out references to the many areas of GitLab documentation that were used to support the creation of the final configuration. The referenced docs are important when more background is needed to adjust the implementation to a specific scenario.
 <!-- TOC -->
 
-- Self-Hosted Model: Complete AWS/Google Cloud Deployment Guide with Ollama Integration
+- GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with Ollama Integration
   - [Prerequisites](#prerequisites)
     - [Virtual Machines](#virtual-machines)
       - [Resources & Operating System](#resources--operating-system)
@@ -31,7 +31,7 @@ This guide is a comprehensive, end-to-end set of instructions for getting the de
       - [Model Deployment](#model-deployment)
   - [Integration](#integration)
     - [Enable GitLab Duo for Root User](#enable-gitlab-duo-for-root-user)
-    - [Configure Self-Hosted Model in GitLab](#configure-self-hosted-model-in-gitlab)
+    - [Configure Self-Hosted Model in GitLab](#configure-gitlab-duo-self-hosted-in-gitlab)
   - [Verification](#verification)
 
 <!-- /TOC -->
@@ -267,9 +267,9 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
 NOTE:
 Enabling Duo for just the root user is sufficient for initial setup and testing. Additional users can be granted Duo access later if needed, within your seat license limitations.
 
-### Configure Self-Hosted Model in GitLab
+### Configure GitLab Duo Self-Hosted in GitLab
 
-1. Access Self-Hosted Models Configuration
+1. Access GitLab Duo Self-Hosted Configuration
 
    - Navigate to Admin Area > GitLab Duo > "Self-hosted models"
    - Click "Add self-hosted model" button

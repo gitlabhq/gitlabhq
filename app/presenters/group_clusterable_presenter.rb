@@ -15,6 +15,11 @@ class GroupClusterablePresenter < ClusterablePresenter
     clear_cache_group_cluster_path(clusterable, cluster)
   end
 
+  override :create_cluster_migration_path
+  def create_cluster_migration_path(cluster)
+    migrate_group_cluster_path(clusterable, cluster)
+  end
+
   override :cluster_path
   def cluster_path(cluster, params = {})
     group_cluster_path(clusterable, cluster, params)

@@ -67,6 +67,12 @@ RSpec.describe ProjectClusterablePresenter, feature_category: :environment_manag
     it { is_expected.to eq(clear_cache_project_cluster_path(project, cluster)) }
   end
 
+  describe '#create_cluster_migration_path' do
+    subject { presenter.create_cluster_migration_path(cluster) }
+
+    it { is_expected.to eq(migrate_project_cluster_path(project, cluster)) }
+  end
+
   describe '#cluster_path' do
     subject { presenter.cluster_path(cluster) }
 

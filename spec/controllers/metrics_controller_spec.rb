@@ -76,7 +76,7 @@ RSpec.describe MetricsController, :request_store do
           get :index
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq("# Metrics are disabled, see: http://test.host/help/administration/monitoring/prometheus/gitlab_metrics.md#gitlab-prometheus-metrics\n")
+          expect(response.body).to eq("# Metrics are disabled, see: http://test.host/help/administration/monitoring/prometheus/gitlab_metrics.md\n")
         end
       end
     end

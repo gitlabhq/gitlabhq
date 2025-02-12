@@ -4,6 +4,7 @@ remove_date: '2025-01-24'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../jobs/job_logs.md#job-log-timestamps).
 

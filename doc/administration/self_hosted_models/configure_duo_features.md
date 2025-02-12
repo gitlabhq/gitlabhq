@@ -4,6 +4,7 @@ remove_date: '2025-05-05'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../gitlab_duo_self_hosted/configure_duo_features.md).
 

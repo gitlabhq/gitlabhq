@@ -4,6 +4,7 @@ remove_date: '2025-03-09'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../elasticsearch/troubleshooting/_index.md).
 

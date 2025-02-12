@@ -4,6 +4,7 @@ remove_date: '2025-10-08'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](https://about.gitlab.com/blog/2023/07/27/gitlab-flow-duo/).
 

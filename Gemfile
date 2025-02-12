@@ -719,7 +719,7 @@ gem 'ed25519', '~> 1.3.0', feature_category: :shared
 gem 'error_tracking_open_api', path: 'gems/error_tracking_open_api', feature_category: :shared
 
 # Vulnerability advisories
-gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite', feature_category: :software_composition_analysis
+gem 'cvss-suite', '~> 3.3.0', require: 'cvss_suite', feature_category: :software_composition_analysis
 
 # Work with RPM packages
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry

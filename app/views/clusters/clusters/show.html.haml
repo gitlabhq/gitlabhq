@@ -30,6 +30,7 @@
   - if cluster_created?(@cluster)
     .js-toggle-container
       = gl_tabs_nav do
+        = render 'clusters/clusters/migrate_tab'
         = render 'clusters/clusters/details_tab'
         = render_if_exists 'clusters/clusters/environments_tab'
         = render 'clusters/clusters/advanced_settings_tab'

@@ -4,6 +4,7 @@ remove_date: '2025-03-20'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../../development/internal_analytics/product_analytics.md).
 

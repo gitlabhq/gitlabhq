@@ -4,6 +4,7 @@ remove_date: '2025-01-09'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](../gitlab_duo/_index.md).
 

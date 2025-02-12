@@ -4,6 +4,7 @@ remove_date: '2025-01-31'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](_index.md).
 

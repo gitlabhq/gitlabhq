@@ -10,14 +10,17 @@ RSpec.describe 'getting Work Item counts by state', feature_category: :portfolio
   let_it_be(:group) { create(:group, :private) }
   let_it_be(:milestone) { create(:milestone, group: group) }
   let_it_be(:label) { create(:group_label, group: group) }
-  let_it_be(:work_item_opened1) { create(:work_item, namespace: group, milestone_id: milestone.id, labels: [label]) }
+  let_it_be(:work_item_opened1) do
+    create(:work_item, namespace: group, milestone_id: milestone.id, labels: [label], title: 'Foo')
+  end
+
   let_it_be(:work_item_opened2) { create(:work_item, :confidential, namespace: group, author: current_user) }
   let_it_be(:work_item_closed1) do
     create(:work_item, :closed, :confidential, namespace: group, milestone_id: milestone.id)
   end
 
   let_it_be(:work_item_closed2) do
-    create(:work_item, :epic, :closed, namespace: group, assignees: [current_user], labels: [label])
+    create(:work_item, :epic, :closed, namespace: group, assignees: [current_user], labels: [label], description: 'Bar')
   end
 
   let(:params) { {} }
@@ -153,14 +156,44 @@ RSpec.describe 'getting Work Item counts by state', feature_category: :portfolio
           end
         end
 
-        context 'when filtering by search' do
-          let(:params) { { search: 'foo', in: [:TITLE] } }
+        context 'when searching by text' do
+          let(:params) {  { search: 'Foo' } }
 
-          it 'returns an error for filters that are not supported' do
+          it 'returns the correct counts for each status' do
             query_counts
 
-            expect(graphql_errors).to contain_exactly(
-              hash_including('message' => 'Searching is not available for work items at the namespace level yet')
+            expect(work_item_counts).to eq(
+              'all' => 1,
+              'opened' => 1,
+              'closed' => 0
+            )
+          end
+        end
+
+        context 'when searching in title' do
+          let(:params) {  { search: 'Foo', in: [:TITLE] } }
+
+          it 'returns the correct counts for each status' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 1,
+              'opened' => 1,
+              'closed' => 0
+            )
+          end
+        end
+
+        context 'when searching in description' do
+          let(:params) { { search: 'Bar', in: [:DESCRIPTION] } }
+
+          it 'returns the correct counts for each status' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 1,
+              'opened' => 0,
+              'closed' => 1
             )
           end
         end

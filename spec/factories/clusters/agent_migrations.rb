@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :cluster_agent_migration, class: 'Clusters::AgentMigration' do
-    association :cluster, :group
+    association :cluster, :instance
     association :agent, factory: :cluster_agent
     project
 

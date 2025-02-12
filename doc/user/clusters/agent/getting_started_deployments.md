@@ -2,9 +2,8 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Get started deploying to Kubernetes
 ---
-
-# Get started deploying to Kubernetes
 
 This page introduces you to deploying to Kubernetes using methods supported by GitLab.
 In the end, you will understand:

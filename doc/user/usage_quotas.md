@@ -4,6 +4,7 @@ remove_date: '2025-01-11'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](storage_usage_quotas.md).
 

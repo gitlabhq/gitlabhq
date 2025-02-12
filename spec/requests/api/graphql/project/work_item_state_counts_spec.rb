@@ -154,6 +154,20 @@ RSpec.describe 'getting Work Item counts by state', feature_category: :portfolio
           end
         end
 
+        context 'when searching by text' do
+          let(:params) {  { search: 'Foo' } }
+
+          it 'returns the correct counts for each status' do
+            query_counts
+
+            expect(work_item_counts).to eq(
+              'all' => 1,
+              'opened' => 1,
+              'closed' => 0
+            )
+          end
+        end
+
         context 'when searching in title' do
           let(:params) {  { search: 'Foo', in: [:TITLE] } }
 

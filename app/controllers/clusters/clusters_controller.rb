@@ -3,7 +3,7 @@
 class Clusters::ClustersController < ::Clusters::BaseController
   include RoutableActions
 
-  before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache]
+  before_action :cluster, only: [:cluster_status, :show, :update, :destroy, :clear_cache, :migrate]
   before_action :user_cluster, only: [:connect]
   before_action :authorize_read_cluster!, only: [:show, :index]
   before_action :authorize_create_cluster!, only: [:connect]
@@ -101,7 +101,27 @@ class Clusters::ClustersController < ::Clusters::BaseController
     redirect_to cluster.show_path, notice: _('Cluster cache cleared.')
   end
 
+  def migrate
+    response = Clusters::Migration::CreateService.new(
+      cluster.cluster,
+      current_user: current_user,
+      configuration_project_id: migrate_params[:configuration_project_id]
+    ).execute
+
+    if response.success?
+      flash[:notice] = s_('ClusterIntegration|Migrating cluster - initiated')
+    else
+      flash[:alert] = format(s_('ClusterIntegration|Migrating cluster - failed: "%{error}"'), error: response.message)
+    end
+
+    redirect_to cluster.show_path(params: { tab: 'migrate' })
+  end
+
   private
+
+  def migrate_params
+    params.permit(:configuration_project_id)
+  end
 
   def ensure_feature_enabled!
     render_404 unless clusterable.certificate_based_clusters_enabled?

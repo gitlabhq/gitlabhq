@@ -221,6 +221,15 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
         subject
       end
     end
+
+    context 'migrate' do
+      let(:tab) { 'migrate' }
+
+      it 'renders migrate tab' do
+        expect(helper).to receive(:render).with('migrate')
+        subject
+      end
+    end
   end
 
   describe '#cluster_type_label' do

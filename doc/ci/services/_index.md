@@ -266,19 +266,17 @@ test:
 
 > - Introduced in GitLab and GitLab Runner 9.4.
 
-| Setting                           | Required                             | GitLab version | Description                                                                                                                                                                                                                                                                                                                         |
-|-----------------------------------|--------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `name`                            | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services).                                                                                                    |
-| `entrypoint`                      | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
-| `command`                         | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array.                     |
-| `alias` <sup>1</sup> <sup>3</sup> | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services).                                                                                                                              |
-| `variables` <sup>2</sup>          | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves.                                                                                                                                      |
+| Setting         | Required                             | GitLab version | Description |
+|-----------------|--------------------------------------|----------------|-------------|
+| `name`          | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
+| `entrypoint`    | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
+| `command`       | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
+| `alias` (1)     | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services). |
+| `variables` (2) | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves. |
 
-**Footnotes:**
+(1) Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
 
-1. Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
-1. Service variables support for the Docker and the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3158) in GitLab Runner 14.8.
-1. Use alias as a container name for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9. For more information, see [Configuring the service containers name with the Kubernetes executor](#using-aliases-as-service-container-names-for-the-kubernetes-executor).
+(2) Service variables support for the Docker and the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3158) in GitLab Runner 14.8.
 
 ## Starting multiple services from the same image
 
@@ -353,18 +351,6 @@ services:
 ```
 
 The syntax of `command` is similar to [Dockerfile `CMD`](https://docs.docker.com/reference/dockerfile/#cmd).
-
-## Using aliases as service container names for the Kubernetes executor
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab and GitLab Runner 17.9.
-
-You can use service aliases as service container names for the Kubernetes executor.
-GitLab Runner names containers based on the following conditions:
-
-- When multiple aliases are set for a service, the service container is named after the first alias that:
-  - Isn't already used by another service container.
-  - Follows the [Kubernetes constraints for label names](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names).
-- When aliases can't be used to name a service container, GitLab Runner falls back to the `svc-i` pattern.
 
 ## Using `services` with `docker run` (Docker-in-Docker) side-by-side
 

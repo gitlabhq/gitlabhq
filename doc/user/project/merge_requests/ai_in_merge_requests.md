@@ -4,6 +4,7 @@ remove_date: '2025-06-11'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was moved to [another location](duo_in_merge_requests.md).
 

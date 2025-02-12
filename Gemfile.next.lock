@@ -477,7 +477,7 @@ GEM
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
     csv (3.3.0)
-    cvss-suite (3.0.1)
+    cvss-suite (3.3.0)
     danger (9.4.2)
       claide (~> 1.0)
       claide-plugins (>= 0.9.2)
@@ -2071,7 +2071,7 @@ DEPENDENCIES
   crystalball (~> 0.7.0)
   cssbundling-rails (= 1.4.1)
   csv_builder!
-  cvss-suite (~> 3.0.1)
+  cvss-suite (~> 3.3.0)
   database_cleaner-active_record (~> 2.2.0)
   deckar01-task_list (= 2.3.4)
   declarative_policy (~> 1.1.0)

@@ -2,10 +2,10 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Slack notifications (deprecated)
 ---
-<!--- start_remove The following content will be removed on remove_date: '2025-05-15' -->
 
-# Slack notifications (deprecated)
+<!--- start_remove The following content will be removed on remove_date: '2025-05-15' -->
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

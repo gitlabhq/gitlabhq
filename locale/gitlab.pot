@@ -13526,6 +13526,9 @@ msgstr ""
 msgid "ClusterIntegration|If you do not wish to delete all associated GitLab resources, you can simply remove the integration."
 msgstr ""
 
+msgid "ClusterIntegration|Install agent"
+msgstr ""
+
 msgid "ClusterIntegration|Instance cluster"
 msgstr ""
 
@@ -13557,6 +13560,21 @@ msgid "ClusterIntegration|Make sure your API endpoint is correct"
 msgstr ""
 
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{provider_link}"
+msgstr ""
+
+msgid "ClusterIntegration|Migrate"
+msgstr ""
+
+msgid "ClusterIntegration|Migrate this cluster to use the GitLab agent for Kubernetes"
+msgstr ""
+
+msgid "ClusterIntegration|Migrate to the GitLab agent for Kubernetes"
+msgstr ""
+
+msgid "ClusterIntegration|Migrating cluster - failed: \"%{error}\""
+msgstr ""
+
+msgid "ClusterIntegration|Migrating cluster - initiated"
 msgstr ""
 
 msgid "ClusterIntegration|Namespace per environment"
@@ -13644,6 +13662,9 @@ msgid "ClusterIntegration|There was a problem authenticating with your cluster. 
 msgstr ""
 
 msgid "ClusterIntegration|There was an HTTP error when connecting to your cluster."
+msgstr ""
+
+msgid "ClusterIntegration|This cluster integration is deprecated. To continue using this Kubernetes cluster with GitLab, you must install the agent."
 msgstr ""
 
 msgid "ClusterIntegration|This is necessary if your integration has become out of sync. The cache is repopulated during the next CI job that requires namespace and service accounts."

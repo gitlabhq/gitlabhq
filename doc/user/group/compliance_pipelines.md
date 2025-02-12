@@ -2,11 +2,10 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Compliance pipelines (deprecated)
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-
-# Compliance pipelines (deprecated)
 
 DETAILS:
 **Tier:** Ultimate

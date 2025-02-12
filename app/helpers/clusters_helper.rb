@@ -59,6 +59,8 @@ module ClustersHelper
       render 'applications'
     when 'settings'
       render 'advanced_settings_container'
+    when 'migrate'
+      render 'migrate'
     else
       render('details', expanded: expanded)
     end

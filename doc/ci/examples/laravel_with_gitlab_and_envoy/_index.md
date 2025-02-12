@@ -4,6 +4,7 @@ remove_date: '2025-04-27'
 ---
 
 <!-- markdownlint-disable -->
+<!-- vale off -->
 
 This document was removed. You can check other [CI/CD examples](../_index.md).
 
