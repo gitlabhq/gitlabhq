@@ -9,7 +9,7 @@ message: "Use standard single quotes or double quotes only. Do not use left or r
 vocab: false
 level: warning
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#punctuation
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#punctuation
 scope: raw
 raw:
   - '[‘’“”]'

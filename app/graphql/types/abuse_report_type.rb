@@ -11,7 +11,7 @@ module Types
     field :id, Types::GlobalIDType[::AbuseReport],
       null: false, description: 'Global ID of the abuse report.'
 
-    field :labels, ::Types::LabelType.connection_type,
+    field :labels, ::Types::AntiAbuse::AbuseReportLabelType.connection_type,
       null: true, description: 'Labels of the abuse report.'
 
     field :discussions, ::Types::Notes::AbuseReport::DiscussionType.connection_type,

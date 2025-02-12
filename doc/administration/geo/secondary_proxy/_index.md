@@ -151,7 +151,7 @@ the following steps if your sites use different URLs:
 
    To allow the sites to talk to each other, [make sure the `Internal URL` field is unique for each site](../../geo_sites.md#set-up-the-internal-urls).
 
-In Kubernetes, you can [use the same domain under `global.hosts.domain` as for the primary site](https://docs.gitlab.com/charts/advanced/geo/index.html).
+In Kubernetes, you can [use the same domain under `global.hosts.domain` as for the primary site](https://docs.gitlab.com/charts/advanced/geo/).
 
 ## Set up a separate URL for a secondary Geo site
 

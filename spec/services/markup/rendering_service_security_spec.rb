@@ -337,6 +337,24 @@ RSpec.describe Markup::RenderingService, feature_category: :markdown do
         output = render(input, file_name, context)
         expect(output).to eq('')
       end
+
+      it 'does not allow reading arbitrary files via include' do
+        # https://docs.gitlab.com/ee/user/markdown.html#includes
+        input = "::include{file=/etc/hosts}"
+        output = render(input, file_name, context)
+        expect(output).to eq('<p data-sourcepos="1:1-1:26" dir="auto">::include{file=/etc/hosts}</p>')
+      end
+
+      it 'does not allow reading arbitrary files via include with file URL' do
+        # https://docs.gitlab.com/ee/user/markdown.html#includes
+        input = "::include{file=file:///etc/hosts}"
+        output = render(input, file_name, context)
+        expect(output).to eq(
+          '<p data-sourcepos="1:1-1:33" dir="auto">' \
+            '::include{file=<a href="file:///etc/hosts">file:///etc/hosts</a>' \
+            '}</p>'
+        )
+      end
     end
   end
 

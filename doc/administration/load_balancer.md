@@ -34,7 +34,7 @@ Configure your load balancers to pass connections on port 443 as 'TCP' rather
 than 'HTTP(S)' protocol. This passes the connection to the application nodes
 NGINX service untouched. NGINX has the SSL certificate and listen on port 443.
 
-See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
 
 ### Load Balancers terminate SSL without backend SSL
@@ -45,7 +45,7 @@ terminating SSL.
 
 Because communication between the load balancers and GitLab isn't secure,
 there is some additional configuration needed. See the
-[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
+[proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/ssl/#configure-a-reverse-proxy-or-load-balancer-ssl-termination)
 for details.
 
 ### Load Balancers terminate SSL with backend SSL
@@ -58,7 +58,7 @@ Traffic is secure between the load balancers and NGINX in this
 scenario. There is no need to add configuration for proxied SSL because the
 connection is secure all the way. However, configuration must be
 added to GitLab to configure SSL certificates. See
-the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
 
 ## Ports
@@ -134,7 +134,7 @@ The default ciphers for a GitLab version can be
 viewed in the [`files/gitlab-cookbooks/gitlab/attributes/default.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb)
 file and selecting the Git tag that correlates with your target GitLab version
 (for example `15.0.5+ee.0`). If required by your load balancer, you can then define
-[custom SSL ciphers](https://docs.gitlab.com/omnibus/settings/ssl/index.html#use-custom-ssl-ciphers)
+[custom SSL ciphers](https://docs.gitlab.com/omnibus/settings/ssl/#use-custom-ssl-ciphers)
 for NGINX.
 
 ### Some pages and links are downloaded instead of rendered in the browser

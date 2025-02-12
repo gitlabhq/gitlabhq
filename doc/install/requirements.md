@@ -140,7 +140,7 @@ To adjust Puma settings:
 
 - For the Linux package, see [Puma settings](../administration/operations/puma.md).
 - For the GitLab Helm chart, see the
-  [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/index.html).
+  [`webservice` chart](https://docs.gitlab.com/charts/charts/gitlab/webservice/).
 
 ### Workers
 

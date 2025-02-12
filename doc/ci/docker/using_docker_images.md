@@ -231,7 +231,7 @@ To define which option should be used, the runner process reads the configuratio
 
 ### Requirements and limitations
 
-- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html)
+- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/)
   in GitLab Runner 13.1 and later.
 - [Credentials Store](#use-a-credentials-store) and [Credential Helpers](#use-credential-helpers)
   require binaries to be added to the GitLab Runner `$PATH`, and require access to do so. Therefore,
@@ -560,4 +560,4 @@ and manual credential management.
            - Dockerfile
    ```
 
-1. [Register the runner](https://docs.gitlab.com/runner/register/index.html#docker).
+1. [Register the runner](https://docs.gitlab.com/runner/register/#docker).

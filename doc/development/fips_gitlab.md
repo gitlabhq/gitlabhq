@@ -274,7 +274,7 @@ all:
 
 Now create `charts.yml` in the location specified above and specify tags with a `-fips` suffix.
 
-See our [Charts documentation on FIPS](https://docs.gitlab.com/charts/advanced/fips/index.html) for more details, including
+See our [Charts documentation on FIPS](https://docs.gitlab.com/charts/advanced/fips/) for more details, including
 an [example values file](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/examples/fips/values.yaml) as a reference.
 
 You can also use release tags, but the versioning is tricky because each

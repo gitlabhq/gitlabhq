@@ -26,7 +26,7 @@ multiple projects.
 
 If you are using GitLab Self-Managed, administrators can:
 
-- [Install GitLab Runner](https://docs.gitlab.com/runner/install/index.html) and register an instance runner.
+- [Install GitLab Runner](https://docs.gitlab.com/runner/install/) and register an instance runner.
 - Configure a maximum number of instance runner [compute minutes for each group](../../administration/cicd/compute_minutes.md#set-the-compute-quota-for-a-group).
 
 If you are using GitLab.com:
@@ -137,8 +137,8 @@ On GitLab Self-Managed, an administrator can
 [enable them for all new projects](../../administration/settings/continuous_integration.md#enable-instance-runners-for-new-projects).
 
 For existing projects, an administrator must
-[install](https://docs.gitlab.com/runner/install/index.html) and
-[register](https://docs.gitlab.com/runner/register/index.html) them.
+[install](https://docs.gitlab.com/runner/install/) and
+[register](https://docs.gitlab.com/runner/register/) them.
 
 To enable instance runners for a project:
 
@@ -644,7 +644,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
 
 The version of GitLab Runner used by your runners should be
-[kept up-to-date](https://docs.gitlab.com/runner/index.html#gitlab-runner-versions).
+[kept up-to-date](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 
 To determine which runners need to be upgraded:
 

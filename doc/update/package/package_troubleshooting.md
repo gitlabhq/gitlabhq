@@ -18,7 +18,7 @@ sudo gitlab-rake gitlab:check SANITIZE=true
 
 For more information on:
 
-- Using `gitlab-ctl` for maintenance, see [Maintenance commands](https://docs.gitlab.com/omnibus/maintenance/index.html).
+- Using `gitlab-ctl` for maintenance, see [Maintenance commands](https://docs.gitlab.com/omnibus/maintenance/).
 - Using `gitlab-rake` for configuration checking, see
   [Check GitLab configuration](../../administration/raketasks/maintenance.md#check-gitlab-configuration).
 

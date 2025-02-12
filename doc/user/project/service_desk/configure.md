@@ -1097,7 +1097,7 @@ from the `incoming_email` and `service_desk_email` mailboxes.
 ### Helm chart (Kubernetes)
 
 The [GitLab Helm chart](https://docs.gitlab.com/charts/) is made up of multiple subcharts, and one of them is
-the [Mailroom subchart](https://docs.gitlab.com/charts/charts/gitlab/mailroom/index.html). Configure the
+the [Mailroom subchart](https://docs.gitlab.com/charts/charts/gitlab/mailroom/). Configure the
 [common settings for `incoming_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#incoming-email-configuration)
 and the [common settings for `service_desk_email`](https://docs.gitlab.com/charts/installation/command-line-options.html#service-desk-email-configuration).
 

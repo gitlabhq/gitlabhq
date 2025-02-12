@@ -1315,7 +1315,7 @@ gitaly['configuration'] = {
 :::TabTitle Helm chart (Kubernetes)
 
 For Helm-based deployments, see the
-[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/#server-side-backups).
 
 :::TabTitle Self-compiled (source)
 
@@ -1360,7 +1360,7 @@ gitaly['configuration'] = {
 :::TabTitle Helm chart (Kubernetes)
 
 For Helm-based deployments, see the
-[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/#server-side-backups).
 
 :::TabTitle Self-compiled (source)
 
@@ -1406,7 +1406,7 @@ gitaly['configuration'] = {
 :::TabTitle Helm chart (Kubernetes)
 
 For Helm-based deployments, see the
-[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/#server-side-backups).
 
 :::TabTitle Self-compiled (source)
 
@@ -1435,7 +1435,7 @@ The following parameters are supported:
 :::TabTitle Helm chart (Kubernetes)
 
 For Helm-based deployments, see the
-[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/#server-side-backups).
 
 :::TabTitle Linux package (Omnibus)
 

@@ -73,25 +73,25 @@ This content has been moved to [Troubleshooting Sidekiq](../sidekiq/sidekiq_trou
 
 ### Reverify all uploads (or any SSF data type which is verified)
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#reverify-all-uploads-or-any-ssf-data-type-which-is-verified).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-multiple-components).
 
 ### Artifacts
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ### Repository verification failures
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#find-repository-verification-failures).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ### Resync repositories
 
-Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting - Resync repository types](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
-Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization_verification.md#resync-project-and-project-wiki-repositories).
+Moved to [Geo replication troubleshooting - Resync project and project wiki repositories](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ### Blob types
 
-Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#resync-and-reverify-individual-components).
+Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
 
 ## Generate Service Ping
 

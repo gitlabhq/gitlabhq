@@ -18,7 +18,7 @@ CI/CD variables are a type of environment variable. You can use them to:
 You can [override variable values](#cicd-variable-precedence) for a specific pipeline when you [run a pipeline manually](../pipelines/_index.md#run-a-pipeline-manually), [run a manual job](../jobs/job_control.md#specify-variables-when-running-manual-jobs),
 or have them [prefilled in manual pipelines](../pipelines/_index.md#prefill-variables-in-manual-pipelines).
 
-Variable names are limited by the [shell the runner uses](https://docs.gitlab.com/runner/shells/index.html)
+Variable names are limited by the [shell the runner uses](https://docs.gitlab.com/runner/shells/)
 to execute scripts. Each shell has its own set of reserved variable names.
 
 To ensure consistent behavior, you should always put variable values in single or double quotes.

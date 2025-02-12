@@ -1,0 +1,20 @@
+- title: "Major update of the Prometheus subchart"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  reporter: clemensbeck
+  stage: systems
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5927
+  impact: small
+  scope: instance
+  resolution_role: Admin
+  manual_task: true
+  body: |
+    With GitLab 18.0 and GitLab chart 9.0, the Prometheus subchart will be updated from 15.3 to 27.3.
+    Along with this update, Prometheus 3 will be shipped by default.
+
+    Manual steps are required to perform the upgrade. If you have Alertmanager, Node Exporter or
+    Pushgateway enabled, you will also need to update your Helm values.
+
+    Please refer to the [migration guide](https://docs.gitlab.com/charts/releases/9_0.html#prometheus-upgrade)
+    for more information.

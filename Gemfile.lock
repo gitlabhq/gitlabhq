@@ -487,7 +487,6 @@ GEM
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
     date (3.3.3)
-    dead_end (3.1.1)
     deb_version (1.0.2)
     debug_inspector (1.1.0)
     deckar01-task_list (2.3.4)
@@ -496,17 +495,23 @@ GEM
     declarative_policy (1.1.0)
     deprecation_toolkit (1.5.1)
       activesupport (>= 4.2)
-    derailed_benchmarks (2.1.2)
+    derailed_benchmarks (2.2.1)
+      base64
       benchmark-ips (~> 2)
-      dead_end
-      get_process_mem (~> 0)
+      bigdecimal
+      drb
+      get_process_mem
       heapy (~> 0)
+      logger
       memory_profiler (>= 0, < 2)
       mini_histogram (>= 0.3.0)
+      mutex_m
+      ostruct
       rack (>= 1)
       rack-test
       rake (> 10, < 14)
-      ruby-statistics (>= 2.1)
+      ruby-statistics (>= 4.0.1)
+      ruby2_keywords
       thor (>= 0.19, < 2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -1697,7 +1702,7 @@ GEM
     ruby-saml (1.17.0)
       nokogiri (>= 1.13.10)
       rexml
-    ruby-statistics (3.0.0)
+    ruby-statistics (4.1.0)
     ruby2_keywords (0.0.5)
     rubyntlm (0.6.3)
     rubypants (0.2.0)

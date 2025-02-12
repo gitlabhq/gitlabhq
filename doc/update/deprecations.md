@@ -1111,6 +1111,29 @@ For GitLab Self-Managed administrators, you can configure a custom limit with th
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Major update of the Prometheus subchart
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5927).
+
+</div>
+
+With GitLab 18.0 and GitLab chart 9.0, the Prometheus subchart will be updated from 15.3 to 27.3.
+Along with this update, Prometheus 3 will be shipped by default.
+
+Manual steps are required to perform the upgrade. If you have Alertmanager, Node Exporter or
+Pushgateway enabled, you will also need to update your Helm values.
+
+Please refer to the [migration guide](https://docs.gitlab.com/charts/releases/9_0.html#prometheus-upgrade)
+for more information.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### OpenTofu CI/CD template
 
 <div class="deprecation-notes">
@@ -1655,7 +1678,7 @@ SLES 15 SP6 for continued support.
 
 </div>
 
-The SpotBugs [SAST analyzer](https://docs.gitlab.com/ee/user/application_security/sast/index.html#supported-languages-and-frameworks)
+The SpotBugs [SAST analyzer](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks)
 can perform a build when the artifacts to be scanned aren't present. While this usually works well for simple projects, it can fail on more complex builds.
 
 From GitLab 18.0, to resolve SpotBugs analyzer build failures, you should:

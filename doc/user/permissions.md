@@ -166,11 +166,11 @@ Guest users and members with the Reporter role cannot do any of these actions.
 | Clone source and LFS from current project    |     ✓     |     ✓      |       |
 | Clone source and LFS from public projects    |     ✓     |     ✓      |       |
 | Clone source and LFS from internal projects  |     ✓     |     ✓      | Developers and Maintainers: Only if the triggering user is not an external user. |
-| Clone source and LFS from private projects   |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
+| Clone source and LFS from private projects   |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/#usage-of-private-docker-images-with-if-not-present-pull-policy). |
 | Pull container images from current project   |     ✓     |     ✓      |       |
 | Pull container images from public projects   |     ✓     |     ✓      |       |
 | Pull container images from internal projects |     ✓     |     ✓      | Developers and Maintainers: Only if the triggering user is not an external user. |
-| Pull container images from private projects  |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
+| Pull container images from private projects  |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/#usage-of-private-docker-images-with-if-not-present-pull-policy). |
 | Push container images to current project     |     ✓     |     ✓      | You cannot push container images to other projects. |
 
 ### Compliance

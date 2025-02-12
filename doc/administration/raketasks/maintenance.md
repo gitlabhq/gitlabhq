@@ -131,7 +131,7 @@ component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-
 You may also have a look at our troubleshooting guides for:
 
 - [GitLab](../troubleshooting/_index.md).
-- [Linux package installations](https://docs.gitlab.com/omnibus/index.html#troubleshooting).
+- [Linux package installations](https://docs.gitlab.com/omnibus/#troubleshooting).
 
 Additionally you should also [verify database values can be decrypted using the current secrets](check.md#verify-database-values-can-be-decrypted-using-the-current-secrets).
 

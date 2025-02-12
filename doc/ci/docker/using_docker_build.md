@@ -83,7 +83,7 @@ For more information, see [security of the `docker` group](https://blog.zopyx.co
 "Docker-in-Docker" (`dind`) means:
 
 - Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) or
-  the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html).
+  the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
 - The executor uses a [container image of Docker](https://hub.docker.com/_/docker/), provided
   by Docker, to run your CI/CD jobs.
 
@@ -296,7 +296,7 @@ For more information, see [Proxy settings when using dind service](https://docs.
 
 #### Use the Kubernetes executor with Docker-in-Docker
 
-You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html) to run jobs in a Docker container.
+You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/) to run jobs in a Docker container.
 
 ##### Docker-in-Docker with TLS enabled in Kubernetes
 
@@ -519,7 +519,7 @@ services:
 If you are a GitLab Runner administrator, you can specify the `command` to configure the registry mirror
 for the Docker daemon. The `dind` service must be defined for the
 [Docker](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnersdockerservices-section)
-or [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html#define-a-list-of-services).
+or [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services).
 
 Docker:
 
@@ -587,7 +587,7 @@ detected by the `dind` service.
 If you are a GitLab Runner administrator, you can use
 the mirror for every `dind` service. Update the
 [configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
-to specify a [ConfigMap volume mount](https://docs.gitlab.com/runner/executors/kubernetes/index.html#configmap-volume).
+to specify a [ConfigMap volume mount](https://docs.gitlab.com/runner/executors/kubernetes/#configmap-volume).
 
 For example, if you have a `/tmp/daemon.json` file with the following
 content:
@@ -743,7 +743,7 @@ use one of these alternatives:
 To use Buildah with GitLab CI/CD, you need [a runner](https://docs.gitlab.com/runner/) with one
 of the following executors:
 
-- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/index.html).
+- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/).
 - [Docker](https://docs.gitlab.com/runner/executors/docker.html).
 - [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
@@ -807,7 +807,7 @@ This error occurs because Docker starts on TLS automatically.
 - If you are upgrading from v18.09 or earlier, see the
   [upgrade guide](https://about.gitlab.com/blog/2019/07/31/docker-in-docker-with-docker-19-dot-03/).
 
-This error can also occur with the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html#using-dockerdind) when attempts are made to access the Docker-in-Docker service before it has fully started up. For a more detailed explanation, see [issue 27215](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27215).
+This error can also occur with the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/#using-dockerdind) when attempts are made to access the Docker-in-Docker service before it has fully started up. For a more detailed explanation, see [issue 27215](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27215).
 
 ### Docker `no such host` error
 

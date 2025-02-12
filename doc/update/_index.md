@@ -171,7 +171,7 @@ To address the above two scenarios, it is advised to do the following prior to u
 
 1. Wait until all jobs are finished.
 1. Upgrade GitLab.
-1. [Upgrade GitLab Runner](https://docs.gitlab.com/runner/install/index.html) to the same version
+1. [Upgrade GitLab Runner](https://docs.gitlab.com/runner/install/) to the same version
    as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 1. Unpause your runners and unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
 

@@ -19,7 +19,7 @@ For general information about the GitLab APIs, see [API Docs](../_index.md).
 
 <!--
 The following link is absolute rather than relative because it needs to be viewed through the GitLab
-Open API file viewer: https://docs.gitlab.com/ee/user/project/repository/index.html#openapi-viewer.
+Open API file viewer: https://docs.gitlab.com/ee/user/project/repository/#openapi-viewer.
 -->
 The [interactive API documentation tool](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/openapi/openapi.yaml)
 allows API testing directly on the GitLab.com website. Only a few of the available endpoints are

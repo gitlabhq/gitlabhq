@@ -295,7 +295,7 @@ following:
 - `http://plantuml:8005/`
 - `http://localhost:8005/plantuml/`
 
-If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/)
 you must configure this redirection, because PlantUML uses the insecure HTTP protocol.
 Newer browsers, such as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408),
 don't load insecure HTTP resources on pages served over HTTPS.

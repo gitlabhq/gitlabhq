@@ -81,7 +81,7 @@ generation and copy the existing OpenSSH host keys into
 The following instructions switch OpenSSH in favor of `gitlab-sshd`:
 
 1. Set the `gitlab-shell` charts `sshDaemon` option to
-   [`gitlab-sshd`](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html#installation-command-line-options).
+   [`gitlab-sshd`](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/#installation-command-line-options).
    For example:
 
    ```yaml
@@ -133,7 +133,7 @@ To enable the PROXY protocol:
 
 :::TabTitle Helm chart (Kubernetes)
 
-1. Set the [`gitlab.gitlab-shell.config` options](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/index.html#installation-command-line-options). For example:
+1. Set the [`gitlab.gitlab-shell.config` options](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/#installation-command-line-options). For example:
 
    ```yaml
    gitlab:

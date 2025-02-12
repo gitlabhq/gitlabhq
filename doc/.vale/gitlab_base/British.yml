@@ -6,7 +6,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
 message: "Use the US spelling '%s' instead of the British '%s'."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/#language
 vocab: false
 level: error
 action:

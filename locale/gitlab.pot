@@ -61659,7 +61659,7 @@ msgstr ""
 msgid "UsageQuota|Code packages and container images."
 msgstr ""
 
-msgid "UsageQuota|Compute units usage is calculated based on shared runners duration with cost factors applied."
+msgid "UsageQuota|Compute units usage is calculated based on instance runners duration with cost factors applied."
 msgstr ""
 
 msgid "UsageQuota|Compute usage"
@@ -61714,6 +61714,9 @@ msgid "UsageQuota|Includes project artifacts, repositories, packages, and contai
 msgstr ""
 
 msgid "UsageQuota|Instance runner duration"
+msgstr ""
+
+msgid "UsageQuota|Instance runners are disabled in all projects in this namespace."
 msgstr ""
 
 msgid "UsageQuota|Job artifacts created by CI/CD."

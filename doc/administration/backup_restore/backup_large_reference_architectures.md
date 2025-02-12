@@ -300,7 +300,7 @@ new bucket.
      [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
 
    - For Helm chart (Kubernetes) installations, follow
-     [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/index.html).
+     [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/).
 
 1. Before moving on, wait until the new RDS instance is created and ready to use.
 
@@ -313,7 +313,7 @@ new bucket.
      [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
 
    - For Helm chart (Kubernetes) installations, follow
-     [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/index.html).
+     [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/).
 
 1. Before moving on, wait until the Cloud SQL instance is ready to use.
 

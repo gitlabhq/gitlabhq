@@ -617,7 +617,7 @@ The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located
 #!/bin/bash
 
 # Required programs:
-# - GitLab CLI (glab): https://docs.gitlab.com/ee/editor_extensions/gitlab_cli/index.html
+# - GitLab CLI (glab): https://docs.gitlab.com/ee/editor_extensions/gitlab_cli/
 # - jq: https://jqlang.github.io/jq/
 
 # Required variables:

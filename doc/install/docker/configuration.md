@@ -38,7 +38,7 @@ context of a running container.
       [SMTP settings](https://docs.gitlab.com/omnibus/settings/smtp.html). The GitLab Docker image
       doesn't have an SMTP server pre-installed.
 
-   1. If desired [enable HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+   1. If desired [enable HTTPS](https://docs.gitlab.com/omnibus/settings/ssl/).
 
 1. Save the file and restart the container to reconfigure GitLab:
 

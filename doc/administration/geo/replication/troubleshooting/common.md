@@ -437,7 +437,7 @@ Geo finds the current Puma or Sidekiq node's Geo [site](../../glossary.md) name 
 1. Get the "Geo node name" (there is
    [an issue to rename the settings to "Geo site name"](https://gitlab.com/gitlab-org/gitlab/-/issues/335944)):
    - Linux package: get the `gitlab_rails['geo_node_name']` setting.
-   - GitLab Helm charts: get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/index.html)).
+   - GitLab Helm charts: get the `global.geo.nodeName` setting (see [Charts with GitLab Geo](https://docs.gitlab.com/charts/advanced/geo/)).
 1. If that is not defined, then get the `external_url` setting.
 
 This name is used to look up the Geo site with the same **Name** in the **Geo Sites**

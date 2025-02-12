@@ -276,9 +276,9 @@ changing Git remotes and API URLs.
 
 1. Update the **secondary**'s SSL certificate:
 
-   - If you use the [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl/index.html#enable-the-lets-encrypt-integration),
+   - If you use the [Let's Encrypt integration](https://docs.gitlab.com/omnibus/settings/ssl/#enable-the-lets-encrypt-integration),
      the certificate updates automatically.
-   - If you had [manually set up](https://docs.gitlab.com/omnibus/settings/ssl/index.html#configure-https-manually),
+   - If you had [manually set up](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually),
      the **secondary**'s certificate, copy the certificate from the **primary** to the **secondary**.
      If you don't have access to the **primary**, issue a new certificate and make sure it contains
      both the **primary** and **secondary** URLs in the subject alternative names. You can check with:

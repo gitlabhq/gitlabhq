@@ -471,11 +471,11 @@ The same configuration is required if your goal is to [use rootless Podman to ru
 
 ### Configure Kubernetes or OpenShift runners
 
-You must set up Docker in a Docker container (Docker-in-Docker) to use Code Quality. The Kubernetes executor [supports Docker-in-Docker](https://docs.gitlab.com/runner/executors/kubernetes/index.html#using-dockerdind).
+You must set up Docker in a Docker container (Docker-in-Docker) to use Code Quality. The Kubernetes executor [supports Docker-in-Docker](https://docs.gitlab.com/runner/executors/kubernetes/#using-dockerdind).
 
 To ensure Code Quality jobs can run on a Kubernetes executor:
 
-- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
+- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
   [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file below.
 
@@ -524,7 +524,7 @@ To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/s
 - Specify the `DOCKER_HOST` that the Docker CLI communicates with.
 - Set the `DOCKER_DRIVER` variable to empty.
 
-Use the `before_script` section to wait for the Docker daemon to fully boot up. Since GitLab Runner v16.9, this can also be done [by just setting the `HEALTHCHECK_TCP_PORT` variable](https://docs.gitlab.com/runner/executors/kubernetes/index.html#define-a-list-of-services).
+Use the `before_script` section to wait for the Docker daemon to fully boot up. Since GitLab Runner v16.9, this can also be done [by just setting the `HEALTHCHECK_TCP_PORT` variable](https://docs.gitlab.com/runner/executors/kubernetes/#define-a-list-of-services).
 
 ```yaml
 include:
@@ -595,7 +595,7 @@ name = "docker:20.10.12-dind"
    oc adm policy add-scc-to-user -z dind-sa privileged
    ```
 
-1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings).
+1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings).
 1. Set the job definition stays the same as in Kubernetes case:
 
    ```yaml

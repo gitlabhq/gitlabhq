@@ -272,7 +272,7 @@ URLs must be relative. In addition:
 
 - All links in the data file must end with `.html` (with the exception
   of `index.html` files), and not `.md`.
-- For `index.html` files, use the clean (canonical) URL: `path/to/`. For example, `https://docs.gitlab.com/ee/install/index.html` becomes `ee/install/`.
+- For `index.html` files, use the clean (canonical) URL: `path/to/`. For example, `https://docs.gitlab.com/ee/install/` becomes `ee/install/`.
 - Do not start any relative link with a forward slash `/`.
 - As convention, always wrap URLs in single quotes `'url'`.
 - Always use the project prefix depending on which project the link you add
@@ -285,7 +285,7 @@ Examples of relative URLs:
 | Full URL                                                       | Global nav URL                        |
 | -------------------------------------------------------------- | ------------------------------------- |
 | `https://docs.gitlab.com/ee/api/avatar.html`                   | `ee/api/avatar.html`                  |
-| `https://docs.gitlab.com/ee/install/index.html`                | `ee/install/`                         |
+| `https://docs.gitlab.com/ee/install/`                | `ee/install/`                         |
 | `https://docs.gitlab.com/omnibus/settings/database.html`       | `omnibus/settings/database.html`      |
 | `https://docs.gitlab.com/charts/installation/deployment.html`  | `charts/installation/deployment.html` |
 | `https://docs.gitlab.com/runner/install/docker.html`           | `runner/install/docker.html`          |

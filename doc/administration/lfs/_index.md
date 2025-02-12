@@ -520,7 +520,7 @@ error: failed to fetch some objects from 'https://username:[MASKED]@gitlab.examp
 ```
 
 When using GitLab CI over a TLS v1.3 configured GitLab server, you must
-[upgrade to GitLab Runner](https://docs.gitlab.com/runner/install/index.html) 13.2.0
+[upgrade to GitLab Runner](https://docs.gitlab.com/runner/install/) 13.2.0
 or later to receive an updated Git LFS client version with
 the included [GitLab Runner Helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#helper-image).
 

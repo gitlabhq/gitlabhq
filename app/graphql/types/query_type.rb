@@ -223,7 +223,7 @@ module Types
       description: 'Find an abuse report.',
       resolver: Resolvers::AbuseReportResolver
 
-    field :abuse_report_labels, ::Types::LabelType.connection_type,
+    field :abuse_report_labels, ::Types::AntiAbuse::AbuseReportLabelType.connection_type,
       null: true,
       experiment: { milestone: '16.3' },
       description: 'Abuse report labels.',

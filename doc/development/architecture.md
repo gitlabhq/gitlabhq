@@ -452,7 +452,7 @@ GitLab can be considered to have two layers from a process perspective:
   - [Omnibus](https://github.com/certbot/certbot/blob/master/README.rst)
   - [Charts](https://github.com/cert-manager/cert-manager/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/index.html)
+  - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
   - [Source](../install/installation.md#using-https)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md)
@@ -530,7 +530,7 @@ Geo is a premium feature built to help speed up the development of distributed t
 - [Project page](https://gitlab.com/gitlab-org/ruby/gems/gitlab-exporter)
 - Configuration:
   - [Omnibus](../administration/monitoring/prometheus/gitlab_exporter.md)
-  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-exporter/index.html)
+  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/gitlab-exporter/)
 - Layer: Monitoring
 - Process: `gitlab-exporter`
 - GitLab.com: [Monitoring of GitLab.com](https://handbook.gitlab.com/handbook/engineering/monitoring/)
@@ -542,7 +542,7 @@ GitLab Exporter is a process designed in house that allows us to export metrics 
 - [Project page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
-  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/kas/index.html)
+  - [Charts](https://docs.gitlab.com/charts/charts/gitlab/kas/)
 
 The [GitLab agent](../user/clusters/agent/_index.md) is an active in-cluster
 component for solving GitLab and Kubernetes integration tasks in a secure and
@@ -831,7 +831,7 @@ For monitoring deployed apps, see the [Sentry integration docs](../operations/er
 - Configuration:
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template)
   - [Charts](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
-  - [minikube Minimal](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/index.html)
+  - [minikube Minimal](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)

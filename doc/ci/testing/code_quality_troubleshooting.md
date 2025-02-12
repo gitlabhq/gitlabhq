@@ -151,7 +151,7 @@ Example:
 ### Kubernetes
 
 If you have access to GitLab Runner configuration and the Kubernetes cluster,
-you can [mount a ConfigMap](https://docs.gitlab.com/runner/executors/kubernetes/index.html#configmap-volume).
+you can [mount a ConfigMap](https://docs.gitlab.com/runner/executors/kubernetes/#configmap-volume).
 
 Replace `gitlab.example.com` with the actual domain of the registry.
 

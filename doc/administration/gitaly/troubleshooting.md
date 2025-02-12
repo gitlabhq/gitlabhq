@@ -105,7 +105,7 @@ check for an SSL or TLS problem:
 ```
 
 Check whether `Verify return code` field indicates a
-[known Linux package installation configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/index.html).
+[known Linux package installation configuration problem](https://docs.gitlab.com/omnibus/settings/ssl/).
 
 If `openssl` succeeds but `gitlab-rake gitlab:gitaly:check` fails,
 check [certificate requirements](tls_support.md#certificate-requirements) for Gitaly.

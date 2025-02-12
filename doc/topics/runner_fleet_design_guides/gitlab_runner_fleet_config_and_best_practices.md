@@ -522,7 +522,7 @@ As a final step in the deployment phase, you must establish a solution to monito
   - Network utilization
   - Disk utilization
 
-See the [Dedicated GitLab Runner monitoring page](https://docs.gitlab.com/runner/monitoring/index.html) for more details on how to proceed.
+See the [Dedicated GitLab Runner monitoring page](https://docs.gitlab.com/runner/monitoring/) for more details on how to proceed.
 
 ## Optimize
 

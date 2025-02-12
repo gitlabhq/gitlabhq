@@ -72,7 +72,7 @@ Prerequisites:
   - Working installation of `kubectl`.
   - Working installation of Helm, version v3.11.0 or later.
 
-For more information, see [Test the GitLab chart on GKE or EKS](https://docs.gitlab.com/charts/quickstart/index.html).
+For more information, see [Test the GitLab chart on GKE or EKS](https://docs.gitlab.com/charts/quickstart/).
 
 ### Add the AI gateway Helm repository
 

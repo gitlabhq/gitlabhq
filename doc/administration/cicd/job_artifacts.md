@@ -272,7 +272,7 @@ processing is done in a background worker and requires **no downtime**.
 
    ::EndTabs
 
-1. If [Geo](../geo/_index.md) is enabled, [reverify all job artifacts](../geo/replication/troubleshooting/synchronization_verification.md#reverify-all-components-or-any-ssf-data-type-which-supports-verification).
+1. If [Geo](../geo/_index.md) is enabled, [reverify all job artifacts](../geo/replication/troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
 
 In some cases, you need to run the [orphan artifact file cleanup Rake task](../../raketasks/cleanup.md#remove-orphan-artifact-files)
 to clean up orphaned artifacts.
