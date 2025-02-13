@@ -98,6 +98,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Application settings](application_settings.md)
 - [Remote Development](remote_development/_index.md)
 - [Markdown (GLFM) development guide](gitlab_flavored_markdown/_index.md)
+- [Webhooks development guide](webhooks.md)
 
 ### Import and Export
 

@@ -32655,6 +32655,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="pipelinesecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
+| <a id="pipelinesecurityreportfindingseverityoverrides"></a>`severityOverrides` | [`SeverityOverrideConnection`](#severityoverrideconnection) | List of severity changes for the vulnerability finding. (see [Connections](#connections)) |
 | <a id="pipelinesecurityreportfindingsolution"></a>`solution` | [`String`](#string) | Solution for resolving the security report finding. |
 | <a id="pipelinesecurityreportfindingsolutionhtml"></a>`solutionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `solution`. |
 | <a id="pipelinesecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
@@ -38139,7 +38140,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
 | <a id="vulnerabilityscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="vulnerabilityseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
-| <a id="vulnerabilityseverityoverrides"></a>`severityOverrides` | [`SeverityOverrideConnection`](#severityoverrideconnection) | All the severity changes for this vulnerability. (see [Connections](#connections)) |
+| <a id="vulnerabilityseverityoverrides"></a>`severityOverrides` | [`SeverityOverrideConnection`](#severityoverrideconnection) | List of severity changes for the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilitysolution"></a>`solution` | [`String`](#string) | Recommended solution for the vulnerability. |
 | <a id="vulnerabilitystate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED). |
 | <a id="vulnerabilitystatecomment"></a>`stateComment` | [`String`](#string) | Comment given for the vulnerability state change. |

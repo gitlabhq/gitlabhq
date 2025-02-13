@@ -24,6 +24,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.repository_storages_weighted).to eq({}) }
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
+    it { expect(setting.enforce_email_subaddress_restrictions).to be(false) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
     it { expect(setting.decompress_archive_file_timeout).to eq(210) }
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
@@ -1352,6 +1353,20 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           .is_less_than_or_equal_to(1)
           .with_message("must be a value between 0 and 1")
       end
+    end
+
+    describe 'anti_abuse_settings' do
+      let(:valid_anti_abuse_settings_1) { { enforce_email_subaddress_restrictions: true } }
+      let(:valid_anti_abuse_settings_2) { { enforce_email_subaddress_restrictions: false } }
+      let(:invalid_anti_abuse_settings_1) { { enforce_email_subaddress_restrictions: "string value" } }
+      let(:invalid_anti_abuse_settings_2) { { enforce_email_subaddress_restrictions: nil } }
+      let(:invalid_anti_abuse_settings_3) { { enforce_email_subaddress_restrictions: 42 } }
+
+      it { is_expected.to allow_value(valid_anti_abuse_settings_1).for(:anti_abuse_settings) }
+      it { is_expected.to allow_value(valid_anti_abuse_settings_2).for(:anti_abuse_settings) }
+      it { is_expected.not_to allow_value(invalid_anti_abuse_settings_1).for(:anti_abuse_settings) }
+      it { is_expected.not_to allow_value(invalid_anti_abuse_settings_2).for(:anti_abuse_settings) }
+      it { is_expected.not_to allow_value(invalid_anti_abuse_settings_3).for(:anti_abuse_settings) }
     end
   end
 

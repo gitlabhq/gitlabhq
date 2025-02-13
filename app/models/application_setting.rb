@@ -819,6 +819,11 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :pages, pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
   validates :pages, json_schema: { filename: "application_setting_pages" }
 
+  jsonb_accessor :anti_abuse_settings,
+    enforce_email_subaddress_restrictions: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
+
+  validates :anti_abuse_settings, json_schema: { filename: "anti_abuse_settings", detail_errors: true }
+
   validates :enforce_ci_inbound_job_token_scope_enabled,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

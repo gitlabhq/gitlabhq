@@ -111,6 +111,13 @@ RSpec.describe ApplicationSettingsHelper do
         ])
     end
 
+    it 'contains anti abuse settings' do
+      expect(helper.visible_attributes).to include(
+        *%i[
+          enforce_email_subaddress_restrictions
+        ])
+    end
+
     it 'contains sign_in_restrictions values' do
       expect(visible_attributes).to include(*%i[
         disable_password_authentication_for_users_with_sso_identities
