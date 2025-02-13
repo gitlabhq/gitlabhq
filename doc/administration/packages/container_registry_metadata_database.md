@@ -33,7 +33,7 @@ in the Helm Charts documentation.
 ## Known Limitations
 
 - No support for online migrations.
-- Geo Support is not confirmed.
+- Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
 - Registry database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Omnibus GitLab environments.
 
@@ -502,6 +502,61 @@ to each other. To restore the registry, you must apply both backups together.
 
 To downgrade the registry to a previous version after the migration is complete,
 you must restore to a backup of the desired version in order to downgrade.
+
+## Database architecture with Geo
+
+When using GitLab Geo with the container registry, you must configure separate database and
+object storage stacks for the registry at each site. Geo replication to the
+container registry uses events generated from registry notifications,
+rather than by database replication.
+
+### Prerequisites
+
+Each Geo site requires a separate, site-specific:
+
+1. PostgreSQL instance for the container registry database.
+1. Object storage instance for the container registry.
+1. Container registry configured to use these site-specific resources.
+
+This diagram illustrates the data flow and basic architecture:
+
+```mermaid
+flowchart TB
+    subgraph "Primary site"
+        P_Rails[GitLab Rails]
+        P_Reg[Container registry]
+        P_RegDB[(Registry database)]
+        P_Obj[(Object storage)]
+        P_Reg --> P_RegDB
+        P_RegDB --> P_Obj
+    end
+
+    subgraph "Secondary site"
+        S_Rails[GitLab Rails]
+        S_Reg[Container registry]
+        S_RegDB[(Registry database)]
+        S_Obj[(Object storage)]
+        S_Reg --> S_RegDB
+        S_RegDB --> S_Obj
+    end
+
+    P_Reg -- "Notifications" --> P_Rails
+    P_Rails -- "Events" --> S_Rails
+    S_Rails --> S_Reg
+
+    classDef primary fill:#d1f7c4
+    classDef secondary fill:#b8d4ff
+
+    class P_Rails,P_Reg,P_MainDB,P_RegDB,P_Obj primary
+    class S_Rails,S_Reg,S_MainDB,S_RegDB,S_Obj secondary
+```
+
+Use separate database instances on each site because:
+
+1. The main GitLab database is replicated to the secondary site as read-only.
+1. This replication cannot be selectively disabled for the registry database.
+1. The container registry requires write access to its database at both sites.
+1. Homogeneous setups ensure the greatest parity between Geo sites.
 
 ## Troubleshooting
 

@@ -39,7 +39,7 @@ module MergeRequests
     end
 
     def squash_forbidden?
-      target_project.squash_never?
+      merge_request.squash_never?
     end
 
     def repository

@@ -52,7 +52,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/validators/schema_validator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/rack_attack/request_spec.rb'
-    - 'ee/spec/lib/ee/web_ide/settings/extensions_gallery_metadata_generator_spec.rb'
     - 'ee/spec/lib/elastic/latest/custom_language_analyzers_spec.rb'
     - 'ee/spec/lib/elastic/latest/git_instance_proxy_spec.rb'
     - 'ee/spec/lib/elastic/multi_version_class_proxy_spec.rb'

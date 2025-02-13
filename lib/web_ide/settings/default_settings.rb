@@ -3,10 +3,6 @@
 module WebIde
   module Settings
     class DefaultSettings
-      SETTINGS_DEPENDENCIES = {
-        vscode_extensions_gallery_view_model: [:vscode_extension_marketplace_metadata, :vscode_extension_marketplace]
-      }.freeze
-
       # ALL WEB IDE SETTINGS ARE DECLARED HERE.
       # @return [Hash]
       def self.default_settings
@@ -28,7 +24,7 @@ module WebIde
             { enabled: false, disabled_reason: :instance_disabled },
             Hash
           ],
-          vscode_extensions_gallery_view_model: [
+          vscode_extension_marketplace_view_model: [
             { enabled: false, reason: :instance_disabled, help_url: '' },
             Hash
           ]

@@ -1126,6 +1126,7 @@ Gitlab/BoundedContexts:
     - 'app/models/preloaders/environments/deployment_preloader.rb'
     - 'app/models/preloaders/group_policy_preloader.rb'
     - 'app/models/preloaders/group_root_ancestor_preloader.rb'
+    - 'app/models/preloaders/namespace_root_ancestor_preloader.rb'
     - 'app/models/preloaders/labels_preloader.rb'
     - 'app/models/preloaders/merge_request_diff_preloader.rb'
     - 'app/models/preloaders/project_policy_preloader.rb'

@@ -24,7 +24,9 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       address: {
         locality: 'locality',
         country: 'country'
-      }
+      },
+      organization: 'GitLab',
+      job_title: 'Software Engineer'
     }
   end
 
@@ -1146,12 +1148,19 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       it "sets my-provider as the attributes provider" do
         expect(gl_user.user_synced_attributes_metadata.provider).to eql('my-provider')
       end
+
+      it "updates the user organization and job title" do
+        expect(gl_user.organization).to eq(info_hash[:organization])
+        expect(gl_user.job_title).to eq(info_hash[:job_title])
+        expect(gl_user.user_synced_attributes_metadata.organization_synced).to be(true)
+        expect(gl_user.user_synced_attributes_metadata.job_title_synced).to be(true)
+      end
     end
 
     context "update only requested info" do
       before do
         stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
-        stub_omniauth_setting(sync_profile_attributes: %w[name location])
+        stub_omniauth_setting(sync_profile_attributes: %w[name location organization job_title])
       end
 
       it "updates the user name" do
@@ -1166,6 +1175,13 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
 
       it "does not update the user email" do
         expect(gl_user.user_synced_attributes_metadata.email_synced).to be(false)
+      end
+
+      it "updates the user organization and job title" do
+        expect(gl_user.organization).to eq(info_hash[:organization])
+        expect(gl_user.job_title).to eq(info_hash[:job_title])
+        expect(gl_user.user_synced_attributes_metadata.organization_synced).to be(true)
+        expect(gl_user.user_synced_attributes_metadata.job_title_synced).to be(true)
       end
     end
 

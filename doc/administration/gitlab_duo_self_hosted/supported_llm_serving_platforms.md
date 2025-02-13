@@ -26,6 +26,47 @@ There are multiple platforms available to host your self-hosted Large Language M
 
 To install vLLM, see the [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html). You should install [version v0.6.4.post1](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1) or later.
 
+#### Endpoint Configuration
+
+When configuring the endpoint URL for any OpenAI API compatible platforms (such as vLLM) in GitLab:
+
+- The URL must be suffixed with `/v1`
+- If using the default vLLM configuration, the endpoint URL would be `https://<hostname>:8000/v1`
+- If your server is configured behind a proxy or load balancer, you might not need to specify the port, in which case the URL would be `https://<hostname>/v1`
+
+#### Finding the model name
+
+After the model has been deployed, you can obtain the model name for the model identifier field in GitLab by querying the vLLM server's `/v1/models` endpoint:
+
+```shell
+curl \
+  --header "Authorization: Bearer API_KEY" \
+  --header "Content-Type: application/json" \
+  http://your-vllm-server:8000/v1/models
+```
+
+The model name is the value of the `data.id` field in the response.
+
+Example response:
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "Mixtral-8x22B-Instruct-v0.1",
+      "object": "model",
+      "created": 1739421415,
+      "owned_by": "vllm",
+      "root": "mistralai/Mixtral-8x22B-Instruct-v0.1",
+      // ... other fields ...
+    }
+  ]
+}
+```
+
+In this example, if the model's `id` is `Mixtral-8x22B-Instruct-v0.1`, you would set the model identifier in GitLab as `custom_openai/Mixtral-8x22B-Instruct-v0.1`.
+
 For more information on:
 
 - vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
@@ -77,7 +118,7 @@ Examples:
      --served_model_name <choose-a-name-for-the-model> \
      --tokenizer_mode mistral \
      --load_format safetensors \
-     --tokenizer <path-to-model>/Mixtral-8x7B-Instruct-v0.1/
+     --tokenizer <path-to-model>/Mixtral-8x7B-Instruct-v0.1
    ```
 
 ## For cloud-hosted model deployments

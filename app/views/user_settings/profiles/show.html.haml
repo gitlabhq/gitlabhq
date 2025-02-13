@@ -136,12 +136,18 @@
             = f.text_field :location, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|City, country")
         .form-group.gl-form-group
           = f.label :job_title, s_('Profiles|Job title')
-          = f.text_field :job_title, class: 'gl-form-input form-control gl-md-form-input-lg'
+          = f.text_field :job_title, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: @user.read_only_attribute?(:job_title)
+          - if @user.read_only_attribute?(:job_title)
+            .form-text.gl-text-subtle
+              = s_("Profiles|Your job title was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:job_title) }
         .form-group.gl-form-group
           = f.label :organization, s_('Profiles|Organization')
-          = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg'
+          = f.text_field :organization, class: 'gl-form-input form-control gl-md-form-input-lg', readonly: @user.read_only_attribute?(:organization)
           .form-text.gl-text-subtle
-            = s_("Profiles|Who you represent or work for.")
+            - if @user.read_only_attribute?(:organization)
+              = s_("Profiles|Your organization was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:organization) }
+            - else
+              = s_("Profiles|Who you represent or work for.")
         .form-group.gl-form-group.gl-mb-6.gl-max-w-80
           = f.label :bio, s_('Profiles|Bio')
           = f.text_area :bio, class: 'gl-form-input gl-form-textarea form-control', rows: 4, maxlength: 250

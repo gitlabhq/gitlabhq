@@ -18,7 +18,7 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
         requested_setting_names: [
           :vscode_extension_marketplace,
           :vscode_extension_marketplace_metadata,
-          :vscode_extensions_gallery_view_model
+          :vscode_extension_marketplace_view_model
         ],
         settings: {
           vscode_extension_marketplace: {
@@ -33,7 +33,7 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
             enabled: false,
             disabled_reason: :instance_disabled
           },
-          vscode_extensions_gallery_view_model: {
+          vscode_extension_marketplace_view_model: {
             enabled: false,
             reason: :instance_disabled,
             help_url: ''
@@ -42,7 +42,7 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
         setting_types: {
           vscode_extension_marketplace: Hash,
           vscode_extension_marketplace_metadata: Hash,
-          vscode_extensions_gallery_view_model: Hash
+          vscode_extension_marketplace_view_model: Hash
         },
         env_var_prefix: "GITLAB_WEB_IDE",
         env_var_failed_message_class: WebIde::Settings::Messages::SettingsEnvironmentVariableOverrideFailed

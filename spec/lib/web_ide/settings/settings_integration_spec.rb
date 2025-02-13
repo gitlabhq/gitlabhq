@@ -118,8 +118,9 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
         end
 
         it "raises an error" do
-          expected_err_msg = "Settings VSCode extensions gallery validation failed: root is missing required keys: " \
-            "service_url, item_url, resource_url_template"
+          expected_err_msg =
+            "Settings VSCode extension marketplace validation failed: root is missing required keys: " \
+              "service_url, item_url, resource_url_template"
           expect { vscode_extension_marketplace_setting }
             .to raise_error(expected_err_msg)
         end
@@ -149,7 +150,7 @@ RSpec.describe ::WebIde::Settings, feature_category: :web_ide do # rubocop:disab
         end
 
         it "raises an error" do
-          expected_err_msg = "Settings VSCode extensions gallery metadata validation failed: " \
+          expected_err_msg = "Settings VSCode extension marketplace metadata validation failed: " \
             "root is missing required keys: enabled"
           expect { vscode_extension_marketplace_metadata_setting }
             .to raise_error(expected_err_msg)

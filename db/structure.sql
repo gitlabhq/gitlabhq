@@ -22939,7 +22939,9 @@ CREATE TABLE user_synced_attributes_metadata (
     email_synced boolean DEFAULT false,
     location_synced boolean DEFAULT false,
     user_id bigint NOT NULL,
-    provider character varying
+    provider character varying,
+    organization_synced boolean DEFAULT false,
+    job_title_synced boolean DEFAULT false
 );
 
 CREATE SEQUENCE user_synced_attributes_metadata_id_seq

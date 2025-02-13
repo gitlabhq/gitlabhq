@@ -332,24 +332,13 @@ class TodoService
   end
 
   def excluded_user_ids(users, attributes)
-    users_single_todos, users_multiple_todos = users.partition { |u| Feature.disabled?(:multiple_todos, u) }
-    excluded_user_ids = []
+    return [] unless users.present?
+    return [] if Todo::ACTIONS_MULTIPLE_ALLOWED.include?(attributes.fetch(:action))
 
-    if users_single_todos.present?
-      excluded_user_ids += pending_todos(
-        users_single_todos,
-        attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion)
-      ).distinct_user_ids
-    end
-
-    if users_multiple_todos.present? && Todo::ACTIONS_MULTIPLE_ALLOWED.exclude?(attributes.fetch(:action))
-      excluded_user_ids += pending_todos(
-        users_multiple_todos,
-        attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)
-      ).distinct_user_ids
-    end
-
-    excluded_user_ids
+    pending_todos(
+      users,
+      attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)
+    ).distinct_user_ids
   end
 
   def bulk_insert_todos(users, attributes)

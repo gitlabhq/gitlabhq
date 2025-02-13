@@ -54,36 +54,14 @@ describe('BlobFooter', () => {
 
   describe('component with too many results', () => {
     beforeEach(() => {
+      const chunks = [];
+      for (let i = 0; i < 25; i += 1) {
+        chunks.push(...mockDataForBlobBody.chunks);
+      }
       createComponent({
         file: {
           ...mockDataForBlobBody,
-          chunks: [
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-            ...mockDataForBlobBody.chunks,
-          ],
+          chunks,
           matchCountTotal: 200,
         },
         position: 1,
@@ -102,6 +80,12 @@ describe('BlobFooter', () => {
       expect(wrapper.text()).toContain(
         `Show less - Too many matches found. Showing 5 chunks out of 200 results. Open the file to view all.`,
       );
+    });
+
+    it(`has correct link in open state`, async () => {
+      findGlButton().vm.$emit('click');
+      await nextTick();
+      expect(findGlLink().attributes('href')).toBe('https://gitlab.com/file/test.js');
     });
 
     it(`tracks show more or less click`, () => {

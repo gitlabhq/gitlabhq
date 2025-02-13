@@ -59,7 +59,7 @@ To configure a self-hosted model:
    - **Model family**: Select the model family the deployment belongs to. Only GitLab-approved models
      are in this list.
    - **Endpoint**: Enter the URL where the model is hosted.
-     - For models hosted through vLLM, you must suffix the URL with `/v1`. The default port is `8000`, so the default endpoint URL is `https://<hostname>:8000/v1`.
+     - For more information about configuring the endpoint for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#endpoint-configuration).
    - **API key**: Optional. Add an API key if you need one to access the model.
    - **Model identifier**: This is a required field if your deployment method is vLLM, Bedrock or Azure. The value of this field is based on your deployment method, and should match the following structure:
 
@@ -69,6 +69,8 @@ To configure a self-hosted model:
      | Bedrock | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
      | Azure OpenAI | `azure/<model ID of the model>` | `azure/gpt-35-turbo` |
      | Others | The field is optional |  |
+
+     For more information about configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#finding-the-model-name).
 
 1. Select **Create self-hosted model**.
 

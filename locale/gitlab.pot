@@ -504,6 +504,11 @@ msgid_plural "%d stars"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d subgroup"
+msgid_plural "%d subgroups"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d tag"
 msgid_plural "%d tags"
 msgstr[0] ""
@@ -29793,6 +29798,12 @@ msgstr ""
 msgid "Import|An error occurred while fetching import details."
 msgstr ""
 
+msgid "Import|Complete"
+msgstr ""
+
+msgid "Import|Failed"
+msgstr ""
+
 msgid "Import|Failures for %{id}"
 msgstr ""
 
@@ -29806,6 +29817,9 @@ msgid "Import|Import from %{hostname} completed"
 msgstr ""
 
 msgid "Import|Import source user has an invalid status for this operation"
+msgstr ""
+
+msgid "Import|In progress"
 msgstr ""
 
 msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
@@ -29833,6 +29847,9 @@ msgid "Import|Must only contain the base URL of the source GitLab instance."
 msgstr ""
 
 msgid "Import|No import details"
+msgstr ""
+
+msgid "Import|Not started"
 msgstr ""
 
 msgid "Import|Partially completed"
@@ -44456,6 +44473,9 @@ msgstr ""
 msgid "Profiles|Your email address was automatically set based on your %{provider_label} account"
 msgstr ""
 
+msgid "Profiles|Your job title was automatically set based on your %{provider_label} account"
+msgstr ""
+
 msgid "Profiles|Your location was automatically set based on your %{provider_label} account"
 msgstr ""
 
@@ -44463,6 +44483,9 @@ msgid "Profiles|Your name was automatically set based on your %{provider_label} 
 msgstr ""
 
 msgid "Profiles|Your name was automatically set based on your %{provider_label} account, so people you know can recognize you."
+msgstr ""
+
+msgid "Profiles|Your organization was automatically set based on your %{provider_label} account"
 msgstr ""
 
 msgid "Profiles|https://website.com"

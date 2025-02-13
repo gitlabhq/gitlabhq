@@ -2399,6 +2399,171 @@ Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in 
 
 This also sets the `username` attribute in your SAML Response to the username in GitLab.
 
+#### Map profile attributes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505575) `job_title` and `organization` attributes in GitLab 17.8.
+
+To sync profile information from your SAML provider, you must configure `attribute_statements` to map these attributes.
+
+The supported profile attributes are:
+
+- `job_title`
+- `organization`
+
+These attributes have no default mappings and do not sync unless explicitly configured.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. [Configure OmniAuth to sync the desired attributes](omniauth.md#keep-omniauth-user-profiles-up-to-date).
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     { name: 'saml',
+       label: 'Our SAML Provider',
+       args: {
+               assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_sso_target_url: 'https://login.example.com/idp',
+               issuer: 'https://gitlab.example.com',
+               name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+               attribute_statements: {
+                 organization: ['organization'],
+                 job_title: ['job_title']
+               }
+       }
+     }
+   ]
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. [Configure OmniAuth to sync the desired attributes](omniauth.md#keep-omniauth-user-profiles-up-to-date).
+1. Save the following YAML content in a file named `saml.yaml` to be used as a
+   [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#providers):
+
+   ```yaml
+   name: 'saml'
+   label: 'Our SAML Provider'
+   args:
+     assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
+     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_sso_target_url: 'https://login.example.com/idp'
+     issuer: 'https://gitlab.example.com'
+     name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+     attribute_statements:
+       organization: ['organization']
+       job_title: ['job_title']
+   ```
+
+1. Create the Kubernetes Secret:
+
+   ```shell
+   kubectl create secret generic -n <namespace> gitlab-saml --from-file=provider=saml.yaml
+   ```
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       omniauth:
+         providers:
+           - secret: gitlab-saml
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. [Configure OmniAuth to sync the desired attributes](omniauth.md#keep-omniauth-user-profiles-up-to-date).
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['omniauth_providers'] = [
+              { name: 'saml',
+                label: 'Our SAML Provider',
+                args: {
+                        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_sso_target_url: 'https://login.example.com/idp',
+                        issuer: 'https://gitlab.example.com',
+                        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+                        attribute_statements: {
+                          organization: ['organization'],
+                          job_title: ['job_title']
+                        }
+                }
+              }
+           ]
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. [Configure OmniAuth to sync the desired attributes](omniauth.md#keep-omniauth-user-profiles-up-to-date).
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+         - { name: 'saml',
+             label: 'Our SAML Provider',
+             args: {
+                     assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_sso_target_url: 'https://login.example.com/idp',
+                     issuer: 'https://gitlab.example.com',
+                     name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+                     attribute_statements: {
+                       organization: ['organization'],
+                       job_title: ['job_title']
+                     }
+             }
+           }
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
 ### Allow for clock drift
 
 The clock of the IdP may drift slightly ahead of your system clocks.

@@ -58,6 +58,9 @@ To migrate generic deployments:
 
 ## Migrate from GitLab-managed clusters to Kubernetes resources
 
+DETAILS:
+**Tier:** Premium, Ultimate
+
 With GitLab-managed clusters, GitLab creates separate service accounts and namespaces for every branch and deploys by using these resources.
 
 Now, you can use [GitLab-managed Kubernetes resources](../../clusters/agent/managed_kubernetes_resources.md) to self-serve resources with enhanced security controls.

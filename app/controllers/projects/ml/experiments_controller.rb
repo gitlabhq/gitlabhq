@@ -11,18 +11,9 @@ module Projects
 
       feature_category :mlops
 
-      MAX_EXPERIMENTS_PER_PAGE = 20
       MAX_CANDIDATES_PER_PAGE = 30
 
-      def index
-        paginator = Projects::Ml::ExperimentFinder
-          .new(@project, { with_candidate_count: true })
-          .execute
-          .keyset_paginate(cursor: params[:cursor], per_page: MAX_EXPERIMENTS_PER_PAGE)
-
-        @experiments = paginator.records
-        @page_info = page_info(paginator)
-      end
+      def index; end
 
       def show
         find_params = params

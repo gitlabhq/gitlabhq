@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, feature_category: :web_ide do
+RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
   let(:input_context) do

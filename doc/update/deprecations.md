@@ -1210,6 +1210,26 @@ for more information.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### New data retention limits for vulnerabilities on GitLab.com
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/16629).
+
+</div>
+
+In GitLab 18.0, we are introducing a new data retention limit for GitLab.com Ultimate customers to improve system performance and reliability. The data retention limit affects how long your vulnerability data is stored for. Vulnerabilities older than 12 months that have not been updated are automatically moved to cold storage archives. These archives:
+
+- Remain accessible and downloadable through the GitLab UI.
+- Are retained for 3 years.
+- Are permanently deleted after 3 years.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### OpenTofu CI/CD template
 
 <div class="deprecation-notes">

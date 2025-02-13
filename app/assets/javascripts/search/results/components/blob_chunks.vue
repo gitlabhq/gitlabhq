@@ -133,13 +133,17 @@ export default {
         </div>
         <pre
           v-if="line.richText"
-          class="code highlight gl-grow"
+          class="code highlight gl-flex gl-grow"
           data-testid="search-blob-line-code-highlighted"
         >
           <code v-safe-html="line.richText" class="gl-leading-normal">
           </code>
         </pre>
-        <pre v-else class="code gl-grow" data-testid="search-blob-line-code-non-highlighted">
+        <pre
+          v-else
+          class="code gl-flex gl-grow"
+          data-testid="search-blob-line-code-non-highlighted"
+        >
           <code>
             <span v-safe-html="line.text" class="line"></span>
           </code>

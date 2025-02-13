@@ -4,7 +4,10 @@ module WebIde
   module Settings
     class SettingsInitializer
       SETTINGS_DEPENDENCIES = {
-        vscode_extensions_gallery_view_model: [:vscode_extension_marketplace_metadata, :vscode_extension_marketplace]
+        vscode_extension_marketplace_view_model: [
+          :vscode_extension_marketplace_metadata,
+          :vscode_extension_marketplace
+        ]
       }.freeze
 
       # @param [Hash] context

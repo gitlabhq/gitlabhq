@@ -2,7 +2,7 @@
 
 module WebIde
   module Settings
-    class ExtensionsGalleryValidator
+    class ExtensionMarketplaceValidator
       include Messages
 
       # @param [Hash] context
@@ -23,7 +23,7 @@ module WebIde
         if errors.none?
           Gitlab::Fp::Result.ok(context)
         else
-          Gitlab::Fp::Result.err(SettingsVscodeExtensionsGalleryValidationFailed.new(details: errors.join(". ")))
+          Gitlab::Fp::Result.err(SettingsVscodeExtensionMarketplaceValidationFailed.new(details: errors.join(". ")))
         end
       end
 

@@ -66,7 +66,7 @@ This page lists fields available to use as filters when querying issues or work 
 
   ```plaintext
   type = MergeRequest and assignee = currentUser()
-  ``
+  ```
 
 ## Approved by user
 

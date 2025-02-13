@@ -12,8 +12,8 @@ module WebIde
 
       SettingsCurrentSettingsReadFailed = Class.new(Gitlab::Fp::Message)
       SettingsEnvironmentVariableOverrideFailed = Class.new(Gitlab::Fp::Message)
-      SettingsVscodeExtensionsGalleryValidationFailed = Class.new(Gitlab::Fp::Message)
-      SettingsVscodeExtensionsGalleryMetadataValidationFailed = Class.new(Gitlab::Fp::Message)
+      SettingsVscodeExtensionMarketplaceValidationFailed = Class.new(Gitlab::Fp::Message)
+      SettingsVscodeExtensionMarketplaceMetadataValidationFailed = Class.new(Gitlab::Fp::Message)
 
       #---------------------------------------------------------
       # Domain Events - message name should describe the outcome

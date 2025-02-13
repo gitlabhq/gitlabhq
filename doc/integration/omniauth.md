@@ -356,12 +356,19 @@ omniauth:
 
 ## Keep OmniAuth user profiles up to date
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505575) `job_title` and `organization` attributes in GitLab 17.8.
+
+NOTE:
+Some providers require additional configuration to synchronize these attributes. For example, SAML providers require [mapping profile attributes](saml.md#map-profile-attributes).
+
 You can enable profile syncing from selected OmniAuth providers.
 You can sync any combination of the following user attributes:
 
 - `name`
 - `email`
+- `job_title`
 - `location`
+- `organization`
 
 When authenticating using LDAP, the user's name and email are always synced.
 
@@ -369,18 +376,83 @@ When authenticating using LDAP, the user's name and email are always synced.
 
 :::TabTitle Linux package (Omnibus)
 
-```ruby
-gitlab_rails['omniauth_sync_profile_from_provider'] = ['saml', 'google_oauth2']
-gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email', 'location']
-```
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['omniauth_sync_profile_from_provider'] = ['saml', 'google_oauth2']
+   gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email', 'job_title', 'location', 'organization']
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > values.yaml
+   ```
+
+1. Edit `values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       omniauth:
+         syncProfileFromProvider: ['saml', 'google_oauth2']
+         syncProfileAttributes: ['name', 'email', 'job_title', 'location', 'organization']
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['omniauth_sync_profile_from_provider'] = ['saml', 'google_oauth2']
+           gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email', 'job_title', 'location', 'organization']
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
 
 :::TabTitle Self-compiled (source)
 
-```yaml
-omniauth:
-  sync_profile_from_provider: ['saml', 'google_oauth2']
-  sync_profile_attributes: ['email', 'location']
-```
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     omniauth:
+       sync_profile_from_provider: ['saml', 'google_oauth2']
+       sync_profile_attributes: ['name', 'email', 'job_title', 'location', 'organization']
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
 
 ::EndTabs
 

@@ -2,21 +2,21 @@
 
 module WebIde
   module Settings
-    class ExtensionsGalleryViewModelGenerator
+    class ExtensionMarketplaceViewModelGenerator
       # @param [Hash] context
       # @return [Hash]
       def self.generate(context)
-        return context unless context.fetch(:requested_setting_names).include?(:vscode_extensions_gallery_view_model)
+        return context unless context.fetch(:requested_setting_names).include?(:vscode_extension_marketplace_view_model)
 
-        context[:settings][:vscode_extensions_gallery_view_model] = build_view_model(context)
+        context[:settings][:vscode_extension_marketplace_view_model] = build_view_model(context)
 
         context
       end
 
-      # Builds the value for :vscode_extensions_gallery_view_model
+      # Builds the value for :vscode_extension_marketplace_view_model
       #
       # @param [Hash] context The settings railway context
-      # @return [Hash] value for :vscode_extensions_gallery_view_model
+      # @return [Hash] value for :vscode_extension_marketplace_view_model
       def self.build_view_model(context)
         context => {
           options: {
@@ -74,4 +74,4 @@ module WebIde
   end
 end
 
-WebIde::Settings::ExtensionsGalleryViewModelGenerator.prepend_mod
+WebIde::Settings::ExtensionMarketplaceViewModelGenerator.prepend_mod

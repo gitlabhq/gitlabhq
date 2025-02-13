@@ -2,7 +2,7 @@
 
 module WebIde
   module Settings
-    class ExtensionsGalleryMetadataGenerator
+    class ExtensionMarketplaceMetadataGenerator
       include Messages
 
       # NOTE: These `disabled_reason` enumeration values are also referenced/consumed in
@@ -28,12 +28,12 @@ module WebIde
         options_with_defaults => {
           user: ::User | NilClass => user,
           vscode_extension_marketplace_feature_flag_enabled: TrueClass | FalseClass | NilClass =>
-            extensions_marketplace_feature_flag_enabled
+            extension_marketplace_feature_flag_enabled
         }
 
         extension_marketplace_metadata = build_metadata(
           user: user,
-          flag_enabled: extensions_marketplace_feature_flag_enabled
+          flag_enabled: extension_marketplace_feature_flag_enabled
         )
 
         context[:settings][:vscode_extension_marketplace_metadata] = extension_marketplace_metadata
@@ -94,4 +94,4 @@ module WebIde
   end
 end
 
-WebIde::Settings::ExtensionsGalleryMetadataGenerator.prepend_mod
+WebIde::Settings::ExtensionMarketplaceMetadataGenerator.prepend_mod

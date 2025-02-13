@@ -2,7 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-title: 'Self-Hosted Model: Complete AWS/Google Cloud Deployment Guide with Ollama Integration'
+title: 'GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with Ollama Integration'
 ---
 
 DETAILS:
@@ -85,7 +85,7 @@ The rest of this guide assumes you already have a instance of GitLab up and runn
 
 #### Licensing
 
-Operating the Self-Hosted Model requires both a GitLab Ultimate license and a GitLab Duo Enterprise license. The GitLab Ultimate license works with either online or offline licensing options. This documentation assumes that both licenses have been previously obtained and are available for implementation.
+Operating GitLab Duo Self-Hosted requires both a GitLab Ultimate license and a GitLab Duo Enterprise license. The GitLab Ultimate license works with either online or offline licensing options. This documentation assumes that both licenses have been previously obtained and are available for implementation.
 
 ![License screenshot](img/self_hosted_model/license_ultimate_onlinelicense.png)
 
@@ -119,7 +119,7 @@ For details, refer to the [documentation](https://docs.gitlab.com/omnibus/settin
 
 ## Introduction
 
-Before setting up a Self-Hosted Model, it's important to understand how AI works. AI model is the AI's brain trained with data. This brain needs a framework to operate, which is called an LLM Serving Platform or simply "Serving Platform." In AWS, this is "Amazon Bedrock," in Azure, it's "Azure OpenAI Service," and for ChatGPT, it's their platform. For Anthropic, it's "Claude.". For self-hosing models, Ollama is a common choice.
+Before setting up GitLab Duo Self-Hosted, it's important to understand how AI works. AI model is the AI's brain trained with data. This brain needs a framework to operate, which is called an LLM Serving Platform or simply "Serving Platform." In AWS, this is "Amazon Bedrock," in Azure, it's "Azure OpenAI Service," and for ChatGPT, it's their platform. For Anthropic, it's "Claude.". For self-hosing models, Ollama is a common choice.
 
 For example:
 

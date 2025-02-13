@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# This spec requires many let statements to properly test OAuth auth_hash attributes
+# and their various encodings (ASCII and UTF-8).
+# rubocop:disable RSpec/MultipleMemoizedHelpers -- Complex OAuth attribute testing requires multiple let statements
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_category: :user_management do
@@ -29,6 +32,8 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
   let(:last_name_raw) { +"K\xC3\xBC\xC3\xA7\xC3\xBCk" }
   let(:name_raw) { +"Onur K\xC3\xBC\xC3\xA7\xC3\xBCk" }
   let(:username_claim_raw) { +'onur.partner' }
+  let(:organization_raw) { +'GitLab' }
+  let(:job_title_raw) { +'Software Engineer' }
 
   let(:uid_ascii) { uid_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:email_ascii) { email_raw.force_encoding(Encoding::ASCII_8BIT) }
@@ -36,6 +41,8 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
   let(:first_name_ascii) { first_name_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:last_name_ascii) { last_name_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:name_ascii) { name_raw.force_encoding(Encoding::ASCII_8BIT) }
+  let(:organization_ascii) { organization_raw.force_encoding(Encoding::ASCII_8BIT) }
+  let(:job_title_ascii) { job_title_raw.force_encoding(Encoding::ASCII_8BIT) }
 
   let(:uid_utf8) { uid_ascii.force_encoding(Encoding::UTF_8) }
   let(:email_utf8) { email_ascii.force_encoding(Encoding::UTF_8) }
@@ -43,6 +50,8 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
   let(:name_utf8) { name_ascii.force_encoding(Encoding::UTF_8) }
   let(:first_name_utf8) { first_name_ascii.force_encoding(Encoding::UTF_8) }
   let(:username_claim_utf8) { username_claim_raw.force_encoding(Encoding::ASCII_8BIT) }
+  let(:organization_utf8) { organization_ascii.force_encoding(Encoding::UTF_8) }
+  let(:job_title_utf8) { job_title_ascii.force_encoding(Encoding::UTF_8) }
 
   let(:info_hash) do
     {
@@ -55,7 +64,9 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
       address: {
         locality: 'some locality',
         country: 'some country'
-      }
+      },
+      organization: organization_ascii,
+      job_title: job_title_ascii
     }
   end
 
@@ -67,6 +78,8 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
     it { expect(auth_hash.name).to eql name_utf8 }
     it { expect(auth_hash.password).not_to be_empty }
     it { expect(auth_hash.location).to eq 'some locality, some country' }
+    it { expect(auth_hash.organization).to eq organization_utf8 }
+    it { expect(auth_hash.job_title).to eq job_title_utf8 }
     it { expect(auth_hash.errors).to be_empty }
   end
 
@@ -182,6 +195,14 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
 
     it 'forces utf8 encoding on password' do
       expect(auth_hash.password.encoding).to eql Encoding::UTF_8
+    end
+
+    it 'forces utf8 encoding on organization' do
+      expect(auth_hash.organization.encoding).to eql Encoding::UTF_8
+    end
+
+    it 'forces utf8 encoding on job_title' do
+      expect(auth_hash.job_title.encoding).to eql Encoding::UTF_8
     end
   end
 
@@ -301,3 +322,4 @@ RSpec.describe Gitlab::Auth::OAuth::AuthHash, :aggregate_failures, feature_categ
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

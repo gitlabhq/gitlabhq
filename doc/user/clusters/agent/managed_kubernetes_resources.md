@@ -6,7 +6,7 @@ title: GitLab-managed Kubernetes resources
 ---
 
 DETAILS:
-**Tier:** Free, Premium, Ultimate
+**Tier:** Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16130) in GitLab 17.9

@@ -259,34 +259,6 @@ RSpec.describe TodoService, feature_category: :notifications do
         should_not_create_todo(user: skipped, target: addressed_issue, action: Todo::DIRECTLY_ADDRESSED)
       end
 
-      it 'does not create a todo if user was already mentioned and todo is pending' do
-        stub_feature_flags(multiple_todos: false)
-
-        create(:todo, :mentioned, user: member, project: project, target: issue, author: author)
-
-        expect { service.update_issue(issue, author, skip_users) }.not_to change(member.todos, :count)
-      end
-
-      it 'does not create a todo if user was already mentioned and todo is done' do
-        create(:todo, :mentioned, :done, user: skipped, project: project, target: issue, author: author)
-
-        expect { service.update_issue(issue, author, skip_users) }.not_to change(skipped.todos, :count)
-      end
-
-      it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
-        stub_feature_flags(multiple_todos: false)
-
-        create(:todo, :directly_addressed, user: member, project: project, target: addressed_issue, author: author)
-
-        expect { service.update_issue(addressed_issue, author, skip_users) }.not_to change(member.todos, :count)
-      end
-
-      it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is done' do
-        create(:todo, :directly_addressed, :done, user: skipped, project: project, target: addressed_issue, author: author)
-
-        expect { service.update_issue(addressed_issue, author, skip_users) }.not_to change(skipped.todos, :count)
-      end
-
       it 'does not create todo if user can not see the issue when issue is confidential' do
         service.update_issue(confidential_issue, john_doe)
 
@@ -723,44 +695,38 @@ RSpec.describe TodoService, feature_category: :notifications do
       end
     end
 
-    context 'when multiple_todos are enabled' do
-      before do
-        stub_feature_flags(multiple_todos: true)
-      end
+    it 'creates a MENTIONED todo even if user already has a pending MENTIONED todo' do
+      create(:todo, :mentioned, user: member, project: project, target: issue, author: author)
 
-      it 'creates a MENTIONED todo even if user already has a pending MENTIONED todo' do
-        create(:todo, :mentioned, user: member, project: project, target: issue, author: author)
+      expect { service.update_issue(issue, author) }.to change(member.todos, :count)
+    end
 
-        expect { service.update_issue(issue, author) }.to change(member.todos, :count)
-      end
+    it 'creates a DIRECTLY_ADDRESSED todo even if user already has a pending DIRECTLY_ADDRESSED todo' do
+      create(:todo, :directly_addressed, user: member, project: project, target: issue, author: author)
 
-      it 'creates a DIRECTLY_ADDRESSED todo even if user already has a pending DIRECTLY_ADDRESSED todo' do
-        create(:todo, :directly_addressed, user: member, project: project, target: issue, author: author)
+      issue.update!(description: "#{member.to_reference}, what do you think?")
 
-        issue.update!(description: "#{member.to_reference}, what do you think?")
+      expect { service.update_issue(issue, author) }.to change(member.todos, :count)
+    end
 
-        expect { service.update_issue(issue, author) }.to change(member.todos, :count)
-      end
+    it 'creates an ASSIGNED todo even if user already has a pending MARKED todo' do
+      create(:todo, :marked, user: john_doe, project: project, target: assigned_issue, author: author)
 
-      it 'creates an ASSIGNED todo even if user already has a pending MARKED todo' do
-        create(:todo, :marked, user: john_doe, project: project, target: assigned_issue, author: author)
+      expect { service.reassigned_assignable(assigned_issue, author) }.to change(john_doe.todos, :count)
+    end
 
-        expect { service.reassigned_assignable(assigned_issue, author) }.to change(john_doe.todos, :count)
-      end
+    it 'does not create an ASSIGNED todo if user already has an ASSIGNED todo' do
+      create(:todo, :assigned, user: john_doe, project: project, target: assigned_issue, author: author)
 
-      it 'does not create an ASSIGNED todo if user already has an ASSIGNED todo' do
-        create(:todo, :assigned, user: john_doe, project: project, target: assigned_issue, author: author)
+      expect { service.reassigned_assignable(assigned_issue, author) }.not_to change(john_doe.todos, :count)
+    end
 
-        expect { service.reassigned_assignable(assigned_issue, author) }.not_to change(john_doe.todos, :count)
-      end
+    it 'creates multiple todos if a user is assigned and mentioned in a new issue' do
+      assigned_issue.description = mentions
+      service.new_issue(assigned_issue, author)
 
-      it 'creates multiple todos if a user is assigned and mentioned in a new issue' do
-        assigned_issue.description = mentions
-        service.new_issue(assigned_issue, author)
-
-        should_create_todo(user: john_doe, target: assigned_issue, action: Todo::ASSIGNED)
-        should_create_todo(user: john_doe, target: assigned_issue, action: Todo::MENTIONED)
-      end
+      should_create_todo(user: john_doe, target: assigned_issue, action: Todo::ASSIGNED)
+      should_create_todo(user: john_doe, target: assigned_issue, action: Todo::MENTIONED)
     end
   end
 
@@ -986,34 +952,6 @@ RSpec.describe TodoService, feature_category: :notifications do
         should_create_todo(user: author, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
         should_not_create_todo(user: non_member, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
         should_not_create_todo(user: skipped, target: addressed_mr, action: Todo::DIRECTLY_ADDRESSED)
-      end
-
-      it 'does not create a todo if user was already mentioned and todo is pending' do
-        stub_feature_flags(multiple_todos: false)
-
-        create(:todo, :mentioned, user: member, project: project, target: mentioned_mr, author: author)
-
-        expect { service.update_merge_request(mentioned_mr, author) }.not_to change(member.todos, :count)
-      end
-
-      it 'does not create a todo if user was already mentioned and todo is done' do
-        create(:todo, :mentioned, :done, user: skipped, project: project, target: mentioned_mr, author: author)
-
-        expect { service.update_merge_request(mentioned_mr, author, skip_users) }.not_to change(skipped.todos, :count)
-      end
-
-      it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
-        stub_feature_flags(multiple_todos: false)
-
-        create(:todo, :directly_addressed, user: member, project: project, target: addressed_mr, author: author)
-
-        expect { service.update_merge_request(addressed_mr, author) }.not_to change(member.todos, :count)
-      end
-
-      it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is done' do
-        create(:todo, :directly_addressed, user: skipped, project: project, target: addressed_mr, author: author)
-
-        expect { service.update_merge_request(addressed_mr, author, skip_users) }.not_to change(skipped.todos, :count)
       end
 
       context 'with a task list' do
@@ -1299,17 +1237,6 @@ RSpec.describe TodoService, feature_category: :notifications do
         expect(second_todo.reload).to be_done
         expect(third_todo.reload).to be_done
       end
-
-      it 'marks related pending todo to the target MR for the user as done when the multiple_todos feature is off' do
-        stub_feature_flags(multiple_todos: false)
-
-        only_todo = create(:todo, :pending, :assigned, user: john_doe, project: project, target: mentioned_mr, author: author)
-
-        review = Review.new(merge_request: mentioned_mr)
-        service.new_review(review, john_doe)
-
-        expect(only_todo.reload).to be_done
-      end
     end
   end
 
@@ -1384,56 +1311,6 @@ RSpec.describe TodoService, feature_category: :notifications do
       should_create_todo(user: author, target: noteable, action: Todo::DIRECTLY_ADDRESSED)
       should_not_create_todo(user: non_member, target: noteable, action: Todo::DIRECTLY_ADDRESSED)
       should_not_create_todo(user: skipped, target: noteable, action: Todo::DIRECTLY_ADDRESSED)
-    end
-
-    context 'users already have pending todos and the multiple_todos feature is off' do
-      before do
-        stub_feature_flags(multiple_todos: false)
-      end
-
-      let_it_be(:pending_todo_for_member) { create(:todo, :mentioned, user: member, project: project, target: noteable) }
-      let_it_be(:pending_todo_for_guest) { create(:todo, :mentioned, user: guest, project: project, target: noteable) }
-      let_it_be(:pending_todo_for_admin) { create(:todo, :mentioned, user: admin, project: project, target: noteable) }
-      let_it_be(:note_mentioning_1_user) do
-        create(:note, project: project, note: "FYI #{member.to_reference}", noteable: noteable)
-      end
-
-      let_it_be(:note_mentioning_3_users) do
-        create(:note, project: project, note: 'FYI: ' + [member, guest, admin].map(&:to_reference).join(' '), noteable: noteable)
-      end
-
-      it 'does not create a todo if user was already mentioned and todo is pending' do
-        expect { service.update_note(note_mentioning_1_user, author, skip_users) }.not_to change(member.todos, :count)
-      end
-
-      it 'does not create N+1 queries for pending todos' do
-        # Excluding queries for user permissions because those do execute N+1 queries
-        allow_any_instance_of(User).to receive(:can?).and_return(true)
-
-        control = ActiveRecord::QueryRecorder.new { service.update_note(note_mentioning_1_user, author, skip_users) }
-
-        expect { service.update_note(note_mentioning_3_users, author, skip_users) }.not_to exceed_query_limit(control)
-      end
-    end
-
-    it 'does not create a todo if user was already mentioned and todo is done' do
-      create(:todo, :mentioned, :done, user: skipped, project: project, target: noteable, author: author)
-
-      expect { service.update_note(note, author, skip_users) }.not_to change(skipped.todos, :count)
-    end
-
-    it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
-      stub_feature_flags(multiple_todos: false)
-
-      create(:todo, :directly_addressed, user: member, project: project, target: noteable, author: author)
-
-      expect { service.update_note(addressed_note, author, skip_users) }.not_to change(member.todos, :count)
-    end
-
-    it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is done' do
-      create(:todo, :directly_addressed, :done, user: skipped, project: project, target: noteable, author: author)
-
-      expect { service.update_note(addressed_note, author, skip_users) }.not_to change(skipped.todos, :count)
     end
   end
 

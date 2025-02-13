@@ -41,10 +41,10 @@ module WebIde
     # @return [Hash]
     def self.webide_extensions_gallery_settings(user:)
       Settings.get(
-        [:vscode_extensions_gallery_view_model],
+        [:vscode_extension_marketplace_view_model],
         user: user,
         vscode_extension_marketplace_feature_flag_enabled: feature_enabled?(user: user)
-      ).fetch(:vscode_extensions_gallery_view_model)
+      ).fetch(:vscode_extension_marketplace_view_model)
     end
 
     # Returns true if the given flag is enabled for any actor

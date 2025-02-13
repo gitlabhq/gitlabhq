@@ -47,9 +47,22 @@ module Gitlab
           end
         end
 
+        def organization
+          get_info(:organization)
+        end
+
+        def job_title
+          get_info(:job_title)
+        end
+
         def has_attribute?(attribute)
-          if attribute == :location
+          case attribute
+          when :location
             get_info(:address).present?
+          when :organization
+            get_info(:organization).present?
+          when :job_title
+            get_info(:job_title).present?
           else
             get_info(attribute).present?
           end

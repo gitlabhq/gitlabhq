@@ -2,7 +2,7 @@
 
 require "fast_spec_helper"
 
-RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :web_ide do
+RSpec.describe WebIde::Settings::ExtensionMarketplaceValidator, feature_category: :web_ide do
   include ResultMatchers
 
   let(:service_url) { "https://open-vsx.org/vscode/gallery" }
@@ -55,7 +55,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :
     shared_examples "err result" do |expected_error_details:|
       it "returns an err Result containing error details" do
         expect(result).to be_err_result do |message|
-          expect(message).to be_a WebIde::Settings::Messages::SettingsVscodeExtensionsGalleryValidationFailed
+          expect(message).to be_a WebIde::Settings::Messages::SettingsVscodeExtensionMarketplaceValidationFailed
           message.content => { details: String => error_details }
           expect(error_details).to eq(expected_error_details)
         end

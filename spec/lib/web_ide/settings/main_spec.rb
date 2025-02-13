@@ -9,11 +9,11 @@ RSpec.describe WebIde::Settings::Main, feature_category: :web_ide do
   let(:rop_steps) do
     [
       [WebIde::Settings::SettingsInitializer, :map],
-      [WebIde::Settings::ExtensionsGalleryMetadataGenerator, :map],
+      [WebIde::Settings::ExtensionMarketplaceMetadataGenerator, :map],
       [Gitlab::Fp::Settings::EnvVarOverrideProcessor, :and_then],
-      [WebIde::Settings::ExtensionsGalleryValidator, :and_then],
-      [WebIde::Settings::ExtensionsGalleryMetadataValidator, :and_then],
-      [WebIde::Settings::ExtensionsGalleryViewModelGenerator, :map]
+      [WebIde::Settings::ExtensionMarketplaceValidator, :and_then],
+      [WebIde::Settings::ExtensionMarketplaceMetadataValidator, :and_then],
+      [WebIde::Settings::ExtensionMarketplaceViewModelGenerator, :map]
     ]
   end
 
@@ -60,26 +60,26 @@ RSpec.describe WebIde::Settings::Main, feature_category: :web_ide do
     where(:case_name, :err_result_for_step, :expected_response) do
       [
         [
-          "when ExtensionsGalleryValidator returns SettingsVscodeExtensionsGalleryValidationFailed",
+          "when ExtensionMarketplaceValidator returns SettingsVscodeExtensionMarketplaceValidationFailed",
           {
-            step_class: WebIde::Settings::ExtensionsGalleryValidator,
-            returned_message: lazy { WebIde::Settings::Messages::SettingsVscodeExtensionsGalleryValidationFailed.new(err_message_content) }
+            step_class: WebIde::Settings::ExtensionMarketplaceValidator,
+            returned_message: lazy { WebIde::Settings::Messages::SettingsVscodeExtensionMarketplaceValidationFailed.new(err_message_content) }
           },
           {
             status: :error,
-            message: lazy { "Settings VSCode extensions gallery validation failed: #{error_details}" },
+            message: lazy { "Settings VSCode extension marketplace validation failed: #{error_details}" },
             reason: :internal_server_error
           },
         ],
         [
-          "when ExtensionsGalleryMetadataValidator returns SettingsVscodeExtensionsGalleryMetadataValidationFailed",
+          "when ExtensionMarketplaceMetadataValidator returns SettingsVscodeExtensionMarketplaceMetadataValidationFailed",
           {
-            step_class: WebIde::Settings::ExtensionsGalleryMetadataValidator,
-            returned_message: lazy { WebIde::Settings::Messages::SettingsVscodeExtensionsGalleryMetadataValidationFailed.new(err_message_content) }
+            step_class: WebIde::Settings::ExtensionMarketplaceMetadataValidator,
+            returned_message: lazy { WebIde::Settings::Messages::SettingsVscodeExtensionMarketplaceMetadataValidationFailed.new(err_message_content) }
           },
           {
             status: :error,
-            message: lazy { "Settings VSCode extensions gallery metadata validation failed: #{error_details}" },
+            message: lazy { "Settings VSCode extension marketplace metadata validation failed: #{error_details}" },
             reason: :internal_server_error
           },
         ],
@@ -99,7 +99,7 @@ RSpec.describe WebIde::Settings::Main, feature_category: :web_ide do
         [
           "when an unmatched error is returned, an exception is raised",
           {
-            step_class: WebIde::Settings::ExtensionsGalleryValidator,
+            step_class: WebIde::Settings::ExtensionMarketplaceValidator,
             returned_message: lazy { Class.new(Gitlab::Fp::Message).new(err_message_content) }
           },
           Gitlab::Fp::UnmatchedResultError
