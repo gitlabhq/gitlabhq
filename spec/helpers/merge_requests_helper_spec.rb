@@ -464,4 +464,35 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       expect(subject).to include(expected_data)
     end
   end
+
+  describe '#merge_request_squash_option?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject { helper.merge_request_squash_option?(merge_request) }
+
+    where(
+      :persisted, :squash, :squash_enabled_by_default, :expected
+    ) do
+      true  | true  | true  | true
+      true  | true  | false | true
+      true  | false | true  | false
+      true  | false | false | false
+      false | false | false | false
+      false | true  | false | false
+      false | false | true  | true
+      false | true  | true  | true
+    end
+
+    with_them do
+      before do
+        allow(merge_request).to receive_messages(
+          persisted?: persisted, squash: squash, squash_enabled_by_default?: squash_enabled_by_default
+        )
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+  end
 end

@@ -46,6 +46,9 @@ describe('Design item component', () => {
           event,
           notesCount,
           updatedAt: '01-01-2019',
+          useRouter: true,
+          workItemWebUrl: '/gitlab-org/gitlab-test/-/work_items/1',
+          workItemIid: 'gid://gitlab/WorkItem/1',
           ...props,
         },
         data() {
@@ -57,6 +60,50 @@ describe('Design item component', () => {
       }),
     );
   }
+
+  describe('when router navigation is possible', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders a router-link', () => {
+      expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(true);
+    });
+
+    it('provides a valid `to` prop to the router-link', () => {
+      const routerLink = wrapper.findComponent(RouterLinkStub);
+
+      expect(routerLink.props('to')).toEqual(
+        expect.objectContaining({
+          params: {
+            id: 'test',
+            iid: 'gid://gitlab/WorkItem/1',
+          },
+        }),
+      );
+    });
+  });
+
+  describe('when router navigation is not possible', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          useRouter: false,
+        },
+      });
+    });
+
+    it('renders an anchor element instead of router-link', () => {
+      expect(wrapper.find('a').exists()).toBe(true);
+      expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(false);
+    });
+
+    it('provides a valid `to` prop to the router-link', () => {
+      const anchor = wrapper.find('a');
+
+      expect(anchor.attributes('href')).toBe('/gitlab-org/gitlab-test/-/work_items/1/designs/test');
+    });
+  });
 
   describe('when item is not in view', () => {
     it('image is not rendered', () => {

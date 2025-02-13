@@ -10,6 +10,13 @@ DETAILS:
 **Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
 **Offering:** GitLab.com
 
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
+sole discretion of GitLab Inc.
+
 GitLab Duo is designed to provide contextually relevant information during the lifecycle of a merge request.
 
 ## Generate a description by summarizing code changes
@@ -43,33 +50,35 @@ DETAILS:
 **Status:** Experiment
 **LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/development_stages_support.md#experiment).
-> - Feature flag `ai_review_merge_request` [disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/456106).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14825) in GitLab 17.5 as an [experiment](../../../policy/development_stages_support.md#experiment) behind two feature flags named [`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106) and [`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632), both disabled by default.
+> - Feature flags [`ai_review_merge_request`](https://gitlab.com/gitlab-org/gitlab/-/issues/456106) and [`duo_code_review_chat`](https://gitlab.com/gitlab-org/gitlab/-/issues/508632) enabled for GitLab.com in 17.10.
 
 FLAG:
-The availability of this feature is controlled by a feature flag.
+The availability of this feature is controlled by two feature flags.
 For more information, see the history.
 
 WARNING:
-This feature is considered [experimental](../../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+This feature is considered [experimental](../../../policy/development_stages_support.md) and breaking changes may still be made to this feature.
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
-
-When your merge request is ready to be reviewed, use GitLab Duo Code Review to perform an initial review.
+When your merge request is ready to be reviewed, use GitLab Duo Code Review to perform an initial review:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
-1. In a comment box enter the quick action `/assign_reviewer @GitLabDuo` or assign GitLab Duo as reviewer.
+1. In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`, or assign GitLab Duo as reviewer.
+
+NOTE:
+Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
 
 **Data usage**: When you use this feature, the following data is sent to the large language model:
 
 - Contents of the file
 - The filename
+
+### Interact with GitLab Duo in reviews
+
+You can mention `@GitLabDuo` in comments to interact with GitLab Duo on your merge request. You can ask follow-up questions on its review comments, or ask questions on any discussion thread in your merge request.
+
+Interactions with GitLab Duo can help to improve the suggestions and feedback as you work to improve your merge request.
 
 ## Summarize a code review
 

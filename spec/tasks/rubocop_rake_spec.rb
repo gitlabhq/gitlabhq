@@ -12,7 +12,7 @@ require_relative '../../rubocop/formatter/todo_formatter'
 require_relative '../../rubocop/todo_dir'
 require_relative '../../rubocop/check_graceful_task'
 
-RSpec.describe 'rubocop rake tasks', :silence_stdout do
+RSpec.describe 'rubocop rake tasks', :silence_stdout, feature_category: :tooling do
   include NextInstanceOf
 
   before do
@@ -81,14 +81,13 @@ RSpec.describe 'rubocop rake tasks', :silence_stdout do
 
       RUBY
 
-      # Mimicking GitLab's .rubocop_todo.yml avoids relying on RuboCop's
+      # Mimicking GitLab's .rubocop_todo/**/*.yml avoids relying on RuboCop's
       # default.yml configuration.
       File.write('.rubocop.yml', <<~YAML)
         <% unless ENV['REVEAL_RUBOCOP_TODO'] == '1' %>
           <% Dir.glob('.rubocop_todo/**/*.yml').each do |rubocop_todo_yaml| %>
         - '<%= rubocop_todo_yaml %>'
           <% end %>
-        - '.rubocop_todo.yml'
         <% end %>
 
         AllCops:
@@ -105,16 +104,6 @@ RSpec.describe 'rubocop rake tasks', :silence_stdout do
 
         Style/FrozenStringLiteralComment:
           Enabled: true
-      YAML
-
-      # Required to verify that we are revealing all TODOs via
-      # ENV['REVEAL_RUBOCOP_TODO'] = '1'.
-      # This file can be removed from specs after we've moved all offenses from
-      # .rubocop_todo.yml to .rubocop_todo/**/*.yml.
-      File.write('.rubocop_todo.yml', <<~YAML)
-        # Too many offenses
-        Layout/SpaceAroundOperators:
-          Enabled: false
       YAML
 
       # Previous offense now fixed.

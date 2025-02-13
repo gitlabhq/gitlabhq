@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe User do
+RSpec.describe User, feature_category: :system_access do
   describe '#authenticatable_salt' do
     let(:user) { build(:user, encrypted_password: encrypted_password) }
 
@@ -53,6 +53,35 @@ RSpec.describe User do
     end
 
     context 'when the default encryption method is BCrypt' do
+      context 'when the user password is hashed with work factor 4' do
+        let(:encrypted_password) { "$2a$04$ThzqXSFnlW3uH86uQ79puOU7vARSFuuNzb1nUGfsBeYtCLkdymAQW" }
+        let(:increase_password_storage_stretches) { nil }
+
+        before do
+          stub_feature_flags(increase_password_storage_stretches: increase_password_storage_stretches)
+        end
+
+        context 'when feature flag is set to true' do
+          let(:increase_password_storage_stretches) { true }
+
+          it 'upgrades stretches' do
+            expect(user.encrypted_password).to start_with('$2a$04$')
+            user.valid_password?('security')
+            expect(user.encrypted_password).to start_with('$2a$05$')
+          end
+        end
+
+        context 'when feature flag is set to false' do
+          let(:increase_password_storage_stretches) { false }
+
+          it 'does not upgrade stretches' do
+            expect(user.encrypted_password).to start_with('$2a$04$')
+            user.valid_password?('security')
+            expect(user.encrypted_password).to start_with('$2a$04$')
+          end
+        end
+      end
+
       it_behaves_like 'password validation fails when the password is encrypted using an unsupported method'
 
       context 'when the user password PBKDF2+SHA512' do

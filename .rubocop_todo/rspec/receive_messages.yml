@@ -99,7 +99,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/models/merge_request_spec.rb'
     - 'ee/spec/models/merge_trains/train_spec.rb'
     - 'ee/spec/models/namespace_setting_spec.rb'
-    - 'ee/spec/models/namespaces/storage/enforcement_spec.rb'
     - 'ee/spec/models/project_feature_spec.rb'
     - 'ee/spec/models/security/scan_result_policy_read_spec.rb'
     - 'ee/spec/policies/issue_policy_spec.rb'

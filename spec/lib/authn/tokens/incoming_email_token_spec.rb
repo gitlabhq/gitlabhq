@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Authn::Tokens::IncomingEmailToken, feature_category: :system_access do
+RSpec.describe Authn::Tokens::IncomingEmailToken, :aggregate_failures, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
 
   subject(:token) { described_class.new(plaintext, :api_admin_token) }
@@ -14,10 +14,11 @@ RSpec.describe Authn::Tokens::IncomingEmailToken, feature_category: :system_acce
     it_behaves_like 'finding the valid revocable'
 
     describe '#revoke!' do
-      it 'does not support revocation yet' do
-        expect do
-          token.revoke!(user)
-        end.to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type')
+      subject(:revoke) { token.revoke!(user) }
+
+      it 'successfully resets the token' do
+        expect { revoke }.to change { user.reload.incoming_email_token }
+        expect(revoke.success?).to be_truthy
       end
     end
   end

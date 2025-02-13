@@ -11,6 +11,7 @@ exports[`Design item component when item appears in view after image is loaded r
 exports[`Design item component with notes renders item with multiple comments 1`] = `
 <a
   class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
+  href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <div
     class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"
@@ -76,6 +77,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
 exports[`Design item component with notes renders item with single comment 1`] = `
 <a
   class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
+  href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <div
     class="card-body gl-flex gl-items-center gl-justify-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-t-base"

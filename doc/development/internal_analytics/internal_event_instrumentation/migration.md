@@ -15,7 +15,7 @@ While we encourage you to migrate to Internal Event tracking the deprecated meth
 
 ## Migrating from existing Snowplow tracking
 
-If you are already tracking events in Snowplow, you can also start collecting metrics from self-managed instances by switching to Internal Events Tracking.
+If you are already tracking events in Snowplow, you can also start collecting metrics from GitLab Self-Managed instances by switching to Internal Events Tracking.
 
 The event triggered by Internal Events has some special properties compared to previously tracking with Snowplow directly:
 

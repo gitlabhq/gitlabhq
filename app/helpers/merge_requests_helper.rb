@@ -363,6 +363,10 @@ module MergeRequestsHelper
       show_new_mr_dashboard_banner?
   end
 
+  def merge_request_squash_option?(merge_request)
+    merge_request.persisted? ? merge_request.squash : merge_request.squash_enabled_by_default?
+  end
+
   private
 
   def review_requested_merge_requests_count

@@ -90,7 +90,6 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'lib/foo'                    | [:backend]
       'rubocop/foo'                | [:backend]
       '.rubocop.yml'               | [:backend]
-      '.rubocop_todo.yml'          | [:backend]
       '.rubocop_todo/cop/name.yml' | [:backend]
       'gems/foo/.rubocop.yml'      | [:backend]
       'spec/foo'                   | [:backend]

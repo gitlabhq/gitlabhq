@@ -90,7 +90,7 @@ Customers may have multiple instances of GitLab.com or Dedicated, provided that 
 This is technically possible, subject to certain conditions:
 
 Subject to the terms of a written agreement between customer and GitLab, one Cloud Licensing activation code (or license key) may
-be applied to multiple self-managed instances provided that the users on the instances:
+be applied to multiple GitLab Self-Managed instances provided that the users on the instances:
 
 - Are the same, or
 - Are a subset of the customer's licensed production instance.
@@ -101,7 +101,7 @@ as long as the user list is the same, the activation code (or license key) will 
 
 However, if either of the conditions above are not met, customer will need to purchase an additional subscription for a separate instance for those users.
 
-## Use of multiple self-managed instances with a single license key or activation code
+## Use of multiple GitLab Self-Managed instances with a single license key or activation code
 
 ### Validating when one license or activation code is applied to multiple instances
 
@@ -135,9 +135,9 @@ This will provide the customer with the relevant license file, but also with an 
 
 Customers are welcome to apply their production license key or activation code to a development environment. The same user restrictions will apply.
 
-### Using a single subscription for a GitLab.com, Dedicated, and self-managed instance
+### Using a single subscription for a GitLab.com, Dedicated, and GitLab Self-Managed instance
 
-If the customer wants to have GitLab.com, Dedicated, and self-managed instances, the customer will need to purchase separate subscriptions for each instance.
+If the customer wants to have GitLab.com, Dedicated, and GitLab Self-Managed instances, the customer will need to purchase separate subscriptions for each instance.
 
 ### Example Scenarios
 
@@ -146,7 +146,7 @@ The following scenarios reflect questions a customer may ask related to multiple
 #### Example 1
 
 - Q: I want to buy a license for 50 total users, but want to split these users into two instances. Can I do this?
-- A: Yes, provided it is for two self-managed instances, you can apply one Cloud Licensing activation code (or license key) to multiple self-managed instances,
+- A: Yes, provided it is for two GitLab Self-Managed instances, you can apply one Cloud Licensing activation code (or license key) to multiple GitLab Self-Managed instances,
   provided that the users on the instances are the same, or are a subset of the total users. In this case, since there are 50 total or unique users, you may split
   those users into two subset instances.
 

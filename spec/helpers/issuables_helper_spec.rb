@@ -481,30 +481,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#issuable_squash_option?' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:issuable_persisted, :squash, :squash_enabled_by_default, :expectation) do
-      true  | true  | true  | true
-      true  | false | true  | false
-      false | false | false | false
-      false | false | true  | true
-      false | true  | false | false
-      false | true  | true  | true
-    end
-
-    with_them do
-      it 'returns the correct value' do
-        project = double(
-          squash_enabled_by_default?: squash_enabled_by_default
-        )
-        issuable = double(persisted?: issuable_persisted, squash: squash)
-
-        expect(helper.issuable_squash_option?(issuable, project)).to eq(expectation)
-      end
-    end
-  end
-
   describe '#issuable_type_selector_data' do
     using RSpec::Parameterized::TableSyntax
 

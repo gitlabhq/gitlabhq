@@ -6,7 +6,7 @@ title: Delete existing migrations
 ---
 
 When removing existing migrations from the GitLab project, you have to take into account
-the possibility of the migration already been included in past releases or in the current release, and thus already executed on GitLab.com and/or in self-managed instances.
+the possibility of the migration already been included in past releases or in the current release, and thus already executed on GitLab.com and/or in GitLab Self-Managed instances.
 
 Because of it, it's not possible to delete existing migrations, as that could lead to:
 

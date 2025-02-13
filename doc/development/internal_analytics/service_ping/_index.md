@@ -18,7 +18,7 @@ and sales teams understand how GitLab is used. The data helps to:
 Service Ping information is not anonymous. It's linked to the instance's hostname, but does
 not contain project names, usernames, or any other specific data.
 
-Service Ping is enabled by default. However, you can [disable](../../../administration/settings/usage_statistics.md#enable-or-disable-service-ping) certain metrics on any self-managed instance. When Service Ping is enabled, GitLab gathers data from the other instances and can show your instance's usage statistics to your users.
+Service Ping is enabled by default. However, you can [disable](../../../administration/settings/usage_statistics.md#enable-or-disable-service-ping) certain metrics on any GitLab Self-Managed instance. When Service Ping is enabled, GitLab gathers data from the other instances and can show your instance's usage statistics to your users.
 
 ## Service Ping terminology
 

@@ -31,7 +31,7 @@ class RepositoryUpdateRemoteMirrorWorker
       ttl: remote_mirror.max_runtime,
       sleep_sec: LOCK_WAIT_TIME
     ) do
-      update_mirror(remote_mirror, scheduled_time, tries)
+      update_mirror(remote_mirror, tries)
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     # If an update runs longer than 1.5 minutes, we'll reschedule it
@@ -42,13 +42,13 @@ class RepositoryUpdateRemoteMirrorWorker
 
   private
 
-  def update_mirror(mirror, scheduled_time, tries)
+  def update_mirror(mirror, tries)
     project = mirror.project
     current_user = project.creator
     result = Projects::UpdateRemoteMirrorService.new(project, current_user).execute(mirror, tries)
 
     if result[:status] == :error && mirror.to_retry?
-      schedule_retry(mirror, scheduled_time, tries)
+      schedule_retry(mirror, tries)
     end
   end
 
@@ -56,12 +56,8 @@ class RepositoryUpdateRemoteMirrorWorker
     [self.class.name, mirror_id].join(':')
   end
 
-  def schedule_retry(mirror, scheduled_time, tries)
-    retry_time = if Feature.enabled?(:remote_mirror_retry_with_delay, mirror.project)
-                   Time.current + 1.second
-                 else
-                   scheduled_time
-                 end
+  def schedule_retry(mirror, tries)
+    retry_time = Time.current + 1.second
 
     self.class.perform_in(mirror.backoff_delay, mirror.id, retry_time, tries + 1)
   end

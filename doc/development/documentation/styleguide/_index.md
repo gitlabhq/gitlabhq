@@ -758,10 +758,10 @@ page), use these phrases:
 
 | Option | Markdown                 | Displayed result       |
 |--------|--------------------------|------------------------|
-| No     | `**{dotted-circle}** No` | **{dotted-circle}** No |
-| Yes    | `**{check-circle}** Yes` | **{check-circle}** Yes |
+| No     | `**{dash-circle}** No` | **{dash-circle}** No |
+| Yes    | `**{check-circle-filled}** Yes` | **{check-circle-filled}** Yes |
 
-Don't use `**{dotted-circle}**` and `**{check-circle}**` in API documentation.
+Do not use these SVG icons in API documentation.
 Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).
 
 ### Footnotes

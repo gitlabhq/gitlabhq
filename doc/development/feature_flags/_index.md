@@ -74,7 +74,7 @@ When the feature implementation is delivered over multiple merge requests:
    with the implementation. Do not enable the feature flag for a public project
    like `gitlab-org/gitlab` if there is no documentation. Team members and contributors might search for
    documentation on how to use the feature if they see it enabled in a public project.
-1. When the feature is ready for production use, including self-managed instances, open one merge request to:
+1. When the feature is ready for production use, including GitLab Self-Managed instances, open one merge request to:
    - Update the documentation to describe the latest flag status.
    - Add a [changelog entry](#changelog).
    - Remove the feature flag to enable the new behavior, or flip the feature flag to be **enabled by default** (only for `ops` and `beta` feature flags).

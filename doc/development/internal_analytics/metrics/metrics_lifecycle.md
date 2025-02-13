@@ -53,7 +53,7 @@ Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automa
    - Set `milestone_removed:` to the number of the
      milestone in which the metric was removed.
 
-   Do not remove the metric's YAML definition altogether. Some self-managed instances might not immediately update to the latest version of GitLab, and
+   Do not remove the metric's YAML definition altogether. Some GitLab Self-Managed instances might not immediately update to the latest version of GitLab, and
    therefore continue to report the removed metric. The Analytics Instrumentation team requires a record of all removed metrics to identify and filter them.
 
 ## Group name changes

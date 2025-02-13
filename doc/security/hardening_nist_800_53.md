@@ -10,7 +10,7 @@ DETAILS:
 **Offering:** GitLab Self-Managed, GitLab Dedicated
 
 This page provides a reference for GitLab administrators
-who want to configure self-managed instances to meet applicable
+who want to configure GitLab Self-Managed instances to meet applicable
 NIST 800-53 controls. GitLab does not provide specific configuration
 guidance because of the variety of requirements an administrator might have.
 Before you deploy a GitLab instance that meets the NIST 800-53 security controls,
@@ -171,7 +171,7 @@ requirements:
 
 - [Credentials inventory](../administration/credentials_inventory.md)
   enables administrators to review all secrets used in a GitLab
-  self-managed instance in one place. A consolidated view of
+  GitLab Self-Managed instance in one place. A consolidated view of
   credentials, tokens, and keys may assist with satisfying
   requirements such as reviewing passwords or rotating credentials.
 
@@ -456,7 +456,7 @@ organizational needs prior to establishing a contingency plan.
 **Selecting a GitLab Architecture**
 
 GitLab provides extensive documentation on the architectures supported
-in a self-managed instance. GitLab supports the following cloud service
+in a GitLab Self-Managed instance. GitLab supports the following cloud service
 providers:
 
 - [Azure](../install/azure/_index.md)

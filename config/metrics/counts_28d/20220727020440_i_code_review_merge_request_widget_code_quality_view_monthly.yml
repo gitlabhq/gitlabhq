@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.code_review.i_code_review_merge_request_widget_code_quality_view_monthly
 description: The count of unique users (monthly) who were able to see the Code Quality widget extension
-product_group: code_review
+product_group: static_analysis
 product_categories:
 - code_review_workflow
 value_type: number

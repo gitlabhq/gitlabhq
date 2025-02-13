@@ -232,7 +232,7 @@ Variable assignments within `pipelined` and `multi` blocks are not advised as th
 
 <!-- markdownlint-disable MD044 -->
 We may choose to keep the migration paths or remove them, depending on whether
-or not we expect self-managed instances to perform this migration.
+or not we expect GitLab Self-Managed instances to perform this migration.
 [gitlab-com/gl-infra/scalability#1131](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1131#note_603354746)
 contains a discussion on this topic for the trace chunks feature flag. It may
 be - as in that case - that we decide that the maintenance costs of supporting

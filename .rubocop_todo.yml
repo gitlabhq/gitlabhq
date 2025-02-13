@@ -1,7 +1,0 @@
-# This configuration is no longer used.
-#
-# The RuboCop TODO lists are located in `.rubocop_todo/**/*.yml`.
-#
-# Please use `rake rubocop:todo:generate` to generate TODOs.
-#
-# See https://docs.gitlab.com/ee/development/rake_tasks.html#generate-initial-rubocop-todo-list

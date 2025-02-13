@@ -86,7 +86,7 @@ Please see [glfm_markdown.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/l
 
 Usually the easiest way to debug the various pipelines and filters is to run them from the Rails console. This way you can set a `binding.pry` in a filter and step through the code.
 
-Because of `TimeoutFilterHandler` and `PipelineTimingCheck`, it can be a challenge to debug the filters. There is a special environment variable, `GITLAB_DISABLE_MARKDOWN_TIMEOUT`, that when set disables any timeout checking in the filters. This is also available for customers in the rare instance that a [self-managed instance](../../administration/environment_variables.md) wishes to bypass those checks.
+Because of `TimeoutFilterHandler` and `PipelineTimingCheck`, it can be a challenge to debug the filters. There is a special environment variable, `GITLAB_DISABLE_MARKDOWN_TIMEOUT`, that when set disables any timeout checking in the filters. This is also available for customers in the rare instance that a [GitLab Self-Managed instance](../../administration/environment_variables.md) wishes to bypass those checks.
 
 ```ruby
 text = 'Some test **Markdown**'

@@ -80,6 +80,13 @@ Devise.setup do |config|
   # Limiting the stretches to just one in testing will increase the performance of
   # your test suite dramatically. However, it is STRONGLY RECOMMENDED to not use
   # a value less than 10 in other environments.
+
+  # The bcrypt gem does not allow stretches to be set less than 4 (it will ignore it).
+  # To allow password WF upgrade testing (spec/models/concerns/encrypted_user_password_spec.rb),
+  # changing the test-side configuration to 5 to give the test something to do,
+  # along with changing the production value to 13 for https://gitlab.com/gitlab-org/gitlab/-/issues/222481.
+  # config.stretches = Rails.env.test? ? 5 : 13
+  # NOTE: This is being overridden in the `encrypted_user_password.rb` concern, behind an FF
   config.stretches = Rails.env.test? ? 1 : 10
 
   # Set up a pepper to generate the encrypted password.

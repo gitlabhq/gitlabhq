@@ -206,14 +206,6 @@ module IssuablesHelper
     finder.class.scalar_params.any? { |p| params[p].present? }
   end
 
-  def issuable_squash_option?(issuable, project)
-    if issuable.persisted?
-      issuable.squash
-    else
-      project.squash_enabled_by_default?
-    end
-  end
-
   def issuable_type_selector_data(issuable)
     {
       selected_type: issuable.issue_type,

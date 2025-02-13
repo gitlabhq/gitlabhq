@@ -46,6 +46,12 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
+WARNING:
+The Dependency Scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and reaches
+end of support in GitLab 18.0. It is replaced with [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md)
+and the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning).
+For more information, see [issue 501038](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.
 

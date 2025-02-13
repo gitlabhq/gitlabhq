@@ -71,6 +71,8 @@ Use cases include:
 
 ## View approval status
 
+> - More granular approver display [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178005) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `mr_approvers_filter_hidden_users`. Enabled by default.
+
 You can see the approval status of a merge request in two places. On the [merge request itself](#for-a-single-merge-request)
 and in the [list of merge requests](#in-the-list-of-merge-requests) for your project or group.
 
@@ -94,6 +96,14 @@ The widget displays one of these statuses:
 - **Revoke approval**: You have already approved the merge request.
 
 To check if your approval satisfies Code Owner requirements, select **Expand eligible approvers** (**{chevron-lg-down}**).
+
+If you have enabled the `mr_approvers_filter_hidden_users` feature flag, introduced in GitLab 17.9,
+approver visibility depends on your project membership, and group privacy:
+
+- Project members see all approvers.
+- Project non-members see:
+  - All approvers, if the approvers are all from public groups.
+  - No information about approvers, if any of the approvers are from private groups.
 
 ### In the list of merge requests
 

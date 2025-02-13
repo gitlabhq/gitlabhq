@@ -11,7 +11,6 @@ inherit_from:
     <% Dir.glob('.rubocop_todo/**/*.yml').each do |rubocop_todo_yaml| %>
   - '<%= rubocop_todo_yaml %>'
     <% end %>
-  - '.rubocop_todo.yml'
   <% end %>
   - ./rubocop/rubocop-migrations.yml
   - ./rubocop/rubocop-usage-data.yml

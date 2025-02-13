@@ -191,16 +191,16 @@ the post-deployment migrations included in the first MR were executed before mer
 
 #### New or updated queries might be slow on a large GitLab instance
 
-It's not possible to check query performance directly on self-managed instances.
+It's not possible to check query performance directly on GitLab Self-Managed instances.
 PostgreSQL produces an execution plan based on the data distribution, so
 guessing query performance is a hard task.
 
-If you are concerned about the performance of a query on self-managed instances
-and decide that self-managed instances must have an index, follow these recommendations:
+If you are concerned about the performance of a query on GitLab Self-Managed instances
+and decide that GitLab Self-Managed instances must have an index, follow these recommendations:
 
-- For self-managed instances following [zero-downtime](../../update/zero_downtime.md)
+- For GitLab Self-Managed instances following [zero-downtime](../../update/zero_downtime.md)
   upgrades, post-deploy migrations execute when performing an upgrade after the application code deploys.
-- For self-managed instances that do not follow a zero-downtime upgrade,
+- For GitLab Self-Managed instances that do not follow a zero-downtime upgrade,
   the administrator might choose to execute the post-deployment migrations for a release later,
   at the time of their choosing, after the regular migrations execute. The application code deploys when they upgrade.
 
@@ -223,7 +223,7 @@ You have two options depending on [how long it takes to create the index](../mig
 
 PostgreSQL's unique index acts as a constraint. Adding one to an existing table can be tricky.
 
-Unless the table is absolutely guaranteed to be tiny for GitLab.com and self-managed instances,
+Unless the table is absolutely guaranteed to be tiny for GitLab.com and GitLab Self-Managed instances,
 you must use multiple post-deployment migrations over multiple releases to:
 
 - Remove and(or) fix the duplicate records.

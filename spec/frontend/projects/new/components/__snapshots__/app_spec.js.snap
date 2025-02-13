@@ -4,6 +4,7 @@ exports[`Experimental new project creation app creates correct panels 1`] = `
 [
   {
     "description": "Create a blank project to store your files, plan your work, and collaborate on code, among other things.",
+    "imageSrc": "file-mock",
     "key": "blank",
     "name": "blank_project",
     "selector": "#blank-project-pane",
@@ -11,6 +12,7 @@ exports[`Experimental new project creation app creates correct panels 1`] = `
   },
   {
     "description": "Create a project pre-populated with the necessary files to get you started quickly.",
+    "imageSrc": "file-mock",
     "key": "template",
     "name": "create_from_template",
     "selector": "#create-from-template-pane",
@@ -18,6 +20,7 @@ exports[`Experimental new project creation app creates correct panels 1`] = `
   },
   {
     "description": "Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab.",
+    "imageSrc": "file-mock",
     "key": "import",
     "name": "import_project",
     "selector": "#import-project-pane",

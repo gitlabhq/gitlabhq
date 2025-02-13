@@ -18,10 +18,10 @@ module Authn
         ::API::Entities::User
       end
 
-      def revoke!(_current_user)
+      def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type'
+        Users::ResetIncomingEmailTokenService.new(current_user: current_user, user: revocable).execute!
       end
     end
   end

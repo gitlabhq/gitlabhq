@@ -12,10 +12,6 @@ RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_st
     freeze_time { example.run }
   end
 
-  before do
-    stub_feature_flags(remote_mirror_retry_with_delay: false)
-  end
-
   def expect_mirror_service_to_return(mirror, result, tries = 0)
     expect_next_instance_of(Projects::UpdateRemoteMirrorService) do |service|
       expect(service).to receive(:execute).with(mirror, tries).and_return(result)
@@ -45,27 +41,21 @@ RSpec.describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_st
 
       expect(described_class)
         .to receive(:perform_in)
-              .with(remote_mirror.backoff_delay, remote_mirror.id, scheduled_time, 1)
+              .with(remote_mirror.backoff_delay, remote_mirror.id, kind_of(Time), 1)
 
       subject.perform(remote_mirror.id, scheduled_time)
     end
 
-    context 'when remote_mirror_retry_with_delay feature flag is enabled' do
-      before do
-        stub_feature_flags(remote_mirror_retry_with_delay: true)
-      end
+    it 'continues scheduling retries after successive failures' do
+      remote_mirror.update_start!
+      remote_mirror.hard_retry!('Error!')
+      expect_mirror_service_to_return(remote_mirror, { status: :error, message: 'Retry!' }, 1)
 
-      it 'continues scheduling retries after successive failures' do
-        remote_mirror.update_start!
-        remote_mirror.hard_retry!('Error!')
-        expect_mirror_service_to_return(remote_mirror, { status: :error, message: 'Retry!' }, 1)
+      expect(described_class)
+        .to receive(:perform_in)
+        .with(remote_mirror.backoff_delay, remote_mirror.id, retry_time, 2)
 
-        expect(described_class)
-          .to receive(:perform_in)
-          .with(remote_mirror.backoff_delay, remote_mirror.id, retry_time, 2)
-
-        subject.perform(remote_mirror.id, Time.current, 1)
-      end
+      subject.perform(remote_mirror.id, Time.current, 1)
     end
 
     it 'clears the lease if there was an unexpected exception' do

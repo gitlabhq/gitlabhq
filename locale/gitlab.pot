@@ -48334,6 +48334,9 @@ msgstr ""
 msgid "Required approvals (%{approvals_given} of %{required} given, you've approved)"
 msgstr ""
 
+msgid "Required in this branch."
+msgstr ""
+
 msgid "Required in this project."
 msgstr ""
 

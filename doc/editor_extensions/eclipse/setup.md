@@ -18,23 +18,6 @@ Please do not rely on this information for purchasing or planning purposes.
 The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
 sole discretion of GitLab Inc.
 
-## Add the GitLab Releases software site
-
-To add the stable GitLab Releases software site:
-
-1. In your IDE, select **Eclipse > Settings...**.
-1. On the left sidebar, expand **Install/Update**, then select **Available Software Sites**.
-1. On the right, select **Add...** to configure a new software site.
-1. For **Name:**, use `GitLab Releases`.
-1. For **Location:**, copy and paste the following URL:
-
-   ```plaintext
-   https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/releases/permalink/latest/downloads/
-   ```
-
-1. Select **Add**.
-1. Select **Apply and Close**.
-
 ## Install the GitLab for Eclipse plugin
 
 Prerequisites:
@@ -44,12 +27,13 @@ Prerequisites:
 
 To install GitLab for Eclipse:
 
-1. In your IDE, select the **Help** menu.
-1. Select **Install New Software...**.
-1. Expand **Work with:**, then select the `GitLab Releases` software site.
-1. Select **Show only software applicable to target environment**.
-1. Select the **GitLab** category to install the GitLab for Eclipse plugin and dependencies.
-1. Select **Next >**, then select **Finish**.
+1. Open your Eclipse IDE and your preferred web browser.
+1. In your web browser, go to the page for the
+   [GitLab for Eclipse plugin](https://marketplace.eclipse.org/content/gitlab-eclipse) in the Eclipse Marketplace.
+1. On the plugin's page, select **Install**, and drag your mouse over to your Eclipse IDE.
+1. In the **Eclipse Marketplace** window, select the **GitLab For Eclipse** category.
+1. Select **Confirm >**, then select **Finish**.
+1. If the **Trust Authorities** window appears, select the **[`https://gitlab.com`](https://gitlab.com)** update site and select **Trust Selected**.
 1. Select **Restart Now**.
 
 ## Connect to GitLab

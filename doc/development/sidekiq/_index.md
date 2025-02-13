@@ -187,7 +187,7 @@ If you want to allow instance administrators to control the concurrency limit:
 concurrency_limit -> { ApplicationSetting.current.some_feature_concurrent_sidekiq_jobs }
 ```
 
-This approach also allows having separate limits for .com and self-managed instances. To achieve this, you can:
+This approach also allows having separate limits for .com and GitLab Self-Managed instances. To achieve this, you can:
 
 1. Create a migration to add the configuration option with a default set to the self-managed limit.
 1. In the same MR, ship a migration to update the limit for .com only.

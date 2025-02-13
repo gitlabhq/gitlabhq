@@ -35,7 +35,7 @@ self-managed instance.
 
 When migrating projects by using file exports, an administrator's access token is required for user contributions to map correctly.
 
-Therefore, user contributions never map correctly when importing file exports from a self-managed instance to GitLab.com.
+Therefore, user contributions never map correctly when importing file exports from a GitLab Self-Managed instance to GitLab.com.
 Instead, all GitLab user associations (such as comment author) are changed to the user importing the project. To preserve
 contribution history, do one of the following:
 
@@ -321,8 +321,8 @@ Using file exports, you can:
 - Migrate groups one by one, then export and import each project for the groups one by one.
 
 GitLab maps user contributions correctly when an admin access token is used to perform the import. GitLab does not map
-user contributions correctly when you are importing from a self-managed instance to GitLab.com. Correct mapping of user
-contributions when importing from a self-managed instance to GitLab.com can be preserved with paid involvement of
+user contributions correctly when you are importing from a GitLab Self-Managed instance to GitLab.com. Correct mapping of user
+contributions when importing from a GitLab Self-Managed instance to GitLab.com can be preserved with paid involvement of
 Professional Services team.
 
 ### Additional information

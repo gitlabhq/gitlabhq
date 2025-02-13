@@ -1,33 +1,35 @@
-- issuable = local_assigns.fetch(:issuable)
-- project = local_assigns.fetch(:project)
+- merge_request = local_assigns.fetch(:issuable)
 
-- return unless issuable.is_a?(MergeRequest)
-- return if issuable.closed_or_merged_without_fork?
+- return if !merge_request.is_a?(MergeRequest) || merge_request.closed_or_merged_without_fork?
 
 .form-group.row.gl-mb-7
   .col-12
     %label
       = _('Merge options')
-    - if issuable.can_remove_source_branch?(current_user)
+    - if merge_request.can_remove_source_branch?(current_user)
       .form-check.gl-pl-0
         = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
-        = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[force_remove_source_branch]', checked: issuable.force_remove_source_branch?, value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
+        = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[force_remove_source_branch]', checked: merge_request.force_remove_source_branch?, value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
           - c.with_label do
             = _("Delete source branch when merge request is accepted.")
 
-    - if !project.squash_never?
+    - unless merge_request.squash_never?
       .form-check.gl-pl-0
-        - if project.squash_always?
+        - if merge_request.squash_always?
           = hidden_field_tag 'merge_request[squash]', '1', id: nil
-          = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: project.squash_enabled_by_default?, value: '1', checkbox_options: { class: 'js-form-update', disabled: true }) do |c|
+          = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: true, value: '1', checkbox_options: { class: 'js-form-update', disabled: true }) do |c|
             - c.with_label do
               = _("Squash commits when merge request is accepted.")
               = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'
             - c.with_help_text do
-              = _('Required in this project.')
+              -# When we remove the feature flag we should also remove the local_assigns[:project]
+              - if Feature.enabled?(:branch_rule_squash_settings, local_assigns.fetch(:project))
+                = _('Required in this branch.')
+              - else
+                = _('Required in this project.')
         - else
           = hidden_field_tag 'merge_request[squash]', '0', id: nil
-          = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: issuable_squash_option?(issuable, project), value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
+          = render Pajamas::CheckboxTagComponent.new(name: 'merge_request[squash]', checked: merge_request_squash_option?(merge_request), value: '1', checkbox_options: { class: 'js-form-update' }) do |c|
             - c.with_label do
               = _("Squash commits when merge request is accepted.")
               = link_to sprite_icon('question-o'), help_page_path('user/project/merge_requests/squash_and_merge.md'), target: '_blank', rel: 'noopener noreferrer'

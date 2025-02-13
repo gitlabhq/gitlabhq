@@ -1,4 +1,6 @@
 <script>
+import GROUP_IMPORT_SVG_URL from '@gitlab/svgs/dist/illustrations/group-import.svg?url';
+import GROUP_NEW_SVG_URL from '@gitlab/svgs/dist/illustrations/group-new.svg?url';
 import { s__ } from '~/locale';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
 import createGroupDescriptionDetails from './create_group_description_details.vue';
@@ -71,6 +73,7 @@ export default {
             parentGroupName: this.parentGroupName,
             importExistingGroupPath: this.importExistingGroupPath,
           },
+          imageSrc: GROUP_NEW_SVG_URL,
         },
         {
           name: 'import-group-pane',
@@ -80,6 +83,7 @@ export default {
             'GroupsNew|Import a group and related data from another GitLab instance.',
           ),
           details: 'Migrate your existing groups from another instance of GitLab.',
+          imageSrc: GROUP_IMPORT_SVG_URL,
         },
       ];
     },

@@ -112,6 +112,9 @@ describe('DesignWidget', () => {
         uploadError,
         uploadErrorVariant,
         canReorderDesign,
+        workItemFullPath: 'gitlab-org/gitlab-shell',
+        workItemWebUrl: '/gitlab-org/gitlab-shell/-/work_items/1',
+        isGroup: false,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),

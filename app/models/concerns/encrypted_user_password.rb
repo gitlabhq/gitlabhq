@@ -12,6 +12,16 @@ module EncryptedUserPassword
   BCRYPT_STRATEGY = :bcrypt
   PBKDF2_SHA512_STRATEGY = :pbkdf2_sha512
 
+  class_methods do
+    def stretches
+      prior_stretches = Rails.env.test? ? 1 : 10
+
+      return prior_stretches unless Feature.enabled?(:increase_password_storage_stretches) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- required to enable FFing a Class method, which is required to FF the Stretches config
+
+      Rails.env.test? ? 5 : 13
+    end
+  end
+
   # Use Devise DatabaseAuthenticatable#authenticatable_salt
   # unless encrypted password is PBKDF2+SHA512.
   def authenticatable_salt
@@ -69,9 +79,25 @@ module EncryptedUserPassword
   end
 
   def migrate_password!(password)
-    return true if password_strategy == encryptor
+    # A note on ordering here:
+    # Other code expects to use this function to switch between pbkdf2 and bcrypt.
+    # Hence, if password strategy != encryptor, we need to fail immediately and migrate.
+    # Reversing this ordering will break tests in spec/models/concerns/encrypted_user_password_spec.rb.
+
+    if password_strategy == encryptor
+      return true unless Feature.enabled?(:increase_password_storage_stretches) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- required to enable FFing a Class method, which is required to FF the Stretches config
+      return true if (BCRYPT_STRATEGY == password_strategy) && bcrypt_password_matches_current_stretches?
+      # We do not attempt to upgrade stretches on PBKDF2-stored passwords.
+      return true if PBKDF2_SHA512_STRATEGY == password_strategy
+    end
 
     update_attribute(:password, password)
+  end
+
+  def bcrypt_password_matches_current_stretches?
+    return false unless bcrypt_password?
+
+    ::BCrypt::Password.new(encrypted_password).cost == self.class.stretches
   end
 
   def encryptor

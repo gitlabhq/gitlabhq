@@ -264,7 +264,7 @@ In this particular example, the database had to read 10 rows (regardless of our 
 to determine the first `id` value. In a "real-world" application it's hard to predict whether the
 filtering causes problems or not. In the case of GitLab, verifying the data on a
 production replica is a good start, but keep in mind that data distribution on GitLab.com can be
-different from self-managed instances.
+different from GitLab Self-Managed instances.
 
 #### Improve filtering with `each_batch`
 

@@ -198,6 +198,16 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
         end
       end
 
+      context 'when the token is an incoming email token' do
+        let(:plaintext) { user.incoming_email_token }
+
+        it 'resets the token' do
+          expect { delete_token }.to change { user.reload.incoming_email_token }
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
       context 'when the revocation feature is disabled' do
         before do
           stub_feature_flags(api_admin_token_revoke: false)

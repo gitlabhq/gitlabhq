@@ -144,7 +144,7 @@ module Tooling
         %r{\A((ee|jh)/)?vendor/} => :backend,
         %r{\A(Gemfile.*|Rakefile)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
-        %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
+        %r{\A\.rubocop\.yml\z} => :backend,
         %r{\Agems/.*/\.rubocop\.yml\z} => :backend,
         %r{\A\.rubocop_todo/.*\.yml\z} => :backend,
         %r{\Afile_hooks/} => :backend,

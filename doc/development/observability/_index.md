@@ -17,7 +17,7 @@ There are several options for developing and debugging GitLab Observability:
 
 ### Run GDK and connect to the staging instance of GitLab Observability Backend
 
-This method takes advantage of our Cloud Connected Observability Backend. Your GitLab instance will require a valid Cloud License and will be treated as a self-managed instance, connected to a multi-tenant GitLab-hosted instance of the GitLab Observability Backend. See [this design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_for_self_managed/) for more details on how this works.
+This method takes advantage of our Cloud Connected Observability Backend. Your GitLab instance will require a valid Cloud License and will be treated as a GitLab Self-Managed instance, connected to a multi-tenant GitLab-hosted instance of the GitLab Observability Backend. See [this design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_for_self_managed/) for more details on how this works.
 
 How to enable:
 

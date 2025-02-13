@@ -199,7 +199,7 @@ code. We use the following [definition of done](https://www.agilealliance.org/gl
 To reach the definition of done, the merge request must create no regressions and meet all these criteria:
 
 - Verified as working in production on GitLab.com.
-- Verified as working for self-managed instances.
+- Verified as working for GitLab Self-Managed instances.
 - Verified as supporting [Geo](../../administration/geo/_index.md) through the [self-service framework](../geo/framework.md). For more information, see [Geo is a requirement in the definition of done](../geo/framework.md#geo-is-a-requirement-in-the-definition-of-done).
 
 If a regression occurs, we prefer you revert the change.
@@ -238,7 +238,7 @@ requirements.
 
    NOTE:
    There isn't a way to know anything about our customers' data on their
-   [self-managed instances](../../subscriptions/self_managed/_index.md), so keep
+   [GitLab Self-Managed instances](../../subscriptions/self_managed/_index.md), so keep
    that in mind for any data implications with your merge request.
 1. Consider self-managed functionality and upgrade paths. The change should consider both:
 

@@ -55,7 +55,7 @@ RSpec.describe 'User edits a merge request', :js, feature_category: :code_review
       visit(edit_project_merge_request_path(project, merge_request))
 
       expect(page).to have_content('Squash commits when merge request is accepted.')
-      expect(page).to have_content("Required in this project")
+      expect(page).to have_content("Required in this branch")
     end
 
     it 'does not display message for "Allow" project setting squash option' do

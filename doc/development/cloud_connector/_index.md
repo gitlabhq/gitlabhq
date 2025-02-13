@@ -40,7 +40,7 @@ because we do not currently have interfaces in place to self-service this.
 - For GitLab Dedicated and GitLab Self-Managed, the CustomersDot is the **JWT issuer**.
 - For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
 
-#### Register new feature for Self-Managed, Dedicated and GitLab.com customers
+#### Register new feature for GitLab Self-Managed, Dedicated and GitLab.com customers
 
 You must register the new feature as a unit primitive in the [`gitlab-cloud-connector`](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector) repository.
 This repository serves as the Single Source of Truth (SSoT) for all Cloud Connector configurations.
@@ -100,9 +100,9 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
      - For a namespace: scopes will be based on purchased add-ons for this namespace
        - If a service can be accessed for free, the token will include all available scopes for that service.
        - For Duo Chat, the **JWT** would include the `documentation_search` and `duo_chat` scopes.
-   - On self-managed, it will always return `::CloudConnector::ServiceAccessToken` **JWT** token.
+   - On GitLab Self-Managed, it will always return `::CloudConnector::ServiceAccessToken` **JWT** token.
      - Provided parameters such as user, namespace or extra claims would be ignored for Self managed instances.
-       Refer to [this section](#the-new-feature-is-introduced-through-the-existing-backend-service) to see how custom claims are handled for self-managed instances.
+       Refer to [this section](#the-new-feature-is-introduced-through-the-existing-backend-service) to see how custom claims are handled for GitLab Self-Managed instances.
 
    The **backend service** (AI gateway) must validate this token and any scopes it carries when receiving the request.
 
@@ -130,7 +130,7 @@ To decide if the service is available or visible to the end user, we need to:
   ```
 
 - On GitLab Self-Managed, check if the customer is using an [online cloud license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-cloud-licensing)
-  - Cloud connector currently only support online cloud license for self-managed customers.
+  - Cloud connector currently only support online cloud license for GitLab Self-Managed customers.
   - Trials or legacy licenses are not supported.
   - GitLab.com is using a legacy license.
 
@@ -245,7 +245,7 @@ See [access token](#access-token-1)
 
 #### Implement authorization checks in backend service
 
-GitLab Rails calls a backend service to deliver functionality that would otherwise be unavailable to Self-managed and
+GitLab Rails calls a backend service to deliver functionality that would otherwise be unavailable to GitLab Self-Managed and
 Dedicated instances. For GitLab Rails to be able to call this, there has to be an endpoint exposed.
 The backend service must verify each JWT sent by GitLab Rails in the Authorization header.
 

@@ -4,10 +4,11 @@ import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import VueDraggable from 'vuedraggable';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { findDesignWidget } from '~/work_items/utils';
+import { findDesignWidget, canRouterNav } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
@@ -42,6 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
   props: {
     workItemId: {
@@ -73,6 +75,18 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
+    workItemWebUrl: {
+      type: String,
+      required: true,
+    },
+    isGroup: {
+      type: Boolean,
+      required: true,
     },
   },
   apollo: {
@@ -190,6 +204,21 @@ export default {
         ? s__('DesignManagement|Deselect all')
         : s__('DesignManagement|Select all');
     },
+    issueAsWorkItem() {
+      return Boolean(
+        !this.isGroup &&
+          this.glFeatures.workItemsViewPreference &&
+          gon.current_user_use_work_items_view,
+      );
+    },
+    canUseRouter() {
+      return canRouterNav({
+        fullPath: this.fullPath,
+        webUrl: this.workItemWebUrl,
+        isGroup: this.isGroup,
+        issueAsWorkItem: this.issueAsWorkItem,
+      });
+    },
   },
   methods: {
     dismissError() {
@@ -231,7 +260,7 @@ export default {
           mutation: archiveDesignMutation,
           variables: {
             filenames: this.selectedDesigns,
-            projectPath: this.fullPath,
+            projectPath: this.workItemFullPath,
             iid: this.workItemIid,
           },
           update: this.afterArchiveDesign,
@@ -471,6 +500,8 @@ export default {
                 :is-uploading="false"
                 :is-dragging="isDraggingDesign"
                 :work-item-iid="workItemIid"
+                :work-item-web-url="workItemWebUrl"
+                :use-router="canUseRouter"
                 data-testid="design-item"
                 @pointerup="onPointerUp"
               />
