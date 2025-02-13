@@ -17,10 +17,10 @@ RSpec.describe UserDetail, feature_category: :system_access do
       let(:email_opt_in) { true }
       let(:registration_type) { 'free' }
       let(:registration_objective) { 0 }
+      let(:setup_for_company) { true }
       let(:glm_source) { 'glm_source' }
       let(:glm_content) { 'glm_content' }
       let(:joining_project) { true }
-      let(:setup_for_company) { true }
       let(:role) { 0 }
       let(:onboarding_status) do
         {

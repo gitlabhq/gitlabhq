@@ -156,5 +156,5 @@ Do not use `include ActionView::Helpers::UrlHelper` just to make the `link_to` m
 ## `/help` tests
 
 Several [RSpec tests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/features/help_pages_spec.rb)
-are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../index.md) works correctly from `/help`.
+are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../_index.md) works correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).

@@ -11,13 +11,13 @@ RSpec.describe HamlLint::Linter::DocumentationLinks, feature_category: :tooling 
 
   shared_examples 'link validation rules' do |link_pattern|
     context 'when link_to points to the existing file path' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md')" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('_index.md')" }
 
       it { is_expected.not_to report_lint }
     end
 
     context 'when link_to points to the existing file with valid anchor' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', anchor: 'user-accounts'), target: '_blank'" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('_index.md', anchor: 'user-accounts'), target: '_blank'" }
 
       it { is_expected.not_to report_lint }
     end
@@ -29,12 +29,12 @@ RSpec.describe HamlLint::Linter::DocumentationLinks, feature_category: :tooling 
     end
 
     context 'when anchor is not correct' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', anchor: 'wrong')" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('_index.md', anchor: 'wrong')" }
 
       it { is_expected.to report_lint }
 
       context "when #{link_pattern} has multiple options" do
-        let(:haml) { "= link_to 'Description', #{link_pattern}('index.md', key: :value, anchor: 'wrong')" }
+        let(:haml) { "= link_to 'Description', #{link_pattern}('_index.md', key: :value, anchor: 'wrong')" }
 
         it { is_expected.to report_lint }
       end
@@ -65,7 +65,7 @@ RSpec.describe HamlLint::Linter::DocumentationLinks, feature_category: :tooling 
     end
 
     context 'when anchor belongs to a different element' do
-      let(:haml) { "= link_to 'Description', #{link_pattern}('index.md'), target: (anchor: 'blank')" }
+      let(:haml) { "= link_to 'Description', #{link_pattern}('_index.md'), target: (anchor: 'blank')" }
 
       it { is_expected.not_to report_lint }
     end
@@ -89,7 +89,7 @@ RSpec.describe HamlLint::Linter::DocumentationLinks, feature_category: :tooling 
     end
 
     context 'when the second link is invalid' do
-      let(:haml) { ".data-form{ data: { url: #{link_pattern}('index.md'), wrong_url: #{link_pattern}('wrong') } }" }
+      let(:haml) { ".data-form{ data: { url: #{link_pattern}('_index.md'), wrong_url: #{link_pattern}('wrong') } }" }
 
       it { is_expected.to report_lint }
     end

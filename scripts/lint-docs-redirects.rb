@@ -77,7 +77,7 @@ class LintDocsRedirect
     file_sub = file["old_path"].gsub('doc', project_slug).gsub(/_?index\.md/, '').gsub('.md',
       '.html')
 
-    result = navigation_file.include?(file_sub)
+    result = navigation_file.include?("'#{file_sub}'")
     return unless result
 
     # If we're here, the path exists in navigation

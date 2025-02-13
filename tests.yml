@@ -110,7 +110,7 @@ mapping:
     test: 'spec/lib/release_highlights/validator_spec.rb'
 
   # The documentation index page is used in this haml_lint spec
-  - source: 'doc/index\.md'
+  - source: 'doc/_index\.md'
     test: 'spec/haml_lint/linter/documentation_links_spec.rb'
 
   - source: '(?<prefix>ee/)?app/models/.+\.rb'

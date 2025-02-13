@@ -54,7 +54,7 @@
     "@csstools/postcss-global-data": "^2.1.1",
     "@cubejs-client/core": "^1.0.0",
     "@floating-ui/dom": "^1.2.9",
-    "@gitlab/application-sdk-browser": "^0.3.3",
+    "@gitlab/application-sdk-browser": "^0.3.4",
     "@gitlab/at.js": "1.5.7",
     "@gitlab/cluster-client": "^2.4.0",
     "@gitlab/duo-ui": "^8.0.0",

@@ -25,7 +25,7 @@ information to help harden the CI/CD process.
   container technology should be used, such as GCP Secret Manager, AWS KMS, or
   HashiCorp Vault. For self-managed and standalone instances, HashiCorp Vault is
   recommended, and many GitLab features can take advantage of Vault and are well
-  documented in the main [Documentation](../index.md). For detailed CI/CD examples, see [using external secrets in CI](../ci/secrets/_index.md).
+  documented in the main [Documentation](../_index.md). For detailed CI/CD examples, see [using external secrets in CI](../ci/secrets/_index.md).
 - **External Communications**. If your CI/CD process requires connectivity to other
   hosts, ensure that these communication channels are encrypted. You should use TLS 1.2 or 1.3, and where possible implement mutual TLS.
 - **Logging**. Logging can be very important for auditing and troubleshooting, so it

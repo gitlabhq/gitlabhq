@@ -77,7 +77,7 @@ describe('HelpCenter component', () => {
     },
     {
       text: HelpCenter.i18n.contribute,
-      href: helpPagePath('', { anchor: 'contribute-to-gitlab' }),
+      href: helpPagePath('_index.md', { anchor: 'contribute-to-gitlab' }),
       extraAttrs: trackingAttrs('contribute_to_gitlab'),
     },
     {

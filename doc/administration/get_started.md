@@ -231,7 +231,7 @@ If you use GitLab SaaS, you have several channels with which to get support and 
 
 To get assistance for GitLab SaaS:
 
-- Access [GitLab Docs](../index.md) for self-service support.
+- Access [GitLab Docs](../_index.md) for self-service support.
 - Join the [GitLab Forum](https://forum.gitlab.com/) for community support.
 - Gather [your subscription information](https://about.gitlab.com/support/#for-self-managed-users) before submitting a ticket.
 - Submit a support ticket for:

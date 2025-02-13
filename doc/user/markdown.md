@@ -592,7 +592,7 @@ Do not change it back to a markdown codeblock.
 
 <pre class="highlight"><code>- This line shows an [inline-style link](https://www.google.com)
 - This line shows a [link to a repository file in the same directory](permissions.md)
-- This line shows a [relative link to a file one directory higher](../index.md)
+- This line shows a [relative link to a file one directory higher](../_index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using heading ID anchors:
@@ -615,7 +615,7 @@ Some text to show that the reference links can follow later.
 
 - This line shows an [inline-style link](https://www.google.com)
 - This line shows a [link to a repository file in the same directory](permissions.md)
-- This line shows a [relative link to a file one directory higher](../index.md)
+- This line shows a [relative link to a file one directory higher](../_index.md)
 - This line shows a [link that also has title text](https://www.google.com "This link takes you to Google!")
 
 Using heading ID anchors:
@@ -1674,7 +1674,7 @@ the content. This data can be used by static site generators like [Jekyll](https
 When you view a Markdown file rendered by GitLab, front matter is displayed as-is,
 in a box at the top of the document. The HTML content displays after the front matter. To view an example,
 you can toggle between the source and rendered version of a
-[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/index.md).
+[GitLab documentation file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/_index.md).
 
 In GitLab, front matter is used only in Markdown files and wiki pages, not the other
 places where Markdown formatting is supported. It must be at the very top of the document

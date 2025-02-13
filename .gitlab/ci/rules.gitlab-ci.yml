@@ -401,7 +401,7 @@
   - "scripts/rspec_helpers.sh"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
-  - "doc/index.md"
+  - "doc/_index.md"
   - "doc/api/settings.md"
 
 .search-backend-patterns: &search-backend-patterns
@@ -508,7 +508,7 @@
   - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
-  - "doc/index.md"
+  - "doc/_index.md"
   - "doc/api/settings.md"
 
 # .code-patterns + .backstage-patterns
@@ -537,7 +537,7 @@
   - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
-  - "doc/index.md"
+  - "doc/_index.md"
   - "doc/api/settings.md"
   # Backstage changes
   - "Dangerfile"
@@ -574,7 +574,7 @@
   - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
-  - "doc/index.md"
+  - "doc/_index.md"
   - "doc/api/settings.md"
   # QA changes
   - ".dockerignore"
@@ -617,7 +617,7 @@
   - "{,jh/}qa/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
-  - "doc/index.md"
+  - "doc/_index.md"
   - "doc/api/settings.md"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
@@ -649,7 +649,7 @@
   - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
-  - "doc/index.md"
+  - "doc/_index.md"
   - "doc/api/settings.md"
   # Backstage changes
   - "Dangerfile"

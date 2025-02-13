@@ -20237,6 +20237,9 @@ msgstr ""
 msgid "Deployment|You"
 msgstr ""
 
+msgid "Deprecated"
+msgstr ""
+
 msgid "Deprecated API rate limits"
 msgstr ""
 
@@ -50148,6 +50151,9 @@ msgstr ""
 msgid "Scan pushed document contents for policy breaks. %{docs_link}"
 msgstr ""
 
+msgid "ScanExecutionPolicy|%{boldStart}inject_ci%{boldEnd} strategy was deprecated. It was replaced by %{boldStart}inject_policy%{boldEnd} which enforces custom stages. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "ScanExecutionPolicy|%{hostname}'s timezone"
 msgstr ""
 
@@ -50217,6 +50223,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Inject"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Inject without custom stages"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Key"
 msgstr ""
 
@@ -50284,6 +50293,9 @@ msgid "ScanExecutionPolicy|Select timezone"
 msgstr ""
 
 msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file is injected into the .gitlab-ci.yml file of the target project. All GitLab CI/CD features are supported."
+msgstr ""
+
+msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file is injected into the .gitlab-ci.yml file of the target project. Custom stages used in the pipeline execution YAML are ignored, unless they are defined in the `.gitlab-ci.yml` file of the target project. All GitLab CI/CD features are supported."
 msgstr ""
 
 msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file overrides the .gitlab-ci.yml file of the target project. All GitLab CI/CD features are supported."

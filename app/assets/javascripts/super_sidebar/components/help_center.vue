@@ -88,7 +88,7 @@ export default {
             },
             {
               text: this.$options.i18n.contribute,
-              href: helpPagePath('', { anchor: 'contribute-to-gitlab' }),
+              href: helpPagePath('_index.md', { anchor: 'contribute-to-gitlab' }),
               extraAttrs: {
                 ...this.trackingAttrs('contribute_to_gitlab'),
               },
