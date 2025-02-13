@@ -53,7 +53,7 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
         accessed_projects.each do |accessed_project|
           messages << "\nWould have migrated project id: #{accessed_project.id}."
         end
-        messages << "\n\nMigration complete in preview mode.\n\n"
+        messages << "\n\nMigration complete in preview mode.\n\n\n"
 
         task.execute
 
@@ -72,15 +72,18 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
 
       it 'logs the expected messages' do
         messages = []
-        messages << "\nMigrating project(s)...\n"
+        messages << "Migrating project(s)..."
         accessed_projects.each do |accessed_project|
-          messages << "\nMigrated project id: #{accessed_project.id}."
+          messages << "Migrated project id: #{accessed_project.id}."
         end
-        messages << "\n\nMigration complete.\n\n"
+        messages << "Migration complete."
 
         task.execute
-
-        expect(output_stream.string).to eq(messages.join)
+        messages.each do |message|
+          expect(output_stream.string).to include(message)
+        end
+        expect(output_stream.string).to include("3 project(s) successfully migrated, 0 error(s) reported.")
+        expect(output_stream.string).not_to include("project id(s) failed to migrate:")
       end
 
       context "when an exception is raised" do
@@ -98,6 +101,9 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
           task.execute
 
           expect(output_stream.string).to include(message)
+          expect(output_stream.string).to include("  0 project(s) successfully migrated, 1 error(s) reported.\n")
+          expect(output_stream.string).to include("The following 1 project id(s) failed to migrate:")
+          expect(output_stream.string).to include("  #{project.id}")
         end
       end
     end

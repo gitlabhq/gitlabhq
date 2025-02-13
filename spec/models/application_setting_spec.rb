@@ -59,6 +59,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.global_search_merge_requests_enabled).to be(true) }
     it { expect(setting.global_search_snippet_titles_enabled).to be(true) }
     it { expect(setting.global_search_users_enabled).to be(true) }
+
+    it do
+      expect(setting.sign_in_restrictions).to eq({
+        'disable_password_authentication_for_users_with_sso_identities' => false,
+        'root_moved_permanently_redirection' => false
+      })
+    end
   end
 
   describe 'USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS' do

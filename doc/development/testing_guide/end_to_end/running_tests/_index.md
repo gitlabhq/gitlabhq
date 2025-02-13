@@ -143,6 +143,12 @@ Tests can be put in quarantine by assigning `:quarantine` metadata. This means t
 bundle exec rspec --tag quarantine
 ```
 
+Alternatively, the `DISABLE_QUARATINE` variable can be used
+
+```shell
+DISABLE_QUARANTINE=true bundle exec bin/qa Test::Instance::All http://localhost:3000
+```
+
 ### Custom `bin/qa` test runner
 
 `bin/qa` is an additional custom wrapper script that abstracts away some of the more complicated setups that some tests require. This option requires test scenario and test instance's GitLab address to be specified in the command. For example, to run any `Instance` scenario test, the following command can be used:

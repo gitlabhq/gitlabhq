@@ -236,13 +236,10 @@ Users with the Owner role for a top-level group can reassign contributions and m
 from placeholder users to existing active (non-bot) users.
 On the destination instance, users with the Owner role for a top-level group can:
 
-- Request users to review reassignment of contributions and memberships [in the UI](#request-reassignment-in-ui)
-  or [through a CSV file](#request-reassignment-by-using-a-csv-file).
-  For a large number of placeholder users, you should use a CSV file.
-  In both cases, users receive a request by email to accept or reject the reassignment.
-  The reassignment starts only after the selected user
-  [accepts the reassignment request](#accept-contribution-reassignment).
-- Choose not to reassign contributions and memberships and [keep them assigned to placeholder users](#keep-as-placeholder).
+- Request users to accept reassignment of contributions and membership [in the UI](#request-reassignment-in-ui).
+  The reassignment process starts only after the selected user [accepts the reassignment request](#accept-contribution-reassignment),
+  which is sent to them by email.
+- Choose not to reassign contributions and memberships, and [keep them with placeholder users](#keep-as-placeholder).
 
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
 user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
@@ -317,50 +314,6 @@ To request reassignment of contributions and memberships:
 Contributions of only one placeholder user can be reassigned to an active non-bot user on destination instance.
 
 Before a user accepts the reassignment, you can [cancel the request](#cancel-reassignment-request).
-
-#### Request reassignment by using a CSV file
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-Prerequisites:
-
-- You must have the Owner role for the group.
-
-For a large number of placeholder users, you might want to
-reassign contributions and memberships by using a CSV file.
-If placeholder users are awaiting reassignment, you can download
-a prefilled CSV template with the following information.
-For example:
-
-| Source host          | Import type | Source user identifier | Source user name | Source username |
-|----------------------|-------------|------------------------|------------------|-----------------|
-| `gitlab.example.com` | `gitlab`    | `alice`                | `Alice Coder`    | `a.coer`        |
-
-Do not update **Source host**, **Import type**, or **Source user identifier**.
-This information locates the corresponding database record
-after you've uploaded the completed CSV file.
-**Source user name** and **Source username** identify the source user
-and are not used after you've uploaded the CSV file.
-
-To request reassignment of contributions and memberships by using a CSV file:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
-1. Select the **Placeholders** tab.
-1. Select **Reassign with CSV**.
-1. Download the prefilled CSV template.
-1. In **GitLab username** or **GitLab public email**, enter the username or email address
-   of the GitLab user on the destination instance.
-   You can use only public email addresses for reassignment.
-1. Upload the completed CSV file.
-1. Select **Reassign**.
-
-Users receive an email to review and accept any contributions reassigned to them.
 
 #### Keep as placeholder
 

@@ -66,6 +66,7 @@ Example response:
   "default_preferred_language" : "en",
   "failed_login_attempts_unlock_period_in_minutes": 30,
   "restricted_visibility_levels" : [],
+  "sign_in_restrictions": {},
   "password_authentication_enabled_for_web" : true,
   "after_sign_out_path" : null,
   "max_attachment_size" : 10,
@@ -248,6 +249,7 @@ Example response:
     ]
   },
   "restricted_visibility_levels": [],
+  "sign_in_restrictions": {},
   "max_attachment_size": 10,
   "max_decompressed_archive_size": 25600,
   "max_export_size": 50,
@@ -660,6 +662,7 @@ to configure other related settings. These requirements are
 | `sidekiq_job_limiter_compression_threshold_bytes` | integer | no                                   | The threshold in bytes at which Sidekiq jobs are compressed before being stored in Redis. Default: 100,000 bytes (100 KB). |
 | `sidekiq_job_limiter_limit_bytes`                 | integer | no                                   | The threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job). |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
+| `sign_in_restrictions`                   | hash             | no                                   | Application sign in restrictions. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
 | `silent_admin_exports_enabled`           | boolean          | no                                   | Enable [Silent admin exports](../administration/settings/import_and_export_settings.md#enable-silent-admin-exports). Default is `false`. |
 | `silent_mode_enabled`                    | boolean          | no                                   | Enable [Silent mode](../administration/silent_mode/_index.md). Default is `false`. |

@@ -12,22 +12,13 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
   def payload
     [
       Rails.application.credentials.openid_connect_signing_key,
-      Gitlab::CurrentSettings.ci_jwt_signing_key,
-      cloud_connector_keys
-    ].flatten.compact.map { |key_data| pem_to_jwk(key_data) }.uniq
-  end
-
-  def cloud_connector_keys
-    return unless Gitlab.ee?
-
-    CloudConnector::Keys.all_as_pem
-  end
-
-  def pem_to_jwk(key_data)
-    OpenSSL::PKey::RSA.new(key_data)
+      Gitlab::CurrentSettings.ci_jwt_signing_key
+    ].compact.map do |key_data|
+      OpenSSL::PKey::RSA.new(key_data)
         .public_key
         .to_jwk
         .slice(:kty, :kid, :e, :n)
         .merge(use: 'sig', alg: 'RS256')
+    end
   end
 end

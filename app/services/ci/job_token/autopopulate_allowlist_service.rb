@@ -27,8 +27,10 @@ module Ci
 
         ServiceResponse.success
       rescue Ci::JobToken::AuthorizationsCompactor::Error => e
-        Gitlab::ErrorTracking.log_exception(e, { project_id: @project.id, user_id: @user.id })
         ServiceResponse.error(message: e.message)
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, { project_id: @project.id, user_id: @user.id })
+        ServiceResponse.error(message: e)
       end
 
       def execute

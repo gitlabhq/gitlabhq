@@ -34308,6 +34308,9 @@ msgstr ""
 msgid "Manage configuration"
 msgstr ""
 
+msgid "Manage deployments"
+msgstr ""
+
 msgid "Manage framework"
 msgstr ""
 
@@ -36594,6 +36597,9 @@ msgid "MlModelRegistry|Experiment"
 msgstr ""
 
 msgid "MlModelRegistry|Failed to delete model with error: %{message}"
+msgstr ""
+
+msgid "MlModelRegistry|Failed to load experiments with error: %{error}"
 msgstr ""
 
 msgid "MlModelRegistry|Failed to load model runs with error: %{message}"
@@ -66238,6 +66244,9 @@ msgstr ""
 msgid "You are about to transfer %{code_start}%{project_full_name}%{code_end} to another namespace. This action changes the %{link_to_namespace_change_doc} and can lead to %{link_to_data_loss_doc}."
 msgstr ""
 
+msgid "You are almost out of Pages parallel deployments. Delete some deployments or you will be unable to create new ones soon. %{link}."
+msgstr ""
+
 msgid "You are already a member of this %{member_source}."
 msgstr ""
 
@@ -66314,6 +66323,9 @@ msgid "You are now impersonating %{username}"
 msgstr ""
 
 msgid "You are on a read-only GitLab instance."
+msgstr ""
+
+msgid "You are out of Pages parallel deployments. Delete some existing deployments to be able to create new ones. %{link}."
 msgstr ""
 
 msgid "You are receiving this email because you are an Owner of the Group."
@@ -66482,6 +66494,9 @@ msgid "You can view the source or %{linkStart}%{cloneIcon} clone the repository%
 msgstr ""
 
 msgid "You can't approve because you added one or more commits to this merge request."
+msgstr ""
+
+msgid "You can't edit files directly in this project. Fork this project and submit a merge request with your changes."
 msgstr ""
 
 msgid "You can't follow more than %{limit} users. To follow more users, unfollow some others."

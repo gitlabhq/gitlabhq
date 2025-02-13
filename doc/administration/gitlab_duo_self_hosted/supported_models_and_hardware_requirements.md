@@ -18,28 +18,28 @@ DETAILS:
 
 The following table shows the supported models along with their specific features and hardware requirements to help you select the model that best fits your infrastructure needs for optimal performance.
 
-## Supported LLMs
+## Supported models
 
-Install one of the following GitLab-supported large language models (LLMs):
+The following GitLab-supported large language models (LLMs) are generally available.
+
+- Fully compatible: The model can likely handle the feature without any loss of quality.
+- Largely compatible: The model supports the feature, but there might be compromises or limitations.
+- Not compatible: The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-| Model family | Model | Supported platforms | Status | Code completion | Code generation | GitLab Duo Chat |
-|--------------|-------|---------------------|--------|-----------------|-----------------|-----------------|
-|Mistral Codestral   | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Generally available | 🟢 Green | 🟢 Green | N/A |
-| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Generally available | 🟢 Green | 🟢 Green | 🔴 Red |
-| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | Generally available | 🟢 Green | 🟢 Green | 🟡 Amber |
-| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Generally available | 🟢 Green | 🟢 Green | 🟢 Green |
-| Claude 3 | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | Generally available | 🟢 Green | 🟢 Green | 🟢 Green |
-| GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟡 Amber |
-| GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟢 Green |
-| GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Generally available | 🟢 Green | 🟢 Green | 🟡 Amber |
+| Model Family | Model | Supported Platforms | Code completion | Code generation | GitLab Duo Chat |
+|-------------|-------|---------------------|-----------------|-----------------|-----------------|
+| Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | N/A |
+| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | **{dash-circle}** Not compatible |
+| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | **{check-circle-dashed}** Limited compatibility |
+| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | **{check-circle-dashed}** Limited compatibility |
+| Claude 3 | [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible |
+| GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | **{check-circle-dashed}** Limited compatibility |
+| GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible |
+| GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | **{check-circle-filled}** Fully compatible | **{check-circle-filled}** Fully compatible | **{check-circle-dashed}** Limited compatibility |
 
-Legend:
-
-- 🟢 Green - Fully compatible. The model can likely handle the feature without any loss of quality.
-- 🟡 Amber - Largely compatible. The model supports the feature, but there might be compromises or limitations.
-- 🔴 Red - Not compatible. The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
+### Experimental and beta models
 
 The following models are configurable for the functionalities marked below, but are currently in experimental or beta status, under evaluation, and are excluded from the "Customer Integrated Models" definition in the [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/):
 

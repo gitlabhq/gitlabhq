@@ -14,3 +14,4 @@
     = render_if_exists 'shared/shared_runners_minutes_limit', project: project
     = render 'projects/terraform_banner', project: project
     = render 'projects/lfs_misconfiguration_banner', project: project
+    = render_if_exists 'projects/pages_deployments_limit_warning', project: project

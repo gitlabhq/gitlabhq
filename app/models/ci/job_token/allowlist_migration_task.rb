@@ -14,6 +14,8 @@ module Ci
         @exclude_ids = parse_project_ids(exclude_ids)
         @preview = !preview.blank?
         @user = user
+        @success_count = 0
+        @failed_projects = []
         @output_stream = output_stream
       end
 
@@ -25,6 +27,7 @@ module Ci
           migrate!
 
           @output_stream.puts finish_message
+          @output_stream.puts summary_report
         else
           @output_stream.puts configuration_error_banner
         end
@@ -56,15 +59,19 @@ module Ci
           "Would have migrated project id: #{project.id}."
         else
           perform_migration!(project)
+          @success_count += 1
+
           "Migrated project id: #{project.id}."
         end
       rescue StandardError => error
+        @failed_projects << project
         "Error migrating project id: #{project.id}, error: #{error.message}"
       end
 
       def perform_migration!(project)
-        service = ::Ci::JobToken::AutopopulateAllowlistService.new(project, @user) # rubocop:disable CodeReuse/ServiceClass -- This class is not an ActiveRecord model
-        service.unsafe_execute!
+        ::Ci::JobToken::AutopopulateAllowlistService # rubocop:disable CodeReuse/ServiceClass -- This class is not an ActiveRecord model
+          .new(project, @user)
+          .unsafe_execute!
       end
 
       def valid_configuration?
@@ -91,6 +98,22 @@ module Ci
         else
           "\nMigration complete.\n\n"
         end
+      end
+
+      def summary_report
+        return if preview_mode?
+
+        failure_count = @failed_projects.length
+        report_lines = []
+        report_lines << "Summary: \n"
+        report_lines << "  #{@success_count} project(s) successfully migrated, #{failure_count} error(s) reported.\n"
+
+        if failure_count > 0
+          report_lines << "  The following #{failure_count} project id(s) failed to migrate:\n"
+          report_lines << "    #{@failed_projects.pluck(:id).join(', ')}" # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- pluck limited by array size
+        end
+
+        report_lines.join
       end
 
       def preview_banner

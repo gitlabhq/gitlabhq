@@ -2,14 +2,14 @@
 stage: Tenant Scale
 group: Cells Infrastructure
 info: Analysis of Application Settings for Cells 1.0.
-title: Application Settings analysis
 ---
+# Application Settings analysis
 
 ## Statistics
 
 - Number of attributes: 512
 - Number of encrypted attributes: 41 (8.0%)
-- Number of attributes documented: 311 (61.0%)
+- Number of attributes documented: 312 (61.0%)
 - Number of attributes on GitLab.com different from the defaults: 233 (46.0%)
 - Number of attributes with `clusterwide` set: 512 (100.0%)
 - Number of attributes with `clusterwide: true` set: 127 (25.0%)
@@ -349,6 +349,7 @@ title: Application Settings analysis
 | `plantuml_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `true`| `true` |
 | `plantuml_url` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `polling_interval_multiplier` | `false` | `numeric` | `float` | `true` | `1.0` | `false` | `false`| `true` |
+| `pre_receive_secret_detection_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `prevent_merge_requests_author_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `prevent_merge_requests_committers_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `product_analytics_configurator_connection_string` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
@@ -409,7 +410,7 @@ title: Application Settings analysis
 | `secret_detection_token_revocation_enabled` | `false` | `boolean` | `` | `true` | `false` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_token` | `true` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `secret_detection_token_revocation_url` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
-| `secret_push_protection_available` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
+| `secret_push_protection_available` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |
@@ -430,7 +431,7 @@ title: Application Settings analysis
 | `sidekiq_job_limiter_compression_threshold_bytes` | `false` | `integer` | `integer` | `true` | `100000` | `false` | `false`| `true` |
 | `sidekiq_job_limiter_limit_bytes` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `sidekiq_job_limiter_mode` | `false` | `smallint` | `string` | `true` | `1` | `false` | `false`| `true` |
-| `sign_in_restrictions` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
+| `sign_in_restrictions` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
 | `signup_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `false`| `true` |
 | `silent_mode_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `slack_app_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `false`| `true` |

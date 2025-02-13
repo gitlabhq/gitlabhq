@@ -147,10 +147,7 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
         let(:compaction_limit) { 2 }
 
         it 'raises when the limit cannot be achieved' do
-          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-            kind_of(Ci::JobToken::AuthorizationsCompactor::Error),
-            { project_id: accessed_project.id, user_id: maintainer.id }
-          )
+          expect(Gitlab::ErrorTracking).not_to receive(:track_and_raise_for_dev_exception)
           result = service.execute
 
           expect(result).to be_error
@@ -181,6 +178,24 @@ RSpec.describe Ci::JobToken::AutopopulateAllowlistService, feature_category: :se
 
     it 'does not raise an access denied error' do
       expect { service.unsafe_execute! }.not_to raise_error
+    end
+  end
+
+  context 'with an unexpected exception' do
+    it 'reports the error' do
+      expect(Ci::JobToken::Allowlist).to receive(:new).and_raise("Something went wrong")
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+        kind_of(StandardError),
+        { project_id: accessed_project.id, user_id: maintainer.id }
+      )
+
+      result = service.unsafe_execute!
+
+      expect(result).to be_error
+      expect(result.message.to_s).to eq('Something went wrong')
+
+      expect(Ci::JobToken::GroupScopeLink.count).to be(0)
+      expect(Ci::JobToken::ProjectScopeLink.count).to be(0)
     end
   end
 end

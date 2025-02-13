@@ -169,6 +169,116 @@ Example response:
 }
 ```
 
+#### Provision a namespace
+
+Use to provision subscription related resources for a root namespace. This includes main plan, storage, compute minutes, and add-on purchases.
+The endpoint processes resources independently - if one resource fails to provision, others continue to be provisioned.
+
+You can provision one or more resources in a single request based on the parameters provided.
+
+```plaintext
+POST /internal/gitlab_subscriptions/namespaces/:id/provision
+```
+
+Parameters:
+
+| Attribute     | Type      | Required   | Description                      |
+| :------------ | :-------- | :--------- | :------------                    |
+| `id`          | integer   | yes        | ID of the namespace to provision |
+
+The endpoint supports parameters for each resource nested under the `provision` root key:
+
+| Attribute          | Type      | Required   | Description                                           |
+| :------------      | :-------- | :--------- | :------------                                         |
+| `main_plan`        | hash      | no         | Hash object containing GitLab Subscription attributes |
+| `storage`          | hash      | no         | Hash object containing Storage attributes             |
+| `compute_minutes`  | hash      | no         | Hash object containing Compute Minutes attributes     |
+| `add_on_purchases` | hash      | no         | Hash object containing Add-on Purchases attributes    |
+
+Main plan supported attributes:
+
+| Attribute         | Type      | Required   | Description                                                       |
+| :------------     | :-------- | :--------- | :------------                                                     |
+| `plan_code`       | string    | no         | Subscription tier code                                            |
+| `start_date`      | date      | no         | Start date of subscription                                        |
+| `end_date`        | date      | no         | End date of subscription                                          |
+| `seats`           | integer   | no         | Number of seats in subscription                                   |
+| `max_seats_used`  | integer   | no         | Highest number of billable users in the current subscription term |
+| `auto_renew`      | boolean   | no         | Whether subscription auto-renews on end date                      |
+| `trial`           | boolean   | no         | Whether subscription is a trial                                   |
+| `trial_starts_on` | date      | no         | Start date of trial. Required if trial is true                    |
+| `trial_ends_on`   | date      | no         | End date of trial                                                 |
+
+Storage supported attributes:
+
+| Attribute                              | Type      | Required   | Description                          |
+| :------------                          | :-------- | :--------- | :------------                        |
+| `additional_purchased_storage_size`    | integer   | no         | Additional storage size              |
+| `additional_purchased_storage_ends_on` | date      | no         | Additional purchased storage ends on |
+
+Compute Minutes supported attributes:
+
+| Attribute                            | Type      | Required   | Description           |
+| :------------                        | :-------- | :--------- | :------------         |
+| `shared_runners_minutes_limit`       | integer   | no         | Compute minutes quota |
+| `extra_shared_runners_minutes_limit` | integer   | no         | Extra compute minutes |
+
+Add-on Purchases Supported attributes:
+
+| Attribute      | Type      | Required   | Description                                                                                                                        |
+| :------------  | :-------- | :--------- | :------------                                                                                                                      |
+| `quantity`     | integer   | No         | Amount of units in the subscription add-on purchase. Must be a non-negative integer. (Example: Number of seats for Duo Pro add-on) |
+| `started_on`   | date      | Yes        | Date the subscription add-on purchase became available                                                                             |
+| `expires_on`   | date      | Yes        | Expiration date of the subscription add-on purchase                                                                                |
+| `purchase_xid` | string    | No         | Identifier for the subscription add-on purchase (Example: Subscription name for a Duo Pro add-on)                                  |
+| `trial`        | boolean   | No         | Whether the add-on is a trial                                                                                                      |
+
+Example request:
+
+```shell
+curl --request POST --header "X-CUSTOMERS-DOT-INTERNAL-TOKEN: <json-web-token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1/provision" \
+--data '{
+  "provision": {
+    "main_plan": {
+      "plan_code": "ultimate",
+      "seats": 30,
+      "start_date": "2024-01-01",
+      "end_date": "2025-01-01",
+      "max_seats_used": 10,
+      "auto_renew": true,
+      "trial": false,
+      "trial_starts_on": null,
+      "trial_ends_on": null
+    },
+    "storage": {
+      "additional_purchased_storage_size": 100,
+      "additional_purchased_storage_ends_on": "2025-01-01"
+    },
+    "compute_minutes": {
+      "extra_shared_runners_minutes_limit": 90,
+      "shared_runners_minutes_limit": 100
+    },
+    "add_on_purchases": {
+      "duo_enterprise": [{
+        "started_on": "2024-01-01",
+        "expires_on": "2025-01-01",
+        "purchase_xid": "A-S00001",
+        "quantity": 1,
+        "trial": false
+      }]
+    }
+  }
+}'
+```
+
+Response Status Codes:
+
+- 200 OK - Namespace provisioned successfully (empty response)
+- 400 Bad Request - Invalid parameters or non-root namespace
+- 401 Unauthorized - Invalid token
+- 404 Not Found - Namespace doesn't exist
+- 422 Unprocessable Entity - Validation errors during provisioning
+
 ### Subscriptions
 
 The subscription endpoints are used by

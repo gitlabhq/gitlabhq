@@ -49,6 +49,20 @@ This needs to be done for any new, or updated gems.
 
 1. Check and commit the changes for `Gemfile.checksum`.
 
+### Updating the `Gemfile.next.lock` File
+
+Whenever gems are updated, ensure that the `Gemfile.next.lock` file remains consistent.
+
+1. Sync the gem files
+   If you update `Gemfile.checksum`, you must sync the gem files by running:
+
+   ```shell
+   bundle exec rake bundler:gemfile:sync
+   ```
+
+1. Review and commit changes
+   After syncing, verify the updates and commit any changes to `Gemfile.next.checksum` and `Gemfile.next.lock`.
+
 ## No gems fetched from Git repositories
 
 We do not allow gems that are fetched from Git repositories. All gems have

@@ -1,35 +1,65 @@
-export const startCursor = 'eyJpZCI6IjE2In0';
-export const defaultPageInfo = Object.freeze({
-  startCursor,
-  endCursor: 'eyJpZCI6IjIifQ',
-  hasNextPage: true,
-  hasPreviousPage: true,
-});
-
-export const firstExperiment = Object.freeze({
-  name: 'Experiment 1',
-  path: 'path/to/experiment/1',
-  candidate_count: 2,
-  updated_at: '2021-04-01',
-  user: {
-    id: 1,
-    name: 'Joe Doe',
-    path: 'namespace1',
-    avatar_url: 'avatar_url',
-  },
-});
-
-export const secondExperiment = Object.freeze({
-  name: 'Experiment 2',
-  path: 'path/to/experiment/2',
-  candidate_count: 3,
-  updated_at: '2021-04-01',
-  user: {
-    id: 1,
+export const firstExperiment = {
+  id: 'gid://gitlab/Ml::Experiment/1',
+  name: 'experiment-1',
+  updatedAt: '2021-08-10T09:33:54Z',
+  candidateCount: 10,
+  path: 'experiment/path/1',
+  modelId: 'gid://gitlab/Ml::Experiment/10',
+  creator: {
+    id: 'gid://gitlab/User/9998',
     name: 'Jane Doe',
-    path: 'namespace1',
-    avatar_url: 'avatar_url',
+    webUrl: 'jane/web/url',
+    avatarUrl: 'jane/avatar/url',
   },
-});
+};
 
-export const experiments = [firstExperiment, secondExperiment];
+export const secondExperiment = {
+  id: 'gid://gitlab/Ml::Experiment/2',
+  name: 'experiment-2',
+  updatedAt: '2021-08-10T09:39:54Z',
+  candidateCount: 10,
+  path: 'experiment/path/1',
+  modelId: 'gid://gitlab/Ml::Experiment/11',
+  creator: {
+    id: 'gid://gitlab/User/9999',
+    name: 'John Doe',
+    webUrl: 'john/web/url',
+    avatarUrl: 'john/avatar/url',
+  },
+};
+
+export const MockExperimentsQueryResult = {
+  data: {
+    project: {
+      id: 111,
+      mlExperiments: {
+        count: 2,
+        nodes: [firstExperiment, secondExperiment],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          endCursor: 'endCursor',
+          startCursor: 'startCursor',
+        },
+      },
+    },
+  },
+};
+
+export const MockExperimentsEmptyQueryResult = {
+  data: {
+    project: {
+      id: 111,
+      mlExperiments: {
+        count: 0,
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          endCursor: 'endCursor',
+          startCursor: 'startCursor',
+        },
+      },
+    },
+  },
+};

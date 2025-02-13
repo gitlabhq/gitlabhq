@@ -25,6 +25,7 @@ module Gitlab
         @reviewers = []
         @non_housekeeper_changes = []
         @push_options = PushOptions.new
+        @aborted = false
       end
 
       def assignees=(assignees)
@@ -33,6 +34,14 @@ module Gitlab
 
       def reviewers=(reviewers)
         @reviewers = Array(reviewers)
+      end
+
+      def abort!
+        @aborted = true
+      end
+
+      def aborted?
+        @aborted
       end
 
       def mr_description

@@ -57,7 +57,7 @@ module Gitlab
               branch_name = git.create_branch(change)
               add_standard_change_data(change)
 
-              unless change.matches_filters?(@filter_identifiers)
+              if change.aborted? || !change.matches_filters?(@filter_identifiers)
                 # At this point the keep has already run and edited files so we need to
                 # restore the local working copy. We could simply checkout all
                 # changed_files but this is very risky as it could mean losing work that
@@ -67,7 +67,12 @@ module Gitlab
                   git.create_commit(change)
                 end
 
-                @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+                if change.aborted?
+                  @logger.puts "Skipping change as it is marked aborted."
+                else
+                  @logger.puts "Skipping change: #{change.identifiers} due to not matching filter."
+                end
+
                 @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}," \
                              "but will not be pushed."
                 @logger.puts
