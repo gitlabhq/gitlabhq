@@ -17825,6 +17825,7 @@ CREATE TABLE packages_debian_group_architectures (
     distribution_id bigint NOT NULL,
     name text NOT NULL,
     group_id bigint,
+    CONSTRAINT check_7a087a5b9f CHECK ((group_id IS NOT NULL)),
     CONSTRAINT check_ddb220164a CHECK ((char_length(name) <= 255))
 );
 
@@ -31353,6 +31354,8 @@ CREATE UNIQUE INDEX idx_wi_text_values_on_work_item_id_custom_field_id ON work_i
 CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_id ON work_item_type_custom_fields USING btree (namespace_id, work_item_type_id, custom_field_id);
 
 CREATE INDEX idx_zoekt_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt_indices USING btree (used_storage_bytes_updated_at) WHERE (last_indexed_at >= used_storage_bytes_updated_at);
+
+CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_size_bytes ON zoekt_repositories USING btree (zoekt_index_id, size_bytes);
 
 CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_state ON zoekt_repositories USING btree (zoekt_index_id, state);
 

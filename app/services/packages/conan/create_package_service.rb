@@ -3,9 +3,6 @@
 module Packages
   module Conan
     class CreatePackageService < ::Packages::CreatePackageService
-      ERROR_RESPONSE_PACKAGE_PROTECTED =
-        ServiceResponse.error(message: 'Package protected.', reason: :package_protected)
-
       def execute
         return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?
 

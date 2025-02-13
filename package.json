@@ -313,7 +313,7 @@
     "yarn-deduplicate": "^6.0.2"
   },
   "resolutions": {
-    "**/glob/jackspeak": "npm:@gitlab/noop@1.0.0",
+    "**/glob/jackspeak": "npm:@gitlab/noop@1.0.1",
     "**/simple-update-notifier/semver": "^7.0.0",
     "@types/node": "14.17.5",
     "chokidar": "^3.5.3",

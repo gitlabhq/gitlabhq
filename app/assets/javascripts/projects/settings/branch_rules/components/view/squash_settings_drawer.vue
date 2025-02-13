@@ -55,7 +55,7 @@ export default {
     selectedOption: {
       type: String,
       required: false,
-      default: SQUASH_SETTING_DO_NOT_ALLOW,
+      default: null,
     },
   },
   data() {
@@ -71,7 +71,7 @@ export default {
       return findSelectedOptionValueByLabel(this.$options.OPTIONS, this.selectedOption);
     },
     hasChanged() {
-      return this.selected !== this.selectedOptionValue;
+      return !this.selectedOption || this.selected !== this.selectedOptionValue;
     },
   },
   methods: {

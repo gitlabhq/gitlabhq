@@ -17711,6 +17711,9 @@ msgstr ""
 msgid "CycleAnalyticsEvent|Merge request reviewer first assigned"
 msgstr ""
 
+msgid "CycleAnalyticsEvent|Merge request was last approved at"
+msgstr ""
+
 msgid "CycleAnalyticsStage|Code"
 msgstr ""
 
@@ -52768,6 +52771,9 @@ msgstr ""
 msgid "SecurityReports|All projects"
 msgstr ""
 
+msgid "SecurityReports|All scanners"
+msgstr ""
+
 msgid "SecurityReports|All severities"
 msgstr ""
 
@@ -53024,6 +53030,9 @@ msgid "SecurityReports|Results show vulnerability findings from the latest succe
 msgstr ""
 
 msgid "SecurityReports|Scan details"
+msgstr ""
+
+msgid "SecurityReports|Scanner"
 msgstr ""
 
 msgid "SecurityReports|Security dashboard"

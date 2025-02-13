@@ -103,6 +103,7 @@ The following stage events are available:
 - MR label added
 - MR label removed
 - MR last pipeline duration
+- MR last approved at
 
 These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
 

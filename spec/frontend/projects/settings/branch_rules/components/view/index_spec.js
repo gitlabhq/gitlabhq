@@ -35,6 +35,7 @@ import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mu
 import editBranchRuleSquashOptionMutation from '~/projects/settings/branch_rules/mutations/edit_squash_option.mutation.graphql';
 import {
   editBranchRuleMockResponse,
+  editSquashOptionMockResponse,
   deleteBranchRuleMockResponse,
   branchProtectionsMockResponse,
   branchProtectionsNoPushAccessMockResponse,
@@ -76,7 +77,7 @@ describe('View branch rules', () => {
     .mockResolvedValue(predefinedBranchRulesMockResponse);
   const deleteBranchRuleSuccessHandler = jest.fn().mockResolvedValue(deleteBranchRuleMockResponse);
   const editBranchRuleSuccessHandler = jest.fn().mockResolvedValue(editBranchRuleMockResponse);
-  const editSquashOptionSuccessHandler = jest.fn().mockResolvedValue(editBranchRuleMockResponse);
+  const editSquashOptionSuccessHandler = jest.fn().mockResolvedValue(editSquashOptionMockResponse);
   const protectableBranchesMockRequestHandler = jest
     .fn()
     .mockResolvedValue(protectableBranchesMockResponse);
@@ -192,6 +193,26 @@ describe('View branch rules', () => {
       },
     );
 
+    it.each`
+      allowEditSquashSetting | branch            | expectedIsEditAvailable | description
+      ${true}                | ${'main'}         | ${true}                 | ${'allowEditSquashSetting is true and branch is main'}
+      ${false}               | ${'main'}         | ${false}                | ${'allowEditSquashSetting is false and branch is main'}
+      ${false}               | ${'All branches'} | ${true}                 | ${'allowEditSquashSetting is false and target is All branches'}
+    `(
+      'expectedIsEditAvailable: $expectedIsEditAvailable when $description',
+      async ({ allowEditSquashSetting, branch, expectedIsEditAvailable }) => {
+        jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(branch);
+
+        await createComponent({
+          glFeatures: { branchRuleSquashSettings: true },
+          canAdminProtectedBranches: true,
+          allowEditSquashSetting,
+        });
+
+        expect(findSquashSettingSection().props('isEditAvailable')).toBe(expectedIsEditAvailable);
+      },
+    );
+
     it('opens squash settings drawer when edit is clicked', async () => {
       await createComponent();
 
@@ -245,8 +266,9 @@ describe('View branch rules', () => {
       });
     });
 
-    it('closes drawer after successful update', async () => {
+    it('closes drawer and refetches data after successful update', async () => {
       await createComponent();
+      jest.spyOn(wrapper.vm.$apollo.queries.squashOption, 'refetch').mockResolvedValue({});
 
       findSquashSettingSection().vm.$emit('edit');
       await nextTick();
@@ -256,6 +278,7 @@ describe('View branch rules', () => {
       await waitForPromises();
 
       expect(drawer.props('isOpen')).toBe(false);
+      expect(wrapper.vm.$apollo.queries.squashOption.refetch).toHaveBeenCalledTimes(1);
     });
 
     it('renders squash settings section', () => {

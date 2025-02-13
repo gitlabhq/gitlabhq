@@ -102,6 +102,10 @@ class MergeRequest < ApplicationRecord
     inverse_of: :merge_request,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
+  has_one :approval_metrics,
+    class_name: 'MergeRequest::ApprovalMetrics',
+    inverse_of: :merge_request
+
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
   has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline', inverse_of: :merge_request
   has_many :suggestions, through: :notes

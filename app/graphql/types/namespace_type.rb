@@ -7,6 +7,7 @@ module Types
     authorize :read_namespace
 
     implements Types::TodoableInterface
+    expose_permissions Types::PermissionTypes::Namespaces::Base
 
     field :id, GraphQL::Types::ID, null: false,
       description: 'ID of the namespace.'

@@ -390,4 +390,73 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       end
     end
   end
+
+  describe '#protect_package!' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:project_developer) { create(:user, developer_of: project) }
+    let_it_be(:project_owner) { project.owner }
+    let_it_be(:project_deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
+    let_it_be(:package) { create(:maven_package) }
+
+    let_it_be(:package_protection_rule_maven) do
+      create(:package_protection_rule,
+        project: project,
+        package_type: package.package_type,
+        package_name_pattern: "#{package.name}*",
+        minimum_access_level_for_push: :maintainer)
+    end
+
+    before do
+      allow(helper).to receive(:user_project).and_return(project)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    subject { helper.protect_package!(package_name, package_type) }
+
+    shared_examples 'success response because package not protected' do
+      it { is_expected.to be_nil }
+
+      it 'does not render any error' do
+        expect(helper).not_to receive(:bad_request!)
+        expect(helper).not_to receive(:forbidden!)
+
+        subject
+      end
+    end
+
+    shared_examples 'forbidden response because package protected' do
+      it 'renders forbidden error' do
+        expect(helper).to receive(:forbidden!).with('Package protected.')
+
+        subject
+      end
+    end
+
+    shared_examples 'bad_request response' do
+      it 'renders bad_request error' do
+        expect(helper).to receive(:bad_request!)
+
+        subject
+      end
+    end
+
+    where(:package_name, :package_type, :current_user, :expected_shared_example) do
+      lazy { package.name } | :maven   | ref(:project_developer)    | 'forbidden response because package protected'
+      lazy { package.name } | :pypi    | ref(:project_developer)    | 'success response because package not protected'
+      lazy { package.name } | :maven   | ref(:project_owner)        | 'success response because package not protected'
+      lazy { package.name } | :pypi    | ref(:project_owner)        | 'success response because package not protected'
+      lazy { package.name } | :maven   | ref(:project_deploy_token) | 'forbidden response because package protected'
+      lazy { package.name } | :pypi    | ref(:project_deploy_token) | 'success response because package not protected'
+      lazy { package.name } | :maven   | nil                        | 'bad_request response'
+      ''                    | :maven   | ref(:project_developer)    | 'success response because package not protected'
+      nil                   | :maven   | ref(:project_developer)    | 'success response because package not protected'
+      nil                   | :no_type | ref(:project_developer)    | 'bad_request response'
+      nil                   | nil      | ref(:project_developer)    | 'bad_request response'
+    end
+
+    with_them do
+      it_behaves_like params[:expected_shared_example]
+    end
+  end
 end

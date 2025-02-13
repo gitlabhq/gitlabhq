@@ -335,6 +335,20 @@ export const editBranchRuleMockResponse = {
   },
 };
 
+export const editSquashOptionMockResponse = {
+  data: {
+    branchRuleSquashOptionUpdate: {
+      errors: [],
+      squashOption: {
+        option: 'Encourage',
+        helpText: 'Checkbox is visible and selected by default.',
+        __typename: 'SquashOption',
+      },
+      __typename: 'BranchRuleSquashOptionUpdatePayload',
+    },
+  },
+};
+
 export const editRuleData = [{ accessLevel: 60 }, { accessLevel: 40 }, { accessLevel: 30 }];
 
 export const editRuleDataNoAccessLevels = [];

@@ -486,6 +486,11 @@ correct location:
 
 ::EndTabs
 
+NOTE:
+If you protect a Maven package before publishing it, the package will be rejected with a `403 Forbidden` error and an `Authorization failed` error message. 
+Ensure the Maven package is not protected when publishing. 
+For more information about package protection rules, see [how to protect a package](../../../user/packages/package_registry/package_protection_rules.md#protect-a-package).
+
 ## Install a package
 
 To install a package from the GitLab package registry, you must configure
@@ -1137,6 +1142,7 @@ rm -rf ~/.gradle/caches # Or replace ~/.gradle with your custom GRADLE_USER_HOME
 ### Review network trace logs
 
 If you are having issues with the Maven Repository, you may want to review network trace logs.
+Reviewing network trace logs provides more detailed error messages, which Maven clients do not include by default.
 
 For example, try to run `mvn deploy` locally with a PAT token and use these options:
 
@@ -1186,6 +1192,14 @@ GitLab has specific requirements for version strings. Ensure your version follow
 ```
 
 For example, "1.0.0", "1.0-SNAPSHOT", and "1.0.0-alpha" are valid, but "1..0" or "1.0." are not.
+
+### `403 Forbidden` error when trying to publish a package
+
+The `403 Forbidden` error with the message `Authorization failed` usually indicates either an authentication or permissions issue. Check that:
+
+- You're using the correct token type (personal access token, deploy token, or CI/CD job token). For more information, see [Authenticate to the package registry](#authenticate-to-the-package-registry).
+- The token has the necessary permissions. Only users with the Developer role or higher can publish packages. For more information, see [GitLab permissions](../../../user/permissions.md#packages-and-registry).
+- The package you're publishing is not protected by push protection rules. For more information about package protection rules, see [how to protect a package](../../../user/packages/package_registry/package_protection_rules.md#protect-a-package).
 
 ### "Artifact already exists" errors when publishing
 

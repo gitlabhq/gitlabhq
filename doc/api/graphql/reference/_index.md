@@ -23454,7 +23454,6 @@ Represents a custom field select option.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="customizableadminpermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
-| <a id="customizableadminpermissionavailablefromaccesslevel"></a>`availableFromAccessLevel` | [`AccessLevel`](#accesslevel) | Access level from which the permission is available. |
 | <a id="customizableadminpermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
 | <a id="customizableadminpermissionenabledforgroupaccesslevels"></a>`enabledForGroupAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Group access levels from which the permission is allowed. |
 | <a id="customizableadminpermissionenabledforprojectaccesslevels"></a>`enabledForProjectAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Project access levels from which the permission is allowed. |
@@ -23515,7 +23514,6 @@ Represents a product analytics dashboard visualization.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="customizablepermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
-| <a id="customizablepermissionavailablefromaccesslevel"></a>`availableFromAccessLevel` | [`AccessLevel`](#accesslevel) | Access level from which the permission is available. |
 | <a id="customizablepermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
 | <a id="customizablepermissionenabledforgroupaccesslevels"></a>`enabledForGroupAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Group access levels from which the permission is allowed. |
 | <a id="customizablepermissionenabledforprojectaccesslevels"></a>`enabledForProjectAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Project access levels from which the permission is allowed. |
@@ -23530,7 +23528,6 @@ Represents a product analytics dashboard visualization.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="customizablestandardpermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
-| <a id="customizablestandardpermissionavailablefromaccesslevel"></a>`availableFromAccessLevel` | [`AccessLevel`](#accesslevel) | Access level from which the permission is available. |
 | <a id="customizablestandardpermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
 | <a id="customizablestandardpermissionenabledforgroupaccesslevels"></a>`enabledForGroupAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Group access levels from which the permission is allowed. |
 | <a id="customizablestandardpermissionenabledforprojectaccesslevels"></a>`enabledForProjectAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Project access levels from which the permission is allowed. |
@@ -27654,6 +27651,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | ---- | ---- | ----------- |
 | <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
 | <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
+| <a id="grouppermissionsgeneratedescription"></a>`generateDescription` | [`Boolean!`](#boolean) | If `true`, the user can perform `generate_description` on this resource. |
 | <a id="grouppermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
 | <a id="grouppermissionsremovegroup"></a>`removeGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_group` on this resource. |
 | <a id="grouppermissionsvieweditpage"></a>`viewEditPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `view_edit_page` on this resource. |
@@ -31131,6 +31129,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
+| <a id="namespaceuserpermissions"></a>`userPermissions` | [`NamespacePermissions!`](#namespacepermissions) | Permissions for the current user on the resource. |
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 | <a id="namespaceweburl"></a>`webUrl` | [`String`](#string) | URL of this object. |
 
@@ -31504,6 +31503,15 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecommitemailid"></a>`id` | [`ID!`](#id) | Internal ID of the namespace commit email. |
 | <a id="namespacecommitemailnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace. |
 | <a id="namespacecommitemailupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the namespace commit email was last updated. |
+
+### `NamespacePermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacepermissionsgeneratedescription"></a>`generateDescription` | [`Boolean!`](#boolean) | If `true`, the user can perform `generate_description` on this resource. |
+| <a id="namespacepermissionsreadnamespace"></a>`readNamespace` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_namespace` on this resource. |
 
 ### `NamespaceSidebar`
 
@@ -35178,6 +35186,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsdownloadcode"></a>`downloadCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_code` on this resource. |
 | <a id="projectpermissionsdownloadwikicode"></a>`downloadWikiCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `download_wiki_code` on this resource. |
 | <a id="projectpermissionsforkproject"></a>`forkProject` | [`Boolean!`](#boolean) | If `true`, the user can perform `fork_project` on this resource. |
+| <a id="projectpermissionsgeneratedescription"></a>`generateDescription` | [`Boolean!`](#boolean) | If `true`, the user can perform `generate_description` on this resource. |
 | <a id="projectpermissionsmovedesign"></a>`moveDesign` | [`Boolean!`](#boolean) | If `true`, the user can perform `move_design` on this resource. |
 | <a id="projectpermissionspushcode"></a>`pushCode` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_code` on this resource. |
 | <a id="projectpermissionspushtodeleteprotectedbranch"></a>`pushToDeleteProtectedBranch` | [`Boolean!`](#boolean) | If `true`, the user can perform `push_to_delete_protected_branch` on this resource. |
@@ -42190,6 +42199,7 @@ Package type of a package protection rule resource.
 | Value | Description |
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` **{warning-solid}** | **Introduced** in GitLab 17.6. **Status**: Experiment. Packages of the Conan format. Available only when feature flag `packages_protected_packages_conan` is enabled. |
+| <a id="packagesprotectionrulepackagetypemaven"></a>`MAVEN` **{warning-solid}** | **Introduced** in GitLab 17.9. **Status**: Experiment. Packages of the Maven format. Available only when feature flag `packages_protected_packages_maven` is enabled. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
 | <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` | Packages of the PyPI format. |
 
@@ -43078,6 +43088,7 @@ Stage event identifiers.
 | <a id="valuestreamstageeventmerge_request_first_deployed_to_production"></a>`MERGE_REQUEST_FIRST_DEPLOYED_TO_PRODUCTION` | Merge request first deployed to production event. |
 | <a id="valuestreamstageeventmerge_request_label_added"></a>`MERGE_REQUEST_LABEL_ADDED` | Merge request label added event. |
 | <a id="valuestreamstageeventmerge_request_label_removed"></a>`MERGE_REQUEST_LABEL_REMOVED` | Merge request label removed event. |
+| <a id="valuestreamstageeventmerge_request_last_approved_at"></a>`MERGE_REQUEST_LAST_APPROVED_AT` | Merge request last approved at event. |
 | <a id="valuestreamstageeventmerge_request_last_build_finished"></a>`MERGE_REQUEST_LAST_BUILD_FINISHED` | Merge request last build finished event. |
 | <a id="valuestreamstageeventmerge_request_last_build_started"></a>`MERGE_REQUEST_LAST_BUILD_STARTED` | Merge request last build started event. |
 | <a id="valuestreamstageeventmerge_request_last_edited"></a>`MERGE_REQUEST_LAST_EDITED` | Merge request last edited event. |

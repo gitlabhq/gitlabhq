@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, developer_of: [project]) }
 
   let(:app_name) { 'my-app' }
   let(:path) { "sandbox/test/app/#{app_name}" }

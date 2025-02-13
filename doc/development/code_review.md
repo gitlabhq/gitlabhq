@@ -417,6 +417,8 @@ You should guide the author towards splitting the merge request into smaller mer
 The author may choose to request that the current maintainers and reviewers review the split MRs
 or request a new group of maintainers and reviewers.
 
+If the author has added local verification steps, indicate if you did these so the maintainer knows whether they were done, and what the result was.
+
 When you are confident
 that it meets all requirements, you should:
 

@@ -255,7 +255,7 @@ export default {
     },
     showEditSquashSetting() {
       return (
-        this.canAdminProtectedBranches && this.allowEditSquashSetting && !this.isAllBranchesRule
+        this.canAdminProtectedBranches && (this.allowEditSquashSetting || this.isAllBranchesRule)
       );
     },
   },
@@ -368,7 +368,7 @@ export default {
             return;
           }
 
-          this.$apollo.queries.project.refetch();
+          this.$apollo.queries.squashOption.refetch();
         })
         .catch(() => createAlert({ message: this.$options.i18n.updateBranchRuleError }))
         .finally(() => {

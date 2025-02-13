@@ -10,11 +10,14 @@ DETAILS:
 **Tier:** Premium, Ultimate
 
 GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.
-To use GitLab Duo on a self-managed instance, you can:
+To use GitLab Duo on a self-managed instance, you can do either of the following:
 
-1. Use the LLMs and the cloud-based AI gateway that's hosted by GitLab. This option is the default.
-1. [Use LLMs from the supported list and self-host the AI gateway and LLMs](../../administration/gitlab_duo_self_hosted/_index.md).
-   This option provides full control over your data and security.
+- Use the LLMs and the cloud-based AI gateway that's hosted by GitLab. This is the default option.
+- [Use LLMs from the supported list and self-host the AI gateway and LLMs](../../administration/gitlab_duo_self_hosted/_index.md).
+  This option provides full control over your data and security.
+
+  NOTE:
+  You must have an Ultimate license with GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
 
 This page focuses on how to configure a self-managed instance if you're using the default, GitLab-hosted option.
 

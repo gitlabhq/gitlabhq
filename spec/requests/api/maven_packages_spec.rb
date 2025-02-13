@@ -992,6 +992,89 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
     end
 
+    context 'with package protection rule for different roles and package_name_patterns' do
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :maven, project: project)
+      end
+
+      let(:maven_package_name) { 'com/example/my-app' }
+      let(:maven_package_name_no_match) { 'other-scope/com/example/my-app' }
+
+      subject do
+        authorize_upload_with_token
+        response
+      end
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+      end
+
+      shared_examples 'authorized package' do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+
+      shared_examples 'protected package' do
+        it 'responds with forbidden' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq '403 Forbidden - Package protected.'
+        end
+
+        context 'when feature flag :packages_protected_packages_maven is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_maven: false)
+          end
+
+          it_behaves_like 'authorized package'
+        end
+      end
+
+      context 'for personal access token' do
+        let_it_be(:pat_project_developer) { create(:personal_access_token, user: user) }
+        let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: project)) }
+        let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: project)) }
+        let_it_be(:pat_with_scope_admin_mode) { create(:personal_access_token, user: create(:admin), scopes: [:api, :admin_mode]) }
+
+        where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
+          ref(:maven_package_name)          | :maintainer | ref(:pat_project_developer)     | 'protected package'
+          ref(:maven_package_name)          | :maintainer | ref(:pat_project_maintainer)    | 'authorized package'
+          ref(:maven_package_name)          | :owner      | ref(:pat_project_developer)     | 'protected package'
+          ref(:maven_package_name)          | :owner      | ref(:pat_project_owner)         | 'authorized package'
+          ref(:maven_package_name)          | :admin      | ref(:pat_project_owner)         | 'protected package'
+          ref(:maven_package_name)          | :admin      | ref(:pat_with_scope_admin_mode) | 'authorized package'
+          ref(:maven_package_name_no_match) | :maintainer | ref(:pat_project_developer)     | 'authorized package'
+          ref(:maven_package_name_no_match) | :maintainer | ref(:pat_project_maintainer)    | 'authorized package'
+          ref(:maven_package_name_no_match) | :admin      | ref(:pat_project_owner)         | 'authorized package'
+        end
+
+        with_them do
+          it_behaves_like params[:shared_examples_name]
+        end
+      end
+
+      context 'for deploy token' do
+        subject do
+          authorize_upload_with_token({}, headers_with_deploy_token)
+          response
+        end
+
+        where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+          ref(:maven_package_name)          | :maintainer | 'protected package'
+          ref(:maven_package_name)          | :owner      | 'protected package'
+          ref(:maven_package_name)          | :admin      | 'protected package'
+          ref(:maven_package_name_no_match) | :maintainer | 'authorized package'
+        end
+
+        with_them do
+          it_behaves_like params[:shared_examples_name]
+        end
+      end
+    end
+
     def authorize_upload(params = {}, request_headers = headers)
       put api("/projects/#{project.id}/packages/maven/com/example/my-app/#{version}/maven-metadata.xml/authorize"), params: params, headers: request_headers
     end
@@ -1305,6 +1388,77 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         expect(lb_session).to receive(:use_primary).and_call_original
 
         allow(::Gitlab::Database::LoadBalancing::SessionMap).to receive(:current).and_return(lb_session)
+      end
+
+      context 'with package protection rule for different roles and package_name_patterns' do
+        let_it_be_with_reload(:package_protection_rule) do
+          create(:package_protection_rule, package_type: :maven, project: project)
+        end
+
+        let(:maven_package_name) { 'com/example/my-app' }
+        let(:maven_package_name_no_match) { 'other-scope/com/example/my-app' }
+
+        before do
+          package_protection_rule.update!(
+            package_name_pattern: package_name_pattern,
+            minimum_access_level_for_push: minimum_access_level_for_push
+          )
+        end
+
+        shared_examples 'protected package' do
+          it 'responds with forbidden' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['message']).to eq '403 Forbidden - Package protected.'
+          end
+
+          context 'when feature flag :packages_protected_packages_maven is disabled' do
+            before do
+              stub_feature_flags(packages_protected_packages_maven: false)
+            end
+
+            it_behaves_like 'package workhorse uploads'
+          end
+        end
+
+        context 'for personal access token' do
+          let_it_be(:pat_project_developer) { create(:personal_access_token, user: user) }
+          let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: project)) }
+          let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: project)) }
+          let_it_be(:pat_with_scope_admin_mode) { create(:personal_access_token, user: create(:admin), scopes: [:api, :admin_mode]) }
+
+          where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
+            ref(:maven_package_name)          | :maintainer | ref(:pat_project_developer)     | 'protected package'
+            ref(:maven_package_name)          | :maintainer | ref(:pat_project_maintainer)    | 'package workhorse uploads'
+            ref(:maven_package_name)          | :owner      | ref(:pat_project_developer)     | 'protected package'
+            ref(:maven_package_name)          | :owner      | ref(:pat_project_owner)         | 'package workhorse uploads'
+            ref(:maven_package_name)          | :admin      | ref(:pat_project_owner)         | 'protected package'
+            ref(:maven_package_name)          | :admin      | ref(:pat_with_scope_admin_mode) | 'package workhorse uploads'
+            ref(:maven_package_name_no_match) | :maintainer | ref(:pat_project_developer)     | 'package workhorse uploads'
+            ref(:maven_package_name_no_match) | :maintainer | ref(:pat_project_maintainer)    | 'package workhorse uploads'
+            ref(:maven_package_name_no_match) | :admin      | ref(:pat_project_owner)         | 'package workhorse uploads'
+          end
+
+          with_them do
+            it_behaves_like params[:shared_examples_name]
+          end
+        end
+
+        context 'for deploy token' do
+          subject { upload_file_with_token(params: params, request_headers: headers_with_deploy_token) }
+
+          where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+            ref(:maven_package_name)          | :maintainer | 'protected package'
+            ref(:maven_package_name)          | :owner      | 'protected package'
+            ref(:maven_package_name)          | :admin      | 'protected package'
+            ref(:maven_package_name_no_match) | :maintainer | 'package workhorse uploads'
+          end
+
+          with_them do
+            it_behaves_like params[:shared_examples_name]
+          end
+        end
       end
     end
 

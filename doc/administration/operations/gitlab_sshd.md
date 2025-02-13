@@ -10,7 +10,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-> - Ready for production use with [Cloud Native GitLab in GitLab 15.1](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2540) and [Linux packages in GitLab 15.9](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5937).
+> - [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2540) for use with Cloud Native GitLab in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5937) for use with Linux packages in GitLab 15.9.
 
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
 written in Go. It is provided as a part of the `gitlab-shell` package. It has a lower memory

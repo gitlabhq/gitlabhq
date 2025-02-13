@@ -8,8 +8,7 @@ title: Analyze GitLab usage
 
 > - Group-level analytics moved to GitLab Premium in 13.9.
 
-GitLab provides different types of analytics insights at the instance, group, and project level.
-These insights appear on the left sidebar, under [**Analyze**](../project/settings/_index.md#turn-off-project-analytics).
+GitLab provides different types of analytics insights for instances, groups, and [projects](../project/settings/_index.md#turn-off-project-analytics).
 
 ## Analytics features
 
@@ -54,7 +53,7 @@ Use these features to gain insights into CI/CD performance.
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [CI/CD analytics](ci_cd_analytics.md) | Pipeline duration and successes/failures. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [CI/CD analytics](ci_cd_analytics.md) | Pipeline duration and successes or failures. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 | [DORA metrics](dora_metrics.md) | DORA metrics over time. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 
 ### Security analytics
@@ -67,10 +66,13 @@ Use these features to gain insights into security vulnerabilities and metrics.
 
 ## Glossary
 
+The following glossary provides definitions for common development metrics used in analytics features,
+and explains how they are measured in GitLab.
+
 | Metric | Definition | Measurement in GitLab |
 | ------ | ---------- | --------------------- |
-| Mean Time to Change (MTTC) | The average duration between idea and delivery. | From issue creation to the issue's latest related merge request's deployment to production. |
-| Mean Time to Detect (MTTD) | The average duration that a bug goes undetected in production. | From deployment of bug to issue creation. |
-| Mean Time To Merge (MTTM) | The average lifespan of a merge request. | From merge request creation to merge request merge (excluding closed and unmerged merge requests). For more information, see [Merge Request Analytics](merge_request_analytics.md). |
-| Mean Time to Recover/Repair/Resolution/Resolve/Restore (MTTR) | The average duration that a bug is not fixed in production. | From deployment of bug to deployment of fix. |
-| Velocity | The total issue burden completed in some period of time. The burden is usually measured in points or weight, often per sprint. | Total points or weight of issues closed in a given period of time. Expressed as, for example, "30 points per sprint". |
+| Mean Time to Change (MTTC) | The average duration between idea and delivery. | From when an issue is created until its related merge request is deployed to production. |
+| Mean Time to Detect (MTTD) | The average duration that a bug goes undetected in production. | From when a bug is deployed to production until an issue is created to report it. |
+| Mean Time to Merge (MTTM) | The average lifespan of a merge request. | From when a merge request is created until it is merged. Excludes merge requests that are closed or unmerged. For more information, see [merge request analytics](merge_request_analytics.md). |
+| Mean Time to Recover / Repair / Resolution / Resolve / Restore (MTTR) | The average duration that a bug is not fixed in production. | From when a bug is deployed to production until the bug fix is deployed. |
+| Velocity | The total issue burden completed in a specific period of time. The burden is usually measured in points or weight, often per sprint. | Total points or weight of issues closed in a specific period of time. For example, "30 points per sprint". |

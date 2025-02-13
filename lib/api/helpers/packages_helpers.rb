@@ -146,6 +146,18 @@ module API
         )
       end
 
+      def protect_package!(package_name, package_type)
+        service_response =
+          ::Packages::Protection::CheckRuleExistenceService.new(
+            project: user_project,
+            current_user: current_user,
+            params: { package_name: package_name, package_type: package_type }
+          ).execute
+
+        bad_request!(service_response.message) if service_response.error?
+        forbidden!('Package protected.') if service_response[:protection_rule_exists?]
+      end
+
       private
 
       def track_snowplow_event(action_name, snowplow_event_name, category, args)

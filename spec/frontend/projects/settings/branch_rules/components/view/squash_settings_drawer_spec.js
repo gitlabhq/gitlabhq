@@ -96,6 +96,21 @@ describe('Squash Settings Drawer', () => {
         createComponent({ isLoading: true });
         expect(findSaveButton().props('loading')).toBe(true);
       });
+
+      it('is enabled when selectedOption is null', async () => {
+        createComponent({ selectedOption: null });
+        await nextTick();
+
+        expect(findSaveButton().props('disabled')).toBe(false);
+      });
+
+      it('is enabled when selection differs from selectedOption', async () => {
+        createComponent({ selectedOption: SQUASH_SETTING_ALLOW });
+        findRadioGroup().vm.$emit('input', SQUASH_SETTING_ENCOURAGE);
+        await nextTick();
+
+        expect(findSaveButton().props('disabled')).toBe(false);
+      });
     });
 
     describe('cancel button', () => {
