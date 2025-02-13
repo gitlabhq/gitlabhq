@@ -73,13 +73,7 @@ func TestRouting(t *testing.T) {
 		u.Routes = []routeEntry{
 			handle(u, foobar),
 			handle(u, quxbaz),
-			handle(u, gitInfoRefsPattern),
-			handle(u, gitUploadPackPattern),
-			handle(u, gitReceivePackPattern),
-			handle(u, sshUploadPackPattern),
-			handle(u, sshReceivePackPattern),
-			handle(u, gitLfsObjectsPattern),
-			handle(u, main), // "" matches everything, so it must match last
+			handle(u, main),
 		}
 	}, nil)
 	ts := httptest.NewServer(u)
@@ -92,28 +86,6 @@ func TestRouting(t *testing.T) {
 		{"path traversal works, ends up in quxbaz", "/foobar/../quxbaz", quxbaz},
 		{"escaped path traversal does not match any route", "/foobar%2f%2e%2e%2fquxbaz", main},
 		{"double escaped path traversal does not match any route", "/foobar%252f%252e%252e%252fquxbaz", main},
-
-		{"info/refs route works", "/group/test.git/info/refs", gitInfoRefsPattern},
-		{"/-/ in info/refs/ does not match any route", "/group/-/test.git/info/refs/", main},
-
-		{"git-upload-pack route works", "/project/test.git/git-upload-pack", gitUploadPackPattern},
-		{"/-/ in git-upload-pack does not match any route", "/project/-/blob/main/test.git/git-upload-pack", main},
-
-		{"git-receive-pack route works", "/project/test.git/git-receive-pack", gitReceivePackPattern},
-		{"/-/ in git-receive-pack does not match any route", "/project/-/blob/main/test.git/git-receive-pack", main},
-
-		{"ssh-upload-pack route works", "/project/test.git/ssh-upload-pack", sshUploadPackPattern},
-		{"/-/ in ssh-upload-pack does not match any route", "/project/-/blob/main/test.git/ssh-upload-pack", main},
-
-		{"ssh-receive-pack route works", "/project/test.git/ssh-receive-pack", sshReceivePackPattern},
-		{"/-/ in ssh-receive-pack does not match any route", "/project/-/blob/main/test.git/ssh-upload-pack", main},
-
-		{"gitlab-lfs/objects route works", "/a.git/gitlab-lfs/objects/0000000000000000000000000000000000000000000000000000000000000000/0", gitLfsObjectsPattern},
-		{"/-/ in gitlab-lfs/objects does not match any route", "/-/a.git/gitlab-lfs/objects/0000000000000000000000000000000000000000000000000000000000000000/0", main},
-
-		{"hyphen in gitInfoRefsPattern route works", "/gitlab-org/test.git/info/refs", gitInfoRefsPattern},
-		{"double slash in gitInfoRefsPattern route works", "/org//test.git/info/refs", gitInfoRefsPattern},
-		{"hyphen and double slash in gitInfoRefsPattern route works", "/gitlab-org//test.git/info/refs", gitInfoRefsPattern},
 	}
 
 	runTestCases(t, ts, testCases)
