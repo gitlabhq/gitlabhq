@@ -46,6 +46,11 @@ describe('CRUD Component', () => {
     expect(findTitle().text()).toBe('CRUD Component title');
   });
 
+  it('renders the element specified by the containerTag prop', () => {
+    createComponent({ containerTag: 'span' });
+    expect(wrapper.element.tagName).toBe('SPAN');
+  });
+
   it('renders `title` slot', () => {
     createComponent({}, { title: '<p>Title slot</p>' });
 

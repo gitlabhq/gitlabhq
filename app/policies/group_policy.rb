@@ -256,6 +256,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_crm_organization
     enable :read_crm_contact
     enable :read_confidential_issues
+    enable :read_ci_cd_analytics
   end
 
   rule { maintainer }.policy do

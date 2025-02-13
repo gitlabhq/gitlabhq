@@ -26952,6 +26952,21 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouppagesdeploymentssort"></a>`sort` | [`Sort`](#sort) | Sort results. |
 | <a id="grouppagesdeploymentsversioned"></a>`versioned` | [`Boolean`](#boolean) | Filter deployments that are versioned or unversioned. |
 
+##### `Group.pipelineAnalytics`
+
+Pipeline analytics.
+
+Returns [`PipelineAnalytics`](#pipelineanalytics).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouppipelineanalyticsfromtime"></a>`fromTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
+| <a id="grouppipelineanalyticsref"></a>`ref` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.5. **Status**: Experiment. Branch that triggered the pipeline. |
+| <a id="grouppipelineanalyticssource"></a>`source` **{warning-solid}** | [`CiPipelineCiSources`](#cipipelinecisources) | **Introduced** in GitLab 17.5. **Status**: Experiment. Source of the pipeline. |
+| <a id="grouppipelineanalyticstotime"></a>`toTime` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 17.5. **Status**: Experiment. End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
+
 ##### `Group.pipelineExecutionPolicies`
 
 Pipeline Execution Policies of the namespace.
@@ -32433,17 +32448,17 @@ Returns [`TestSuite`](#testsuite).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="pipelineanalyticsaggregate"></a>`aggregate` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.5. **Status**: Experiment. Pipeline analytics for the specified filter. |
-| <a id="pipelineanalyticsmonthpipelineslabels"></a>`monthPipelinesLabels` | [`[String!]`](#string) | Labels for the monthly pipeline count. |
-| <a id="pipelineanalyticsmonthpipelinessuccessful"></a>`monthPipelinesSuccessful` | [`[Int!]`](#int) | Total monthly successful pipeline count. |
-| <a id="pipelineanalyticsmonthpipelinestotals"></a>`monthPipelinesTotals` | [`[Int!]`](#int) | Total monthly pipeline count. |
-| <a id="pipelineanalyticspipelinetimeslabels"></a>`pipelineTimesLabels` | [`[String!]`](#string) | Pipeline times labels. |
-| <a id="pipelineanalyticspipelinetimesvalues"></a>`pipelineTimesValues` | [`[Int!]`](#int) | Pipeline times. |
-| <a id="pipelineanalyticsweekpipelineslabels"></a>`weekPipelinesLabels` | [`[String!]`](#string) | Labels for the weekly pipeline count. |
-| <a id="pipelineanalyticsweekpipelinessuccessful"></a>`weekPipelinesSuccessful` | [`[Int!]`](#int) | Total weekly successful pipeline count. |
-| <a id="pipelineanalyticsweekpipelinestotals"></a>`weekPipelinesTotals` | [`[Int!]`](#int) | Total weekly pipeline count. |
-| <a id="pipelineanalyticsyearpipelineslabels"></a>`yearPipelinesLabels` | [`[String!]`](#string) | Labels for the yearly pipeline count. |
-| <a id="pipelineanalyticsyearpipelinessuccessful"></a>`yearPipelinesSuccessful` | [`[Int!]`](#int) | Total yearly successful pipeline count. |
-| <a id="pipelineanalyticsyearpipelinestotals"></a>`yearPipelinesTotals` | [`[Int!]`](#int) | Total yearly pipeline count. |
+| <a id="pipelineanalyticsmonthpipelineslabels"></a>`monthPipelinesLabels` | [`[String!]`](#string) | Labels for the monthly pipeline count. Only available for projects. |
+| <a id="pipelineanalyticsmonthpipelinessuccessful"></a>`monthPipelinesSuccessful` | [`[Int!]`](#int) | Total monthly successful pipeline count. Only available for projects. |
+| <a id="pipelineanalyticsmonthpipelinestotals"></a>`monthPipelinesTotals` | [`[Int!]`](#int) | Total monthly pipeline count. Only available for projects. |
+| <a id="pipelineanalyticspipelinetimeslabels"></a>`pipelineTimesLabels` | [`[String!]`](#string) | Pipeline times labels. Only available for projects. |
+| <a id="pipelineanalyticspipelinetimesvalues"></a>`pipelineTimesValues` | [`[Int!]`](#int) | Pipeline times. Only available for projects. |
+| <a id="pipelineanalyticsweekpipelineslabels"></a>`weekPipelinesLabels` | [`[String!]`](#string) | Labels for the weekly pipeline count. Only available for projects. |
+| <a id="pipelineanalyticsweekpipelinessuccessful"></a>`weekPipelinesSuccessful` | [`[Int!]`](#int) | Total weekly successful pipeline count. Only available for projects. |
+| <a id="pipelineanalyticsweekpipelinestotals"></a>`weekPipelinesTotals` | [`[Int!]`](#int) | Total weekly pipeline count. Only available for projects. |
+| <a id="pipelineanalyticsyearpipelineslabels"></a>`yearPipelinesLabels` | [`[String!]`](#string) | Labels for the yearly pipeline count. Only available for projects. |
+| <a id="pipelineanalyticsyearpipelinessuccessful"></a>`yearPipelinesSuccessful` | [`[Int!]`](#int) | Total yearly successful pipeline count. Only available for projects. |
+| <a id="pipelineanalyticsyearpipelinestotals"></a>`yearPipelinesTotals` | [`[Int!]`](#int) | Total yearly pipeline count. Only available for projects. |
 
 #### Fields with arguments
 

@@ -17,7 +17,7 @@ Users with at least the Developer role can access the Alert list at **Monitor > 
 
 The alert list displays the following information:
 
-![Alert List](img/alert_list_v13_1.png)
+![The alert list showing details about open alerts](img/alert_list_v13_1.png)
 
 - **Search**: The alert list supports a simple free text search on the title,
   description, monitoring tool, and service fields.

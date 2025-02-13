@@ -576,7 +576,7 @@ module Types
     field :pipeline_analytics, Types::Ci::AnalyticsType,
       null: true,
       description: 'Pipeline analytics.',
-      resolver: Resolvers::Ci::ProjectPipelineAnalyticsResolver
+      resolver: Resolvers::Ci::PipelineAnalyticsResolver
 
     field :ci_template, Types::Ci::TemplateType,
       null: true,

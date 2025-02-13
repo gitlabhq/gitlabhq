@@ -104,21 +104,6 @@ export const integrationSteps = {
   customizeMapping: 'CUSTOMIZE_MAPPING',
 };
 
-export const createStepNumbers = {
-  [integrationSteps.selectType]: 1,
-  [integrationSteps.nameIntegration]: 2,
-  [integrationSteps.enableHttpIntegration]: 3,
-  [integrationSteps.enablePrometheusIntegration]: 2,
-  [integrationSteps.customizeMapping]: 4,
-};
-
-export const editStepNumbers = {
-  [integrationSteps.nameIntegration]: 1,
-  [integrationSteps.enableHttpIntegration]: 2,
-  [integrationSteps.enablePrometheusIntegration]: null,
-  [integrationSteps.customizeMapping]: 3,
-};
-
 export const integrationTypes = {
   none: { value: '', text: s__('AlertSettings|Select integration type') },
   http: { value: 'HTTP', text: s__('AlertSettings|HTTP Endpoint') },

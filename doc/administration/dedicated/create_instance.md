@@ -214,7 +214,7 @@ Also plan ahead if you need the following GitLab Dedicated features:
 - [SAML SSO](../dedicated/configure_instance/saml.md)
 - [Bring your own domain](../dedicated/configure_instance/network_security.md#bring-your-own-domain-byod)
 
-To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../dedicated/configure_instance.md).
+To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../dedicated/configure_instance/_index.md).
 
 NOTE:
 New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../admin_area.md).

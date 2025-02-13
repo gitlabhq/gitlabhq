@@ -249,7 +249,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/features/projects/tags/user_views_tags_spec.rb'
     - 'spec/finders/groups/environment_scopes_finder_spec.rb'
     - 'spec/finders/projects_finder_spec.rb'
-    - 'spec/graphql/resolvers/ci/project_pipeline_analytics_resolver_spec.rb'
     - 'spec/graphql/resolvers/clusters/agents_resolver_spec.rb'
     - 'spec/graphql/resolvers/merge_requests_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_merge_requests_resolver_spec.rb'

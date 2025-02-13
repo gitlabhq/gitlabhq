@@ -24009,7 +24009,8 @@ CREATE TABLE work_item_parent_links (
     relative_position integer,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_e9c0111985 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE work_item_parent_links_id_seq
@@ -27303,9 +27304,6 @@ ALTER TABLE web_hook_logs
 
 ALTER TABLE vulnerability_finding_evidences
     ADD CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE work_item_parent_links
-    ADD CONSTRAINT check_e9c0111985 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE project_relation_exports
     ADD CONSTRAINT check_f461e3537f CHECK ((project_id IS NOT NULL)) NOT VALID;

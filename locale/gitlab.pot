@@ -13961,6 +13961,9 @@ msgid_plural "CodeownersValidation|Contains %d syntax errors."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "CodeownersValidation|Contains owners without permission to approve merge requests"
+msgstr ""
+
 msgid "CodeownersValidation|Entries with spaces"
 msgstr ""
 

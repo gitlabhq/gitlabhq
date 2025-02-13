@@ -44,14 +44,35 @@ RSpec.shared_examples 'creating wiki page meta record examples' do
       end
     end
 
-    context 'when a conflicting record exists' do
-      before do
-        create(:wiki_page_meta, container: container, canonical_slug: last_known_slug)
-        create(:wiki_page_meta, container: container, canonical_slug: current_slug)
+    context 'when a conflicting meta record exists' do
+      let!(:older_meta) do
+        create(:wiki_page_meta, container: container, canonical_slug: current_slug, created_at: 1.day.ago)
       end
 
-      it 'raises an error' do
-        expect { find_record }.to raise_error(ActiveRecord::RecordInvalid)
+      let!(:newer_meta) { create(:wiki_page_meta, container: container, canonical_slug: 'foobar') }
+      let!(:todo) { create(:todo, target: newer_meta) }
+      let!(:event) { create(:event, target: newer_meta) }
+
+      before do
+        slug = newer_meta.slugs.first
+        slug[:slug] = current_slug
+        slug.save!
+      end
+
+      it 'finds the older record' do
+        expect(find_record).to eq(older_meta)
+      end
+
+      it 'destroys the newer record' do
+        expect { find_record }.to change { WikiPage::Meta.count }.by(-1)
+      end
+
+      it 'moves associated todos to the older record' do
+        expect { find_record }.to change { todo.reload.target }.from(newer_meta).to(older_meta)
+      end
+
+      it 'moves associated events to the older record' do
+        expect { find_record }.to change { event.reload.target }.from(newer_meta).to(older_meta)
       end
     end
 

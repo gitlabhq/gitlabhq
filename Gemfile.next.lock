@@ -1099,8 +1099,8 @@ GEM
     kaminari-core (1.2.2)
     knapsack (4.0.0)
       rake
-    kramdown (2.5.0)
-      rexml (>= 3.3.6)
+    kramdown (2.5.1)
+      rexml (>= 3.3.9)
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     kubeclient (4.11.0)

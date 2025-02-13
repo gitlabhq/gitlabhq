@@ -9,7 +9,6 @@ class WikiPage
 
     self.table_name = 'wiki_page_meta'
 
-    CanonicalSlugConflictError = Class.new(ActiveRecord::RecordInvalid)
     WikiPageInvalid = Class.new(ArgumentError)
 
     belongs_to :project, optional: true
@@ -18,6 +17,7 @@ class WikiPage
     has_many :events, as: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- Technical debt
     has_many :slugs, class_name: 'WikiPage::Slug', foreign_key: 'wiki_page_meta_id', inverse_of: :wiki_page_meta
     has_many :notes, as: :noteable
+    has_many :todos, as: :target
     has_many :user_mentions, class_name: 'Wikis::UserMention', foreign_key: 'wiki_page_meta_id',
       inverse_of: :wiki_page_meta
 
@@ -28,7 +28,7 @@ class WikiPage
     scope :with_canonical_slug, ->(slug) do
       slug_table_name = klass.reflect_on_association(:slugs).table_name
 
-      joins(:slugs).where(slug_table_name => { canonical: true, slug: slug })
+      joins(:slugs).where(slug_table_name => { canonical: true, slug: slug }).order(created_at: :asc)
     end
 
     delegate :wiki, to: :container
@@ -73,8 +73,17 @@ class WikiPage
           .limit(2)
 
         if conflict.present?
-          meta.errors.add(:canonical_slug, 'Duplicate value found')
-          raise CanonicalSlugConflictError, meta
+          transaction(requires_new: false) do
+            conflict.events.each_batch do |batch|
+              batch.update_all(target_id: meta.id)
+            end
+
+            conflict.todos.each_batch do |batch|
+              batch.update_all(target_id: meta.id)
+            end
+
+            conflict.destroy
+          end
         end
 
         meta

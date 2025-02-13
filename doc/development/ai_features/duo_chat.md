@@ -9,7 +9,7 @@ GitLab Duo Chat aims to assist users with AI in ideation and creation tasks as
 well as in learning tasks across the entire Software Development Lifecycle
 (SDLC) to make them faster and more efficient.
 
-[Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md)
+[Chat](../../user/gitlab_duo_chat/_index.md) is a part of the [GitLab Duo](../../user/ai_features.md)
 offering.
 
 Chat can answer different questions and perform certain tasks. It's done with

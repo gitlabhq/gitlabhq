@@ -17,7 +17,7 @@ RSpec.describe ::Ci::CollectAggregatePipelineAnalyticsService, :click_house, :en
   let(:service) do
     described_class.new(
       current_user: current_user,
-      project: project,
+      container: project,
       from_time: from_time,
       to_time: to_time,
       status_groups: status_groups,

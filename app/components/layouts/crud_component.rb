@@ -15,11 +15,12 @@ module Layouts
     # @param [Hash] toggle_options
     # @param [Hash] footer_options
     # @param [Boolean] is_collapsible
+    # @param [String] container_tag
     def initialize(
       title, description: nil, count: nil, icon: nil, icon_class: nil,
       toggle_text: nil, options: {}, count_options: {}, body_options: {},
       form_options: {}, toggle_options: {}, footer_options: {},
-      is_collapsible: false
+      is_collapsible: false, container_tag: 'section'
     )
       @title = title
       @description = description
@@ -34,6 +35,7 @@ module Layouts
       @toggle_options = toggle_options
       @footer_options = footer_options
       @is_collapsible = is_collapsible
+      @container_tag = container_tag
     end
 
     renders_one :description
@@ -48,11 +50,13 @@ module Layouts
     end
 
     def options_attrs
+      default_testid = 'haml-crud'
       default_classes = [
+        'crud', 'gl-bg-subtle', 'gl-border', 'gl-border-section', 'gl-rounded-base',
         ('js-toggle-container' if @toggle_text),
         ('js-crud-collapsible-section' if @is_collapsible)
       ]
-      @options.merge(default_attrs(@options, nil, default_classes))
+      @options.merge(default_attrs(@options, default_testid, default_classes))
     end
 
     def body_options_attrs

@@ -145,7 +145,7 @@ Logic that performs a specific LLM-related task; each tool has a description and
 
 ### Unit Primitive
 
-GitLab-specific term that refers to the fundamental logical feature that a permission or access scope can control. Examples: [`duo_chat`](../../user/gitlab_duo_chat.md) and [`code_suggestions`](../../api/code_suggestions.md). These features are both currently part of the GitLab Duo Pro license but we are building the concept of a Unit Primitive around each Duo feature so that Duo features are easily composable into different groupings to accommodate potential future product packaging needs.
+GitLab-specific term that refers to the fundamental logical feature that a permission or access scope can control. Examples: [`duo_chat`](../../user/gitlab_duo_chat/_index.md) and [`code_suggestions`](../../api/code_suggestions.md). These features are both currently part of the GitLab Duo Pro license but we are building the concept of a Unit Primitive around each Duo feature so that Duo features are easily composable into different groupings to accommodate potential future product packaging needs.
 
 ### Word-Level Metrics
 
@@ -160,7 +160,7 @@ system prompt that explains how an LLM should interpret user input from GitLab D
 list of tool descriptions. Using this information, the agent determines which tool to use to answer a user's question.
 The agent may decide that no tools are required and answer the question directly.
 If a tool is used, the answer from the tool is fed back to the zero-shot agent to evaluate if the answer is
-sufficient or if an additional tool must be used to answer the question. 
+sufficient or if an additional tool must be used to answer the question.
 
 [Code](https://gitlab.com/gitlab-org/gitlab/-/blob/6b747cbd7c6a71145a8bfb8201db3c857b5aed6a/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb).
 

@@ -7,7 +7,7 @@ RSpec.describe ::Ci::CollectPipelineAnalyticsServiceBase, feature_category: :fle
   let_it_be(:current_user) { build_stubbed(:user, reporter_of: project) }
 
   let(:test_class) { stub_const('TestService', Class.new(described_class)) }
-  let(:service) { test_class.new(current_user: current_user, project: project, from_time: nil, to_time: nil) }
+  let(:service) { test_class.new(current_user: current_user, container: project, from_time: nil, to_time: nil) }
 
   subject(:result) { service.execute }
 

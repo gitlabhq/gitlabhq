@@ -89,7 +89,10 @@ module NavHelper
   end
 
   def new_issue_look?
-    current_controller?('issues') && current_user&.user_preference&.use_work_items_view
+    current_controller?('issues') &&
+      current_user&.user_preference&.use_work_items_view &&
+      !@issue&.work_item_type&.incident? &&
+      !@issue&.from_service_desk?
   end
 
   def skip_right_sidebar_classes?

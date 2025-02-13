@@ -59,6 +59,13 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     end
   end
 
+  describe 'pipeline_analytics field' do
+    subject { described_class.fields['pipelineAnalytics'] }
+
+    it { is_expected.to have_graphql_type(Types::Ci::AnalyticsType) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::PipelineAnalyticsResolver) }
+  end
+
   describe 'contact_state_counts field' do
     subject { described_class.fields['contactStateCounts'] }
 

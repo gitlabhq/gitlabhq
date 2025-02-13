@@ -53,6 +53,11 @@ export default {
       required: false,
       default: false,
     },
+    containerTag: {
+      type: String,
+      required: false,
+      default: 'section',
+    },
     isLoading: {
       type: Boolean,
       required: false,
@@ -164,7 +169,8 @@ export default {
 </script>
 
 <template>
-  <section
+  <component
+    :is="containerTag"
     :id="anchorId"
     ref="crudComponent"
     class="crud gl-border gl-rounded-base gl-border-section gl-bg-subtle"
@@ -283,5 +289,5 @@ export default {
     >
       <slot name="footer"></slot>
     </footer>
-  </section>
+  </component>
 </template>

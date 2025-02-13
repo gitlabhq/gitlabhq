@@ -19,27 +19,27 @@ module Types
           end
 
       field :month_pipelines_labels, [GraphQL::Types::String], null: true,
-        description: 'Labels for the monthly pipeline count.'
+        description: 'Labels for the monthly pipeline count. Only available for projects.'
       field :month_pipelines_successful, [GraphQL::Types::Int], null: true,
-        description: 'Total monthly successful pipeline count.'
+        description: 'Total monthly successful pipeline count. Only available for projects.'
       field :month_pipelines_totals, [GraphQL::Types::Int], null: true,
-        description: 'Total monthly pipeline count.'
+        description: 'Total monthly pipeline count. Only available for projects.'
       field :pipeline_times_labels, [GraphQL::Types::String], null: true,
-        description: 'Pipeline times labels.'
+        description: 'Pipeline times labels. Only available for projects.'
       field :pipeline_times_values, [GraphQL::Types::Int], null: true,
-        description: 'Pipeline times.'
+        description: 'Pipeline times. Only available for projects.'
       field :week_pipelines_labels, [GraphQL::Types::String], null: true,
-        description: 'Labels for the weekly pipeline count.'
+        description: 'Labels for the weekly pipeline count. Only available for projects.'
       field :week_pipelines_successful, [GraphQL::Types::Int], null: true,
-        description: 'Total weekly successful pipeline count.'
+        description: 'Total weekly successful pipeline count. Only available for projects.'
       field :week_pipelines_totals, [GraphQL::Types::Int], null: true,
-        description: 'Total weekly pipeline count.'
+        description: 'Total weekly pipeline count. Only available for projects.'
       field :year_pipelines_labels, [GraphQL::Types::String], null: true,
-        description: 'Labels for the yearly pipeline count.'
+        description: 'Labels for the yearly pipeline count. Only available for projects.'
       field :year_pipelines_successful, [GraphQL::Types::Int], null: true,
-        description: 'Total yearly successful pipeline count.'
+        description: 'Total yearly successful pipeline count. Only available for projects.'
       field :year_pipelines_totals, [GraphQL::Types::Int], null: true,
-        description: 'Total yearly pipeline count.'
+        description: 'Total yearly pipeline count. Only available for projects.'
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

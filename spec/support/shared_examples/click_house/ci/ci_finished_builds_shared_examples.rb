@@ -24,6 +24,19 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     end
   end
 
+  describe '#for_group' do
+    subject(:result_sql) { instance.for_group(group).to_sql }
+
+    it 'builds the correct SQL' do
+      expected_sql = <<~SQL.lines(chomp: true).join(' ')
+        SELECT * FROM "#{table_name}"
+        WHERE startsWith(path, '#{group.traversal_path}')
+      SQL
+
+      expect(result_sql.strip).to eq(expected_sql.strip)
+    end
+  end
+
   describe '#for_ref' do
     subject(:result_sql) { instance.for_ref(ref).to_sql }
 
@@ -170,11 +183,27 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       allow(described_class).to receive(:new).and_return(instance)
     end
 
-    describe '.for_project' do
-      it 'calls the corresponding instance method' do
-        expect(instance).to receive(:for_project).with(project)
+    describe '.for_container' do
+      subject { described_class.for_container(container) }
 
-        described_class.for_project(project)
+      context 'when container is a project' do
+        let(:container) { project }
+
+        it 'calls #for_project method' do
+          expect(instance).to receive(:for_project).with(project)
+
+          subject
+        end
+      end
+
+      context 'when container is a group' do
+        let(:container) { group }
+
+        it 'calls #for_group method' do
+          expect(instance).to receive(:for_group).with(group)
+
+          subject
+        end
       end
     end
 

@@ -1386,10 +1386,10 @@
     vue-resizable "1.3.4"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/eslint-plugin@20.6.0":
-  version "20.6.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-20.6.0.tgz#ff3b5cda779b4d9984796bf81286f70bfe7d5915"
-  integrity sha512-9y/slEJ+aWXUnK1UcaG+EzB/JjCrK10sHCzxOcEEuML5DUpRqH7axGFYBmug7sR65w66pZZf/IDXe1nUEk/quQ==
+"@gitlab/eslint-plugin@20.7.1":
+  version "20.7.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-20.7.1.tgz#89dfb95bf6ffec50bd7d9bace42622634a529cf0"
+  integrity sha512-BSB5SC86ITaauEab0HMWLTiaA1QgFlwz5keoO8YQ0JSjPaKusVOGDYDoxQHtZVuRBVfYQi0Cwf5dSWiHJWAeEw==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^7.14.1"
     eslint-config-airbnb-base "^15.0.0"
@@ -1457,10 +1457,12 @@
   dependencies:
     "@vue/devtools-api" "^6.4.5"
 
-"@gitlab/vuex-vue3@npm:vuex@4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.0.0.tgz#ac877aa76a9c45368c979471e461b520d38e6cf5"
-  integrity sha512-56VPujlHscP5q/e7Jlpqc40sja4vOhC4uJD1llBCWolVI8ND4+VzisDVkUMl+z5y0MpIImW6HjhNc+ZvuizgOw==
+"@gitlab/vuex-vue3@npm:vuex@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.1.0.tgz#aa1b3ea5c7385812b074c86faeeec2217872e36c"
+  integrity sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==
+  dependencies:
+    "@vue/devtools-api" "^6.0.0-beta.11"
 
 "@gitlab/web-ide@^0.0.1-dev-20250128095641":
   version "0.0.1-dev-20250128095641"
@@ -3940,6 +3942,11 @@
     vue-template-es2015-compiler "^1.9.0"
   optionalDependencies:
     prettier "^1.18.2 || ^2.0.0"
+
+"@vue/devtools-api@^6.0.0-beta.11":
+  version "6.6.4"
+  resolved "https://registry.yarnpkg.com/@vue/devtools-api/-/devtools-api-6.6.4.tgz#cbe97fe0162b365edc1dba80e173f90492535343"
+  integrity sha512-sGhTPMuXqZ1rVOk32RylztWkfXTRhuS7vgAKv0zjqk8gbsHkJ7xfFf+jbySxt7tWObEJwyKaHMikV/WGDiQm8g==
 
 "@vue/devtools-api@^6.4.5", "@vue/devtools-api@^6.6.3":
   version "6.6.3"

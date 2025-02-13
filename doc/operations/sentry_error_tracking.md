@@ -66,3 +66,15 @@ you might see an error when you try to [enable Sentry integration for a project]
 The resulting request to `/project/path/-/error_tracking/projects.json?api_host=https:%2F%2Fsentry.example.com%2F&token=<token>` returns a 404 error.
 
 To fix this issue, enable the **Monitor** feature for the project.
+
+### Error `Connection has failed. Re-check Auth Token and try again`
+
+On-premise Sentry integrations may encounter this issue when attempting to connect.
+
+To fix this issue:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Network**.
+1. Expand **Outbound requests**.
+1. Select the **Allow requests to the local network from webhooks and integrations** and **Allow requests to the local network from system hooks** checkboxes.
+1. Select **Save changes**.

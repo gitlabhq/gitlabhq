@@ -55,7 +55,7 @@ RSpec.shared_examples_for 'a pipeline analytics service' do
 
     it 'returns error response', :aggregate_failures do
       expect(result.error?).to be true
-      expect(result.errors).to contain_exactly('Project must be specified')
+      expect(result.errors).to contain_exactly('Container must be specified')
     end
   end
 

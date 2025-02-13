@@ -8,14 +8,14 @@ module Ci
 
     ALLOWED_PERCENTILES = [50, 75, 90, 95, 99].freeze
 
-    attr_reader :current_user, :project, :from_time, :to_time, :source, :ref, :status_groups, :duration_percentiles
+    attr_reader :current_user, :container, :from_time, :to_time, :source, :ref, :status_groups, :duration_percentiles
 
     def initialize(
-      current_user:, project:, from_time:, to_time:,
+      current_user:, container:, from_time:, to_time:,
       source: nil, ref: nil, status_groups: [:any], duration_percentiles: []
     )
       @current_user = current_user
-      @project = project
+      @container = container
       @from_time = from_time || 1.week.ago.utc
       @to_time = to_time || Time.now.utc
       @status_groups = status_groups
@@ -38,7 +38,7 @@ module Ci
     private
 
     def allowed?
-      current_user&.can?(:read_ci_cd_analytics, project)
+      current_user&.can?(:read_ci_cd_analytics, container)
     end
 
     def clickhouse_model
@@ -50,7 +50,7 @@ module Ci
     end
 
     def base_query
-      query = clickhouse_model.for_project(project).within_dates(from_time, to_time)
+      query = clickhouse_model.for_container(container).within_dates(from_time, to_time)
       query = query.for_source(source) if source
       query = query.for_ref(ref) if ref
 
@@ -70,7 +70,7 @@ module Ci
         return ServiceResponse.error(message: 'Invalid duration percentiles specified')
       end
 
-      return ServiceResponse.error(message: 'Project must be specified') if project.nil?
+      return ServiceResponse.error(message: 'Container must be specified') if container.nil?
       return ServiceResponse.error(message: 'Not allowed') unless allowed?
       return ServiceResponse.error(message: 'Invalid time window') if from_time > to_time
 

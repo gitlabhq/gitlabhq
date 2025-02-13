@@ -12,16 +12,20 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           raise NotImplementedError, "subclasses of #{self.class.name} must implement #{__method__}"
         end
 
-        def self.for_project(project)
-          new.for_project(project)
-        end
-
         def self.by_status(statuses)
           new.by_status(statuses)
         end
 
         def self.group_by_status
           new.group_by_status
+        end
+
+        def self.for_container(container)
+          if container.is_a?(Project)
+            new.for_project(container)
+          else
+            new.for_group(container)
+          end
         end
 
         def for_project(project)
@@ -34,6 +38,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         def for_ref(ref)
           where(ref: ref)
+        end
+
+        def for_group(group)
+          traversal_path = group.traversal_path
+
+          condition =
+            Arel::Nodes::NamedFunction.new('startsWith', [Arel.sql('path'), Arel::Nodes.build_quoted(traversal_path)])
+
+          where(condition)
         end
 
         def within_dates(from_time, to_time)

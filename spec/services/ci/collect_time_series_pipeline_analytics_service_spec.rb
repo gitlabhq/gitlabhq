@@ -23,7 +23,7 @@ RSpec.describe ::Ci::CollectTimeSeriesPipelineAnalyticsService, :click_house, :e
   let(:service) do
     described_class.new(
       current_user: current_user,
-      project: project,
+      container: project,
       from_time: from_time,
       to_time: to_time,
       time_series_period: time_series_period,

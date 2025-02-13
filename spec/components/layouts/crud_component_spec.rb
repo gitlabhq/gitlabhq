@@ -15,6 +15,13 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
   let(:pagination) { 'Pagination' }
   let(:component_title) { described_class.new(title) }
 
+  describe 'container_tag' do
+    it 'renders the element specified by container_tag option' do
+      render_inline described_class.new(title, container_tag: :div)
+      expect(page).to have_selector('div[data-testid="haml-crud"]')
+    end
+  end
+
   describe 'slots' do
     it 'renders title' do
       render_inline component_title

@@ -2,7 +2,7 @@
 
 module Resolvers
   module Ci
-    class ProjectPipelineAnalyticsResolver < BaseResolver
+    class PipelineAnalyticsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
       type Types::Ci::AnalyticsType, null: true
@@ -11,7 +11,7 @@ module Resolvers
       authorize :read_ci_cd_analytics
       extras [:lookahead]
 
-      alias_method :project, :object
+      alias_method :container, :object
 
       argument :source, Types::Ci::PipelineCiSourcesEnum,
         required: false,
@@ -38,7 +38,7 @@ module Resolvers
       def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil)
         period = lookahead.selection(:time_series)&.arguments&.fetch(:period)
         base_service_args = {
-          current_user: context[:current_user], project: project,
+          current_user: context[:current_user], container: container,
           source: source, ref: ref,
           from_time: from_time, to_time: to_time
         }
@@ -72,11 +72,13 @@ module Resolvers
       end
 
       def legacy_fields(lookahead)
+        return {} if container.is_a?(Group)
+
         # NOTE: The fields below will eventually be deprecated once we move to using the new `aggregate`
         # and `time_series` fields (see https://gitlab.com/gitlab-org/gitlab/-/issues/444468/#proposed-api-layout)
-        weekly_stats = Gitlab::Ci::Charts::WeekChart.new(project, selected_period_statuses(lookahead, :week))
-        monthly_stats = Gitlab::Ci::Charts::MonthChart.new(project, selected_period_statuses(lookahead, :month))
-        yearly_stats = Gitlab::Ci::Charts::YearChart.new(project, selected_period_statuses(lookahead, :year))
+        weekly_stats = Gitlab::Ci::Charts::WeekChart.new(container, selected_period_statuses(lookahead, :week))
+        monthly_stats = Gitlab::Ci::Charts::MonthChart.new(container, selected_period_statuses(lookahead, :month))
+        yearly_stats = Gitlab::Ci::Charts::YearChart.new(container, selected_period_statuses(lookahead, :year))
 
         result = {}
         if any_field_selected?(lookahead, :week_pipelines_labels, :week_pipelines_totals, :week_pipelines_successful)
@@ -101,7 +103,7 @@ module Resolvers
         end
 
         if any_field_selected?(lookahead, :pipeline_times_labels, :pipeline_times_values)
-          pipeline_times = Gitlab::Ci::Charts::PipelineTime.new(project, [])
+          pipeline_times = Gitlab::Ci::Charts::PipelineTime.new(container, [])
           result.merge!(
             pipeline_times_labels: pipeline_times.labels,
             pipeline_times_values: pipeline_times.pipeline_times)

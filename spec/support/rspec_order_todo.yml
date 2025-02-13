@@ -3671,7 +3671,7 @@
 - './spec/graphql/resolvers/ci/group_runners_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/jobs_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/job_token_scope_resolver_spec.rb'
-- './spec/graphql/resolvers/ci/project_pipeline_analytics_resolver_spec.rb'
+- './spec/graphql/resolvers/ci/pipeline_analytics_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/project_pipeline_counts_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/project_pipeline_resolver_spec.rb'
 - './spec/graphql/resolvers/ci/project_pipelines_resolver_spec.rb'

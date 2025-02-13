@@ -246,7 +246,6 @@ spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spe
 spec/frontend/sidebar/components/incidents/escalation_status_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/labels_select_root_spec.js
-spec/frontend/sidebar/components/lock/issuable_lock_form_spec.js
 spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js
 spec/frontend/sidebar/components/todo_toggle/sidebar_todo_widget_spec.js

@@ -177,9 +177,11 @@ module Ci
     end
 
     def collect_metrics
+      return unless container.is_a?(Project)
+
       track_internal_event(
         'collect_time_series_pipeline_analytics',
-        project: project,
+        project: container,
         user: current_user,
         additional_properties: { property: time_series_period.to_s }
       )
