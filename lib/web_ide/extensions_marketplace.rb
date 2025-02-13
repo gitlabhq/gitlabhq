@@ -43,7 +43,7 @@ module WebIde
       Settings.get(
         [:vscode_extensions_gallery_view_model],
         user: user,
-        vscode_extensions_marketplace_feature_flag_enabled: feature_enabled?(user: user)
+        vscode_extension_marketplace_feature_flag_enabled: feature_enabled?(user: user)
       ).fetch(:vscode_extensions_gallery_view_model)
     end
 

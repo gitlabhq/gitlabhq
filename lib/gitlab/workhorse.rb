@@ -43,6 +43,14 @@ module Gitlab
           }
         }
 
+        if repo_type == Gitlab::GlRepository::PROJECT
+          project = repository.container
+          root_namespace = project&.root_namespace
+
+          attrs[:ProjectID] = project.id if project
+          attrs[:RootNamespaceID] = root_namespace.id if root_namespace
+        end
+
         # Custom option for git-receive-pack command
         receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
         if receive_max_input_size > 0

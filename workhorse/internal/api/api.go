@@ -155,6 +155,12 @@ type Response struct {
 	// 'git push' and 'git pull'
 	GL_REPOSITORY string // nolint:stylecheck,revive // used as env variable
 
+	// Id of the requested project
+	ProjectID int
+
+	// Id of the requested project's root namespace
+	RootNamespaceID int
+
 	// GitConfigOptions holds the custom options that we want to pass to the git command
 	GitConfigOptions []string
 	// StoreLFSPath is provided by the GitLab Rails application to mark where the tmp file should be placed.

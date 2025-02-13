@@ -19774,6 +19774,7 @@ AI features communication message.
 | <a id="aimessageid"></a>`id` | [`ID`](#id) | UUID of the message. |
 | <a id="aimessagerequestid"></a>`requestId` | [`String`](#string) | UUID of the original request. Shared between chat prompt and response. |
 | <a id="aimessagerole"></a>`role` | [`AiMessageRole!`](#aimessagerole) | Message owner role. |
+| <a id="aimessagethreadid"></a>`threadId` | [`AiConversationThreadID`](#aiconversationthreadid) | Global ID of the existing thread for the Chat conversation. |
 | <a id="aimessagetimestamp"></a>`timestamp` | [`Time!`](#time) | Message creation timestamp. |
 | <a id="aimessagetype"></a>`type` | [`AiMessageType`](#aimessagetype) | Message type. |
 

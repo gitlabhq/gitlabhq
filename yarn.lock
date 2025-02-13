@@ -1412,10 +1412,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.0.tgz#b1ecb8ae6b2abf9b2e28927e4fbb05b7a1b2704b"
-  integrity sha512-nOltttik5o2BjBo8LnyeTFzHoLpMY/XcCVOC+lm9ZwU+ivEam8wafacMF0KTbRn1KVrIoHYdo70QnqS+vJiOVw==
+"@gitlab/noop@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
+  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 "@gitlab/query-language-rust@0.3.2":
   version "0.3.2"

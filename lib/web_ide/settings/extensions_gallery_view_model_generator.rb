@@ -23,8 +23,8 @@ module WebIde
             user: ::User => user
           },
           settings: {
-            vscode_extensions_gallery: Hash => vscode_settings,
-            vscode_extensions_gallery_metadata: Hash => metadata
+            vscode_extension_marketplace: Hash => vscode_settings,
+            vscode_extension_marketplace_metadata: Hash => metadata
           }
         }
 

@@ -250,7 +250,9 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
         GL_USERNAME: user.username,
         GL_REPOSITORY: "project-#{project.id}",
         ShowAllRefs: false,
-        NeedAudit: false
+        NeedAudit: false,
+        ProjectID: project.id,
+        RootNamespaceID: project.root_namespace.id
       }
     end
 
@@ -278,6 +280,10 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
       subject { described_class.git_http_ok(repository, Gitlab::GlRepository::WIKI, user, action) }
 
       it { expect(subject).to include(params) }
+
+      it 'does not include Project and RootNamespace data' do
+        expect(subject).not_to include(:ProjectID, :RootNamespaceID)
+      end
     end
 
     it 'includes a Repository param' do

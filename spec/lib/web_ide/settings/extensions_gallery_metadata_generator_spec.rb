@@ -7,12 +7,12 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, feature_cat
 
   let(:input_context) do
     {
-      requested_setting_names: [:vscode_extensions_gallery_metadata],
+      requested_setting_names: [:vscode_extension_marketplace_metadata],
       options: options,
       settings: {
-        # NOTE: default value of 'vscode_extensions_gallery_metadata' is an empty hash. Include it here to
+        # NOTE: default value of 'vscode_extension_marketplace_metadata' is an empty hash. Include it here to
         #       ensure that it always gets overwritten with the generated value
-        vscode_extensions_gallery_metadata: {},
+        vscode_extension_marketplace_metadata: {},
         some_other_existing_setting_that_should_not_be_overwritten: "some context"
       }
     }
@@ -22,9 +22,9 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, feature_cat
     described_class.generate(input_context)
   end
 
-  shared_examples 'extensions marketplace settings' do
+  shared_examples 'extension marketplace settings' do
     it "has the expected settings behavior" do
-      if expected_vscode_extensions_gallery_metadata == RuntimeError
+      if expected_vscode_extension_marketplace_metadata == RuntimeError
         expected_err_msg = "Invalid user.extensions_marketplace_opt_in_status: '#{opt_in_status}'. " \
           "Supported statuses are: [:unset, :enabled, :disabled]."
         expect { returned_context }
@@ -33,7 +33,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, feature_cat
         expect(returned_context).to eq(
           input_context.deep_merge(
             settings: {
-              vscode_extensions_gallery_metadata: expected_vscode_extensions_gallery_metadata
+              vscode_extension_marketplace_metadata: expected_vscode_extension_marketplace_metadata
             }
           )
         )
@@ -46,7 +46,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, feature_cat
     :opt_in_status,
     :flag_exists,
     :flag_enabled,
-    :expected_vscode_extensions_gallery_metadata
+    :expected_vscode_extension_marketplace_metadata
   ) do
     # @formatter:off - Turn off RubyMine autoformatting
 
@@ -71,7 +71,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, feature_cat
     let(:options) do
       options = {}
       options[:user] = user if user_exists
-      options[:vscode_extensions_marketplace_feature_flag_enabled] = flag_enabled if flag_exists
+      options[:vscode_extension_marketplace_feature_flag_enabled] = flag_enabled if flag_exists
       options
     end
 
@@ -82,10 +82,10 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, feature_cat
       allow(enums).to receive(:statuses).and_return({ unset: :unset, enabled: :enabled, disabled: :disabled })
     end
 
-    it_behaves_like "extensions marketplace settings"
+    it_behaves_like "extension marketplace settings"
   end
 
-  context "when requested_setting_names does not include vscode_extensions_gallery_metadata" do
+  context "when requested_setting_names does not include vscode_extension_marketplace_metadata" do
     let(:input_context) do
       {
         requested_setting_names: [:some_other_setting],

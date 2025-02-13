@@ -8,14 +8,14 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryViewModelGenerator, feature_ca
   let(:user_class) { stub_const('User', Class.new) }
   let(:user) { user_class.new }
   let(:requested_setting_names) { [:vscode_extensions_gallery_view_model] }
-  let(:vscode_extensions_gallery) { { item_url: 'https://example.com/vscode/is/cooler/than/rubymine' } }
-  let(:vscode_extensions_gallery_metadata) { { enabled: true } }
+  let(:vscode_extension_marketplace) { { item_url: 'https://example.com/vscode/is/cooler/than/rubymine' } }
+  let(:vscode_extension_marketplace_metadata) { { enabled: true } }
   let(:context) do
     {
       requested_setting_names: requested_setting_names,
       settings: {
-        vscode_extensions_gallery: vscode_extensions_gallery,
-        vscode_extensions_gallery_metadata: vscode_extensions_gallery_metadata
+        vscode_extension_marketplace: vscode_extension_marketplace,
+        vscode_extension_marketplace_metadata: vscode_extension_marketplace_metadata
       },
       options: {
         user: user
@@ -41,7 +41,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryViewModelGenerator, feature_ca
     end
 
     it 'by default, setting is enabled with vscode_settings' do
-      expect(settings_result).to eq({ enabled: true, vscode_settings: vscode_extensions_gallery })
+      expect(settings_result).to eq({ enabled: true, vscode_settings: vscode_extension_marketplace })
     end
 
     context 'when settings name is not requested' do
@@ -60,7 +60,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryViewModelGenerator, feature_ca
       end
 
       with_them do
-        let(:vscode_extensions_gallery_metadata) { { enabled: false, disabled_reason: disabled_reason } }
+        let(:vscode_extension_marketplace_metadata) { { enabled: false, disabled_reason: disabled_reason } }
 
         it 'setting is disabled with attributes for view' do
           expect(settings_result).to match({

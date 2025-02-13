@@ -104,6 +104,25 @@ class BasePolicy < DeclarativePolicy::Base
   def user_is_user?
     user.is_a?(User)
   end
+
+  def owns_organization?(org)
+    return false unless org.present?
+    return false unless user_is_user?
+
+    # Admin is often automatically assigned as an owner of the default organization
+    # so we only want to return true here if an admin user is running in admin mode
+    return false if admin_mode_required?
+
+    # Load the owners with a single query.
+    org.owner_user_ids.include?(@user.id)
+  end
+
+  def admin_mode_required?
+    return false unless @user&.admin?
+    return false unless Gitlab::CurrentSettings.admin_mode
+
+    !Gitlab::Auth::CurrentUserMode.new(@user).admin_mode?
+  end
 end
 
 BasePolicy.prepend_mod_with('BasePolicy')

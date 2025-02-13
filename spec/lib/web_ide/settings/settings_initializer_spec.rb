@@ -16,12 +16,12 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
     expect(returned_value).to match(
       {
         requested_setting_names: [
-          :vscode_extensions_gallery,
-          :vscode_extensions_gallery_metadata,
+          :vscode_extension_marketplace,
+          :vscode_extension_marketplace_metadata,
           :vscode_extensions_gallery_view_model
         ],
         settings: {
-          vscode_extensions_gallery: {
+          vscode_extension_marketplace: {
             control_url: "",
             item_url: "https://open-vsx.org/vscode/item",
             nls_base_url: "",
@@ -29,7 +29,7 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
             resource_url_template: 'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}',
             service_url: "https://open-vsx.org/vscode/gallery"
           },
-          vscode_extensions_gallery_metadata: {
+          vscode_extension_marketplace_metadata: {
             enabled: false,
             disabled_reason: :instance_disabled
           },
@@ -40,8 +40,8 @@ RSpec.describe WebIde::Settings::SettingsInitializer, feature_category: :web_ide
           }
         },
         setting_types: {
-          vscode_extensions_gallery: Hash,
-          vscode_extensions_gallery_metadata: Hash,
+          vscode_extension_marketplace: Hash,
+          vscode_extension_marketplace_metadata: Hash,
           vscode_extensions_gallery_view_model: Hash
         },
         env_var_prefix: "GITLAB_WEB_IDE",

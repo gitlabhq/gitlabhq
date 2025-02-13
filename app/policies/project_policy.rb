@@ -54,9 +54,7 @@ class ProjectPolicy < BasePolicy
   end
 
   desc "User owns the project's organization"
-  condition(:organization_owner) do
-    owns_project_organization?
-  end
+  condition(:organization_owner) { owns_organization?(@subject.organization) }
 
   rule { admin | organization_owner }.enable :read_all_organization_resources
 
@@ -1160,21 +1158,6 @@ class ProjectPolicy < BasePolicy
     project.group && project.group.requesters.exists?(user_id: @user.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
-  def owns_project_organization?
-    return false unless @user
-    return false unless user_is_user?
-    return false unless @subject.organization
-    # Ensure admins can't bypass admin mode.
-    return false if @user.admin? && !can?(:admin)
-
-    # Load the owners with a single query.
-    @subject.organization
-            .owner_user_ids
-            .include?(@user.id)
-  end
-  # rubocop:enable Cop/UserAdmin
 
   def team_access_level
     return -1 if @user.nil?

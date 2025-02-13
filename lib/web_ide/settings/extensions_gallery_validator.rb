@@ -8,17 +8,17 @@ module WebIde
       # @param [Hash] context
       # @return [Gitlab::Fp::Result]
       def self.validate(context)
-        unless context.fetch(:requested_setting_names).intersect?([:vscode_extensions_gallery])
+        unless context.fetch(:requested_setting_names).intersect?([:vscode_extension_marketplace])
           return Gitlab::Fp::Result.ok(context)
         end
 
         context => { settings: Hash => settings }
-        settings => { vscode_extensions_gallery: Hash => vscode_extensions_gallery }
+        settings => { vscode_extension_marketplace: Hash => vscode_extension_marketplace }
 
         # NOTE: We deep_stringify_keys here, so we can still pass keys as symbols during tests.
         #       This is the only place where keys need to be strings, because of the JSON schema
         #       validation, all other places we convert and work with the keys as symbols.
-        errors = validate_against_schema(vscode_extensions_gallery.deep_stringify_keys)
+        errors = validate_against_schema(vscode_extension_marketplace.deep_stringify_keys)
 
         if errors.none?
           Gitlab::Fp::Result.ok(context)

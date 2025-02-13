@@ -3,6 +3,7 @@ stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: 'Learn how to use and administer GitLab, the most scalable Git-based fully integrated platform for software development.'
+title: GitLab Docs
 ---
 
 <!-- markdownlint-disable MD041 MD044-->
@@ -14,8 +15,6 @@ description: 'Learn how to use and administer GitLab, the most scalable Git-base
 <!-- the div above will not display on the docs site but will display on /help -->
 
 <!-- markdownlint-enable MD044 -->
-
-# GitLab Docs
 
 Explore the different areas of the documentation:
 

@@ -55,6 +55,7 @@ func postRPCHandler(
 		w := NewHTTPResponseWriter(rw)
 		defer func() {
 			w.Log(r, cr.Count())
+			logGitMetadata(r, ar, w.Count())
 		}()
 
 		stats, err := handler(w, r, ar)
@@ -69,6 +70,24 @@ func postRPCHandler(
 
 		postFunc(a, r, ar, stats)
 	})
+}
+
+// logGitMetadata records Git traffic-related metadata for monitoring purposes.
+func logGitMetadata(r *http.Request, ar *api.Response, count int64) {
+	fields := log.Fields{
+		"written_bytes": count,
+		"service":       getService(r),
+	}
+
+	if ar.ProjectID != 0 {
+		fields["project_id"] = ar.ProjectID
+	}
+
+	if ar.RootNamespaceID != 0 {
+		fields["root_namespace_id"] = ar.RootNamespaceID
+	}
+
+	log.WithFields(fields).Info("git_traffic")
 }
 
 func repoPreAuthorizeHandler(myAPI *api.API, handleFunc api.HandleFunc) http.Handler {

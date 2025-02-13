@@ -8,7 +8,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :
   let(:service_url) { "https://open-vsx.org/vscode/gallery" }
   let(:item_url) { "https://open-vsx.org/vscode/item" }
   let(:resource_url_template) { "https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.WebResources/{path}" }
-  let(:vscode_extensions_gallery) do
+  let(:vscode_extension_marketplace) do
     {
       service_url: service_url,
       item_url: item_url,
@@ -19,12 +19,12 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :
     }
   end
 
-  let(:requested_setting_names) { [:vscode_extensions_gallery] }
+  let(:requested_setting_names) { [:vscode_extension_marketplace] }
   let(:context) do
     {
       requested_setting_names: requested_setting_names,
       settings: {
-        vscode_extensions_gallery: vscode_extensions_gallery
+        vscode_extension_marketplace: vscode_extension_marketplace
       }
     }
   end
@@ -33,7 +33,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :
     described_class.validate(context)
   end
 
-  context "when vscode_extensions_gallery is valid" do
+  context "when vscode_extension_marketplace is valid" do
     shared_examples "success result" do
       it "return an ok Result containing the original context which was passed" do
         expect(result).to eq(Gitlab::Fp::Result.ok(context))
@@ -44,14 +44,14 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :
       it_behaves_like 'success result'
     end
 
-    context "when only :vscode_extensions_gallery_metadata is requested" do
-      let(:requested_setting_names) { [:vscode_extensions_gallery_metadata] }
+    context "when only :vscode_extension_marketplace_metadata is requested" do
+      let(:requested_setting_names) { [:vscode_extension_marketplace_metadata] }
 
       it_behaves_like 'success result'
     end
   end
 
-  context "when vscode_extensions_gallery is invalid" do
+  context "when vscode_extension_marketplace is invalid" do
     shared_examples "err result" do |expected_error_details:|
       it "returns an err Result containing error details" do
         expect(result).to be_err_result do |message|
@@ -63,7 +63,7 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryValidator, feature_category: :
     end
 
     context "when missing required entries" do
-      let(:vscode_extensions_gallery) { {} }
+      let(:vscode_extension_marketplace) { {} }
 
       it_behaves_like "err result", expected_error_details:
         "root is missing required keys: service_url, item_url, resource_url_template"

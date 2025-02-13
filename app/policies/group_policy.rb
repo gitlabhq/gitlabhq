@@ -35,9 +35,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   desc "User owns the group's organization"
-  condition(:organization_owner) do
-    owns_group_organization?
-  end
+  condition(:organization_owner) { owns_organization?(@subject.organization) }
 
   rule { admin | organization_owner }.enable :admin_organization
 
@@ -481,21 +479,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   def resource_access_token_creation_allowed?
     resource_access_token_create_feature_available? && group.root_ancestor.namespace_settings.resource_access_token_creation_allowed?
   end
-
-  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
-  def owns_group_organization?
-    return false unless @user
-    return false unless user_is_user?
-    return false unless @subject.organization
-    # Ensure admins can't bypass admin mode.
-    return false if @user.admin? && !can?(:admin)
-
-    # Load the owners with a single query.
-    @subject.organization
-            .owner_user_ids
-            .include?(@user.id)
-  end
-  # rubocop:enable Cop/UserAdmin
 end
 
 GroupPolicy.prepend_mod_with('GroupPolicy')
