@@ -281,6 +281,7 @@
     "WorkItemWidgetDesigns",
     "WorkItemWidgetDevelopment",
     "WorkItemWidgetEmailParticipants",
+    "WorkItemWidgetErrorTracking",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",

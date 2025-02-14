@@ -2,14 +2,14 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Integrations API
+title: Project integrations API
 ---
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-This API enables you to work with external services that integrate with GitLab.
+Use this API to work with external services that integrate with GitLab.
 
 This API requires an access token with the Maintainer or Owner role.
 

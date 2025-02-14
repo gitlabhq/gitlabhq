@@ -3374,7 +3374,6 @@ RSpec/FeatureCategory:
     - 'spec/models/preloaders/commit_status_preloader_spec.rb'
     - 'spec/models/preloaders/environments/deployment_preloader_spec.rb'
     - 'spec/models/preloaders/group_policy_preloader_spec.rb'
-    - 'spec/models/preloaders/group_root_ancestor_preloader_spec.rb'
     - 'spec/models/preloaders/labels_preloader_spec.rb'
     - 'spec/models/preloaders/merge_request_diff_preloader_spec.rb'
     - 'spec/models/preloaders/project_policy_preloader_spec.rb'

@@ -1000,7 +1000,7 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
     Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker'] ||= {}
     Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['cron'] ||= "0 */6 * * *"
-    Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['job_class'] = 'Namespaces::ScheduleDormantMemberRemoval'
+    Settings.cron_jobs['namespaces_schedule_dormant_member_removal_worker']['job_class'] = 'Namespaces::ScheduleDormantMemberRemovalWorker'
     Settings.cron_jobs['gitlab_subscriptions_offline_cloud_license_provision_worker']['status'] = 'disabled'
     Settings.cron_jobs['send_recurring_notifications_worker'] ||= {}
     Settings.cron_jobs['send_recurring_notifications_worker']['cron'] ||= '0 7 * * *'

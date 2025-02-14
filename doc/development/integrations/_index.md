@@ -360,7 +360,7 @@ To expose the integration in the [REST API](../../api/integrations.md):
    'foo-bar' => ::Integrations::FooBar.api_arguments
    ```
 
-1. Update the reference documentation in `doc/api/integrations.md`, add a new section for your integration, and document all properties.
+1. Update the reference documentation in `doc/api/integrations.md` and `doc/api/group_integrations.md`, add a new section for your integration, and document all properties.
 
 You can also refer to our [REST API style guide](../api_styleguide.md).
 
@@ -450,8 +450,8 @@ In the major milestone of intended removal (M.0), disable the integration and de
 - Remove the integration from `Integration::INTEGRATION_NAMES`.
 - Delete the integration model's `#execute` and `#test` methods (if defined), but keep the model.
 - Add a post-migration to delete the integration records from PostgreSQL (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114721)).
-- [Mark the integration documentation as removed](../documentation/styleguide/deprecations_and_removals.md#remove-a-page).
-- [Update the integration API documentation](../../api/integrations.md).
+- [Mark the integration documentation as removed](../../development/documentation/styleguide/deprecations_and_removals.md#remove-a-page).
+- Update the [project](../../api/integrations.md) and [group](../../api/group_integrations.md) integrations API pages.
 
 In the next minor release (M.1):
 

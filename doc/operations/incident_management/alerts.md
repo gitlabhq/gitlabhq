@@ -93,7 +93,7 @@ The following actions result in a system note:
 - [Assignment of an alert to a user](#assign-an-alert)
 - [Escalation of an alert to on-call responders](paging.md#escalating-an-alert)
 
-![Alert Details Activity Feed](img/alert_detail_activity_feed_v13_5.png)
+![GitLab alert activity feed showing three system notes](img/alert_detail_activity_feed_v13_5.png)
 
 ## Alert actions
 

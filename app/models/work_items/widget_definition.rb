@@ -44,7 +44,8 @@ module WorkItems
       email_participants: 25,
       custom_status: 26,
       linked_resources: 27,
-      custom_fields: 28 # EE-only
+      custom_fields: 28, # EE-only
+      error_tracking: 29
     }
 
     attribute :widget_options, ::Gitlab::Database::Type::IndifferentJsonb.new

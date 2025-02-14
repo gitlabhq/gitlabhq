@@ -31,7 +31,8 @@ module Gitlab
           crm_contacts: 'CRM contacts',
           email_participants: 'Email participants',
           custom_status: 'Custom status',
-          custom_fields: 'Custom fields'
+          custom_fields: 'Custom fields',
+          error_tracking: 'Error tracking'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -45,6 +46,7 @@ module Gitlab
             :designs,
             :development,
             :email_participants,
+            :error_tracking,
             :health_status,
             :hierarchy,
             :iteration,

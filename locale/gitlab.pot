@@ -19473,6 +19473,9 @@ msgstr ""
 msgid "Dependencies|Direct dependents"
 msgstr ""
 
+msgid "Dependencies|Enter at least 3 characters to view available components."
+msgstr ""
+
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
 msgstr ""
 
@@ -19498,6 +19501,9 @@ msgid "Dependencies|List of direct dependents"
 msgstr ""
 
 msgid "Dependencies|Location"
+msgstr ""
+
+msgid "Dependencies|No components found."
 msgstr ""
 
 msgid "Dependencies|Packager"
@@ -52771,6 +52777,18 @@ msgid "SecurityReports|%{firstProject} and %{secondProject}"
 msgstr ""
 
 msgid "SecurityReports|%{firstProject}, %{secondProject}, and %{rest}"
+msgstr ""
+
+msgid "SecurityReports|%{nrVulnerabilities} vulnerabilities attached to %{nrIssues} issues"
+msgstr ""
+
+msgid "SecurityReports|%{nrVulnerabilities} vulnerabilities attached to 1 issue"
+msgstr ""
+
+msgid "SecurityReports|1 vulnerability attached to %{nrIssues} issues"
+msgstr ""
+
+msgid "SecurityReports|1 vulnerability attached to 1 issue"
 msgstr ""
 
 msgid "SecurityReports|A comment is required when changing the severity."

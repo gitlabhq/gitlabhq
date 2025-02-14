@@ -116,14 +116,6 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4
 In GitLab 17.0, the [Runners API](../runners.md) will return `""` in place of `ip_address` for runners.
 In v5 of the REST API, the field will be removed.
 
-## Runner will not return `version`, `revision`, `platform`, or `architecture`
-
-Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/457128).
-
-In GitLab 18.0, the [Runners API](../runners.md) will return `""` in place of `version`, `revision`, `platform`,
-and `architecture` for runners.
-In v5 of the REST API, the fields will be removed.
-
 ## `default_branch_protection` API field
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408315).

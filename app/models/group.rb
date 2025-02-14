@@ -898,6 +898,10 @@ class Group < Namespace
     # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
   end
 
+  def find_or_initialize_integration(integration)
+    Integration.find_or_initialize_non_project_specific_integration(integration, group_id: id)
+  end
+
   def execute_integrations(data, hooks_scope)
     integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
       integration.async_execute(data)

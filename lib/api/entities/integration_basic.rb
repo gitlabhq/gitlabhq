@@ -2,7 +2,7 @@
 
 module API
   module Entities
-    class ProjectIntegrationBasic < Grape::Entity
+    class IntegrationBasic < Grape::Entity
       expose :id, documentation: { type: 'integer', example: 75 }
       expose :title, documentation: { type: 'string', example: 'Jenkins CI' }
       expose :slug, documentation: { type: 'integer', example: 'jenkins' } do |integration|
@@ -33,4 +33,4 @@ module API
   end
 end
 
-API::Entities::ProjectIntegrationBasic.prepend_mod
+API::Entities::IntegrationBasic.prepend_mod

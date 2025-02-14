@@ -11,7 +11,7 @@ module API
         expose :locked
         expose :maximum_timeout
         expose :access_level
-        # TODO: return nil in 18.0 and remove in v5 https://gitlab.com/gitlab-org/gitlab/-/issues/457128
+        # TODO: remove in v5 https://gitlab.com/gitlab-org/gitlab/-/issues/457128
         expose(:version) { |runner, _options| latest_runner_manager(runner)&.version }
         expose(:revision) { |runner, _options| latest_runner_manager(runner)&.revision }
         expose(:platform) { |runner, _options| latest_runner_manager(runner)&.platform }

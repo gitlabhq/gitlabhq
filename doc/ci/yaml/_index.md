@@ -5180,8 +5180,8 @@ job4:
 
 #### `stage: .pre`
 
-Use the `.pre` stage to make a job run at the start of a pipeline. `.pre` is
-always the first stage in a pipeline. User-defined stages execute after `.pre`.
+Use the `.pre` stage to make a job run at the start of a pipeline. By default, `.pre` is
+the first stage in a pipeline. User-defined stages execute after `.pre`.
 You do not have to define `.pre` in [`stages`](#stages).
 
 If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
@@ -5212,10 +5212,17 @@ job2:
     - echo "This job runs in the test stage."
 ```
 
+**Additional details:**
+
+- If a pipeline has jobs with [`needs: []`](#needs) and jobs in the `.pre` stage, they will
+  all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
+  ignoring any stage configuration.
+- A [pipeline execution policy](../../user/application_security/policies/pipeline_execution_policies.md) can define a `.pipeline-policy-pre` stage which runs before `.pre`.
+
 #### `stage: .post`
 
-Use the `.post` stage to make a job run at the end of a pipeline. `.post`
-is always the last stage in a pipeline. User-defined stages execute before `.post`.
+Use the `.post` stage to make a job run at the end of a pipeline. By default, `.post`
+is the last stage in a pipeline. User-defined stages execute before `.post`.
 You do not have to define `.post` in [`stages`](#stages).
 
 If a pipeline contains only jobs in the `.pre` or `.post` stages, it does not run.
@@ -5248,9 +5255,7 @@ job2:
 
 **Additional details:**
 
-- If a pipeline has jobs with [`needs: []`](#needs) and jobs in the `.pre` stage, they will
-  all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
-  ignoring any stage configuration.
+- A [pipeline execution policy](../../user/application_security/policies/pipeline_execution_policies.md) can define a `.pipeline-policy-post` stage which runs after `.post`.
 
 ### `tags`
 

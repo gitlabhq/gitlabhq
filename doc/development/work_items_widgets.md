@@ -377,7 +377,6 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
        include Gitlab::Database::MigrationHelpers::WorkItems::Widgets
 
        restrict_gitlab_migration gitlab_schema: :gitlab_main
-       disable_ddl_transaction!
        milestone '17.9'
 
        WORK_ITEM_TYPE_ENUM_VALUES = 8 # ticket, use [8,9] for multiple types
