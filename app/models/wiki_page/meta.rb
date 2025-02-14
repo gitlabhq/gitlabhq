@@ -74,10 +74,6 @@ class WikiPage
 
         if conflict.present?
           transaction(requires_new: false) do
-            conflict.events.each_batch do |batch|
-              batch.update_all(target_id: meta.id)
-            end
-
             conflict.todos.each_batch do |batch|
               batch.update_all(target_id: meta.id)
             end

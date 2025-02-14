@@ -1,4 +1,5 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueRouter from 'vue-router';
 import { GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -14,7 +15,19 @@ import CreateWorkItemCancelConfirmationModal from '~/work_items/components/creat
 const showToast = jest.fn();
 
 describe('CreateWorkItemModal', () => {
+  Vue.use(VueRouter);
   let wrapper;
+  const router = new VueRouter({
+    routes: [
+      {
+        path: `/`,
+        name: 'home',
+        component: CreateWorkItemModal,
+      },
+    ],
+    mode: 'history',
+    base: 'basePath',
+  });
 
   const findTrigger = () => wrapper.find('[data-testid="new-epic-button"]');
   const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
@@ -50,6 +63,7 @@ describe('CreateWorkItemModal', () => {
       stubs: {
         GlModal,
       },
+      router,
     });
   };
 
@@ -57,7 +71,7 @@ describe('CreateWorkItemModal', () => {
     createComponent();
 
     await waitForPromises();
-    findForm().vm.$emit('workItemCreated', { webUrl: '/' });
+    findForm().vm.$emit('workItemCreated', { webUrl: '/', workItemType: { name: 'Epic' } });
 
     expect(showToast).toHaveBeenCalledWith('Epic created', expect.any(Object));
   });

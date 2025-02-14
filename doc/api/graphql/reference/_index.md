@@ -22442,11 +22442,9 @@ Represents a ComplianceRequirement associated with a ComplianceFramework.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="compliancerequirementcompliancerequirementscontrols"></a>`complianceRequirementsControls` | [`ComplianceRequirementsControlConnection`](#compliancerequirementscontrolconnection) | Compliance controls of the compliance requirement. (see [Connections](#connections)) |
-| <a id="compliancerequirementcontrolexpression"></a>`controlExpression` | [`String`](#string) | Control expression of the compliance requirement. |
 | <a id="compliancerequirementdescription"></a>`description` | [`String!`](#string) | Description of the compliance requirement. |
 | <a id="compliancerequirementid"></a>`id` | [`ID!`](#id) | Compliance requirement ID. |
 | <a id="compliancerequirementname"></a>`name` | [`String!`](#string) | Name of the compliance requirement. |
-| <a id="compliancerequirementrequirementtype"></a>`requirementType` | [`String!`](#string) | Type of the compliance requirement. |
 
 ### `ComplianceRequirementControl`
 
@@ -46080,7 +46078,6 @@ Attributes for defining a CI/CD variable.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="compliancerequirementinputcontrolexpression"></a>`controlExpression` | [`String`](#string) | Control expression for the compliance requirement. |
 | <a id="compliancerequirementinputdescription"></a>`description` | [`String`](#string) | New description for the compliance requirement. |
 | <a id="compliancerequirementinputname"></a>`name` | [`String`](#string) | New name for the compliance requirement. |
 

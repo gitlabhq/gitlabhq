@@ -88,6 +88,14 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
         expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/generic#{candidate.artifact_root}")
       end
     end
+
+    context 'when candidate has no file or generic package' do
+      let!(:candidate) { create(:ml_candidates, :with_ml_model, name: 'candidate_1') }
+
+      it 'returns a string with no package' do
+        expect(subject[:artifact_uri]).to eq("mlflow-artifacts:/candidate:#{candidate.iid}")
+      end
+    end
   end
 
   describe 'lifecycle_stage' do

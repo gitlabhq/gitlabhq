@@ -51,7 +51,6 @@ RSpec.shared_examples 'creating wiki page meta record examples' do
 
       let!(:newer_meta) { create(:wiki_page_meta, container: container, canonical_slug: 'foobar') }
       let!(:todo) { create(:todo, target: newer_meta) }
-      let!(:event) { create(:event, target: newer_meta) }
 
       before do
         slug = newer_meta.slugs.first
@@ -69,10 +68,6 @@ RSpec.shared_examples 'creating wiki page meta record examples' do
 
       it 'moves associated todos to the older record' do
         expect { find_record }.to change { todo.reload.target }.from(newer_meta).to(older_meta)
-      end
-
-      it 'moves associated events to the older record' do
-        expect { find_record }.to change { event.reload.target }.from(newer_meta).to(older_meta)
       end
     end
 

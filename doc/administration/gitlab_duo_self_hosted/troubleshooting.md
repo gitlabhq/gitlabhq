@@ -20,7 +20,7 @@ When working with GitLab Duo Self-Hosted, you might encounter issues.
 
 Before you begin troubleshooting, you should:
 
-- Be able to access open the [`gitlab-rails` console](../operations/rails_console.md).
+- Be able to access the [`gitlab-rails` console](../operations/rails_console.md).
 - Open a shell in the AI gateway Docker image.
 - Know the endpoint where your:
   - AI gateway is hosted.
@@ -35,8 +35,7 @@ Before you begin troubleshooting, you should:
 
 ## Use debugging scripts
 
-We provide two debugging scripts to help administrators verify their self-hosted
-model configuration.
+We provide two debugging scripts to help administrators verify their self-hosted model configuration.
 
 1. Debug the GitLab to AI gateway connection. From your GitLab instance, run the
    [Rake task](../../raketasks/_index.md):
@@ -155,7 +154,7 @@ This missing configuration might be because of either of the following:
 - The license is not valid. To resolve, [check or update your license](../license_file.md#see-current-license-information).
 - GitLab Duo was not configured to use a self-hosted model. To resolve, [check if the GitLab instance is configured to use self-hosted models](#check-if-gitlab-instance-is-configured-to-use-self-hosted-models).
 
-## Check if GitLab instance is configured to use self-hosted-models
+## Check if GitLab instance is configured to use self-hosted models
 
 To check if GitLab Duo was configured correctly:
 

@@ -13,6 +13,8 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
   let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: version) }
   let_it_be(:package_file) { create(:package_file, :ml_model, package: model_version.package) }
   let_it_be(:model_version_no_package) { create(:ml_model_versions, model: model, version: '0.0.2') }
+  let_it_be(:candidate) { create(:ml_candidates, :with_ml_model, project: project) }
+  let_it_be(:candidate_package_file) { create(:package_file, :ml_model, package: candidate.package) }
 
   let_it_be(:tokens) do
     {
@@ -89,6 +91,19 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
       end
     end
 
+    context 'when the model version is a candidate version' do
+      let(:route) do
+        "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow-artifacts/artifacts?path=candidate:#{candidate.iid}/MlModel"
+      end
+
+      it 'returns an empty list of artifacts', :aggregate_failures do
+        is_expected.to have_gitlab_http_status(:ok)
+        expect(json_response).to have_key('files')
+        expect(json_response['files']).to be_an_instance_of(Array)
+        expect(json_response['files']).to be_empty
+      end
+    end
+
     it_behaves_like 'MLflow|an authenticated resource'
     it_behaves_like 'MLflow|a read-only model registry resource'
   end
@@ -106,6 +121,22 @@ RSpec.describe API::Ml::MlflowArtifacts::Artifacts, feature_category: :mlops do
         expect(response.body)
           .to eq(package_file.file.read)
         expect(response.headers['Content-Length']).to eq(package_file.size.to_s)
+      end
+    end
+
+    context 'when the model version is a candidate' do
+      let_it_be(:file) { candidate_package_file.file_name }
+      let(:route) do
+        "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow-artifacts/artifacts/candidate:#{candidate.iid}/#{file}"
+      end
+
+      it 'returns the artifact file', :aggregate_failures do
+        is_expected.to have_gitlab_http_status(:ok)
+        expect(response.headers['Content-Disposition']).to match(
+          "attachment; filename=\"#{candidate_package_file.file_name}\""
+        )
+        expect(response.body).to eq(candidate_package_file.file.read)
+        expect(response.headers['Content-Length']).to eq(candidate_package_file.size.to_s)
       end
     end
 

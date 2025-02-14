@@ -25,11 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    language: {
-      type: String,
-      required: false,
-      default: '',
-    },
     fileMode: {
       type: String,
       required: false,
@@ -71,15 +66,9 @@ export default {
       return this.fileMode === FILE_SYMLINK_MODE;
     },
     spriteHref() {
-      const iconName = this.submodule ? 'folder-git' : this.iconForFile;
+      const iconName = this.submodule ? 'folder-git' : getIconForFile(this.fileName) || 'file';
 
       return `${gon.sprite_file_icons}#${iconName}`;
-    },
-    iconForFile() {
-      const languageIcon = this.language && getIconForFile(this.language);
-      const fileNameIcon = getIconForFile(this.fileName);
-
-      return languageIcon || fileNameIcon || 'file';
     },
     folderIconName() {
       return this.opened ? 'folder-open' : 'folder';

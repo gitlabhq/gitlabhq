@@ -90,6 +90,17 @@ describe('Create work item page component', () => {
     expect(visitUrl).toHaveBeenCalledWith('/work_items/1234');
   });
 
+  it('reloads the page after create if work item created is an incident', () => {
+    createComponent();
+
+    findCreateWorkItem().vm.$emit('workItemCreated', {
+      workItem: { webUrl: '/work_items/1234', workItemType: { name: 'Incident' } },
+      numberOfDiscussionsResolved: '',
+    });
+
+    expect(visitUrl).toHaveBeenCalledWith('/work_items/1234');
+  });
+
   it('calls router.push after create if router is present', () => {
     const pushMock = jest.fn();
     createComponent({ push: pushMock });

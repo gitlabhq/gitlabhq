@@ -46,7 +46,7 @@ The next time someone tries to access your website and the access control is
 enabled, they're presented with a page to sign in to GitLab and verify they
 can access the website.
 
-## Restrict Pages access to project members
+## Restrict Pages access to project members for the group and its subgroups
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254962) in GitLab 17.9.
 

@@ -130,7 +130,26 @@ with mlflow.start_run():
     model.fit(X_train, y_train)
 
     # Log the model using MLflow sklearn mode flavour
-    mlflow.sklearn.log_model(model, artifact_path="model")
+    mlflow.sklearn.log_model(model, artifact_path="")
+```
+
+### Loading a run
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509595) in GitLab 17.9.
+
+You can load a run from the GitLab model registry to, for example, make predictions.
+
+```python
+import mlflow
+import mlflow.pyfunc
+
+run_id = "<your_run_id>"
+download_path = "models"  # Local folder to download to
+
+mlflow.pyfunc.load_model(f"runs:/{run_id}/", dst_path=download_path)
+
+sample_input = [[1,0,3,4],[2,0,1,2]]
+model.predict(data=sample_input)
 ```
 
 ### Associating a run to a CI/CD job

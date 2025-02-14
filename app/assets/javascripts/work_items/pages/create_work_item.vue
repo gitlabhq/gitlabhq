@@ -2,7 +2,14 @@
 import { visitUrl, getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import CreateWorkItem from '../components/create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from '../components/create_work_item_cancel_confirmation_modal.vue';
-import { ROUTES, RELATED_ITEM_ID_URL_QUERY_PARAM } from '../constants';
+import {
+  ROUTES,
+  RELATED_ITEM_ID_URL_QUERY_PARAM,
+  BASE_ALLOWED_CREATE_TYPES,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_VALUE_MAP,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+} from '../constants';
 import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
 
 export default {
@@ -53,12 +60,30 @@ export default {
       },
     },
   },
+  computed: {
+    isIssue() {
+      return this.workItemTypeName === WORK_ITEM_TYPE_ENUM_ISSUE;
+    },
+    isIncident() {
+      return this.workItemTypeName === WORK_ITEM_TYPE_ENUM_INCIDENT;
+    },
+    allowedWorkItemTypes() {
+      if (this.isIssue || this.isIncident) {
+        return BASE_ALLOWED_CREATE_TYPES;
+      }
+
+      return [];
+    },
+  },
   methods: {
     updateWorkItemType(type) {
       this.workItemType = type;
     },
     workItemCreated({ workItem, numberOfDiscussionsResolved }) {
-      if (this.$router) {
+      if (
+        this.$router &&
+        WORK_ITEM_TYPE_VALUE_MAP[this.workItemType] !== WORK_ITEM_TYPE_ENUM_INCIDENT
+      ) {
         const routerPushObject = {
           name: ROUTES.workItem,
           params: { iid: workItem.iid },
@@ -120,6 +145,8 @@ export default {
       :is-group="isGroup"
       :related-item="relatedItem"
       :should-discard-draft="shouldDiscardDraft"
+      :always-show-work-item-type-select="isIncident || isIssue"
+      :allowed-work-item-types="allowedWorkItemTypes"
       @updateType="updateWorkItemType($event)"
       @confirmCancel="handleConfirmCancellation"
       @discardDraft="handleDiscardDraft('createPage')"

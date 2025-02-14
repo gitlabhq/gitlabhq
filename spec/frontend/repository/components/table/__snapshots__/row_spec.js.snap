@@ -19,7 +19,6 @@ exports[`Repository table row component renders a symlink table row 1`] = `
         cssclasses="gl-relative file-icon"
         filemode="120000"
         filename="test"
-        language=""
         size="16"
       />
       <gl-truncate-stub
@@ -78,7 +77,6 @@ exports[`Repository table row component renders table row 1`] = `
         cssclasses="gl-relative file-icon"
         filemode=""
         filename="test"
-        language=""
         size="16"
       />
       <gl-truncate-stub
@@ -137,7 +135,6 @@ exports[`Repository table row component renders table row for path with special 
         cssclasses="gl-relative file-icon"
         filemode=""
         filename="test"
-        language=""
         size="16"
       />
       <gl-truncate-stub

@@ -739,7 +739,11 @@ For example:
 
 > - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
-To include the title in the rendered link of an issue, task, objective, key result, merge request, or epic:
+<!-- When epics as work items are generally available and `work_item_epics` flag is removed,
+refactor the link below and add a history note -->
+
+To include the title in the rendered link of an epic ([using the new look](group/epics/epic_work_items.md)),
+issue, task, objective, key result, merge request, or epic:
 
 - Add a plus (`+`) at the end of the reference.
 
@@ -752,11 +756,15 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are al
 > - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
 > - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
-To include an extended summary in the rendered link of an issue, task, objective, key result, or merge request:
+<!-- When epics as work items are generally available and `work_item_epics` flag is removed,
+refactor the link below and add a history note -->
+
+To include an extended summary in the rendered link of an epic ([using the new look](group/epics/epic_work_items.md)),
+issue, task, objective, key result, or merge request:
 
 - Add a `+s` at the end of the reference.
 
-Summary includes information about **assignees**, **milestone** and **health status** of referenced item.
+Summary includes information about **assignees**, **milestone** and **health status**, as applicable by work item type, of referenced item.
 
 For example, a reference like `#123+s` is rendered as
 `The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.

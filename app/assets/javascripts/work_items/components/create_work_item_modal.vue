@@ -12,6 +12,7 @@ import {
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
@@ -107,12 +108,28 @@ export default {
         this.$router.options.routes.some((route) => route.name === 'workItem')
       );
     },
+    newWorkItemPathQuery() {
+      let query = '';
+      let previousQueryParam = false;
+      // Only add query string if there's a work item type selected
+      if (this.selectedWorkItemTypeName && this.useVueRouter) {
+        query += previousQueryParam ? '&' : '?';
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        query += `type=${this.selectedWorkItemTypeName}`;
+        previousQueryParam = true;
+      }
+      if (this.relatedItem) {
+        query += previousQueryParam ? '&' : '?';
+        query += `${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}`;
+      }
+      return query;
+    },
     newWorkItemPath() {
       return newWorkItemPath({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
         workItemTypeName: this.workItemTypeName,
-        query: this.relatedItem ? `?${RELATED_ITEM_ID_URL_QUERY_PARAM}=${this.relatedItem.id}` : '',
+        query: this.newWorkItemPathQuery,
       });
     },
     selectedWorkItemTypeLowercase() {
@@ -204,7 +221,8 @@ export default {
             // Take incidents to the legacy detail view with a full page load
             if (
               this.useVueRouter &&
-              this.selectedWorkItemTypeName !== WORK_ITEM_TYPE_ENUM_INCIDENT
+              WORK_ITEM_TYPE_VALUE_MAP[workItem?.workItemType?.name] !==
+                WORK_ITEM_TYPE_ENUM_INCIDENT
             ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
             } else {
@@ -217,11 +235,6 @@ export default {
       this.hideCreateModal();
     },
     redirectToNewPage(event) {
-      if (isMetaClick(event)) {
-        // opening in a new tab
-        return;
-      }
-
       event.preventDefault();
 
       if (this.useVueRouter) {
