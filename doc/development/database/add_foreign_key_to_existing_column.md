@@ -69,6 +69,8 @@ Migration file for adding `NOT VALID` foreign key:
 
 ```ruby
 class AddNotValidForeignKeyToEmailsUser < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+
   def up
     add_concurrent_foreign_key :emails, :users, column: :user_id, on_delete: :cascade, validate: false
   end
@@ -83,10 +85,6 @@ Adding a foreign key without validating it is a fast operation. It only requires
 short lock on the table before being able to enforce the constraint on new data.
 We do still want to enable lock retries for high traffic and large tables.
 `add_concurrent_foreign_key` does this for us, and also checks if the foreign key already exists.
-
-WARNING:
-Avoid using `add_foreign_key` or `add_concurrent_foreign_key` constraints more than
-once per migration file, unless the source and target tables are identical.
 
 #### Data migration to fix existing records
 

@@ -20,6 +20,7 @@ import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_VALUE_INCIDENT,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_MAP,
@@ -541,6 +542,43 @@ describe('Create work item component', () => {
 
       it('renders the work item parent widget', () => {
         expect(findParentWidget().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('Create work item widgets for Incident work item type', () => {
+    describe('default', () => {
+      beforeEach(async () => {
+        createComponent({ workItemTypeName: WORK_ITEM_TYPE_ENUM_INCIDENT });
+        await waitForPromises();
+      });
+
+      it('renders the work item title widget', () => {
+        expect(findTitleInput().exists()).toBe(true);
+      });
+
+      it('renders the work item description widget', () => {
+        expect(findDescriptionWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item assignees widget', () => {
+        expect(findAssigneesWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item labels widget', () => {
+        expect(findLabelsWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item CRM contacts widget', () => {
+        expect(findCrmContactsWidget().exists()).toBe(true);
+      });
+
+      it('renders the work item milestone widget', () => {
+        expect(findMilestoneWidget().exists()).toBe(true);
+      });
+
+      it('does not renders the work item parent widget', () => {
+        expect(findParentWidget().exists()).toBe(false);
       });
     });
   });

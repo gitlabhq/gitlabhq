@@ -59,7 +59,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         get :callback
 
         expect(controller).to redirect_to(new_import_url)
-        expect(flash[:alert]).to eq('Access denied to your GitHub account.')
+        expect(flash[:alert]).to eq('Wrong credentials')
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
         get :callback, params: { state: "different-state" }
 
         expect(controller).to redirect_to(new_import_url)
-        expect(flash[:alert]).to eq('Access denied to your GitHub account.')
+        expect(flash[:alert]).to eq('Wrong credentials')
       end
 
       it "updates access token if state param is valid" do
@@ -180,7 +180,7 @@ RSpec.describe Import::GithubController, feature_category: :importers do
 
         expect(session[:"#{provider}_access_token"]).to be_nil
         expect(controller).to redirect_to(new_import_url)
-        expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.")
+        expect(flash[:alert]).to eq("Wrong credentials")
       end
     end
 

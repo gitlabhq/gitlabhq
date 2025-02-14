@@ -119,9 +119,9 @@ module QA
             has_element?('input[aria-label="input"]')
           end
 
-          def has_committed_successfully?
+          def commit_shows_message?(expected_message)
             within_vscode_editor do
-              has_text?('Success! Your changes have been committed.')
+              has_text?(expected_message)
             end
           end
 
@@ -201,9 +201,9 @@ module QA
             Support::Waiter.wait_until { !has_text?("Loading GitLab Web IDE...", wait: 1) }
           end
 
-          def commit_and_push_to_existing_branch(file_name)
+          def commit_and_push_to_existing_branch(file_name, message: 'Success! Your changes have been committed.')
             commit_toggle(file_name)
-            push_to_existing_branch
+            push_to_existing_branch(message)
             Support::Waiter.wait_until { !has_text?("Loading GitLab Web IDE...", wait: 1) }
           end
 
@@ -223,11 +223,16 @@ module QA
             end
           end
 
-          def push_to_existing_branch
+          def commit_blocked_by_secret_detection(file_name)
+            commit_and_push_to_existing_branch(file_name,
+              message: 'The secret detection scan encountered one or more findings.')
+          end
+
+          def push_to_existing_branch(message)
             within_vscode_editor do
               click_continue_with_existing_branch
             end
-            raise "failed to push_to_existing_branch" unless has_committed_successfully?
+            raise "failed to push_to_existing_branch" unless commit_shows_message?(message)
           end
 
           def push_to_new_branch
@@ -237,7 +242,10 @@ module QA
               # Typing enter to 'New branch name' popup to take the default branch name
               send_keys(:enter)
             end
-            raise "failed to push_to_new_branch" unless has_committed_successfully?
+
+            return if commit_shows_message?('Success! Your changes have been committed.')
+
+            raise "failed to push_to_new_branch"
           end
 
           def create_merge_request
@@ -278,15 +286,22 @@ module QA
           end
 
           def add_prompt_into_a_file(file_name, prompt_data, wait_for_code_suggestions: true)
+            add_text_to_a_file(file_name, prompt_data) do
+              wait_until_code_suggestions_enabled if wait_for_code_suggestions
+            end
+          end
+
+          def add_text_to_a_file(file_name, file_text)
             within_vscode_editor do
               open_file_from_explorer(file_name)
               click_inside_editor_frame
               within_file_editor do
-                wait_until_code_suggestions_enabled if wait_for_code_suggestions
+                yield if block_given?
+
                 send_keys(:enter, :enter)
 
-                # Send keys one at a time to allow suggestions request to be triggered
-                prompt_data.each_char { |c| send_keys(c) }
+                # Send keys one at a time to simulate typing
+                file_text.each_char { |c| send_keys(c) }
               end
             end
           end

@@ -556,7 +556,7 @@ EOS
     context 'of a regular commit' do
       let(:commit) { project.commit('video') }
 
-      it { expect(commit.cherry_pick_message(user)).to include("\n\n(cherry-picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
+      it { expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
     end
 
     context 'of a merge commit' do
@@ -592,7 +592,7 @@ EOS
         it do
           expected_appended_text = <<~STR.rstrip
 
-            (cherry-picked from commit #{merge_commit.sha})
+            (cherry picked from commit #{merge_commit.sha})
 
             467dc98f Add new 'videos' directory
             88790590 Upload new video file
@@ -604,7 +604,7 @@ EOS
 
       context "that is existing but not found" do
         it 'does not include details of the merged commits' do
-          expect(merge_commit.cherry_pick_message(user)).to end_with("(cherry-picked from commit #{merge_commit.sha})")
+          expect(merge_commit.cherry_pick_message(user)).to end_with("(cherry picked from commit #{merge_commit.sha})")
         end
       end
     end

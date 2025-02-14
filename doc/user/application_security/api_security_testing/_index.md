@@ -9,8 +9,8 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - API security testing analyzer [became the default analyzer for on-demand API security testing scans](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) from **DAST API analyzer** to **API security testing analyzer** in GitLab 17.0.
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6 to the default analyzer for on-demand API security testing scans.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) in GitLab 17.0 from "DAST API analyzer" to "API security testing analyzer".
 
 Perform Dynamic Application Security Testing (DAST) of web APIs to help discover bugs and potential
 security issues that other QA processes may miss. Use API security testing in addition to

@@ -52,6 +52,7 @@ import {
   WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
   WORK_ITEM_TYPE_NAME_MAP,
   WORK_ITEM_TYPE_VALUE_MAP,
+  WORK_ITEM_TYPE_VALUE_INCIDENT,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -320,6 +321,18 @@ export default {
     },
     workItemHierarchy() {
       return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
+    },
+    showParentAttribute() {
+      // We use the work item create work flow for incidents although
+      // incidents haven't been migrated to work items and use the legacy
+      // detail view instead. Since the legacy view doesn't support setting a parent
+      // we need to hide this attribute here until the migration has been finished.
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
+      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_VALUE_INCIDENT) {
+        return false;
+      }
+
+      return Boolean(this.workItemHierarchy);
     },
     workItemCrmContacts() {
       return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
@@ -939,7 +952,7 @@ export default {
               @error="$emit('error', $event)"
             />
             <work-item-parent
-              v-if="workItemHierarchy"
+              v-if="showParentAttribute"
               class="work-item-attributes-item"
               :can-update="canUpdate"
               :work-item-id="workItemId"

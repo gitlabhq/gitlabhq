@@ -32,7 +32,7 @@ RSpec.describe API::Helpers::ImportGithubHelpers, feature_category: :importers d
 
   describe '#provider_unauthorized' do
     it 'raises an error' do
-      expect(subject).to receive(:error!).with('Access denied to your GitHub account.', 401)
+      expect(subject).to receive(:error!).with('Wrong credentials', 401)
       subject.provider_unauthorized
     end
   end
