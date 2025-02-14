@@ -68,14 +68,6 @@ module Gitlab
         MARKDOWN
       end
 
-      def matches_filters?(filters)
-        filters.all? do |filter|
-          identifiers.any? do |identifier|
-            identifier.match?(filter)
-          end
-        end
-      end
-
       def update_required?(category)
         !category.in?(non_housekeeper_changes)
       end

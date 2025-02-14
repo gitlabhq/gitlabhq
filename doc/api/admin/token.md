@@ -112,6 +112,7 @@ Example response:
 > - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179066) in GitLab 17.9.
 > - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035) in GitLab 17.9.
 > - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763) in GitLab 17.9.
+> - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -132,6 +133,7 @@ Revokes or resets a given token based on the token type. This endpoint supports 
 | [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens) | Reset              |
 | [OAuth application secrets](../../integration/oauth_provider.md)                             | Reset              |
 | [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)                | Reset              |
+| [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)      | Reset              |
 
 ```plaintext
 DELETE /api/v4/admin/token

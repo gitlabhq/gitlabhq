@@ -14,12 +14,7 @@ DETAILS:
 > - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.5.
 > - Released [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/development_stages_support.md#experiment-features) in GitLab 17.4.
 > - Released [Dependency Scanning CI/CD Component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature uses an experimental scanner.
-This feature is available for testing, but not ready for production use.
+> - [Enabled by default with the Dependency Scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) and Scan Execution Policies for Cargo, Conda, Cocoapods and Swift in GitLab 17.9.
 
 Dependency scanning using CycloneDX SBOM analyzes your application's dependencies for known
 vulnerabilities. All dependencies are scanned, [including transitive dependencies](../_index.md).
@@ -33,54 +28,93 @@ Dependency scanning can run in the development phase of your application's lifec
 pipeline produces an SBOM report, security findings are identified and compared between the source
 and target branches. Findings and their severity are listed in the merge request, enabling you to
 proactively address the risk to your application, before the code change is committed. Security
-findings can also be identified outside a pipeline by
-[Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
+findings for reported SBOM components are also identified by
+[Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md)
+when new security advisories are published, independently from CI/CD pipelines.
 
 GitLab offers both dependency scanning and [container scanning](../../container_scanning/_index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
 we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../../comparison_dependency_and_container_scanning.md).
 
-## Supported package types
+## How it scans an application
 
-The vulnerability scanning of SBOM files is performed in GitLab by the same scanner used by
-[Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
-In order for security scanning to work for your package manager, advisory information must be
-available for the components present in the SBOM report.
+The dependency scanning using SBOM approach relies on two distinct phases:
 
-See [Supported package types](../../continuous_vulnerability_scanning/_index.md#supported-package-types).
+- First, the dependency detection phase that focuses solely on creating a comprehensive inventory of your
+project’s dependencies and their relationship (dependency graph). This inventory is captured in an SBOM (Software Bill of Materials)
+document.
+- Second, after the CI/CD pipeline completes, the GitLab platform processes your SBOM report and performs
+a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. It is the same scanner
+that provides [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
 
-## Dependency detection workflow
+This separation of concerns and the modularity of this architecture allows to better support customers through expansion
+of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard
+report types.
 
-The dependency detection workflow is as follows:
+## Dependency detection
 
-1. The application to be scanned provides a
-   [CycloneDX SBOM report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)
-   or creates one by [enabling the GitLab Dependency Scanning analyzer](#enabling-the-analyzer).
-1. GitLab checks each of the dependencies listed in the SBOM against the GitLab Advisory Database.
-1. If the SBOM report is declared by a CI/CD job on the default branch: vulnerabilities are created,
-   and can be seen in the vulnerability report.
+Dependency scanning using SBOM requires the detected dependencies to be captured in a CycloneDX SBOM document.
+However, the modular aspect of this functionality allows you to select how this document is generated:
 
-   If the SBOM report is declared by a CI/CD job on a non-default branch: no vulnerability
-   scanning takes place. Improvement to the feature is being tracked in
-   [Epic 14636](https://gitlab.com/groups/gitlab-org/-/epics/14636) so that security findings are
-   created, and can be seen in the pipeline security tab and MR security widget.
+- Using the Dependency Scanning analyzer provided by GitLab (recommended)
+- Using the (deprecated) Gemnasium analyzer provided by GitLab
+- Using a custom job with a 3rd party CycloneDX SBOM generator or a custom tool.
+
+In order to activate dependency scanning using SBOM, the provided CycloneDX SBOM document must:
+
+- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
+- Comply with the [GitLab CycloneDX property taxonomy](../../../../development/sec/cyclonedx_property_taxonomy.md).
+- Be uploaded as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
+
+When using GitLab provided analyzers, these requirements are met.
+
+## Security analysis
+
+Once a compatible CycloneDX SBOM document is uploaded, GitLab automatically performs the security analysis
+with the GitLab SBOM Vulnerability Scanner. Each component is checked against the GitLab Advisory Database and
+scan results are processed in the following manners:
+
+If the SBOM report is declared by a CI/CD job on the default branch: vulnerabilities are created,
+and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
+
+If the SBOM report is declared by a CI/CD job on a non-default branch: security findings are created,
+and can be seen in the [security tab of the pipeline view](../../vulnerability_report/pipeline.md) and MR security widget.
+This functionality is behing a feature flag and tracked in [Epic 14636](https://gitlab.com/groups/gitlab-org/-/epics/14636).
+
+### Supported package types
+
+For the security analysis to be effective, the components listed in your SBOM report must have corresponding
+entries in the [GitLab Advisory Database](../../gitlab_advisory_database/_index.md).
+
+The GitLab SBOM Vulnerablity Scanner can report Dependency Scanning vulnerabilities for components with the
+following [PURL types](https://github.com/package-url/purl-spec/blob/346589846130317464b677bc4eab30bf5040183a/PURL-TYPES.rst):
+
+- `cargo`
+- `composer`
+- `conan`
+- `gem`
+- `golang`
+- `maven`
+- `npm`
+- `nuget`
+- `pypi`
 
 ## Configuration
 
-- Enable the dependency scanning analyzer to generate a CycloneDX SBOM containing your
-  application's dependencies. Once this report is uploaded to GitLab, the dependencies are scanned
-  for known vulnerabilities.
-- You can adjust the analyzer behavior by configuring the CI/CD component's inputs.
+Enable the Dependency Scanning using SBOM feature with one of the following options:
 
-For a list of languages and package managers supported by the analyzer, see
-[supported files](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files).
+- Use either the Dependency Scanning CI/CD template `Dependency-Scanning.gitlab-ci.yml` or `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
+  - The (deprecated) Gemnasium analyzer is used by default.
+  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) to enable a GitLab provided analyzer.
+  - The (deprecated) Gemnasium analyzer is used by default.
+  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
+- Provide your own CycloneDX SBOM document.
 
-After a
-[CycloneDX SBOM report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx)
-is uploaded, GitLab automatically scans all
-[supported package types](../../continuous_vulnerability_scanning/_index.md#supported-package-types)
-present in the report.
+The preferred method is to use the new Dependency Scanning analyzer and this is what is documented in the next section.
+To enable the (deprecated) Gemnasium analyzer please refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#enabling-the-analyzer).
 
 ## Enabling the analyzer
 
@@ -97,12 +131,26 @@ Prerequisites:
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
   - If you're using SaaS runners on GitLab.com, this is enabled by default.
 
-To enable the analyzer, use the `main` [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning):
+To enable the analyzer, you must:
 
-```yaml
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-```
+- Use either the Dependency Scanning CI/CD template `Dependency-Scanning.gitlab-ci.yml` or `Dependency-Scanning.latest.gitlab-ci.yml`
+and enforce the new Dependency Scanning analyzer by settin the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+
+  ```yaml
+    include:
+      - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+    variables:
+      DS_ENFORCE_NEW_ANALYZER: 'true'
+  ```
+
+- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) and enforce the new Dependency Scanning analyzer by settin the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
+
+  ```yaml
+    include:
+      - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+  ```
 
 ### Language-specific instructions
 

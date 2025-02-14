@@ -1235,6 +1235,30 @@ for more information.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Make the `gitlab-runner-helper-images` Linux OS package an optional dependency of `gitlab-runner`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517765).
+
+</div>
+
+Currently the `gitlab-runner` OS package depends on the `gitlab-runner-helper-images` package. The
+`gitlab-runner-helper-images` package provides an exported archive of the `gitlab-runner-helper` Docker images for
+several OS architectures. The archive is ~500MB, but is required by only some users. The required dependency means
+users are forced to install the latter package even if they do not need the exported runner helper images it
+provides.
+
+In GitLab 18.0 this dependency will become optional, and users that need the exported helper images will have to
+explicitly install them. This means that in very specific cases, CI jobs can fail when attempting to pull the helper
+Docker image.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### New data retention limits for vulnerabilities on GitLab.com
 
 <div class="deprecation-notes">
@@ -1475,6 +1499,31 @@ The configuration arguments disabled for authentication tokens are:
 - `--maintenance-note`
 
 This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Reject container image pull policies not in `allowed_pull_policies`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/516107).
+
+</div>
+
+All configured pull-policies should be present in the
+[`allowed_pull_policies` configuration](https://docs.gitlab.com/runner/executors/docker.html#allow-docker-pull-policies)
+specified in the runner's `config.toml` file. If they are not, the job should fail with an `incompatible pull policy` error.
+
+In the current implementation, when multiple pull policies are defined, jobs pass if at least one pull policy
+matches those in `allowed-pull-policies`, even if other policies are not included.
+
+In GitLab 18.0, jobs will fail only if none of the pull policies match those in `allowed-pull-policies`.
+However, unlike the current behavior, jobs will use only the pull policies listed in `allowed-pull-policies`.
+This distinction can cause jobs that currently pass to fail in GitLab 18.0.
 
 </div>
 

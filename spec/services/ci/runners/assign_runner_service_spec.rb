@@ -59,7 +59,7 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
           expect(execute).to be_error
           expect(execute.reason).to eq(:runner_error)
           expect(execute.errors).to contain_exactly(
-            'Assign to Validation failed: Runner projects runner has already been taken')
+            'Validation failed: Runner projects runner has already been taken')
         end
       end
 
@@ -119,10 +119,11 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
     context 'when runner is not associated with any projects' do
       let(:runner) { create(:ci_runner, :project, :without_projects) }
 
-      it 'calls assign_to on runner and returns success response' do
+      it 'does not allow taking over the orphaned runner' do
         expect(runner).to receive(:assign_to).with(new_project, user).once.and_call_original
 
-        expect(execute).to be_success
+        expect(execute).to be_error
+        expect(runner.errors[:assign_to]).to contain_exactly('Taking over an orphaned project runner is not allowed')
       end
     end
   end

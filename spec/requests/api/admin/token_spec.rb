@@ -146,55 +146,47 @@ RSpec.describe API::Admin::Token, :aggregate_failures, feature_category: :system
 
     context 'when the user is an admin' do
       context 'when the token is valid' do
-        where(:token, :plaintext) do
-          [
-            [ref(:personal_access_token), lazy { personal_access_token.token }],
-            [ref(:project_access_token), lazy { project_access_token.token }],
-            [ref(:impersonation_token), lazy { impersonation_token.token }],
-            [ref(:group_access_token), lazy { group_access_token.token }],
-            [ref(:group_deploy_token), lazy { group_deploy_token.token }],
-            [ref(:project_deploy_token), lazy { project_deploy_token.token }],
-            [ref(:cluster_agent_token), lazy { cluster_agent_token.token }]
-          ]
-        end
+        context 'when the token can be revoked' do
+          where(:token, :plaintext) do
+            [
+              [ref(:personal_access_token), lazy { personal_access_token.token }],
+              [ref(:project_access_token), lazy { project_access_token.token }],
+              [ref(:impersonation_token), lazy { impersonation_token.token }],
+              [ref(:group_access_token), lazy { group_access_token.token }],
+              [ref(:group_deploy_token), lazy { group_deploy_token.token }],
+              [ref(:project_deploy_token), lazy { project_deploy_token.token }],
+              [ref(:cluster_agent_token), lazy { cluster_agent_token.token }]
+            ]
+          end
 
-        with_them do
-          it 'revokes the token' do
-            delete_token
+          with_them do
+            it 'revokes the token' do
+              delete_token
 
-            expect(response).to have_gitlab_http_status(:no_content)
-            expect(token.reload.revoked?).to be_truthy
+              expect(response).to have_gitlab_http_status(:no_content)
+              expect(token.reload.revoked?).to be_truthy
+            end
           end
         end
-      end
 
-      context 'when the token is a feed token' do
-        let(:plaintext) { user.feed_token }
+        context 'when the token can be reset' do
+          where(:token, :plaintext_attribute, :changed_attribute) do
+            [
+              [ref(:user), :feed_token, :feed_token],
+              [ref(:runner_authentication_token), :token, :token],
+              [ref(:feature_flags_client), :token, :token],
+              [ref(:oauth_application), :plaintext_secret, :secret]
+            ]
+          end
 
-        it 'resets the token' do
-          delete_token
+          with_them do
+            let(:plaintext) { token.send(plaintext_attribute) }
+            it 'resets the token' do
+              expect { delete_token }.to change { token.reload.send(changed_attribute) }
 
-          expect(response).to have_gitlab_http_status(:no_content)
-          expect(user.reload.feed_token).not_to eq(plaintext)
-        end
-      end
-
-      context 'when the token is a runner authentication token' do
-        let(:plaintext) { runner_authentication_token.token }
-
-        it 'resets the runner token' do
-          expect { delete_token }.to change { runner_authentication_token.reload.token }
-          expect(response).to have_gitlab_http_status(:no_content)
-        end
-      end
-
-      context 'when the token is an oauth application token' do
-        let(:plaintext) { oauth_application.plaintext_secret }
-
-        it 'resets the token' do
-          expect { delete_token }.to change { oauth_application.reload.secret }
-
-          expect(response).to have_gitlab_http_status(:no_content)
+              expect(response).to have_gitlab_http_status(:no_content)
+            end
+          end
         end
       end
 

@@ -7,22 +7,6 @@ query workItemDevelopment($id: WorkItemID!) {
     namespace {
       id
     }
-    mockWidgets @client {
-      type
-      customFieldValues {
-        ... on LocalWorkItemNumberFieldValue {
-          id
-        }
-
-        ... on LocalWorkItemTextFieldValue {
-          id
-        }
-
-        ... on LocalWorkItemSelectFieldValue {
-          id
-        }
-      }
-    }
     widgets {
       ... on WorkItemWidgetDevelopment {
         ...WorkItemDevelopmentFragment

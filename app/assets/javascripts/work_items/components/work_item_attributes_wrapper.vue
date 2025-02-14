@@ -19,7 +19,6 @@ import {
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
-  WIDGET_TYPE_CUSTOM_FIELDS,
   WORK_ITEM_TYPE_VALUE_MAP,
 } from '../constants';
 import { findHierarchyWidgetDefinition } from '../utils';
@@ -194,21 +193,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
     },
     showWorkItemCustomFields() {
-      // Making sure we have mocks only for flightjs (local) and gitlab-org (prod)
-      const isValidGroup = this.groupPath === 'flightjs' || this.groupPath === 'gitlab-org';
-
-      // @todo: Added flag and mocked CUSTOM_FIELDS widget while not suported by backend
-      return (
-        this.glFeatures.customFieldsFeature &&
-        this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_CUSTOM_FIELDS) &&
-        isValidGroup
-      );
-    },
-    workItemCustomFields() {
-      // @todo: Mocking CUSTOM_FIELDS widget while not suported by backend
-      return this.workItem?.mockWidgets?.find(
-        (widget) => widget.type === WIDGET_TYPE_CUSTOM_FIELDS,
-      );
+      return this.glFeatures.customFieldsFeature;
     },
   },
   methods: {
@@ -351,13 +336,15 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <work-item-custom-fields
-      v-if="showWorkItemCustomFields"
-      :custom-field-values="workItemCustomFields.customFieldValues"
-      :work-item-type="workItemType"
-      :full-path="fullPath"
-      :can-update="canUpdate"
-    />
+    <template v-if="showWorkItemCustomFields">
+      <work-item-custom-fields
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        :full-path="fullPath"
+        :can-update="canUpdate"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="showParent">
       <work-item-parent
         class="work-item-attributes-item"

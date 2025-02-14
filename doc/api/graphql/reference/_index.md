@@ -104,6 +104,20 @@ Returns [`[AddOnPurchase!]`](#addonpurchase).
 | ---- | ---- | ----------- |
 | <a id="queryaddonpurchasesnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | ID of namespace that the add-ons were purchased for. |
 
+### `Query.adminMemberRolePermissions`
+
+List of all admin customizable permissions.
+
+DETAILS:
+**Introduced** in GitLab 17.9.
+**Status**: Experiment.
+
+Returns [`CustomizableAdminPermissionConnection`](#customizableadminpermissionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.aiConversationThreads`
 
 List conversation threads of AI features.
@@ -810,13 +824,13 @@ Returns [`MemberRole`](#memberrole).
 
 ### `Query.memberRolePermissions`
 
-List of all customizable permissions.
+List of all standard customizable permissions.
 
 DETAILS:
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
-Returns [`CustomizablePermissionConnection`](#customizablepermissionconnection).
+Returns [`CustomizableStandardPermissionConnection`](#customizablestandardpermissionconnection).
 
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
@@ -14410,29 +14424,6 @@ The edge type for [`CustomizableDashboardVisualization`](#customizabledashboardv
 | <a id="customizabledashboardvisualizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="customizabledashboardvisualizationedgenode"></a>`node` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | The item at the end of the edge. |
 
-#### `CustomizablePermissionConnection`
-
-The connection type for [`CustomizablePermission`](#customizablepermission).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="customizablepermissionconnectionedges"></a>`edges` | [`[CustomizablePermissionEdge]`](#customizablepermissionedge) | A list of edges. |
-| <a id="customizablepermissionconnectionnodes"></a>`nodes` | [`[CustomizablePermission]`](#customizablepermission) | A list of nodes. |
-| <a id="customizablepermissionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `CustomizablePermissionEdge`
-
-The edge type for [`CustomizablePermission`](#customizablepermission).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="customizablepermissionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="customizablepermissionedgenode"></a>`node` | [`CustomizablePermission`](#customizablepermission) | The item at the end of the edge. |
-
 #### `CustomizableStandardPermissionConnection`
 
 The connection type for [`CustomizableStandardPermission`](#customizablestandardpermission).
@@ -23453,10 +23444,7 @@ Represents a custom field select option.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="customizableadminpermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
 | <a id="customizableadminpermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
-| <a id="customizableadminpermissionenabledforgroupaccesslevels"></a>`enabledForGroupAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Group access levels from which the permission is allowed. |
-| <a id="customizableadminpermissionenabledforprojectaccesslevels"></a>`enabledForProjectAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Project access levels from which the permission is allowed. |
 | <a id="customizableadminpermissionname"></a>`name` | [`String!`](#string) | Localized name of the permission. |
 | <a id="customizableadminpermissionrequirements"></a>`requirements` | [`[MemberRoleAdminPermission!]`](#memberroleadminpermission) | Requirements of the permission. |
 | <a id="customizableadminpermissionvalue"></a>`value` | [`MemberRoleAdminPermission!`](#memberroleadminpermission) | Value of the permission. |
@@ -23506,20 +23494,6 @@ Represents a product analytics dashboard visualization.
 | <a id="customizabledashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
 | <a id="customizabledashboardvisualizationslug"></a>`slug` | [`String!`](#string) | Slug of the visualization. |
 | <a id="customizabledashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |
-
-### `CustomizablePermission`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="customizablepermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
-| <a id="customizablepermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
-| <a id="customizablepermissionenabledforgroupaccesslevels"></a>`enabledForGroupAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Group access levels from which the permission is allowed. |
-| <a id="customizablepermissionenabledforprojectaccesslevels"></a>`enabledForProjectAccessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Project access levels from which the permission is allowed. |
-| <a id="customizablepermissionname"></a>`name` | [`String!`](#string) | Localized name of the permission. |
-| <a id="customizablepermissionrequirements"></a>`requirements` | [`[MemberRolePermission!]`](#memberrolepermission) | Requirements of the permission. |
-| <a id="customizablepermissionvalue"></a>`value` | [`MemberRolePermission!`](#memberrolepermission) | Value of the permission. |
 
 ### `CustomizableStandardPermission`
 

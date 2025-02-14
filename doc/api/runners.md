@@ -274,7 +274,6 @@ NOTE:
 The `version`, `revision`, `platform`, and `architecture` attributes in the response were deprecated
 [in GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
-These attributes will start returning an empty string in GitLab 18.0.
 The same attributes can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
 

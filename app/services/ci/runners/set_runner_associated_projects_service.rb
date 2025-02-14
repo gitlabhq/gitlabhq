@@ -60,7 +60,7 @@ module Ci
           return error_responses.sole if error_responses.one?
 
           return ServiceResponse.error(
-            message: error_responses.map(&:message).uniq,
+            message: error_responses.flat_map(&:message).uniq,
             reason: :multiple_errors
           )
         end

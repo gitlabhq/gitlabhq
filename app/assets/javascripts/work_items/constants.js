@@ -103,6 +103,10 @@ export const I18N_WORK_ITEM_FETCH_AWARD_EMOJI_ERROR = s__(
   'WorkItem|Something went wrong while fetching work item award emojis. Please try again.',
 );
 
+export const I18N_WORK_ITEM_FETCH_CUSTOM_FIELDS_ERROR = s__(
+  'WorkItem|Some fields could not be loaded. Refresh the page to try again.',
+);
+
 export const I18N_NEW_WORK_ITEM_BUTTON_LABEL = s__('WorkItem|New %{workItemType}');
 export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
 export const I18N_WORK_ITEM_NEW_RELATED_ITEM = s__('WorkItem|New related %{workItemType}');

@@ -18,10 +18,11 @@ module Authn
         ::FeatureFlags::ClientConfigurationEntity
       end
 
-      def revoke!(_current_user)
+      def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type'
+        ::Environments::FeatureFlags::ResetClientTokenService.new(current_user: current_user,
+          feature_flags_client: revocable).execute!
       end
     end
   end

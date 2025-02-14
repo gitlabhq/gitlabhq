@@ -25,7 +25,7 @@ module Ci
           ServiceResponse.success
         else
           ServiceResponse.error(
-            message: @runner.errors.full_messages_for(:assign_to).presence || _('failed to assign runner to project'),
+            message: @runner.errors[:assign_to] || _('failed to assign runner to project'),
             reason: :runner_error)
         end
       end

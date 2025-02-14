@@ -1,6 +1,5 @@
 enum LocalWidgetType {
   ASSIGNEES
-  CUSTOM_FIELDS
 }
 
 interface LocalWorkItemWidget {
@@ -10,58 +9,6 @@ interface LocalWorkItemWidget {
 type LocalWorkItemAssignees implements LocalWorkItemWidget {
   type: LocalWidgetType!
   nodes: [UserCore]
-}
-
-enum LocalCustomFieldType {
-  CUSTOM_FIELDS_TYPE_NUMBER
-  CUSTOM_FIELDS_TYPE_TEXT
-  CUSTOM_FIELDS_TYPE_SINGLE_SELECT
-  CUSTOM_FIELDS_TYPE_MULTI_SELECT
-}
-
-type CustomFieldIdValue {
-  id: String
-  value: String
-}
-
-interface LocalWorkItemCustomField {
-  id: String
-  fieldType: LocalCustomFieldType
-  name: String
-}
-
-type LocalWorkItemCustomFieldSelect implements LocalWorkItemCustomField {
-  id: String
-  fieldType: LocalCustomFieldType
-  name: String
-  selectOptions: [CustomFieldIdValue]
-}
-
-interface LocalWorkItemCustomFieldValues {
-  id: String
-}
-
-type LocalWorkItemNumberFieldValue implements LocalWorkItemCustomFieldValues {
-  id: String
-  customField: LocalWorkItemCustomField
-  value: Int
-}
-
-type LocalWorkItemTextFieldValue implements LocalWorkItemCustomFieldValues {
-  id: String
-  customField: LocalWorkItemCustomField
-  value: String
-}
-
-type LocalWorkItemSelectFieldValue implements LocalWorkItemCustomFieldValues {
-  id: String
-  customField: LocalWorkItemCustomFieldSelect
-  selectedOptions: [CustomFieldIdValue]
-}
-
-type LocalWorkItemCustomFields implements LocalWorkItemWidget {
-  type: LocalWidgetType!
-  customFieldValues: [LocalWorkItemCustomFieldValues]
 }
 
 extend type WorkItem {

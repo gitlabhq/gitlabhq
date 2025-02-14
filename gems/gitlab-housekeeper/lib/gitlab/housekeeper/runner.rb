@@ -36,7 +36,7 @@ module Gitlab
                    all_keeps
                  end
 
-        @filter_identifiers = filter_identifiers
+        @filter_identifiers = ::Gitlab::Housekeeper::FilterIdentifiers.new(filter_identifiers)
       end
 
       def run
@@ -45,7 +45,7 @@ module Gitlab
         git.with_clean_state do
           @keeps.each do |keep_class|
             @logger.puts "Running keep #{keep_class}"
-            keep = keep_class.new(logger: @logger)
+            keep = keep_class.new(logger: @logger, filter_identifiers: @filter_identifiers)
             keep.each_change do |change|
               unless change.valid?
                 @logger.warn "Ignoring invalid change from: #{keep_class}"
@@ -57,7 +57,7 @@ module Gitlab
               branch_name = git.create_branch(change)
               add_standard_change_data(change)
 
-              if change.aborted? || !change.matches_filters?(@filter_identifiers)
+              if change.aborted? || !@filter_identifiers.matches_filters?(change.identifiers)
                 # At this point the keep has already run and edited files so we need to
                 # restore the local working copy. We could simply checkout all
                 # changed_files but this is very risky as it could mean losing work that

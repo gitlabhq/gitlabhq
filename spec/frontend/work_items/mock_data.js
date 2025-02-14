@@ -6,6 +6,9 @@ import {
   STATE_CLOSED,
   WIDGET_TYPE_CUSTOM_FIELDS,
   CUSTOM_FIELDS_TYPE_NUMBER,
+  CUSTOM_FIELDS_TYPE_TEXT,
+  CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+  CUSTOM_FIELDS_TYPE_MULTI_SELECT,
 } from '~/work_items/constants';
 
 export const mockAssignees = [
@@ -1357,7 +1360,6 @@ export const workItemResponseFactory = ({
   healthStatusWidgetPresent = true,
   notesWidgetPresent = true,
   designWidgetPresent = true,
-  customFieldsWidgetPresent = true,
   confidential = false,
   hasChildren = true,
   discussionLocked = false,
@@ -1394,6 +1396,8 @@ export const workItemResponseFactory = ({
   descriptionText = 'some **great** text',
   descriptionHtml = '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
   developmentWidgetPresent = false,
+  customFieldsWidgetPresent = true,
+  customFieldValues = null,
 } = {}) => ({
   data: {
     workItem: {
@@ -1436,29 +1440,6 @@ export const workItemResponseFactory = ({
       reference: 'test-project-path#1',
       createNoteEmail:
         'gitlab-incoming+test-project-path-13fp7g6i9agekcv71s0jx9p58-issue-1@gmail.com',
-      ...(customFieldsWidgetPresent
-        ? {
-            mockWidgets: [
-              {
-                __typename: 'LocalWorkItemCustomFields',
-                type: WIDGET_TYPE_CUSTOM_FIELDS,
-                customFieldValues: [
-                  {
-                    id: 'gid://gitlab/CustomFieldValue/1',
-                    customField: {
-                      id: '1-number',
-                      fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
-                      name: 'Number custom field label',
-                      __typename: 'LocalWorkItemCustomField',
-                    },
-                    value: 5,
-                    __typename: 'LocalWorkItemNumberFieldValue',
-                  },
-                ],
-              },
-            ],
-          }
-        : {}),
       widgets: [
         {
           __typename: 'WorkItemWidgetDescription',
@@ -1741,6 +1722,98 @@ export const workItemResponseFactory = ({
           ? {
               type: 'DEVELOPMENT',
               __typename: 'WorkItemWidgetDevelopment',
+            }
+          : { type: 'MOCK TYPE' },
+        customFieldsWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetCustomFields',
+              type: WIDGET_TYPE_CUSTOM_FIELDS,
+              customFieldValues: customFieldValues ?? [
+                {
+                  id: 'gid://gitlab/CustomFieldValue/1',
+                  customField: {
+                    id: '1-number',
+                    fieldType: CUSTOM_FIELDS_TYPE_NUMBER,
+                    name: 'Number custom field label',
+                    selectOptions: null,
+                  },
+                  value: 5,
+                  __typename: 'WorkItemNumberFieldValue',
+                },
+                {
+                  id: 'gid://gitlab/CustomFieldValue/2',
+                  customField: {
+                    id: '1-text',
+                    fieldType: CUSTOM_FIELDS_TYPE_TEXT,
+                    name: 'Text custom field label',
+                    selectOptions: null,
+                  },
+                  value: 'Sample text',
+                  __typename: 'WorkItemTextFieldValue',
+                },
+                {
+                  id: 'gid://gitlab/CustomFieldValue/3',
+                  customField: {
+                    id: '1-select',
+                    fieldType: CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+                    name: 'Single select custom field label',
+                    selectOptions: [
+                      {
+                        id: 'select-1',
+                        value: 'Option 1',
+                      },
+                      {
+                        id: 'select-2',
+                        value: 'Option 2',
+                      },
+                      {
+                        id: 'select-3',
+                        value: 'Option 3',
+                      },
+                    ],
+                  },
+                  selectedOptions: [
+                    {
+                      id: 'select-1',
+                      value: 'Option 1 ',
+                    },
+                  ],
+                  __typename: 'WorkItemSelectFieldValue',
+                },
+                {
+                  id: 'gid://gitlab/CustomFieldValue/4',
+                  customField: {
+                    id: '1-multi-select',
+                    fieldType: CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+                    name: 'Multi select custom field label',
+                    selectOptions: [
+                      {
+                        id: 'select-1',
+                        value: 'Option 1',
+                      },
+                      {
+                        id: 'select-2',
+                        value: 'Option 2',
+                      },
+                      {
+                        id: 'select-3',
+                        value: 'Option 3',
+                      },
+                    ],
+                  },
+                  selectedOptions: [
+                    {
+                      id: 'select-1',
+                      value: 'Option 1',
+                    },
+                    {
+                      id: 'select-2',
+                      value: 'Option 2',
+                    },
+                  ],
+                  __typename: 'WorkItemSelectFieldValue',
+                },
+              ],
             }
           : { type: 'MOCK TYPE' },
       ],
@@ -5563,7 +5636,6 @@ export const createWorkItemQueryResponse = {
           reportSpam: false,
           __typename: 'WorkItemPermissions',
         },
-        mockWidgets: [],
         widgets: [
           {
             type: 'ASSIGNEES',

@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Authn::Tokens::FeatureFlagsClientToken, feature_category: :system_access do
+RSpec.describe Authn::Tokens::FeatureFlagsClientToken, :aggregate_failures, feature_category: :feature_flags do
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, maintainers: [user]) }
 
-  let(:feature_flags_client) { create(:operations_feature_flags_client) }
+  let(:feature_flags_client) { create(:operations_feature_flags_client, project: project) }
 
   subject(:token) { described_class.new(plaintext, :api_admin_token) }
 
@@ -16,10 +17,11 @@ RSpec.describe Authn::Tokens::FeatureFlagsClientToken, feature_category: :system
     it_behaves_like 'finding the valid revocable'
 
     describe '#revoke!' do
-      it 'does not support revocation yet' do
-        expect do
-          token.revoke!(user)
-        end.to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported token type')
+      subject(:revoke) { token.revoke!(user) }
+
+      it 'successfully resets the client token' do
+        expect { revoke }.to change { feature_flags_client.reload.token }
+        expect(revoke.success?).to be_truthy
       end
     end
   end

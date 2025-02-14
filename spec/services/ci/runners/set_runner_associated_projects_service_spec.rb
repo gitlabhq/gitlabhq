@@ -223,24 +223,23 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
           let(:new_projects) { [project3, project4] }
           let(:owner_project) { new_projects.first }
 
-          it 'assigns associated projects and returns success response' do
-            expect(execute).to be_success
+          it 'does not allow taking over the orphaned runner' do
+            expect(execute).to be_error
+            expect(execute.message)
+              .to contain_exactly('Taking over an orphaned project runner is not allowed')
 
-            runner.reload
-
-            expect(runner.owner).to eq(owner_project)
-            expect(ordered_runner_project_ids).to eq(new_projects.map(&:id))
+            expect(runner.reload.owner).to be_nil
           end
 
           context 'with different owner' do
             let(:new_projects) { [project4, project3] }
 
-            it 'assigns correct owner and returns success response' do
-              expect(execute).to be_success
+            it 'does not allow taking over the orphaned runner' do
+              expect(execute).to be_error
+              expect(execute.message)
+                .to contain_exactly('Taking over an orphaned project runner is not allowed')
 
-              runner.reload
-
-              expect(runner.owner).to eq(owner_project)
+              expect(runner.reload.owner).to be_nil
             end
           end
         end

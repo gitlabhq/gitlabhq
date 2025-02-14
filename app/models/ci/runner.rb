@@ -356,11 +356,16 @@ module Ci
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
+      if self.runner_projects.empty?
+        self.errors.add(:assign_to, 'Taking over an orphaned project runner is not allowed')
+        return false
+      end
+
       begin
         transaction do
-          if ::Project.id_in(sharding_key_id).empty?
-            self.clear_memoization(:owner)
-            self.sharding_key_id = fallback_owner_project&.id || project.id
+          if projects.id_in(sharding_key_id).empty? && !update_project_id
+            self.errors.add(:assign_to, 'Runner is orphaned and no fallback owner exists')
+            next false
           end
 
           self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
@@ -551,6 +556,20 @@ module Ci
       project_ids = runner_projects.order(:id).pluck(:project_id)
       projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
       Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
+    end
+
+    # Ensure we have a valid sharding_key_id. Logic is similar to the one used in
+    # Ci::Runners::UpdateProjectRunnersOwnerService when a project is deleted
+    def update_project_id
+      project_id = fallback_owner_project&.id
+
+      return if project_id.nil?
+
+      self.clear_memoization(:owner)
+      self.sharding_key_id = project_id
+
+      runner_managers.where(runner_type: :project_type).each_batch { |batch| batch.update_all(sharding_key_id: project_id) }
+      taggings.where(runner_type: :project_type).update_all(sharding_key_id: project_id)
     end
 
     def compute_token_expiration_instance

@@ -1,0 +1,25 @@
+- title: Make the `gitlab-runner-helper-images` Linux OS package an optional dependency of `gitlab-runner`
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  window: # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
+  reporter: deastman # The GitLab username of the person reporting the change
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517765
+  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact: medium # Can be one of: [critical, high, medium, low]
+  scope: instance, group, project # Can be one or a combination of: [instance, group, project]
+  resolution_role: Maintainer # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: | # (required) Don't change this line.
+    Currently the `gitlab-runner` OS package depends on the `gitlab-runner-helper-images` package. The
+    `gitlab-runner-helper-images` package provides an exported archive of the `gitlab-runner-helper` Docker images for
+    several OS architectures. The archive is ~500MB, but is required by only some users. The required dependency means
+    users are forced to install the latter package even if they do not need the exported runner helper images it
+    provides.
+
+    In GitLab 18.0 this dependency will become optional, and users that need the exported helper images will have to
+    explicitly install them. This means that in very specific cases, CI jobs can fail when attempting to pull the helper
+    Docker image.
