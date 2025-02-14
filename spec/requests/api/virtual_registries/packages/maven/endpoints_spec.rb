@@ -182,6 +182,19 @@ RSpec.describe API::VirtualRegistries::Packages::Maven::Endpoints, :aggregate_fa
         it_behaves_like 'returning response status', :not_found
       end
 
+      context 'with a personal access token with only the read_virtual_registry scope' do
+        let(:personal_access_token) { create(:personal_access_token, user: user, scopes: ['read_virtual_registry']) }
+
+        let(:headers) { { 'Private-Token' => personal_access_token.token } }
+
+        before do
+          # read_virtual_registry is only available when the dependency proxy feature is enabled
+          stub_config(dependency_proxy: { enabled: true })
+        end
+
+        it_behaves_like 'returning the workhorse send_dependency response'
+      end
+
       it_behaves_like 'disabled virtual_registry_maven feature flag'
       it_behaves_like 'maven virtual registry disabled dependency proxy'
     end

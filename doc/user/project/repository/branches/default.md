@@ -27,9 +27,9 @@ GitLab checks first for specific customizations, then checks at a broader level,
 using the GitLab default only if no customizations are set:
 
 1. A [project-specific](#change-the-default-branch-name-for-a-project) custom default branch name.
-1. [Custom group default branch name](#group-level-custom-initial-branch-name) specified in project's direct subgroup.
-1. [Custom group default branch name](#group-level-custom-initial-branch-name) specified in project's top-level group.
-1. A custom default branch name set for the [instance](#instance-level-custom-initial-branch-name).
+1. [Custom group default branch name](#change-the-default-branch-name-for-new-projects-in-a-group) specified in a project's direct subgroup.
+1. Custom group default branch name specified in a project's top-level group.
+1. A custom default branch name set for the [instance](#change-the-default-branch-name-for-new-projects-in-an-instance).
 1. If no custom default branch name is set at any level, GitLab defaults to `main`.
 
 In the GitLab UI, you can change the defaults at any level. GitLab also provides
@@ -54,13 +54,7 @@ To update the default branch for an individual [project](../../_index.md):
 API users can also use the `default_branch` attribute of the
 [Projects API](../../../../api/projects.md) when creating or editing a project.
 
-## Change the default branch name for an instance or group
-
-GitLab administrators can configure a new default branch name for the
-[entire instance](#instance-level-custom-initial-branch-name) or for
-[individual groups](#group-level-custom-initial-branch-name).
-
-### Instance-level custom initial branch name
+## Change the default branch name for new projects in an instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -80,9 +74,13 @@ Projects created on this instance after you change the setting use the
 custom branch name, unless a group or subgroup configuration
 overrides it.
 
-### Group-level custom initial branch name
+## Change the default branch name for new projects in a group
 
-Users with the Owner role of groups and subgroups can configure the default branch name for a group:
+Prerequisites:
+
+- You must have the Owner role for the group and subgroups.
+
+To change the default branch name for new projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Repository**.
@@ -102,9 +100,7 @@ DETAILS:
 > - Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
 
 GitLab administrators and group owners can define [branch protections](protected.md)
-to apply to every repository's default branch
-[for the instance](#instance-level-default-branch-protection) and
-[individual groups](#group-level-default-branch-protection) with one of the following options:
+to apply to every repository's default branch for the instance, or for individual groups, with one of these options:
 
 - **Fully protected** - Default value. Developers cannot push new commits, but maintainers can.
   No one can force push.
@@ -120,7 +116,7 @@ to apply to every repository's default branch
 WARNING:
 Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
 
-### Instance-level default branch protection
+### For all projects in an instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -163,7 +159,7 @@ disable this privilege for group owners, enforcing the protection rule set for t
 NOTE:
 GitLab administrators can still update the default branch protection of a group.
 
-### Group-level default branch protection
+### For all projects in a group
 
 DETAILS:
 **Tier:** Premium, Ultimate

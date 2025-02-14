@@ -3145,31 +3145,6 @@ Input type: `BranchRuleUpdateInput`
 | <a id="mutationbranchruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationbranchruleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
-### `Mutation.buildForecast`
-
-DETAILS:
-**Introduced** in GitLab 16.0.
-**Status**: Experiment.
-
-Input type: `BuildForecastInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationbuildforecastclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationbuildforecastcontextid"></a>`contextId` | [`GlobalID!`](#globalid) | Global ID of the context for the forecast to pick an appropriate model. |
-| <a id="mutationbuildforecasthorizon"></a>`horizon` | [`Int!`](#int) | Number of data points to forecast. |
-| <a id="mutationbuildforecasttype"></a>`type` | [`String!`](#string) | Type of the forecast. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationbuildforecastclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationbuildforecasterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationbuildforecastforecast"></a>`forecast` | [`Forecast!`](#forecast) | Created forecast. |
-
 ### `Mutation.bulkDestroyJobArtifacts`
 
 DETAILS:
@@ -15213,29 +15188,6 @@ The edge type for [`FeatureFlag`](#featureflag).
 | <a id="featureflagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="featureflagedgenode"></a>`node` | [`FeatureFlag`](#featureflag) | The item at the end of the edge. |
 
-#### `ForecastDatapointConnection`
-
-The connection type for [`ForecastDatapoint`](#forecastdatapoint).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="forecastdatapointconnectionedges"></a>`edges` | [`[ForecastDatapointEdge]`](#forecastdatapointedge) | A list of edges. |
-| <a id="forecastdatapointconnectionnodes"></a>`nodes` | [`[ForecastDatapoint]`](#forecastdatapoint) | A list of nodes. |
-| <a id="forecastdatapointconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `ForecastDatapointEdge`
-
-The edge type for [`ForecastDatapoint`](#forecastdatapoint).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="forecastdatapointedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="forecastdatapointedgenode"></a>`node` | [`ForecastDatapoint`](#forecastdatapoint) | The item at the end of the edge. |
-
 #### `GitlabSubscriptionHistoryConnection`
 
 The connection type for [`GitlabSubscriptionHistory`](#gitlabsubscriptionhistory).
@@ -25295,28 +25247,6 @@ Represents security reports comparison for vulnerability findings.
 | <a id="findingreportscomparerreport"></a>`report` **{warning-solid}** | [`ComparedSecurityReport`](#comparedsecurityreport) | **Introduced** in GitLab 16.1. **Status**: Experiment. Compared security report. |
 | <a id="findingreportscomparerstatus"></a>`status` | [`FindingReportsComparerStatus`](#findingreportscomparerstatus) | Comparison status. |
 | <a id="findingreportscomparerstatusreason"></a>`statusReason` | [`String`](#string) | Text explaining the status. |
-
-### `Forecast`
-
-Information about specific forecast created.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="forecaststatus"></a>`status` | [`ForecastStatus!`](#forecaststatus) | Status of the forecast. |
-| <a id="forecastvalues"></a>`values` | [`ForecastDatapointConnection`](#forecastdatapointconnection) | Actual forecast values. (see [Connections](#connections)) |
-
-### `ForecastDatapoint`
-
-Information about specific forecast datapoint.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="forecastdatapointdatapoint"></a>`datapoint` | [`String!`](#string) | Datapoint of the forecast. Usually a date. |
-| <a id="forecastdatapointvalue"></a>`value` | [`Float`](#float) | Value of the given datapoint. |
 
 ### `ForkDetails`
 
@@ -41101,15 +41031,6 @@ Report comparison status.
 | <a id="findingreportscomparerstatuserror"></a>`ERROR` | An error happened while generating the report. |
 | <a id="findingreportscomparerstatusparsed"></a>`PARSED` | Report was generated. |
 | <a id="findingreportscomparerstatusparsing"></a>`PARSING` | Report is being generated. |
-
-### `ForecastStatus`
-
-List of statuses for forecasting model.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="forecaststatusready"></a>`READY` | Forecast is ready. |
-| <a id="forecaststatusunavailable"></a>`UNAVAILABLE` | Forecast is unavailable. |
 
 ### `GeoRegistriesBulkAction`
 

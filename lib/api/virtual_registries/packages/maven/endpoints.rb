@@ -7,6 +7,7 @@ module API
         class Endpoints < ::API::Base
           include ::API::Helpers::Authentication
           include ::API::Concerns::VirtualRegistries::Packages::Endpoint
+          include ::API::APIGuard
 
           feature_category :virtual_registry
           urgency :low
@@ -25,6 +26,8 @@ module API
               :job_token_with_username
             ).sent_through(:http_basic_auth)
           end
+
+          allow_access_with_scope :read_virtual_registry
 
           helpers do
             include ::Gitlab::Utils::StrongMemoize

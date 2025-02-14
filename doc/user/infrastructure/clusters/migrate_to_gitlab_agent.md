@@ -80,6 +80,7 @@ Prerequisites:
 
 To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
 
+1. If you're migrating an existing environment, configure an agent for the environment either through the [dashboard for Kubernetes](../../../ci/environments/kubernetes_dashboard.md#configure-a-dashboard) or the [Environments API](../../../api/environments.md).
 1. Configure the agent to turn on resource management in your agent configuration file:
 
    ```yaml

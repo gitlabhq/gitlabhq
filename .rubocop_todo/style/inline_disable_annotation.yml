@@ -1102,8 +1102,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/graphql/types/epic_health_status_type.rb'
     - 'ee/app/graphql/types/epic_issue_type.rb'
     - 'ee/app/graphql/types/external_issue_type.rb'
-    - 'ee/app/graphql/types/forecasting/datapoint_type.rb'
-    - 'ee/app/graphql/types/forecasting/forecast_type.rb'
     - 'ee/app/graphql/types/geo/registry_class_enum.rb'
     - 'ee/app/graphql/types/gitlab_subscriptions/preview_billable_user_change_type.rb'
     - 'ee/app/graphql/types/incident_management/escalation_rule_input_type.rb'

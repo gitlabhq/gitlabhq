@@ -83,8 +83,8 @@ that matches `v1.x` must set `Allowed to push and merge` to `No one`, like this:
 
 ### Set the default branch protection level
 
-Administrators can set a default branch protection level in the
-[**Admin** area](default.md#instance-level-default-branch-protection).
+Administrators can [set a default branch protection level](default.md#for-all-projects-in-an-instance)
+in the **Admin** area.
 
 ## Add protection to existing branches
 

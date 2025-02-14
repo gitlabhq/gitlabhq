@@ -47,6 +47,9 @@ To set up infrastructure for workspaces:
 > - **Variables** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463514) in GitLab 17.1.
 > - **Workspace automatically terminates after** [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166065) in GitLab 17.6.
 
+WARNING:
+Create a workspace only from trusted projects.
+
 Prerequisites:
 
 - You must [set up workspace infrastructure](#set-up-workspace-infrastructure).

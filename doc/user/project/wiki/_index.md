@@ -36,16 +36,9 @@ has [disabled it](#enable-or-disable-a-project-wiki).
 
 ## Configure a default branch for your wiki
 
-The default branch for your wiki repository depends on your version of GitLab:
-
-- *GitLab versions 14.1 and later:* Wikis inherit the
-  [default branch name](../repository/branches/default.md) configured for
-  your instance or group. If no custom value is configured, GitLab uses `main`.
-- *GitLab versions 14.0 and earlier:* GitLab uses `master`.
-
-For any version of GitLab, you can
-[rename this default branch](../repository/branches/default.md#update-the-default-branch-name-in-your-repository)
-for previously created wikis.
+Your wiki repository inherits the [default branch name](../repository/branches/default.md)
+from your instance or group. If no custom branch name is configured, GitLab uses `main`.
+To rename your wiki's default branch,see [Update the default branch name in your repository](../repository/branches/default.md#update-the-default-branch-name-in-your-repository).
 
 ## Create the wiki home page
 

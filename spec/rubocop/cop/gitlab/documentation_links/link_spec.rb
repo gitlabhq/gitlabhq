@@ -15,8 +15,8 @@ RSpec.describe RuboCop::Cop::Gitlab::DocumentationLinks::Link, feature_category:
   shared_examples 'offense registered' do |offense_message|
     it 'registers an offense' do
       expect_offense(<<~'RUBY', code: code, offense_message: offense_message)
-          %{code}
-          ^{code} %{offense_message}
+             %{code}
+             ^{code} %{offense_message}
       RUBY
     end
   end
@@ -82,23 +82,48 @@ RSpec.describe RuboCop::Cop::Gitlab::DocumentationLinks::Link, feature_category:
       end
 
       context 'when the anchor is invalid' do
-        where(:code) do
-          [
-            "help_page_path('/this/file/exists.md#this-anchor-does-not-exist')",
-            "help_page_path('/this/file/exists.md', anchor: 'this-anchor-does-not-exist')",
-            "help_page_url('/this/file/exists.md#this-anchor-does-not-exist')"
-          ]
+        offense_message = "The anchor `#this-anchor-does-not-exist` was not found in [...]"
+
+        context 'when the anchor is passed via the first argument' do
+          let(:argument) { "'/this/file/exists.md#this-anchor-does-not-exist'" }
+
+          it 'registers an offense with help_page_path' do
+            expect_offense(<<~'RUBY', start: "help_page_path(", argument: argument, offense_message: offense_message)
+              %{start}%{argument})
+              _{start}^{argument} %{offense_message}
+            RUBY
+          end
+
+          it 'registers an offense with help_page_url' do
+            expect_offense(<<~'RUBY', start: "help_page_url(", argument: argument, offense_message: offense_message)
+              %{start}%{argument})
+              _{start}^{argument} %{offense_message}
+            RUBY
+          end
         end
 
-        with_them do
-          it_behaves_like 'offense registered', "The anchor `#this-anchor-does-not-exist` was not found in [...]"
+        context 'when the anchor is passed via the anchor argument' do
+          let(:start) { "help_page_path('/this/file/exists.md#this-anchor-does-not-exist', anchor: " }
+          let(:argument) { "'this-anchor-does-not-exist'" }
+
+          it 'registers an offense with help_page_path' do
+            expect_offense(<<~'RUBY', start: start, argument: argument, offense_message: offense_message)
+              %{start}%{argument})
+              _{start}^{argument} %{offense_message}
+            RUBY
+          end
         end
       end
 
       context 'when the anchor is not a string' do
-        let(:code) { "help_page_path('/this/file/exists.md', anchor: anchor_variable)" }
+        let(:start) { "help_page_path('/this/file/exists.md', anchor: " }
 
-        it_behaves_like 'offense registered', "`help_page_path`'s `anchor` argument must be passed as a string [...]"
+        it 'registers an offense' do
+          expect_offense(<<~'RUBY', start: start, argument: "anchor_variable")
+            %{start}%{argument})
+            _{start}^{argument} `help_page_path`'s `anchor` argument must be passed as a string [...]
+          RUBY
+        end
       end
     end
   end
@@ -108,17 +133,20 @@ RSpec.describe RuboCop::Cop::Gitlab::DocumentationLinks::Link, feature_category:
       allow(File).to receive(:exists).and_return(false)
     end
 
-    where(:code) do
-      [
-        "help_page_path('/this/file/does/not/exist.md')",
-        "help_page_path('/this/file/does/not/exist.md#some-anchor')",
-        "help_page_path('/this/file/does/not/exist.md', anchor: 'some-anchor')",
-        "help_page_url('/this/file/does/not/exist.md')"
-      ]
+    where(:start, :argument, :closure) do
+      "help_page_path(" | "'/this/file/does/not/exist.md'" | ")"
+      "help_page_path(" | "'/this/file/does/not/exist.md#some-anchor'" | ")"
+      "help_page_path(" | "'/this/file/does/not/exist.md'" | ", anchor: 'some-anchor')"
+      "help_page_url(" | "'/this/file/does/not/exist.md'" | ")"
     end
 
     with_them do
-      it_behaves_like 'offense registered', "This file does not exist: [...]"
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY', start: start, argument: argument, closure: closure)
+          %{start}%{argument}%{closure}
+          _{start}^{argument} This file does not exist: [...]
+        RUBY
+      end
     end
 
     context 'when the path is not a string' do
@@ -136,10 +164,11 @@ RSpec.describe RuboCop::Cop::Gitlab::DocumentationLinks::Link, feature_category:
       end
 
       with_them do
-        it 'registers an offense and corrects' do
-          expect_offense(<<~'RUBY', code: "help_page_path('#{path}')")
-            %{code}
-            ^{code} Add .md extension to the link: [...]
+        it 'registers two offenses and corrects the missing extension' do
+          expect_offense(<<~'RUBY', start: "help_page_path(", argument: "'#{path}'")
+            %{start}%{argument})
+            _{start}^{argument} This file does not exist: [...]
+            ^{start}^{argument}^ Add .md extension to the link: [...]
           RUBY
 
           expect_correction("help_page_path('#{correction}')\n")

@@ -53,7 +53,7 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   end
 
   describe 'GET index' do
-    describe 'renderering' do
+    describe 'rendering' do
       before do
         list_experiments
       end
@@ -160,10 +160,10 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
         end
       end
 
-      it 'does not perform N+1 sql queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/458136' do
-        control_count = ActiveRecord::QueryRecorder.new(skip_cached: true) { show_experiment }
+      it 'does not perform N+1 sql queries' do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { show_experiment }
 
-        create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment)
+        create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment, project: experiment.project)
 
         expect { show_experiment }.not_to exceed_all_query_limit(control_count)
       end

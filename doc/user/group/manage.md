@@ -84,20 +84,18 @@ For more information about our solution to mitigate this timeout risk, see [issu
 
 ## Change the default branch protection of a group
 
-By default, every group inherits the branch protection set at the global level.
-
-To change this setting for a specific group, see [group level default branch protection](../project/repository/branches/default.md#group-level-default-branch-protection).
-
-To change this setting globally, see [initial default branch protection](../project/repository/branches/default.md#instance-level-default-branch-protection).
-
-NOTE:
-In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group Owners from updating the default branch protection](../project/repository/branches/default.md#prevent-overrides-of-default-branch-protection).
+The administrator of a GitLab instance can configure default branch protections for
+[all projects in an instance](../project/repository/branches/default.md#for-all-projects-in-an-instance).
+Groups in that instance inherit the branch protection set at the global level. Group owners can
+[override the instance settings](../project/repository/branches/default.md#for-all-projects-in-a-group)
+for projects in a group. In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), the administrator
+of the instance can disable this privilege.
 
 ## Use a custom name for the initial branch
 
 When you create a new project in GitLab, a default branch is created with the
 first push. The group Owner can
-[customize the initial branch](../project/repository/branches/default.md#group-level-custom-initial-branch-name)
+[customize the initial branch](../project/repository/branches/default.md#change-the-default-branch-name-for-new-projects-in-a-group)
 for the group's projects to meet your group's needs.
 
 ## Transfer a group

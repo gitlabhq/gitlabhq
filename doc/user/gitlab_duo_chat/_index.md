@@ -94,6 +94,13 @@ This applies to files added via `/include`, and all generation commands.
 ## Use GitLab Duo Chat in the GitLab UI
 
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+
+   > The **GitLab Duo Chat** button is **not visible** in the following sections:
+   >
+   > - Any of the **Your work** pages such as your [To-Do List](../todos.md).
+   > - Your [**user profile**](../profile/_index.md).
+   > - **Help**.
+
 1. Enter your question in the chat input box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
 

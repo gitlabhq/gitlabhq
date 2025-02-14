@@ -25059,9 +25059,6 @@ msgstr ""
 msgid "Forbidden"
 msgstr ""
 
-msgid "Forecast horizon must be positive and %{max_horizon} days at the most."
-msgstr ""
-
 msgid "Forgot your password?"
 msgstr ""
 
@@ -30948,9 +30945,6 @@ msgid "Invalid URL: %{url}"
 msgstr ""
 
 msgid "Invalid access credentials. %{cta}"
-msgstr ""
-
-msgid "Invalid context type. %{type} is expected."
 msgstr ""
 
 msgid "Invalid date"
@@ -61517,9 +61511,6 @@ msgid "Unsubscribed from notifications."
 msgstr ""
 
 msgid "Unsubscribes from notifications."
-msgstr ""
-
-msgid "Unsupported forecast type."
 msgstr ""
 
 msgid "Unsupported signature"

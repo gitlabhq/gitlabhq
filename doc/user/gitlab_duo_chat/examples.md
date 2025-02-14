@@ -10,6 +10,9 @@ represent some of the areas where GitLab Duo Chat can be the most helpful.
 
 For additional practical examples, see the [GitLab Duo use cases](../gitlab_duo/use_cases.md).
 
+NOTE:
+The example questions on this page, including the [slash commands](#gitlab-duo-chat-slash-commands), are deliberately generic. You might receive more useful responses from Chat by asking questions that are specific to your current goal. For example, "How does the `clean_missing_data` function in `data_cleaning.py` decide which rows to drop?".
+
 ## Ask about GitLab
 
 DETAILS:

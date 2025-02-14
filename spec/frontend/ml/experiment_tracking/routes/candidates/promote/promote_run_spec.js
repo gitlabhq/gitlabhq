@@ -250,6 +250,23 @@ describe('PromoteRun', () => {
     });
   });
 
+  describe('Graphql query error', () => {
+    const error = new Error('Failed to fetch');
+
+    beforeEach(async () => {
+      const errorResolver = jest.fn().mockRejectedValue(error);
+      createWrapper(errorResolver);
+
+      findVersionInput().vm.$emit('input', '1.0.0');
+
+      await submitForm();
+    });
+
+    it('logs a Sentry error', () => {
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
   describe('Standalone experiment', () => {
     beforeEach(() => {
       createWrapper(undefined, false);

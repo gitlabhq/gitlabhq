@@ -107,7 +107,7 @@ RSpec.describe Mutations::Issues::Create, feature_category: :api do
           end
 
           it 'ignores the special params' do
-            expect(mutated_issue).not_to be_like_time(special_params[:created_at])
+            expect(mutated_issue.created_at).not_to be_like_time(special_params[:created_at])
             expect(mutated_issue.iid).not_to eq(special_params[:iid])
           end
         end
