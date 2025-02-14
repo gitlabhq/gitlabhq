@@ -6,6 +6,7 @@ import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
+import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import RepositoryOverflowMenu from '~/repository/components/header_area/repository_overflow_menu.vue';
@@ -37,6 +38,7 @@ describe('HeaderArea', () => {
   const findCompactCodeDropdown = () => wrapper.findComponent(CompactCodeDropdown);
   const findSourceCodeDownloadDropdown = () => wrapper.findComponent(SourceCodeDownloadDropdown);
   const findCloneCodeDropdown = () => wrapper.findComponent(CloneCodeDropdown);
+  const findAddToTreeDropdown = () => wrapper.findComponent(AddToTree);
   const findPageHeading = () => wrapper.findByTestId('repository-heading');
   const findFileIcon = () => wrapper.findComponent(FileIcon);
   const findRepositoryOverflowMenu = () => wrapper.findComponent(RepositoryOverflowMenu);
@@ -153,13 +155,28 @@ describe('HeaderArea', () => {
             expect(findCloneCodeDropdown().props('httpUrl')).toBe(headerAppInjected.httpUrl);
           });
         });
+
+        describe('Add to tree dropdown', () => {
+          it('does not render AddToTree component', () => {
+            expect(findAddToTreeDropdown().exists()).toBe(false);
+          });
+        });
       });
     });
   });
 
   describe('when rendered for tree view and directory_code_dropdown_updates flag is true', () => {
-    it('renders CompactCodeDropdown with correct props', () => {
+    beforeEach(() => {
       wrapper = createComponent({}, {}, { glFeatures: { directoryCodeDropdownUpdates: true } });
+    });
+
+    describe('Add to tree dropdown', () => {
+      it('renders AddToTree component', () => {
+        expect(findAddToTreeDropdown().exists()).toBe(true);
+      });
+    });
+
+    it('renders CompactCodeDropdown with correct props', () => {
       expect(findCompactCodeDropdown().exists()).toBe(true);
       expect(findCompactCodeDropdown().props()).toMatchObject({
         sshUrl: headerAppInjected.sshUrl,
@@ -200,6 +217,10 @@ describe('HeaderArea', () => {
       expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
     });
 
+    it('does not render AddToTree component', () => {
+      expect(findAddToTreeDropdown().exists()).toBe(false);
+    });
+
     it('displays correct file name and icon', () => {
       expect(findPageHeading().text()).toContain('index.js');
       expect(findFileIcon().props('fileName')).toBe('index.js');
@@ -221,6 +242,10 @@ describe('HeaderArea', () => {
     it('does not render RefSelector or Breadcrumbs', () => {
       expect(findRefSelector().exists()).toBe(false);
       expect(findBreadcrumbs().exists()).toBe(false);
+    });
+
+    it('does not render AddToTree component', () => {
+      expect(findAddToTreeDropdown().exists()).toBe(false);
     });
 
     it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {

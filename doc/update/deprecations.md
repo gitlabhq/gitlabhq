@@ -750,12 +750,14 @@ This affects the following templates:
 - `Terraform/Base.latest.gitlab-ci.yml`
 
 In GitLab 16.9, a new job is added to the templates to inform users of the deprecation.
+The warning can be switched off by overwriting the `deprecated-and-will-be-removed-in-18.0` job with a placeholder job in the affected pipelines.
 
 GitLab won't be able to update the `terraform` binary in the job images to any version that
 is licensed under BSL.
 
 To continue using Terraform, clone the templates and [Terraform image](https://gitlab.com/gitlab-org/terraform-images),
 and maintain them as needed.
+GitLab provides [detailed instructions](https://gitlab.com/gitlab-org/terraform-images) for migrating to a custom built image.
 
 As an alternative we recommend using the new OpenTofu CI/CD component on GitLab.com
 or the new OpenTofu CI/CD template on GitLab Self-Managed.

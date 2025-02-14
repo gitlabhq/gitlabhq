@@ -5340,6 +5340,7 @@ The keywords available for use in trigger jobs are:
 - [`extends`](#extends).
 - [`needs`](#needs), but not [`needs:project`](#needsproject).
 - [`only` and `except`](#only--except).
+- [`parallel`](#parallel).
 - [`rules`](#rules).
 - [`stage`](#stage).
 - [`trigger`](#trigger).

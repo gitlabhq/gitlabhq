@@ -19,6 +19,7 @@ import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vu
 import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdown/download_dropdown.vue';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
+import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 
 export default {
@@ -38,6 +39,7 @@ export default {
     CompactCodeDropdown,
     SourceCodeDownloadDropdown,
     CloneCodeDropdown,
+    AddToTree,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
     LockDirectoryButton: () =>
       import('ee_component/repository/components/lock_directory_button.vue'),
@@ -239,6 +241,25 @@ export default {
 
       <!-- Tree controls -->
       <div v-if="isTreeView" class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 sm:gl-mb-0">
+        <add-to-tree
+          v-if="!isReadmeView && showCompactCodeDropdown"
+          class="gl-hidden sm:gl-block"
+          :current-path="currentPath"
+          :can-collaborate="canCollaborate"
+          :can-edit-tree="canEditTree"
+          :can-push-code="canPushCode"
+          :can-push-to-branch="canPushToBranch"
+          :original-branch="originalBranch"
+          :selected-branch="selectedBranch"
+          :new-branch-path="newBranchPath"
+          :new-tag-path="newTagPath"
+          :new-blob-path="newBlobPath"
+          :fork-new-blob-path="forkNewBlobPath"
+          :fork-new-directory-path="forkNewDirectoryPath"
+          :fork-upload-blob-path="forkUploadBlobPath"
+          :upload-path="uploadPath"
+          :new-dir-path="newDirPath"
+        />
         <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
         <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
         <gl-button
@@ -277,7 +298,27 @@ export default {
         <!-- code + mobile panel -->
         <div v-if="!isReadmeView" class="project-code-holder gl-w-full sm:gl-w-auto">
           <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
+            <add-to-tree
+              v-if="!isReadmeView"
+              class="sm:gl-hidden"
+              :current-path="currentPath"
+              :can-collaborate="canCollaborate"
+              :can-edit-tree="canEditTree"
+              :can-push-code="canPushCode"
+              :can-push-to-branch="canPushToBranch"
+              :original-branch="originalBranch"
+              :selected-branch="selectedBranch"
+              :new-branch-path="newBranchPath"
+              :new-tag-path="newTagPath"
+              :new-blob-path="newBlobPath"
+              :fork-new-blob-path="forkNewBlobPath"
+              :fork-new-directory-path="forkNewDirectoryPath"
+              :fork-upload-blob-path="forkUploadBlobPath"
+              :upload-path="uploadPath"
+              :new-dir-path="newDirPath"
+            />
             <compact-code-dropdown
+              class="gl-ml-auto"
               :ssh-url="sshUrl"
               :http-url="httpUrl"
               :kerberos-url="kerberosUrl"

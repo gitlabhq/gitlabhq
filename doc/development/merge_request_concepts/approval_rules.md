@@ -93,7 +93,7 @@ erDiagram
 `ApprovalProjectRule` model is defined in `ee/app/models/approval_project_rule.rb`.
 
 A record is created/updated/deleted when an approval rule is added/edited/removed
-via project settings or the [project level approvals API](../../api/merge_request_approvals.md#project-level-mr-approvals).
+via project settings or the [project level approvals API](../../api/merge_request_approvals.md#project-approval-rules).
 The `ApprovalState` model gets these records when approval rules are not
 overwritten.
 
@@ -117,7 +117,7 @@ erDiagram
 `ApprovalMergeRequestRule` model is defined in `ee/app/models/approval_merge_request_rule.rb`.
 
 A record is created/updated/deleted when a rule is added/edited/removed via merge
-request create/edit form or the [merge request level approvals API](../../api/merge_request_approvals.md#merge-request-level-mr-approvals).
+request create/edit form or the [single merge request approvals API](../../api/merge_request_approvals.md#single-merge-request-approval).
 
 The `approval_project_rule` is set when it is based from an existing `ApprovalProjectRule`.
 
@@ -201,7 +201,7 @@ submitted. It's like `Projects::MergeRequests::CreationsController` but it execu
 
 This API is defined in `ee/lib/api/merge_request_approvals.rb`.
 
-The [Approvals API endpoint](../../api/merge_request_approvals.md#merge-request-level-mr-approvals)
+The [Approvals API endpoint](../../api/merge_request_approvals.md#get-merge-request-approval-rules)
 is requested when a merge request page loads.
 
 The `/projects/:id/merge_requests/:merge_request_iid/approval_settings` is a
@@ -252,9 +252,9 @@ It is responsible for creating approval rules at either the merge request or pro
 
 It is called when:
 
-- Creating approval rules at the project level through the UI.
-- Creating approval rules at the project level through the [API::ProjectApprovalRules](../../api/merge_request_approvals.md#create-merge-request-level-rule) `/projects/:id/approval_rules` endpoint.
-- Creating merge request level rules through [API::MergeRequestApprovalRules](../../api/merge_request_approvals.md#create-project-level-rule) `/projects/:id/merge_requests/:merge_request_iid/approval_rules` endpoint.
+- Creating approval rules for a project through the UI.
+- Creating approval rules for a project through the [API::ProjectApprovalRules](../../api/merge_request_approvals.md#create-project-approval-rule) `/projects/:id/approval_rules` endpoint.
+- Creating merge request level rules through [API::MergeRequestApprovalRules](../../api/merge_request_approvals.md#create-merge-request-rule) `/projects/:id/merge_requests/:merge_request_iid/approval_rules` endpoint.
 
 Merge request level rules created through the UI do not use this service. See [Projects::MergeRequests::CreationsController](#projectsmergerequestscontroller)
 

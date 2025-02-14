@@ -37,12 +37,11 @@ variables:
       echo "https://gitlab.com/components/opentofu"
       echo " "
       echo "Alternatively, you can continue building the Terraform templates and "
-      echo "accompanying image (see https://gitlab.com/gitlab-org/terraform-images) yourself and use them as before."
+      echo "accompanying image yourself and use them as before."
+      echo "Instructions for using your own image are provided here https://gitlab.com/gitlab-org/terraform-images."
       echo " "
-      echo "To disable this warning, set IGNORE_TF_DEPRECATION_WARNING to 'true' in your pipeline variables."
+      echo "To disable this warning, overwrite the 'deprecated-and-will-be-removed-in-18.0' job in the '.pre' stage of the pipeline with a placeholder job."
     - 'false'
-  rules:
-    - if: $IGNORE_TF_DEPRECATION_WARNING != "true"
 
 .terraform:fmt:
   stage: validate

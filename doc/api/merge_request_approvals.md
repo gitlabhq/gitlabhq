@@ -16,7 +16,7 @@ Configuration for
 [approvals on all merge requests](../user/project/merge_requests/approvals/_index.md)
 in the project. All endpoints require authentication.
 
-## Group-level MR approvals
+## Group approval rules
 
 DETAILS:
 **Status:** Experiment
@@ -30,7 +30,7 @@ This feature is not ready for production use.
 
 Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [experiment](../policy/development_stages_support.md).
 
-### Get group-level approval rules
+### Get group approval rules
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440638) in GitLab 16.10.
 
@@ -103,9 +103,9 @@ Example response:
 
 ```
 
-### Create group-level approval rules
+### Create group approval rules
 
-Group admins can create group level approval rules using the following endpoint:
+Group admins can create approval rules for a group using the following endpoint:
 
 ```plaintext
 POST /groups/:id/approval_rules
@@ -175,11 +175,11 @@ Example response:
 }
 ```
 
-### Update group-level approval rules
+### Update group approval rules
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440639) in GitLab 16.10.
 
-Group admins can update group level approval rules using the following endpoint:
+Group admins can update group approval rules using the following endpoint:
 
 ```shell
 PUT /groups/:id/approval_rules/:approval_rule_id
@@ -250,9 +250,9 @@ Example response:
 }
 ```
 
-## Project-level MR approvals
+## Project approval rules
 
-> - Use the [project level approval rules](#get-project-level-rules) to access this information.
+> - Use the [project approval rules](#get-all-approval-rules-for-project) to access this information.
 
 You can request information about a project's approval configuration using the
 following endpoint:
@@ -295,7 +295,7 @@ Supported attributes:
 | Attribute                                        | Type              | Required | Description |
 |--------------------------------------------------|-------------------|----------|-------------|
 | `id`                                             | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-| `approvals_before_merge` (deprecated)            | integer           | No       | Number of required approvals before a merge request can merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. Use [Approval Rules](#create-project-level-rule) instead. |
+| `approvals_before_merge` (deprecated)            | integer           | No       | Number of required approvals before a merge request can merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. Use [Approval Rules](#create-project-approval-rule) instead. |
 | `disable_overriding_approvers_per_merge_request` | boolean           | No       | Allow or prevent overriding approvers per merge request. |
 | `merge_requests_author_approval`                 | boolean           | No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
 | `merge_requests_disable_committers_approval`     | boolean           | No       | Allow or prevent committers from self approving merge requests. |
@@ -317,7 +317,7 @@ Supported attributes:
 }
 ```
 
-### Get project-level rules
+### Get all approval rules for project
 
 > - Pagination support introduced in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/31011`
 > - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
@@ -503,12 +503,12 @@ Supported attributes:
 ]
 ```
 
-### Get a single project-level rule
+### Get single approval rule for project
 
 > - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 > - `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
-You can request information about a single project approval rules using the following endpoint:
+You can request information about a single project's approval rule using the following endpoint:
 
 ```plaintext
 GET /projects/:id/approval_rules/:approval_rule_id
@@ -604,7 +604,7 @@ Supported attributes:
 }
 ```
 
-### Create project-level rule
+### Create project approval rule
 
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
@@ -733,7 +733,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/approval_rules"
 ```
 
-### Update project-level rule
+### Update project approval rule
 
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
@@ -849,7 +849,7 @@ Supported attributes:
 }
 ```
 
-### Delete project-level rule
+### Delete project approval rule
 
 You can delete project approval rules using the following endpoint:
 
@@ -864,7 +864,7 @@ Supported attributes:
 | `id`               | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
 | `approval_rule_id` | integer           | Yes      | The ID of a approval rule. |
 
-## Merge request-level MR approvals
+## Single merge request approval
 
 Configuration for approvals on a specific merge request. All endpoints require authentication.
 
@@ -980,7 +980,7 @@ Supported attributes:
 }
 ```
 
-### Get merge request level rules
+### Get merge request approval rules
 
 > - Pagination support introduced in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/31011`
 > - Pagination support [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366823) in GitLab 15.7. Feature flag `approval_rules_pagination` removed.
@@ -1117,7 +1117,7 @@ Supported attributes:
 ]
 ```
 
-### Get a single merge request level rule
+### Get a single merge request rule
 
 You can request information about a single merge request approval rule using the following endpoint:
 
@@ -1192,7 +1192,7 @@ Supported attributes:
 }
 ```
 
-### Create merge request level rule
+### Create merge request rule
 
 You can create merge request approval rules using the following endpoint:
 
@@ -1208,14 +1208,14 @@ Supported attributes:
 | `approvals_required`       | integer           | Yes | The number of required approvals for this rule.                              |
 | `merge_request_iid`        | integer           | Yes | The IID of the merge request.                                                |
 | `name`                     | string            | Yes | The name of the approval rule.                                               |
-| `approval_project_rule_id` | integer           | No | The ID of a project-level approval rule.                                     |
+| `approval_project_rule_id` | integer           | No | The ID of a project's approval rule.                                     |
 | `group_ids`                | Array             | No | The IDs of groups as approvers.                                              |
 | `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 | `usernames`                | string array      | No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 
 NOTE:
 Setting `approval_project_rule_id` copies the `name`, `users` and
-`groups` of the project-level rule. It uses the `approvals_required` you specify.
+`groups` of the project's rule. It uses the `approvals_required` you specify.
 
 ```json
 {
@@ -1275,7 +1275,7 @@ Setting `approval_project_rule_id` copies the `name`, `users` and
 }
 ```
 
-### Update merge request level rule
+### Update merge request rule
 
 To update merge request approval rules, use this endpoint:
 
@@ -1359,7 +1359,7 @@ Supported attributes:
 }
 ```
 
-### Delete merge request level rule
+### Delete merge request rule
 
 You can delete merge request approval rules using the following endpoint:
 

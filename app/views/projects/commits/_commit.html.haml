@@ -62,9 +62,13 @@
         - if tags.present?
           - if tags.size > 1
             = gl_badge_tag(variant: :neutral, icon: 'tag', class: 'gl-font-monospace has-tooltip',  title: tags.join(', '),  href: project_commit_path(project, commit.id)) do
+              %span.gl-sr-only
+                = _('View commit %{commit_id}') % { commit_id: commit.short_id}
               = _('%{count} tags') % { count: tags.size }
           - else
             = gl_badge_tag(variant: :neutral, icon: 'tag', class: 'gl-font-monospace has-tooltip',  title: tags.first,  href: project_commits_path(project, tags.first, ref_type: 'tags')) do
+              %span.gl-sr-only
+                = _('View commits for tag %{tag}') % { tag: tags.first }
               %span{ class: 'gl-truncate gl-max-w-12 sm:gl-max-w-15 md:gl-max-w-28 lg:gl-max-w-34 xl:gl-max-w-48' }
                 = tags.first
         - if request.xhr?

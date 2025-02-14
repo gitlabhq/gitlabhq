@@ -300,7 +300,7 @@ export default {
       return this.$route.name === 'blobPath' || this.$route.name === 'blobPathDecoded';
     },
     renderAddToTreeDropdown() {
-      return this.dropdownItems.length;
+      return this.dropdownItems.length && !this.glFeatures.directoryCodeDropdownUpdates;
     },
     newDirectoryPath() {
       return joinPaths(this.newDirPath, this.currentPath);
