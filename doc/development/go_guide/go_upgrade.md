@@ -26,26 +26,10 @@ Testing matrices for all projects using Go must include the version shipped by D
 
 ## Supporting multiple Go versions
 
-Individual Go projects need to support multiple Go versions because:
+Individual Go projects might need to support multiple Go versions because:
 
-- When a new version of Go is released, we should start integrating it into the CI pipelines to verify compatibility with the new compiler.
-- We must support the versions of Go [shipped by Distribution](#testing-against-shipped-go-versions), which might be behind the latest minor release.
-- When Linux package builds or Cloud-Native GitLab (CNG) change a Go version, we still might need to support the old version for backports.
-
-These 3 requirements may easily be satisfied by keeping support for the [3 latest minor versions of Go](https://go.dev/dl/).
-
-It is ok to drop support for the oldest Go version and support only the 2 latest releases,
-if this is enough to support backports to the last 3 minor GitLab releases.
-
-For example, if we want to drop support for `go 1.11` in GitLab `12.10`, we need
-to verify which Go versions we are using in `12.9`, `12.8`, and `12.7`. We do not
-consider the active milestone, `12.10`, because a backport for `12.7` is required
-in case of a critical patch release.
-
-- If both [Omnibus GitLab and Cloud-Native GitLab (CNG)](#updating-go-version) were using Go `1.12` in GitLab `12.7` and later,
-  then we can safely drop support for `1.11`.
-- If Omnibus GitLab or Cloud-Native GitLab (CNG) were using `1.11` in GitLab `12.7`, then we still need to keep
-  support for Go `1.11` for easier backporting of security fixes.
+- When a new version of Go is released, we should start integrating it into the CI pipelines to verify forward compatibility.
+- To enable backports, we must support the versions of Go [shipped by Distribution](#testing-against-shipped-go-versions) in the latest 3 minor GitLab releases, excluding the active milestone.
 
 ## Updating Go version
 

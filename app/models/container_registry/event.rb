@@ -3,6 +3,7 @@
 module ContainerRegistry
   class Event
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::InternalEventsTracking
 
     ALLOWED_ACTIONS = %w[push delete].freeze
     PUSH_ACTION = 'push'
@@ -49,7 +50,7 @@ module ContainerRegistry
       ::Gitlab::Tracking.event(EVENT_TRACKING_CATEGORY, tracking_action)
 
       if manifest_delete_event?
-        ::Gitlab::UsageDataCounters::ContainerRegistryEventCounter.count("#{EVENT_PREFIX}_delete_manifest")
+        track_internal_event("delete_manifest_from_container_registry", project: project)
       else
         event = usage_data_event_for(tracking_action)
         ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event, values: originator.id) if event

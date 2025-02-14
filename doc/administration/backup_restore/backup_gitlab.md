@@ -9,9 +9,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab Self-Managed
 
-The exact procedure for backing up GitLab depends on many factors. Your particular deployment's usage and configuration determine what kind of data exists, where it is located, and how much there is. These factors influence your options for how to perform a back up, how to store it, and how to restore it.
+The exact procedure for backing up GitLab depends on many factors. Your particular deployment's usage and configuration determine what kind of data exists, where it is located, and how much there is. These factors influence your options for how to perform a backup, how to store it, and how to restore it.
 
-## Simple back up procedure
+## Simple backup procedure
 
 As a rough guideline, if you are using a [1k reference architecture](../reference_architectures/1k_users.md) with less than 100 GB of data, then follow these steps:
 
@@ -548,7 +548,7 @@ responsible for creating the backup and streaming it to object storage. This
 helps reduce the network resources required to create and restore a backup.
 
 1. [Configure a server-side backup destination in Gitaly](../gitaly/configure_gitaly.md#configure-server-side-backups).
-1. Create a back up using the repositories server-side option. See the following examples.
+1. Create a backup using the repositories server-side option. See the following examples.
 
 ::Tabs
 

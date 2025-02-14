@@ -4,6 +4,7 @@ description: Monthly count of ci builds created across all projects and project 
 product_group: pipeline_execution
 performance_indicator_type:
 - lighthouse
+- customer_health_score
 value_type: number
 status: active
 milestone: '16.9'

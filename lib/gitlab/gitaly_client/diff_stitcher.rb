@@ -5,10 +5,13 @@ module Gitlab
     class DiffStitcher
       include Enumerable
 
-      delegate :size, to: :rpc_response
+      def initialize(rpc_response)
+        @rpc_response = rpc_response
+        @diff_count = 0
+      end
 
-      def initialize(rpc_response_param)
-        @rpc_response = rpc_response_param
+      def size
+        @diff_count
       end
 
       def each
@@ -27,16 +30,13 @@ module Gitlab
             current_diff.patch = "#{current_diff.patch}#{diff_msg.raw_patch_data}"
           end
 
-          if diff_msg.end_of_patch
-            yield current_diff
-            current_diff = nil
-          end
+          next unless diff_msg.end_of_patch
+
+          @diff_count += 1
+          yield current_diff
+          current_diff = nil
         end
       end
-
-      private
-
-      attr_reader :rpc_response
     end
   end
 end

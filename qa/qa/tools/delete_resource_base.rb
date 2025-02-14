@@ -112,13 +112,15 @@ module QA
             return @permanently_delete ? delete_permanently(resource) : log_marked_for_deletion(resource)
           when response&.code == HTTP_STATUS_NOT_FOUND
             return log_permanent_deletion(resource)
-          when response&.code == HTTP_STATUS_BAD_REQUEST && response&.include?("Security Policy Project")
+          when response&.code == HTTP_STATUS_BAD_REQUEST && response&.include?("security policy project")
             if retry_count < max_retries
               find_and_unassign_security_policy_project(resource)
               retry_count += 1
               next
             end
           end
+
+          return log_failure(resource, response)
         end
 
         log_failure(resource, response)

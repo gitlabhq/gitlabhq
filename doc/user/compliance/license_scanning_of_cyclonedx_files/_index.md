@@ -159,6 +159,12 @@ License scanning is supported for the following languages and package managers:
       <td>No</td>
       <td><a href="https://gitlab.com/components/dependency-scanning#generating-cargo-sboms">Yes</a></td>
     </tr>
+    <tr>
+      <td>Swift</td>
+      <td><a href="https://developer.apple.com/swift/">sbt</a></td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
   </tbody>
 </table>
 

@@ -339,6 +339,31 @@ This is one small step towards moving away from CI/CD templates in preference of
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="18.3">
+
+## GitLab 18.3
+
+<div class="deprecation breaking-change" data-milestone="18.3">
+
+### Linux packages for Ubuntu 20.04
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.3</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8915).
+
+</div>
+
+Ubuntu standard support for Ubuntu 20.04 [ends in May 2025](https://wiki.ubuntu.com/Releases).
+
+Therefore, from GitLab 18.3, we will no longer provide packages for the Ubuntu 20.04 distribution for Linux package installs.
+GitLab 18.2 will be the last GitLab version with Linux packages for Ubuntu 20.04.
+You should upgrade to Ubuntu 22.04 for continued support.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.0">
 
 ## GitLab 18.0
@@ -1348,6 +1373,25 @@ to ensure the correct locations are being used to mirror the required scanner im
 
 The REST API endpoint `pre_receive_secret_detection_enabled` is deprecated in favor of `secret_push_protection_enabled`. We are renaming some API fields to reflect the name change of the feature `pre_receive_secret_detection` to `secret_push_protection`.
 To avoid breaking workflows that use the old name, you should stop using the `pre_receive_secret_detection_enabled` endpoint before GitLab 18.0. Instead, use the new `secret_push_protection_enabled` endpoint.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Raspberry Pi 32-bit packages are deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519113).
+
+</div>
+
+Starting from GitLab version 18.0, we will no longer provide 32-bit packages for Raspberry Pi.
+You should use 64-bit Raspberry Pi OS and [install the `arm64` Debian packages](https://about.gitlab.com/install/#debian).
+For information on backing up data on a 32-bit OS and restoring it to a 64-bit OS, see
+[Upgrading operating systems for PostgreSQL](https://docs.gitlab.com/ee/administration/postgresql/upgrading_os.html).
 
 </div>
 

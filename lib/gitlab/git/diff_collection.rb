@@ -6,6 +6,7 @@ module Gitlab
   module Git
     class DiffCollection
       include Enumerable
+      include Gitlab::EncodingHelper
 
       attr_reader :limits
 
@@ -155,17 +156,22 @@ module Gitlab
         @collapsed_safe_files || @collapsed_safe_lines || @collapsed_safe_bytes
       end
 
-      def expand_diff?
-        # Force single-entry diff collections to always present as expanded
-        #
-        @iterator.size == 1 || !@enforce_limits || @expanded
+      def expand_diff?(raw)
+        # For binary files only check @enforce_limits and @expanded,
+        # for non-binary files also auto-expand when it's a single file diff
+        allow_expansion = !@enforce_limits || @expanded
+        diff_content = raw.is_a?(Hash) ? raw[:diff] : raw.patch
+
+        return allow_expansion if detect_binary?(diff_content) || Gitlab::Git::Diff.has_binary_notice?(diff_content)
+
+        @iterator.size == 1 || allow_expansion
       end
 
       def each_gitaly_patch
         @iterator.each_with_index do |raw, iterator_index|
           @empty = false
 
-          options = { expanded: expand_diff? }
+          options = { expanded: expand_diff?(raw) }
           options[:generated] = @generated_files.include?(raw.from_path) if @generated_files
 
           diff = Gitlab::Git::Diff.new(raw, **options)
@@ -199,9 +205,10 @@ module Gitlab
             break
           end
 
-          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff?)
+          expand_diff = expand_diff?(raw)
+          diff = Gitlab::Git::Diff.new(raw, expanded: expand_diff)
 
-          if !expand_diff? && over_safe_limits?(i) && diff.line_count > 0
+          if !expand_diff && over_safe_limits?(i) && diff.line_count > 0
             diff.collapse!
           end
 

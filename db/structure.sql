@@ -17954,7 +17954,8 @@ CREATE TABLE packages_debian_project_architectures (
     distribution_id bigint NOT NULL,
     name text NOT NULL,
     project_id bigint,
-    CONSTRAINT check_9c2e1c99d8 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_9c2e1c99d8 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_e187c75bb4 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_debian_project_architectures_id_seq

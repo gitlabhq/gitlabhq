@@ -10,6 +10,13 @@ module Gitlab
 
         SNOWPLOW_NAMESPACE = 'gl'
 
+        def initialize
+          return unless Feature.enabled?(:snowplow_tracking_post_method, :instance, type: :gitlab_com_derisk) &&
+            Feature.enabled?(:snowplow_buffer_events, :instance, type: :gitlab_com_derisk)
+
+          Kernel.at_exit { tracker.flush(async: false) }
+        end
+
         override :event
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
           return unless enabled?
@@ -80,7 +87,8 @@ module Gitlab
             # By default, Snowplow uses `get` method with buffer_size set to `1`.
             # However, setting method to `post` changes default buffer_size to `10`
             emitter_options[:method] = 'post'
-            emitter_options[:buffer_size] = 1
+            buffer_size = Feature.enabled?(:snowplow_buffer_events, :instance, type: :gitlab_com_derisk) ? 10 : 1
+            emitter_options[:buffer_size] = buffer_size
           end
 
           SnowplowTracker::AsyncEmitter.new(

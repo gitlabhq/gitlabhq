@@ -184,7 +184,7 @@ The backup information file includes the following:
 
 ## Backup staging directory
 
-The backup staging directory is a temporary storage location used during the back up and restore processes.
+The backup staging directory is a temporary storage location used during the backup and restore processes.
 This directory:
 
 - Stores backup artifacts before creating the GitLab backup archive.
