@@ -1,0 +1,21 @@
+- title: "DAST `dast_crawl_extract_element_timeout` and `dast_crawl_search_element_timeout` variables are deprecated"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: false
+  window: 1
+  reporter: DavidNelsonGL
+  stage: application security testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517250
+  impact: low
+  scope: project
+  resolution_role: Developer
+  manual_task: true
+  body: |  # (required) Don't change this line.
+   The DAST variables `DAST_CRAWL_EXTRACT_ELEMENT_TIMEOUT` and `DAST_CRAWL_SEARCH_ELEMENT_TIMEOUT` are deprecated and will be removed in GitLab 18.0.
+   When they were introduced, the variables provided granular timeout controls for specific browser interactions. These interactions are now governed by a common timeout value, which makes the variables unnecessary. In addition, because of an underlying implementation issue, the variables haven't been functional since the introduction of the DAST browser-based analyzer.
+   Removing these two variables will simplify DAST configuration, and provide a better onboarding experience for users.
+  end_of_support_milestone:
+  tiers: [Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/dast/browser/configuration/variables.html
+  image_url:
+  video_url:

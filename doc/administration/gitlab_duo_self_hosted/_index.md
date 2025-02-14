@@ -20,7 +20,7 @@ To maintain full control over your data privacy, security, and the deployment of
 
 By deploying GitLab Duo Self-Hosted, you can manage the entire lifecycle of requests made to LLM backends for GitLab Duo features, ensuring that all requests stay in your enterprise network, and avoiding external dependencies.
 
-For a click-through demo, see [GitLab Duo Self-Hosted prooduct tour](https://gitlab.navattic.com/gitlab-duo-self-hosted).
+For a click-through demo, see [GitLab Duo Self-Hosted product tour](https://gitlab.navattic.com/gitlab-duo-self-hosted).
 <!-- Demo published on 2025-02-13 -->
 
 ## Why use GitLab Duo Self-Hosted

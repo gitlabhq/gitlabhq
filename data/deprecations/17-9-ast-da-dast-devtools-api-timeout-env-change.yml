@@ -1,0 +1,20 @@
+- title: "DAST `dast_devtools_api_timeout` will have a lower default value"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.9"
+  breaking_change: true
+  window: 1
+  reporter: DavidNelsonGL
+  stage: application security testing
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517254
+  impact: low
+  scope: project
+  resolution_role: Developer
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    The `DAST_DEVTOOLS_API_TIMEOUT` environment variable determines how long a DAST scan waits for a response from the browser. Before GitLab 18.0, the variable has a static value of 45 seconds. After GitLab 18.0, `DAST_DEVTOOLS_API_TIMEOUT` environment variable has a dynamic value, which is calculated based on other timeout configurations.
+    In most cases, the 45-second value was higher than the timeout value of many scanner functions. The dynamically calculated value makes the `DAST_DEVTOOLS_API_TIMEOUT` variable more useful by increasing the number of cases it applies to.
+  end_of_support_milestone:
+  tiers: [Ultimate]
+  documentation_url: https://docs.gitlab.com/ee/user/application_security/dast/browser/configuration/variables.html
+  image_url:
+  video_url:

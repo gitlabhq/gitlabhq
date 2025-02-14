@@ -221,7 +221,7 @@ gem 'google-apis-core', '~> 0.11.0', '>= 0.11.1', feature_category: :shared
 gem 'google-apis-compute_v1', '~> 0.57.0', feature_category: :shared
 gem 'google-apis-container_v1', '~> 0.43.0', feature_category: :shared
 gem 'google-apis-container_v1beta1', '~> 0.43.0', feature_category: :shared
-gem 'google-apis-cloudbilling_v1', '~> 0.21.0', feature_category: :shared
+gem 'google-apis-cloudbilling_v1', '~> 0.22.0', feature_category: :shared
 gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0', feature_category: :shared
 gem 'google-apis-iam_v1', '~> 0.36.0', feature_category: :shared
 gem 'google-apis-serviceusage_v1', '~> 0.28.0', feature_category: :shared

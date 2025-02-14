@@ -847,6 +847,26 @@ However, you should avoid putting too many links on any page. Too many links can
 - Consider using [Related topics](../topic_types/_index.md#related-topics) to reduce links that interrupt the flow of a task.
 - Try to avoid anchor links to sections on the same page. Let users rely on the right navigation instead.
 
+### Inline links
+
+Use inline links instead of reference links. Inline links are easier to parse
+and edit.
+([Vale](../testing/vale.md) rule: [`ReferenceLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_docs/ReferenceLinks.yml))
+
+- Do:
+
+  ```markdown
+  For more information, see [merge requests](path/to/merge_requests.md)
+  ```
+
+- Don't:
+
+  ```markdown
+  For more information, see [merge requests][1].
+
+  [1]: path/to/merge_requests.md
+  ```
+
 ### Links in the same repository
 
 To link to another documentation (`.md`) file in the same repository:
