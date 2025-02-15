@@ -1674,7 +1674,6 @@ Style/InlineDisableAnnotation:
     - 'lib/api/deploy_keys.rb'
     - 'lib/api/discussions.rb'
     - 'lib/api/entities/basic_project_details.rb'
-    - 'lib/api/entities/ci/runner_details.rb'
     - 'lib/api/entities/feature.rb'
     - 'lib/api/entities/ml/mlflow/search_runs.rb'
     - 'lib/api/entities/project.rb'

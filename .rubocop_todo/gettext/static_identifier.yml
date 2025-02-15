@@ -8,7 +8,6 @@ Gettext/StaticIdentifier:
     - 'app/services/security/ci_configuration/base_create_service.rb'
     - 'app/services/users/banned_user_base_service.rb'
     - 'ee/app/mailers/ee/emails/admin_notification.rb'
-    - 'ee/app/models/integrations/github.rb'
     - 'ee/app/services/ee/projects/create_from_template_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/policy_configuration_validation_service.rb'
     - 'ee/app/services/timebox_report_service.rb'

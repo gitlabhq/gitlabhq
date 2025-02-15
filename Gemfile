@@ -14,7 +14,7 @@ end
 
 # Please see https://docs.gitlab.com/ee/development/feature_categorization/#gemfile
 ignore_feature_category = Module.new do
-  def gem(*arguments, feature_category: nil, **keyword_arguments) # rubocop:disable Lint/UnusedMethodArgument
+  def gem(*arguments, feature_category: nil, **keyword_arguments) # rubocop:disable Lint/UnusedMethodArgument -- Ignoring feature_category intentionally
     super(*arguments, **keyword_arguments)
   end
 end
@@ -522,7 +522,7 @@ group :development, :test do
   gem 'spring', '~> 4.1.0', feature_category: :shared
   gem 'spring-commands-rspec', '~> 1.0.4', feature_category: :shared
 
-  gem 'gitlab-styles', '~> 13.0.2', feature_category: :tooling
+  gem 'gitlab-styles', '~> 13.1.0', feature_category: :tooling, require: false
   gem 'haml_lint', '~> 0.58', feature_category: :tooling
 
   # Benchmarking & profiling

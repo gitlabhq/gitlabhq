@@ -34,7 +34,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'app/models/concerns/enums/ci/commit_status.rb'
     - 'app/models/dependency_proxy.rb'
     - 'app/models/draft_note.rb'
-    - 'app/models/integrations/harbor.rb'
     - 'app/models/ml.rb'
     - 'app/models/namespace/traversal_hierarchy.rb'
     - 'app/models/namespaces/traversal/linear.rb'

@@ -83,7 +83,6 @@ Style/RedundantSelf:
     - 'app/models/label.rb'
     - 'app/models/legacy_diff_note.rb'
     - 'app/models/lfs_object.rb'
-    - 'app/models/lfs_objects_project.rb'
     - 'app/models/member.rb'
     - 'app/models/members/project_member.rb'
     - 'app/models/merge_request.rb'

@@ -784,8 +784,8 @@ GEM
     gitlab-security_report_schemas (0.1.2.min15.0.0.max15.2.1)
       activesupport (>= 6, < 8)
       json_schemer (~> 2.3.0)
-    gitlab-styles (13.0.2)
-      rubocop (~> 1.68.0)
+    gitlab-styles (13.1.0)
+      rubocop (= 1.71.1)
       rubocop-capybara (~> 2.21.0)
       rubocop-factory_bot (~> 2.26.1)
       rubocop-graphql (~> 1.5.4)
@@ -1582,7 +1582,7 @@ GEM
       redis-store (>= 1.2, < 2)
     redis-store (1.11.0)
       redis (>= 4, < 6)
-    regexp_parser (2.6.0)
+    regexp_parser (2.10.0)
     regexp_property_values (1.0.0)
     representable (3.2.0)
       declarative (< 0.1.0)
@@ -1654,17 +1654,17 @@ GEM
       activerecord
       get_process_mem
       rails
-    rubocop (1.68.0)
+    rubocop (1.71.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 2.4, < 3.0)
-      rubocop-ast (>= 1.32.2, < 2.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.38.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.32.3)
+      unicode-display_width (>= 2.4.0, < 4.0)
+    rubocop-ast (1.38.0)
       parser (>= 3.3.1.0)
     rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
@@ -2114,7 +2114,7 @@ DEPENDENCIES
   gitlab-secret_detection (< 1.0)
   gitlab-security_report_schemas (= 0.1.2.min15.0.0.max15.2.1)
   gitlab-sidekiq-fetcher!
-  gitlab-styles (~> 13.0.2)
+  gitlab-styles (~> 13.1.0)
   gitlab-topology-service-client (~> 0.1)!
   gitlab-utils!
   gitlab_chronic_duration (~> 0.12)

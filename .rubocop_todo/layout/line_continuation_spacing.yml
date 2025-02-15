@@ -7,7 +7,6 @@ Layout/LineContinuationSpacing:
     - 'app/helpers/tags_helper.rb'
     - 'app/helpers/tree_helper.rb'
     - 'app/models/concerns/spammable.rb'
-    - 'app/models/integrations/teamcity.rb'
     - 'app/models/work_items/parent_link.rb'
     - 'app/services/feature_flags/update_service.rb'
     - 'app/services/issues/build_service.rb'

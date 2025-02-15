@@ -33,8 +33,6 @@ Rails/Date:
     - 'ee/app/presenters/subscription_presenter.rb'
     - 'ee/app/services/iterations/cadences/create_iterations_in_advance_service.rb'
     - 'ee/app/services/search/elastic/destroy_expired_subscription_service.rb'
-    - 'ee/app/views/groups/contribution_analytics/show.html.haml'
-    - 'ee/app/views/notify/okr_checkin_reminder_notification.html.haml'
     - 'ee/app/workers/okrs/checkin_reminder_emails_cron_worker.rb'
     - 'ee/db/fixtures/development/20_burndown.rb'
     - 'ee/lib/analytics/productivity_analytics_request_params.rb'

@@ -872,7 +872,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/github_import/representation/note_text_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/protected_branch_spec.rb'
     - 'spec/lib/gitlab/github_import/settings_spec.rb'
-    - 'spec/lib/gitlab/github_import/user_finder_spec.rb'
     - 'spec/lib/gitlab/global_id/deprecations_spec.rb'
     - 'spec/lib/gitlab/graphql/loaders/batch_lfs_oid_loader_spec.rb'
     - 'spec/lib/gitlab/graphql/pagination/externally_paginated_array_connection_spec.rb'

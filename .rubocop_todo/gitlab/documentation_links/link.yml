@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Gitlab/DocumentationLinks/Link:
   Exclude:
-    - '**/*.haml'
     - 'app/helpers/releases_helper.rb'
     - 'app/presenters/commit_status_presenter.rb'
     - 'app/presenters/key_presenter.rb'
