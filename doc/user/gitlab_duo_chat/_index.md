@@ -143,17 +143,27 @@ Prerequisites:
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
-1. Open Chat by using one of the following methods:
-   - On the left sidebar, select **GitLab Duo Chat**.
-   - In the file that you have open in the editor, select some code.
-     1. Right-click and select **GitLab Duo Chat**.
-     1. Select **Explain selected code** or **Generate Tests**.
-   - Use the keyboard shortcut: <kbd>ALT</kbd>+<kbd>d</kbd> (on Windows and Linux) or <kbd>Option</kbd>+<kbd>d</kbd> (on Mac).
+1. On the left sidebar, select **GitLab Duo Chat** (**{duo-chat}**).
 1. In the message box, enter your question and press **Enter** or select **Send**.
 1. In the chat pane, on the top right corner, select **Show Status** to show information
    in the Command Palette.
 
-If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.
+### Select code and use Duo Chat
+
+You can interact with Duo Chat while you're working with a subset of code.
+
+1. In VS Code, open a file. The file does not need to be a file in a Git repository.
+1. In the file, select some code.
+1. Right-click and select **GitLab Duo Chat**.
+1. Select an option, or **Open Quick Chat** and ask a question, like `Can you simplify this code?` and press <kbd>Enter</kbd>.
+
+### Close Duo Chat
+
+To close Duo Chat:
+
+- For Duo Chat on the left sidebar, select **GitLab Duo Chat** (**{duo-chat}**).
+- For the quick chat window that's embedded in your file, in the upper-right corner,
+  select **Collapse** (**{chevron-lg-up}**).
 
 ### In the editor window
 
