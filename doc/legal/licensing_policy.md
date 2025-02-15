@@ -163,7 +163,7 @@ The following scenarios reflect questions a customer may ask related to multiple
 
 #### Example 4
 
-- Q: I purchased 100 licenses in India but only need to deploy 75. Can I deploy the remaining 25 licenses to my team in the US?
+- Q: I purchased 100 licenses in India but only need to deploy 75. Can I deploy the remaining 25 licenses to my team in California, USA?
 - A: No. California is outside of the Geographical Region of India, so you are unable to deploy the remaining 25 licenses in this manner.
 
 #### Example 5
