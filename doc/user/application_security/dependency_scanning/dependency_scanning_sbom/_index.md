@@ -14,7 +14,6 @@ DETAILS:
 > - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.5.
 > - Released [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/development_stages_support.md#experiment-features) in GitLab 17.4.
 > - Released [Dependency Scanning CI/CD Component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
-> - [Enabled by default with the latest Dependency Scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods and Swift in GitLab 17.9.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -110,12 +109,6 @@ following [PURL types](https://github.com/package-url/purl-spec/blob/34658984613
 
 Enable the Dependency Scanning using SBOM feature with one of the following options:
 
-- Use the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
-  - The (deprecated) Gemnasium analyzer is used by default.
-  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template to enable a GitLab provided analyzer.
-  - The (deprecated) Gemnasium analyzer is used by default.
-  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 - Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
 - Provide your own CycloneDX SBOM document.
 
@@ -139,18 +132,6 @@ Prerequisites:
 
 To enable the analyzer, you must:
 
-- Use either the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml`
-and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-
-  ```yaml
-    include:
-      - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
-
-    variables:
-      DS_ENFORCE_NEW_ANALYZER: 'true'
-  ```
-
-- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 - Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
 
   ```yaml
