@@ -3,7 +3,7 @@
   removal_milestone: "15.0"
   breaking_change: true
   body: |
-    The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database.html)
+    The syntax of [GitLabs database](https://docs.gitlab.com/omnibus/settings/database/)
     configuration located in `database.yml` is changing and the legacy format is deprecated. The legacy format
     supported using a single PostgreSQL adapter, whereas the new format is changing to support multiple databases. The `main:` database needs to be defined as a first configuration item.
 

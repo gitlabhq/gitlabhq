@@ -14,7 +14,7 @@
   body: |  # (required) Don't change this line.
     In some cases, users with sufficient permissions in a project could forward protected variables to an unsecure project, so this change is a security enhancement that minimizes the risk of protected variable values being exposed.
 
-    While [forwarding CI/CD variables](https://docs.gitlab.com/ee/ci/pipelines/downstream_pipelines.html#pass-cicd-variables-to-a-downstream-pipeline) through downstream pipelines is useful for some workflows, [protected variables](https://docs.gitlab.com/ee/ci/variables/#protect-a-cicd-variable) require additional care. They are intended for use only with specific protected branches or tags.
+    While [forwarding CI/CD variables](https://docs.gitlab.com/ci/pipelines/downstream_pipelines/#pass-cicd-variables-to-a-downstream-pipeline) through downstream pipelines is useful for some workflows, [protected variables](https://docs.gitlab.com/ci/variables/#protect-a-cicd-variable) require additional care. They are intended for use only with specific protected branches or tags.
 
     In GitLab 19.0, variable forwarding will be updated to ensure protected variables are only passed in specific situations:
 

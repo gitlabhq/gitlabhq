@@ -6,7 +6,7 @@
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/368195  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#set-cicd-limits) was never enabled by default and will be removed in GitLab 16.0. This limit can also be configured in the Rails console under [`ci_active_pipelines`](https://docs.gitlab.com/ee/administration/instance_limits.html#number-of-pipelines-running-concurrently). Instead, use the other recommended rate limits that offer similar protection:
+    The [**Maximum number of active pipelines per project** limit](https://docs.gitlab.com/administration/settings/continuous_integration/#set-cicd-limits) was never enabled by default and will be removed in GitLab 16.0. This limit can also be configured in the Rails console under [`ci_active_pipelines`](https://docs.gitlab.com/administration/instance_limits/#number-of-pipelines-running-concurrently). Instead, use the other recommended rate limits that offer similar protection:
 
-    - [**Pipelines rate limits**](https://docs.gitlab.com/ee/administration/settings/rate_limit_on_pipelines_creation.html).
-    - [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/ee/administration/settings/continuous_integration.html#set-cicd-limits).
+    - [**Pipelines rate limits**](https://docs.gitlab.com/administration/settings/rate_limit_on_pipelines_creation/).
+    - [**Total number of jobs in currently active pipelines**](https://docs.gitlab.com/administration/settings/continuous_integration/#set-cicd-limits).

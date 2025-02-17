@@ -138,6 +138,11 @@ export default {
       required: false,
       default: false,
     },
+    canUpdateMetadata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     canDelete: {
       type: Boolean,
       required: false,
@@ -258,7 +263,7 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.canUpdate || this.workItemType !== WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_VALUE_KEY_RESULT;
       },
     },
   },
@@ -288,11 +293,8 @@ export default {
         ? sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE_HIERARCHY, this.workItemType)
         : sprintfWorkItem(I18N_WORK_ITEM_ARE_YOU_SURE_DELETE, this.workItemType);
     },
-    canLockWorkItem() {
-      return this.canUpdate;
-    },
     canPromoteToObjective() {
-      return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
     },
     confidentialItem() {
       return {
@@ -340,7 +342,7 @@ export default {
         : this.$options.i18n.confidentialityEnabled;
     },
     showChangeType() {
-      return !this.isEpic && this.canUpdate;
+      return !this.isEpic && this.canUpdateMetadata;
     },
     allowedWorkItemTypes() {
       if (this.isGroup) {
@@ -572,7 +574,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
-        v-if="canLockWorkItem"
+        v-if="canUpdateMetadata"
         :data-testid="$options.lockDiscussionTestId"
         @action="toggleDiscussionLock"
       >
@@ -583,7 +585,7 @@ export default {
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
-        v-if="canUpdate"
+        v-if="canUpdateMetadata"
         v-gl-tooltip.left.viewport.d0="confidentialTooltip"
         :item="confidentialItem"
         :data-testid="$options.confidentialityTestId"

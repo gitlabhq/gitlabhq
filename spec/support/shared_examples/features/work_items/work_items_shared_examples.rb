@@ -365,15 +365,60 @@ RSpec.shared_examples 'work items milestone' do
   end
 end
 
-RSpec.shared_examples 'work items comment actions for guest users' do
-  context 'for guest user' do
-    it 'hides other actions other than copy link', :aggregate_failures do
-      page.within(".main-notes-list") do
-        click_button _('More actions'), match: :first
+RSpec.shared_examples 'authored work item guest user permissions' do
+  it 'shows expected actions based on guest permissions on authored work item', :aggregate_failures do
+    within_testid 'work-item-actions-dropdown' do
+      click_button _('More actions')
 
-        expect(page).to have_button _('Copy link')
-        expect(page).not_to have_button _('Assign to commenting user')
-      end
+      expect(page).to have_button 'Close key result'
+      expect(page).to have_button 'New related item'
+      expect(page).not_to have_button 'Promote to objective'
+      expect(page).not_to have_button 'Change type'
+      expect(page).not_to have_button 'Lock discussion'
+      expect(page).not_to have_button 'Turn on confidentiality'
+      expect(page).to have_button 'Copy reference'
+      expect(page).not_to have_button 'Report abuse'
+      expect(page).to have_button 'Delete key result'
+    end
+
+    within_testid 'work-item-overview-right-sidebar' do
+      expect(page).not_to have_button 'Edit'
+    end
+
+    page.within('.main-notes-list') do
+      click_button _('More actions'), match: :first
+
+      expect(page).to have_button _('Copy link')
+      expect(page).not_to have_button _('Assign to commenting user')
+    end
+  end
+end
+
+RSpec.shared_examples 'non-authored work item guest user permissions' do
+  it 'shows expected actions based on guest permissions on non-authored work item', :aggregate_failures do
+    within_testid 'work-item-actions-dropdown' do
+      click_button _('More actions')
+
+      expect(page).not_to have_button 'Close key result'
+      expect(page).not_to have_button 'New related item'
+      expect(page).not_to have_button 'Promote to objective'
+      expect(page).not_to have_button 'Change type'
+      expect(page).not_to have_button 'Lock discussion'
+      expect(page).not_to have_button 'Turn on confidentiality'
+      expect(page).to have_button 'Copy reference'
+      expect(page).to have_button 'Report abuse'
+      expect(page).not_to have_button 'Delete key result'
+    end
+
+    within_testid 'work-item-overview-right-sidebar' do
+      expect(page).not_to have_button 'Edit'
+    end
+
+    page.within('.main-notes-list') do
+      click_button _('More actions'), match: :first
+
+      expect(page).to have_button _('Copy link')
+      expect(page).not_to have_button _('Assign to commenting user')
     end
   end
 end

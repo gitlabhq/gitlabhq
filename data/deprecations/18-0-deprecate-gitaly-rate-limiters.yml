@@ -11,12 +11,12 @@
   manual_task: false
   body: |
     Because of the highly variable nature of Git operations and repository latencies, Gitaly
-    [RPC-based rate limiting](https://docs.gitlab.com/ee/administration/gitaly/monitoring.html#monitor-gitaly-rate-limiting)
+    [RPC-based rate limiting](https://docs.gitlab.com/administration/gitaly/monitoring/#monitor-gitaly-rate-limiting)
     is ineffective. Configuring proper rate limits is challenging and often becomes obsolete quickly because harmful
     actions rarely generate enough requests per second to stand out.
 
-    Gitaly already supports [concurrency limiting](https://docs.gitlab.com/ee/administration/gitaly/concurrency_limiting.html) and an
-    [adaptive limiting add-on](https://docs.gitlab.com/ee/administration/gitaly/concurrency_limiting.html#adaptive-concurrency-limiting),
+    Gitaly already supports [concurrency limiting](https://docs.gitlab.com/administration/gitaly/concurrency_limiting/) and an
+    [adaptive limiting add-on](https://docs.gitlab.com/administration/gitaly/concurrency_limiting/#adaptive-concurrency-limiting),
     which have proven to work well in production.
 
     Because Gitaly is not directly exposed to external networks and external protection layers, such as load balancers,

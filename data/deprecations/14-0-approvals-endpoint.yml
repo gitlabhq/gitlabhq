@@ -8,7 +8,7 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     To change the approvals required for a merge request, you should no longer use the `/approvals` API endpoint, which was deprecated in GitLab 14.0.
 
-    Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/merge_request_approvals.html#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule) or [update](https://docs.gitlab.com/ee/api/merge_request_approvals.html#update-merge-request-level-rule) the approval rules for a merge request.
+    Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/api/merge_request_approvals/#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/api/merge_request_approvals/#create-merge-request-level-rule) or [update](https://docs.gitlab.com/api/merge_request_approvals/#update-merge-request-level-rule) the approval rules for a merge request.
   end_of_support_milestone:
   tiers: Premium
   documentation_url: https://docs.gitlab.com/ee/api/merge_request_approvals.html

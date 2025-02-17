@@ -18,7 +18,7 @@
 
     NOTE:
     The deprecated support is for
-    [GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration.html#error-reporting-and-logging-with-sentry)
+    [GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)
     for administrators. The deprecated support does not relate to
-    [GitLab error tracking](https://docs.gitlab.com/ee/operations/error_tracking.html#sentry-error-tracking) for
+    [GitLab error tracking](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking) for
     developers' own deployed applications.

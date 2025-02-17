@@ -14,11 +14,11 @@
   resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
-    The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#javascript) feature
+    The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
     provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9 and reaches end of support in GitLab 18.0.
 
     While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
-    See details in [the migration guide](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans.html)
+    See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
 
     A replacement feature will be developed with [Dependency Scanning on vendored libraries](https://gitlab.com/groups/gitlab-org/-/epics/7186) but no timeline has been set for its delivery.
 

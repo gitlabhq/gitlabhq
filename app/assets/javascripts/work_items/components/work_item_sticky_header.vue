@@ -100,6 +100,9 @@ export default {
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
     },
+    canUpdateMetadata() {
+      return this.workItem.userPermissions?.setWorkItemMetadata;
+    },
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
@@ -198,6 +201,7 @@ export default {
             :can-delete="canDelete"
             :can-report-spam="canReportSpam"
             :can-update="canUpdate"
+            :can-update-metadata="canUpdateMetadata"
             :is-confidential="workItem.confidential"
             :is-discussion-locked="isDiscussionLocked"
             :is-parent-confidential="parentWorkItemConfidentiality"

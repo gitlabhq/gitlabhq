@@ -16,7 +16,11 @@
 #    $ ./scripts/database/migrate.rb -t down
 #    This will show a list of changed migration files and allow you to select which ones to revert.
 #
-# 3. Debug mode:
+# 3. Dry run mode:
+#    $ ./scripts/database/migrate.rb -n
+#    This will show what commands would be executed without actually running them.
+#
+# 4. Debug mode:
 #    $ ruby scripts/database/migrate.rb --debug
 #    This will run the script with additional debug output for troubleshooting.
 #
@@ -38,7 +42,8 @@ end
 
 def parse_options
   options = {
-    task: :up
+    task: :up,
+    dry_run: false
   }
   OptionParser.new do |opts|
     opts.banner = "Usage: #{SCRIPT_NAME} [options]"
@@ -46,7 +51,10 @@ def parse_options
     opts.on('--debug', 'Enable debug mode') do |v|
       options[:debug] = v
     end
-    opts.on('-t', '--task=[up|down]', 'Set task - "up" to migrate forward, "down" to rollback') do |v|
+    opts.on('-n', '--dry-run', 'Show commands without executing them') do |v|
+      options[:dry_run] = v
+    end
+    opts.on('-t', '--task [up|down]', [:up, :down], 'Set task - "up" to migrate forward, "down" to rollback') do |v|
       options[:task] = v
     end
   end.parse!
@@ -109,25 +117,30 @@ def execute
   sorted = selected_files.sort_by { |f| f.match(/^\d+/)[0].to_i }
   puts "Sorted: #{sorted.inspect}" if options[:debug]
 
-  case options[:task].to_sym
-  when :up
-    sorted.each do |file|
-      version = file.match(/^\d+/)[0].to_i
+  migrations = case options[:task]
+               when :up
+                 sorted.map do |file|
+                   version = file.match(/^\d+/)[0].to_i
+                   "bin/rails db:migrate:up:main db:migrate:up:ci VERSION=#{version}"
+                 end
+               when :down
+                 sorted.reverse.map do |file|
+                   version = file.match(/^\d+/)[0].to_i
+                   "bin/rails db:migrate:down:main db:migrate:down:ci VERSION=#{version}"
+                 end
+               else
+                 puts 'Invalid task. Use --task=[up|down]'
+                 exit 1
+               end
 
-      cmd = "bin/rails db:migrate:up:main db:migrate:up:ci VERSION=#{version}"
-      puts "$ #{cmd}"
-      raise "Migration #{version} failed" unless system(cmd)
+  migrations.each do |cmd|
+    puts "$ #{cmd}"
+
+    if options[:dry_run]
+      puts "[dry-run] Skipping execution"
+    else
+      raise "Migration failed: #{cmd}" unless system(cmd)
     end
-  when :down
-    sorted.reverse_each do |file|
-      version = file.match(/^\d+/)[0].to_i
-      cmd = "bin/rails db:migrate:down:main db:migrate:down:ci VERSION=#{version}"
-      puts "$ #{cmd}"
-      raise "Migration #{version} failed" unless system(cmd)
-    end
-  else
-    puts 'Invalid task. Use --task=[up|down]'
-    exit 1
   end
 end
 # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity

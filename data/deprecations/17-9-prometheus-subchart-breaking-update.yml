@@ -16,5 +16,5 @@
     Manual steps are required to perform the upgrade. If you have Alertmanager, Node Exporter or
     Pushgateway enabled, you will also need to update your Helm values.
 
-    Please refer to the [migration guide](https://docs.gitlab.com/charts/releases/9_0.html#prometheus-upgrade)
+    Please refer to the [migration guide](https://docs.gitlab.com/charts/releases/9_0/#prometheus-upgrade)
     for more information.

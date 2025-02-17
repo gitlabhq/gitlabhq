@@ -119,6 +119,7 @@ The dependency list shows only dependencies that match your filters.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500551) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `update_sbom_occurrences_vulnerabilities_on_cvs`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/514223) in GitLab 17.9.
 
 {{< /history >}}
 

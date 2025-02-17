@@ -56,6 +56,7 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 | [`RemoteDevelopmentAgentConfig` GraphQL type is deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
 | [`defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/509787) | Low | Create | Project |
 | [GitLab Advanced SAST will be enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/513685) | Medium | Application security testing | Instance |
+| [The `agentk` container registry is moving to Cloud Native GitLab](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630) | Medium | Deploy | Instance |
 | [SAST jobs no longer use global cache settings](https://gitlab.com/gitlab-org/gitlab/-/issues/512564) | Medium | Application security testing | Instance |
 | [End-of-Support SAST jobs will be removed from the CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/issues/519133) | High | Application security testing | Project |
 | [Application Security Testing analyzers major version update](https://gitlab.com/gitlab-org/gitlab/-/issues/513417) | Low | Application security testing | Project |

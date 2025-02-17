@@ -80,6 +80,7 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
+  TOKEN_TYPE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   workItemResponseFactory,
@@ -718,6 +719,7 @@ describe('CE IssuesListApp component', () => {
           { type: TOKEN_TYPE_ORGANIZATION },
           { type: TOKEN_TYPE_RELEASE },
           { type: TOKEN_TYPE_SEARCH_WITHIN },
+          { type: TOKEN_TYPE_SUBSCRIBED },
           { type: TOKEN_TYPE_TYPE },
         ]);
       });

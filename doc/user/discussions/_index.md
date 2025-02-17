@@ -20,6 +20,7 @@ title: Comments and threads
 - Paginated merge request discussions [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
 - Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
 - Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `wiki_comments`. Disabled by default.
+- Comments and threads on Wiki pages [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/502847) in GitLab 17.9. Feature flag `wiki_comments` removed.
 
 {{< /history >}}
 
@@ -48,7 +49,7 @@ You can create comments in places like:
 - Snippets.
 - Tasks.
 - OKRs.
-- Wiki pages. The `wiki_comments` feature flag must be enabled. For more information, see the history.
+- Wiki pages.
 
 Each object can have as many as 5,000 comments.
 

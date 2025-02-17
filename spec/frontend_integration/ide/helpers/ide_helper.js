@@ -39,10 +39,10 @@ export const waitForEditorModelChange = (instance) =>
   });
 
 export const findMonacoEditor = () =>
-  screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-editor'));
+  screen.findAllByLabelText(/^Code Editor\./).then(([x]) => x.closest('.monaco-editor'));
 
 export const findMonacoDiffEditor = () =>
-  screen.findAllByLabelText(/Editor content;/).then(([x]) => x.closest('.monaco-diff-editor'));
+  screen.findAllByLabelText(/^Code Editor\./).then(([x]) => x.closest('.monaco-diff-editor'));
 
 export const findAndSetEditorValue = async (value) => {
   const editor = await findMonacoEditor();

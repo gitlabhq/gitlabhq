@@ -120,6 +120,7 @@ describe('WorkItemActions component', () => {
 
   const createComponent = ({
     canUpdate = true,
+    canUpdateMetadata = true,
     canDelete = true,
     canReportSpam = true,
     hasOkrsFeature = true,
@@ -160,6 +161,7 @@ describe('WorkItemActions component', () => {
         workItemWebUrl: 'gitlab-org/gitlab-test/-/work_items/1',
         isGroup,
         canUpdate,
+        canUpdateMetadata,
         canDelete,
         canReportSpam,
         isConfidential,
@@ -363,8 +365,8 @@ describe('WorkItemActions component', () => {
       expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
     });
 
-    it('does not render when canUpdate is false', () => {
-      createComponent({ canUpdate: false });
+    it('does not render when canUpdateMetadata is false', () => {
+      createComponent({ canUpdateMetadata: false });
       expect(findConfidentialityToggleButton().exists()).toBe(false);
     });
 
@@ -698,7 +700,7 @@ describe('WorkItemActions component', () => {
     });
 
     it('hides the action when there is no permission', () => {
-      createComponent({ canUpdate: false });
+      createComponent({ canUpdateMetadata: false });
 
       expect(findChangeTypeButton().exists()).toBe(false);
     });

@@ -9521,7 +9521,10 @@ ALTER SEQUENCE board_group_recent_visits_id_seq OWNED BY board_group_recent_visi
 CREATE TABLE board_labels (
     id bigint NOT NULL,
     board_id bigint NOT NULL,
-    label_id bigint NOT NULL
+    label_id bigint NOT NULL,
+    group_id bigint,
+    project_id bigint,
+    CONSTRAINT check_b8d32bd9fe CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE board_labels_id_seq
@@ -31750,7 +31753,11 @@ CREATE UNIQUE INDEX index_board_group_recent_visits_on_user_group_and_board ON b
 
 CREATE UNIQUE INDEX index_board_labels_on_board_id_and_label_id ON board_labels USING btree (board_id, label_id);
 
+CREATE INDEX index_board_labels_on_group_id ON board_labels USING btree (group_id);
+
 CREATE INDEX index_board_labels_on_label_id ON board_labels USING btree (label_id);
+
+CREATE INDEX index_board_labels_on_project_id ON board_labels USING btree (project_id);
 
 CREATE INDEX index_board_project_recent_visits_on_board_id ON board_project_recent_visits USING btree (board_id);
 
@@ -39011,6 +39018,9 @@ ALTER TABLE ONLY ml_candidates
 ALTER TABLE ONLY approval_group_rules
     ADD CONSTRAINT fk_2a74c6e52d FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY board_labels
+    ADD CONSTRAINT fk_2adb910a2e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_2c9f941965 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -40450,6 +40460,9 @@ ALTER TABLE ONLY pages_domains
 
 ALTER TABLE ONLY vulnerability_representation_information
     ADD CONSTRAINT fk_ea478b7da6 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY board_labels
+    ADD CONSTRAINT fk_eae737023c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_debian_project_distribution_keys
     ADD CONSTRAINT fk_eb2224a3c0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

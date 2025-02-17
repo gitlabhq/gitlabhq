@@ -19,6 +19,7 @@ query getProjectMergeRequestsCount(
   $deployedBefore: Time
   $deployedAfter: Time
   $environmentName: String
+  $subscribed: SubscriptionStatus
   $not: MergeRequestsResolverNegatedParams
 ) {
   namespace: project(fullPath: $fullPath) {
@@ -44,6 +45,7 @@ query getProjectMergeRequestsCount(
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
       environmentName: $environmentName
+      subscribed: $subscribed
       not: $not
     ) {
       count
@@ -69,6 +71,7 @@ query getProjectMergeRequestsCount(
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
       environmentName: $environmentName
+      subscribed: $subscribed
       not: $not
     ) {
       count
@@ -94,6 +97,7 @@ query getProjectMergeRequestsCount(
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
       environmentName: $environmentName
+      subscribed: $subscribed
       not: $not
     ) {
       count
@@ -119,6 +123,7 @@ query getProjectMergeRequestsCount(
       deployedBefore: $deployedBefore
       deployedAfter: $deployedAfter
       environmentName: $environmentName
+      subscribed: $subscribed
       not: $not
     ) {
       count

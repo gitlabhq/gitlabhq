@@ -125,14 +125,26 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
       project.add_guest(user)
     end
 
-    before do
-      sign_in(user)
-      visit work_items_path
-      wait_for_all_requests
+    context 'for work item authored by guest user' do
+      let_it_be(:key_result) { create(:work_item, :key_result, author: user, project: project) }
+      let_it_be(:note) { create(:note, noteable: key_result, project: key_result.project) }
+
+      before do
+        sign_in(user)
+        visit project_work_item_path(project, key_result.iid)
+      end
+
+      it_behaves_like 'authored work item guest user permissions'
     end
 
-    it_behaves_like 'work items comment actions for guest users'
-    it_behaves_like 'change type action is not displayed'
+    context 'for work item not authored by guest user' do
+      before do
+        sign_in(user)
+        visit work_items_path
+      end
+
+      it_behaves_like 'non-authored work item guest user permissions'
+    end
   end
 
   context 'for user not signed in' do

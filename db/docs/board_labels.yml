@@ -8,6 +8,8 @@ description: Used by issue boards to filter issues by label as part of the defau
   scope
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2912
 milestone: '10.2'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514602
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+  project_id: projects
 table_size: small

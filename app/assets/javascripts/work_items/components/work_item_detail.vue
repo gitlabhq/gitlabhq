@@ -316,14 +316,14 @@ export default {
     canReportSpam() {
       return this.workItem.userPermissions?.reportSpam;
     },
-    canSetWorkItemMetadata() {
+    canUpdateMetadata() {
       return this.workItem.userPermissions?.setWorkItemMetadata;
     },
     canAdminWorkItemLink() {
       return this.workItem.userPermissions?.adminWorkItemLink;
     },
     canAssignUnassignUser() {
-      return this.workItemAssignees && this.canSetWorkItemMetadata;
+      return this.workItemAssignees && this.canUpdateMetadata;
     },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
@@ -901,6 +901,7 @@ export default {
                 :can-delete="canDelete"
                 :can-report-spam="canReportSpam"
                 :can-update="canUpdate"
+                :can-update-metadata="canUpdateMetadata"
                 :is-confidential="workItem.confidential"
                 :is-discussion-locked="isDiscussionLocked"
                 :is-parent-confidential="parentWorkItemConfidentiality"

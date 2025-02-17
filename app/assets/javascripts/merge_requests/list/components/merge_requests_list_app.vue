@@ -50,6 +50,8 @@ import {
   TOKEN_TYPE_DEPLOYED_AFTER,
   TOKEN_TYPE_ENVIRONMENT,
   TOKEN_TITLE_ENVIRONMENT,
+  TOKEN_TYPE_SUBSCRIBED,
+  TOKEN_TITLE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -448,6 +450,26 @@ export default {
           icon: 'clock',
           token: DateToken,
           operators: OPERATORS_IS,
+        },
+        {
+          type: TOKEN_TYPE_SUBSCRIBED,
+          title: TOKEN_TITLE_SUBSCRIBED,
+          icon: 'notifications',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            {
+              icon: 'notifications',
+              value: 'EXPLICITLY_SUBSCRIBED',
+              title: __('Explicitly subscribed'),
+            },
+            {
+              icon: 'notifications-off',
+              value: 'EXPLICITLY_UNSUBSCRIBED',
+              title: __('Explicitly unsubscribed'),
+            },
+          ],
         },
       ].filter(Boolean);
     },

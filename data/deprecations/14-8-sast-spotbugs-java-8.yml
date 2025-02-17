@@ -4,9 +4,9 @@
   breaking_change: true
   reporter: connorgilbert
   body: |  # Do not modify this line, instead modify the lines below.
-    The [GitLab SAST SpotBugs analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) scans [Java, Scala, Groovy, and Kotlin code](https://docs.gitlab.com/ee/user/application_security/sast/#supported-languages-and-frameworks) for security vulnerabilities.
+    The [GitLab SAST SpotBugs analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) scans [Java, Scala, Groovy, and Kotlin code](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks) for security vulnerabilities.
     For technical reasons, the analyzer must first compile the code before scanning.
-    Unless you use the [pre-compilation strategy](https://docs.gitlab.com/ee/user/application_security/sast/#pre-compilation), the analyzer attempts to automatically compile your project's code.
+    Unless you use the [pre-compilation strategy](https://docs.gitlab.com/user/application_security/sast/#pre-compilation), the analyzer attempts to automatically compile your project's code.
 
     In GitLab versions prior to 15.0, the analyzer image includes Java 8 and Java 11 runtimes to facilitate compilation.
 

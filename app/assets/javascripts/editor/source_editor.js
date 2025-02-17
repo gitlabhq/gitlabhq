@@ -4,6 +4,7 @@ import languages from '~/ide/lib/languages';
 import { registerLanguages } from '~/ide/utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { uuids } from '~/lib/utils/uuids';
+import { __, s__, sprintf } from '~/locale';
 import {
   SOURCE_EDITOR_INSTANCE_ERROR_NO_EL,
   URI_PREFIX,
@@ -36,6 +37,17 @@ const instanceDisposeModels = (editor, instance, model) => {
   }
 };
 
+const getAriaLabel = (blobPath) => {
+  const keyCombo = window.gl?.client?.isMac ? __('Control + Shift + M') : __('Control + M');
+
+  return sprintf(
+    s__(
+      'Editor|Code Editor. Press %{keyCombo} to toggle tab key behavior between indentation and navigation. Editing %{blobPath}.',
+    ),
+    { keyCombo, blobPath },
+  );
+};
+
 export default class SourceEditor {
   /**
    * Constructs a global editor.
@@ -47,6 +59,7 @@ export default class SourceEditor {
     this.options = {
       extraEditorClassName: 'gl-source-editor',
       ...defaultEditorOptions,
+      accessibilitySupport: 'on',
       ...options,
     };
 
@@ -122,6 +135,8 @@ export default class SourceEditor {
     const instance = new EditorInstance(
       monacoEditor[createEditorFn].call(this, el, {
         ...this.options,
+        ariaLabel: getAriaLabel(blobPath),
+        dataTestId: 'editor-content',
         ...instanceOptions,
       }),
       this.extensionsStore,

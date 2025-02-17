@@ -8,8 +8,8 @@
 
     The permissions model for GraphQL is being updated. After 15.0, users with the Guest, Reporter, and Developer role can no longer update these settings:
 
-    - [Package Registry settings](https://docs.gitlab.com/ee/api/graphql/reference/#packagesettings)
-    - [Container registry cleanup policy](https://docs.gitlab.com/ee/api/graphql/reference/#containerexpirationpolicy)
-    - [Dependency Proxy time-to-live policy](https://docs.gitlab.com/ee/api/graphql/reference/#dependencyproxyimagettlgrouppolicy)
-    - [Enabling the Dependency Proxy for your group](https://docs.gitlab.com/ee/api/graphql/reference/#dependencyproxysetting)
+    - [Package Registry settings](https://docs.gitlab.com/api/graphql/reference/#packagesettings)
+    - [Container registry cleanup policy](https://docs.gitlab.com/api/graphql/reference/#containerexpirationpolicy)
+    - [Dependency Proxy time-to-live policy](https://docs.gitlab.com/api/graphql/reference/#dependencyproxyimagettlgrouppolicy)
+    - [Enabling the Dependency Proxy for your group](https://docs.gitlab.com/api/graphql/reference/#dependencyproxysetting)
   stage: package

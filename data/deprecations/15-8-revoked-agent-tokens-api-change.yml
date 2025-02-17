@@ -6,7 +6,7 @@
   stage: configure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382129
   body: |
-    Currently, GET requests to the [Cluster Agents API](https://docs.gitlab.com/ee/api/cluster_agents.html#list-tokens-for-an-agent)
+    Currently, GET requests to the [Cluster Agents API](https://docs.gitlab.com/api/cluster_agents/#list-tokens-for-an-agent)
     endpoints can return revoked tokens. In GitLab 16.0, GET requests will not return revoked tokens.
 
     You should review your calls to these endpoints and ensure you do not use revoked tokens.
@@ -14,7 +14,7 @@
     This change affects the following REST and GraphQL API endpoints:
 
     - REST API:
-      - [List tokens](https://docs.gitlab.com/ee/api/cluster_agents.html#list-tokens-for-an-agent)
-      - [Get a single token](https://docs.gitlab.com/ee/api/cluster_agents.html#get-a-single-agent-token)
+      - [List tokens](https://docs.gitlab.com/api/cluster_agents/#list-tokens-for-an-agent)
+      - [Get a single token](https://docs.gitlab.com/api/cluster_agents/#get-a-single-agent-token)
     - GraphQL:
-      - [`ClusterAgent.tokens`](https://docs.gitlab.com/ee/api/graphql/reference/#clusteragenttokens)
+      - [`ClusterAgent.tokens`](https://docs.gitlab.com/api/graphql/reference/#clusteragenttokens)

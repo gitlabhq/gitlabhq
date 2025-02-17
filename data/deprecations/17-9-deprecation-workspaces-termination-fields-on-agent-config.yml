@@ -13,7 +13,7 @@
     The `defaultMaxHoursBeforeTermination` and `maxHoursBeforeTerminationLimit` fields are no longer used internally.
     They are deprecated in the `WorkspacesAgentConfig` type.
 
-    This removal extends to the [agent configuration](https://docs.gitlab.com/ee/user/workspace/gitlab_agent_configuration.html#workspace-settings)
+    This removal extends to the [agent configuration](https://docs.gitlab.com/user/workspace/gitlab_agent_configuration/#workspace-settings)
     file associated with your workspaces setup.
 
     To prepare for this change:

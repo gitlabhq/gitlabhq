@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: connorgilbert
   body: |  # Do not modify this line, instead modify the lines below.
-    GitLab SAST uses various [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
+    GitLab SAST uses various [analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
 
     We are reducing the number of analyzers used in GitLab SAST as part of our long-term strategy to deliver a better and more consistent user experience.
     Streamlining the set of analyzers will also enable faster [iteration](https://handbook.gitlab.com/handbook/values/#iteration), better [results](https://handbook.gitlab.com/handbook/values/#results), and greater [efficiency](https://handbook.gitlab.com/handbook/values/#efficiency) (including a reduction in CI runner usage in most cases).
@@ -32,7 +32,7 @@
     - whether you've excluded the Semgrep-based analyzer from running in the past.
     - which analyzer first discovered the vulnerabilities shown in the project's Vulnerability Report.
 
-    See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
+    See [Vulnerability translation documentation](https://docs.gitlab.com/user/application_security/sast/analyzers/#vulnerability-translation) for further details.
 
     If you applied customizations to any of the affected analyzers or if you currently disable the Semgrep analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/352554#breaking-change).
 # The following items are not published on the docs page, but may be used in the future.

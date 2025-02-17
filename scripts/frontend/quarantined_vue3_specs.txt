@@ -18,7 +18,6 @@ ee/spec/frontend/analytics/group_ci_cd_analytics/components/release_stats_card_s
 ee/spec/frontend/analytics/merge_request_analytics/components/filter_bar_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/throughput_chart_spec.js
 ee/spec/frontend/analytics/merge_request_analytics/components/throughput_table_spec.js
-ee/spec/frontend/approvals/components/security_configuration/unconfigured_security_rule_spec.js
 ee/spec/frontend/approvals/components/security_configuration/unconfigured_security_rules_spec.js
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
@@ -272,7 +271,6 @@ spec/frontend/vue_shared/components/filtered_search_bar/filtered_search_bar_root
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js
 spec/frontend/vue_shared/components/markdown/header_spec.js
 spec/frontend/vue_shared/components/markdown/markdown_editor_spec.js
-spec/frontend/vue_shared/components/markdown_drawer/markdown_drawer_spec.js
 spec/frontend/vue_shared/components/metric_images/metric_image_details_modal_spec.js
 spec/frontend/vue_shared/components/page_heading_spec.js
 spec/frontend/vue_shared/components/pagination_bar/pagination_bar_spec.js

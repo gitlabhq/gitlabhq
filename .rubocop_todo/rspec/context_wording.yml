@@ -2830,7 +2830,6 @@ RSpec/ContextWording:
     - 'spec/workers/deployments/link_merge_request_worker_spec.rb'
     - 'spec/workers/deployments/update_environment_worker_spec.rb'
     - 'spec/workers/design_management/new_version_worker_spec.rb'
-    - 'spec/workers/every_sidekiq_worker_spec.rb'
     - 'spec/workers/gitlab_service_ping_worker_spec.rb'
     - 'spec/workers/group_import_worker_spec.rb'
     - 'spec/workers/incident_management/process_alert_worker_v2_spec.rb'

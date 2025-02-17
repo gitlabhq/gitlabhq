@@ -5,7 +5,7 @@
   reporter: jreporter  # GitLab username of the person reporting the deprecation
   body: |  # Do not modify this line, instead modify the lines below.
       To simplify setting a test coverage pattern, in GitLab 15.0 the
-      [project setting for test coverage parsing](https://docs.gitlab.com/ee/ci/pipelines/settings.html#add-test-coverage-results-using-project-settings-removed)
+      [project setting for test coverage parsing](https://docs.gitlab.com/ci/pipelines/settings/#add-test-coverage-results-using-project-settings-removed)
       is being removed.
 
       Instead, using the project's `.gitlab-ci.yml`, provide a regular expression with the `coverage` keyword to set

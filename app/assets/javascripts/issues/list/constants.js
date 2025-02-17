@@ -40,6 +40,7 @@ import {
   TOKEN_TYPE_DEPLOYED_AFTER,
   TOKEN_TYPE_ENVIRONMENT,
   TOKEN_TYPE_STATE,
+  TOKEN_TYPE_SUBSCRIBED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const ISSUE_REFERENCE = /^#\d+$/;
@@ -109,6 +110,8 @@ export const i18n = {
   upvotes: __('Upvotes'),
   titles: __('Titles'),
   descriptions: __('Descriptions'),
+  subscribedExplicitly: __('Explicitly subscribed'),
+  unsubscribedExplicitly: __('Explicitly unsubscribed'),
 };
 
 export const urlSortParams = {
@@ -550,6 +553,16 @@ export const filtersMap = {
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'state',
+      },
+    },
+  },
+  [TOKEN_TYPE_SUBSCRIBED]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'subscribed',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'subscribed',
       },
     },
   },

@@ -3,7 +3,7 @@
   removal_milestone: "15.0"  # The milestone when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
-    In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/ee/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
+    In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
 
     - The `versions` field's `pipelines` field. This returns all the pipelines associated with all the package's versions, which can pull an unbounded number of objects in memory and create performance concerns.
     - The `pipelines` field of a specific `version`. This returns only the pipelines associated with that single package version.

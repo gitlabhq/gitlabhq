@@ -32,22 +32,21 @@
   templates: templates.to_json,
 } }
 
-- if @wiki.container.wiki_comments_feature_flag_enabled?
-  #js-vue-wiki-notes-app{
-    data: {
-      testid: 'wiki-notes-app',
-      container_id: @wiki.container.id,
-      container_type: @wiki.container.is_a?(Project) ? 'project' : 'group',
-      current_user_data: UserSerializer.new.represent(current_user, {only_path: false}, CurrentUserEntity).to_json,
-      page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
-      register_path: new_user_registration_path(redirect_to_referer: 'yes'),
-      sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
-      markdown_preview_path: preview_markdown_path(@wiki.container),
-      noteable_type: @noteable_type,
-      is_container_archived: @wiki.container.is_a?(Project) ? @wiki.container.archived : false,
-      notes_filters: UserPreference.notes_filters.to_json,
-      report_abuse_path: add_category_abuse_reports_path
-    }
+#js-vue-wiki-notes-app{
+  data: {
+    testid: 'wiki-notes-app',
+    container_id: @wiki.container.id,
+    container_type: @wiki.container.is_a?(Project) ? 'project' : 'group',
+    current_user_data: UserSerializer.new.represent(current_user, {only_path: false}, CurrentUserEntity).to_json,
+    page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
+    register_path: new_user_registration_path(redirect_to_referer: 'yes'),
+    sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
+    markdown_preview_path: preview_markdown_path(@wiki.container),
+    noteable_type: @noteable_type,
+    is_container_archived: @wiki.container.is_a?(Project) ? @wiki.container.archived : false,
+    notes_filters: UserPreference.notes_filters.to_json,
+    report_abuse_path: add_category_abuse_reports_path
   }
+}
 
 = render 'shared/wikis/sidebar'

@@ -14,4 +14,4 @@
 
     CI configurations including any of the templates above will stop working in GitLab 17.0.
 
-    Users are advised to use [License scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/) instead.
+    Users are advised to use [License scanning of CycloneDX files](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/) instead.

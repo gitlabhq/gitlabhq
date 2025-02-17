@@ -7974,7 +7974,6 @@
 - './spec/workers/environments/auto_stop_worker_spec.rb'
 - './spec/workers/environments/canary_ingress/update_worker_spec.rb'
 - './spec/workers/error_tracking_issue_link_worker_spec.rb'
-- './spec/workers/every_sidekiq_worker_spec.rb'
 - './spec/workers/expire_build_artifacts_worker_spec.rb'
 - './spec/workers/export_csv_worker_spec.rb'
 - './spec/workers/external_service_reactive_caching_worker_spec.rb'

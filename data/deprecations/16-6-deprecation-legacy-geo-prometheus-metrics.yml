@@ -6,7 +6,7 @@
   stage: enablement
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/430192
   body: |
-    Following the migration of projects to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html) we have deprecated a number of [Prometheus](https://docs.gitlab.com/ee/administration/monitoring/prometheus/) metrics.
+    Following the migration of projects to the [Geo self-service framework](https://docs.gitlab.com/development/geo/framework/) we have deprecated a number of [Prometheus](https://docs.gitlab.com/administration/monitoring/prometheus/) metrics.
     The following Geo-related Prometheus metrics are deprecated and will be removed in 17.0.
     The table below lists the deprecated metrics and their respective replacements. The replacements are available in GitLab 16.3.0 and later.
 

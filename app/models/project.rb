@@ -3296,10 +3296,6 @@ class Project < ApplicationRecord
     group&.continue_indented_text_feature_flag_enabled? || Feature.enabled?(:continue_indented_text, self, type: :wip)
   end
 
-  def wiki_comments_feature_flag_enabled?
-    group&.wiki_comments_feature_flag_enabled? || Feature.enabled?(:wiki_comments, self, type: :wip)
-  end
-
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 

@@ -14,4 +14,4 @@
     Starting from GitLab version 18.0, we will no longer provide 32-bit packages for Raspberry Pi.
     You should use 64-bit Raspberry Pi OS and [install the `arm64` Debian packages](https://about.gitlab.com/install/#debian).
     For information on backing up data on a 32-bit OS and restoring it to a 64-bit OS, see
-    [Upgrading operating systems for PostgreSQL](https://docs.gitlab.com/ee/administration/postgresql/upgrading_os.html).
+    [Upgrading operating systems for PostgreSQL](https://docs.gitlab.com/administration/postgresql/upgrading_os/).

@@ -15,7 +15,7 @@
   manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: | # (required) Don't change this line.
     All configured pull-policies should be present in the
-    [`allowed_pull_policies` configuration](https://docs.gitlab.com/runner/executors/docker.html#allow-docker-pull-policies)
+    [`allowed_pull_policies` configuration](https://docs.gitlab.com/runner/executors/docker/#allow-docker-pull-policies)
     specified in the runner's `config.toml` file. If they are not, the job should fail with an `incompatible pull policy` error.
 
     In the current implementation, when multiple pull policies are defined, jobs pass if at least one pull policy

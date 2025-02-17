@@ -7,16 +7,16 @@
   issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The version of Grafana bundled with Omnibus GitLab is
-    [deprecated and disabled](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#deprecation-of-bundled-grafana)
+    [deprecated and disabled](https://docs.gitlab.com/administration/monitoring/performance/grafana_configuration/#deprecation-of-bundled-grafana)
     in 16.0 and will be removed in 16.3. If you are using the bundled Grafana, you must migrate to either:
 
     - Another implementation of Grafana. For more information, see
-      [Switch to new Grafana instance](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#switch-to-new-grafana-instance).
+      [Switch to new Grafana instance](https://docs.gitlab.com/administration/monitoring/performance/grafana_configuration/#switch-to-new-grafana-instance).
     - Another observability platform of your choice.
 
     The version of Grafana that is currently provided is no longer a supported version.
 
-    In GitLab versions 16.0 to 16.2, you can still [re-enable the bundled Grafana](https://docs.gitlab.com/ee/administration/monitoring/performance/grafana_configuration.html#temporary-workaround).
+    In GitLab versions 16.0 to 16.2, you can still [re-enable the bundled Grafana](https://docs.gitlab.com/administration/monitoring/performance/grafana_configuration/#temporary-workaround).
     However, enabling the bundled Grafana will no longer work from GitLab 16.3.
   end_of_support_milestone:
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]

@@ -13,7 +13,7 @@
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
     Starting in GitLab 18.0, the internal process that releases CI/CD components to the Catalog will be changed.
-    If you use the [recommended CI/CD component release process](https://docs.gitlab.com/ee/ci/components/#publish-a-new-release), which makes use of the `release` keyword and the `registry.gitlab.com/gitlab-org/release-cli:latest` container image, you do not need to make any changes.
+    If you use the [recommended CI/CD component release process](https://docs.gitlab.com/ci/components/#publish-a-new-release), which makes use of the `release` keyword and the `registry.gitlab.com/gitlab-org/release-cli:latest` container image, you do not need to make any changes.
     The `latest` version of this container image (`v0.20.0`) contains [GLab](https://gitlab.com/gitlab-org/cli/) `v1.50.0`, which will be used for all releases to the CI/CD Catalog in GitLab 18.0 and later.
     In other cases:
 

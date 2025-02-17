@@ -18,7 +18,7 @@
     The change improves consistency between Omnibus GitLab and source installs and enables us to provide better documentation and tooling for both.
 
     You should update to the new configuration structure as soon as possible using
-    [the upgrade instructions](https://docs.gitlab.com/ee/update/#gitaly-omnibus-gitlab-configuration-structure-change).
+    [the upgrade instructions](https://docs.gitlab.com/update/#gitaly-omnibus-gitlab-configuration-structure-change).
 #
 # OPTIONAL END OF SUPPORT FIELDS
 #

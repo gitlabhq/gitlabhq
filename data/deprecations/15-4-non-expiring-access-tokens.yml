@@ -34,9 +34,9 @@
     is divulged. Because access tokens that have an expiration date are better, from GitLab 15.3 we
     [populate a default expiration date](https://gitlab.com/gitlab-org/gitlab/-/issues/348660).
 
-    In GitLab 16.0, any [personal](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html),
-    [project](https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html), or
-    [group](https://docs.gitlab.com/ee/user/group/settings/group_access_tokens.html) access token that does not have an
+    In GitLab 16.0, any [personal](https://docs.gitlab.com/user/profile/personal_access_tokens/),
+    [project](https://docs.gitlab.com/user/project/settings/project_access_tokens/), or
+    [group](https://docs.gitlab.com/user/group/settings/group_access_tokens/) access token that does not have an
     expiration date will automatically have an expiration date set at one year.
 
     We recommend giving your access tokens an expiration date in line with your company's security policies before the

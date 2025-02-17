@@ -6,7 +6,7 @@
   breaking_change: true
   reporter: ahmed.hemdan
   body: |
-    In the [GraphQL API](https://docs.gitlab.com/ee/api/graphql/), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/ee/api/graphql/reference/#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/ee/user/project/releases/release_fields.html#links) is internal or external to your GitLab instance.
+    In the [GraphQL API](https://docs.gitlab.com/api/graphql/), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/api/graphql/reference/#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/user/project/releases/release_fields/#links) is internal or external to your GitLab instance.
     As of GitLab 15.9, we treat all release links as external, and therefore, this field is deprecated in GitLab 15.9, and will be removed in GitLab 16.0.
     To avoid any disruptions to your workflow, please stop using the `external` field because it will be removed and will not be replaced.
   stage: Release

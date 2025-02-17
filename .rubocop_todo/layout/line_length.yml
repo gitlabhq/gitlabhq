@@ -4248,7 +4248,6 @@ Layout/LineLength:
     - 'spec/workers/disallow_two_factor_for_subgroups_worker_spec.rb'
     - 'spec/workers/email_receiver_worker_spec.rb'
     - 'spec/workers/emails_on_push_worker_spec.rb'
-    - 'spec/workers/every_sidekiq_worker_spec.rb'
     - 'spec/workers/gitlab/import/stuck_import_job_spec.rb'
     - 'spec/workers/gitlab/jira_import/import_issue_worker_spec.rb'
     - 'spec/workers/group_export_worker_spec.rb'

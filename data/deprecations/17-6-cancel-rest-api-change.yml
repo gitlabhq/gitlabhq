@@ -16,7 +16,7 @@
   resolution_role: Owner  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: | # (required) Don't change this line.
-    The Pipelines API cancel endpoint [`POST /projects/:id/pipelines/:pipeline_id/cancel`](https://docs.gitlab.com/ee/api/pipelines.html#cancel-a-pipelines-jobs)
+    The Pipelines API cancel endpoint [`POST /projects/:id/pipelines/:pipeline_id/cancel`](https://docs.gitlab.com/api/pipelines/#cancel-a-pipelines-jobs)
     returns a `200` success response regardless of whether a pipeline can be canceled.
     Starting in GitLab 18.0, the endpoint will return a `422 Unprocessable Entity` error when a pipeline cannot be canceled.
     Update your API integration to handle the `422` status code when making pipeline cancellation requests.

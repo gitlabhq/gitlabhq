@@ -13,4 +13,4 @@
     - GitLab requires TLS 1.2 or higher for all outgoing and incoming TLS connections.
     - TLS/SSL certificates must have at least 112 bits of security. RSA, DSA, and DH keys shorter than 2048 bits, and ECC keys shorter than 224 bits are prohibited.
 
-    See the [GitLab 17.5 changes](https://docs.gitlab.com/ee/update/versions/gitlab_17_changes.html#1750) for more details.
+    See the [GitLab 17.5 changes](https://docs.gitlab.com/update/versions/gitlab_17_changes/#1750) for more details.

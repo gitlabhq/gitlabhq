@@ -158,16 +158,16 @@ License scanning is supported for the following languages and package managers:
       <td>No</td>
     </tr>
     <tr>
-      <td>Scala</td>
-      <td><a href="https://www.scala-sbt.org/">sbt</a></td>
-      <td>Yes</td>
-      <td>No</td>
-    </tr>
-    <tr>
       <td>Rust</td>
       <td><a href="https://doc.rust-lang.org/cargo/">cargo</a></td>
       <td>No</td>
       <td><a href="https://gitlab.com/components/dependency-scanning#generating-cargo-sboms">Yes</a></td>
+    </tr>
+    <tr>
+      <td>Scala</td>
+      <td><a href="https://www.scala-sbt.org/">sbt</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>Swift</td>

@@ -4,6 +4,6 @@
   breaking_change: true
   reporter: fzimmer
   body: |  # Do not modify this line, instead modify the lines below.
-    The `user_email_lookup_limit` [API field](https://docs.gitlab.com/ee/api/settings.html) is deprecated in GitLab 14.9 and removed in GitLab 16.7. Until the feature is removed, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows still work.
+    The `user_email_lookup_limit` [API field](https://docs.gitlab.com/api/settings/) is deprecated in GitLab 14.9 and removed in GitLab 16.7. Until the feature is removed, `user_email_lookup_limit` is aliased to `search_rate_limit` and existing workflows still work.
 
     Any API calls to change the rate limits for `user_email_lookup_limit` must use `search_rate_limit` instead.

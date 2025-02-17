@@ -27,6 +27,7 @@ query getDashboardIssues(
   $createdBefore: Time
   $closedAfter: Time
   $closedBefore: Time
+  $subscribed: SubscriptionStatus
 ) {
   issues(
     search: $search
@@ -52,6 +53,7 @@ query getDashboardIssues(
     createdBefore: $createdBefore
     closedAfter: $closedAfter
     closedBefore: $closedBefore
+    subscribed: $subscribed
   ) @persist {
     nodes {
       __persist

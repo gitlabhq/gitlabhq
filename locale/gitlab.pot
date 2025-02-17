@@ -16402,6 +16402,12 @@ msgstr ""
 msgid "Contributor analytics"
 msgstr ""
 
+msgid "Control + M"
+msgstr ""
+
+msgid "Control + Shift + M"
+msgstr ""
+
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
 msgstr ""
 
@@ -21946,6 +21952,9 @@ msgstr ""
 msgid "Editor toolbar"
 msgstr ""
 
+msgid "Editor|Code Editor. Press %{keyCombo} to toggle tab key behavior between indentation and navigation. Editing %{blobPath}."
+msgstr ""
+
 msgid "Edits"
 msgstr ""
 
@@ -23879,6 +23888,12 @@ msgid "Explain current vulnerability."
 msgstr ""
 
 msgid "Explain why you're reporting the user."
+msgstr ""
+
+msgid "Explicitly subscribed"
+msgstr ""
+
+msgid "Explicitly unsubscribed"
 msgstr ""
 
 msgid "Explore"

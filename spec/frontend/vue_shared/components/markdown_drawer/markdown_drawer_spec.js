@@ -43,7 +43,7 @@ describe('MarkdownDrawer', () => {
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
-  const findDrawerTitle = () => wrapper.findComponent('[data-testid="title-element"]');
+  const findDrawerTitle = () => wrapper.findByTestId('title-element');
   const findDrawerBody = () => wrapper.findComponent({ ref: 'content-element' });
 
   describe('component', () => {

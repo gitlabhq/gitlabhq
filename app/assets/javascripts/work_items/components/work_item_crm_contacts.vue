@@ -97,8 +97,8 @@ export default {
         ? newWorkItemFullPath(this.fullPath, this.workItemType)
         : this.fullPath;
     },
-    canUpdate() {
-      return this.workItem?.userPermissions?.updateWorkItem;
+    canUpdateMetadata() {
+      return this.workItem?.userPermissions?.setWorkItemMetadata;
     },
     dropdownLabelText() {
       return n__('%d contact', '%d contacts', this.selectedCount);
@@ -269,7 +269,7 @@ export default {
 <template>
   <work-item-sidebar-dropdown-widget
     :dropdown-label="s__('Crm|Contacts')"
-    :can-update="canUpdate"
+    :can-update="canUpdateMetadata"
     dropdown-name="crm-contacts"
     :loading="isLoading"
     :list-items="listItems"

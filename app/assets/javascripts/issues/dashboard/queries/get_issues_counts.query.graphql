@@ -16,6 +16,7 @@ query getDashboardIssuesCount(
   $createdBefore: Time
   $closedAfter: Time
   $closedBefore: Time
+  $subscribed: SubscriptionStatus
 ) {
   openedIssues: issues(
     state: opened
@@ -36,6 +37,7 @@ query getDashboardIssuesCount(
     createdBefore: $createdBefore
     closedAfter: $closedAfter
     closedBefore: $closedBefore
+    subscribed: $subscribed
   ) {
     count
   }
@@ -58,6 +60,7 @@ query getDashboardIssuesCount(
     createdBefore: $createdBefore
     closedAfter: $closedAfter
     closedBefore: $closedBefore
+    subscribed: $subscribed
   ) {
     count
   }
@@ -80,6 +83,7 @@ query getDashboardIssuesCount(
     createdBefore: $createdBefore
     closedAfter: $closedAfter
     closedBefore: $closedBefore
+    subscribed: $subscribed
   ) {
     count
   }

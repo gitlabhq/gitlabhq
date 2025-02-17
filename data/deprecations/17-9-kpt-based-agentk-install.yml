@@ -20,4 +20,4 @@
     - GitLab CLI
     - Flux
 
-    To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/ee/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
+    To migrate from `kpt` to Helm, follow [the agent installation documentation](https://docs.gitlab.com/user/clusters/agent/install/) to overwrite your `kpt`-deployed `agentk` instance.
