@@ -65,7 +65,9 @@ module Gitlab
               "gitlab.webservice.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-webservice-ee",
               "gitlab.webservice.image.tag" => commit_sha,
               "gitlab.webservice.workhorse.image" => "#{IMAGE_REPOSITORY}/gitlab-workhorse-ee",
-              "gitlab.webservice.workhorse.tag" => commit_sha
+              "gitlab.webservice.workhorse.tag" => commit_sha,
+              "gitlab.kas.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-kas",
+              "gitlab.kas.image.tag" => semver?(kas_version) ? "v#{kas_version}" : kas_version
             }
           end
 

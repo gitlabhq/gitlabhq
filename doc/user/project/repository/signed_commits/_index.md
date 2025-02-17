@@ -12,10 +12,18 @@ DETAILS:
 
 When you add a digital signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. A digital signature is a cryptographic output
-used to verify authenticity. If GitLab can verify a commit author's identity with a public [GPG key](gpg.md),
-the commit is marked **Verified** in the GitLab UI. You can then configure
-[push rules](../push_rules.md) for your project to reject individual unsigned commits, or reject all
-commits from unverified users.
+used to verify authenticity.
+
+If GitLab can verify the committer's identity with a public [GPG key](gpg.md), the commit is
+marked **Verified** in the GitLab UI.
+You can then configure [push rules](../push_rules.md) for your project to:
+
+- Reject individual unsigned commits.
+- Reject all commits from unverified users.
+
+NOTE:
+The committer and author fields are distinct in Git. The author writes the commit, and the committer
+applies it. Commit signing verifies only the committer's identity.
 
 Sign commits with your:
 

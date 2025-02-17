@@ -147,7 +147,7 @@ In such cases, `organization_id` is an option for the sharding key, provided the
 - Only add `organization_id` for root level models (for example, `namespaces`), and not leaf-level models (for example, `issues`).
 - Ensure such tables do not contain data related to groups, or projects (or records that belong to groups / projects).
   Instead, use `project_id`, or `namespace_id`.
-- Tables with lots of rows are not good candidates.
+- Tables with lots of rows are not good candidates because we would need to re-write every row if we move the entity to a different organization which can be expensive.
 - When there are other tables referencing this table, the application should continue to work if the referencing table records are moved to a different organization.
 
 If you believe that the `organization_id` is the best option for the sharding key, seek approval from the Tenant Scale group.
