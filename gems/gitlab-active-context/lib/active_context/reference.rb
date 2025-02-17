@@ -3,9 +3,9 @@
 module ActiveContext
   class Reference
     extend Concerns::ReferenceUtils
+    extend Concerns::Preprocessor
 
     DELIMITER = '|'
-    PRELOAD_BATCH_SIZE = 1_000
 
     class << self
       def deserialize(string)
@@ -22,26 +22,16 @@ module ActiveContext
         new(*deserialize_string(string))
       end
 
-      def preload(refs)
-        refs.group_by(&:class).each do |klass, class_refs|
-          class_refs.each_slice(PRELOAD_BATCH_SIZE) do |group_slice|
-            klass.preload_refs(group_slice)
-          end
-        end
-
-        refs
-      end
-
       def serialize
         raise NotImplementedError
       end
 
-      def preload_refs(refs)
-        refs
-      end
-
       def klass
         name.demodulize
+      end
+
+      def preprocess_references(refs)
+        preprocess(refs)
       end
     end
 

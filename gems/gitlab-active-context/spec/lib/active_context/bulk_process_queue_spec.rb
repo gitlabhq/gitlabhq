@@ -19,7 +19,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
 
   describe '#process' do
     let(:specs) { [['spec1', 1], ['spec2', 2]] }
-    let(:reference_class) { class_double("ActiveContext::Reference", preload_refs: nil).as_stubbed_const }
+    let(:reference_class) { class_double("ActiveContext::Reference").as_stubbed_const }
     let(:references) { [instance_double('ActiveContext::Reference'), instance_double('ActiveContext::Reference')] }
 
     before do
@@ -29,8 +29,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
       allow(bulk_process_queue).to receive(:deserialize_all).and_return(references)
       allow(redis).to receive(:zremrangebyscore)
       allow(references).to receive(:group_by).and_return({ reference_class => references })
-      allow(reference_class).to receive(:preload_refs)
-      allow(ActiveContext::Reference).to receive(:preload).and_return(references)
+      allow(reference_class).to receive(:preprocess_references).and_return(references)
     end
 
     it 'processes specs and flushes the bulk processor' do

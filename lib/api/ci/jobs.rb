@@ -232,14 +232,10 @@ module API
 
       resource :job do
         before do
-          if Feature.enabled?(:jobs_api_use_primary_to_authenticate) # rubocop: disable Gitlab/FeatureFlagWithoutActor -- Actor isn't known prior to authentication
-            # Use primary for both main and ci database as authenticating in the scope of runners will load
-            # Ci::Build model and other standard authn related models like License, Project and User.
-            ::Gitlab::Database::LoadBalancing::SessionMap
-              .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary { authenticate! }
-          else
-            authenticate!
-          end
+          # Use primary for both main and ci database as authenticating in the scope of runners will load
+          # Ci::Build model and other standard authn related models like License, Project and User.
+          ::Gitlab::Database::LoadBalancing::SessionMap
+            .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary { authenticate! }
         end
 
         desc 'Get current job using job token' do

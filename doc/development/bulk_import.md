@@ -60,3 +60,52 @@ There are two different strategies:
 
 - `BulkImports::Pipeline::HexdigestCacheStrategy`, which caches a hexdigest representation of the data.
 - `BulkImports::Pipeline::IndexCacheStrategy`, which caches the last processed index of an entry in a pipeline.
+
+### Sidekiq jobs execution hierarchy
+
+**On destination instance**
+
+```mermaid
+flowchart TD
+    subgraph s1["Main"]
+        BulkImportWorker -- Enqueue itself --> BulkImportWorker
+        BulkImportWorker --> BulkImports::ExportRequestWorker
+        BulkImports::ExportRequestWorker --> BulkImports::EntityWorker
+        BulkImports::EntityWorker -- Enqueue itself --> BulkImports::EntityWorker
+        BulkImports::EntityWorker --> BulkImports::PipelineWorker
+        BulkImports::PipelineWorker -- Enqueue itself --> BulkImports::PipelineWorker
+        BulkImports::EntityWorker --> BulkImports::PipelineWorkerA["BulkImports::PipelineWorker"]
+        BulkImports::EntityWorker --> BulkImports::PipelineWorkerA1["..."]
+
+        BulkImportWorker --> BulkImports::ExportRequestWorkerB["BulkImports::ExportRequestWorker"]
+        BulkImports::ExportRequestWorkerB --> BulkImports::PipelineWorkerBB["..."]
+    end
+
+    subgraph s2["Batched pipelines"]
+        BulkImports::PipelineWorker --> BulkImports::PipelineBatchWorker
+        BulkImports::PipelineWorker --> BulkImports::PipelineBatchWorkerA["..."]
+        BulkImports::PipelineBatchWorker --> BulkImports::FinishBatchedPipelineWorker
+    end
+```
+
+```mermaid
+flowchart TD
+  subgraph s1["Cron"]
+    BulkImports::StaleImportWorker
+  end
+```
+
+**On source instance**
+
+```mermaid
+flowchart TD
+    subgraph s1["Main"]
+        BulkImports::RelationExportWorker
+    end
+
+    subgraph s2["Batched relations"]
+        BulkImports::RelationExportWorker --> BulkImports::RelationBatchExportWorker
+        BulkImports::RelationExportWorker --> BulkImports::RelationBatchExportWorkerA["..."]
+        BulkImports::RelationBatchExportWorker --> BulkImports::FinishBatchedRelationExportWorker
+    end
+```

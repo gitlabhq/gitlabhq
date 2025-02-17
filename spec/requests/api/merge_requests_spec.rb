@@ -1814,6 +1814,25 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response.size).to eq(merge_request.commits.size)
       expect(json_response.first['id']).to eq(commit.id)
       expect(json_response.first['title']).to eq(commit.title)
+      expect(json_response.first['parent_ids']).to be_present
+    end
+
+    context 'when commits_from_gitaly feature flag is disabled' do
+      before do
+        stub_feature_flags(commits_from_gitaly: false)
+      end
+
+      it 'returns a 200 without parent_ids' do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
+        commit = merge_request.commits.first
+
+        expect_successful_response_with_paginated_array
+        expect(json_response.size).to eq(merge_request.commits.size)
+        expect(json_response.first['id']).to eq(commit.id)
+        expect(json_response.first['title']).to eq(commit.title)
+
+        expect(json_response.first['parent_ids']).to eq([])
+      end
     end
 
     it 'returns a 404 when merge_request_iid not found' do

@@ -153,20 +153,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           perform_request
           expect(response).to be_successful
         end
-
-        context 'when the jobs_api_use_primary_to_authenticate flag is disabled' do
-          before do
-            stub_feature_flags(jobs_api_use_primary_to_authenticate: false)
-          end
-
-          it 'does not specify a database' do
-            expect(Gitlab::Database::LoadBalancing::SessionMap).not_to receive(:with_sessions)
-            expect(Gitlab::Database::LoadBalancing::ScopedSessions).not_to receive(:new)
-
-            perform_request
-            expect(response).to be_successful
-          end
-        end
       end
 
       it_behaves_like 'returns common pipeline data' do
@@ -346,20 +332,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
           subject
           expect(response).to be_successful
-        end
-
-        context 'when the jobs_api_use_primary_to_authenticate flag is disabled' do
-          before do
-            stub_feature_flags(jobs_api_use_primary_to_authenticate: false)
-          end
-
-          it 'does not specify a database' do
-            expect(Gitlab::Database::LoadBalancing::SessionMap).not_to receive(:with_sessions)
-            expect(Gitlab::Database::LoadBalancing::ScopedSessions).not_to receive(:new)
-
-            subject
-            expect(response).to be_successful
-          end
         end
       end
 

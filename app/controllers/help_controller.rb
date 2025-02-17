@@ -113,7 +113,9 @@ class HelpController < ApplicationController
   end
 
   def documentation_file_path
-    @documentation_file_path ||= [version_segment, 'ee', "#{@path}.html"].compact.join('/')
+    path = @path.presence || 'index'
+    path = path.gsub(/(?:_)?index$/, '').chomp('/')
+    @documentation_file_path ||= "#{[version_segment, path].compact.join('/')}/"
   end
 
   def version_segment

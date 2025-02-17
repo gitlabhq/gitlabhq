@@ -48,7 +48,7 @@ module ActiveContext
 
       refs = deserialize_all(specs_buffer)
 
-      Reference.preload(refs).each do |ref| # rubocop: disable Rails/FindEach -- not ActiveRecord
+      Reference.preprocess_references(refs).each do |ref|
         bulk_processor.process(ref)
       end
 
