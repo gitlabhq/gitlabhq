@@ -125,21 +125,21 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           .to include('use-new-web-ide' => 'false')
       end
 
-      context 'for extensions marketplace data' do
+      context 'for extension marketplace data' do
         where(:settings, :expected_settings_hash) do
           ref(:disabled_vscode_settings) | nil
           ref(:enabled_vscode_settings) | 'c6620244fe72864fa8d8'
         end
 
         with_them do
-          it 'includes extensions gallery settings and settings context hash' do
-            expect(WebIde::ExtensionsMarketplace).to receive(:webide_extensions_gallery_settings)
+          it 'includes extension marketplace settings and settings context hash' do
+            expect(WebIde::ExtensionMarketplace).to receive(:webide_extension_marketplace_settings)
               .with(user: user).and_return(settings)
 
             actual = helper.ide_data(project: nil, fork_info: fork_info, params: params)
 
             expect(actual).to include({
-              'extensions-gallery-settings' => settings.to_json,
+              'extension-marketplace-settings' => settings.to_json,
               'settings-context-hash' => expected_settings_hash
             })
           end

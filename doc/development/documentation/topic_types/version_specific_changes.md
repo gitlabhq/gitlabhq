@@ -22,11 +22,15 @@ For each major version of GitLab, create a page in `doc/update/versions/gitlab_X
 The version-specific changes page should use the following format:
 
 ```markdown
-# GitLab X changes
+title: GitLab X changes
+---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{</* details */>}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{</* /details */>}}
 
 This page contains upgrade information for minor and patch versions of GitLab X.
 Ensure you review these instructions for:
@@ -34,7 +38,7 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-For more information about upgrading GitLab Helm Chart, see [the release notes for X.0](https://docs.gitlab.com/charts/releases/X_0.html).
+For more information about upgrading GitLab Helm Chart, see [the release notes for X.0](https://docs.gitlab.com/charts/releases/X_0).
 
 ## Issues to be aware of when upgrading from <last minor version of last major>
 

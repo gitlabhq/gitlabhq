@@ -6,14 +6,6 @@ description: Learn how to contribute to GitLab Documentation.
 title: Redirects in GitLab documentation
 ---
 
-<!--
-  The clean_redirects Rake task in the gitlab-docs repository manually
-  excludes this file. If the line containing remove_date is moved to a new
-  document, update the Rake task with the new location.
-
-  https://gitlab.com/gitlab-org/gitlab-docs/-/blob/1979f985708d64558bb487fbe9ed5273729c01b7/Rakefile#L306
--->
-
 When you move, rename, or delete a page, you must add a redirect. Redirects reduce
 how often users get 404s when they visit the documentation site from out-of-date links.
 
@@ -24,8 +16,7 @@ Add a redirect to ensure:
   checks for redirected links.
 - The documentation site global navigation does not link to a missing page.
 
-  The links in the global navigation are already tested in the `gitlab-docs` project.
-  If the redirect is missing, the `gitlab-docs` project's `main` branch might break.
+  The links in the global navigation are already tested in the `docs-gitlab-com` project.
 
 Be sure to assign a technical writer to any merge request that moves, renames, or deletes a page.
 Technical Writers can help with any questions and can review your change.
@@ -53,9 +44,7 @@ There are two types of redirects:
   contributors and expire after nine months. Redirects pointing to external sites
   are not added to the GitLab Pages redirects.
 
-Expired redirect files are removed from the documentation projects by the
-[`clean_redirects` Rake task](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#clean-up-redirects),
-as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
+Expired redirect files are removed from the documentation projects as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
 
 ## Redirect to a page that already exists
 
@@ -79,7 +68,7 @@ To redirect a page to another page in the same repository:
      <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
      <!-- Redirects that point to other docs in the same project expire in three months. -->
      <!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
-     <!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->
+     <!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->
      ```
 
    - Replace both instances of `../newpath/to/file/index.md` with the new file path.
@@ -95,14 +84,14 @@ might link to the old file:
 1. In <https://gitlab.com/gitlab-com/www-gitlab-com>, search for full URLs:
 
    ```shell
-   grep -r "docs.gitlab.com/ee/path/to/file.html" .
+   grep -r "docs.gitlab.com/path/to/file" .
    ```
 
-1. In <https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/content/_data>,
-   search the navigation bar configuration files for the path with `.html`:
+1. In <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/tree/main/data>,
+   search the navigation bar configuration files for the path:
 
    ```shell
-   grep -r "path/to/file.html" .
+   grep -r "path/to/file" .
     ```
 
 1. In [all of the doc projects](site_architecture/_index.md#source-files), search for links in the docs
@@ -110,8 +99,8 @@ might link to the old file:
    For example, go to the root directory of the `gitlab` project and run:
 
    ```shell
-   grep -r "docs.gitlab.com/ee/path/to/file.html" .
-   grep -r "path/to/file.html" .
+   grep -r "docs.gitlab.com/path/to/file" .
+   grep -r "path/to/file" .
    grep -r "path/to/file.md" .
    grep -r "path/to/file" .
    ```
@@ -122,7 +111,7 @@ might link to the old file:
 1. In <https://gitlab.com/gitlab-org/customers-gitlab-com>, search for full URLs:
 
    ```shell
-   grep -r "docs.gitlab.com/ee/path/to/file.html" .
+   grep -r "docs.gitlab.com/path/to/file" .
    ```
 
 ### Move a file's location
@@ -169,7 +158,7 @@ and the second argument is the path of the new file:
 If you create a new page and then rename it before it's added to a release on the 18th:
 
 Instead of following that procedure, ask a Technical Writer to manually add the redirect
-to [`redirects.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/redirects.yaml).
+to [`redirects.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/redirects.yaml).
 
 ## Exceptions to creating a redirect
 

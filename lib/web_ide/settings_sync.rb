@@ -12,10 +12,10 @@ module WebIde
       # The actual hash we calculate for default settings, but needs to be mapped to the CURRENT one for compatability
       DEFAULT_SETTINGS_HASH = "e36c431c0e2e1ee82c86"
 
-      def settings_context_hash(extensions_gallery_settings:)
-        return unless extensions_gallery_settings[:enabled]
+      def settings_context_hash(extension_marketplace_settings:)
+        return unless extension_marketplace_settings[:enabled]
 
-        settings = extensions_gallery_settings[:vscode_settings]
+        settings = extension_marketplace_settings[:vscode_settings]
 
         # This value determines the extensions settings context.
         # Modifying this value could clear the set of installed extensions for users.

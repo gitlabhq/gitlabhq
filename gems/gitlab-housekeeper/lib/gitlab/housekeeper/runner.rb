@@ -10,6 +10,7 @@ require 'gitlab/housekeeper/gitlab_client'
 require 'gitlab/housekeeper/git'
 require 'gitlab/housekeeper/change'
 require 'gitlab/housekeeper/substitutor'
+require 'gitlab/housekeeper/filter_identifiers'
 require 'awesome_print'
 require 'digest'
 

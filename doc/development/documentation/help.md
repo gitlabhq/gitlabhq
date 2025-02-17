@@ -62,17 +62,6 @@ For example:
   - `doc/user/index.md` if it exists.
   - Otherwise, to `doc/user/_index.md`.
 
-## Source files
-
-`/help` can render Markdown files with the level 1 heading either:
-
-- Specified in YAML front matter using `title`. For example, `title: My Markdown file`.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145627) in GitLab 16.10.
-- Specified in the Markdown itself. For example, `# My Markdown file`.
-
-You should not specify the level 1 heading for a page using both methods at the same time, otherwise the level 1 heading
-is repeated.
-
 ## Linking to `/help`
 
 When you're building a new feature, you may need to link to the documentation

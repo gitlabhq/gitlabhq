@@ -280,9 +280,7 @@ find . -name '*.md' | sort | xargs vale --minAlertLevel warning --output line > 
 find . -name '*.md' | sort | xargs vale --minAlertLevel error --output line > ../../results.txt
 ```
 
-These results can be used with the
-[`create_issues.js` script](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/scripts/create_issues.js)
-to generate [documentation-related issues for Hackathons](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#create-issues-for-a-hackathon).
+These results can be used to generate [documentation-related issues for Hackathons](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#create-issues-for-a-hackathon).
 
 ## Enable custom rules locally
 

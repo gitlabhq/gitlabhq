@@ -5,12 +5,10 @@ info: For assistance with this Style Guide page, see https://handbook.gitlab.com
 title: Hugo migration reference for writers
 ---
 
-We are moving GitLab Docs from Nanoc to Hugo. This guide outlines the formatting
-requirements for documentation after the migration.
+We've rebuilt the GitLab Docs website on Hugo. This guide outlines the formatting
+requirements for documentation after the relaunch.
 
 While existing content will be automatically updated, any new or modified documentation must follow these guidelines to ensure proper building with Hugo.
-
-For the latest migration status, see [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/44).
 
 ## New project
 
@@ -55,8 +53,6 @@ A GitLab Rails instance accesses...
 **Why:** Hugo can generate automated listings of pages. For these to work, Hugo needs the page title to be handled more like data than regular content.
 We are not using these initially, but may do so in the future.
 
-**When:** Currently in-progress. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for details.
-
 **Testing:** Error-level Vale rule ([`FrontMatter.yml`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/doc/.vale/gitlab_docs/FrontMatter.yml?ref_type=heads)).
 
 ### Shortcodes
@@ -93,9 +89,7 @@ See the [Shortcodes reference](https://new.docs.gitlab.com/shortcodes) for synta
 **Why:** Shortcodes are the standard Hugo method for creating custom templated
 bits of content.
 
-**When:** After launch.
-
-**Testing:** Shortcodes will be validated on docs pipelines (see [implementation issue](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/issues/161)).
+**Testing:** Shortcodes are validated on docs pipelines (see [implementation issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/161)).
 
 #### Shortcodes in `/help`
 
@@ -108,8 +102,6 @@ tags and show simplified plain text fallbacks for elements like tabs and alert b
 
 **Why:** `/help` only renders plain Markdown. It is not a static site generator with
 functionality to transform content or render templated frontend code.
-
-**When:** After launch.
 
 ### Kramdown
 
@@ -127,9 +119,7 @@ With Hugo, these will no longer have any effect. They will render as plain text.
 
 **Why:** Hugo uses the Goldmark Markdown rendering engine, not Kramdown.
 
-**When:** At this time, avoid adding new Kramdown tags. Support for these is dropped entirely after launch.
-
-**Testing:** We are running an audit job on the CI pipeline for Kramdown tags ([example](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/jobs/8885163533)).
+**Testing:** We are running an audit job on the CI pipeline for Kramdown tags ([example](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/jobs/8885163533)).
 These tags will be manually removed as part of launch.
 
 ### Menu entries in `navigation.yaml`
@@ -184,9 +174,7 @@ include a `.html` extension. End each URL with a trailing `/`.
       url: 'tutorials/gitlab_navigation/'
     ```
 
-**When:** Post-launch.
-
-**Testing:** We various checks on `navigation.yaml` in [this script](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/blob/main/scripts/check-navigation.sh?ref_type=heads),
+**Testing:** We run various checks on `navigation.yaml` in [this script](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/main/scripts/check-navigation.sh?ref_type=heads),
 which runs as a pipeline job when the YAML file is updated.
 
 ## File naming
@@ -218,9 +206,7 @@ doc/
 **Why:** Hugo requires this specific naming convention for section index pages (pages that serve as the main page for a directory).
 See Hugo's documentation on [Page bundles](https://gohugo.io/content-management/page-bundles/) for more information.
 
-**When:** Currently in-progress. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for details.
-
-**Testing:** We will test for this on the pipeline and prevent merges that include an `index.md` file (see [this issue](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/issues/161) for details).
+**Testing:** We will test for this on the pipeline and prevent merges that include an `index.md` file (see [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/161) for details).
 
 ### Clashing file names
 
@@ -250,8 +236,6 @@ inaccessible.
 somewhat different paths than the Nanoc website does. We've opted for `prettyURLs` because it's
 Hugo's default, and Hugo's pattern for `uglyURLs` is different from most other static site generators.
 
-**When:** Try to start avoiding these now because each one requires a manual fix: a rename and a redirect.
-
 **Testing:** After launch, Hugo will throw an error on docs pipelines if it detects a new path clash.
 
 ## Processes
@@ -263,8 +247,6 @@ the project, and the release template has been updated accordingly.
 
 **Why:** We've refactored versioning to use the [Parallel Deployments](../../user/project/pages/_index.md#parallel-deployments) feature.
 You can review the new release process [here](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/issue_templates/release.md).
-
-**When:** First new release after launch.
 
 ### Monthly technical writing tasks
 
@@ -283,9 +265,7 @@ low-priority enough that we can launch without them. There may be more opportuni
 post-launch to share more of these scripts with the Handbook project.
 
 **Testing:** Because we will pause on removing old redirects temporarily,
-we've added a [test script](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/blob/main/scripts/redirect-threshold-check.sh?ref_type=heads) to warn if we get near the Pages redirect limit.
-
-**When:** Post-launch.
+we've added a [test script](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/redirect-threshold-check.sh?ref_type=heads) to warn if we get near the Pages redirect limit.
 
 ## User-facing changes
 
@@ -303,7 +283,7 @@ for site visitors.
 A file located at `/foo/bar/baz.html` is available at `/foo/bar/baz`.
 
 We have redirects in place at Cloudflare to redirect all URLs to their
-new formats. See the [redirects documentation](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/blob/main/doc/redirects.md?ref_type=heads#cloudflare) in the Hugo project for more information.
+new formats. See the [redirects documentation](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/redirects.md?ref_type=heads#cloudflare) in the Hugo project for more information.
 
 ### Layout changes
 
@@ -316,22 +296,3 @@ The primary changes are:
 - Main content column (which includes the table of contents) is
 centered, with extra space on either side of it, when the site
 is viewed on a large screen.
-
-## Timeline for all changes
-
-| Change           |  When     | Action needed |
-| ---------------- | --------- | --------- |
-| Path clashes     | Now | Avoid creating new clashing paths. If possible, remove and redirect [existing clashing paths](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/snippets/4797439) for pages in your groups. |
-| Kramdown         | Now | Do not add new Kramdown tags to page content. |
-| Page titles<sup>1</sup>      | Now (in-progress) | Use new format in projects where this change is complete. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for current status. |
-| Index file names<sup>1</sup> | Now (in-progress) | Use new format in projects where this change is complete. See [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/82) for current status. |
-| Shortcodes<sup>1</sup>       | Post-launch | None |
-| Release process  | Post-launch | None |
-| Chores process   | Post-launch | None |
-
-**Footnotes:**
-
-1. Timing for these changes on [automated pages](site_architecture/automation.md) will
-differ from standard pages, as they require a more
-complex set of steps to migrate. See [this issue](https://gitlab.com/gitlab-org/technical-writing-group/gitlab-docs-hugo/-/issues/168)
-for details.

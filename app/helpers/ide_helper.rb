@@ -79,16 +79,18 @@ module IdeHelper
   end
 
   def new_ide_data(project:)
-    extensions_gallery_settings = WebIde::ExtensionsMarketplace.webide_extensions_gallery_settings(user: current_user)
+    extension_marketplace_settings = WebIde::ExtensionMarketplace.webide_extension_marketplace_settings(
+      user: current_user
+    )
     settings_context_hash = WebIde::SettingsSync.settings_context_hash(
-      extensions_gallery_settings: extensions_gallery_settings
+      extension_marketplace_settings: extension_marketplace_settings
     )
 
     {
       'project-path' => project&.path_with_namespace,
       'csp-nonce' => content_security_policy_nonce,
       'editor-font' => new_ide_fonts.to_json,
-      'extensions-gallery-settings' => extensions_gallery_settings.to_json,
+      'extension-marketplace-settings' => extension_marketplace_settings.to_json,
       'settings-context-hash' => settings_context_hash
     }.merge(new_ide_code_suggestions_data).merge(new_ide_oauth_data)
   end

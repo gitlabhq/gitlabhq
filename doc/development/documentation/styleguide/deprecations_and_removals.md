@@ -25,28 +25,38 @@ When a feature is no longer actively developed, but not deprecated, add the foll
 the topic title and version history:
 
 ```markdown
-NOTE:
+{{</* alert type="note" */>}}
+
 This feature is not under active development, but
 [community contributions](https://about.gitlab.com/community/contribute/) are welcome.
+
+{{</* /alert */>}}
 ```
 
 ## Deprecate a page or topic
 
 To deprecate a page or topic:
 
-1. Add `(deprecated)` after the title. Use a warning to explain when it was deprecated,
+1. Add `(deprecated)` after the title. Use a warning `alert` to explain when it was deprecated,
    when it will be removed, and the replacement feature.
 
    ```markdown
-   ## Title (deprecated)
+   title: Title (deprecated)
+   ---
 
-   DETAILS:
-   **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+   {{</* details */>}}
 
-   WARNING:
+   - Tier: Premium, Ultimate
+   - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+   {{</* /details */>}}
+
+   {{</* alert type="warning" */>}}
+
    This feature was [deprecated](https://issue-link) in GitLab 14.8
    and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
+
+   {{</* /alert */>}}
    ```
 
    If you're not sure when the feature will be removed or no
@@ -64,17 +74,24 @@ To deprecate a page or topic:
    set a date three months after the [release where it will be removed](https://about.gitlab.com/releases/).
 
    ```markdown
+   title: Title (deprecated)
+   ---
+
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
-   ## Title (deprecated)
+   {{</* details */>}}
 
-   DETAILS:
-   **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+   - Tier: Premium, Ultimate
+   - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-   WARNING:
+   {{</* /details */>}}
+
+   {{</* alert type="warning" */>}}
+
    This feature was [deprecated](https://issue-link) in GitLab 14.8
    and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
+
+   {{</* /alert */>}}
 
    <!--- end_remove -->
    ```
@@ -88,8 +105,8 @@ The title and a removed indicator remains until three months after the removal.
 
 To remove a page:
 
-1. Leave the page title. Remove all other content, including the history items and the word `WARNING:`.
-1. After the title, change `(deprecated)` to `(removed)`.
+1. Leave the page title. Remove all other content, including the history items and the `details` and `alert` shortcodes.
+1. After the `title`, change `(deprecated)` to `(removed)`.
 1. Update the YAML metadata:
    - For `remove_date`, set the value to a date three months after
      the release when the feature was removed.
@@ -103,23 +120,25 @@ To remove a page:
    info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
    remove_date: '2022-08-02'
    redirect_to: '../newpath/to/file/index.md'
+   title: Title (removed)
    ---
 
-   # Title (removed)
+   {{</* details */>}}
 
-   DETAILS:
-   **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+   - Tier: Premium, Ultimate
+   - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+   {{</* /details */>}}
 
    This feature was [deprecated](https://issue-link) in GitLab X.Y
    and [removed](https://issue-link) in X.Y.
    Use [feature X](link-to-docs.md) instead.
    ```
 
-1. Edit the [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`
+1. Edit the [`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml) in `docs-gitlab-com`
    to remove the page's entry from the global navigation.
 1. Search the [Deprecations and Removals](../../../update/deprecations.md) page for
-   links to the removed page. These are full URLs like: `https://docs.gitlab.com/ee/user/deprecated_page.html`.
+   links to the removed page. The links use full URLs like: `https://docs.gitlab.com/user/deprecated_page/`.
    If you find any links, update the relevant [YAML files](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations):
 
    - In the `body:` section, remove links to the removed page.
@@ -138,19 +157,23 @@ This content is removed from the documentation as part of the Technical Writing 
 To remove a topic:
 
 1. Leave the title and the details of the deprecation and removal. Remove all other content,
-   including the history items and the word `WARNING:`.
+   including the history items and the `details` and `alert` shortcodes.
 1. Add `(removed)` after the title.
 1. Add the following HTML comments above and below the topic.
    For `remove_date`, set a date three months after the release where it was removed.
 
    ```markdown
+   title: Title (removed)
+   ----
+
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
-   ## Title (removed)
+   {{</* details */>}}
 
-   DETAILS:
-   **Tier:** Premium, Ultimate
-   **Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+   - Tier: Premium, Ultimate
+   - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+   {{</* /details */>}}
 
    This feature was [deprecated](https://issue-link) in GitLab X.Y
    and [removed](https://issue-link) in X.Y.
@@ -160,7 +183,7 @@ To remove a topic:
    ```
 
 1. Search the [Deprecations and Removals](../../../update/deprecations.md) page for
-   links to the removed page. These are full URLs like: `https://docs.gitlab.com/ee/user/deprecated_page.html`.
+   links to the removed page. The links use full URLs like: `https://docs.gitlab.com/user/deprecated_page/`.
    If you find any links, update the relevant [YAML files](https://gitlab.com/gitlab-org/gitlab/-/tree/master/data/deprecations):
 
    - In the `body:` section, remove links to the removed page.

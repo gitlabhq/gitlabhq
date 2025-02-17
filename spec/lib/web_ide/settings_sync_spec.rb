@@ -59,7 +59,7 @@ RSpec.describe WebIde::SettingsSync, feature_category: :web_ide do
     end
 
     subject(:settings_context_hash) do
-      described_class.settings_context_hash(extensions_gallery_settings: {
+      described_class.settings_context_hash(extension_marketplace_settings: {
         enabled: enabled,
         vscode_settings: vscode_settings
       })

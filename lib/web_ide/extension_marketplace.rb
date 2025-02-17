@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module WebIde
-  module ExtensionsMarketplace
+  module ExtensionMarketplace
     # This returns true if the extensions marketplace feature is available to any users
     #
     # @return [Boolean]
@@ -39,12 +39,12 @@ module WebIde
     #
     # @param [User] user The current user
     # @return [Hash]
-    def self.webide_extensions_gallery_settings(user:)
-      Settings.get(
-        [:vscode_extension_marketplace_view_model],
+    def self.webide_extension_marketplace_settings(user:)
+      Settings.get_single_setting(
+        :vscode_extension_marketplace_view_model,
         user: user,
         vscode_extension_marketplace_feature_flag_enabled: feature_enabled?(user: user)
-      ).fetch(:vscode_extension_marketplace_view_model)
+      )
     end
 
     # Returns true if the given flag is enabled for any actor
@@ -64,5 +64,3 @@ module WebIde
     private_class_method :feature_flag_enabled_for_any_actor?
   end
 end
-
-WebIde::ExtensionsMarketplace.prepend_mod

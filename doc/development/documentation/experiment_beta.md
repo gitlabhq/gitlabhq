@@ -22,28 +22,39 @@ When the feature changes from experiment or beta to generally available:
 ## Features that require user enrollment or feedback
 
 To include details about how users should enroll or leave feedback,
-add it below the `FLAG:` note.
+add it below the `type=flag` alert.
 
 For example:
 
 ```markdown
 ## Great new feature
 
-DETAILS:
-**Status:** Experiment
+{{</* details */>}}
 
-> - [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/development_stages_support.md).
+Status: Experiment
 
-FLAG:
+{{</* /details */>}}
+
+{{</* history */>}}
+
+- [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/development_stages_support.md).
+
+{{</* /history */>}}
+
+{{</* alert type="flag" */>}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{</* /alert */>}}
 
 Use this new feature when you need to do this new thing.
 
 This feature is an [experiment](<link_to>/policy/development_stages_support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](https://link).
+
 ```
 
 ## GitLab Duo features

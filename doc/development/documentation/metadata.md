@@ -12,13 +12,14 @@ docs website only.
 ## Stage and group metadata
 
 Each page should have metadata related to the stage and group it
-belongs to, as well as an information block. For example:
+belongs to, an information block, and the page title. For example:
 
 ```yaml
 ---
 stage: Example Stage
 group: Example Group
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Example page title
 ---
 ```
 
@@ -30,6 +31,7 @@ To populate the metadata, include this information:
   that the majority of the page's content belongs to.
 - `info`: How to find the Technical Writer associated with the page's stage and
   group.
+- `title`: The page title that appears as the H1 (level one heading) at the top of the page.
 
 ### Exceptions
 
@@ -39,7 +41,8 @@ Documents in the `/development` directory get this metadata:
 ---
 stage: Example Stage
 group: Example Group
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+title: Example page title
 ---
 ```
 
@@ -50,8 +53,17 @@ Documents in the `/solutions` directory get this metadata:
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+title: Example page title
 ---
 ```
+
+## Title metadata
+
+The `title` metadata:
+
+- Generates the H1 (level one heading) at the top of the rendered page.
+- Can be used to generate automated page listings.
+- Replaces Markdown H1 headings (like `# Page title`).
 
 ## Description metadata
 
@@ -72,7 +84,7 @@ See the Google [Best practices for creating quality meta descriptions](https://d
 ## Avoid pages being added to global navigation
 
 If a specific page shouldn't be added to the global navigation (have an entry added to
-[`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml)), add
+[`navigation.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/navigation.yaml), add
 the following to the page's metadata:
 
 ```yaml
@@ -81,7 +93,7 @@ ignore_in_report: true
 
 When this metadata is set on a page:
 
-- The [`pages_not_in_nav.js`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/scripts/pages_not_in_nav.js)
+- The [`pages_not_in_nav.cjs`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/pages_not_in_nav.cjs)
   script ignores the page when processing the documentation.
 - Technical writers doing the Technical Writing team's monthly tasks aren't prompted to add the page to the global
   navigation.

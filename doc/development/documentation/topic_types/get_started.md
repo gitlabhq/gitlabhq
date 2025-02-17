@@ -25,7 +25,8 @@ A **Get started** page should point to tutorials, however, because tutorials are
 Get started pages should be in this format:
 
 ```markdown
-# Get started with abc
+title: Get started with abc
+---
 
 These features work together in this way. You can use them to achieve these goals.
 Include a paragraph that ties together the features without describing what

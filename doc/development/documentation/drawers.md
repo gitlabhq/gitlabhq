@@ -45,14 +45,9 @@ To create this content:
   The `H1` heading is the drawer title.
 - Do not include any characters other than plain text in the `H1`.
 - The drawer component is narrow and not resizable.
-  - If you include tables, the content within should be brief.
+  - If you include tables, the content in the table should be brief.
   - While no technical limitation exists on the number of characters
     you can use, you should preview the drawer content to
     ensure it renders well.
 - To link from the drawer to other content, use absolute URLs.
-- Do not include:
-  - Tier badges
-  - History text
-  - Alert boxes
-  - Images
-  - SVG icons
+- Do not include Hugo shortcodes, such as Alert boxes or SVG icons.

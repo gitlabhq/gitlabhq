@@ -174,7 +174,7 @@ module PreferencesHelper
   private
 
   def extensions_marketplace_view
-    return unless WebIde::ExtensionsMarketplace.feature_enabled?(user: current_user)
+    return unless WebIde::ExtensionMarketplace.feature_enabled?(user: current_user)
 
     build_extensions_marketplace_view(
       title: s_("Preferences|Web IDE"),
@@ -184,13 +184,13 @@ module PreferencesHelper
   end
 
   def build_extensions_marketplace_view(title:, message:)
-    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionsMarketplace.marketplace_home_url}%{linkEnd}"
+    extensions_marketplace_home = "%{linkStart}#{::WebIde::ExtensionMarketplace.marketplace_home_url}%{linkEnd}"
     {
       name: 'extensions_marketplace',
       message: format(message, extensions_marketplace_home: extensions_marketplace_home),
       title: title,
-      message_url: WebIde::ExtensionsMarketplace.marketplace_home_url,
-      help_link: WebIde::ExtensionsMarketplace.help_preferences_url
+      message_url: WebIde::ExtensionMarketplace.marketplace_home_url,
+      help_link: WebIde::ExtensionMarketplace.help_preferences_url
     }
   end
 

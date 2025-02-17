@@ -23,7 +23,8 @@ If you start describing another concept, start a new concept and link to it.
 Concepts should be in this format:
 
 ```markdown
-# Title (a noun, like "Widgets")
+title: Title (a noun, like "Widgets")
+---
 
 A paragraph or two that explains what this thing is and why you would use it.
 

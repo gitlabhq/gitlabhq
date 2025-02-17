@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
+RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
   let(:help_url) { "/help/user/project/web_ide/_index.md#extension-marketplace" }
@@ -52,7 +52,7 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   end
 
   describe '#help_preferences_url' do
-    it do
+    it 'returns expected url' do
       expect(described_class.help_preferences_url).to match(
         '/help/user/profile/preferences.md#integrate-with-the-extension-marketplace'
       )
@@ -63,8 +63,8 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
     it { expect(user_preferences_url).to match('/-/profile/preferences#integrations') }
   end
 
-  describe '#webide_extensions_gallery_settings' do
-    subject(:webide_settings) { described_class.webide_extensions_gallery_settings(user: current_user) }
+  describe '#webide_extension_marketplace_settings' do
+    subject(:webide_settings) { described_class.webide_extension_marketplace_settings(user: current_user) }
 
     context 'when instance enabled' do
       before do

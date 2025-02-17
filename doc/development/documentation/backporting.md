@@ -102,8 +102,8 @@ you must update the Docker image that holds that version's documentation.
 The Docker image determines the contents that are displayed when you select the
 version dropdown list in the upper-right corner of the documentation.
 
-Run a [new pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/new)
-in the `gitlab-docs` repository for every version of the documentation that needs
+Run a [new pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipelines/new)
+in the `docs-gitlab-com` repository for every version of the documentation that needs
 an update.
 
 Choose the branch name that matches the stable version, for example `16.11` or `17.0`.
@@ -116,8 +116,8 @@ If the backport change was made to one of the last three stable branches,
 update the main docs site:
 
 1. After the pipeline finishes and the Docker image is updated, go to the
-   [pipeline schedules](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules)
-   and run the **Build Docker images manually** schedule.
+   [pipeline schedules](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipeline_schedules)
+   and run the **Build Docker images pipeline (Manual)** schedule.
 
 1. A dialog with a link to the **pipelines** page appears. Select that link.
 
@@ -128,7 +128,7 @@ update the main docs site:
    **test:image:docs-latest** job in the **test** stage to finish first.
 
 1. When the **image:docs-latest** job is finished,
-  [run a new pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/new)
+  [run a new pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipelines/new)
   that targets the main branch.
 
 1. After the pipeline finishes, go to `https://docs.gitlab.com` and verify that

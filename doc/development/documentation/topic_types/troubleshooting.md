@@ -93,13 +93,16 @@ If the troubleshooting suggestion includes a function that changes data on the G
 add the following warning:
 
 ```markdown
-WARNING:
+{{</* alert type="warning" */>}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{</* /alert */>}}
 ```
 
 ## Troubleshooting page type
 
-When there are five Troubleshooting topics or more on a page, create a separate Troubleshooting page type.
+When there are five troubleshooting topics or more on a page, create a separate Troubleshooting page.
 
 Follow these conventions:
 

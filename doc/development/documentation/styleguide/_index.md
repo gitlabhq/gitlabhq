@@ -35,11 +35,11 @@ GitLab uses [topic types](../topic_types/_index.md) to organize the product docu
 
 Topic types help users digest information more quickly. They also help address these issues:
 
-- **Content is hard to find.** The GitLab docs are comprehensive and include a large amount of
+- **Content is hard to find.** The GitLab documentation is comprehensive and includes a large amount of
   useful information. Topic types create repeatable patterns that make the content easier
   to scan and parse.
-- **Content is often written from the contributor's point of view.** The GitLab docs
-  are written by a variety of contributors. Topic types (tasks, specifically) help put
+- **Content is often written from the contributor's point of view.** The GitLab documentation is
+  written by a variety of contributors. Topic types (tasks, specifically) help put
   information into a format that is geared toward helping others, rather than
   documenting how a feature was implemented.
 
@@ -102,15 +102,9 @@ Also, keep the following guidance in mind:
 
 All GitLab documentation is written in [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
-The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/ruby/gems/gitlab_kramdown),
-a "flavored" Kramdown engine to render pages from Markdown to HTML. The use of Kramdown
-features is limited by our linters, so, use regular Markdown and follow the rules in the
-linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
+The [documentation website](https://docs.gitlab.com) uses the [Hugo](https://gohugo.io/) static site generator with its default Markdown engine, [Goldmark](https://gohugo.io/content-management/formats/#markdown).
 
-For a complete Kramdown reference, see the
-[GitLab Markdown Guide](https://handbook.gitlab.com/docs/markdown-guide/).
-
-The Markdown format is tested by using [markdownlint](../testing/markdownlint.md) and [Vale](../testing/vale.md).
+Markdown formatting is tested by using [markdownlint](../testing/markdownlint.md) and [Vale](../testing/vale.md).
 
 ### HTML in Markdown
 
@@ -130,21 +124,39 @@ HTML is permitted if:
 - There is an urgent need for the custom element that cannot wait for implementation by Technical Writing engineers.
 
 If you have an idea or request for a new element that would be useful on the Docs site, please
-submit a [feature request](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/new?issuable_template=Default).
+submit a [feature request](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/new?issuable_template=Default).
 
 ### Heading levels in Markdown
 
-Each documentation page begins with a level 1 heading (`#`). This becomes the `h1` element when
-the page is rendered to HTML. There can be only **one** level 1 heading per page.
+Each documentation page must include a `title` attribute in its [metadata](../metadata.md).
+The `title` becomes the `H1` element when rendered to HTML.
+Do not add an `H1` heading in Markdown, as there can be only one per page.
 
 - For each subsection, increment the heading level. In other words, increment the number of `#` characters
   in front of the topic title.
 - Avoid heading levels greater than `H5` (`#####`). If you need more than five heading levels, move the topics to a new page instead.
-  Heading levels greater than `H5` do not display in the right sidebar navigation.
+  Heading levels greater than `H4` do not display in the right sidebar navigation.
 - Do not skip a level. For example: `##` > `####`.
 - Leave one blank line before and after the topic title.
 - If you use code in topic titles, ensure the code is in backticks.
 - Do not use bold text in topic titles.
+
+### Shortcodes
+
+[Shortcodes](https://gohugo.io/content-management/shortcodes/) are snippets of template code that we can include in our Markdown content to display non-standard elements on a page, such as alert boxes or tabs.
+
+GitLab documentation uses the following shortcodes:
+
+- [Alert boxes](#alert-boxes)
+  - Note
+  - Warning
+  - Flag
+  - Disclaimer
+  - Details
+- [Availability details](availability_details.md)
+- [Version history](availability_details.md#history)
+- [Icons](#gitlab-svg-icons)
+- [Tabs](#tabs)
 
 ## Language
 
@@ -539,7 +551,7 @@ This is a code block using Markdown to demonstrate **bold** and `backticks`.
 When using code blocks:
 
 - Add a blank line above and below code blocks.
-- Use one of the [supported syntax names](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers).
+- Use one of the [supported syntax names](https://github.com/alecthomas/chroma?tab=readme-ov-file#supported-languages).
   Use `plaintext` if no better option is available.
 - Use quadruple backticks (````` ```` `````) when the code block contains another (nested) code block
   which has triple backticks already. The example above uses quadruple backticks internally
@@ -890,12 +902,6 @@ use a URL like `[GitLab Charts documentation](https://docs.gitlab.com/charts/)`.
 
 Each topic title has an anchor link. For example, a topic with the title
 `## This is an example` has the anchor `#this-is-an-example`.
-
-The first topic title on a page (the `h1`) has an anchor link,
-but do not use it. Link to the page instead.
-
-With Kramdown, you can add a custom ID to an HTML element, but these IDs
-don't work in `/help`, so you should not use them.
 
 When you change topic title text, the anchor link changes. To avoid broken links:
 
@@ -1511,13 +1517,10 @@ flowchart TD
 Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
 [GitLab SVG icons](#gitlab-svg-icons) instead.
 
-Use of emoji in Markdown requires GitLab Flavored Markdown, which is not supported by Kramdown,
-the Markdown rendering engine used for GitLab documentation.
-
 ## GitLab SVG icons
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
-directly in the documentation. For example, `{{< icon name="tanuki" >}}` renders as: {{< icon name="tanuki" >}}.
+directly in the documentation. For example, `{{</* icon name="tanuki" */>}}` renders as: {{< icon name="tanuki" >}}.
 
 In most cases, you should avoid using the icons in text.
 However, you can use an icon when hover text is the only
@@ -1526,21 +1529,21 @@ often have hover text only.
 
 When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
 
-- Avoid: `Select {{< icon name="pencil" >}} **Edit**.` This generates as: Select {{< icon name="pencil" >}} **Edit**.
-- Use instead: `Select **Edit** ({{< icon name="pencil" >}}).` This generates as: Select **Edit** ({{< icon name="pencil" >}}).
+- Avoid: `Select {{</* icon name="pencil" */>}} **Edit**.` This generates as: Select {{< icon name="pencil" >}} **Edit**.
+- Use instead: `Select **Edit** ({{</* icon name="pencil" */>}}).` This generates as: Select **Edit** ({{< icon name="pencil" >}}).
 
 Do not use words to describe the icon:
 
 - Avoid: `Select **Erase job log** (the trash icon).`
-- Use instead: `Select **Erase job log** ({{< icon name="remove" >}}).` This generates as: Select **Erase job log** ({{< icon name="remove" >}}).
+- Use instead: `Select **Erase job log** ({{</* icon name="remove" */>}}).` This generates as: Select **Erase job log** ({{< icon name="remove" >}}).
 
 When the button doesn't have any hover text, you can describe the icon.
 Follow up by creating a
 [UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Bug)
 to add hover text to the button to improve accessibility.
 
-- Avoid: `Select {{< icon name="ellipsis_v" >}}.`
-- Use instead: `Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).` This generates as: Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
+- Avoid: `Select {{</* icon name="ellipsis_v" */>}}.`
+- Use instead: `Select the vertical ellipsis ({{</* icon name="ellipsis_v" */>}}).` This generates as: Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 
 ## Videos
 
@@ -1563,7 +1566,7 @@ for videos before reading. Include the video's publication date after the link, 
 videos that might be out-of-date.
 
 ```markdown
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+<i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see [Video Title](https://link-to-video).
 <!-- Video published on YYYY-MM-DD -->
 ```
@@ -1641,23 +1644,17 @@ For a click-through demo, see [Demo Title](https://link-to-demo).
 
 Use alert boxes to call attention to information. Use them sparingly, and never have an alert box immediately follow another alert box.
 
-Alert boxes are generated when one of these words is followed by a line break:
+Alert boxes are generated using a Hugo shortcode:
 
-- `FLAG:`
-- `NOTE:`
-- `WARNING:`
-- `DISCLAIMER:`
-- `DETAILS:`
+```plaintext
+{{</* alert type="note" */>}}
 
-For example:
-
-```markdown
-NOTE:
 This is something to note.
+
+{{</* /alert */>}}
 ```
 
-To display an alert box for multiple paragraphs, lists, or headings, use
-[blockquotes](#blockquotes) instead.
+The valid alert types are `flag`, `note`, `warning`, and `disclaimer`.
 
 Alert boxes render only on the GitLab documentation site (<https://docs.gitlab.com>).
 In the GitLab product help, alert boxes appear as plain text.
@@ -1665,7 +1662,7 @@ In the GitLab product help, alert boxes appear as plain text.
 ### Flag
 
 Use this alert type to describe a feature's availability. For information about how to format
-`FLAG` alerts, see [Document features deployed behind feature flags](../feature_flags.md).
+`flag` alerts, see [Document features deployed behind feature flags](../feature_flags.md).
 
 ### Note
 
@@ -1680,8 +1677,11 @@ Instead of adding a note:
 If you must use a note, use this format:
 
 ```markdown
-NOTE:
+{{</* alert type="note" */>}}
+
 This is something to note.
+
+{{</* /alert */>}}
 ```
 
 It renders on the GitLab documentation site as:
@@ -1698,8 +1698,11 @@ Use a warning to indicate deprecated features, or to provide a warning about
 procedures that have the potential for data loss.
 
 ```markdown
-WARNING:
+{{</* alert type="warning" */>}}
+
 This is something to be warned about.
+
+{{</* /alert */>}}
 ```
 
 It renders on the GitLab documentation site as:
@@ -1712,15 +1715,15 @@ This is something to be warned about.
 
 ### Disclaimer
 
-If you **must** write about features we have not yet delivered, put this exact disclaimer about forward-looking statements near the content it applies to.
+If you **must** write about features we have not yet delivered, add a disclaimer about forward-looking statements near the content it applies to.
 
-```markdown
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+Disclaimer alerts are populated using a [template](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/themes/gitlab-docs/layouts/shortcodes/alert.html) and should not include
+any other text.
+
+Add a disclaimer like this:
+
+```plaintext
+{{</* alert type="disclaimer" /*/>}}
 ```
 
 It renders on the GitLab documentation site as:
@@ -1732,10 +1735,6 @@ If all of the content on the page is not available, use the disclaimer about for
 If the content in a topic is not ready, use the disclaimer in the topic.
 
 For more information, see [Promising features in future versions](#promising-features-in-future-versions).
-
-### Details
-
-`DETAILS:` alert boxes are used for [product availability details](#product-availability-details).
 
 ## Blockquotes
 
@@ -1772,9 +1771,8 @@ It renders on the GitLab documentation site as:
 > - Second item in the list
 
 ## Tabs
-<!-- markdownlint-disable tabs-blank-lines -->
 
-On the docs site, you can format text so it's displayed as tabs.
+On the documentation site, you can format text so it's displayed as tabs.
 
 {{< alert type="warning" >}}
 
@@ -1785,31 +1783,34 @@ Do not put version history bullets, topic headings, HTML, or tabs in tabs. Only 
 To create a set of tabs, follow this example:
 
 ```plaintext
-::Tabs
+{{</* tabs */>}}
 
-:::TabTitle Tab One
+{{</* tab title="Tab one" */>}}
 
 Here's some content in tab one.
 
-:::TabTitle Tab Two
+{{</* /tab */>}}
+
+{{</* tab title="Tab two" */>}}
 
 Here's some other content in tab two.
 
-::EndTabs
+{{</* /tab */>}}
+
+{{</* /tabs */>}}
 ```
-<!-- markdownlint-enable tabs-blank-lines -->
 
 This code renders on the GitLab documentation site as:
 
 {{< tabs >}}
 
-{{< tab title="Tab One" >}}
+{{< tab title="Tab one" >}}
 
 Here's some content in tab one.
 
 {{< /tab >}}
 
-{{< tab title="Tab Two" >}}
+{{< tab title="Tab two" >}}
 
 Here's some other content in tab two.
 
@@ -1903,7 +1904,7 @@ for the changes to take effect.
 
 If the document resides outside of the `doc/` directory, use the full path
 instead of the relative link:
-`https://docs.gitlab.com/ee/administration/restart_gitlab.html`.
+`https://docs.gitlab.com/administration/restart_gitlab`.
 
 ### How to document different installation methods
 
@@ -1942,11 +1943,10 @@ GitLab, or restart GitLab. In this case:
 When describing a configuration edit, you can use and edit to your liking the
 following snippet:
 
-<!-- markdownlint-disable tabs-blank-lines -->
 ````markdown
-::Tabs
+{{</* tabs */>}}
 
-:::TabTitle Linux package (Omnibus)
+{{</* tab title="Linux package (Omnibus)" */>}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1960,7 +1960,9 @@ following snippet:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{</* /tab */>}}
+
+{{</* tab title="Helm chart (Kubernetes)" */>}}
 
 1. Export the Helm values:
 
@@ -1983,7 +1985,9 @@ following snippet:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{</* /tab */>}}
+
+{{</* tab title="Docker" */>}}
 
 1. Edit `docker-compose.yml`:
 
@@ -2002,7 +2006,9 @@ following snippet:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{</* /tab */>}}
+
+{{</* tab title="Self-compiled (source)" */>}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -2022,9 +2028,10 @@ following snippet:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{</* /tab */>}}
+
+{{</* /tabs */>}}
 ````
-<!-- markdownlint-enable tabs-blank-lines -->
 
 It renders as:
 

@@ -31,7 +31,7 @@ In addition to the four primary topic types, you can use the following:
 
 You should avoid:
 
-- Pages that are exclusively links to other pages. The only exception are
+- Pages that are exclusively links to other pages. The only exceptions are
   top-level pages that aid with navigation.
 - Topics that have one or two sentences only. In these cases:
   - Incorporate the information in another topic.

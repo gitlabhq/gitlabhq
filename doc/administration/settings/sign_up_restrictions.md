@@ -130,15 +130,16 @@ When you turn on restricted access, the following known issues might occur and r
   - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with administrator access add members simultaneously.
   - New billable users delay accepting an invitation.
-  - You change from using the user cap to restricted access, and have users pending approval
-    from before you changed to restricted access. In this case, those users remain in a pending state. If
-    pending users are approved while using restricted access, you might exceed the number of seats in your subscription.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
 you will be charged overages for the five additional users.
 
 ## User cap
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab Self-Managed
 
 The user cap is the maximum number of billable users who can sign up or be added to a subscription
 without administrator approval. After the user cap is reached, users who sign up or are

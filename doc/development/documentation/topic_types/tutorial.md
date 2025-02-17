@@ -8,7 +8,7 @@ title: Tutorial page type
 A tutorial is page that contains an end-to-end walkthrough of a complex workflow or scenario.
 In general, you might consider using a tutorial when:
 
-- The workflow requires a number of sequential steps where each step consists
+- The workflow requires sequential steps where each step consists
   of sub-steps.
 - The steps cover a variety of GitLab features or third-party tools.
 
@@ -40,7 +40,8 @@ Add a link to the tutorial on one of the [tutorial pages](../../../tutorials/_in
 Tutorials should be in this format:
 
 ```markdown
-# Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: Create a website")
+title: Title (starts with "Tutorial:" followed by an active verb, like "Tutorial: Create a website")
+---
 
 A paragraph that explains what the tutorial does, and the expected outcome.
 

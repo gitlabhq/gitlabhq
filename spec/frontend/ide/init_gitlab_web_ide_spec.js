@@ -29,7 +29,7 @@ const TEST_MR_TARGET_PROJECT = 'gitlab-org/the-real-gitlab';
 const TEST_SIGN_IN_PATH = 'sign-in';
 const TEST_SIGN_OUT_PATH = 'sign-out';
 const TEST_FORK_INFO = { fork_path: '/forky' };
-const TEST_EXTENSIONS_GALLERY_SETTINGS = {
+const TEST_EXTENSION_MARKETPLACE_SETTINGS = {
   enabled: true,
   vscode_settings: {
     item_url: 'https://gitlab.test/vscode/marketplace/item/url',
@@ -239,11 +239,11 @@ describe('ide/init_gitlab_web_ide', () => {
     });
   });
 
-  describe('when extensionsGallerySettings is in dataset', () => {
-    function setMockExtensionGallerySettingsDataset(
-      mockSettings = TEST_EXTENSIONS_GALLERY_SETTINGS,
+  describe('when extensionMarketplaceSettings is in dataset', () => {
+    function setMockExtensionMarketplaceSettingsDataset(
+      mockSettings = TEST_EXTENSION_MARKETPLACE_SETTINGS,
     ) {
-      findRootElement().dataset.extensionsGallerySettings = JSON.stringify(mockSettings);
+      findRootElement().dataset.extensionMarketplaceSettings = JSON.stringify(mockSettings);
 
       if (mockSettings.enabled) {
         findRootElement().dataset.settingsContextHash = TEST_SETTINGS_CONTEXT_HASH;
@@ -253,7 +253,7 @@ describe('ide/init_gitlab_web_ide', () => {
     }
 
     it('calls start with element and extensionsGallerySettings', () => {
-      setMockExtensionGallerySettingsDataset();
+      setMockExtensionMarketplaceSettingsDataset();
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
         findRootElement(),
@@ -269,8 +269,8 @@ describe('ide/init_gitlab_web_ide', () => {
       );
     });
 
-    it('calls start with element and crossOriginExtensionHost flag if extensionsGallerySettings is enabled', () => {
-      setMockExtensionGallerySettingsDataset();
+    it('calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings is enabled', () => {
+      setMockExtensionMarketplaceSettingsDataset();
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
         findRootElement(),
@@ -284,7 +284,7 @@ describe('ide/init_gitlab_web_ide', () => {
     });
 
     it('calls start with settingsContextHash', () => {
-      setMockExtensionGallerySettingsDataset();
+      setMockExtensionMarketplaceSettingsDataset();
 
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
@@ -296,14 +296,14 @@ describe('ide/init_gitlab_web_ide', () => {
     });
 
     it.each(['opt_in_unset', 'opt_in_disabled'])(
-      'calls start with element and crossOriginExtensionHost flag if extensionsGallerySettings reason is $reason',
+      'calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings reason is $reason',
       (reason) => {
-        const mockExtensionsGalleryDisabledSettings = {
+        const mockExtensionMarketplaceDisabledSettings = {
           enabled: false,
           reason,
         };
 
-        setMockExtensionGallerySettingsDataset(mockExtensionsGalleryDisabledSettings);
+        setMockExtensionMarketplaceSettingsDataset(mockExtensionMarketplaceDisabledSettings);
 
         expect(start).toHaveBeenCalledTimes(1);
         expect(start).toHaveBeenCalledWith(

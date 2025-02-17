@@ -39,7 +39,7 @@ module WorkItems
       # rubocop:disable Gitlab/NoCodeCoverageComment -- overridden and tested in EE
       # :nocov:
       def fixed?
-        true
+        rollupable_dates.fixed?
       end
 
       def can_rollup?
@@ -51,23 +51,24 @@ module WorkItems
       def start_date
         return work_item&.start_date unless dates_source_present?
 
-        dates_source.start_date_fixed
+        rollupable_dates.start_date
       end
 
       def due_date
         return work_item&.due_date unless dates_source_present?
 
-        dates_source.due_date_fixed
+        rollupable_dates.due_date
       end
 
       private
 
-      def dates_source
-        return DatesSource.new if work_item.blank?
-
-        work_item.dates_source || work_item.build_dates_source
+      def rollupable_dates
+        WorkItems::RollupableDates.new(
+          work_item.dates_source || work_item.build_dates_source,
+          can_rollup: can_rollup?
+        )
       end
-      strong_memoize_attr :dates_source
+      strong_memoize_attr :rollupable_dates
 
       def dates_source_present?
         return false if work_item&.dates_source.blank?
@@ -77,6 +78,7 @@ module WorkItems
           .slice(:start_date, :start_date_fixed, :due_date, :due_date_fixed)
           .any? { |_, value| value.present? }
       end
+      strong_memoize_attr :dates_source_present?
     end
   end
 end

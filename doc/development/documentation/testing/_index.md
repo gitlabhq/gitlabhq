@@ -222,17 +222,17 @@ synchronized to the other projects. In each of the [supported projects](#support
 ## Update linting images
 
 Lint tests run in CI/CD pipelines using images from the
-`gitlab-docs` [container registry](https://gitlab.com/gitlab-org/gitlab-docs/container_registry).
+`docs-gitlab-com` [container registry](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/container_registry).
 
-If a new version of a dependency is released (like a new version of Ruby), we
+If a new version of a dependency is released (like a new version of Vale), we
 should update the images to use the newer version. Then, we can update the configuration
 files in each of our documentation projects to point to the new image.
 
 To update the linting images:
 
-1. In `gitlab-docs`, open a merge request to update `.gitlab-ci.yml` to use the new tooling
-   version. ([Example MR](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/2571))
-1. When merged, start a `Build docker images manually` [scheduled pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules).
+1. In `docs-gitlab-com`, open a merge request to update `.gitlab-ci.yml` to use the new tooling
+   version. ([Example MR](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/merge_requests/341))
+1. When merged, start a `Build docker images pipeline (Manual)` [scheduled pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipeline_schedules).
 1. Go the pipeline you started, and wait for the relevant `test:image` job to complete,
    for example `test:image:docs-lint-markdown`. If the job:
    - Passes, start the relevant `image:` job, for example, `image:docs-lint-markdown`.
@@ -286,7 +286,7 @@ To match the versions of `markdownlint-cli2` and `vale` used in the GitLab proje
 
 - For projects managed with `asdf`, the `.tool-versions` file in the project. For example, the
   [`.tool-versions` file in the `gitlab` project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.tool-versions).
-- The [versions used (see `variables:` section)](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/.gitlab-ci.yml)
+- The [versions used (see `variables:` section)](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab-ci.yml)
   when building the `image:docs-lint-markdown` Docker image containing these tools for CI/CD.
 
 Versions set in these two locations should be the same.
