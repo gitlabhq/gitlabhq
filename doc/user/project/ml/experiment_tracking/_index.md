@@ -19,10 +19,10 @@ title: Machine learning model experiments
 
 {{< /history >}}
 
-When creating machine learning models, data scientists often experiment with different parameters, configurations, and feature
-engineering to improve the performance of the model. Keeping track of all this metadata and the associated
-artifacts so that the data scientist can later replicate the experiment is not trivial. Machine learning experiment
-tracking enables them to log parameters, metrics, and artifacts directly into GitLab, giving easy access later on.
+As you create machine learning models, you likely experiment with different parameters, configurations,
+and feature engineering to improve the model's performance. To replicate your experiments later, you need
+to effectively track the metadata and artifacts. Use GitLab model experiments to track and log parameters,
+metrics, and artifacts directly into GitLab.
 
 ## What is an experiment?
 

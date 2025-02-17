@@ -23,6 +23,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       value :UNSPECIFIED, 0
       value :FIRST_CELL, 1
       value :SESSION_PREFIX, 2
+      value :CELL_ID, 3
     end
     add_enum "gitlab.cells.topology_service.ClassifyAction" do
       value :ACTION_UNSPECIFIED, 0

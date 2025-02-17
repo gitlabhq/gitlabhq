@@ -49,7 +49,7 @@ RSpec.describe 'Timelogs', feature_category: :team_planning do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(graphql_errors).to contain_exactly(
-          a_hash_including('message' => 'Non-admin users must provide a group_id, project_id, or current username')
+          a_hash_including('message' => 'Non-admin users must provide a groupId, projectId, or current username')
         )
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe 'Timelogs', feature_category: :team_planning do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(graphql_errors).to contain_exactly(
-          a_hash_including('message' => 'Non-admin users must provide a group_id, project_id, or current username')
+          a_hash_including('message' => 'Non-admin users must provide a groupId, projectId, or current username')
         )
       end
     end

@@ -12,7 +12,7 @@
 
 - [ ] Create an issue to reinstate the merge request and assign it to the author of the reverted merge request.
 - [ ] If the revert is to resolve a [broken 'master' incident](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master), please read through the [Responsibilities of the Broken `master` resolution DRI](https://handbook.gitlab.com/handbook/engineering/workflow/#responsibilities-of-the-resolution-dri).
-- [ ] If the revert involves a database migration, please read through [Deleting existing migrations](https://docs.gitlab.com/ee/development/database/deleting_migrations.html).
+- [ ] If the revert involves a database migration, please read through [Deleting existing migrations](https://docs.gitlab.com/development/database/deleting_migrations/).
 - [ ] Add the appropriate labels **before** the MR is created. We can skip CI/CD jobs only if the labels are added **before** the CI/CD pipeline is created.
 
 ### Milestone info

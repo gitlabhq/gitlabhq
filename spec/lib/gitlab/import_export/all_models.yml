@@ -787,6 +787,7 @@ project:
 - source_pipelines
 - sourced_pipelines
 - vulnerabilities
+- vulnerability_archives
 - vulnerability_exports
 - vulnerability_findings
 - vulnerability_feedback

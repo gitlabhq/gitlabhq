@@ -52,5 +52,5 @@ markdown(<<~MARKDOWN)
 
   An even _better_ alternative is to refactor this component to only use
   a single template for both CE and EE.  More info on this approach here:
-  https://docs.gitlab.com/ee/development/ee_features.html#template-tag
+  https://docs.gitlab.com/development/ee_features/#template-tag
 MARKDOWN

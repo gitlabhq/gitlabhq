@@ -76,7 +76,7 @@ review-docs-hugo-cleanup:
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.20-vale-3.9.3-markdownlint2-0.17.1-lychee-0.18.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.21-vale-3.9.3-markdownlint2-0.17.1-lychee-0.18.0
 
 docs-lint markdown:
   extends:
@@ -110,6 +110,28 @@ docs code_quality:
       - gl-code-quality-report-docs.json
     expire_in: 2 weeks
     when: always
+
+docs hugo_build:
+  image: hugomods/hugo:exts-0.142.0
+  extends:
+    - .default-retry
+    - .docs:rules:docs-lint
+  stage: lint
+  needs: []
+  dependencies: []
+  before_script:
+    - apk add --no-cache git make nodejs npm bash
+    - git clone --depth 1 --filter=tree:0 https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
+    - cd docs-gitlab-com
+    - make add-latest-icons
+    # Copy the current project's docs to the appropriate location in the docs website
+    - cp -r ../doc/* content/
+  script:
+    # Test that Hugo will build
+    - hugo --gc --printPathWarnings --panicOnWarning
+    # Test for invalid index pages
+    # See https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/check-index-filenames.sh
+    - make check-index-pages SEARCH_DIR="../doc"
 
 docs-lint links:
   extends:

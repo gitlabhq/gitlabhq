@@ -7,23 +7,24 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom|ics)/ }
   ) do
     scope(path: '-') do
-      # These routes are legit and the cop rule will be improved in
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/230703
-      get :edit, as: :edit_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: ->(req) { req.format == :ics } # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :issues, as: :issues_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :merge_requests, as: :merge_requests_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :projects, as: :projects_group, to: redirect('%{id}') # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :details, as: :details_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :activity, as: :activity_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      put :transfer, as: :transfer_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      post :export, as: :export_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :download_export, as: :download_export_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :unfoldered_environment_names, as: :unfoldered_environment_names_group # rubocop:disable Cop/PutGroupRoutesUnderScope
+      # rubocop:disable Cop/PutGroupRoutesUnderScope -- These routes are legit and the cop rule will be improved in https://gitlab.com/gitlab-org/gitlab/-/issues/230703
+      get :edit, as: :edit_group
+      get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: ->(req) { req.format == :ics }
+      get :issues, as: :issues_group
+      get :merge_requests, as: :merge_requests_group
+      get :projects, as: :projects_group, to: redirect('%{id}')
+      get :details, as: :details_group
+      get :activity, as: :activity_group
+      put :transfer, as: :transfer_group
+      post :export, as: :export_group
+      get :download_export, as: :download_export_group
+      get :unfoldered_environment_names, as: :unfoldered_environment_names_group
 
-      get 'shared', action: :show, as: :group_shared # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get 'inactive', action: :show, as: :group_inactive # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get 'archived', to: redirect('groups/%{id}/-/inactive') # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get 'shared', action: :show, as: :group_shared
+      get 'shared_groups', action: :show, as: :group_shared_groups
+      get 'inactive', action: :show, as: :group_inactive
+      get 'archived', to: redirect('groups/%{id}/-/inactive')
+      # rubocop:enable Cop/PutGroupRoutesUnderScope
     end
 
     get '/', action: :show, as: :group_canonical

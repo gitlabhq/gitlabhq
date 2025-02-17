@@ -262,6 +262,8 @@ export default {
       :summary="summary"
       :fetch-collapsed-data="fetchCollapsedData"
       :is-collapsible="hasSuites"
+      :label="$options.i18n.label"
+      path="test-summary"
     >
       <template #content>
         <mr-widget-row

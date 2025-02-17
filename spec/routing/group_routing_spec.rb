@@ -8,6 +8,9 @@ RSpec.shared_examples 'groups routing' do
 
   it "to #show" do
     expect(get("/groups/#{group_path}")).to route_to('groups#show', id: group_path)
+    expect(get("/groups/#{group_path}/-/shared")).to route_to('groups#show', id: group_path)
+    expect(get("/groups/#{group_path}/-/shared_groups")).to route_to('groups#show', id: group_path)
+    expect(get("/groups/#{group_path}/-/inactive")).to route_to('groups#show', id: group_path)
   end
 
   it "also supports nested groups" do

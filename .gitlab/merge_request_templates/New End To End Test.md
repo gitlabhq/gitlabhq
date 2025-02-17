@@ -20,16 +20,16 @@ bundle exec rspec <path/to/spec.rb>
 This may be particularly helpful if you're requesting reviews from engineers who aren't familiar with GitLab's E2E tests.
 
 Any other necessary setup should be included here as well, especially if it's an orchestrated test that requires a
-[special setup](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html)
+[special setup](https://docs.gitlab.com/development/testing_guide/end_to_end/running_tests_that_require_special_setup/)
 to run locally against GDK.
 -->
 
 ### Checklist
 
-- [ ] Confirm the test has a [`testcase:` tag linking to an existing test case](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/best_practices.html#link-a-test-to-its-test-case-issue) in the test case project.
+- [ ] Confirm the test has a [`testcase:` tag linking to an existing test case](https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/#link-a-test-to-its-test-case-issue) in the test case project.
 - [ ] Note if the test is intended to run in specific scenarios. If a scenario is new, add a link to the MR that adds the new scenario.
-- [ ] Follow the end-to-end tests [style guide](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/style_guide.html) and [best practices](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/best_practices.html).
-- [ ] Use the appropriate [RSpec metadata tag(s)](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/rspec_metadata_tests.html#rspec-metadata-for-end-to-end-tests).
+- [ ] Follow the end-to-end tests [style guide](https://docs.gitlab.com/development/testing_guide/end_to_end/style_guide/) and [best practices](https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/).
+- [ ] Use the appropriate [RSpec metadata tag(s)](https://docs.gitlab.com/development/testing_guide/end_to_end/rspec_metadata_tests/#rspec-metadata-for-end-to-end-tests).
 - Most resources will be cleaned up via the general [cleanup task](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L44). Check that is successful, or ensure resources are cleaned up in the test:
   - [ ] New resources have `api_get_path` and `api_delete_path` implemented if possible.
   - [ ] If any resource cannot be deleted in the general delete task, make sure it is [ignored](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L29).
@@ -37,7 +37,7 @@ to run locally against GDK.
 - [ ] Ensure that no [transient bugs](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#transient-bugs) are hidden accidentally due to the usage of `waits` and `reloads`.
 - [ ] Verify the tags to ensure it runs on the desired test environments.
 - [ ] If this MR has a dependency on another MR, such as a GitLab QA MR, specify the order in which the MRs should be merged.
-- [ ] (If applicable) Create a follow-up issue to document [the special setup](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) necessary to run the test: ISSUE_LINK
+- [ ] (If applicable) Create a follow-up issue to document [the special setup](https://docs.gitlab.com/development/testing_guide/end_to_end/running_tests_that_require_special_setup/) necessary to run the test: ISSUE_LINK
 - [ ] If the test requires an admin's personal access token, ensure that the test passes on your local environment with and without the `GITLAB_QA_ADMIN_ACCESS_TOKEN` provided.
 
 <!-- Base labels. -->

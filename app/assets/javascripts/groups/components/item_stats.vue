@@ -70,10 +70,11 @@ export default {
       data-testid="project-count"
     />
     <item-stats-value
-      v-if="isGroup"
+      v-if="displayValue(item.memberCount)"
       :title="__('Direct members')"
       :value="item.memberCount"
       css-class="number-users gl-ml-5"
+      data-testid="member-count"
       icon-name="users"
     />
     <item-stats-value

@@ -6,6 +6,6 @@ if all_changed_files.detect { |file| file == 'Gemfile' || file == 'Gemfile.lock'
   markdown <<~MSG
    ## Rubygems
 
-   This merge request adds, or changes a Rubygems dependency. Please review the [Gemfile guidelines](https://docs.gitlab.com/ee/development/gemfile.html).
+   This merge request adds, or changes a Rubygems dependency. Please review the [Gemfile guidelines](https://docs.gitlab.com/development/gemfile/).
   MSG
 end

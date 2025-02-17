@@ -10,7 +10,7 @@ TITLE FORMAT
 The title should be something that is easily understood that quickly communicates the intent of the project allowing team members to easily understand and recognize the expected work that will be done. A proposal title should combine the beneficiary of the feature/UI, the job it will allow them to accomplish (see https://about.gitlab.com/handbook/product/ux/jobs-to-be-done/#how-to-write-a-jtbd), and their expected outcome when the work is delivered. Well-defined statements are concise without sacrificing the substance of the proposal so that anyone can understand it at a glance. (e.g. {Reduce the effort} {for security teams} {when prioritizing business-critical risks in their assets}).
 -->
 
-# [Experiment](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#experiment)
+# [Experiment](https://docs.gitlab.com/policy/development_stages_support/#experiment)
 _This section should be completed prior to beginning work on the Experiment._
 
 ## Problem to be solved
@@ -38,9 +38,9 @@ _How will you measure whether this experiment is a success?_
 | [Problem validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-problem-validation)<br>How well do we understand the problem? | [Mix of evidence and assumptions](https://about.gitlab.com/handbook/product/ai/ux-maturity/#questions-to-ask) | <!-- Acceptable answers: Yes, Somewhat or Somewhat, Somewhat --> |
 | [Solution validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-solution-validation)<br>How usable is the solution? | [Usability testing](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-b-perform-a-formative-evaluation), Grade C | <!-- Acceptable: >80% and grade C --> |
 | [Improve](https://about.gitlab.com/handbook/product/ai/ux-maturity/#build-improve)<br>How successful is the solution? | Quality goals set by the team are reached. | <!-- Acceptable answers: :white_check_mark: Reached all quality goals for this phase. --> |
-| [Design standards](https://about.gitlab.com/handbook/product/ai/ux-maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([Pajamas](https://design.gitlab.com/), [checklist](https://docs.gitlab.com/ee/development/contributing/design.html#checklist)) | <!-- Acceptable: Mostly adheres to design standards --> |
+| [Design standards](https://about.gitlab.com/handbook/product/ai/ux-maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([Pajamas](https://design.gitlab.com/), [checklist](https://docs.gitlab.com/development/contributing/design/#checklist)) | <!-- Acceptable: Mostly adheres to design standards --> |
 
-# [Beta](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#beta)
+# [Beta](https://docs.gitlab.com/policy/development_stages_support/#beta)
 _This section should be completed prior to beginning work on the Beta experience._
 <!-- DO NOT REMOVE THIS SECTION
 Although the initial focus is on the “Experiment” section, do not remove this “Beta” section. It's important that we link Experiment to Beta release. Fill this section in as you progress.
@@ -86,9 +86,9 @@ _How will you measure whether this Beta is a success?_
 | [Problem validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-problem-validation)<br>How well do we understand the problem? | [Mix of evidence and assumptions](https://about.gitlab.com/handbook/product/ai/ux-maturity/#questions-to-ask) | <!-- Acceptable answers: Yes, Yes --> |
 | [Solution validation](https://about.gitlab.com/handbook/product/ai/ux-maturity/#validation-solution-validation)<br>How usable is the solution? | [Usability testing](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-b-perform-a-formative-evaluation) and [Heuristic evaluation](https://about.gitlab.com/handbook/product/ux/ux-scorecards/#option-a-conduct-a-heuristic-evaluation), Avg. task pass rate >80%, Grade B | <!-- Acceptable: >80% and grade B --> |
 | [Improve](https://about.gitlab.com/handbook/product/ai/ux-maturity/#build-improve)<br>How successful is the solution? | Quality goals set by the team are reached. | <!-- Acceptable answers: :white_check_mark: Reached all quality goals for this phase. -->  |
-| [Design standards](https://about.gitlab.com/handbook/product/ai/ux-maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([Pajamas](https://design.gitlab.com/), [checklist](https://docs.gitlab.com/ee/development/contributing/design.html#checklist)) | <!-- Acceptable: Completely adheres to design standards --> |
+| [Design standards](https://about.gitlab.com/handbook/product/ai/ux-maturity/#design-standards) adherence<br>How compliant is the solution with our design standards? |  Should adhere to ([Pajamas](https://design.gitlab.com/), [checklist](https://docs.gitlab.com/development/contributing/design/#checklist)) | <!-- Acceptable: Completely adheres to design standards --> |
 
-# [Generally Available](https://docs.gitlab.com/ee/policy/alpha-beta-support.html#generally-available-ga)
+# [Generally Available](https://docs.gitlab.com/policy/development_stages_support/#generally-available)
 <!-- DO NOT REMOVE THIS SECTION
 Although the initial focus is on the “Experiment” section, do not remove this “Generally Available” section. It's important that we link Beta to GA release. Fill this section in as you progress.
 -->
@@ -150,7 +150,7 @@ _What tasks or actions should the user be capable of performing with this featur
 - [ ] Add all related feature issues to the Linked items section
 - [ ] Add all relevant solution validation issues to the Linked items section that shows this proposal will solve the customer problem, or details explaining why it's not possible to provide that validation.
 - [ ] Add relevant designs to the Design Management area of the issue.
-- [ ] You have adhered to our [Definition of Done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) standards
+- [ ] You have adhered to our [Definition of Done](https://docs.gitlab.com/development/contributing/merge_request_workflow/#definition-of-done) standards
 - [ ] Completed the necessary steps to move from Beta to GA
 
 </details>
@@ -167,7 +167,7 @@ _What tasks or actions should the user be capable of performing with this featur
     - [ ] Requirements have been defined
 - [ ] Add all relevant solution validation issues to the Linked items section that shows this proposal will solve the customer problem, or details explaining why it's not possible to provide that validation.
 - [ ] Add relevant designs to the Design Management area of the issue.
-- [ ] You have adhered to our [Definition of Done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) standards
+- [ ] You have adhered to our [Definition of Done](https://docs.gitlab.com/development/contributing/merge_request_workflow/#definition-of-done) standards
 - [ ] Ensure this issue has the ~wg-ai-integration label to ensure visibility to various teams working on this
 
 </details>
@@ -175,7 +175,7 @@ _What tasks or actions should the user be capable of performing with this featur
 <details> <summary> Technical needs </summary>
 
 - [ ] Please consider the operational aspects of the feature you are creating. A list of things to think about is in: https://gitlab.com/gitlab-org/gitlab/-/issues/403859. We will be improving this process in the future: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117637#note_1353253349. 
-- [ ] @ mention your [AppSec Stable Counterpart](https://about.gitlab.com/handbook/product/categories/) and read the [AI secure coding guidelines](https://docs.gitlab.com/ee/development/secure_coding_guidelines.html#artificial-intelligence-ai-features)
+- [ ] @ mention your [AppSec Stable Counterpart](https://about.gitlab.com/handbook/product/categories/) and read the [AI secure coding guidelines](https://docs.gitlab.com/development/secure_coding_guidelines/#artificial-intelligence-ai-features)
 
 1. Work estimate and skills needs to build an ML viable feature: To build any ML feature depending on the work, there are many personas that contribute including Data Scientist, NLP engineer, ML Engineer, MLOps Engineer, ML Infra engineers, Fullstack engineer to integrate the ML Services with Gitlab. Post-prototype we would assess the skills needed to build a production-grade ML feature for the prototype.
 2. Data Limitation: We would like to upfront validate if we have viable data for the feature including whether we can use the DataOps pipeline of ModelOps or create a custom one. We would want to understand the training data, test data, and feedback data to dial up the accuracy and the limitations of the data.

@@ -8,7 +8,7 @@ require 'proto/cell_info_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("proto/cell_service.proto", :syntax => :proto3) do
     add_message "gitlab.cells.topology_service.GetCellRequest" do
-      optional :cell_name, :string, 1, json_name: "cellName"
+      optional :cell_id, :int64, 2, json_name: "cellId"
     end
     add_message "gitlab.cells.topology_service.GetCellResponse" do
       optional :cell_info, :message, 1, "gitlab.cells.topology_service.CellInfo", json_name: "cellInfo"

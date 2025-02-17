@@ -171,5 +171,7 @@ export default {
     :content="content"
     :is-collapsible="shouldCollapse"
     :fetch-collapsed-data="fetchCollapsedData"
+    :label="__('Accessibility')"
+    path="accessibility"
   />
 </template>

@@ -87,7 +87,7 @@ For the change to appear in:
 - `docs.gitlab.com`, the release manager only has to merge the MR to the stable branch,
   and the technical writer needs to [deploy the backport changes](#deploy-the-backport-changes).
 - `gitlab.com/help`, the change needs to be part of a GitLab release. The release
-  manager can include the change in the next release they create. This is an optional step.
+  manager can include the change in the next release they create. This step is optional.
 
 ### Deploy the backport changes
 

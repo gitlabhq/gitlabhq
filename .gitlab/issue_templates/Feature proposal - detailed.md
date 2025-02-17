@@ -51,7 +51,7 @@ https://about.gitlab.com/handbook/product/ux/ux-research-training/user-story-map
 ### Permissions and Security
 
 <!-- What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)?
-Consider adding checkboxes and expectations of users with certain levels of membership https://docs.gitlab.com/ee/user/permissions.html
+Consider adding checkboxes and expectations of users with certain levels of membership https://docs.gitlab.com/user/permissions/
 * [ ] Add expected impact to members with no access (0)
 * [ ] Add expected impact to Guest (10) members
 * [ ] Add expected impact to Reporter (20) members
@@ -66,10 +66,10 @@ Don't hesitate to reach out to the Application Security Team (`@gitlab-com/gl-se
 
 ### Documentation
 
-<!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/workflow.html#for-a-product-change
+<!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/development/documentation/workflow/#for-a-product-change
 
-* Add all known Documentation Requirements in this section. See https://docs.gitlab.com/ee/development/documentation/workflow.html
-* If this feature requires changing permissions, update the permissions document. See https://docs.gitlab.com/ee/user/permissions.html -->
+* Add all known Documentation Requirements in this section. See https://docs.gitlab.com/development/documentation/workflow/
+* If this feature requires changing permissions, update the permissions document. See https://docs.gitlab.com/user/permissions/ -->
 
 ### Availability & Testing
 

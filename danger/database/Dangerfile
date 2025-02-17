@@ -17,7 +17,7 @@ changes are reviewed, take the following steps:
 1. Ensure the merge request has ~database and ~"database::review pending" labels.
    If the merge request modifies database files, Danger will do this for you.
 1. Prepare your MR for database review according to the
-   [docs](https://docs.gitlab.com/ee/development/database_review.html#how-to-prepare-the-merge-request-for-a-database-review).
+   [docs](https://docs.gitlab.com/development/database_review/#how-to-prepare-the-merge-request-for-a-database-review).
 1. Assign and mention the database reviewer suggested by Reviewer Roulette.
 MSG
 
@@ -31,7 +31,7 @@ by removing the ~database label and re-running the [`danger-review` job](#{ENV['
 MSG
 
 DB_MIGRATION_TESTING_REQUIRED_MESSAGE = <<~MSG
-The [database migration pipeline](https://docs.gitlab.com/ee/development/database/database_migration_pipeline.html)
+The [database migration pipeline](https://docs.gitlab.com/development/database/database_migration_pipeline/)
 must be triggered by the job `db:gitlabcom-database-testing` must be run before requesting
 ~database review. This job takes ~30m and will post the results to a comment on the merge
 request. Please run and review any results before passing to a reviewer.
@@ -43,7 +43,7 @@ DB_OLD_MIGRATIONS_MESSAGE = <<~MSG
 
   %<old_migrations>s
 
-  Please double check the timestamps and update them if possible. [Why does this matter?](https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-timestamp-age)
+  Please double check the timestamps and update them if possible. [Why does this matter?](https://docs.gitlab.com/development/migration_style_guide/#migration-timestamp-age)
 MSG
 
 DATABASE_APPROVED_LABEL = 'database::approved'

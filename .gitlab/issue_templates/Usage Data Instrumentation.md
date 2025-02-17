@@ -1,6 +1,6 @@
 <!-- Guide for product managers or engineering teams looking to track usage of their features -->
 
-:warning: If GDK is accessible, an alternative to using this guide is to directly establish event/metric definitions using our [internal events generator](https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html#defining-event-and-metrics)
+:warning: If GDK is accessible, an alternative to using this guide is to directly establish event/metric definitions using our [internal events generator](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/#defining-event-and-metrics)
 
 ## Objective
 
@@ -64,11 +64,11 @@ Metrics:
 
 # Important links
 
-:star: [Quick start guide to internal events](https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html)
+:star: [Quick start guide to internal events](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/)
 
 :question: [Analytics Instrumentation slack channel for questions](https://gitlab.enterprise.slack.com/archives/CL3A7GFPF)
 
 
-:writing_hand: Try our [internal events generator](https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/quick_start.html#defining-event-and-metrics). Creating event and metric definition files has never been easier.
+:writing_hand: Try our [internal events generator](https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/#defining-event-and-metrics). Creating event and metric definition files has never been easier.
 
 /label ~"analytics instrumentation"

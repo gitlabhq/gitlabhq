@@ -6,6 +6,8 @@ module ActiveContext
       class Adapter
         include ActiveContext::Databases::Concerns::Adapter
 
+        delegate :bulk_process, to: :client
+
         def client_klass
           ActiveContext::Databases::Postgresql::Client
         end

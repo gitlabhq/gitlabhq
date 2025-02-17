@@ -49,7 +49,7 @@ Consider these questions if a code change introduced the issue.
 
 | Question | Answer |
 | ----- | ----- |
-| Was the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist) marked as reviewed in the MR? | |
+| Was the [MR acceptance checklist](https://docs.gitlab.com/development/code_review/#acceptance-checklist) marked as reviewed in the MR? | |
 | Should the checklist be updated to help reduce chances of future recurrences? If so, who is the DRI to do so? | |
 
 ## Timeline
@@ -103,7 +103,7 @@ Start with the following:
 - Is there anything that could have been done to improve the response or time to response?
 - Is there an existing issue that would have either prevented this incident or reduced the impact?
 - Did we have any indication or beforehand knowledge that this incident might take place?
-- Was the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist) marked as reviewed in the MR?
+- Was the [MR acceptance checklist](https://docs.gitlab.com/development/code_review/#acceptance-checklist) marked as reviewed in the MR?
 - Should the checklist be updated to help reduce chances of future recurrences?
 
 

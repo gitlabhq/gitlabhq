@@ -170,7 +170,7 @@ To assign an alert:
 
 1. Select your desired alert to display its details.
 
-   ![Alert Details View Assignees](img/alert_details_assignees_v13_1.png)
+   ![Alert details page with the right sidebar expanded, showing the Assignee dropdown list for assigning or unassigning users](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
    **Expand sidebar** ({{< icon name="chevron-double-lg-right" >}}) to expand it.

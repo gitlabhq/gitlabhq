@@ -38,7 +38,7 @@ module ActiveContext
           fixed_columns, variable_columns = sort_fields_by_size(fields)
 
           adapter.client.with_connection do |connection|
-            connection.create_table(name, id: false, primary_key: [:id, :partition_id],
+            connection.create_table(name, primary_key: [:id, :partition_id],
               options: 'PARTITION BY LIST (partition_id)') do |table|
               # Add partition_id first as it's required for partitioning
               table.integer :partition_id, null: false

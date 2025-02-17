@@ -58,7 +58,7 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{,ee/}app/graphql/**/*.rb'
       run: bundle exec rake gitlab:graphql:check_docs
-    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
+    vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       exclude: 'doc/api/graphql/reference/_index.md'
@@ -70,7 +70,7 @@ pre-push:
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor /dev/stdout --silent | diff - locale/gitlab.pot
       fail_text: PO files need to be updated. Try running tooling/bin/gettext_extractor locale/gitlab.pot
-    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
+    docs-metadata: # See https://docs.gitlab.com/development/documentation/metadata/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'doc/*.md'
@@ -167,7 +167,7 @@ pre-commit:
     secrets-detection:
       tags: secrets
       run: .lefthook/gitleaks.sh pre-commit
-    docs-metadata: # See https://docs.gitlab.com/ee/development/documentation/metadata.html
+    docs-metadata: # See https://docs.gitlab.com/development/documentation/metadata/
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
       glob: 'doc/*.md'
@@ -193,7 +193,7 @@ pre-commit:
       files: git diff --name-only --diff-filter=d --staged
       glob: '{app,lib,ee,spec,doc,scripts}/**/*.md'
       run: scripts/lint/check_mermaid.mjs {files}
-    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
+    vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
       exclude: 'doc/api/graphql/reference/_index.md'

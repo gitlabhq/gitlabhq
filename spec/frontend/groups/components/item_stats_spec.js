@@ -1,8 +1,9 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ItemStats from '~/groups/components/item_stats.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { ITEM_TYPE } from '~/groups/constants';
 
-import { mockParentGroupItem, ITEM_TYPE } from '../mock_data';
+import { mockParentGroupItem } from '../mock_data';
 
 describe('ItemStats', () => {
   let wrapper;
@@ -79,6 +80,46 @@ describe('ItemStats', () => {
       createComponent({ item });
 
       expect(wrapper.findByTestId('subgroup-count').props('value')).toBe('4.5k');
+    });
+  });
+
+  describe('when member count is undefined', () => {
+    it('does not render member count', () => {
+      const item = {
+        ...mockParentGroupItem,
+        memberCount: undefined,
+      };
+
+      createComponent({ item });
+
+      expect(wrapper.findByTestId('member-count').exists()).toBe(false);
+    });
+  });
+
+  describe('when member count is 4,500', () => {
+    it('renders subgroup count', () => {
+      const item = {
+        ...mockParentGroupItem,
+        memberCount: '4,500',
+      };
+
+      createComponent({ item });
+
+      expect(wrapper.findByTestId('member-count').props('value')).toBe('4,500');
+    });
+
+    describe('when item type is project', () => {
+      it('does not render member count', () => {
+        const item = {
+          ...mockParentGroupItem,
+          memberCount: '4,500',
+          type: ITEM_TYPE.PROJECT,
+        };
+
+        createComponent({ item });
+
+        expect(wrapper.findByTestId('member-count').exists()).toBe(false);
+      });
     });
   });
 

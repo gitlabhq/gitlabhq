@@ -21,6 +21,7 @@ export default {
   provide() {
     return {
       reportsTabContent: this.reportsTabContent,
+      reportsTabSidebar: this.reportsTabSidebar,
     };
   },
   props: {
@@ -33,10 +34,16 @@ export default {
       required: false,
       default: false,
     },
+    reportsTabSidebar: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      collapsed: this.reportsTabContent ? false : this.glFeatures.mrReportsTab,
+      collapsed:
+        this.reportsTabContent || this.reportsTabSidebar ? false : this.glFeatures.mrReportsTab,
       findingsCount: 0,
       loadedCount: 0,
     };
@@ -96,7 +103,7 @@ export default {
     isViewingReport(reportName) {
       if (!this.reportsTabContent) return true;
 
-      return this.$router.currentRoute.params.report === reportName;
+      return this.$route.params.report === reportName;
     },
     onLoadedReport(findings) {
       this.findingsCount += findings;
@@ -113,11 +120,11 @@ export default {
     :aria-label="reportsTabContent ? null : __('Merge request reports')"
     data-testid="mr-widget-app"
     :class="{
-      'mr-section-container': !reportsTabContent,
+      'mr-section-container': !reportsTabContent && !reportsTabSidebar,
     }"
   >
     <state-container
-      v-if="glFeatures.mrReportsTab && !reportsTabContent"
+      v-if="glFeatures.mrReportsTab && !reportsTabContent && !reportsTabSidebar"
       :status="statusIcon"
       is-collapsible
       collapse-on-desktop
@@ -154,7 +161,7 @@ export default {
       class="reports-widgets-container"
       :class="{
         'gl-border-t gl-relative gl-border-t-section gl-bg-subtle':
-          glFeatures.mrReportsTab && !reportsTabContent,
+          glFeatures.mrReportsTab && !reportsTabContent && !reportsTabSidebar,
       }"
     >
       <component
@@ -164,8 +171,9 @@ export default {
         :mr="mr"
         class="mr-widget-section"
         :class="{
-          'gl-border-t gl-border-t-section': index > 0 && !reportsTabContent,
+          'gl-border-t gl-border-t-section': index > 0 && !reportsTabContent && !reportsTabSidebar,
         }"
+        :reports-tab-sidebar="reportsTabSidebar"
         @loaded="onLoadedReport"
       />
     </div>

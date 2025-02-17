@@ -12,6 +12,7 @@ module ActiveContext
 
         DEFAULT_POOL_SIZE = 5
         DEFAULT_CONNECT_TIMEOUT = 5
+        BULK_OPERATIONS = [:upsert, :delete].freeze
 
         attr_reader :connection_pool, :options
 
@@ -25,6 +26,22 @@ module ActiveContext
             res = conn.execute('SELECT * FROM pg_stat_activity')
             QueryResult.new(res)
           end
+        end
+
+        def bulk_process(operations)
+          failed_operations = []
+          operations_by_collection = operations.group_by { |op| op.each_key.first }
+
+          operations_by_collection.each do |collection_name, collection_operations|
+            model = ar_model_for(collection_name)
+
+            BULK_OPERATIONS.each do |operation_type|
+              failed_ops = perform_bulk_operation(operation_type, model, collection_name, collection_operations)
+              failed_operations.concat(failed_ops)
+            end
+          end
+
+          failed_operations
         end
 
         # Provides raw PostgreSQL connection
@@ -125,6 +142,45 @@ module ActiveContext
 
         def close
           connection_pool&.disconnect!
+        end
+
+        # rubocop:disable Rails/SkipsModelValidations -- bulk_upsert is more performant and we don't have validations
+        def perform_bulk_operation(operation_type, model, collection_name, operations)
+          data = operations.filter_map { |op| op[collection_name][operation_type] }
+
+          return data if data.empty?
+
+          case operation_type
+          when :upsert
+            upsert_data = prepare_upsert_data(data)
+            model.transaction do
+              upsert_data.each do |upsert_group|
+                model.upsert_all(
+                  upsert_group[:data],
+                  unique_by: upsert_group[:unique_by],
+                  update_only: upsert_group[:update_only_columns]
+                )
+              end
+            end
+          when :delete
+            model.where(id: data).delete_all
+          end
+
+          []
+        rescue StandardError => e
+          ActiveContext::Logger.exception(e, message: "Error with #{operation_type} operation for #{collection_name}")
+          operations.pluck(:ref)
+        end
+        # rubocop:enable Rails/SkipsModelValidations
+
+        def prepare_upsert_data(data)
+          data.group_by(&:keys).map do |columns, grouped_data|
+            {
+              unique_by: [:id, :partition_id],
+              update_only_columns: columns - [:id, :partition_id],
+              data: grouped_data
+            }
+          end
         end
       end
     end

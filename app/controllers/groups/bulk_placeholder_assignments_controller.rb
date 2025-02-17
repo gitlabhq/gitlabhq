@@ -29,33 +29,46 @@ module Groups
     def create
       return render_404 unless Feature.enabled?(:importer_user_mapping_reassignment_csv, current_user)
 
-      unless file_is_valid?(file_params[:file])
-        respond_to do |format|
-          format.json do
-            render json: { message: s_('UserMapping|You must upload a CSV file with a .csv file extension.') },
-              status: :unprocessable_entity
-          end
-        end
+      unless file_type_is_valid?(file_params[:file])
+        render_unprocessable_entity(s_('UserMapping|You must upload a CSV file with a .csv file extension.'))
         return
       end
 
-      respond_to do |format|
-        format.json do
-          render json: {
-            message: s_('UserMapping|The file is being processed and you will receive an email when completed.')
-          }
+      uploader = UploadService.new(
+        group,
+        file_params[:file],
+        uploader_class
+      ).execute
+
+      result = Import::SourceUsers::BulkReassignFromCsvService.new(
+        current_user,
+        group,
+        uploader.upload
+      ).async_execute
+
+      if result.success?
+        respond_to do |format|
+          format.json do
+            render json: {
+              message: s_('UserMapping|The file is being processed and you will receive an email when completed.')
+            }
+          end
         end
+      else
+        render_unprocessable_entity(result.message)
       end
     end
 
     private
+
+    alias_method :file_type_is_valid?, :file_is_valid?
 
     def file_params
       params.permit(:file)
     end
 
     def uploader_class
-      FileUploader
+      ::Import::PlaceholderReassignmentsUploader
     end
 
     def file_extension_allowlist
@@ -64,6 +77,14 @@ module Groups
 
     def maximum_size
       Gitlab::CurrentSettings.max_attachment_size.megabytes
+    end
+
+    def render_unprocessable_entity(message)
+      respond_to do |format|
+        format.json do
+          render json: { message: message }, status: :unprocessable_entity
+        end
+      end
     end
   end
 end

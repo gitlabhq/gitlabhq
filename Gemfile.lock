@@ -167,6 +167,7 @@ PATH
   remote: vendor/gems/gitlab-topology-service-client
   specs:
     gitlab-topology-service-client (0.1)
+      google-protobuf (~> 3)
       grpc
 
 PATH

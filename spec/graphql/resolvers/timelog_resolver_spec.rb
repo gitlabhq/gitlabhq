@@ -311,7 +311,7 @@ RSpec.describe Resolvers::TimelogResolver, feature_category: :team_planning do
     it 'generates an error' do
       expect_graphql_error_to_be_created(
         error_class,
-        /Non-admin users must provide a group_id, project_id, or current username/
+        /Non-admin users must provide a groupId, projectId, or current username/
       ) do
         timelogs
       end

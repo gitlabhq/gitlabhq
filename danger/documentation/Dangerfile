@@ -61,7 +61,7 @@ The review does not need to block merging this merge request. See the:
 
 - [Metadata for the `*.md` files](https://docs.gitlab.com/ee/development/documentation/#metadata) that you've changed. The first few lines of each `*.md` file identify the stage and group most closely associated with your docs change.
 - The [Technical Writer assigned](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments) for that stage and group.
-- [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
+- [Documentation workflows](https://docs.gitlab.com/development/documentation/workflow/) for information on when to assign a merge request for review.
 MSG
 
 # Documentation should be updated for feature::addition and feature::enhancement
@@ -71,7 +71,7 @@ DOCUMENTATION_UPDATE_MISSING = <<~MSG
 For more information, see:
 
 - The Handbook page on [merge request types](https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification).
-- The [definition of done](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#definition-of-done) documentation.
+- The [definition of done](https://docs.gitlab.com/development/contributing/merge_request_workflow/#definition-of-done) documentation.
 MSG
 
 # Output messages

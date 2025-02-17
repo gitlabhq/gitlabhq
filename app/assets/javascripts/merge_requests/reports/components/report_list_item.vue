@@ -12,6 +12,11 @@ export default {
       type: String,
       required: true,
     },
+    params: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     statusIcon: {
       type: String,
       required: true,
@@ -32,7 +37,7 @@ export default {
 
 <template>
   <router-link
-    :to="{ name: to }"
+    :to="{ name: to, params: params }"
     active-class="gl-font-bold gl-bg-strong"
     exact
     class="gl-flex gl-items-center gl-rounded-base gl-p-2 gl-text-default hover:gl-bg-strong hover:gl-text-default hover:gl-no-underline"

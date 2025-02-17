@@ -18,11 +18,8 @@ module Gitlab
         )
       end
 
-      def cell_name
-        # This should be removed in
-        # https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/issues/60
-        # then we should pass cell.id instead
-        @cell_name ||= "cell-#{Gitlab.config.cell.id}"
+      def cell_id
+        @cell_id ||= Gitlab.config.cell.id
       end
 
       def service_credentials

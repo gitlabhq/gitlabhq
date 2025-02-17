@@ -182,11 +182,11 @@ When `group-01` is invited to `project-01` with `Owner` permissions, users have 
 - User D, Maintainer
 - User E, Reporter
 
-### View a group's shared projects
+### View shared projects
 
-In a group, a shared project is a project to which the group members gained access through the [**Invite a group**](#invite-a-group-to-a-project) action.
+A shared project is a project that has invited your group members to access its resources through the [**Invite a group**](#invite-a-group-to-a-project) action.
 
-To view a group's shared projects:
+To view projects that have shared access with your group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. On the group page, select the **Shared projects** tab.
@@ -297,6 +297,18 @@ When you remove the invited group from your group:
 
 - All direct members of the invited group no longer have access to your group.
 - Members of the invited group no longer count towards the billable members of your group.
+
+### View shared groups
+
+A shared group is a group that has invited your group members to access its resources through the [**Invite a group**](#invite-a-group-to-a-group) action.
+
+To view groups that have shared access with your group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the group page, select the **Shared groups** tab.
+
+A list of shared groups is displayed.
+You can also use the REST API to [list a group's shared groups](../../../api/groups.md#list-shared-groups).
 
 ### Prevent inviting groups outside the group hierarchy
 

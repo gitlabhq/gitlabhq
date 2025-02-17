@@ -1,6 +1,6 @@
 <!--
 Merging into stable branches in canonical projects is reserved for
-GitLab patch releases https://docs.gitlab.com/ee/policy/maintenance.html#patch-releases
+GitLab patch releases https://docs.gitlab.com/policy/maintenance/#patch-releases
 
 If you're backporting a security fix, please refer to the security merge request
 template https://gitlab.com/gitlab-org/security/gitlab/blob/master/.gitlab/merge_request_templates/Security%20Release.md.

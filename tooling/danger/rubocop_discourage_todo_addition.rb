@@ -14,7 +14,7 @@ module Tooling
         Adding exclusions to RuboCop TODO files manually is discouraged.
 
         If it is not possible to resolve the exception, then
-        [inline disabling](https://docs.gitlab.com/ee/development/rubocop_development_guide.html#disabling-rules-inline)
+        [inline disabling](https://docs.gitlab.com/development/rubocop_development_guide/#disabling-rules-inline)
         should be used.
 
         ----

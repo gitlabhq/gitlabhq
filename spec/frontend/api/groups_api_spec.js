@@ -1,6 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import group from 'test_fixtures/api/groups/post.json';
 import getGroupTransferLocationsResponse from 'test_fixtures/api/groups/transfer_locations.json';
+import sharedGroupsResponse from 'test_fixtures/api/groups/groups/shared/get.json';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_PER_PAGE } from '~/api';
@@ -10,6 +11,7 @@ import {
   getGroupTransferLocations,
   getGroupMembers,
   createGroup,
+  getSharedGroups,
 } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
@@ -122,6 +124,27 @@ describe('GroupsApi', () => {
 
       await expect(createGroup(body)).resolves.toMatchObject({
         data: group,
+      });
+    });
+  });
+
+  describe('getSharedGroups', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'get');
+    });
+
+    it('retrieves shared groups from the correct URL and returns them in the response data', async () => {
+      const params = { page: 1 };
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/groups/shared`;
+
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, { data: sharedGroupsResponse });
+
+      await expect(getSharedGroups(mockGroupId, params)).resolves.toMatchObject({
+        data: { data: sharedGroupsResponse },
+      });
+
+      expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
+        params: { ...params, per_page: DEFAULT_PER_PAGE },
       });
     });
   });

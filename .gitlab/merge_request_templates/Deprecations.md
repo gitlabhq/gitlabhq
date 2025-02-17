@@ -27,7 +27,7 @@ Deprecation announcements can and should be created and merged into Docs at any 
 
 Please review:
 
-- The definitions of ["Deprecation"](https://docs.gitlab.com/ee/update/terminology.html#deprecation), ["End of Support"](https://docs.gitlab.com/ee/update/terminology.html#end-of-support), and ["Removal"](https://docs.gitlab.com/ee/update/terminology.html#removal).
+- The definitions of ["Deprecation"](https://docs.gitlab.com/update/terminology/#deprecation), ["End of Support"](https://docs.gitlab.com/update/terminology/#end-of-support), and ["Removal"](https://docs.gitlab.com/update/terminology/#removal).
 - The [guidelines for deprecations](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
 - The process for [creating a deprecation announcement](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 
@@ -36,9 +36,9 @@ They are frequently updated, and everyone should make sure they are aware of the
 ## EM/PM release post item checklist
 
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
-- [ ] For [breaking changes](https://docs.gitlab.com/ee/update/terminology.html#breaking-change):
+- [ ] For [breaking changes](https://docs.gitlab.com/update/terminology/#breaking-change):
   - [ ] Add the ~"breaking change"  label to the MR.
-  - [ ] If the breaking change affects GitLab.com, add `window` with a value of `1`, `2`, or `3`. The value represents the planned [release window](https://docs.gitlab.com/ee/update/breaking_windows.html) for GitLab.com, typically in the three weeks before the major release date. You should intentionally plan this window ahead of time. If you're not sure, ask `@swiskow`.
+  - [ ] If the breaking change affects GitLab.com, add `window` with a value of `1`, `2`, or `3`. The value represents the planned [release window](https://docs.gitlab.com/update/breaking_windows/) for GitLab.com, typically in the three weeks before the major release date. You should intentionally plan this window ahead of time. If you're not sure, ask `@swiskow`.
 - [ ] Confirm this MR is labeled ~"release post item::deprecation"
 - [ ] Follow the process to [create a deprecation YAML file](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 - [ ] Add reviewers by the 10th.
@@ -51,7 +51,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 
 When the content is ready for review, it must be reviewed by a Technical Writer and Engineering Manager, but can also be reviewed by
 Product Marketing, Product Design, and the Product Leaders for this area. Please use the
-[reviewers](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature)
+[reviewers](https://docs.gitlab.com/development/code_review/#dogfooding-the-reviewers-feature)
 feature for all reviews. Reviewers will then approve the MR and remove themselves from Reviewers when their review is complete.
 
 - [ ] (Recommended) PMM

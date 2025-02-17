@@ -16,12 +16,12 @@ the noise (due to constantly failing tests, flaky tests, and so on) so that new 
 ### Check-list
 
 - [ ] General code guidelines check-list
-  - [ ] [Code review guidelines](https://docs.gitlab.com/ee/development/code_review.html)
-  - [ ] [Style guides](https://docs.gitlab.com/ee/development/contributing/style_guides.html)
+  - [ ] [Code review guidelines](https://docs.gitlab.com/development/code_review/)
+  - [ ] [Style guides](https://docs.gitlab.com/development/contributing/style_guides/)
 - [ ] Quarantine test check-list
   - [ ] Follow the [Quarantining Tests guide](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/pipeline-triage/#quarantining-tests).
   - [ ] Confirm the test has a [`quarantine:` tag with the specified quarantine type](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/pipeline-triage/#quarantined-test-types).
-  - [ ] Note if the test should be [quarantined for a specific environment](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/execution_context_selection.html#quarantine-a-test-for-a-specific-environment).
+  - [ ] Note if the test should be [quarantined for a specific environment](https://docs.gitlab.com/development/testing_guide/end_to_end/execution_context_selection/#quarantine-a-test-for-a-specific-environment).
   - [ ] (Optionally) In case of an emergency (e.g. blocked deployments), consider adding labels to pick into auto-deploy (~"Pick into auto-deploy" ~"priority::1" ~"severity::1").
 - [ ] Dequarantine test check-list
   - [ ] Follow the [Dequarantining Tests guide](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/pipeline-triage/#dequarantining-tests).

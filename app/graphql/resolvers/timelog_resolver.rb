@@ -75,7 +75,7 @@ module Resolvers
 
     def validate_args!(object, args)
       unless has_parent?(object, args) || for_current_user?(args) || admin_user?
-        raise_argument_error('Non-admin users must provide a group_id, project_id, or current username')
+        raise_argument_error('Non-admin users must provide a groupId, projectId, or current username')
       end
 
       if args[:start_time] && args[:start_date]

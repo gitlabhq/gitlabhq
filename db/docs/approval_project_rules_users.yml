@@ -8,14 +8,6 @@ description: Keeps connection between user and a project approval rule
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: approval_project_rule_id
-        table: approval_project_rules
-        sharding_key: project_id
-        belongs_to: approval_project_rule
-desired_sharding_key_migration_job_name: BackfillApprovalProjectRulesUsersProjectId
 table_size: small
+sharding_key:
+  project_id: projects

@@ -21,7 +21,7 @@ Consider the effect of the changes in this merge request on the following:
   - [ ] `security`
   - [ ] `dev`
   - [ ] personal forks
-- [ ] [Pipeline performance](https://docs.gitlab.com/ee/ci/pipelines/pipeline_efficiency.html)
+- [ ] [Pipeline performance](https://docs.gitlab.com/ci/pipelines/pipeline_efficiency/)
 
 **If new jobs are added:**
 

@@ -45,13 +45,14 @@ export default {
     DynamicScroller,
     DynamicScrollerItem,
     HelpPopover,
+    ReportListItem: () => import('~/merge_requests/reports/components/report_list_item.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: { reportsTabContent: { default: false } },
+  inject: { reportsTabContent: { default: false }, reportsTabSidebar: { default: false } },
   props: {
     loadingText: {
       type: String,
@@ -173,6 +174,16 @@ export default {
       required: false,
       default: false,
     },
+    label: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    path: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -227,6 +238,11 @@ export default {
         },
       ];
     },
+    routeParams() {
+      if (!this.path) return {};
+
+      return { report: this.path };
+    },
   },
   watch: {
     hasError: {
@@ -248,16 +264,16 @@ export default {
     this.isLoadingCollapsedContent = true;
     this.telemetryHub?.viewed();
 
+    if (this.reportsTabContent) {
+      this.fetchExpandedContent();
+    }
+
     try {
       if (this.fetchCollapsedData) {
         await this.fetch(this.fetchCollapsedData);
       }
     } catch {
       this.summaryError = this.errorText;
-    }
-
-    if (this.reportsTabContent) {
-      this.fetchExpandedContent();
     }
 
     this.isLoadingCollapsedContent = false;
@@ -346,7 +362,17 @@ export default {
 </script>
 
 <template>
-  <section class="media-section" data-testid="widget-extension">
+  <report-list-item
+    v-if="reportsTabSidebar"
+    to="report"
+    :params="routeParams"
+    :status-icon="summaryStatusIcon"
+    :is-loading="shouldShowLoadingIcon"
+    class="gl-mb-3"
+  >
+    {{ label }}
+  </report-list-item>
+  <section v-else class="media-section" data-testid="widget-extension">
     <div
       v-if="!reportsTabContent"
       :class="{

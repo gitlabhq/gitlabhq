@@ -8796,7 +8796,8 @@ CREATE TABLE approval_project_rules_users (
     id bigint NOT NULL,
     approval_project_rule_id bigint NOT NULL,
     user_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_26058e3982 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE approval_project_rules_users_id_seq
@@ -23338,7 +23339,8 @@ CREATE TABLE vulnerability_finding_evidences (
     updated_at timestamp with time zone NOT NULL,
     vulnerability_occurrence_id bigint NOT NULL,
     data jsonb DEFAULT '{}'::jsonb NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerability_finding_evidences_id_seq
@@ -27264,9 +27266,6 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE merge_request_assignees
     ADD CONSTRAINT check_1442f79624 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
-ALTER TABLE approval_project_rules_users
-    ADD CONSTRAINT check_26058e3982 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE status_check_responses
     ADD CONSTRAINT check_29114cce9c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -27326,9 +27325,6 @@ ALTER TABLE sprints
 
 ALTER TABLE web_hook_logs
     ADD CONSTRAINT check_df72cb58f5 CHECK ((char_length(url_hash) <= 44)) NOT VALID;
-
-ALTER TABLE vulnerability_finding_evidences
-    ADD CONSTRAINT check_e8f37f70eb CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE project_relation_exports
     ADD CONSTRAINT check_f461e3537f CHECK ((project_id IS NOT NULL)) NOT VALID;

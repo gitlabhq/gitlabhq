@@ -20,10 +20,19 @@ title: Model registry
 
 {{< /history >}}
 
-Model registry allows data scientists and developers to manage their machine learning
-models, along with all metadata associated with their creation: parameters, performance
-metrics, artifacts, logs, and more. For the full list of supported features,
-see [epic 9423](https://gitlab.com/groups/gitlab-org/-/epics/9423).
+A machine learning model registry serves as a centralized repository for managing machine learning
+models throughout their lifecycle. It functions like a specialized database that stores model
+versions along with essential metadata including performance metrics, validation results, and
+data lineage information.
+
+Use GitLab model registries to:
+
+- Register and version machine learning models systematically
+- Track comprehensive metadata including performance metrics, parameters, and data lineage
+- Compare model versions and monitor their evolution over time
+- Maintain clear documentation of model behavior and requirements
+
+For more information about model registry features and capabilities, see [epic 9423](https://gitlab.com/groups/gitlab-org/-/epics/9423).
 
 ## Access the model registry
 

@@ -11,12 +11,12 @@
 
 - [ ] Optional. Consider taking [the GitLab Technical Writing Fundamentals course](https://handbook.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
 - [ ] Follow the:
-  - [Documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html).
+  - [Documentation process](https://docs.gitlab.com/development/documentation/workflow/).
   - [Documentation guidelines](https://docs.gitlab.com/ee/development/documentation/).
   - [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
-- [ ] If you're adding a new page, add the [product availability details](https://docs.gitlab.com/ee/development/documentation/styleguide/availability_details.html) under the H1 topic title.
-- [ ] If you are a GitLab team member, [request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on:
-    - The documentation page's [metadata](https://docs.gitlab.com/ee/development/documentation/metadata.html).
+- [ ] If you're adding a new page, add the [product availability details](https://docs.gitlab.com/development/documentation/styleguide/availability_details/) under the H1 topic title.
+- [ ] If you are a GitLab team member, [request a review](https://docs.gitlab.com/development/code_review/#dogfooding-the-reviewers-feature) based on:
+    - The documentation page's [metadata](https://docs.gitlab.com/development/documentation/metadata/).
     - The [associated Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
 If you are a GitLab team member and only adding documentation, do not add any of the following labels:

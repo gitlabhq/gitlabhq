@@ -15,7 +15,7 @@ exercises a definition that is removed in the new Gitaly version, then that
 spec will fail.
 
 You must confirm the second assertion. Failing to do so will introduce a [non
-backward compatible change](https://docs.gitlab.com/ee/development/multi_version_compatibility.html),
+backward compatible change](https://docs.gitlab.com/development/multi_version_compatibility/),
 for example during canary deployment of GitLab.com, which can cause an incident.
 This type of problem can also impact customers performing zero-downtime upgrades.
 Some options:

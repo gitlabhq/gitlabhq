@@ -149,10 +149,10 @@ External Communication Plan
 - [ ] Ensure you have approvals from legal and corp comms for any communication being sent directly to customers.
 - [ ] As soon as possible, but no later than the third milestone preceding the major release, ensure that the following are complete (for example, given the following release schedule: `17.8, 17.9, 17.10, 17.11, 18.0` – `17.9` is the third milestone preceding the major release). 
     - [ ] A [deprecation announcement entry](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement) has been created so the deprecation will appear in release posts and on the [general deprecation page](https://docs.gitlab.com/ee/update/deprecations). _Add link to the relevant merge request._
-    - [ ] Documentation has been updated to mark the feature as [deprecated](https://docs.gitlab.com/ee/development/documentation/versions.html#deprecations-and-removals).  _Add link to the relevant merge request._
+    - [ ] Documentation has been updated to mark the feature as [deprecated](https://docs.gitlab.com/development/documentation/versions/#deprecations-and-removals).  _Add link to the relevant merge request._
 - [ ] On the major milestone:
     - [ ] The deprecated item has been removed.  _Add link to the relevant merge request._
-    - [ ] If the removal of the deprecated item is a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change), the merge request is labeled ~"breaking change".
+    - [ ] If the removal of the deprecated item is a [breaking change](https://docs.gitlab.com/update/terminology/#breaking-change), the merge request is labeled ~"breaking change".
     - [ ] Document the migration plan for users, clearly outlining the actions they need to take to mitigate the impact of the breaking change.
        - [ ] [Add link](here)
 
@@ -209,7 +209,7 @@ Keep in mind that approval check boxes and deprecations notices alone are not su
 /label ~"awaiting-pm-approval" ~"awaiting-em-approval" ~"awaiting-senior-eng-approval" ~"awaiting-senior-product-approval"
 
 - [ ] This issue is labeled ~deprecation, and with the relevant `~devops::`, `~group::`, and `~Category:` labels.
-- [ ] This issue is labeled  ~"breaking change" if the removal of the deprecated item will be a [breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change).
+- [ ] This issue is labeled  ~"breaking change" if the removal of the deprecated item will be a [breaking change](https://docs.gitlab.com/update/terminology/#breaking-change).
 
 
 <!-- Label reminders - you should have one of each of the following labels.
@@ -226,9 +226,9 @@ Use the following resources to find the appropriate labels:
 - [Deprecations, removals, and breaking changes](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes)
 - [Deprecation guidelines](https://docs.gitlab.com/ee/development/deprecation_guidelines/)
 - [Deprecations and removals doc styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide/deprecations_and_removals)
-- [REST API Deprecations](https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html#deprecations) and [REST API breaking changes](https://docs.gitlab.com/ee/development/api_styleguide.html#breaking-changes).
-- [GraphQL Deprecations](https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#deprecating-schema-items) and [GraphQL API breaking changes](https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#breaking-changes).
-- [GitLab release and maintenance policy](https://docs.gitlab.com/ee/policy/maintenance.html)
+- [REST API Deprecations](https://docs.gitlab.com/development/documentation/restful_api_styleguide/#deprecations) and [REST API breaking changes](https://docs.gitlab.com/development/api_styleguide/#breaking-changes).
+- [GraphQL Deprecations](https://docs.gitlab.com/development/api_graphql_styleguide/#deprecating-schema-items) and [GraphQL API breaking changes](https://docs.gitlab.com/development/api_graphql_styleguide/#breaking-changes).
+- [GitLab release and maintenance policy](https://docs.gitlab.com/policy/maintenance/)
 - Videos 📺
    - [How to deprecate and remove features in GitLab releases](https://youtu.be/9gy7tg94j7s)
    - [Review of GitLab deprecations and removals policy & Runner team deprecations and removals process](https://youtu.be/ehT1xBajCRI)

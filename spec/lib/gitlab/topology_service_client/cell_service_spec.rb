@@ -8,7 +8,7 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
 
   let(:cell_info) do
     Gitlab::Cells::TopologyService::CellInfo.new(
-      name: "cell-1",
+      id: 1,
       address: "127.0.0.1:3000",
       session_prefix: "cell-1-",
       sequence_range: Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 1000)
@@ -33,7 +33,7 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
       it 'returns the cell information' do
         expect_next_instance_of(service_class) do |instance|
           expect(instance).to receive(:get_cell).with(
-            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_name: "cell-1")
+            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_id: 1)
           ).and_return(Gitlab::Cells::TopologyService::GetCellResponse.new(cell_info: cell_info))
         end
 
@@ -43,11 +43,11 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
       it 'returns nil if the cell is not found' do
         expect_next_instance_of(service_class) do |instance|
           expect(instance).to receive(:get_cell).with(
-            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_name: "cell-1")
+            Gitlab::Cells::TopologyService::GetCellRequest.new(cell_id: 1)
           ).and_raise(GRPC::NotFound)
         end
 
-        expected_error = "Cell 'cell-1' not found on Topology Service"
+        expected_error = "Cell '1' not found on Topology Service"
         expect(Gitlab::AppLogger).to receive(:error).with(hash_including(message: expected_error))
         expect(cell_service.get_cell_info).to be_nil
       end

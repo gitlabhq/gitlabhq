@@ -19,7 +19,7 @@ This will give reviewers and future readers helpful context to give an efficient
 
 ## MR acceptance checklist
 
-**Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/ee/development/code_review.html#acceptance-checklist).**
+**Please evaluate this MR against the [MR acceptance checklist](https://docs.gitlab.com/development/code_review/#acceptance-checklist).**
 It helps you analyze changes to reduce risks in quality, performance, reliability, security, and maintainability.
 
 ## Screenshots or screen recordings

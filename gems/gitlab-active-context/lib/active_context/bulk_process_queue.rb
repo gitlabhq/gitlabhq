@@ -59,7 +59,7 @@ module ActiveContext
       logger.info(
         'class' => self.class.name,
         'message' => 'bulk_indexer_flushed',
-        'meta.indexing.search_flushing_duration_s' => flushing_duration_s
+        'meta.indexing.flushing_duration_s' => flushing_duration_s
       )
 
       # Re-enqueue any failures so they are retried
