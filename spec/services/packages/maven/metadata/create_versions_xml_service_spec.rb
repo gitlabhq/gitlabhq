@@ -50,19 +50,6 @@ RSpec.describe ::Packages::Maven::Metadata::CreateVersionsXmlService, feature_ca
         expect(result).to be_success
         expect(result.payload).to eq(changes_exist: false, empty_versions: false)
       end
-
-      context 'when maven_extract_package_model is disabled' do
-        before do
-          stub_feature_flags(maven_extract_package_model: false)
-        end
-
-        it 'returns no changes', :aggregate_failures do
-          result = subject
-
-          expect(result).to be_success
-          expect(result.payload).to eq(changes_exist: false, empty_versions: false)
-        end
-      end
     end
 
     context 'with more versions' do

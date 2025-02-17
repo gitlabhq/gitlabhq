@@ -15,7 +15,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
-  let(:registration_token) { 'abcdefg123456' }
   let(:job) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
   let(:jwt) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
   let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt } }
@@ -27,7 +26,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     before do
       stub_feature_flags(ci_enable_live_trace: true)
       stub_gitlab_calls
-      stub_application_setting(runners_registration_token: registration_token)
       allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
       stub_artifacts_object_storage
 

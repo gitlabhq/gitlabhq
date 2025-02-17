@@ -4153,7 +4153,6 @@
 - './spec/lib/container_registry/gitlab_api_client_spec.rb'
 - './spec/lib/container_registry/path_spec.rb'
 - './spec/lib/container_registry/registry_spec.rb'
-- './spec/lib/container_registry/tag_spec.rb'
 - './spec/lib/declarative_enum_spec.rb'
 - './spec/lib/error_tracking/stacktrace_builder_spec.rb'
 - './spec/lib/event_filter_spec.rb'

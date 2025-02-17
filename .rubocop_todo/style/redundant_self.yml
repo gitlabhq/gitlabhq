@@ -73,7 +73,6 @@ Style/RedundantSelf:
     - 'app/models/group_group_link.rb'
     - 'app/models/hooks/web_hook_log.rb'
     - 'app/models/identity.rb'
-    - 'app/models/integrations/pipelines_email.rb'
     - 'app/models/integrations/zentao.rb'
     - 'app/models/internal_id.rb'
     - 'app/models/issue.rb'

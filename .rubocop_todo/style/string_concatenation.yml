@@ -142,7 +142,6 @@ Style/StringConcatenation:
     - 'spec/lib/banzai/filter/references/user_reference_filter_spec.rb'
     - 'spec/lib/banzai/pipeline/plain_markdown_pipeline_spec.rb'
     - 'spec/lib/constraints/project_url_constrainer_spec.rb'
-    - 'spec/lib/container_registry/tag_spec.rb'
     - 'spec/lib/gitlab/auth/o_auth/user_spec.rb'
     - 'spec/lib/gitlab/auth/otp/strategies/forti_token_cloud_spec.rb'
     - 'spec/lib/gitlab/ci/build/artifacts/metadata_spec.rb'

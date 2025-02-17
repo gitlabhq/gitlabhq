@@ -104,7 +104,6 @@ Lint/UnusedMethodArgument:
     - 'app/models/external_issue.rb'
     - 'app/models/group.rb'
     - 'app/models/integrations/buildkite.rb'
-    - 'app/models/integrations/microsoft_teams.rb'
     - 'app/models/integrations/prometheus.rb'
     - 'app/models/internal_id.rb'
     - 'app/models/issue.rb'

@@ -218,10 +218,11 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
       context 'when the context is :block' do
         it 'renders a warning note' do
           expectation = <<~MD.chomp
-            DETAILS:
+            {{< details >}}
             **Deprecated** in GitLab 10.10.
             This was renamed.
             Use: [`X.y`](#xy).
+            {{< /details >}}
           MD
 
           expect(deprecation.markdown(context: :block)).to eq(expectation)
@@ -244,9 +245,10 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
       context 'when the context is :block' do
         it 'renders a warning note' do
           expectation = <<~MD.chomp
-            DETAILS:
+            {{< details >}}
             **Deprecated** in GitLab 10.10.
             Removed.
+            {{< /details >}}
           MD
 
           expect(deprecation.markdown(context: :block)).to eq(expectation)

@@ -29,11 +29,7 @@ module Packages
 
       override :packages_class
       def packages_class
-        if Feature.enabled?(:maven_extract_package_model, Feature.current_request)
-          ::Packages::Maven::Package
-        else
-          super
-        end
+        ::Packages::Maven::Package
       end
     end
   end

@@ -1101,6 +1101,10 @@ class User < ApplicationRecord
       exists?(username: username)
     end
 
+    def id_exists?(id)
+      exists?(id: id)
+    end
+
     def ends_with_reserved_file_extension?(username)
       Mime::EXTENSION_LOOKUP.keys.any? { |type| username.end_with?(".#{type}") }
     end

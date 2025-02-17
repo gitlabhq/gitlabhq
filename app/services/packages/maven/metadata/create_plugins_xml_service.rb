@@ -56,18 +56,10 @@ module Packages
             "#{@package.name}/#{artifact_id}"
           end
 
-          packages = if Feature.enabled?(:maven_extract_package_model, Feature.current_request)
-                       ::Packages::Maven::Package.for_projects(@package.project)
-                                                 .displayable
-                                                 .with_name(package_names)
-                                                 .has_version
-                     else
-                       @package.project.packages
-                               .maven
-                               .displayable
-                               .with_name(package_names)
-                               .has_version
-                     end
+          packages = ::Packages::Maven::Package.for_projects(@package.project)
+                                               .displayable
+                                               .with_name(package_names)
+                                               .has_version
 
           ::Packages::Maven::Metadatum.for_package_ids(packages.select(:id))
                                       .order_created

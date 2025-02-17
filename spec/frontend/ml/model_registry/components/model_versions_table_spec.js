@@ -18,9 +18,11 @@ import {
 
 jest.mock('~/alert');
 
-let wrapper;
-let apolloProvider;
 describe('ModelVersionsTable', () => {
+  let wrapper;
+  let apolloProvider;
+  const successfulDeleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success);
+
   Vue.use(VueApollo);
 
   beforeEach(() => {
@@ -34,7 +36,7 @@ describe('ModelVersionsTable', () => {
   const items = [modelVersionWithCandidateAndAuthor];
 
   const createWrapper = ({
-    deleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success),
+    deleteResolver = successfulDeleteResolver,
     canWriteModelRegistry = true,
     mountFn = mountExtended,
     tableItems = items,
@@ -128,20 +130,14 @@ describe('ModelVersionsTable', () => {
 
   it('emits model-versions-update upon successful delete mutation', async () => {
     createWrapper();
-    jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
     wrapper.findComponent(ModelVersionActionsDropdown).vm.$emit('delete-model-version', 2);
 
     await waitForPromises();
 
-    expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        mutation: deleteModelVersionMutation,
-        variables: {
-          id: 'gid://gitlab/Ml::ModelVersion/2',
-        },
-      }),
-    );
+    expect(successfulDeleteResolver).toHaveBeenCalledWith({
+      id: 'gid://gitlab/Ml::ModelVersion/2',
+    });
     expect(wrapper.emitted('model-versions-update')).toHaveLength(1);
   });
 

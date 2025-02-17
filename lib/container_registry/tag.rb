@@ -152,6 +152,29 @@ module ContainerRegistry
       client.delete_repository_tag_by_digest(repository.path, digest)
     end
 
+    def protection_rule
+      result = ::ContainerRegistry::Protection::TagRule.new
+      return result if Feature.disabled?(:container_registry_protected_tags, repository.project)
+
+      repository.project.container_registry_protection_tag_rules.each do |rule|
+        next unless Gitlab::UntrustedRegexp.new(rule.tag_name_pattern).match?(name)
+
+        set_highest_protection_rule_access_level(result, rule)
+      end
+
+      result
+    end
+    strong_memoize_attr :protection_rule
+
+    def protected_for_delete?(user)
+      return false if Feature.disabled?(:container_registry_protected_tags, repository.project)
+      return false if user.can_admin_all_resources?
+      return false unless protection_rule.minimum_access_level_for_delete
+
+      max_access = user.max_member_access_for_project(repository.project_id)
+      protection_rule.delete_restricted?(max_access)
+    end
+
     private
 
     def from_api?
@@ -162,6 +185,16 @@ module ContainerRegistry
       DateTime.iso8601(string_value)
     rescue ArgumentError
       nil
+    end
+
+    def set_highest_protection_rule_access_level(result, rule)
+      %i[push delete].each do |action|
+        attribute = :"minimum_access_level_for_#{action}"
+        result[attribute] = [
+          result.method(:"#{attribute}_before_type_cast").call.to_i,
+          rule.method(:"#{attribute}_before_type_cast").call
+        ].max
+      end
     end
   end
 end

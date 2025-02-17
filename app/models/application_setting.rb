@@ -132,6 +132,7 @@ class ApplicationSetting < ApplicationRecord
   attribute :repository_storages_weighted, default: -> { {} }
   attribute :kroki_formats, default: -> { {} }
   attribute :default_branch_protection_defaults, default: -> { {} }
+  attribute :vscode_extension_marketplace, default: -> { {} }
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
@@ -923,6 +924,9 @@ class ApplicationSetting < ApplicationRecord
   validates :secret_detection_service_url,
     allow_blank: true,
     length: { maximum: 255 }
+
+  validates :vscode_extension_marketplace,
+    json_schema: { filename: "application_setting_vscode_extension_marketplace", detail_errors: true }
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?

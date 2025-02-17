@@ -7,11 +7,11 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 512
+- Number of attributes: 513
 - Number of encrypted attributes: 41 (8.0%)
 - Number of attributes documented: 312 (61.0%)
-- Number of attributes on GitLab.com different from the defaults: 233 (46.0%)
-- Number of attributes with `clusterwide` set: 512 (100.0%)
+- Number of attributes on GitLab.com different from the defaults: 233 (45.0%)
+- Number of attributes with `clusterwide` set: 513 (100.0%)
 - Number of attributes with `clusterwide: true` set: 127 (25.0%)
 
 ## Individual columns
@@ -525,6 +525,7 @@ title: Application Settings analysis
 | `version_check_enabled` | `false` | `boolean` | `boolean` | `false` | `true` | `false` | `false`| `true` |
 | `vertex_ai_host` | `false` | `text` | `` | `false` | `null` | `false` | `false`| `false` |
 | `vertex_ai_project` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
+| `vscode_extension_marketplace` | `false` | `jsonb` | `hash` | `true` | `'{}'::jsonb` | `false` | `false`| `true` |
 | `web_ide_oauth_application_id` | `false` | `bigint` | `` | `false` | `null` | `true` | `false`| `false` |
 | `whats_new_variant` | `false` | `smallint` | `string` | `false` | `0` | `false` | `false`| `true` |
 | `wiki_asciidoc_allow_uri_includes` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |

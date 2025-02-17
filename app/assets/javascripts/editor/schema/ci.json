@@ -521,6 +521,11 @@
               "format": "uri-reference",
               "pattern": "^https?://.+\\.ya?ml$"
             },
+            "integrity": {
+              "description": "SHA256 integrity hash of the remote file content.",
+              "type": "string",
+              "pattern": "^sha256-[A-Za-z0-9+/]{43}=$"
+            },
             "rules": {
               "$ref": "#/definitions/includeRules"
             },

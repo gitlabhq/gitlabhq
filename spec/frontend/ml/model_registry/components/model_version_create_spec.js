@@ -31,6 +31,7 @@ jest.mock('~/ml/model_registry/services/upload_model', () => ({
 describe('ModelVersionCreate', () => {
   let wrapper;
   let apolloProvider;
+  const successfulResolver = jest.fn().mockResolvedValue(createModelVersionResponses.success);
 
   const file = { name: 'file.txt', size: 1024 };
   const anotherFile = { name: 'another file.txt', size: 10 };
@@ -44,10 +45,7 @@ describe('ModelVersionCreate', () => {
     apolloProvider = null;
   });
 
-  const createWrapper = (
-    createResolver = jest.fn().mockResolvedValue(createModelVersionResponses.success),
-    provide = {},
-  ) => {
+  const createWrapper = (createResolver = successfulResolver, provide = {}) => {
     const requestHandlers = [[createModelVersionMutation, createResolver]];
     apolloProvider = createMockApollo(requestHandlers);
 
@@ -237,23 +235,17 @@ describe('ModelVersionCreate', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findDescriptionInput().vm.$emit('input', 'My model version description');
       zone().vm.$emit('change', files);
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
     });
 
     it('Makes a create mutation upon confirm', () => {
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mutation: createModelVersionMutation,
-          variables: {
-            modelId: 'gid://gitlab/Ml::Model/1',
-            projectPath: 'some/project',
-            version: '1.0.0',
-            description: 'My model version description',
-          },
-        }),
-      );
+      expect(successfulResolver).toHaveBeenCalledWith({
+        modelId: 'gid://gitlab/Ml::Model/1',
+        projectPath: 'some/project',
+        version: '1.0.0',
+        description: 'My model version description',
+      });
     });
 
     it('Uploads a file mutation upon confirm', () => {

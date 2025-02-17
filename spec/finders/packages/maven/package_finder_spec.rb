@@ -13,16 +13,6 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
   let(:param_order_by_package_file) { false }
   let(:finder) { described_class.new(user, project_or_group, path: param_path, order_by_package_file: param_order_by_package_file) }
 
-  shared_context 'with FF maven_extract_package_model disabled' do
-    # It's required to turn off the FF when using the `maven_package_legacy` factory,
-    # since its associations depend on the FF status.
-    before do
-      stub_feature_flags(maven_extract_package_model: false)
-    end
-
-    let!(:package) { create(:maven_package_legacy, project: project, name: FFaker::Lorem.word) }
-  end
-
   describe '#execute' do
     subject { finder.execute }
 
@@ -58,24 +48,12 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
       let(:project_or_group) { project }
 
       it_behaves_like 'handling valid and invalid paths'
-
-      context 'with FF maven_extract_package_model disabled' do
-        include_context 'with FF maven_extract_package_model disabled' do
-          it_behaves_like 'handling valid and invalid paths'
-        end
-      end
     end
 
     context 'within a group' do
       let(:project_or_group) { group }
 
       it_behaves_like 'handling valid and invalid paths'
-
-      context 'with FF maven_extract_package_model disabled' do
-        include_context 'with FF maven_extract_package_model disabled' do
-          it_behaves_like 'handling valid and invalid paths'
-        end
-      end
 
       context 'when the FF maven_remove_permissions_check_from_finder disabled' do
         before do
@@ -93,36 +71,12 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
 
           it_behaves_like 'handling valid and invalid paths'
         end
-
-        context 'with FF maven_extract_package_model disabled' do
-          include_context 'with FF maven_extract_package_model disabled' do
-            it 'returns an empty array' do
-              is_expected.to be_empty
-            end
-
-            context 'when a user is assigned the developer role' do
-              before do
-                group.add_developer(user)
-              end
-
-              it_behaves_like 'handling valid and invalid paths'
-            end
-          end
-        end
       end
     end
 
     context 'across all projects' do
       it 'returns an empty array' do
         is_expected.to be_empty
-      end
-
-      context 'with FF maven_extract_package_model disabled' do
-        include_context 'with FF maven_extract_package_model disabled' do
-          it 'returns an empty array' do
-            is_expected.to be_empty
-          end
-        end
       end
     end
 
@@ -155,27 +109,6 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
 
         it { expect(subject.last).to eq(package2) }
       end
-
-      context 'with FF maven_extract_package_model disabled' do
-        include_context 'with FF maven_extract_package_model disabled' do
-          let_it_be(:package_name) { FFaker::Lorem.word }
-
-          let!(:package1) { create(:maven_package_legacy, project: project1, name: package_name, version: nil) }
-          let!(:package2) { create(:maven_package_legacy, project: project2, name: package_name, version: nil) }
-          let!(:package3) { create(:maven_package_legacy, project: project3, name: package_name, version: nil) }
-          let!(:package_file) { create(:package_file, :xml, package: package2) }
-
-          context 'without order by package file' do
-            it { is_expected.to match_array([package1, package2, package3]) }
-          end
-
-          context 'with order by package file' do
-            let(:param_order_by_package_file) { true }
-
-            it { expect(subject.last).to eq(package2) }
-          end
-        end
-      end
     end
 
     context 'with anonymous access to public registry in private group/project' do
@@ -192,12 +125,6 @@ RSpec.describe ::Packages::Maven::PackageFinder, feature_category: :package_regi
       end
 
       it_behaves_like 'handling valid and invalid paths'
-
-      context 'with FF maven_extract_package_model disabled' do
-        include_context 'with FF maven_extract_package_model disabled' do
-          it_behaves_like 'handling valid and invalid paths'
-        end
-      end
     end
   end
 

@@ -7,12 +7,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include RedisHelpers
   include WorkhorseHelpers
 
-  let(:registration_token) { 'abcdefg123456' }
-
   before do
     stub_feature_flags(ci_enable_live_trace: true)
     stub_gitlab_calls
-    stub_application_setting(runners_registration_token: registration_token)
     allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
     allow(Ci::Build).to receive(:find_by!).and_call_original
     allow(Ci::Build).to receive(:find_by!).with(partition_id: instance_of(Integer), id: job.id).and_return(job)

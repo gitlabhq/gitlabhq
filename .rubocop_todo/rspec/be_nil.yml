@@ -95,7 +95,6 @@ RSpec/BeNil:
     - 'spec/services/alert_management/alerts/todo/create_service_spec.rb'
     - 'spec/services/groups/transfer_service_spec.rb'
     - 'spec/services/merge_requests/merge_service_spec.rb'
-    - 'spec/services/packages/maven/create_package_service_spec.rb'
     - 'spec/services/packages/ml_model/create_package_file_service_spec.rb'
     - 'spec/services/packages/npm/generate_metadata_service_spec.rb'
     - 'spec/services/projects/create_from_template_service_spec.rb'

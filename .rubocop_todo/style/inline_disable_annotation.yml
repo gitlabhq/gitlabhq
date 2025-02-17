@@ -1,7 +1,6 @@
 ---
 Style/InlineDisableAnnotation:
   Exclude:
-    - 'Gemfile'
     - 'Guardfile'
     - 'app/channels/graphql_channel.rb'
     - 'app/controllers/abuse_reports_controller.rb'
@@ -1678,7 +1677,6 @@ Style/InlineDisableAnnotation:
     - 'lib/api/entities/ml/mlflow/search_runs.rb'
     - 'lib/api/entities/project.rb'
     - 'lib/api/entities/project_details.rb'
-    - 'lib/api/entities/project_integration.rb'
     - 'lib/api/entities/project_with_access.rb'
     - 'lib/api/group_boards.rb'
     - 'lib/api/groups.rb'

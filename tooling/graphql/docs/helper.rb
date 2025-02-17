@@ -256,7 +256,7 @@ module Tooling
 
         def render_name(object, owner = nil)
           rendered_name = "`#{object[:name]}`"
-          rendered_name += ' **{warning-solid}**' if deprecated?(object, owner)
+          rendered_name += ' {{< icon name="warning-solid" >}}' if deprecated?(object, owner)
 
           return rendered_name unless owner
 

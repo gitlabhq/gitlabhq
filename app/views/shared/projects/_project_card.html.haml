@@ -13,16 +13,19 @@
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
 - css_controls_class = "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?
 - css_metadata_classes = "gl-flex gl-items-center !gl-ml-0 !gl-text-inherit icon-wrapper has-tooltip"
+- project_avatar_link_label = _("View %{project} project") % { project: project.name }
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-justify-between lg:gl-w-1/4 gl-grow gl-shrink-0 gl-mt-0' }, header_options: { class: 'gl-flex gl-grow gl-items-start gl-gap-5' }) do |c|
   - c.with_header do
     - if avatar
       .project-avatar-container.gl-relative.gl-pb-4
         = link_to project_path(project), class: dom_class(project) do
+          %span.gl-sr-only
+            = project_avatar_link_label
           - if project.creator && use_creator_avatar
-            = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '')
+            = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '', avatar_options: { aria: { hidden: "true" } })
           - else
-            = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
+            = render Pajamas::AvatarComponent.new(project, size: 48, alt: '', avatar_options: { aria: { hidden: "true" } })
 
     .gl-w-full.gl-pt-2.gl-break-anywhere
       .gl-flex.gl-items-center.gl-flex-wrap

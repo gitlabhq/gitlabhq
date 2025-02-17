@@ -729,8 +729,61 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       it 'returns nil' do
         subject
 
-        expect(tag_permissions_response).to be_nil
+        expect(tag_permissions_response).to eq(
+          {
+            'minimumAccessLevelForPush' => nil,
+            'minimumAccessLevelForDelete' => nil
+          }
+        )
       end
+    end
+  end
+
+  context 'for tags destroyContainerRepositoryTag field' do
+    let(:tags) { %w[latest alpha] }
+    let(:fields) do
+      <<~GQL
+        tags {
+          nodes {
+            userPermissions {
+              destroyContainerRepositoryTag
+            }
+          }
+        }
+      GQL
+    end
+
+    let(:query) do
+      graphql_query_for(
+        'containerRepository',
+        { id: container_repository_global_id },
+        fields
+      )
+    end
+
+    before_all do
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        tag_name_pattern: '.*',
+        minimum_access_level_for_push: 'owner',
+        minimum_access_level_for_delete: 'maintainer'
+      )
+    end
+
+    it 'avoids N+1 database queries', :use_sql_query_cache do
+      first_user = create(:user, developer_of: project)
+      second_user = create(:user, developer_of: project)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: first_user, variables: variables)
+      end
+
+      tags.push('beta', 'release')
+
+      expect do
+        post_graphql(query, current_user: second_user, variables: variables) # use a different user to avoid a false positive from authentication queries
+      end.to issue_same_number_of_queries_as(control)
     end
   end
 end

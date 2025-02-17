@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[local file remote template component artifact inputs job project ref rules].freeze
+          ALLOWED_KEYS = %i[local file remote template component artifact inputs job project ref rules integrity].freeze
 
           validations do
             validates :config, hash_or_string: true
@@ -27,6 +27,22 @@ module Gitlab
 
               if config[:project] && config[:file].blank?
                 errors.add(:config, "must specify the file where to fetch the config from")
+              end
+
+              if config[:integrity]
+                errors.add(:config, "integrity can only be specified for remote includes") if config[:remote].blank?
+
+                unless config[:integrity].is_a?(String) && config[:integrity].start_with?('sha256-')
+                  errors.add(:config, "integrity hash must start with 'sha256-'")
+                  next
+                end
+
+                hash = config[:integrity].delete_prefix('sha256-')
+                begin
+                  Base64.strict_decode64(hash)
+                rescue ArgumentError
+                  errors.add(:config, "integrity hash must be base64 encoded")
+                end
               end
             end
 

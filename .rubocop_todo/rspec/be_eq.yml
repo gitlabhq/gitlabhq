@@ -702,7 +702,6 @@ RSpec/BeEq:
     - 'spec/lib/cloud_connector/connected_service_spec.rb'
     - 'spec/lib/constraints/jira_encoded_url_constrainer_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
-    - 'spec/lib/container_registry/tag_spec.rb'
     - 'spec/lib/event_filter_spec.rb'
     - 'spec/lib/extracts_path_spec.rb'
     - 'spec/lib/extracts_ref/ref_extractor_spec.rb'

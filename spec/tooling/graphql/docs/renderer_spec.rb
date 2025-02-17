@@ -245,7 +245,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
-         | <a id="deprecatedtestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 101.2. Bad argument. |
+         | <a id="deprecatedtestfoofooarg"></a>`fooArg` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 101.2. Bad argument. |
         DOC
       end
 
@@ -292,8 +292,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="deprecatedtestbar"></a>`bar` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 1.10. This was renamed. Use: [`Query.boom`](#queryboom). |
-          | <a id="deprecatedtestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 1.10. This is deprecated. |
+          | <a id="deprecatedtestbar"></a>`bar` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Deprecated** in GitLab 1.10. This was renamed. Use: [`Query.boom`](#queryboom). |
+          | <a id="deprecatedtestfoo"></a>`foo` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Deprecated** in GitLab 1.10. This is deprecated. |
 
           #### Fields with arguments
 
@@ -301,10 +301,11 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A description.
 
-          DETAILS:
+          {{< details >}}
           **Deprecated** in GitLab 1.10.
           Do not use.
           Use: [`X.y`](#xy).
+          {{< /details >}}
 
           Returns [`String!`](#string).
 
@@ -337,10 +338,11 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A bar.
 
-          DETAILS:
+          {{< details >}}
           **Deprecated** in GitLab 10.11.
           This was renamed.
           Use: [`Query.foo`](#queryfoo).
+          {{< /details >}}
 
           Returns [`Int`](#int).
         DOC
@@ -379,7 +381,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
-         | <a id="alphatestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 101.2. **Status**: Experiment. Argument description. |
+         | <a id="alphatestfoofooarg"></a>`fooArg` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 101.2. **Status**: Experiment. Argument description. |
         DOC
       end
 
@@ -417,7 +419,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="alphatestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 1.10. **Status**: Experiment. A description. |
+          | <a id="alphatestfoo"></a>`foo` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 1.10. **Status**: Experiment. A description. |
 
           #### Fields with arguments
 
@@ -425,9 +427,10 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A description.
 
-          DETAILS:
+          {{< details >}}
           **Introduced** in GitLab 1.10.
           **Status**: Experiment.
+          {{< /details >}}
 
           Returns [`String!`](#string).
 
@@ -460,9 +463,10 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A bar.
 
-          DETAILS:
+          {{< details >}}
           **Introduced** in GitLab 10.11.
           **Status**: Experiment.
+          {{< /details >}}
 
           Returns [`Int`](#int).
         DOC
@@ -502,9 +506,9 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Value | Description |
           | ----- | ----------- |
-          | <a id="myenumbar"></a>`BAR` **{warning-solid}** | **Deprecated** in GitLab 1.10. This is deprecated. |
+          | <a id="myenumbar"></a>`BAR` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 1.10. This is deprecated. |
           | <a id="myenumbaz"></a>`BAZ` | A description of BAZ. |
-          | <a id="myenumboop"></a>`BOOP` **{warning-solid}** | **Deprecated** in GitLab 1.10. This was renamed. Use: [`MyEnum.BAR`](#myenumbar). |
+          | <a id="myenumboop"></a>`BOOP` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 1.10. This was renamed. Use: [`MyEnum.BAR`](#myenumbar). |
         DOC
       end
 
@@ -613,7 +617,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             | ---- | ---- | ----------- |
             | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
             | <a id="mutationmakeitprettyprettinessfactor"></a>`prettinessFactor` | [`Float!`](#float) | How much prettier?. |
-            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` **{warning-solid}** | [`Float`](#float) | **Deprecated:** This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
+            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated:** This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
 
             #### Fields
 
@@ -622,7 +626,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
             | <a id="mutationmakeitprettyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
             | <a id="mutationmakeitprettyeverything"></a>`everything` | [`String`](#string) | What we made prettier. |
-            | <a id="mutationmakeitprettyomnis"></a>`omnis` **{warning-solid}** | [`String`](#string) | **Deprecated:** This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
+            | <a id="mutationmakeitprettyomnis"></a>`omnis` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
           DOC
         end
       end

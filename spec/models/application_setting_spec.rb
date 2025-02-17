@@ -59,6 +59,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.global_search_merge_requests_enabled).to be(true) }
     it { expect(setting.global_search_snippet_titles_enabled).to be(true) }
     it { expect(setting.global_search_users_enabled).to be(true) }
+    it { expect(setting.vscode_extension_marketplace).to eq({}) }
 
     it do
       expect(setting.sign_in_restrictions).to eq({
@@ -1752,6 +1753,32 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       # invalid json
       it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
     end
+  end
+
+  describe 'vscode_extension_marketplace' do
+    let(:invalid_custom) { { enabled: false, preset: "custom", custom_values: {} } }
+    let(:valid_open_vsx) { { enabled: true, preset: "open_vsx" } }
+    let(:valid_custom) do
+      {
+        enabled: false,
+        preset: "custom",
+        custom_values: {
+          item_url: "https://example.com",
+          service_url: "https://example.com",
+          resource_url_template: "https://example.com"
+        }
+      }
+    end
+
+    # valid json
+    it { is_expected.to allow_value({}).for(:vscode_extension_marketplace) }
+    it { is_expected.to allow_value({ enabled: true, preset: "open_vsx" }).for(:vscode_extension_marketplace) }
+    it { is_expected.to allow_value(valid_custom).for(:vscode_extension_marketplace) }
+
+    # invalid json
+    it { is_expected.not_to allow_value({ enabled: false, preset: "foo" }).for(:vscode_extension_marketplace) }
+    it { is_expected.not_to allow_value({ enabled: true, preset: "custom" }).for(:vscode_extension_marketplace) }
+    it { is_expected.not_to allow_value(invalid_custom).for(:vscode_extension_marketplace) }
   end
 
   describe '#static_objects_external_storage_auth_token=', :aggregate_failures do

@@ -855,6 +855,8 @@
   - 1
 - - security_orchestration_configuration_remove_bot
   - 1
+- - security_orchestration_configuration_remove_bot_for_namespace
+  - 1
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_persist_security_policies

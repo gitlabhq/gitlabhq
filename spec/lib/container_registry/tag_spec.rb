@@ -3,12 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
-  let(:group) { create(:group, name: 'group') }
-  let(:project) { create(:project, path: 'test', group: group) }
-
-  let(:repository) do
-    create(:container_repository, name: '', project: project)
-  end
+  let_it_be(:group) { create(:group, name: 'group') }
+  let_it_be(:project) { create(:project, path: 'test', group: group) }
+  let_it_be(:repository) { create(:container_repository, name: '', project: project) }
 
   let(:headers) do
     { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') }
@@ -27,10 +24,6 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
 
   describe '#path' do
     context 'when tag belongs to zero-level repository' do
-      let(:repository) do
-        create(:container_repository, name: '', tags: %w[rc1], project: project)
-      end
-
       it 'returns path to the image' do
         expect(tag.path).to eq('group/test:tag')
       end
@@ -54,7 +47,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
     end
   end
 
-  context 'manifest processing' do
+  context 'for manifest processing' do
     shared_examples 'using the value manually set on created_at' do
       let(:value) { 5.seconds.ago }
 
@@ -148,13 +141,13 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
           end
 
           it 'returns true' do
-            expect(tag.valid?).to eq(true)
+            expect(tag.valid?).to be(true)
           end
         end
 
         context 'when manifest is not present' do
           it 'returns false' do
-            expect(tag.valid?).to eq(false)
+            expect(tag.valid?).to be(false)
           end
         end
       end
@@ -167,7 +160,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
         let(:tag) { described_class.new(repository, 'tag', from_api: true) }
 
         it 'returns true' do
-          expect(tag.valid?).to eq(true)
+          expect(tag.valid?).to be(true)
           expect(tag).not_to have_received(:manifest)
         end
       end
@@ -183,20 +176,20 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
       end
     end
 
-    context 'schema v1' do
+    context 'for schema v1' do
       before do
         stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')
           .with(headers: headers)
           .to_return(
             status: 200,
-            body: File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest_1.json'),
+            body: File.read(Rails.root.join('spec/fixtures/container_registry/tag_manifest_1.json').to_s),
             headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v1+prettyjws' })
       end
 
       describe '#layers' do
-        subject { tag.layers }
+        subject { tag.layers.length }
 
-        it { expect(subject.length).to eq(1) }
+        it { is_expected.to eq(1) }
       end
 
       describe '#total_size' do
@@ -205,7 +198,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
         it { is_expected.to be_nil }
       end
 
-      context 'config processing' do
+      context 'for config processing' do
         describe '#config' do
           subject { tag.config }
 
@@ -222,20 +215,20 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
       end
     end
 
-    context 'image is a helm chart' do
+    context 'when image is a helm chart' do
       before do
         stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')
           .with(headers: headers)
           .to_return(
             status: 200,
-            body: File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest_helm.json'),
+            body: File.read(Rails.root.join('spec/fixtures/container_registry/tag_manifest_helm.json').to_s),
             headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json' })
 
         stub_request(:get, 'http://registry.gitlab/v2/group/test/blobs/sha256:65a07b841ece031e6d0ec5eb948eacb17aa6d7294cdeb01d5348e86242951487')
           .with(headers: { 'Accept' => 'application/vnd.cncf.helm.config.v1+json' })
           .to_return(
             status: 200,
-            body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob_helm.json'))
+            body: File.read(Rails.root.join('spec/fixtures/container_registry/config_blob_helm.json').to_s))
       end
 
       describe '#created_at' do
@@ -247,20 +240,20 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
       end
     end
 
-    context 'schema v2' do
+    context 'for schema v2' do
       before do
         stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')
           .with(headers: headers)
           .to_return(
             status: 200,
-            body: File.read(Rails.root + 'spec/fixtures/container_registry/tag_manifest.json'),
+            body: File.read(Rails.root.join('spec/fixtures/container_registry/tag_manifest.json').to_s),
             headers: { 'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json' })
       end
 
       describe '#layers' do
-        subject { tag.layers }
+        subject { tag.layers.length }
 
-        it { expect(subject.length).to eq(1) }
+        it { is_expected.to eq(1) }
       end
 
       describe '#total_size' do
@@ -269,7 +262,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
         it { is_expected.to eq(2319870) }
       end
 
-      context 'config processing' do
+      context 'for config processing' do
         shared_examples 'a processable' do
           describe '#config' do
             subject { tag.config }
@@ -292,7 +285,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
               .with(headers: { 'Accept' => 'application/octet-stream' })
               .to_return(
                 status: 200,
-                body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
+                body: File.read(Rails.root.join('spec/fixtures/container_registry/config_blob.json').to_s))
           end
 
           it_behaves_like 'a processable'
@@ -309,7 +302,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
             stub_request(:get, 'http://external.com/blob/file')
               .to_return(
                 status: 200,
-                body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
+                body: File.read(Rails.root.join('spec/fixtures/container_registry/config_blob.json').to_s))
           end
 
           it_behaves_like 'a processable'
@@ -365,13 +358,13 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
           context 'with a nil input' do
             let(:input) { nil }
 
-            it { is_expected.to eq(nil) }
+            it { is_expected.to be_nil }
           end
 
           context 'with an invalid input' do
             let(:input) { 'not a timestamp' }
 
-            it { is_expected.to eq(nil) }
+            it { is_expected.to be_nil }
           end
         end
 
@@ -390,13 +383,13 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
           context 'with a nil input' do
             let(:input) { nil }
 
-            it { is_expected.to eq(nil) }
+            it { is_expected.to be_nil }
           end
 
           context 'with an invalid input' do
             let(:input) { 'not a timestamp' }
 
-            it { is_expected.to eq(nil) }
+            it { is_expected.to be_nil }
           end
         end
       end
@@ -435,6 +428,112 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
 
       it 'correctly deletes the tag' do
         expect(tag.unsafe_delete).to be_truthy
+      end
+    end
+
+    describe '#protection_rule' do
+      subject { tag.protection_rule }
+
+      before_all do
+        create(
+          :container_registry_protection_tag_rule,
+          project: project,
+          tag_name_pattern: 'tag',
+          minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
+          minimum_access_level_for_delete: Gitlab::Access::OWNER
+        )
+
+        create(
+          :container_registry_protection_tag_rule,
+          project: project,
+          tag_name_pattern: '.*',
+          minimum_access_level_for_push: Gitlab::Access::OWNER,
+          minimum_access_level_for_delete: Gitlab::Access::MAINTAINER
+        )
+
+        create(
+          :container_registry_protection_tag_rule,
+          project: project,
+          tag_name_pattern: 'non-matching-pattern',
+          minimum_access_level_for_push: Gitlab::Access::ADMIN,
+          minimum_access_level_for_delete: Gitlab::Access::ADMIN
+        )
+      end
+
+      it 'returns the highest access level from the matching protection rules' do
+        is_expected.to have_attributes(
+          minimum_access_level_for_push: 'owner',
+          minimum_access_level_for_delete: 'owner'
+        )
+      end
+
+      context 'when the feature container_registry_protected_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_protected_tags: false)
+        end
+
+        it 'returns nil for push and delete' do
+          is_expected.to have_attributes(
+            minimum_access_level_for_push: nil,
+            minimum_access_level_for_delete: nil
+          )
+        end
+      end
+    end
+
+    describe '#protected_for_delete?' do
+      subject { tag.protected_for_delete?(user) }
+
+      let_it_be(:user) { create(:user) }
+      let_it_be(:protection_rule) do
+        create(
+          :container_registry_protection_tag_rule,
+          project: project,
+          tag_name_pattern: 'tag',
+          minimum_access_level_for_delete: Gitlab::Access::OWNER
+        )
+      end
+
+      context 'when the feature container_registry_protected_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_protected_tags: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'for admin' do
+        before do
+          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when minimum_access_level_for_delete is nil' do
+        before do
+          allow(tag).to receive(:protection_rule).and_return(
+            build(:container_registry_protection_tag_rule, minimum_access_level_for_delete: nil)
+          )
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when user has lower access level' do
+        before_all do
+          project.add_maintainer(user)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when user has the same or higher access level' do
+        before_all do
+          project.add_owner(user)
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end

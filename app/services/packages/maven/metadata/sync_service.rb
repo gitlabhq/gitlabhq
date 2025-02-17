@@ -98,20 +98,11 @@ module Packages
         end
 
         def versionless_package_named(name)
-          if Feature.enabled?(:maven_extract_package_model, Feature.current_request)
-            ::Packages::Maven::Package.for_projects(project)
-                                      .displayable
-                                      .with_name(name)
-                                      .with_version(nil)
-                                      .first
-          else
-            project.packages
-                   .maven
-                   .displayable
-                   .with_name(name)
-                   .with_version(nil)
-                   .first
-          end
+          ::Packages::Maven::Package.for_projects(project)
+                                    .displayable
+                                    .with_name(name)
+                                    .with_version(nil)
+                                    .first
         end
 
         def package_name

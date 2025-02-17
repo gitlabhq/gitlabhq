@@ -58,14 +58,22 @@ module Ci
         if preview_mode?
           "Would have migrated project id: #{project.id}."
         else
-          perform_migration!(project)
-          @success_count += 1
+          result = perform_migration!(project)
 
-          "Migrated project id: #{project.id}."
+          if result.success?
+            @success_count += 1
+            "Migrated project id: #{project.id}."
+          else
+            log_error(project, result.message)
+          end
         end
       rescue StandardError => error
+        log_error(project, error.message)
+      end
+
+      def log_error(project, message)
         @failed_projects << project
-        "Error migrating project id: #{project.id}, error: #{error.message}"
+        "Error migrating project id: #{project.id}, error: #{message}"
       end
 
       def perform_migration!(project)

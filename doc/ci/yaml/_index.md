@@ -184,6 +184,7 @@ And optionally:
 
 - [`include:inputs`](#includeinputs)
 - [`include:rules`](#includerules)
+- [`include:integrity`](#includeintegrity)
 
 **Additional details**:
 
@@ -356,7 +357,8 @@ include:
   so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
 - Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger
   when the other project's files change. From a security perspective, this is similar to
-  pulling a third-party dependency. If you link to another GitLab project you own, consider the use of both
+  pulling a third-party dependency. To verify the integrity of the included file, consider using the [`integrity`](#includeintegrity) keyword.
+  If you link to another GitLab project you own, consider the use of both
   [protected branches](../../user/project/repository/branches/protected.md) and [protected tags](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)
   to enforce change management rules.
 
@@ -475,6 +477,26 @@ In this example, if the `INCLUDE_BUILDS` variable is:
   - [`rules:if`](includes.md#include-with-rulesif).
   - [`rules:changes`](includes.md#include-with-ruleschanges).
   - [`rules:exists`](includes.md#include-with-rulesexists).
+
+#### `include:integrity`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178593) in GitLab 17.9.
+
+Use `integrity` with `include:remote` to specifiy a SHA256 hash of the included remote file.
+If `integrity` does not match the actual content, the remote file is not processed
+and the pipeline fails.
+
+**Keyword type**: Global keyword.
+
+**Supported values**: Base64-encoded SHA256 hash of the included content.
+
+**Example of `include:integrity`**:
+
+```yaml
+include:
+  - remote: 'https://gitlab.com/example-project/-/raw/main/.gitlab-ci.yml'
+    integrity: 'sha256-L3/GAoKaw0Arw6hDCKeKQlV1QPEgHYxGBHsH4zG1IY8='
+```
 
 ### `stages`
 

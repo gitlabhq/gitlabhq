@@ -741,6 +741,7 @@ to configure other related settings. These requirements are
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the `You won't be able to pull or push project code via SSH` warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
 | `valid_runner_registrars`                | array of strings | no                                   | List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']` or `['group', 'project']`. |
+| `vscode_extension_marketplace`           | hash             | no                                   | Settings for VS Code Extension Marketplace. Used by [Web IDE](../user/project/web_ide/_index.md) and [Workspaces](../user/workspace/_index.md). |
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
 | `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous direct transfer batch exports to process. |

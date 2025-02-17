@@ -2,6 +2,7 @@
 
 class Admin::SystemInfoController < Admin::ApplicationController
   feature_category :not_owned # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
+  authorize! :read_admin_system_information, only: [:show]
 
   EXCLUDED_MOUNT_OPTIONS = %w[
     nobrowse

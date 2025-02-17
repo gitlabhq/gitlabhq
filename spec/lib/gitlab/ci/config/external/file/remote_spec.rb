@@ -94,6 +94,26 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
       it { is_expected.to be_falsy }
     end
+
+    context 'when integrity is specified' do
+      let(:params) { { remote: location, integrity: integrity_hash } }
+
+      before do
+        stub_full_request(location).to_return(body: remote_file_content)
+      end
+
+      context 'with matching integrity hash' do
+        let(:integrity_hash) { "sha256-#{Base64.strict_encode64(Digest::SHA256.digest(remote_file_content))}" }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with non-matching integrity hash' do
+        let(:integrity_hash) { "sha256-#{Base64.strict_encode64(Digest::SHA256.digest('different content'))}" }
+
+        it { is_expected.to be_falsy }
+      end
+    end
   end
 
   describe "#content" do
@@ -242,6 +262,20 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
       it 'returns details about connection failure' do
         expect(subject).to eq "Remote file could not be fetched because Connection refused!"
+      end
+    end
+
+    context 'when integrity check fails' do
+      let(:params) { { remote: location, integrity: "sha256-#{Base64.strict_encode64(Digest::SHA256.digest('different content'))}" } }
+
+      before do
+        stub_full_request(location).to_return(body: remote_file_content)
+      end
+
+      it 'returns error message about integrity check failure' do
+        expect(error_message).to eq(
+          'Remote file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` failed integrity check!'
+        )
       end
     end
   end

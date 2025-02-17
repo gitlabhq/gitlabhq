@@ -15,11 +15,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
   describe '/api/v4/runners' do
     let(:params) { nil }
-    let(:registration_token) { 'abcdefg123456' }
-
-    before do
-      stub_application_setting(runners_registration_token: registration_token)
-    end
 
     subject(:perform_request) { delete api('/runners'), params: params }
 

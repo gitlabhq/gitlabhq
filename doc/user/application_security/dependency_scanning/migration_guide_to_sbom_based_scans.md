@@ -46,13 +46,15 @@ This also impacts the availability of some functionalities that depend on the se
 
 ### CI/CD configuration
 
-To prevent disruption to your CI/CD pipelines, as of GitLab 17.9 the new approach is not yet applied to the Dependency Scanning CI/CD templates (`Dependency-Scanning.gitlab-ci.yml` and `Dependency-Scanning.latest.gitlab-ci.yml`).
-
-To enable the new Dependency Scanning analyzer, you must use the [main Dependency Scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main).
-
-If you're using the specialized components for Android, Rust, Swift, or Cocoapods, you'll need to migrate to the main component that now covers all supported languages and package managers.
-
+To prevent disruption to your CI/CD pipelines, the new approach is not yet applied to the stable Dependency Scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and you must use the `latest` template (`Dependency-Scanning.latest.gitlab-ci.yml`) to enable it.
 Other migration paths might be considered as the feature gains maturity.
+
+The latest Dependency Scanning CI/CD template (`Dependency-Scanning.latest.gitlab-ci.yml`) still maintains backward compatibility by default. It continues to run existing Gemnasium analyzer jobs, while the new Dependency Scanning analyzer only activates for newly supported languages and package managers. You can opt-in to use the new Dependency Scanning analyzer for all projects by configuring the `DS_ENFORCE_NEW_ANALYZER` CI/CD variable to `true`.
+
+If you're using [Scan Execution Policies](../policies/scan_execution_policies.md), these changes apply in the same way because they build upon the CI/CD templates.
+
+If you're using the [main Dependency Scanning CI/CD component](https://gitlab.com/components/dependency-scanning/-/tree/main/templates/main) you won't see any changes as it already employs the new analyzer.
+However, if you're using the specialized components for Android, Rust, Swift, or Cocoapods, you'll need to migrate to the main component that now covers all supported languages and package managers.
 
 ### Build support for Java and Python
 
@@ -82,6 +84,14 @@ To migrate to the Dependency Scanning using SBOM method, perform the following s
    - If you have manually overridden the `gemnasium-dependency_scanning`, `gemnasium-maven-dependency_scanning`, or `gemnasium-python-dependency_scanning` CI/CD jobs to customize them in a project's `.gitlab-ci.yml` or in the CI/CD configuration for a Pipeline Execution Policy, remove them.
    - If you have configured any of [the impacted CI/CD variables](#changes-to-cicd-variables), adjust your configuration accordingly.
 1. Enable the Dependency Scanning using SBOM feature with one of the following options:
+   - Use the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to run the new Dependency Scanning analyzer:
+     1. Ensure your `.gitlab-ci.yml` CI/CD configuration includes the latest Dependency Scanning CI/CD template.
+     1. Add the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` and set it to `true`. This variable can be set in many different places, while observing the [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
+     1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
+   - Use the [Scan Execution Policies](../policies/scan_execution_policies.md) to run the new Dependency Scanning analyzer:
+     1. Edit the configured scan execution policy for Dependency Scanning and ensure it uses the `latest` template.
+     1. Add the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` and set it to `true`. This variable can be set in many different places, while observing the [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
+     1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
    - Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to run the new Dependency Scanning analyzer:
      1. Replace the Dependency Scanning CI/CD template's `include` statement with the Dependency Scanning CI/CD component in your `.gitlab-ci.yml` CI/CD configuration.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.

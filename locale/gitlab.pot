@@ -40599,9 +40599,6 @@ msgstr ""
 msgid "Package type must be Helm"
 msgstr ""
 
-msgid "Package type must be Maven"
-msgstr ""
-
 msgid "Package type must be NuGet"
 msgstr ""
 

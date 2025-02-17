@@ -35,7 +35,6 @@ Style/SuperArguments:
     - 'app/models/current.rb'
     - 'app/models/hooks/service_hook.rb'
     - 'app/models/integrations/matrix.rb'
-    - 'app/models/integrations/microsoft_teams.rb'
     - 'app/models/integrations/telegram.rb'
     - 'app/models/issue.rb'
     - 'app/models/label.rb'

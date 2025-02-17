@@ -63,8 +63,9 @@ function createComponent({
   provide = {},
   response = getQueryResponse,
   mountFn = shallowMountExtended,
+  queryResponse = null,
 } = {}) {
-  getQueryResponseMock = jest.fn().mockResolvedValue(response);
+  getQueryResponseMock = queryResponse || jest.fn().mockResolvedValue(response);
   getCountsQueryResponseMock = jest.fn().mockResolvedValue(getCountsQueryResponse);
   const getApprovalsQueryResponseMock = jest.fn().mockResolvedValue(response);
 
@@ -682,6 +683,22 @@ describe('Merge requests list app', () => {
           assigneeUsernames: 'test-username',
         }),
       );
+    });
+  });
+
+  describe('errors', () => {
+    it('clears error message when "dismiss-alert" event is emitted from IssuableList', async () => {
+      createComponent({ queryResponse: jest.fn().mockRejectedValue(new Error()) });
+
+      await waitForPromises();
+
+      expect(findIssuableList().props('error')).not.toBeNull();
+
+      findIssuableList().vm.$emit('dismiss-alert');
+
+      await nextTick();
+
+      expect(findIssuableList().props('error')).toBeNull();
     });
   });
 });

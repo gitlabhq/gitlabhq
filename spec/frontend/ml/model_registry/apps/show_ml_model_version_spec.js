@@ -61,9 +61,11 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrlWithAlerts: jest.fn(),
 }));
 
-let wrapper;
-let apolloProvider;
 describe('ml/model_registry/apps/show_model_version.vue', () => {
+  let wrapper;
+  let apolloProvider;
+  const successfulDeleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success);
+
   Vue.use(VueApollo);
   Vue.use(VueRouter);
 
@@ -77,7 +79,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
 
   const createWrapper = ({
     resolver = jest.fn().mockResolvedValue(modelVersionQueryWithAuthor),
-    deleteResolver = jest.fn().mockResolvedValue(deleteModelVersionResponses.success),
+    deleteResolver = successfulDeleteResolver,
     canWriteModelRegistry = true,
     mountFn = shallowMountExtended,
   } = {}) => {
@@ -298,20 +300,13 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   it('Makes a delete mutation upon receiving delete-model-version event', async () => {
     createWrapper();
 
-    jest.spyOn(apolloProvider.defaultClient, 'mutate');
-
     findModelVersionActionsDropdown().vm.$emit('delete-model-version');
 
     await waitForPromises();
 
-    expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        mutation: deleteModelVersionMutation,
-        variables: {
-          id: 'gid://gitlab/Ml::ModelVersion/2',
-        },
-      }),
-    );
+    expect(successfulDeleteResolver).toHaveBeenCalledWith({
+      id: 'gid://gitlab/Ml::ModelVersion/2',
+    });
   });
 
   it('Visits the model versions page upon successful delete mutation', async () => {

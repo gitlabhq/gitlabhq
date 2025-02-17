@@ -981,7 +981,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/models/concerns/loaded_in_group_list_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/models/group_spec.rb'
-    - 'spec/models/integrations/microsoft_teams_spec.rb'
     - 'spec/models/issue_spec.rb'
     - 'spec/models/members/group_member_spec.rb'
     - 'spec/models/members/project_member_spec.rb'

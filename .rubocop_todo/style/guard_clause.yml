@@ -78,7 +78,6 @@ Style/GuardClause:
     - 'app/models/generic_commit_status.rb'
     - 'app/models/grafana_integration.rb'
     - 'app/models/integrations/datadog.rb'
-    - 'app/models/integrations/pipelines_email.rb'
     - 'app/models/internal_id.rb'
     - 'app/models/issue.rb'
     - 'app/models/member.rb'

@@ -44,20 +44,8 @@ class Packages::Package < ApplicationRecord
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
 
-  # TODO: Remove with the rollout of the FF maven_extract_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
-  has_one :maven_metadatum, inverse_of: :legacy_package, class_name: 'Packages::Maven::Metadatum'
-
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
-
-  # TODO: Remove with the rollout of the FF maven_extract_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
-  accepts_nested_attributes_for :maven_metadatum
-
-  # TODO: Remove with the rollout of the FF maven_extract_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
-  before_validation :prevent_concurrent_inserts, on: :create, if: :maven?
 
   validates :project, presence: true
   validates :name, presence: true
@@ -139,7 +127,7 @@ class Packages::Package < ApplicationRecord
   def self.inheritance_column = 'package_type'
 
   def self.inheritance_column_to_class_map
-    hash = {
+    {
       ml_model: 'Packages::MlModel::Package',
       golang: 'Packages::Go::Package',
       rubygems: 'Packages::Rubygems::Package',
@@ -152,29 +140,9 @@ class Packages::Package < ApplicationRecord
       pypi: 'Packages::Pypi::Package',
       terraform_module: 'Packages::TerraformModule::Package',
       nuget: 'Packages::Nuget::Package',
-      npm: 'Packages::Npm::Package'
-    }
-
-    hash[:maven] = 'Packages::Maven::Package' if Feature.enabled?(:maven_extract_package_model, Feature.current_request)
-
-    hash.freeze
-  end
-
-  # TODO: Remove with the rollout of the FF maven_extract_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
-  def self.only_maven_packages_with_path(path, use_cte: false)
-    if use_cte
-      # This is an optimization fence which assumes that looking up the Metadatum record by path (globally)
-      # and then filter down the packages (by project or by group and subgroups) will be cheaper than
-      # looking up all packages within a project or group and filter them by path.
-
-      inner_query = Packages::Maven::Metadatum.where(path: path).select(:id, :package_id)
-      cte = Gitlab::SQL::CTE.new(:maven_metadata_by_path, inner_query)
-      with(cte.to_arel)
-        .joins('INNER JOIN maven_metadata_by_path ON maven_metadata_by_path.package_id=packages_packages.id')
-    else
-      joins(:maven_metadatum).where(packages_maven_metadata: { path: path })
-    end
+      npm: 'Packages::Npm::Package',
+      maven: 'Packages::Maven::Package'
+    }.freeze
   end
 
   def self.by_name_and_file_name(name, file_name)
@@ -253,14 +221,6 @@ class Packages::Package < ApplicationRecord
     project.namespace.package_settings
   end
   strong_memoize_attr :package_settings
-
-  # TODO: Remove with the rollout of the FF maven_extract_package_model
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/502402
-  def sync_maven_metadata(user)
-    return unless maven? && version? && user
-
-    ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project_id, name)
-  end
 
   def create_build_infos!(build)
     return unless build&.pipeline

@@ -32,26 +32,6 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
       end
 
       it_behaves_like 'assigns the package creator'
-
-      context 'with FF maven_extract_package_model disabled' do
-        before do
-          stub_feature_flags(maven_extract_package_model: false)
-        end
-
-        it_behaves_like 'returning a success service response'
-
-        it 'creates a new package with metadatum' do
-          expect(package).to be_valid
-          expect(package.name).to eq(path)
-          expect(package.version).to eq(version)
-          expect(package.package_type).to eq('maven')
-          expect(package.maven_metadatum).to be_valid
-          expect(package.maven_metadatum.path).to eq(path_with_version)
-          expect(package.maven_metadatum.app_group).to eq('my.company.app')
-          expect(package.maven_metadatum.app_name).to eq(app_name)
-          expect(package.maven_metadatum.app_version).to eq(version)
-        end
-      end
     end
 
     context 'with version' do

@@ -12,7 +12,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'app/models/concerns/spammable.rb'
     - 'app/models/concerns/taskable.rb'
     - 'app/models/integrations/gitlab_slack_application.rb'
-    - 'app/models/integrations/hangouts_chat.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/work_items/parent_link.rb'
     - 'app/serializers/import/github_failure_entity.rb'

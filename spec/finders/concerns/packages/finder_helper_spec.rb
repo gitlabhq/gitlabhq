@@ -323,6 +323,20 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       it { is_expected.to be_empty }
     end
 
+    shared_examples 'handles a group deploy token' do
+      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
+      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+      before do
+        project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+        subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+        project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+        group.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))
+      end
+
+      it_behaves_like 'returning both projects'
+    end
+
     describe '#projects_visible_to_user' do
       subject { finder.projects_visible_to_user(user, within_group: group) }
 
@@ -365,28 +379,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
         end
       end
 
-      context 'with a group deploy token' do
-        let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
-
-        where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
-          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both projects'
-          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both projects'
-          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
-          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both projects'
-        end
-
-        with_them do
-          before do
-            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          end
-
-          it_behaves_like params[:shared_example_name]
-        end
-      end
+      it_behaves_like 'handles a group deploy token'
     end
 
     describe '#projects_visible_to_user_including_public_registries' do
@@ -413,6 +406,38 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
 
       with_them do
         it_behaves_like params[:shared_example_name]
+      end
+    end
+
+    describe '#projects_visible_to_reporters' do
+      before_all do
+        project1.add_reporter(user)
+      end
+
+      let(:within_public_package_registry) { false }
+
+      subject do
+        finder.projects_visible_to_reporters(user,
+          within_group: group,
+          within_public_package_registry: within_public_package_registry)
+      end
+
+      it_behaves_like 'handles a group deploy token'
+
+      it_behaves_like 'returning project1'
+
+      context 'when within_public_package_registry set to true' do
+        let_it_be(:project_with_public_package_registry) { create(:project, group: group) }
+
+        let(:within_public_package_registry) { true }
+
+        before do
+          project_with_public_package_registry
+            .project_feature
+            .update_attribute(:package_registry_access_level, ::ProjectFeature::PUBLIC)
+        end
+
+        it { is_expected.to match_array [project1, project_with_public_package_registry] }
       end
     end
   end

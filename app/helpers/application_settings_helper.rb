@@ -576,7 +576,8 @@ module ApplicationSettingsHelper
       :global_search_snippet_titles_enabled,
       :global_search_users_enabled,
       :global_search_issues_enabled,
-      :global_search_merge_requests_enabled
+      :global_search_merge_requests_enabled,
+      :vscode_extension_marketplace
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

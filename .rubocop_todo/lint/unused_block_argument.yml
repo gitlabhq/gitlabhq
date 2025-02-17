@@ -157,7 +157,6 @@ Lint/UnusedBlockArgument:
     - 'lib/api/entities/ml/mlflow/run_info.rb'
     - 'lib/api/entities/note.rb'
     - 'lib/api/entities/project.rb'
-    - 'lib/api/entities/project_integration.rb'
     - 'lib/api/entities/project_label.rb'
     - 'lib/api/entities/projects/topic.rb'
     - 'lib/api/entities/public_group_details.rb'

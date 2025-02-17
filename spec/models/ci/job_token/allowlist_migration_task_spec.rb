@@ -86,12 +86,35 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
         expect(output_stream.string).not_to include("project id(s) failed to migrate:")
       end
 
-      context "when an exception is raised" do
+      context "when a handled exception is raised" do
         let(:project) { create(:project) }
         let(:only_ids) { project.id.to_s }
 
         it 'logs the error' do
-          exception = Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError
+          message = "Gitlab::Utils::TraversalIdCompactor::CompactionLimitCannotBeAchievedError"
+          error = ServiceResponse.error(message: message)
+          message = "Error migrating project id: #{project.id}, error: #{error.message}\n"
+
+          expect_next_instance_of(::Ci::JobToken::AutopopulateAllowlistService) do |instance|
+            expect(instance).to receive(:unsafe_execute!).and_return(error)
+          end
+
+          task.execute
+
+          expect(output_stream.string).to include(message)
+          expect(output_stream.string).to include("  0 project(s) successfully migrated, 1 error(s) reported.\n")
+          expect(output_stream.string).to include("The following 1 project id(s) failed to migrate:")
+          expect(output_stream.string).to include("  #{project.id}")
+        end
+      end
+
+      context "when an unhandled exception is raised" do
+        let(:project) { create(:project) }
+        let(:only_ids) { project.id.to_s }
+        let(:some_error) { Class.new(StandardError) }
+
+        it 'logs the error' do
+          exception = some_error
           message = "Error migrating project id: #{project.id}, error: #{exception}\n"
 
           expect_next_instance_of(::Ci::JobToken::AutopopulateAllowlistService) do |instance|

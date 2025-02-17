@@ -735,6 +735,9 @@ export default {
         target_branch: mergeRequest.targetBranch,
       });
     },
+    handleDismissAlert() {
+      this.mergeRequestsError = null;
+    },
   },
   STATUS_OPEN,
 };
@@ -772,6 +775,7 @@ export default {
       @sort="handleSort"
       @filter="handleFilter"
       @update-legacy-bulk-edit="handleUpdateLegacyBulkEdit"
+      @dismiss-alert="handleDismissAlert"
     >
       <template #nav-actions>
         <div class="gl-flex gl-gap-3">
