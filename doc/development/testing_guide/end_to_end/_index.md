@@ -11,7 +11,11 @@ End-to-end (e2e) testing is a strategy used to check whether your application wo
 
 ## How do we test GitLab?
 
-We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we test these packages using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool to run the end-to-end tests located in the `qa` directory.
+To test GitLab, we:
+
+1. Use [CNG](https://gitlab.com/gitlab-org/build/CNG) to build GitLab Cloud Native packages.
+1. Deploy these packages using the [`gitlab-cng` orchestrator](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/gems/gitlab-cng?ref_type=heads) CLI tool to create
+   a running instance of GitLab to run E2E tests against.
 
 Additionally, we use the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK) as a test environment that can be deployed quickly for faster test feedback.
 
@@ -25,6 +29,8 @@ We run scheduled pipelines each night to test staging. You can find these pipeli
 
 ### Testing code in merge requests
 
+[End-to-end test pipelines](test_pipelines.md) describes pipeline setup responsible for running E2E testing within merge requests.
+
 #### Using the test-on-omnibus job
 
 It is possible to run end-to-end tests for a merge request by triggering the `e2e:test-on-omnibus` manual action in the `qa` stage (not available for forks).
@@ -32,76 +38,6 @@ It is possible to run end-to-end tests for a merge request by triggering the `e2
 **This runs end-to-end tests against a custom EE (with an Ultimate license) Docker image built from your merge request's changes.**
 
 Manual action that starts end-to-end tests is also available in [`gitlab-org/omnibus-gitlab` merge requests](https://docs.gitlab.com/omnibus/build/team_member_docs.html#i-have-an-mr-in-the-omnibus-gitlab-project-and-want-a-package-or-docker-image-to-test-it).
-
-##### How does it work?
-
-Currently, we are using _multi-project pipeline_-like approach to run end-to-end pipelines against Omnibus GitLab.
-
-```mermaid
-graph TB
-    A1 -.->|once done, can be triggered| A2
-    A2 -.->|1. Triggers an `omnibus-gitlab-mirror` pipeline<br>and wait for it to be done| B1
-    B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a `gitlab-qa-mirror` pipeline<br>and wait for it to be done| C1
-
-subgraph " `gitlab-org/gitlab` pipeline"
-    A1[`build-images` stage<br>`build-qa-image` and `build-assets-image` jobs]
-    A2[`qa` stage<br>`e2e:test-on-omnibus` job]
-    end
-
-subgraph " `gitlab-org/build/omnibus-gitlab-mirror` pipeline"
-    B1[`Trigger-docker` stage<br>`Trigger:gitlab-docker` job] -->|once done| B2
-    end
-
-subgraph " `gitlab-org/gitlab-qa-mirror` pipeline"
-    C1[End-to-end jobs run]
-    end
-```
-
-1. In the [`gitlab-org/gitlab` pipeline](https://gitlab.com/gitlab-org/gitlab):
-   1. Developer triggers the `e2e:test-on-omnibus` manual action (available once the `build-qa-image` and
-      `build-assets-image` jobs are done), that can be found in GitLab merge
-      requests. This starts a e2e test child pipeline.
-   1. E2E child pipeline triggers a downstream pipeline in
-      [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror)
-      and polls for the resulting status. We call this a _status attribution_.
-
-1. In the [`gitlab-org/build/omnibus-gitlab-mirror` pipeline](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror):
-   1. Docker image is being built and pushed to its container registry.
-   1. Once Docker images are built and pushed jobs in `test` stage are started
-
-1. In the `Test` stage:
-   1. Container for the Docker image stored in the [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) registry is spun-up.
-   1. End-to-end tests are run with the `gitlab-qa` executable, which spin up a container for the end-to-end image from the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) registry.
-
-{{< alert type="note" >}}
-
-You may have noticed that we use `gitlab-org/build/omnibus-gitlab-mirror` instead of
-`gitlab-org/omnibus-gitlab`. This is due to technical limitations in the GitLab permission model: the ability to run a pipeline
-against a protected branch is controlled by the ability to push/merge to this branch.
-This means that for developers to be able to trigger a pipeline for the default branch in
-`gitlab-org/omnibus-gitlab`, they would need to have the Maintainer role for this project.
-For security reasons and implications, we couldn't open up the default branch to all the Developers.
-Hence we created this mirror where Developers and Maintainers are allowed to push/merge to the default branch.
-This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues/63#note_107175160> and the "mirror"
-work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
-A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
-
-{{< /alert >}}
-
-For more technical details on CI/CD setup and documentation on adding new test jobs to `e2e:test-on-omnibus` pipeline, see [`e2e:test-on-omnibus` setup documentation](test_pipelines.md).
-
-#### Using the `test-on-gdk` job
-
-The `e2e:test-on-gdk` job is run automatically in most merge requests, which triggers a [child-pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) that builds and installs a GDK instance from your merge request's changes, and then executes end-to-end tests against that GDK instance.
-
-##### How does it work?
-
-In the [`gitlab-org/gitlab` pipeline](https://gitlab.com/gitlab-org/gitlab):
-
-1. The [`build-gdk-image` job](https://gitlab.com/gitlab-org/gitlab/-/blob/07504c34b28ac656537cd60810992aa15e9e91b8/.gitlab/ci/build-images.gitlab-ci.yml#L32) uses the code from the merge request to build a Docker image for a GDK instance.
-1. The `e2e:test-on-gdk` trigger job creates a child pipeline that executes the end-to-end tests against GDK instances launched from the image built in the previous job.
-
-For more details, see the [documentation for the `e2e:test-on-gdk` pipeline](test_pipelines.md#e2etest-on-gdk).
 
 #### With merged results pipelines
 
@@ -180,6 +116,35 @@ Skip running end-to-end tests by applying the `pipeline:skip-e2e` label to the m
 There is a risk in skipping end-to-end tests. Use caution and discretion when applying this label. The end-to-end test suite is the last line of defense before changes are merged into the default branch. Skipping these tests increases the risk of introducing regressions into the codebase.
 
 {{< /alert >}}
+
+#### Dynamic parallel job scaling
+
+To maintain consistent pipeline run times, the CI/CD job count for each particular E2E test suite is scaled dynamically based on total run time of tests in the suite. 
+The [`generate_e2e_pipelines`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/tasks/ci.rake?ref_type=heads) Rake task creates CI/CD YAML files that:
+
+- Create the correct number of parallel jobs.
+- Skip particular jobs entirely if no tests would be executed.
+
+This functionality works in tandem with [selective test execution](#selective-test-execution) to optimize pipeline run time and costs as much as possible based on
+particular changes within merge request.
+
+##### Design outline
+
+Dynamic job scaling relies on [Test Scenario](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/qa/scenario/test?ref_type=heads) classes. This abstraction encapsulates the following:
+
+- The RSpec tags a particular scenario should execute.
+- An optional spec file pattern that can limit the scenario to particular spec files.
+- A pipeline mapping which defines the pipeline types and jobs a particular scenario would run in merge request pipelines.
+
+The [PipelineCreator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/tools/ci/pipeline_creator.rb?ref_type=heads) class generates pipeline YAML files with
+dynamically adjusted parallel job counts. Before pipeline YAML generation, `PipelineCreator` iterates over all defined `Test Scenario` classes and creates a mapping
+which contains a total of calculated test run time for each CI/CD job. Based on this information, the pipeline YAML file is generated with correctly adjusted parallel job count.
+
+`PipelineCreator` additionally takes input from [selective test execution](#selective-test-execution) to further reduce the total number of tests that
+would be executed.
+
+For an example of how to create a new scenario that would run this scenario in merge request pipelines and scale parallel jobs dynamically, see
+[Adding new jobs to E2E test pipelines](test_pipelines.md#adding-new-jobs-to-e2e-test-pipelines).
 
 ## Test pipeline tools and configuration
 

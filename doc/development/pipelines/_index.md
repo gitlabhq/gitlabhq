@@ -301,19 +301,7 @@ Forcing all jobs on docs only related MRs would not have the prerequisite jobs a
 
 ### End-to-end jobs
 
-The [`e2e:test-on-omnibus`](../testing_guide/end_to_end/_index.md#using-the-test-on-omnibus-job) child pipeline
-runs end-to-end jobs automatically depending on changes, and is manual in other cases.
-See `.qa:rules:test-on-omnibus` in
-[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
-the specific list of rules.
-
-If you want to force `e2e:test-on-omnibus` to run regardless of your changes, you can add the
-`pipeline:run-all-e2e` label to the merge request.
-
-The [`e2e:test-on-gdk`](../testing_guide/end_to_end/_index.md#using-the-test-on-gdk-job) child pipeline runs
-E2E specs automatically for all `code patterns changes`. See `.qa:rules:e2e:test-on-gdk` in  [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for specific set of rules.
-
-Consult the [End-to-end Testing](../testing_guide/end_to_end/_index.md) dedicated page for more information.
+For more information, see [End-to-end test pipelines](../testing_guide/end_to_end/test_pipelines.md).
 
 ### Observability end-to-end jobs
 
