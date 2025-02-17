@@ -5,23 +5,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Google Cloud integration API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Experiment
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
 
 Use this API to interact with the Google Cloud integration. For more information, see [GitLab and Google Cloud integration](../ci/gitlab_google_cloud_integration/_index.md).
 
 ## Project-level Google Cloud integration scripts
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10. This feature is an [experiment](../policy/development_stages_support.md).
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
 
 ### Workload identity federation creation script
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10.
+
+{{< /history >}}
 
 Users with at least the Maintainer role for the project can use the following endpoint to
 query a shell script that creates and configures the workload identity
@@ -52,7 +66,11 @@ curl --request GET \
 
 ### Script to set up a Google Cloud integration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144787) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144787) in GitLab 16.10.
+
+{{< /history >}}
 
 Users with at least the Maintainer role for the project can use the following endpoint to
 query a shell script to set up a Google Cloud integration:
@@ -88,7 +106,11 @@ curl --request GET \
 
 ### Script to configure a Google Cloud project for runner provisioning
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145525) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145525) in GitLab 16.10.
+
+{{< /history >}}
 
 Users with at least the Maintainer role for the project can use the following endpoint to
 query a shell script to configure a Google Cloud project for runner provisioning and execution:

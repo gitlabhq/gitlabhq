@@ -5,10 +5,13 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Tiered Storages in ClickHouse
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 The MergeTree table engine in ClickHouse supports tiered storage.
 See the documentation for [Using Multiple Block Devices for Data Storage](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-multiple-volumes)
 for details on setup and further explanation.
+
+{{< /alert >}}
 
 Quoting from the [MergeTree documentation](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#table_engine-mergetree-multiple-volumes):
 
@@ -79,9 +82,12 @@ PARTITION BY toYYYYMM(event_date)
 SETTINGS storage_policy = 'move_from_local_disks_to_gcs'
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 In this storage policy, the move happens implicitly. It is also possible to keep
 _hot_ data on local disks for a fixed period of time and then move them as _cold_.
+
+{{< /alert >}}
 
 This approach is possible with
 [Table TTLs](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree#mergetree-table-ttl),

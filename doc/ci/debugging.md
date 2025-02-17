@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Debugging CI/CD pipelines
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab provides several tools to help make it easier to debug your CI/CD configuration.
 
@@ -230,9 +233,12 @@ job1:
       - rspec.xmp
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not save tokens, passwords, or other sensitive information in artifacts,
 as they could be viewed by any user with access to the pipelines.
+
+{{< /alert >}}
 
 ### Run the job's commands locally
 
@@ -378,7 +384,7 @@ This issue is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/229352) i
 
 ### `Checking pipeline status` message
 
-This message displays with a spinning status icon (**{spinner}**) when the merge request
+This message displays with a spinning status icon ({{< icon name="spinner" >}}) when the merge request
 does not yet have a pipeline associated with the latest commit. This might be because:
 
 - GitLab hasn't finished creating the pipeline yet.
@@ -437,7 +443,11 @@ Ensure that included configuration files do not create a loop of references to e
 
 ### `Failed to pull image` messages
 
-> - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+{{< history >}}
+
+- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+
+{{< /history >}}
 
 A runner might return a `Failed to pull image` message when trying to pull a container image
 in a CI/CD job.

@@ -188,11 +188,14 @@ FROM result
         114 | {}           | {24,25,26,112,113,114} | jump
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Using this query to find all the namespace IDs in a group hierarchy is likely slower
 than other querying methods, such as the current `self_and_descendants` implementation
 based on the `traversal_ids` column. The query above should be only used when
 implementing batch iteration over the group hierarchy.
+
+{{< /alert >}}
 
 Rudimentary batching implementation in Ruby:
 

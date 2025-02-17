@@ -18,9 +18,12 @@ Metric definitions are available:
 
 ## Monitor Gitaly rate limiting (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitaly/-/issues/5011) in GitLab 17.7
 and is planned for removal in 18.0. Use [concurrency limiting](concurrency_limiting.md) instead.
+
+{{< /alert >}}
 
 Gitaly can be configured to limit requests based on:
 
@@ -99,7 +102,11 @@ In Prometheus, look for the following metrics:
 
 ## Monitor Gitaly adaptive concurrency limiting
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+
+{{< /history >}}
 
 You can observe specific behavior of [adaptive concurrency limiting](concurrency_limiting.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
 
@@ -185,7 +192,11 @@ gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+git
 
 ## Monitor Gitaly server-side backups
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5358) in GitLab 16.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5358) in GitLab 16.7.
+
+{{< /history >}}
 
 Monitor [server-side repository backups](configure_gitaly.md#configure-server-side-backups) with the following metrics:
 

@@ -51,8 +51,11 @@ The open-source version is a time-delayed clone of the GitLab Advisory Database,
 - [Container Scanning](../container_scanning/_index.md)
 - Third-party tools
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab Advisory Database Terms prohibit the use of data contained in the GitLab Advisory Database by third-party tools. Third-party integrators can use the MIT-licensed, time-delayed [repository clone](https://gitlab.com/gitlab-org/advisories-community) instead.
+
+{{< /alert >}}
 
 ### How the database can be used
 

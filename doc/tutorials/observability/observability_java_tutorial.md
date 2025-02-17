@@ -22,7 +22,7 @@ To follow along this tutorial, you must have:
 
 First, create a GitLab project and a corresponding access token.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select **Spring** and then **Use template**.
 1. Enter the project details.

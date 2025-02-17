@@ -5,16 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: License scanning of CycloneDX files
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
-> - The legacy License Compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
-> - In GitLab 17.5 we introduced the ability to use a CycloneDX report artifact as a source of data for license information behind the feature flag `license_scanning_with_sbom_licenses`, disabled by default.
-> - In GitLab 17.6 the ability to use a CycloneDX report artifact as a source of data for license information has been enabled by default. The feature flag `license_scanning_with_sbom_licenses` is still present to disable the feature if necessary.
-> - In GitLab 17.8 the feature flag `license_scanning_with_sbom_licenses` was removed.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
+- The legacy License Compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
+- In GitLab 17.5 we introduced the ability to use a CycloneDX report artifact as a source of data for license information behind the feature flag `license_scanning_with_sbom_licenses`, disabled by default.
+- In GitLab 17.6 the ability to use a CycloneDX report artifact as a source of data for license information has been enabled by default. The feature flag `license_scanning_with_sbom_licenses` is still present to disable the feature if necessary.
+- In GitLab 17.8 the feature flag `license_scanning_with_sbom_licenses` was removed.
+
+{{< /history >}}
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/_index.md),
@@ -23,11 +30,14 @@ This method of scanning is capable of parsing and identifying over 600 different
 Third-party scanners may be used to generate the list of dependencies, as long as they produce a CycloneDX report artifact for [one of our supported languages](#supported-languages-and-package-managers) and follow the [GitLab CycloneDX property taxonomy](../../../development/sec/cyclonedx_property_taxonomy.md).
 The ability to provide other licenses is tracked in [epic 10861](https://gitlab.com/groups/gitlab-org/-/epics/10861).
 
-NOTE:
+{{< alert type="note" >}}
+
 The License Scanning feature relies on publicly available package metadata collected in an
 external database and synced with the GitLab instance automatically. This database is a multi-region Google Cloud Storage bucket hosted in the United States.
 The scan is executed exclusively within the GitLab instance.
 No contextual information (for example, a list of project dependencies) is sent to the external service.
+
+{{< /alert >}}
 
 ## Configuration
 
@@ -212,9 +222,12 @@ Users can require approval for merge requests based on the licenses that are det
 
 ## Running in an offline environment
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 For instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required to successfully scan
 CycloneDX reports for licenses. For more information, see the offline [quick start guide](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database).

@@ -5,9 +5,12 @@ info: This page is owned by the Solutions Architecture team.
 title: Security Metrics and KPIs
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The document describes the installation, configuration and user guide of GitLab Security Metrics and KPIs Solution Component. This security solution component provides metrics and KPIs that can be viewed by business units, time range, vulnerability severity and security types. It can provide snapshot of the seucrity posture on the monthly and quarterly basis with pdf documents. The dashboard and visualization of data are displayed as Dashboard in Splunk. 
 

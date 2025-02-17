@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Feature flags API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This API is for managing Flipper-based [feature flags used in development of GitLab](../development/feature_flags/_index.md).
 
@@ -110,8 +113,11 @@ Set a feature's gate value. If a feature with the given name doesn't exist yet,
 it's created. The value can be a boolean, or an integer to indicate
 percentage of time.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Before you enable a feature still in development, you should understand the [security and stability risks](../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+
+{{< /alert >}}
 
 ```plaintext
 POST /features/:name

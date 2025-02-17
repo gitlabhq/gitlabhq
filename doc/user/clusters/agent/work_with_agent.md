@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Managing the agent for Kubernetes instances
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the following tasks when you work with the agent for Kubernetes.
 
@@ -53,7 +56,11 @@ The agent configuration file manages the various agent features:
 
 ## View shared agents
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395498) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395498) in GitLab 16.1.
+
+{{< /history >}}
 
 In addition to the agents owned by your project, you can also view agents shared with the
 [`ci_access`](ci_cd_workflow.md) and [`user_access`](user_access.md) keywords. Once an agent
@@ -89,7 +96,11 @@ View and provide feedback about the UI in [this epic](https://gitlab.com/groups/
 
 ## Debug the agent
 
-> - The `grpc_level` was [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/669) in GitLab 15.1.
+{{< history >}}
+
+- The `grpc_level` was [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/669) in GitLab 15.1.
+
+{{< /history >}}
 
 To debug the cluster-side component (`agentk`) of the agent, set the log
 level according to the available options:
@@ -124,8 +135,12 @@ For more information about debugging, see [troubleshooting documentation](troubl
 
 ## Reset the agent token
 
-> - Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `cluster_agents_limit_tokens_created`.
-> - Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
+{{< history >}}
+
+- Two-token limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361030/) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `cluster_agents_limit_tokens_created`.
+- Two-token limit [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/412399) in GitLab 16.2. Feature flag `cluster_agents_limit_tokens_created` removed.
+
+{{< /history >}}
 
 An agent can have only two active tokens at one time.
 
@@ -139,7 +154,7 @@ To reset the agent token without downtime:
    1. Enter token's name and description (optional) and select **Create token**.
 1. Securely store the generated token.
 1. Use the token to [install the agent in your cluster](install/_index.md#install-the-agent-in-the-cluster) and to [update the agent](install/_index.md#update-the-agent-version) to another version.
-1. To delete the token you're no longer using, return to the token list and select **Revoke** (**{remove}**).
+1. To delete the token you're no longer using, return to the token list and select **Revoke** ({{< icon name="remove" >}}).
 
 ## Remove an agent
 
@@ -154,7 +169,7 @@ To remove an agent from the UI:
 
 1. On the left sidebar, select **Search or go to** and find the project that contains the agent configuration file.
 1. Select **Operate > Kubernetes clusters**.
-1. In the table, in the row for your agent, in the **Options** column, select the vertical ellipsis (**{ellipsis_v}**).
+1. In the table, in the row for your agent, in the **Options** column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete agent**.
 
 ### Remove an agent with the GitLab GraphQL API

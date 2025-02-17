@@ -5,15 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Audit event streaming GraphQL API for instances
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
-> - APIs for custom HTTP headers for instance level streaming destinations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404560) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
-> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
-> - User-specified destination name API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413894) in GitLab 16.2.
-> - Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+- APIs for custom HTTP headers for instance level streaming destinations [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404560) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+- [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
+- User-specified destination name API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413894) in GitLab 16.2.
+- Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
+
+{{< /history >}}
 
 Manage audit event streaming destinations for instances by using a GraphQL API.
 
@@ -228,12 +235,16 @@ The header is deleted if the returned `errors` object is empty.
 
 ### Event type filters
 
-> - Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
+{{< history >}}
+
+- Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
+
+{{< /history >}}
 
 When this feature is enabled for an instance, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
 
-A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+A streaming destination that has an event type filter set has a **filtered** ({{< icon name="filter" >}}) label.
 
 #### Use the API to add an event type filter
 
@@ -285,7 +296,11 @@ Event type filters are removed if:
 
 ## Google Cloud Logging destinations
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11303) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11303) in GitLab 16.5.
+
+{{< /history >}}
 
 Manage Google Cloud Logging destinations for an entire instance.
 

@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use Git branches to develop new features. Add branch protections to critical branches to ensure only trusted users can merge into them."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use Git branches to develop new features. Add branch protections to critical branches to ensure only trusted users can merge into them.
 title: Default branch
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you create a new [project](../../_index.md), GitLab creates a default branch
 in the repository. A default branch has special configuration options not shared
@@ -56,9 +59,12 @@ API users can also use the `default_branch` attribute of the
 
 ## Change the default branch name for new projects in an instance
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Administrators](../../../permissions.md) of GitLab Self-Managed can
 customize the initial branch for projects hosted on that instance. Individual
@@ -93,11 +99,18 @@ unless a subgroup configuration overrides it.
 
 ## Protect initial default branches
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
+
+{{< /history >}}
 
 GitLab administrators and group owners can define [branch protections](protected.md)
 to apply to every repository's default branch for the instance, or for individual groups, with one of these options:
@@ -113,14 +126,20 @@ to apply to every repository's default branch for the instance, or for individua
 - **Not protected** - Both developers and maintainers can push new commits
   and force push.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
+
+{{< /alert >}}
 
 ### For all projects in an instance
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This setting applies only to each repository's default branch. To protect other branches,
 you must either:
@@ -141,9 +160,12 @@ groups and subgroups can override the instance default setting for their project
 
 #### Prevent overrides of default branch protection
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Group owners can override protections for default branches set for an entire instance
 on a per-group basis. In
@@ -156,14 +178,20 @@ disable this privilege for group owners, enforcing the protection rule set for t
 1. Clear the **Allow owners to manage default branch protection per group** checkbox.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab administrators can still update the default branch protection of a group.
+
+{{< /alert >}}
 
 ### For all projects in a group
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Group owners can override protections for default branches set for an entire instance
 on a per-group basis. In
@@ -179,12 +207,15 @@ which locks this setting for group owners.
 
 ## Update the default branch name in your repository
 
-WARNING:
+{{< alert type="warning" >}}
+
 Changing the name of your default branch can potentially break tests,
 CI/CD configuration, services, helper utilities, and any integrations your repository
 uses. Before you change this branch name, consult with your project owners and maintainers.
 Ensure they understand the scope of this change includes references to the old
 branch name in related code and scripts.
+
+{{< /alert >}}
 
 When you change the default branch name for an existing repository, don't create a new branch.
 Preserve the history of your default branch by renaming it. This example renames a Git repository's

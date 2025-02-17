@@ -1,6 +1,6 @@
 ---
-redirect_to: 'set_up_gitlab_agent_and_proxies.md'
-remove_date: '2025-04-20'
+redirect_to: set_up_gitlab_agent_and_proxies.md
+remove_date: "2025-04-20"
 ---
 
 <!-- markdownlint-disable -->

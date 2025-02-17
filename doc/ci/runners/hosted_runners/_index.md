@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab-hosted runners
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Dedicated
+
+{{< /details >}}
 
 Use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated.
 These runners can build, test, and deploy applications on different environments.
@@ -16,8 +19,11 @@ To create and register your own runners, see [self-managed runners](https://docs
 
 ## Hosted runners for GitLab.com
 
-DETAILS:
-**Offering:** GitLab.com
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
 
 These runners are fully integrated with GitLab.com and are enabled by default for all projects, with no configuration required.
 Your jobs can run on:
@@ -37,8 +43,11 @@ When you use hosted runners:
   This means that the available free disk space for your jobs to use is reduced.
 - [Untagged](../../yaml/_index.md#tags) jobs run on the `small` Linux x86-64 runner.
 
-NOTE:
+{{< alert type="note" >}}
+
 Jobs handled by hosted runners on GitLab.com time out after 3 hours, regardless of the timeout configured in a project.
+
+{{< /alert >}}
 
 ### Security of hosted runners for GitLab.com
 
@@ -103,8 +112,11 @@ You can find all GitLab Runner breaking changes under [Deprecations and removals
 
 ## Hosted runners for GitLab community contributions
 
-DETAILS:
-**Offering:** GitLab.com
+{{< details >}}
+
+- Offering: GitLab.com
+
+{{< /details >}}
 
 If you want to [contribute to GitLab](https://about.gitlab.com/community/contribute/), jobs are picked up by the
 `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners, dedicated for GitLab projects and related community forks.
@@ -116,8 +128,11 @@ As we want to encourage people to contribute, these runners are free of charge.
 
 ## Hosted runners for GitLab Dedicated
 
-DETAILS:
-**Offering:** GitLab Dedicated
+{{< details >}}
+
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 Hosted runners for GitLab Dedicated are created on demand and are fully integrated with your GitLab Dedicated instance.
 For more information, see [hosted runners for GitLab Dedicated](../../../administration/dedicated/hosted_runners.md).

@@ -6,9 +6,12 @@ description: Doing SRE for Gitaly instances on AWS.
 title: SRE Considerations for Gitaly on AWS
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 ## Gitaly SRE considerations
 
@@ -35,8 +38,11 @@ Complete performance metrics should be collected for Gitaly instances for identi
 
 Gitaly functions as the primary Git Repository Storage in GitLab. However, it's not a streaming file server. It also does a lot of demanding computing work, such as preparing and caching Git packfiles which informs some of the performance recommendations below.
 
-NOTE:
+{{< alert type="note" >}}
+
 All recommendations are for production configurations, including performance testing. For test configurations, like training or functional testing, you can use less expensive options. However, you should adjust or rebuild if performance is an issue.
+
+{{< /alert >}}
 
 #### Overall recommendations
 

@@ -73,7 +73,8 @@ subgraph " `gitlab-org/gitlab-qa-mirror` pipeline"
    1. Container for the Docker image stored in the [`gitlab-org/build/omnibus-gitlab-mirror`](https://gitlab.com/gitlab-org/build/omnibus-gitlab-mirror) registry is spun-up.
    1. End-to-end tests are run with the `gitlab-qa` executable, which spin up a container for the end-to-end image from the [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) registry.
 
-NOTE:
+{{< alert type="note" >}}
+
 You may have noticed that we use `gitlab-org/build/omnibus-gitlab-mirror` instead of
 `gitlab-org/omnibus-gitlab`. This is due to technical limitations in the GitLab permission model: the ability to run a pipeline
 against a protected branch is controlled by the ability to push/merge to this branch.
@@ -84,6 +85,8 @@ Hence we created this mirror where Developers and Maintainers are allowed to pus
 This problem was discovered in <https://gitlab.com/gitlab-org/gitlab-qa/-/issues/63#note_107175160> and the "mirror"
 work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4717>.
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
+
+{{< /alert >}}
 
 For more technical details on CI/CD setup and documentation on adding new test jobs to `e2e:test-on-omnibus` pipeline, see [`e2e:test-on-omnibus` setup documentation](test_pipelines.md).
 
@@ -172,8 +175,11 @@ Examples could include:
 
 Skip running end-to-end tests by applying the `pipeline:skip-e2e` label to the merge request.
 
-WARNING:
+{{< alert type="warning" >}}
+
 There is a risk in skipping end-to-end tests. Use caution and discretion when applying this label. The end-to-end test suite is the last line of defense before changes are merged into the default branch. Skipping these tests increases the risk of introducing regressions into the codebase.
+
+{{< /alert >}}
 
 ## Test pipeline tools and configuration
 

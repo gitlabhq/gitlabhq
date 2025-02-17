@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab 16 changes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains upgrade information for minor and patch versions of GitLab 16.
 Ensure you review these instructions for:
@@ -1153,9 +1156,12 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
 
 ### Geo installations
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Specific information applies to installations using Geo:
 
@@ -1267,9 +1273,12 @@ For more information, see the:
 
 ### Geo installations
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Specific information applies to installations using Geo:
 
@@ -1300,12 +1309,15 @@ Migrate by moving your existing configuration under the new structure. `git_data
 
 **Migrate to the new structure**
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you are running Gitaly cluster, [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
 Once this change is tested, proceed with your Gitaly nodes.
 If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect.md#repository-verification)
 will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
+
+{{< /alert >}}
 
 1. If you're running Gitaly Cluster, ensure repository verification is disabled on all Praefect nodes.
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
@@ -1324,8 +1336,11 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 The new structure is documented below with the old keys described in a comment above the new keys.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Double check your update to `storage`. You must append `/repositories` to the value of `path`.
+
+{{< /alert >}}
 
 ```ruby
 gitaly['configuration'] = {
@@ -1486,12 +1501,15 @@ Migrate by moving your existing configuration under the new structure. The new s
 
 **Migrate to the new structure**
 
-WARNING:
+{{< alert type="warning" >}}
+
 Migrate Praefect to the new configuration structure **first**.
 Once this change is tested, [proceed with your Gitaly nodes](#gitaly-configuration-structure-change).
 If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect.md#repository-verification)
 will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
+
+{{< /alert >}}
 
 1. When applying the new structure to your configuration:
    - Replace the `...` with the value from the old key.
@@ -1649,9 +1667,9 @@ If you have PgBouncer deployed:
 
 Follow the instructions for your installation type to switch back to a single database connection:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package and Docker
+{{< tab title="Linux package and Docker" >}}
 
 1. Add this setting to `/etc/gitlab/gitlab.rb`:
 
@@ -1663,7 +1681,9 @@ Follow the instructions for your installation type to switch back to a single da
 
 In a multi-node environment, this setting should be updated on all Rails and Sidekiq nodes.
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Set the `ci.enabled` key to `false`:
 
@@ -1674,11 +1694,15 @@ global:
       enabled: false
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 Remove the `ci:` section from `config/database.yml`.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Long-running user type data change
 
@@ -1775,9 +1799,9 @@ on the source instance.
 The commands in the following sections are for Linux package installations, and
 differ for other installation types:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Docker
+{{< tab title="Docker" >}}
 
 - Omit `sudo`
 - Shell into the GitLab container and run the same commands:
@@ -1786,19 +1810,25 @@ differ for other installation types:
   docker exec -it <container-id> bash
   ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 - Use `sudo -u git -H bundle exec rake RAILS_ENV=production` instead of `sudo gitlab-rake`
 - Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 - Omit `sudo`.
 - Shell into the `toolbox` pod to run the Rake commands: `gitlab-rake` is in `/usr/local/bin` if not in the `PATH`.
   - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
 - Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Workaround: instance created with 15.9 or earlier
 

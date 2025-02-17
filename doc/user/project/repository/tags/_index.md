@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use Git tags to mark important points in a repository's history, and trigger CI/CD pipelines."
+description: Use Git tags to mark important points in a repository's history, and trigger CI/CD pipelines.
 title: Tags
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
@@ -34,14 +37,14 @@ In the GitLab UI, each tag displays:
 
 ![Example of a single tag](img/tag-display_v15_9.png)
 
-- The tag name. (**{tag}**)
+- The tag name. ({{< icon name="tag" >}})
 - Optional. If the tag is [protected](../../protected_tags.md), a **protected** badge.
-- The commit SHA (**{commit}**), linked to the commit's contents.
+- The commit SHA ({{< icon name="commit" >}}), linked to the commit's contents.
 - The commit's title and creation date.
-- Optional. A link to the release (**{rocket}**).
+- Optional. A link to the release ({{< icon name="rocket" >}}).
 - Optional. If a pipeline has been run, the current pipeline status.
 - Download links to the source code and artifacts linked to the tag.
-- A [**Create release**](../../releases/_index.md#create-a-release) (**{pencil}**) link.
+- A [**Create release**](../../releases/_index.md#create-a-release) ({{< icon name="pencil" >}}) link.
 - A link to delete the tag.
 
 ## View tags for a project
@@ -53,11 +56,15 @@ To view all existing tags for a project:
 
 ## View tagged commits in the commits list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
+
+{{< /history >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Commits**.
-1. Commits with a tag are labeled with a tag icon (**{tag}**) and the name of the tag.
+1. Commits with a tag are labeled with a tag icon ({{< icon name="tag" >}}) and the name of the tag.
    This example shows a commit tagged `v1.26.0`:
 
    ![A tagged commit in the Commits view](img/tags_commits_view_v15_10.png)
@@ -116,9 +123,12 @@ GitLab enforces these additional rules on all tags:
 
 ## Prevent tag deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 

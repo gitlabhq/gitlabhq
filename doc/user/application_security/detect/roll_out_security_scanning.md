@@ -44,10 +44,13 @@ The behavior of each security scanner can be customized by using the
 [predefined CD/CD variables](../../../ci/variables/predefined_variables.md) and each scanner's own
 CI/CD variables. See each scanner's documentation for details of the CI/CD variables available.
 
-WARNING:
+{{< alert type="warning" >}}
+
 All customization of security scanning tools should be tested in a merge request before merging
 these changes to the default branch. Failure to do so can give unexpected results, including a large
 number of false positives.
+
+{{< /alert >}}
 
 ### Template editions
 
@@ -61,9 +64,12 @@ Most of the GitLab application security tools have two template editions:
   include breaking changes that are planned for the next major release. This template allows you to
   try new features and updates before they become part of the stable release.
 
-NOTE:
+{{< alert type="note" >}}
+
 Mixing different security template editions can cause both merge request and branch pipelines to
 run. You should use **either** the stable or latest edition templates in a project.
+
+{{< /alert >}}
 
 ### Override the default registry base address
 

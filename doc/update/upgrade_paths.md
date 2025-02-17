@@ -1,14 +1,17 @@
 ---
 stage: Systems
 group: Distribution
-description: Latest version instructions.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Latest version instructions.
 title: Upgrade paths
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).

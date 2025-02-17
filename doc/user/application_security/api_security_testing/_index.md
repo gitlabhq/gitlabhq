@@ -5,22 +5,32 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: API security testing analyzer
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6 to the default analyzer for on-demand API security testing scans.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) in GitLab 17.0 from "DAST API analyzer" to "API security testing analyzer".
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6 to the default analyzer for on-demand API security testing scans.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) in GitLab 17.0 from "DAST API analyzer" to "API security testing analyzer".
+
+{{< /history >}}
 
 Perform Dynamic Application Security Testing (DAST) of web APIs to help discover bugs and potential
 security issues that other QA processes may miss. Use API security testing in addition to
 other [GitLab Secure](../_index.md) security scanners and your own test processes. You can run DAST
 API tests either as part your CI/CD workflow, [on-demand](../dast/on-demand_scan.md), or both.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not run API security testing against a production server. Not only can it perform _any_ function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run API security testing against a test server.
+
+{{< /alert >}}
 
 API security testing can test the following web API types:
 
@@ -29,9 +39,12 @@ API security testing can test the following web API types:
 - GraphQL
 - Form bodies, JSON, or XML
 
-NOTE:
+{{< alert type="note" >}}
+
 DAST API has been re-branded to API Security Testing. As part of this re-branding the template
 name and variable prefixes have also been updated. The old template and variable names continue to work until the next major release, 18.0 in May 2025.
+
+{{< /alert >}}
 
 ## When API security testing scans run
 
@@ -74,8 +87,11 @@ When experiencing a behavior not working as expected, consider providing context
 - Full job console output.
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+
+{{< /alert >}}
 
 ## Glossary
 

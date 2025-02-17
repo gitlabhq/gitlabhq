@@ -1,6 +1,6 @@
 ---
-redirect_to: '../getting_started.md'
-remove_date: '2025-02-07'
+redirect_to: ../getting_started.md
+remove_date: "2025-02-07"
 ---
 
 <!-- markdownlint-disable -->

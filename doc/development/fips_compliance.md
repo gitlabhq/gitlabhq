@@ -1,6 +1,6 @@
 ---
-redirect_to: 'fips_gitlab.md'
-remove_date: '2025-04-29'
+redirect_to: fips_gitlab.md
+remove_date: "2025-04-29"
 ---
 
 <!-- markdownlint-disable -->

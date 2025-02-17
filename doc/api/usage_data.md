@@ -5,15 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Service Ping API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The Service Ping API is associated with [Service Ping](../development/internal_analytics/service_ping/_index.md).
 
 ## Export Service Ping data
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141446) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141446) in GitLab 16.9.
+
+{{< /history >}}
 
 Requires a personal access token with `read_service_ping` scope.
 
@@ -89,8 +96,12 @@ Example response:
 
 This action is behind the `usage_data_queries_api` feature flag and is available only for the GitLab instance [Administrator](../user/permissions.md) users.
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) in GitLab 13.11.
-> - [Deployed behind a feature flag](../user/feature_flags.md) named `usage_data_queries_api`, disabled by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57016) in GitLab 13.11.
+- [Deployed behind a feature flag](../user/feature_flags.md) named `usage_data_queries_api`, disabled by default.
+
+{{< /history >}}
 
 Return all of the raw SQL queries used to compute Service Ping.
 
@@ -153,8 +164,12 @@ Example response:
 
 This action is behind the `usage_data_non_sql_metrics` feature flag and is available only for the GitLab instance [Administrator](../user/permissions.md) users.
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050) in GitLab 13.11.
-> - [Deployed behind a feature flag](../user/feature_flags.md), named `usage_data_non_sql_metrics`, disabled by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57050) in GitLab 13.11.
+- [Deployed behind a feature flag](../user/feature_flags.md), named `usage_data_non_sql_metrics`, disabled by default.
+
+{{< /history >}}
 
 Return all non-SQL metrics data used in the Service ping.
 

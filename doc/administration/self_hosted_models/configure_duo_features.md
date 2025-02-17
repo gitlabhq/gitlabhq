@@ -1,6 +1,6 @@
 ---
-redirect_to: '../gitlab_duo_self_hosted/configure_duo_features.md'
-remove_date: '2025-05-05'
+redirect_to: ../gitlab_duo_self_hosted/configure_duo_features.md
+remove_date: "2025-05-05"
 ---
 
 <!-- markdownlint-disable -->

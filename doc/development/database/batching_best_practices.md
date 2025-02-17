@@ -234,8 +234,11 @@ def perform
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 To avoid parallel processing of records, you might need to wrap the execution with a distributed Redis lock.
+
+{{< /alert >}}
 
 Example Redis lock usage:
 
@@ -260,11 +263,16 @@ Sidekiq jobs can consume substantial database resources. If your job only batche
 
 ## Batching strategies
 
-NOTE:
+{{< alert type="note" >}}
+
 To keep the examples easy to follow, we omit the code for limiting the runtime.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 Some examples include an optional variable assignment to the `cursor` variable. This is optional step which can be used when implementing the "continue later" mechanism.
+{{< /alert >}}
 
 ### Loop-based batching
 

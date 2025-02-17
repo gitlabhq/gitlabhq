@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Review spam logs
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab tracks user activity and flags certain behavior for potential spam.
 
@@ -15,7 +18,11 @@ In the **Admin** area, a GitLab administrator can view and resolve spam logs.
 
 ## Manage spam logs
 
-> - **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131812) in GitLab 16.5.
+{{< history >}}
+
+- **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131812) in GitLab 16.5.
+
+{{< /history >}}
 
 View and resolve spam logs to moderate user activity in your instance.
 
@@ -23,7 +30,7 @@ To view spam logs:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Spam logs**.
-1. Optional. To resolve a spam log, select **More actions** (**{ellipsis_v}**), then **Remove user**, **Block user**, **Remove log**, or **Trust user**.
+1. Optional. To resolve a spam log, select **More actions** ({{< icon name="ellipsis_v" >}}), then **Remove user**, **Block user**, **Remove log**, or **Trust user**.
 
 ### Resolving spam logs
 

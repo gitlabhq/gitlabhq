@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "To ensure all changes are reviewed, configure optional or required approvals for merge requests in your project."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: To ensure all changes are reviewed, configure optional or required approvals for merge requests in your project.
 title: Merge request approvals
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To set up a review process for changes in your project, configure merge request approvals.
 They help to ensure that changes are reviewed before they're merged into your project.
@@ -27,9 +30,12 @@ You can configure approvals to be optional or required, depending on your projec
     [for the entire instance](../../../../administration/merge_requests_approvals.md).
   - Configure  [group merge request approval settings](../../../group/manage.md#group-merge-request-approval-settings).
 
-    NOTE:
+    {{< alert type="note" >}}
+
     Support for group merge request approval settings is tracked in
     [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
+
+    {{< /alert >}}
 
 ## Configure approval rules
 
@@ -54,9 +60,12 @@ For more information on configuring rules, see [Approval rules](rules.md).
 
 ### Required approvals
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Required approvals enforce code reviews by specified users. Without these approvals, merging is not possible.
 
@@ -71,7 +80,11 @@ Use cases include:
 
 ## View approval status
 
-> - More granular approver display [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178005) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `mr_approvers_filter_hidden_users`. Enabled by default.
+{{< history >}}
+
+- More granular approver display [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178005) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `mr_approvers_filter_hidden_users`. Enabled by default.
+
+{{< /history >}}
 
 You can see the approval status of a merge request in two places. On the [merge request itself](#for-a-single-merge-request)
 and in the [list of merge requests](#in-the-list-of-merge-requests) for your project or group.
@@ -95,7 +108,7 @@ The widget displays one of these statuses:
 - **Approve additionally**: The merge request has the required approvals.
 - **Revoke approval**: You have already approved the merge request.
 
-To check if your approval satisfies Code Owner requirements, select **Expand eligible approvers** (**{chevron-lg-down}**).
+To check if your approval satisfies Code Owner requirements, select **Expand eligible approvers** ({{< icon name="chevron-lg-down" >}}).
 
 If you have enabled the `mr_approvers_filter_hidden_users` feature flag, introduced in GitLab 17.9,
 approver visibility depends on your project membership, and group privacy:
@@ -112,9 +125,9 @@ shows the approval status for each merge request:
 
 | Example | Description |
 | :-----: | :---------- |
-| ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png) | Required approvals are missing. (**{approval}**) |
-| ![Approvals are satisfied](img/approvals_satisfied_v17_1.png) | Approvals are satisfied. (**{check}**) |
-| ![Approvals are satisfied, and you approved](img/you_approvals_satisfied_v17_1.png) | Approvals are satisfied, and you are one of the approvers. (**{approval-solid}**) |
+| ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png) | Required approvals are missing. ({{< icon name="approval" >}}) |
+| ![Approvals are satisfied](img/approvals_satisfied_v17_1.png) | Approvals are satisfied. ({{< icon name="check" >}}) |
+| ![Approvals are satisfied, and you approved](img/you_approvals_satisfied_v17_1.png) | Approvals are satisfied, and you are one of the approvers. ({{< icon name="approval-solid" >}}) |
 
 ### Individual reviewer status
 
@@ -125,15 +138,15 @@ To see the review and approval status for each reviewer:
 
 Each reviewer's status is shown next to the their name.
 
-- **{dash-circle}** Awaiting review
-- **{status_running}** Review in progress
-- **{check-circle}** Approved
-- **{comment-lines}** Reviewer commented
-- **{status_warning}** Reviewer requested changes
+- {{< icon name="dash-circle" >}} Awaiting review
+- {{< icon name="status_running" >}} Review in progress
+- {{< icon name="check-circle" >}} Approved
+- {{< icon name="comment-lines" >}} Reviewer commented
+- {{< icon name="status_warning" >}} Reviewer requested changes
 
    ![This reviewer has requested changes, and blocked this merge request.](img/reviewer_blocks_mr_v17_3.png)
 
-To [re-request a review](../reviews/_index.md#re-request-a-review), select the **Re-request a review** icon (**{redo}**) next to the user.
+To [re-request a review](../reviews/_index.md#re-request-a-review), select the **Re-request a review** icon ({{< icon name="redo" >}}) next to the user.
 
 ## Approve a merge request
 
@@ -142,7 +155,7 @@ Eligible approvers can approve merge requests in two ways:
 1. Select **Approve** in the merge request widget.
 1. Use the `/approve` [quick action](../../quick_actions.md) in a comment.
 
-Approved merge requests display a green check mark (**{check-circle-filled}**) next to the user's name in the reviewer list.
+Approved merge requests display a green check mark ({{< icon name="check-circle-filled" >}}) next to the user's name in the reviewer list.
 After a merge request receives the required approvals, it is ready to merge, unless it's blocked due to:
 
 - [Merge conflicts](../conflicts.md)
@@ -160,9 +173,13 @@ don't affect existing merge requests, except for [target branch](rules.md#approv
 
 ## Invalid rules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389905) in GitLab 15.11 [with a flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.2. Feature flag `invalid_scan_result_policy_prevents_merge` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334698) in GitLab 15.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389905) in GitLab 15.11 [with a flag](../../../../administration/feature_flags.md) named `invalid_scan_result_policy_prevents_merge`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/405023) in GitLab 16.2. Feature flag `invalid_scan_result_policy_prevents_merge` removed.
+
+{{< /history >}}
 
 GitLab marks approval rules as **Auto approved** when they're impossible to satisfy, such as when:
 

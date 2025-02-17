@@ -5,10 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Analyze dependency for behaviors
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
 
 Libbehave is an experimental feature that scans your dependencies during merge request pipelines to
 identify newly added libraries and their potentially risky behaviors. While traditional dependency

@@ -1,19 +1,25 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project CI/CD job token scope API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 All requests to the CI/CD job token scope API endpoint must be [authenticated](rest/authentication.md).
 The authenticated user must have at least the Maintainer role for the project.
+
+{{< /alert >}}
 
 ## Get a project's CI/CD job token access settings
 
@@ -53,7 +59,11 @@ Example response:
 
 ## Patch a project's CI/CD job token access settings
 
-> - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+{{< history >}}
+
+- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+
+{{< /history >}}
 
 Patch the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) (job token scope) of a project.
 

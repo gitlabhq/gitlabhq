@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Items migrated when using direct transfer
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Many items are migrated when using the direct transfer method, and some are excluded.
 
@@ -76,12 +79,19 @@ Some group items are excluded from migration because they:
 
 ## Migrated project items
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
-> - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
-> - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
+- `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
+- Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+
+{{< /history >}}
 
 If you choose to migrate projects when you [select groups to migrate](direct_transfer_migrations.md#select-the-groups-and-projects-to-import),
 project items are migrated with the projects.
@@ -221,8 +231,11 @@ Some project items are excluded from migration because they:
   - Agents
   - Merge request approval rules
 
-    NOTE:
+    {{< alert type="note" >}}
+
     Approval rules related to project settings are imported.
+
+    {{< /alert >}}
 
   - Container registry
   - Environments

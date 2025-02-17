@@ -7,12 +7,19 @@ title: Advanced search migration style guide
 
 ## Create a new advanced search migration
 
-NOTE:
+{{< alert type="note" >}}
+
 This functionality is only supported for indices created in GitLab 13.0 and later.
+
+{{< /alert >}}
 
 ### With a script
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+
+{{< /history >}}
 
 Execute `scripts/elastic-migration` and follow the prompts to create:
 
@@ -22,7 +29,11 @@ Execute `scripts/elastic-migration` and follow the prompts to create:
 
 ### Manually
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
+
+{{< /history >}}
 
 In the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder, create a new file with the filename format `YYYYMMDDHHMMSS_migration_name.rb`. This format is the same for Rails database migrations.
 
@@ -237,8 +248,11 @@ Requires:
 - The `target_class` and `document_type` methods
 - Mappings and index settings for the class
 
-WARNING:
+{{< alert type="warning" >}}
+
 You must perform a follow-up migration to populate the index in the same milestone.
+
+{{< /alert >}}
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -263,8 +277,11 @@ Reindexes all documents in the index that stores the specified document type and
 Requires the `DOCUMENT_TYPE` and `NEW_SCHEMA_VERSION` constants.
 The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
 
-NOTE:
+{{< alert type="note" >}}
+
 Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
+
+{{< /alert >}}
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -287,8 +304,11 @@ Deletes all documents in the index that stores the specified document type and h
 Requires the `DOCUMENT_TYPE` constant and `schema_version` method.
 The index mapping must have a `schema_version` integer field in a `YYWW` (year/week) format.
 
-NOTE:
+{{< alert type="note" >}}
+
 Previously index mapping `schema_version` used `YYMM` format. New versions should use the `YYWW` format.
+
+{{< /alert >}}
 
 ```ruby
 class MigrationName < Elastic::Migration

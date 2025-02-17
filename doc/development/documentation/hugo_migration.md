@@ -272,8 +272,11 @@ The [Docs project maintenance tasks rotation](https://handbook.gitlab.com/handbo
 
 For February 2025, run the checks for broken external links and `start_remove` content before Wednesday, February 12. Other tasks are fine to skip for now. From March onwards, the monthly maintenance task will be on hold until further notice.
 
-NOTE:
+{{< alert type="note" >}}
+
 This does not impact the release post [structural check](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#structural-check) or [monthly documentation release](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/releases.md) tasks. The assigned Technical Writer should continue to do these tasks as previously scheduled.
+
+{{< /alert >}}
 
 **Why:** Some Ruby scripts need to be rewritten in Go, and the maintenance tasks are
 low-priority enough that we can launch without them. There may be more opportunity

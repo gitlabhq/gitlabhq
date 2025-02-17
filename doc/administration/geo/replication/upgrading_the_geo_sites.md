@@ -5,17 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Upgrading the Geo sites
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-WARNING:
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 Read these sections carefully before updating your Geo sites. Not following
 version-specific upgrade steps may result in unexpected downtime. If you have
 any specific questions, [contact Support](https://about.gitlab.com/support/#contact-support).
 A database major version upgrade requires [re-initializing the PostgreSQL replication](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance)
 to Geo secondaries. This applies to both Linux-packaged and externally-managed databases.
 This may result in a larger than expected downtime.
+
+{{< /alert >}}
 
 Upgrading Geo sites involves performing:
 
@@ -27,9 +33,12 @@ Upgrading Geo sites involves performing:
 
 ## General upgrade steps
 
-NOTE:
+{{< alert type="note" >}}
+
 These general upgrade steps require downtime in a multi-node setup.
 If you want to avoid downtime, consider using [zero-downtime upgrades](../../../update/zero_downtime.md#multi-node--ha-deployment-with-geo).
+
+{{< /alert >}}
 
 To upgrade the Geo sites when a new GitLab version is released, upgrade **primary**
 and all **secondary** sites:

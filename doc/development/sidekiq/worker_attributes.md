@@ -386,9 +386,12 @@ class PausedWorker
 end
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 In case you want to remove the middleware for a worker, please set the strategy to `:deprecated` to disable it and wait until
 a required stop before removing it completely. That ensures that all paused jobs are resumed correctly.
+
+{{< /alert >}}
 
 ## Concurrency limit
 
@@ -410,9 +413,12 @@ Prometheus metrics are exposed to monitor workers using concurrency limit middle
 - `sidekiq_concurrency_limit_max_concurrent_jobs`
 - `sidekiq_concurrency_limit_current_concurrent_jobs_total`
 
-WARNING:
+{{< alert type="warning" >}}
+
 If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or
 the workload drops under the limit.
+
+{{< /alert >}}
 
 You should use a lambda to define the limit. If it returns `nil` or `0`, the limit won't be applied.
 Negative numbers pause the execution.

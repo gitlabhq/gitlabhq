@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Create HAR Files
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 HTTP Archive (HAR) format files are an industry standard for exchanging information about HTTP
 requests and HTTP responses. A HAR file's content is JSON formatted, containing browser interactions
@@ -16,10 +19,13 @@ with a web site. The file extension `.har` is commonly used.
 The HAR files can be used to perform [web API Fuzz Testing](configuration/enabling_the_analyzer.md#http-archive-har) as part of
 your [GitLab CI/CD](../../../ci/_index.md) pipelines.
 
-WARNING:
+{{< alert type="warning" >}}
+
 A HAR file stores information exchanged between web client and web server. It could also
 store sensitive information such as authentication tokens, API keys, and session cookies. We
 recommend that you review the HAR file contents before adding them to a repository.
+
+{{< /alert >}}
 
 ## HAR file creation
 
@@ -37,10 +43,13 @@ automatically record your network activity and generate the HAR file:
 1. [Chrome web browser](#chrome-web-browser).
 1. [Firefox web browser](#firefox-web-browser).
 
-WARNING:
+{{< alert type="warning" >}}
+
 HAR files may contain sensitive information such as authentication tokens, API keys, and
 session cookies. We recommend that you review the HAR file contents before adding them to a
 repository.
+
+{{< /alert >}}
 
 ### GitLab HAR Recorder
 

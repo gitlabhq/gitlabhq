@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
+
+{{< /history >}}
 
 With the GitLab package registry, you can use GitLab as a private or public registry for a variety
 of [supported package managers](supported_package_managers.md).
@@ -64,9 +71,12 @@ For most package types, the following credential types are valid:
 - If your organization uses two factor authentication (2FA), you must use a personal access token with the scope set to `api`.
 - If you are publishing a package by using CI/CD pipelines, you must use a CI job token.
 
-NOTE:
+{{< alert type="note" >}}
+
 If the "Package registry" feature is turned off for your project at **Settings > General > Visibility, project features, permissions**, you will receive a 403 Forbidden response.
 Accessing the package registry with a deploy token is not available when external authorization is enabled.
+
+{{< /alert >}}
 
 ## Use GitLab CI/CD
 
@@ -148,10 +158,14 @@ Registry disables all package registry operations.
 
 ### Allow anyone to pull from package registry
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385994) in GitLab 15.7.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468058) in GitLab 17.4 to support NuGet group endpoints.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468059) in GitLab 17.5 to support Maven group endpoint.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468062) in GitLab 17.5 to support Terraform module namespace endpoints.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385994) in GitLab 15.7.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468058) in GitLab 17.4 to support NuGet group endpoints.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468059) in GitLab 17.5 to support Maven group endpoint.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/468062) in GitLab 17.5 to support Terraform module namespace endpoints.
+
+{{< /history >}}
 
 To allow anyone to pull from the package registry, regardless of project visibility:
 

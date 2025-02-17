@@ -1,14 +1,17 @@
 ---
 stage: Systems
 group: Distribution
-description: Recommended deployments at scale.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Recommended deployments at scale.
 title: Reference architectures
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The GitLab reference architectures provide recommended scalable and elastic environment sizes.
 
@@ -18,8 +21,11 @@ The following reference architectures are available as recommended starting poin
 
 The architectures are named in terms of peak load, based on user count or requests per second (RPS). RPS is calculated based on average real data.
 
-NOTE:
+{{< alert type="note" >}}
+
 Each architecture is designed to be [scalable and elastic](#scaling-an-environment). They can be adjusted accordingly based on your workload, upwards or downwards. For example, some known heavy scenarios such as using [large monorepos](#large-monorepos) or notable [additional workloads](#additional-workloads).
+
+{{< /alert >}}
 
 For details about what each reference architecture is tested against, see the **Testing Methodology** section of each page.
 
@@ -166,8 +172,11 @@ To determine which architecture to pick for the expected load, see the following
   </tr>
 </table>
 
-NOTE:
+{{< alert type="note" >}}
+
 Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos, as they may impact the choice beyond just RPS or user count.
+
+{{< /alert >}}
 
 #### If in doubt, start large, monitor, and then scale down
 
@@ -313,8 +322,11 @@ If you want, you can select a newer machine type series and have improved perfor
 
 Additionally, ARM CPUs are supported for Linux package environments and for any [cloud provider services](#cloud-provider-services).
 
-NOTE:
+{{< alert type="note" >}}
+
 Any "burstable" instance types are not recommended due to inconsistent performance.
+
+{{< /alert >}}
 
 ### Supported disk types
 
@@ -346,8 +358,11 @@ Their presence and how they are used can put a significant strain on the entire 
 
 The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If this applies to you, we strongly recommend you follow the linked documentation and reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+{{< /alert >}}
 
 Large monorepos come with notable cost. If you have such a repository,
 follow these guidance to ensure good performance and to keep costs in check:
@@ -421,12 +436,15 @@ can be set up using the Linux package as the specifications reflect. For more de
 
 ## Recommended cloud providers and services
 
-NOTE:
+{{< alert type="note" >}}
+
 The following lists are non-exhaustive. Other cloud providers not listed
 here may work with the same specifications, but they have not been validated.
 For the cloud provider services not listed here,
 use caution, as each implementation can be notably different.
 Test thoroughly before using them in production.
+
+{{< /alert >}}
 
 The following architectures are recommended for the following cloud providers based on testing and real life usage:
 
@@ -638,8 +656,11 @@ The above RPS targets were selected based on real customer data of total environ
 
 ### How to interpret the results
 
-NOTE:
+{{< alert type="note" >}}
+
 Read our blog post on [how our QA team leverages GitLab performance testing tool](https://about.gitlab.com/blog/2020/02/18/how-were-building-up-performance-testing-of-gitlab/).
+
+{{< /alert >}}
 
 Testing is done publicly, and all results are shared.
 
@@ -799,8 +820,11 @@ In this section you can find links to documentation for relevant areas and speci
 
 The reference architectures are designed as a starting point, and are elastic and scalable throughout. You might want to adjust the environment for your specific needs after deployment for reasons such as additional performance capacity or reduced costs. This behavior is expected. Scaling can be done iteratively or wholesale to the next architecture size, if metrics suggest that a component is exhausted.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a component is continuously exhausting its given resources, reach out to our [Support team](https://about.gitlab.com/support/) before performing any significant scaling.
+
+{{< /alert >}}
 
 For most components, vertical and horizontal scaling can be applied as usual. However, before doing so, be aware of the following caveats:
 
@@ -816,8 +840,11 @@ You should take an iterative approach when scaling downwards, to ensure there ar
 
 In some cases, scaling a component significantly may result in knock on effects for downstream components, impacting performance. The architectures are designed with balance in mind to ensure components that depend on each other are congruent in terms of specifications. Notably scaling a component may result in additional throughput being passed to the other components it depends on. As a result, they may need to be scaled as well.
 
-NOTE:
+{{< alert type="note" >}}
+
 The architectures have been designed to have elasticity to accommodate an upstream component being scaled. However, reach out to our [Support team](https://about.gitlab.com/support/) before you make any significant changes to your environment to be safe.
+
+{{< /alert >}}
 
 The following components can impact others when they have been significantly scaled:
 
@@ -843,15 +870,21 @@ Upgrading a reference architecture environment is same as any other GitLab envir
 The main [Upgrade GitLab](../../update/_index.md) section has detailed steps on how to approach this.
 [Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
 
-NOTE:
+{{< alert type="note" >}}
+
 You should upgrade a reference architecture in the same order as you created it.
+
+{{< /alert >}}
 
 ### Monitoring
 
 You can monitor your infrastructure and [GitLab](../monitoring/_index.md) using various options. See the selected monitoring solution's documentation for more information.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab application is bundled with [Prometheus and various Prometheus compatible exporters](../monitoring/prometheus/_index.md) that could be hooked into your solution.
+
+{{< /alert >}}
 
 ## Update history
 

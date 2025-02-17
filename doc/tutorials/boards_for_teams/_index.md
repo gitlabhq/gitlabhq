@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Set up issue boards for team hand-off'
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -65,7 +68,7 @@ You add your users as members in the group, and assign them a role.
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. Complete the fields. Name your group `Paperclip Software Factory`.
 1. Select **Create group**.
@@ -80,7 +83,7 @@ upcoming code changes.
 
 To create a blank project:
 
-1. In your group, on the left sidebar, at the top, select **Create new** (**{plus}**) and then select
+1. In your group, on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and then select
    **In this group > New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
@@ -169,7 +172,7 @@ To create an issue from your board:
 
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **UX workflow**.
-1. On the `Workflow::Ready for development` list, select **Create new issue** (**{plus}**).
+1. On the `Workflow::Ready for development` list, select **Create new issue** ({{< icon name="plus" >}}).
 1. Complete the fields:
    1. Under **Title**, enter `Redesign user profile page`.
    1. Under **Projects**, select **Paperclip Software Factory / Paperclip Assistant**.

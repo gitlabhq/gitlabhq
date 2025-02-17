@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use approval rules to define the users or groups who should approve merge requests. Approvers can be optional or required."
+description: Use approval rules to define the users or groups who should approve merge requests. Approvers can be optional or required.
 title: Merge request approval rules
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Approval rules define how many [approvals](_index.md) a merge request must receive before it can
 be merged, and which users should do the approving. They can be used in conjunction
@@ -36,7 +39,11 @@ Merge request approvals can be configured globally to apply across all (or a sub
 
 ## Add an approval rule
 
-> - Approval rules for all protected branches introduced in GitLab 15.3.
+{{< history >}}
+
+- Approval rules for all protected branches introduced in GitLab 15.3.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -90,7 +97,7 @@ To edit a merge request approval rule:
      creates a required rule.
      Maximum number of required approvals is `100`.
    - To remove users or groups, identify the group or user to remove, and select **Remove**
-     (**{remove}**).
+     ({{< icon name="remove" >}}).
 1. Select **Save changes**.
 
 ## Delete an approval rule
@@ -103,7 +110,7 @@ To delete a merge request approval rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
-1. In the **Merge request approvals** section, next to the rule you want to delete, select the trash can (**{remove}**).
+1. In the **Merge request approvals** section, next to the rule you want to delete, select the trash can ({{< icon name="remove" >}}).
 1. Select **Remove approvers**.
 
 ## Multiple approval rules
@@ -267,7 +274,11 @@ To make an approval rule optional, you can also [use the API](../../../../api/me
 
 ## Approvals for protected branches
 
-> - **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
+{{< history >}}
+
+- **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
+
+{{< /history >}}
 
 Approval rules are often relevant only to specific branches, like your
 [default branch](../../repository/branches/default.md). To configure an
@@ -284,13 +295,20 @@ approval rule for certain branches:
 
 ## Security Approvals
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Security approvals moved to merge request approvals settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
-> - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.
-> - Bot comment for approvals [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130827) in GitLab 16.3. Feature flag `security_policy_approval_notification` removed.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Security approvals moved to merge request approvals settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
+- Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.
+- Bot comment for approvals [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130827) in GitLab 16.3. Feature flag `security_policy_approval_notification` removed.
+
+{{< /history >}}
 
 You can use [merge request approval policies](../../../application_security/policies/merge_request_approval_policies.md#merge-request-approval-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
 Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.

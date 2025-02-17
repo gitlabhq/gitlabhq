@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure rate limits for Git LFS on GitLab Self-Managed."
+description: Configure rate limits for Git LFS on GitLab Self-Managed.
 title: Rate limits on Git LFS
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 [Git LFS (Large File Storage)](../../topics/git/lfs/_index.md) is a Git extension
 for handling large files. If you use Git LFS in your repository, common Git operations

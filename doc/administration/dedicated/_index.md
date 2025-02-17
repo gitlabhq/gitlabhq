@@ -1,14 +1,17 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-description: Get started with GitLab Dedicated.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Get started with GitLab Dedicated.
 title: Administer GitLab Dedicated
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 Use GitLab Dedicated to run GitLab on a fully-managed, single-tenant instance hosted on AWS. You maintain control over your instance configuration through Switchboard, the GitLab Dedicated management portal, while GitLab manages the underlying infrastructure.
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Trigger pipelines by using the API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To trigger a pipeline for a specific branch or tag, you can use an API call
 to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
@@ -43,13 +46,16 @@ To create a trigger token:
    - You can view and copy the full token for all triggers you have created.
    - You can only see the first 4 characters for tokens created by other project members.
 
-WARNING:
+{{< alert type="warning" >}}
+
 It is a security risk to save tokens in plain text in public projects, or store them
 in a way that malicious users could access them. A leaked trigger token could be
 used to force an unscheduled deployment, attempt to access CI/CD variables,
 or other malicious uses. [Masked CI/CD variables](../variables/_index.md#mask-a-cicd-variable)
 help improve the security of trigger tokens. For more information about keeping tokens secure,
 see the [security considerations](../../security/tokens/_index.md#security-considerations).
+
+{{< /alert >}}
 
 ## Trigger a pipeline
 
@@ -165,7 +171,7 @@ To revoke a pipeline trigger token:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Pipeline triggers**.
-1. To the left of the trigger token you want to revoke, select **Revoke** (**{remove}**).
+1. To the left of the trigger token you want to revoke, select **Revoke** ({{< icon name="remove" >}}).
 
 A revoked trigger token cannot be added back.
 

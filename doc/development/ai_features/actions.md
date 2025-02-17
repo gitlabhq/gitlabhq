@@ -197,8 +197,11 @@ What needs to be included in the code:
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/global_policy.rb#L222-222) of policy not connected to the particular resource.
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb#L25-25) of policy connected to the particular resource.
 
-NOTE:
+{{< alert type="note" >}}
+
 For more information, see [the GitLab AI gateway documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI gateway.
+
+{{< /alert >}}
 
 If your Duo feature involves an autonomous agent, you should use
 [composite identity](composite_identity.md) authorization.

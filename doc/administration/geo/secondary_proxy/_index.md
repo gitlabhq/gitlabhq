@@ -5,18 +5,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Geo proxying for secondary sites
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - HTTP proxying for secondary sites with separate URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 14.5 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`. Disabled by default.
-> - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- HTTP proxying for secondary sites with separate URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 14.5 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 The `geo_secondary_proxy_separate_urls` feature flag is planned to be deprecated and removed in a future release.
 Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810).
+
+{{< /alert >}}
 
 Secondary sites behave as full read-write GitLab instances. They transparently proxy all operations to the primary site, with [some notable exceptions](#features-accelerated-by-secondary-geo-sites).
 
@@ -157,8 +167,11 @@ In Kubernetes, you can [use the same domain under `global.hosts.domain` as for t
 
 You can use different external URLs per site. You can use this to offer a specific site to a specific set of users. Alternatively, you can give users control over which site they use, though they must understand the implications of their choice.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab does not support multiple external URLs, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/issues/21319). An inherent problem is there are many cases where a site needs to produce an absolute URL outside of the context of an HTTP request, such as when sending emails that were not triggered by a request.
+
+{{< /alert >}}
 
 ### Configure a secondary Geo site to a different external URL than the primary site
 
@@ -209,20 +222,20 @@ In this context, accelerated reads refer to read requests served from the second
 
 | Feature / component                                 | Accelerated reads?     | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | :-------------------------------------------------- | :--------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Project, wiki, design repository (using the web UI) | **{dotted-circle}** No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Project, wiki repository (using Git)                | **{check-circle}** Yes | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.                                                                                                                                                                                                                                                                      |
-| Project, Personal Snippet (using the web UI)        | **{dotted-circle}** No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Project, Personal Snippet (using Git)               | **{check-circle}** Yes | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.                                                                                                                                                                                                                                                                      |
-| Group wiki repository (using the web UI)            | **{dotted-circle}** No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Group wiki repository (using Git)                   | **{check-circle}** Yes | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.                                                                                                                                                                                                                                                                      |
-| User uploads                                        | **{dotted-circle}** No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| LFS objects (using the web UI)                      | **{dotted-circle}** No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| LFS objects (using Git)                             | **{check-circle}** Yes |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Pages                                               | **{dotted-circle}** No | Pages can use the same URL (without access control), but must be configured separately and are not proxied.                                                                                                                                                                                                                                                                                                                                                                |
-| Advanced search (using the web UI)                  | **{dotted-circle}** No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Container registry                                  | **{dotted-circle}** No | The container registry is only recommended for Disaster Recovery scenarios. If the secondary site's container registry is not up to date, the read request is served with old data as the request is not forwarded to the primary site. Accelerating the container registry is planned, please upvote or comment in the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) to indicate your interest or ask your GitLab representative to do so on your behalf. |
-| Dependency Proxy                                    | **{dotted-circle}** No | Read requests to a Geo secondary site's Dependency Proxy are always proxied to the primary site.                                                                                                                                                                                                                                                                                                                                                                           |
-| All other data                                    | **{dotted-circle}** No | Read requests for components not listed in this table are always automatically forwarded to the primary site.                                                                                                                                                                                                                                                                                                                                                                           |
+| Project, wiki, design repository (using the web UI) | {{< icon name="dotted-circle" >}} No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Project, wiki repository (using Git)                | {{< icon name="check-circle" >}} Yes | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.                                                                                                                                                                                                                                                                      |
+| Project, Personal Snippet (using the web UI)        | {{< icon name="dotted-circle" >}} No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Project, Personal Snippet (using Git)               | {{< icon name="check-circle" >}} Yes | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.                                                                                                                                                                                                                                                                      |
+| Group wiki repository (using the web UI)            | {{< icon name="dotted-circle" >}} No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Group wiki repository (using Git)                   | {{< icon name="check-circle" >}} Yes | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.                                                                                                                                                                                                                                                                      |
+| User uploads                                        | {{< icon name="dotted-circle" >}} No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| LFS objects (using the web UI)                      | {{< icon name="dotted-circle" >}} No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| LFS objects (using Git)                             | {{< icon name="check-circle" >}} Yes |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Pages                                               | {{< icon name="dotted-circle" >}} No | Pages can use the same URL (without access control), but must be configured separately and are not proxied.                                                                                                                                                                                                                                                                                                                                                                |
+| Advanced search (using the web UI)                  | {{< icon name="dotted-circle" >}} No |                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Container registry                                  | {{< icon name="dotted-circle" >}} No | The container registry is only recommended for Disaster Recovery scenarios. If the secondary site's container registry is not up to date, the read request is served with old data as the request is not forwarded to the primary site. Accelerating the container registry is planned, please upvote or comment in the [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/365864) to indicate your interest or ask your GitLab representative to do so on your behalf. |
+| Dependency Proxy                                    | {{< icon name="dotted-circle" >}} No | Read requests to a Geo secondary site's Dependency Proxy are always proxied to the primary site.                                                                                                                                                                                                                                                                                                                                                                           |
+| All other data                                    | {{< icon name="dotted-circle" >}} No | Read requests for components not listed in this table are always automatically forwarded to the primary site.                                                                                                                                                                                                                                                                                                                                                                           |
 
 To request acceleration of a feature, check if an issue already exists in [epic 8239](https://gitlab.com/groups/gitlab-org/-/epics/8239) and upvote or comment on it to indicate your interest or ask your GitLab representative to do so on your behalf. If an applicable issue doesn't exist, open one and mention it in the epic.
 
@@ -232,9 +245,9 @@ Secondary site HTTP proxying is enabled by default on a secondary site when it u
 
 HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even without a unified URL. If proxying needs to be disabled on all secondary sites, it is easiest to disable the feature flag:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. SSH into a node which is running Puma or Sidekiq on your primary Geo site and run:
 
@@ -248,7 +261,9 @@ HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even with
    sudo gitlab-ctl restart puma
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. On your primary Geo site, run this command in the Toolbox pod:
 
@@ -262,13 +277,15 @@ HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even with
    kubectl rollout restart deployment -l app=webservice
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To revert the changes so secondary site proxying is enabled again:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. SSH into a node which is running Puma or Sidekiq on your primary Geo site and run:
 
@@ -282,7 +299,9 @@ To revert the changes so secondary site proxying is enabled again:
    sudo gitlab-ctl restart puma
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. On your primary Geo site, run this command in the Toolbox pod:
 
@@ -296,15 +315,17 @@ To revert the changes so secondary site proxying is enabled again:
    kubectl rollout restart deployment -l app=webservice
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Disable secondary site HTTP proxying per site
 
 If there are multiple secondary sites, you can disable HTTP proxying on each secondary site separately, by following these steps:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. SSH into each application node (serving user traffic directly) on your secondary Geo site
    and add the following environment variable:
@@ -325,7 +346,9 @@ If there are multiple secondary sites, you can disable HTTP proxying on each sec
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 You can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
 or specify the following in your values file:
@@ -337,7 +360,9 @@ gitlab:
       GEO_SECONDARY_PROXY: "0"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Disable secondary site Git proxying
 

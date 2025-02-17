@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Pages SSL/TLS certificates
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 Every GitLab Pages project on GitLab.com is available under
 HTTPS for the default Pages domain (`*.gitlab.io`). Once you set
@@ -15,10 +18,13 @@ up your Pages project with your custom (sub)domain, if you want
 it secured by HTTPS, you must issue a certificate for that
 (sub)domain and install it on your project.
 
-NOTE:
+{{< alert type="note" >}}
+
 Certificates are **not** required to add to your custom
 (sub)domain on your GitLab Pages project, though they are
 highly recommendable.
+
+{{< /alert >}}
 
 Let's start with an introduction to the importance of HTTPS.
 

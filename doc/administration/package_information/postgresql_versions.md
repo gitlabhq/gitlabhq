@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: PostgreSQL versions shipped with the Linux package
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This table lists only GitLab versions where a significant change happened in the
 package regarding PostgreSQL versions, not all.
+
+{{< /alert >}}
 
 Usually, PostgreSQL versions change with major or minor GitLab releases. However, patch versions
 of the Linux package sometimes update the patch level of PostgreSQL. We've established a

@@ -5,12 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Mock CI
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This integration is only available in a development environment.
+
+{{< /alert >}}
 
 To set up the mock CI service server, respond to the following endpoints:
 

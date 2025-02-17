@@ -117,11 +117,14 @@ Usually, GitLab CE/EE tests use a local clone of Gitaly in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
 branches and SHA to use a custom commit in [the repository](https://gitlab.com/gitlab-org/gitaly).
 
-NOTE:
+{{< alert type="note" >}}
+
 With the introduction of auto-deploy for Gitaly, the format of
 `GITALY_SERVER_VERSION` was aligned with Omnibus syntax.
 It no longer supports `=revision`, it evaluates the file content as a Git
 reference (branch or SHA). Only if it matches a semantic version does it prepend a `v`.
+
+{{< /alert >}}
 
 If you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
@@ -276,9 +279,12 @@ Pay attention to the name of the flag and the one used in the Rails console. The
 between them (dashes replaced by underscores and name prefix is changed). Make sure to prefix all
 flags with `gitaly_`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If not set in GitLab, feature flags are read as false from the console and Gitaly uses their
 default value. The default value depends on the GitLab version.
+
+{{< /alert >}}
 
 ### Testing with GDK
 

@@ -2,7 +2,7 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure the GitLab agent for workspaces."
+description: Configure the GitLab agent for workspaces.
 title: Workspace settings
 ---
 
@@ -33,9 +33,12 @@ your Kubernetes cluster. These settings control:
 | [`max_active_hours_before_stop`](#max_active_hours_before_stop) | No | `36` | Maximum number of hours a workspace can be active before it is stopped. |
 | [`max_stopped_hours_before_termination`](#max_stopped_hours_before_termination) | No | `744` | Maximum number of hours a workspace can be stopped before it is terminated. |
 
-NOTE:
+{{< alert type="note" >}}
+
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
 Updating any of these settings, except `enabled`, does not affect existing workspaces.
+
+{{< /alert >}}
 
 ## `enabled`
 
@@ -116,7 +119,11 @@ The default value for `network_policy.enabled` is `true`.
 
 ### `network_policy.egress`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11629) in GitLab 16.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11629) in GitLab 16.7.
+
+{{< /history >}}
 
 Use this setting to define a list of IP CIDR ranges to allow as egress destinations from a workspace.
 
@@ -150,7 +157,11 @@ In this example, traffic from the workspace is allowed if:
 
 ## `default_resources_per_workspace_container`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+
+{{< /history >}}
 
 Use this setting to define the default [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
 for CPU and memory per workspace container.
@@ -174,7 +185,11 @@ remote_development:
 
 ## `max_resources_per_workspace`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+
+{{< /history >}}
 
 Use this setting to define the maximum [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
 for CPU and memory per workspace.
@@ -205,7 +220,11 @@ to perform bootstrapping operations such as cloning the project repository.
 
 ## `workspaces_quota`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+
+{{< /history >}}
 
 Use this setting to set the maximum number of workspaces for the GitLab agent.
 
@@ -229,7 +248,11 @@ remote_development:
 
 ## `workspaces_per_user_quota`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+
+{{< /history >}}
 
 Use this setting to set the maximum number of workspaces per user.
 
@@ -253,7 +276,11 @@ remote_development:
 
 ## `use_kubernetes_user_namespaces`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+{{< /history >}}
 
 Use this setting to specify whether to use the user namespaces feature in Kubernetes.
 
@@ -274,7 +301,11 @@ For more information about `use_kubernetes_user_namespaces`, see
 
 ## `default_runtime_class`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+{{< /history >}}
 
 Use this setting to select the container runtime configuration used to run the containers in the workspace.
 
@@ -299,7 +330,11 @@ For more information about `default_runtime_class`, see
 
 ## `allow_privilege_escalation`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+{{< /history >}}
 
 Use this setting to control whether a process can gain more privileges than its parent process.
 
@@ -324,7 +359,11 @@ For more information about `allow_privilege_escalation`, see
 
 ## `image_pull_secrets`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14664) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14664) in GitLab 17.6.
+
+{{< /history >}}
 
 Use this setting to specify existing Kubernetes secrets of the type `kubernetes.io/dockercfg`
 or `kubernetes.io/dockerconfigjson` required by workspaces to pull private images.
@@ -352,7 +391,11 @@ in all the namespaces of the workspaces where the secret is referenced.
 
 ## `annotations`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+{{< /history >}}
 
 Use this setting to attach arbitrary non-identifying metadata to the Kubernetes objects.
 
@@ -381,7 +424,11 @@ For more information about `annotations`, see
 
 ## `labels`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+{{< /history >}}
 
 Use this setting to attach arbitrary identifying metadata to the Kubernetes objects.
 
@@ -414,7 +461,11 @@ For more information about `labels`, see
 
 ## `max_active_hours_before_stop`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+
+{{< /history >}}
 
 Use this setting to automatically stop the agent's workspaces after the specified number of hours
 have passed, because the workspace last transitioned to an active state.
@@ -446,7 +497,11 @@ This means that the workspace might be active for up to one hour longer than the
 
 ## `max_stopped_hours_before_termination`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+
+{{< /history >}}
 
 Use this setting to automatically terminate the agent's workspaces after they have been in the stopped
 state for the specified number of hours.

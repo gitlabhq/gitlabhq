@@ -91,7 +91,7 @@ the "Open" list into iteration lists to schedule them for upcoming iterations.
 To visualize the workflow for issues in the current iteration, create another issue board called
 "Current Iteration." When you're creating the board:
 
-1. Select **Configure board** (**{settings}**).
+1. Select **Configure board** ({{< icon name="settings" >}}).
 1. Next to **Iteration**, select **Edit**.
 1. From the dropdown list, select **Current iteration**.
 1. Select **Save changes**.

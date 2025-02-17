@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrate groups and projects by using direct transfer
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To migrate GitLab groups and projects by using direct transfer, you:
 
@@ -23,7 +26,11 @@ If there are any problems, you can:
 
 ## Prerequisites
 
-> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+{{< history >}}
+
+- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+{{< /history >}}
 
 Before migrating by using direct transfer, see the following prerequisites.
 
@@ -73,14 +80,21 @@ GitLab 16.8.
 
 ## User contribution and membership mapping
 
-DETAILS:
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
-> - Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
-> - Removed from direct transfer on GitLab.com in GitLab 17.5 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
-> - Removed as the default direct transfer method on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
+- Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
+- Removed from direct transfer on GitLab.com in GitLab 17.5 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
+- Removed as the default direct transfer method on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
+
+{{< /history >}}
 
 This method of user contribution and membership mapping is available for
 GitLab Self-Managed when `importer_user_mapping` and `bulk_import_importer_user_mapping` are disabled.
@@ -103,8 +117,11 @@ has an existing membership in the destination namespace with a [higher role](../
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
 elevated permissions.
 
-NOTE:
+{{< alert type="note" >}}
+
 There is a [known issue](_index.md#known-issues) affecting the mapping of shared memberships.
+
+{{< /alert >}}
 
 ### Configure users on destination instance
 
@@ -130,18 +147,22 @@ a lot of user accounts to have public email addresses, see
 On the destination GitLab instance, create the group you want to import to and connect the source GitLab instance:
 
 1. Create either:
-   - A new group. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**. Then select **Import group**.
+   - A new group. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**. Then select **Import group**.
    - A new subgroup. On existing group's page, either:
      - Select **New subgroup**.
-     - On the left sidebar, at the top, select **Create new** (**{plus}**) and **New subgroup**. Then select the **import an existing group** link.
+     - On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New subgroup**. Then select the **import an existing group** link.
 1. Enter the base URL of a GitLab instance.
 1. Enter the [personal access token](../../profile/personal_access_tokens.md) for your source GitLab instance.
 1. Select **Connect instance**.
 
 ## Select the groups and projects to import
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
-> - **Import user memberships** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477734) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
+- **Import user memberships** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477734) in GitLab 17.6.
+
+{{< /history >}}
 
 After you have authorized access to the source GitLab instance, you are redirected to the GitLab group importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner role.
 
@@ -154,12 +175,19 @@ If you do not want to import all user memberships from the source instance, ensu
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Importing groups with projects is in [beta](../../../policy/development_stages_support.md#beta). This feature is not ready for production use.
+
+{{< /alert >}}
 
 ## Group import history
 
-> - **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
+{{< history >}}
+
+- **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
+
+{{< /history >}}
 
 You can view all groups migrated by you by direct transfer listed on the group import history page. This list includes:
 
@@ -172,17 +200,21 @@ You can view all groups migrated by you by direct transfer listed on the group i
 To view group import history:
 
 1. Sign in to GitLab.
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
 1. If there are any errors for a particular import, select **Show errors** to see their details.
 
 ## Review results of the import
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
-> - Feature flag `bulk_import_details_page` removed in GitLab 16.8.
-> - Details for partially completed and completed imports [added](https://gitlab.com/gitlab-org/gitlab/-/issues/437874) in GitLab 16.9.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443492) in GitLab 17.0, an **Imported** badge to indicate that designs, epics, issues, merge requests, notes (system notes and comments), snippets, and user profile activity were imported.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429109) in GitLab 16.6 [with a flag](../../feature_flags.md) named `bulk_import_details_page`. Enabled by default.
+- Feature flag `bulk_import_details_page` removed in GitLab 16.8.
+- Details for partially completed and completed imports [added](https://gitlab.com/gitlab-org/gitlab/-/issues/437874) in GitLab 16.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443492) in GitLab 17.0, an **Imported** badge to indicate that designs, epics, issues, merge requests, notes (system notes and comments), snippets, and user profile activity were imported.
+
+{{< /history >}}
 
 To review the results of an import:
 

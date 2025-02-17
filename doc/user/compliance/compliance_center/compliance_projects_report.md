@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Compliance projects report
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
-> - [Renamed from **compliance frameworks report**](https://gitlab.com/gitlab-org/gitlab/-/issues/422963) in GitLab 16.5.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387910) in GitLab 15.10.
+- [Renamed from **compliance frameworks report**](https://gitlab.com/gitlab-org/gitlab/-/issues/422963) in GitLab 16.5.
+
+{{< /history >}}
 
 With the compliance projects report, you can see the compliance frameworks that are applied to projects in a group, subgroup, or project.
 Each row of the report shows:
@@ -35,10 +42,14 @@ To view the compliance projects report:
 
 ## Apply a compliance framework to projects in a group
 
-> - Adding compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
-> - Adding compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
-> - Ability to add compliance frameworks to subgroups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469004) in GitLab 17.2.
-> - Ability to add compliance frameworks to projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507986) in GitLab 17.9.
+{{< history >}}
+
+- Adding compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+- Adding compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
+- Ability to add compliance frameworks to subgroups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469004) in GitLab 17.2.
+- Ability to add compliance frameworks to projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507986) in GitLab 17.9.
+
+{{< /history >}}
 
 You can apply one or more compliance frameworks to projects in a group, subgroup, or project.
 
@@ -51,7 +62,7 @@ To apply a compliance framework to one project in a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
-1. Next to the project you want to add the compliance framework to, select **{pencil}** action.
+1. Next to the project you want to add the compliance framework to, select {{< icon name="pencil" >}} action.
 1. Select one or more existing compliance frameworks or create a new one.
 
 To apply a compliance framework to multiple projects in a group:
@@ -66,10 +77,14 @@ To apply a compliance framework to multiple projects in a group:
 
 ## Remove a compliance framework from projects in a group
 
-> - Removing compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
-> - Removing compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
-> - Ability to remove compliance frameworks from subgroups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469004) in GitLab 17.2.
-> - Ability to remove compliance frameworks from projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507986) in GitLab 17.9.
+{{< history >}}
+
+- Removing compliance frameworks using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11.
+- Removing compliance frameworks without using bulk actions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394795) in GitLab 16.0.
+- Ability to remove compliance frameworks from subgroups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469004) in GitLab 17.2.
+- Ability to remove compliance frameworks from projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507986) in GitLab 17.9.
+
+{{< /history >}}
 
 You can remove a compliance framework from projects in a group, subgroup, or project.
 
@@ -82,7 +97,7 @@ To remove a compliance framework from one project in a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
 1. On the page, select the **Projects** tab.
-1. Next to the compliance framework to remove from the project, select **{close}** on the framework label.
+1. Next to the compliance framework to remove from the project, select {{< icon name="close" >}} on the framework label.
 
 To remove a compliance framework from multiple projects in a group:
 
@@ -95,7 +110,11 @@ To remove a compliance framework from multiple projects in a group:
 
 ## Export a report of compliance frameworks on projects in a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
+
+{{< /history >}}
 
 Export a report of compliance frameworks that are applied to projects in a group. Reports:
 
@@ -117,7 +136,11 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 ## Filter the compliance projects report
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
+
+{{< /history >}}
 
 To filter the list of compliance frameworks:
 

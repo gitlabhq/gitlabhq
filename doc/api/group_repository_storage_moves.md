@@ -2,13 +2,16 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation for the REST API for moving the storage for repositories in a GitLab group."
+description: Documentation for the REST API for moving the storage for repositories in a GitLab group.
 title: Group repository storage moves API
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Group wiki repositories can be moved between storages. This API can help you, for example,
 [migrate to Gitaly Cluster](../administration/gitaly/_index.md#migrate-to-gitaly-cluster)

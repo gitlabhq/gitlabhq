@@ -5,19 +5,29 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Query Language (GLQL)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `glql_integration`. Disabled by default.
-> - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
-> - `iteration` and `cadence` fields [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/gitlab-query-language/-/issues/74) in GitLab 17.6.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `glql_integration`. Disabled by default.
+- Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
+- `iteration` and `cadence` fields [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/gitlab-query-language/-/issues/74) in GitLab 17.6.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 GitLab Query Language (GLQL) is an [experimental](../../policy/development_stages_support.md) attempt
 to create a single query language for all of GitLab.
@@ -55,8 +65,8 @@ For a full list of supported fields, supported operators, and value types, see [
 | `=`           | Equals / Includes all in list           | `is` (equal to)        |
 | `!=`          | Doesn't equal / Isn't contained in list | `is not` (equal to)    |
 | `in`          | Contained in list                       | `or` / `is one of`     |
-| `>`           | Greater than                            | **{dotted-circle}** No |
-| `<`           | Less than                               | **{dotted-circle}** No |
+| `>`           | Greater than                            | {{< icon name="dotted-circle" >}} No |
+| `<`           | Less than                               | {{< icon name="dotted-circle" >}} No |
 
 **Logical operators**: Only `and` is supported.
 `or` is indirectly supported for some fields by using the `in` comparison operator.
@@ -78,7 +88,11 @@ Values can include:
 
 ## GLQL views
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
+
+{{< /history >}}
 
 A view created with GLQL is a display representation of a query that executes to
 fetch the desired results.

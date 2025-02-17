@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure GitLab running in a Docker container
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This container uses the official Linux package, so you can use
 the unique configuration file `/etc/gitlab/gitlab.rb` to configure the instance.
@@ -135,10 +138,13 @@ port `2424`:
      gitlab/gitlab-ee:<version>-ee.0
    ```
 
-   NOTE:
-   The format to publish ports is `hostPort:containerPort`. Read more in the
+   {{< alert type="note" >}}
+
+The format to publish ports is `hostPort:containerPort`. Read more in the
    Docker documentation about
    [exposing incoming ports](https://docs.docker.com/network/#published-ports).
+
+   {{< /alert >}}
 
 1. Enter the running container:
 

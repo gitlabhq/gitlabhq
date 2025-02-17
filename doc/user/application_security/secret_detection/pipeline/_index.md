@@ -4,11 +4,15 @@ group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Pipeline secret detection
 ---
+
 <!-- markdownlint-disable MD025 -->
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Pipeline secret detection scans files after they are committed to a Git repository and pushed to GitLab.
 
@@ -102,11 +106,18 @@ pipeline.
 
 ## Advanced vulnerability tracking
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434096) in GitLab 17.0.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434096) in GitLab 17.0.
+
+{{< /history >}}
 
 When developers make changes to a file with identified secrets, it's likely that the positions of these secrets will also change. Pipeline secret detection may have already flagged these secrets as vulnerabilities, tracked in the [Vulnerability Report](../../vulnerability_report/_index.md). These vulnerabilities are associated with specific secrets for easy identification and action. However, if the detected secrets aren't accurately tracked as they shift, managing vulnerabilities becomes challenging, potentially resulting in duplicate vulnerability reports.
 
@@ -146,15 +157,15 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 | Capability                                                                                           | In Free & Premium      | In Ultimate            |
 |:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| [Enable the analyzer](#enable-the-analyzer)                                                          | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Customize analyzer settings](#customize-analyzer-settings)                                          | **{check-circle}** Yes | **{check-circle}** Yes |
-| Download [output](#output)                                                                           | **{check-circle}** Yes | **{check-circle}** Yes |
-| See new findings in the merge request widget                                                         | **{dotted-circle}** No | **{check-circle}** Yes |
-| View identified secrets in the pipelines' **Security** tab                                           | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Manage vulnerabilities](../../vulnerability_report/_index.md)                                        | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Access the Security Dashboard](../../security_dashboard/_index.md)                                   | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Customize analyzer rulesets](#customize-analyzer-rulesets)                                          | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Enable security policies](../../policies/_index.md)                                                  | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Enable the analyzer](#enable-the-analyzer)                                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [Customize analyzer settings](#customize-analyzer-settings)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Download [output](#output)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| See new findings in the merge request widget                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| View identified secrets in the pipelines' **Security** tab                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Manage vulnerabilities](../../vulnerability_report/_index.md)                                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Access the Security Dashboard](../../security_dashboard/_index.md)                                   | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Customize analyzer rulesets](#customize-analyzer-rulesets)                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Enable security policies](../../policies/_index.md)                                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
 ### Enable the analyzer
 
@@ -192,16 +203,23 @@ Pipelines now include a pipeline secret detection job.
 
 #### Use an automatically configured merge request
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
+
+{{< /history >}}
 
 This method automatically prepares a merge request, with the pipeline secret detection template included in
 the `.gitlab-ci.yml` file. You then merge the merge request to enable pipeline secret detection.
 
-NOTE:
+{{< alert type="note" >}}
+
 This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
 file. If you have a complex GitLab configuration file it may not be parsed successfully, and an
 error may occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
+
+{{< /alert >}}
 
 To enable pipeline secret detection:
 
@@ -219,10 +237,13 @@ Pipelines now include a pipeline secret detection job.
 The pipeline secret detection scan settings can be changed through [CI/CD variables](#available-cicd-variables)
 by using the [`variables`](../../../../ci/yaml/_index.md#variables) parameter in `.gitlab-ci.yml`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 All configuration of GitLab security scanning tools should be tested in a merge request before
 merging these changes to the default branch. Failure to do so can give unexpected results,
 including a large number of false positives.
+
+{{< /alert >}}
 
 #### Add new patterns
 
@@ -291,13 +312,20 @@ secret_detection:
 
 ### Customize analyzer rulesets
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
-> - Expanded to include additional passthrough types of `file` and `raw` in GitLab 14.6.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/336395) support for passthrough chains and included additional passthrough types of `git` and `url` in GitLab 17.2.
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
+- Expanded to include additional passthrough types of `file` and `raw` in GitLab 14.6.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/336395) support for passthrough chains and included additional passthrough types of `git` and `url` in GitLab 17.2.
+
+{{< /history >}}
 
 You can customize the behavior of pipeline secret detection by [creating a ruleset configuration file](#create-a-ruleset-configuration-file),
 either in the repository being scanned or a remote repository. Customization enables you to modify, replace, or extend the default ruleset.
@@ -337,7 +365,11 @@ You can also use a ruleset configuration file stored remotely (that is, a remote
 
 ##### Disable a rule
 
-> - Ability to disable a rule with a remote ruleset was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
+{{< history >}}
+
+- Ability to disable a rule with a remote ruleset was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
+
+{{< /history >}}
 
 You can disable rules that you don't want active. To disable rules from the analyzer default ruleset:
 
@@ -361,7 +393,11 @@ In the following example `secret-detection-ruleset.toml` file, the disabled rule
 
 ##### Override a rule
 
-> - Ability to override a rule with a remote ruleset was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
+{{< history >}}
+
+- Ability to override a rule with a remote ruleset was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425251) in GitLab 16.0 and later.
+
+{{< /history >}}
 
 If there are specific rules to customize, you can override them. For example, you may increase the severity of a specific type of secret because leaking it would have a higher impact on your workflow.
 
@@ -409,9 +445,12 @@ variables:
 
 Pipeline secret detection assumes the configuration is defined in `.gitlab/secret-detection-ruleset.toml` file in the repository referenced by the CI variable where the remote ruleset is stored. If that file doesn't exist, please make sure to [create one](#create-a-ruleset-configuration-file) and follow the steps to [override](#override-a-rule) or [disable](#disable-a-rule) a predefined rule as outlined above.
 
-NOTE:
+{{< alert type="note" >}}
+
 A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` by default because `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `true`.
 If you set `SECURE_ENABLE_LOCAL_CONFIGURATION` to `false`, the local file is ignored and the default configuration or `SECRET_DETECTION_RULESET_GIT_REFERENCE` (if set) is used.
+
+{{< /alert >}}
 
 The `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable uses a format similar to [Git URLs](https://git-scm.com/docs/git-clone#_git_urls) for specifying a URI, optional authentication, and optional Git SHA. The variable uses the following format:
 
@@ -530,8 +569,11 @@ For more information on the passthrough syntax to use, see [Schema](../pipeline/
 
 If a ruleset configuration is stored in a private repository you must provide the credentials to access the repository by using the passthrough's [`auth` setting](../pipeline/custom_rulesets_schema.md#the-secretspassthrough-section).
 
-NOTE:
+{{< alert type="note" >}}
+
 The `auth` setting only works with `git` passthrough.
+
+{{< /alert >}}
 
 To use a remote ruleset stored in a private repository, add the following to the `.gitlab/secret-detection-ruleset.toml` configuration file stored in a repository, adjust the `value` to point to the address of the Git repository, and update `auth` to use the appropriate credentials:
 
@@ -545,8 +587,11 @@ To use a remote ruleset stored in a private repository, add the following to the
     value  = "https://gitlab.com/user_group/central_repository_with_shared_ruleset"
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Beware of leaking credentials when using this feature. Check [this section](../pipeline/custom_rulesets_schema.md#interpolate) for an example on how to use environment variables to minimize the risk.
+
+{{< /alert >}}
 
 For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
@@ -649,8 +694,11 @@ There may be situations in which you need to ignore a certain pattern or path fr
 
 In that case, you can utilize [Gitleaks' native `[allowlist]`](https://github.com/gitleaks/gitleaks#configuration) directive to ignore specific patterns or paths.
 
-NOTE:
+{{< alert type="note" >}}
+
 This feature works regardless of whether you're using a local or a remote ruleset configuration file. The examples below utilizes a local ruleset using `file` passthrough though.
+
+{{< /alert >}}
 
 To ignore a pattern, add the following to the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository, and adjust the `value` as appropriate to point to the path of the extended configuration file:
 
@@ -782,10 +830,13 @@ path = "/gitleaks.toml"
   keywords = ["pwd", "passwd", "password"]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This example configuration is provided only for convenience, and might not work
 for all use cases. If you configure your ruleset to detect complex strings, you might
 create a large number of false positives, or fail to capture certain patterns.
+
+{{< /alert >}}
 
 ### Available CI/CD variables
 
@@ -808,9 +859,12 @@ In previous GitLab versions, the following variables were also available:
 
 ### Offline configuration
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 An offline environment has limited, restricted, or intermittent access to external resources through
 the internet. For instances in such an environment, pipeline secret detection requires
@@ -921,7 +975,11 @@ There are also some video demonstrations walking through setting up remote rules
 
 ## FIPS-enabled images
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+
+{{< /history >}}
 
 The default scanner images are built off a base Alpine image for size and maintainability. GitLab
 offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)

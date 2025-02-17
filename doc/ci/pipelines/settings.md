@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Customize pipeline configuration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can customize how pipelines run for your project.
 
@@ -86,7 +89,11 @@ running job can be canceled before it completes. After a job with
 
 ## Prevent outdated deployment jobs
 
-> - Also preventing outdated manual or retried deployment jobs from running [added](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5.
+{{< history >}}
+
+- Also preventing outdated manual or retried deployment jobs from running [added](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5.
+
+{{< /history >}}
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run in the same time frame.
@@ -107,11 +114,18 @@ For more information, see [Deployment safety](../environments/deployment_safety.
 
 ## Restrict roles that can cancel pipelines or jobs
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137301) in GitLab 16.7.
+
+{{< /history >}}
 
 You can customize which roles have permission to cancel pipelines or jobs.
 
@@ -143,9 +157,12 @@ To customize the path:
    - Is on an external site, enter the full URL.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot use your project's [pipeline editor](../pipeline_editor/_index.md) to
 edit CI/CD configuration files in other projects or on an external site.
+
+{{< /alert >}}
 
 ### Custom CI/CD configuration file examples
 
@@ -258,12 +275,19 @@ These changes do not apply to projects in an [external integration](../../user/p
 
 ## Automatic pipeline cleanup
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `ci_delete_old_pipelines`. Disabled by default.
-> - [Feature flag `ci_delete_old_pipelines`](https://gitlab.com/gitlab-org/gitlab/-/issues/503153) removed in GitLab 17.9.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498969) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `ci_delete_old_pipelines`. Disabled by default.
+- [Feature flag `ci_delete_old_pipelines`](https://gitlab.com/gitlab-org/gitlab/-/issues/503153) removed in GitLab 17.9.
+
+{{< /history >}}
 
 Users with the Owner role can set a CI/CD pipeline expiry time to help manage pipeline storage and improve system performance.
 The system automatically deletes pipelines that were created before the configured value.

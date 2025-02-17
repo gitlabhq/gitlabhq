@@ -3,9 +3,8 @@ stage: none
 group: none
 info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
 toc: false
+title: Deprecations and removals by version
 ---
-
-# Deprecations and removals by version
 
 The following GitLab features are deprecated and no longer recommended for use.
 
@@ -20,7 +19,7 @@ For advanced searching and filtering of this deprecation information, try
 
 [REST API deprecations](https://docs.gitlab.com/ee/api/rest/deprecations.html) are documented separately.
 
-**{rss}** **To be notified of upcoming breaking changes**,
+{{< icon name="rss" >}} **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
 
 <!-- vale off -->
@@ -46,8 +45,6 @@ For deprecation reviewers (Technical Writers only):
 - For more information about updating the deprecation doc, see the deprecation doc update guidance:
   https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
-
-{::options parse_block_html="true" /}
 
 <div class="js-deprecation-filters"></div>
 <div class="milestone-wrapper" data-milestone="20.0">
@@ -8059,9 +8056,4 @@ This will result in the rename of the sub-chart: `gitlab/task-runner` to `gitlab
 </div>
 </div>
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+{{< alert type="disclaimer" />}}

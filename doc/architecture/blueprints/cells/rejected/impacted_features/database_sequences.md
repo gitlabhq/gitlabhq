@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/rejected/impacted_features/database_sequences/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/rejected/impacted_features/database_sequences/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

@@ -2,10 +2,10 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Individual contributor license agreement
 ---
-<!-- vale off -->
 
-# Individual contributor license agreement
+<!-- vale off -->
 
 You accept and agree to the following terms and conditions for Your present and
 future Contributions submitted to GitLab Inc. Except for the license granted

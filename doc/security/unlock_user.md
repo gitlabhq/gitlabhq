@@ -9,9 +9,12 @@ GitLab locks a user account after the user unsuccessfully attempts to sign in se
 
 ## GitLab.com users
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 If two-factor authentication (2FA) is enabled, accounts are locked after three failed sign-in attempts. Accounts are unlocked automatically after 30 minutes.
 
@@ -22,11 +25,18 @@ If 2FA is not enabled user accounts are locked after three failed sign-in attemp
 
 ## GitLab Self-Managed and GitLab Dedicated users
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Configurable locked user policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27048) in GitLab 16.5.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Configurable locked user policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27048) in GitLab 16.5.
+
+{{< /history >}}
 
 By default, user accounts are locked after 10 failed sign-in attempts. Accounts are unlocked automatically after 10 minutes.
 

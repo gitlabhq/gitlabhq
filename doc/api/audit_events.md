@@ -5,17 +5,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Audit events API
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Author Email added to the response body](https://gitlab.com/gitlab-org/gitlab/-/issues/386322) in GitLab 15.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Author Email added to the response body](https://gitlab.com/gitlab-org/gitlab/-/issues/386322) in GitLab 15.9.
+
+{{< /history >}}
 
 ## Instance audit events
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to retrieve instance audit events.
 
@@ -23,8 +33,12 @@ To retrieve audit events using the API, you must [authenticate yourself](rest/au
 
 ### Retrieve all instance audit events
 
-> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11.
-> - Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
+{{< history >}}
+
+- Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.11.
+- Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
+
+{{< /history >}}
 
 ```plaintext
 GET /audit_events
@@ -168,7 +182,11 @@ Example response:
 
 ## Group audit events
 
-> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+{{< history >}}
+
+- Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+
+{{< /history >}}
 
 Use this API to retrieve group audit events.
 
@@ -182,7 +200,11 @@ pagination is recommended when requesting consecutive pages of results.
 
 ### Retrieve all group audit events
 
-> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+{{< history >}}
+
+- Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 GET /groups/:id/audit_events
@@ -292,7 +314,11 @@ A user with a Developer role is limited to project audit events based on their i
 
 ### Retrieve all project audit events
 
-> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
+{{< history >}}
+
+- Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
+
+{{< /history >}}
 
 ```plaintext
 GET /projects/:id/audit_events

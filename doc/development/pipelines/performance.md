@@ -125,8 +125,11 @@ We also changed the `setup-test-env` job to:
 1. If the package is retrieved successfully, its content is placed in the right folder (for example, `tmp/tests/gitlab-workhorse`), preventing the building of the binaries when `scripts/setup-test-env` is run later on.
 1. If the package URL returns a 404, the behavior doesn't change compared to the current one: the GitLab Workhorse binaries are built as part of `scripts/setup-test-env`.
 
-NOTE:
+{{< alert type="note" >}}
+
 The version of the package is the workhorse tree SHA (for example, `git rev-parse HEAD:workhorse`).
+
+{{< /alert >}}
 
 ## `cache-assets`
 

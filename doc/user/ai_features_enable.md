@@ -1,6 +1,6 @@
 ---
-redirect_to: '../user/gitlab_duo/turn_on_off.md'
-remove_date: '2025-06-11'
+redirect_to: ../user/gitlab_duo/turn_on_off.md
+remove_date: "2025-06-11"
 ---
 
 <!-- markdownlint-disable -->

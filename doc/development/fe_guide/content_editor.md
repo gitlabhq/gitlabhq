@@ -170,10 +170,13 @@ Node views are located in `~/content_editor/components/wrappers`.
 You can inject the Tiptap Editor object to Vue components to dispatch
 commands.
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not implement logic that changes the editor's
 state in Vue components. Encapsulate this logic in commands, and dispatch
 the command from the component's methods.
+
+{{< /alert >}}
 
 ```html
 <script>

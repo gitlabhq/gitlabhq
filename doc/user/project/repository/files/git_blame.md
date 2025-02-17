@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation on Git file blame."
+description: Documentation on Git file blame.
 title: Git file blame
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Git blame](https://git-scm.com/docs/git-blame) provides more information
 about every line in a file, including the last modified time, author, and
@@ -16,7 +19,11 @@ commit hash.
 
 ## View blame for a file
 
-> - Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flag](../../../../administration/feature_flags.md) named `inline_blame`. Disabled by default.
+{{< history >}}
+
+- Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flag](../../../../administration/feature_flags.md) named `inline_blame`. Disabled by default.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -50,7 +57,7 @@ To see earlier revisions of a specific line:
 1. Select **Code > Repository**.
 1. Select the file you want to review.
 1. In the upper-right corner, select **Blame**, and go to the line you want to see.
-1. Select **View blame prior to this change** (**{doc-versions}**)
+1. Select **View blame prior to this change** ({{< icon name="doc-versions" >}})
    until you've found the changes you're interested in viewing.
 
 ## Related topics

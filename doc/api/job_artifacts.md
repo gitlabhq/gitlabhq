@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Job Artifacts API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the job artifacts API to download or delete job artifacts.
 
@@ -16,7 +19,11 @@ available in the Premium and Ultimate tier.
 
 ## Get job artifacts
 
-> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
+{{< history >}}
+
+- The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
+
+{{< /history >}}
 
 Get a zipped archive of a job's artifacts from a project.
 
@@ -75,7 +82,11 @@ Possible response status codes:
 
 ## Download the artifacts archive
 
-> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
+{{< history >}}
+
+- The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
+
+{{< /history >}}
 
 Download a zipped archive of a job's artifacts in the latest **successful**
 pipeline using the reference name. This endpoint is the same as
@@ -322,8 +333,11 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/1/artifacts"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 At least Maintainer role is required to delete artifacts.
+
+{{< /alert >}}
 
 If the artifacts were deleted successfully, a response with status `204 No Content` is returned.
 

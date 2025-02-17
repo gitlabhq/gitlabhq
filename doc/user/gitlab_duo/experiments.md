@@ -1,6 +1,6 @@
 ---
-redirect_to: '../gitlab_duo/_index.md'
-remove_date: '2025-01-09'
+redirect_to: ../gitlab_duo/_index.md
+remove_date: "2025-01-09"
 ---
 
 <!-- markdownlint-disable -->

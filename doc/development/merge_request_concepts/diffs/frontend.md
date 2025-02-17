@@ -2,7 +2,7 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Developer documentation explaining how the different parts of the Vue-based frontend diffs are generated."
+description: Developer documentation explaining how the different parts of the Vue-based frontend diffs are generated.
 title: Merge request diffs frontend overview
 ---
 
@@ -229,10 +229,13 @@ Previously, we had to request two different formats for inline and side-by-side.
 then uses this standard format to render the diff line data. With this standard format, the user
 can then switch between inline and side-by-side without the need to re-fetch any data.
 
-NOTE:
+{{< alert type="note" >}}
+
 For this component, a lot of the data used and rendered gets memoized and cached, based on
 various conditions. It is possible that data sometimes gets cached between each different
 component render.
+
+{{< /alert >}}
 
 ### Vuex store
 
@@ -333,10 +336,13 @@ formatting happens in a computed property inside the `diff_content.vue` componen
 
 ### Render queue
 
-NOTE:
+{{< alert type="note" >}}
+
 This _might_ not be required any more. Some investigation work is required to decide
 the future of the render queue. The virtual scroll bar we created has probably removed
 any performance benefit we got from this approach.
+
+{{< /alert >}}
 
 To render diffs quickly, we have a render queue that allows the diffs to render only if the
 browser is idle. This saves the browser getting frozen when rendering a lot of large diffs at once,

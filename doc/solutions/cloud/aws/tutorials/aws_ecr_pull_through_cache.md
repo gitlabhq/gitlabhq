@@ -2,7 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-description: "Integrations Solutions Index for GitLab and AWS."
+description: Integrations Solutions Index for GitLab and AWS.
 title: 'Tutorial: Configuring AWS ECR Pull Through Cache Rules for Authenticated Access to GitLab.com Projects'
 ---
 
@@ -20,8 +20,11 @@ On Step 2: Configure authentication page, for Upstream credentials, you must sto
 
 To use an existing secret, choose Use an existing AWS secret. For Secret name use the drop down to select your existing secret, and then choose Next. For more information on creating a Secrets Manager secret using the Secrets Manager console, see Storing your upstream repository credentials in an AWS Secrets Manager secret.
 
-NOTE:
+{{< alert type="note" >}}
+
 The AWS Management Console only displays Secrets Manager secrets with names using the ecr-pullthroughcache/ prefix. The secret must also be in the same account and Region that the pull through cache rule is created in.
+
+{{< /alert >}}
 
 To create a new secret, choose Create an AWS secret, do the following, then choose Next.
 

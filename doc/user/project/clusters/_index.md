@@ -5,14 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project-level Kubernetes clusters (certificate-based) (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 in GitLab 14.5. To connect clusters to GitLab, use the
 [GitLab agent](../../clusters/agent/_index.md).
+
+{{< /alert >}}
 
 [Project-level](../../infrastructure/clusters/connect/_index.md#cluster-levels-deprecated) Kubernetes clusters
 allow you to connect a Kubernetes cluster to a project in GitLab.

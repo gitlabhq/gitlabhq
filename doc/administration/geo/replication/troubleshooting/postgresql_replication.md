@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Geo PostgreSQL replication
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following sections outline troubleshooting steps for fixing replication error messages (indicated by `Database replication working? ... no` in the
 [`geo:check` output](common.md#health-check-rake-task).
@@ -25,8 +28,11 @@ If the secondary site is not able to reconnect, use the following steps to remov
    sudo gitlab-psql -d gitlabhq_production
    ```
 
-   NOTE:
-   Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+   {{< alert type="note" >}}
+
+Using `gitlab-rails dbconsole` does not work, because managing replication slots requires superuser permissions.
+
+   {{< /alert >}}
 
 1. View the replication slots and remove them if they are inactive:
 

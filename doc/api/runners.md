@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Runners API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This page describes endpoints for runners registered to an instance. To create a runner linked to the current user, see [Create a runner](users.md#create-a-runner-linked-to-a-user).
 
@@ -75,21 +78,28 @@ GET /runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `active` and `paused` values in the `status` query parameter were deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 The `ip_address` attribute in the response was deprecated
 [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+{{< /alert >}}
 
 Example response:
 
@@ -124,9 +134,12 @@ Example response:
 
 ## List all runners
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Get a list of all runners in the GitLab instance (project and shared). Access
 is restricted to users with administrator access.
@@ -158,21 +171,28 @@ GET /runners/all?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `active` and `paused` values in the `status` query parameter were deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 The `ip_address` attribute in the response was deprecated
 [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+{{< /alert >}}
 
 Example response:
 
@@ -254,28 +274,37 @@ GET /runners/:id
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `token` attribute in the response was deprecated [in GitLab 12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/214320)
 and removed in [GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/214322).
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 The `ip_address` attribute in the response was deprecated
 [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 The `version`, `revision`, `platform`, and `architecture` attributes in the response were deprecated
 [in GitLab 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457128) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 The same attributes can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+{{< /alert >}}
 
 Example response:
 
@@ -348,21 +377,28 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
      --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `token` attribute in the response was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/214320) in GitLab 12.10
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/214322) in GitLab 13.0.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The `active` query parameter was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 The `ip_address` attribute in the response was deprecated
 [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+{{< /alert >}}
 
 Example response:
 
@@ -438,13 +474,20 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form "active=false"  "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `active` form attribute was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
 
+{{< /alert >}}
+
 ## List jobs processed by a runner
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
+
+{{< /history >}}
 
 List jobs that are being processed or were processed by the specified runner. The list of jobs is limited
 to projects where the user has at least the Reporter role.
@@ -614,21 +657,28 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `active` and `paused` values in the `status` query parameter were deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 The `ip_address` attribute in the response was deprecated
 [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+{{< /alert >}}
 
 Example response:
 
@@ -685,13 +735,16 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
      --form "runner_id=9"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `ip_address` attribute in the response was deprecated
 [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+
+{{< /alert >}}
 
 Example response:
 
@@ -763,21 +816,28 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `active` and `paused` values in the `status` query parameter were deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). They are replaced by the `paused` query parameter.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The `active` attribute in the response was deprecated
 and will be removed in [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109). It is replaced by the `paused` attribute.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 The `ip_address` attribute in the response was deprecated
 [in GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/415159) and will be removed in
 [a future version of the REST API](https://gitlab.com/gitlab-org/gitlab/-/issues/351109).
 This attribute will start returning an empty string in GitLab 17.0.
 The `ipAddress` attribute can be found inside the respective runner manager, currently only available through the GraphQL
 [`CiRunnerManager` type](graphql/reference/_index.md#cirunnermanager).
+{{< /alert >}}
 
 Example response:
 
@@ -824,11 +884,14 @@ Example response:
 
 ## Create a runner
 
-WARNING:
+{{< alert type="warning" >}}
+
 This endpoint returns an `HTTP 410 Gone` status code if registration with runner registration tokens
 is disabled in the project or group settings. If registration with runner registration tokens
 is disabled, use the [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) endpoint
 to create and register runners instead.
+
+{{< /alert >}}
 
 Create a runner with a runner registration token.
 
@@ -970,8 +1033,11 @@ Example response:
 
 ## Reset instance's runner registration token
 
-WARNING:
+{{< alert type="warning" >}}
+
 Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
+
+{{< /alert >}}
 
 Reset the runner registration token for the GitLab instance.
 
@@ -986,8 +1052,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Reset project's runner registration token
 
-WARNING:
+{{< alert type="warning" >}}
+
 Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
+
+{{< /alert >}}
 
 Reset the runner registration token for a project.
 
@@ -1002,8 +1071,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Reset group's runner registration token
 
-WARNING:
+{{< alert type="warning" >}}
+
 Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
+
+{{< /alert >}}
 
 Reset the runner registration token for a group.
 

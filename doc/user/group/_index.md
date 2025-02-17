@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Groups
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In GitLab, you use groups to manage one or more related projects at the same time.
 
@@ -65,7 +68,8 @@ The following table describes the most common models of structuring groups.
 
 <!-- vale gitlab_base.Simplicity = YES -->
 
-NOTE:
+{{< alert type="note" >}}
+
 On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
 For more information about efforts to create an organization view of all groups,
 [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
@@ -74,6 +78,8 @@ A top-level group offers insights in your entire organization through a complete
 [Vulnerability Report](../application_security/vulnerability_report/_index.md),
 [compliance center](../compliance/compliance_center/_index.md), and
 [value stream analytics](value_stream_analytics/_index.md).
+
+{{< /alert >}}
 
 ## Group visibility
 
@@ -146,7 +152,11 @@ To view the activity of a group:
 
 ### Access a group by using the group ID
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165889) in GitLab 17.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165889) in GitLab 17.5.
+
+{{< /history >}}
 
 You can access a group by using its ID instead of its name at `https://gitlab.example.com/-/g/<id>`.
 For example, if your group `example-group` has an ID `123456`, you can access the group either at
@@ -157,7 +167,7 @@ You might need the group ID if you want to interact with it using the [GitLab AP
 To copy the Group ID:
 
 1. On the left sidebar, select **Search or go to** and find your Group.
-1. On the Group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. On the Group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy Group ID**.
 
 ## Create a group
@@ -166,7 +176,7 @@ To create a group:
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).
@@ -203,7 +213,11 @@ To edit group details:
 
 ## Leave a group
 
-> - The button to leave a group [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+{{< history >}}
+
+- The button to leave a group [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
+{{< /history >}}
 
 When you leave a group:
 
@@ -218,7 +232,11 @@ To leave a group:
 
 ## Delete a group
 
-> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+{{< history >}}
+
+- Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+{{< /history >}}
 
 To delete a group and its contents:
 
@@ -232,7 +250,7 @@ You can also delete a group from the groups dashboard:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my groups**.
-1. Select (**{ellipsis_v}**) for the group you want to delete.
+1. Select ({{< icon name="ellipsis_v" >}}) for the group you want to delete.
 1. Select **Delete**.
 1. In the **Delete group** section, select **Delete group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
@@ -242,14 +260,20 @@ On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](ht
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job will instead restore and unarchive the group, so the group will no longer be scheduled for deletion.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    If the user who scheduled the group deletion regains Owner role or administrator access before the job runs, then the job removes the group permanently.
+
+   {{< /alert >}}
 
 ### View groups pending deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To view a list of the subgroups that are pending deletion in a group:
 
@@ -260,11 +284,18 @@ Groups that are marked for deletion are labeled **Pending deletion**.
 
 ## Delete a group immediately
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+{{< /history >}}
 
 If you don't want to wait, you can delete a group immediately.
 
@@ -285,9 +316,12 @@ This action deletes the group, its subgroups, projects, and all related resource
 
 ## Restore a group
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To restore a group that is marked for deletion:
 
@@ -333,9 +367,12 @@ A table displays the member's:
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
 
-NOTE:
+{{< alert type="note" >}}
+
 The display of group members' **Source** might be inconsistent.
 For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
+
+{{< /alert >}}
 
 To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage Quotas** page](../../subscriptions/gitlab_com/_index.md#view-seat-usage).
 
@@ -367,7 +404,7 @@ You can search for members by name, username, or [public email](../profile/_inde
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
-1. To the right of the **Filter members** box, select the magnifying glass (**{search}**).
+1. To the right of the **Filter members** box, select the magnifying glass ({{< icon name="search" >}}).
 
 ### Sort members in a group
 
@@ -378,12 +415,16 @@ You can sort members by **Account**, **Access granted**, **Role**, or **Last sig
 1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
-   arrow (**{sort-lowest}** or **{sort-highest}**).
+   arrow ({{< icon name="sort-lowest" >}} or {{< icon name="sort-highest" >}}).
 
 ## Add users to a group
 
-> - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
-> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+{{< history >}}
+
+- Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+- Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+
+{{< /history >}}
 
 You can give a user access to all projects in a group.
 
@@ -408,9 +449,12 @@ Prerequisites:
    If you enter an access expiration date, the group member gets an email notification
    seven days before their access expires.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Maintainers have full permissions until their role expires, including the ability to
    extend their own access expiration date.
+
+   {{< /alert >}}
 
 1. Select **Invite**.
    If you invite the user by their:
@@ -452,7 +496,7 @@ To remove a member from a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
-1. Next to the member you want to remove, select the vertical ellipsis (**{ellipsis_v}**).
+1. Next to the member you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Remove member**.
 1. Optional. On the **Remove member** confirmation dialog, select one or both checkboxes:
    - **Also remove direct user membership from subgroups and projects**

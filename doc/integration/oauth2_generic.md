@@ -5,12 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Generic OAuth2 gem as an OAuth 2.0 authentication provider
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 If your provider supports the OpenID specification, you should use [`omniauth-openid-connect`](../administration/auth/oidc.md) as your authentication provider.
+
+{{< /alert >}}
 
 The [`omniauth-oauth2-generic` gem](https://gitlab.com/satorix/omniauth-oauth2-generic) allows single sign-on (SSO) between GitLab
 and your OAuth 2.0 provider, or any OAuth 2.0 provider compatible with this gem.
@@ -57,9 +63,9 @@ To configure the provider:
 
 1. On your GitLab server, complete the following steps.
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    1. Configure the [common settings](omniauth.md#configure-common-settings)
       to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
@@ -103,7 +109,9 @@ To configure the provider:
       sudo gitlab-ctl reconfigure
       ```
 
-   :::TabTitle Helm chart (Kubernetes)
+   {{< /tab >}}
+
+   {{< tab title="Helm chart (Kubernetes)" >}}
 
    1. Configure the [common settings](omniauth.md#configure-common-settings)
       to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
@@ -161,7 +169,9 @@ To configure the provider:
       helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
       ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    1. Configure the [common settings](omniauth.md#configure-common-settings)
       to add `oauth2_generic` as a single sign-on provider. This enables Just-In-Time
@@ -209,7 +219,9 @@ To configure the provider:
       sudo service gitlab restart
       ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 On the sign-in page there should now be a new icon below the regular sign-in
 form. Select that icon to begin your provider's authentication process. This

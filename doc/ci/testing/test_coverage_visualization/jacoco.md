@@ -1,6 +1,6 @@
 ---
-redirect_to: '../code_coverage/jacoco.md'
-remove_date: '2025-04-30'
+redirect_to: ../code_coverage/jacoco.md
+remove_date: "2025-04-30"
 ---
 
 <!-- markdownlint-disable -->

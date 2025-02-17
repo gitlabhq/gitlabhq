@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Reference architecture: Up to 40 RPS or 2,000 users'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page describes the GitLab reference architecture designed to target a peak load of 40 requests per second (RPS), the typical peak load of up to 2,000 users, both manual and automated, based on real data.
 
@@ -49,8 +52,11 @@ For a full list of reference architectures, see
    such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
-NOTE:
+{{< alert type="note" >}}
+
 For all PaaS solutions that involve configuring instances, it's recommended to deploy them over multiple availability zones for resilience if desired.
+
+{{< /alert >}}
 
 ```plantuml
 @startuml 2k
@@ -354,9 +360,12 @@ are supported and can be added if needed.
 In this section, you'll be guided through configuring an external Redis instance
 to be used with GitLab.
 
-NOTE:
+{{< alert type="note" >}}
+
 Redis is primarily single threaded and doesn't significantly benefit from an increase in CPU cores.
 Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
+
+{{< /alert >}}
 
 ### Provide your own Redis instance
 
@@ -423,10 +432,13 @@ are supported and can be added if needed.
 [Gitaly](../gitaly/_index.md) server node requirements are dependent on data size,
 specifically the number of projects and those projects' sizes.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
 **However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact the performance of the environment and further adjustments may be required.**
 If this applies to you, we strongly recommended referring to the linked documentation as well as reaching out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+{{< /alert >}}
 
 Due to Gitaly having notable input and output requirements, we strongly
 recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
@@ -448,10 +460,13 @@ Be sure to note the following items:
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
 
-NOTE:
+{{< alert type="note" >}}
+
 The token referred to throughout the Gitaly documentation is an arbitrary
 password selected by the administrator. This token is unrelated to tokens
 created for the GitLab API or other similar web API tokens.
+
+{{< /alert >}}
 
 The following procedure describes how to configure a single Gitaly server named
 `gitaly1.internal` with the secret token `gitalysecret`. We assume your GitLab
@@ -465,8 +480,11 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
-   NOTE:
-   You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+   {{< alert type="note" >}}
+
+You can't remove the `default` entry from `gitaly['configuration'][:storage]` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+
+   {{< /alert >}}
 
    <!--
    Updates to example must be made at:
@@ -560,11 +578,14 @@ nodes (including the Gitaly node using the certificate) and on all client nodes
 that communicate with it following the procedure described in
 [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates).
 
-NOTE:
+{{< alert type="note" >}}
+
 The self-signed certificate must specify the address you use to access the
 Gitaly server. If you are addressing the Gitaly server by a hostname, add it as a Subject Alternative
 Name. If you are addressing the Gitaly server by its IP address, you must add it
 as a Subject Alternative Name to the certificate.
+
+{{< /alert >}}
 
 It's possible to configure Gitaly servers with both an unencrypted listening
 address (`listen_addr`) and an encrypted listening address (`tls_listen_addr`)
@@ -619,14 +640,19 @@ Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you find that the environment's Sidekiq job processing is slow with long queues
 you can scale it accordingly. Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
 update the Sidekiq configuration in addition to the Rails configuration.
 Refer to the [external Sidekiq documentation](../sidekiq/_index.md) for more information.
+{{< /alert >}}
 
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
@@ -1067,9 +1093,12 @@ While sharing the job logs through NFS is supported, it's recommended to avoid t
 
 ## Configure advanced search
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
@@ -1106,19 +1135,27 @@ Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts
 documentation for setup instructions including guidance on what GitLab secrets to sync
 between Kubernetes and the backend components.
 
-NOTE:
+{{< alert type="note" >}}
+
 This is an **advanced** setup. Running services in Kubernetes is well known
 to be complex. **This setup is only recommended** if you have strong working
 knowledge and experience in Kubernetes. The rest of this
 section assumes this.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The 2,000 reference architecture is not a highly-available setup. To achieve HA,
 you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
+{{< /alert >}}
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Gitaly Cluster is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
+
+{{< /alert >}}
 
 ### Cluster topology
 
@@ -1161,8 +1198,11 @@ services where applicable):
 3. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 <!-- markdownlint-enable MD029 -->
 
-NOTE:
+{{< alert type="note" >}}
+
 For all PaaS solutions that involve configuring instances, it's recommended to implement a minimum of three nodes in three different availability zones to align with resilient cloud architecture practices.
+
+{{< /alert >}}
 
 ```plantuml
 @startuml 2k
@@ -1266,5 +1306,8 @@ After following this guide you should now have a fresh GitLab environment with c
 
 You may want to configure additional optional features of GitLab depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-NOTE:
+{{< alert type="note" >}}
+
 Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features as desired. Refer to the individual pages for more information.
+
+{{< /alert >}}

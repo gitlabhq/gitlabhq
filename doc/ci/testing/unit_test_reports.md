@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Unit test reports
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can configure your [CI/CD pipeline](../pipelines/_index.md) to display unit test results directly in merge requests and pipeline details.
 This makes it easier to identify test failures without searching through job logs.
@@ -60,7 +63,11 @@ the error output.
 
 #### Copy failed test names
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91552) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91552) in GitLab 15.2.
+
+{{< /history >}}
 
 You can copy the name and path of failed tests when there are failed tests listed
 in the **Test summary** panel. Use name and path to find and rerun the
@@ -73,9 +80,9 @@ the `<file>` attributes for failed tests.
 
 To copy the name of a single failed test:
 
-1. Expand the **Test summary** panel by selecting **Show test summary details** (**{chevron-lg-down}**).
+1. Expand the **Test summary** panel by selecting **Show test summary details** ({{< icon name="chevron-lg-down" >}}).
 1. Select the test you want to review.
-1. Select **Copy test name to rerun locally** (**{copy-to-clipboard}**).
+1. Select **Copy test name to rerun locally** ({{< icon name="copy-to-clipboard" >}}).
 
 ### Number of recent failures
 

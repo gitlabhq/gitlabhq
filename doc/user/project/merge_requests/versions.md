@@ -2,22 +2,28 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use diff versions to compare pushes contained in a single merge request."
+description: Use diff versions to compare pushes contained in a single merge request.
 title: Merge request diff versions
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you create a merge request, you select two branches to compare. The differences
 between the two branches are shown as a **diff** in the merge request. Each time
 you push commits to a branch connected to a merge request, GitLab updates the
 merge request diff to a new **diff version**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Diff versions are updated on each push, not each commit. If a push contains multiple
 commits, only one new diff version is created.
+
+{{< /alert >}}
 
 By default, GitLab compares the latest push in your source branch (`feature`)
 against the most recent commit in the target branch, often `main`.
@@ -39,7 +45,7 @@ To compare diff versions:
 1. Select **Code > Merge requests**.
 1. Select a merge request.
 1. To view the current diff version for this merge request, select **Changes**.
-1. Next to **Compare** (**{file-tree}**), select the pushes to compare. This example
+1. Next to **Compare** ({{< icon name="file-tree" >}}), select the pushes to compare. This example
    compares `main` to the most recent push (latest diff version) of the branch:
 
    ![Merge request versions dropdown list](img/versions_dropdown_v16_6.png)

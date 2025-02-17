@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Create an audit report by using GraphQL
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can create an audit report for a specific subset of users by using:
 
@@ -77,9 +80,12 @@ You can use GraphiQL to query information about a subset of users.
 
 1. Select **Play**.
 
-NOTE:
+{{< alert type="note" >}}
+
 [The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
 It also expects a GlobalID as an input rather than a single integer.
+
+{{< /alert >}}
 
 This query returns the groups and projects that the user has been explicitly made a member of.
 

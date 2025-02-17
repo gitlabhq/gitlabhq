@@ -378,9 +378,9 @@ This is summarized in the following table:
 
 | Field purpose | Use `GraphQL::Types::ID`? |
 |---------------|---------------------------|
-| Full path | **{check-circle}** Yes |
-| Database ID | **{dotted-circle}** No |
-| IID | **{dotted-circle}** No |
+| Full path | {{< icon name="check-circle" >}} Yes |
+| Database ID | {{< icon name="dotted-circle" >}} No |
+| IID | {{< icon name="dotted-circle" >}} No |
 
 ### `markdown_field`
 
@@ -419,8 +419,11 @@ This can be overridden by passing a `description:` argument.
 
 ### Connection types
 
-NOTE:
+{{< alert type="note" >}}
+
 For specifics on implementation, see [Pagination implementation](#pagination-implementation).
+
+{{< /alert >}}
 
 GraphQL uses [cursor based pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
 to expose collections of items. This provides the clients with a lot
@@ -530,10 +533,13 @@ returned per page if no limiting arguments (`first:` or `last:`) are provided by
 The `max_page_size` argument can be used to specify a different page size limit
 for a connection.
 
-WARNING:
+{{< alert type="warning" >}}
+
 It's better to change the frontend client, or product requirements, to not need large amounts of
 records per page than it is to raise the `max_page_size`, as the default is set to ensure
 the GraphQL API remains performant.
+
+{{< /alert >}}
 
 For example:
 
@@ -653,13 +659,16 @@ This can be done in a resolver, in the
 type, or even in a model method, depending on your preference and
 situation.
 
-NOTE:
+{{< alert type="note" >}}
+
 It's recommended that you also [mark the item as an experiment](#mark-schema-items-as-experiments) while it is behind a feature flag.
 This signals to consumers of the public GraphQL API that the field is not
 meant to be used yet.
 You can also
 [change or remove experimental items at any time](#breaking-change-exemptions) without needing to deprecate them. When the flag is removed, "release"
 the schema item by removing its `experiment` property to make it public.
+
+{{< /alert >}}
 
 ### Descriptions for feature-flagged items
 
@@ -817,11 +826,14 @@ change would typically constitute a breaking change.
 To continue to support clients using the old Global ID argument, we add a deprecation
 to `Gitlab::GlobalId::Deprecations`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If the Global ID is _only_ [exposed as a field](#exposing-global-ids) then we do not need to
 deprecate it. We consider the change to the way a Global ID is expressed in a field to be
 backwards-compatible. We expect that clients don't parse these values: they are meant to
 be treated as opaque tokens, and any structure in them is incidental and not to be relied on.
+
+{{< /alert >}}
 
 **Example scenario:**
 
@@ -893,12 +905,15 @@ The API also accepts these types in the query signature for the argument:
 - `PrometheusServiceID`
 - `IntegrationsPrometheusID`
 
-NOTE:
+{{< alert type="note" >}}
+
 Although queries that use the old type (`PrometheusServiceID` in this example) are
 considered valid and executable by the API, validator tools consider them to be invalid.
 They are considered invalid because we are deprecating using a bespoke method outside of the
 [`@deprecated` directive](https://spec.graphql.org/June2018/#sec--deprecated), so validators are not
 aware of the support.
+
+{{< /alert >}}
 
 The documentation mentions that the old Global ID style is now deprecated.
 
@@ -912,9 +927,12 @@ An item marked as an experiment is
 removed at any time without notice. Mark an item as an experiment when it is subject to
 change and not ready for public use.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only mark new items as an experiment. Never mark existing items
 as an experiment because they're already public.
+
+{{< /alert >}}
 
 To mark a schema item as an experiment, use the `experiment:` keyword.
 You must provide the `milestone:` that introduced the experimental item.
@@ -1971,8 +1989,11 @@ to deliver the messages over websockets.
 When a client subscribes to a subscription, we store their query in-memory in Puma workers. Then when the subscription is triggered,
 the Puma workers execute the stored GraphQL queries and push the results to the clients.
 
-NOTE:
+{{< alert type="note" >}}
+
 We cannot test subscriptions using GraphiQL, because they require an Action Cable client, which GraphiQL does not support at the moment.
+
+{{< /alert >}}
 
 ### Building subscriptions
 
@@ -2282,9 +2303,12 @@ resolve(described_class, obj: project, ctx: { current_user: current_user })
 
 ### Writing unit tests (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 Avoid writing unit tests if the same thing can be tested with
 a full GraphQL request.
+
+{{< /alert >}}
 
 Before creating unit tests, review the following examples:
 

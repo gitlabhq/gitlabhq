@@ -1,14 +1,17 @@
 ---
 stage: Foundations
 group: Import and Integrate
-description: Custom HTTP callbacks, used to send events.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Custom HTTP callbacks, used to send events.
 title: Troubleshooting webhooks
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Troubleshoot and resolve common issues with GitLab webhooks.
 
@@ -28,10 +31,13 @@ For information about webhook events and JSON payloads, see [webhook events](web
 Use public tools to inspect and test webhook payloads.
 These tools provide catch-all endpoints for HTTP requests and respond with a `200 OK` status code.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Exercise caution when using public tools, as you might send sensitive data to external services.
 Use test tokens and rotate any secrets inadvertently sent to third parties.
 For enhanced privacy, [create a private webhook receiver](#create-a-private-webhook-receiver).
+
+{{< /alert >}}
 
 Public webhook inspection tools include:
 
@@ -93,8 +99,11 @@ To create a private webhook receiver:
    - -> /
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 To add this receiver, you might need to [allow requests to the local network](../../../security/webhooks.md).
+
+{{< /alert >}}
 
 ## Resolve SSL certificate verification errors
 
@@ -114,7 +123,11 @@ To resolve this issue:
 
 ## Webhook not triggered
 
-> - Webhooks not triggered in Silent Mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
+{{< history >}}
+
+- Webhooks not triggered in Silent Mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
+
+{{< /history >}}
 
 If a webhook is not triggered, verify that:
 

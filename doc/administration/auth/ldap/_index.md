@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Integrate LDAP with GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab integrates with [LDAP - Lightweight Directory Access Protocol](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
 to support user authentication.
@@ -19,8 +22,11 @@ This integration works with most LDAP-compliant directory servers, including:
 - Open LDAP.
 - 389 Server.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab does not support [Microsoft Active Directory Trusts](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771568(v=ws.10)).
+
+{{< /alert >}}
 
 Users added through LDAP:
 
@@ -112,9 +118,9 @@ To configure LDAP, you edit the settings in a configuration file:
 
 The file you edit differs depending on your GitLab setup:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -148,7 +154,9 @@ The file you edit differs depending on your GitLab setup:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -191,7 +199,9 @@ The file you edit differs depending on your GitLab setup:
 For more information, see
 [how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -233,7 +243,9 @@ For more information, see
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -274,7 +286,9 @@ For more information, see
 For more information about the various LDAP options, see the `ldap` setting in
 [`gitlab.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 After configuring LDAP, to test the configuration, use the
 [LDAP check Rake task](../../raketasks/ldap.md#check).
@@ -287,23 +301,23 @@ The following basic settings are available:
 
 | Setting                         | Required               | Type                          | Description |
 |---------------------------------|------------------------|-------------------------------|-------------|
-| `label`                         | **{check-circle}** Yes | String                        | A human-friendly name for your LDAP server. It is displayed on your sign-in page. Example: `'Paris'` or `'Acme, Ltd.'` |
-| `host`                          | **{check-circle}** Yes | String                        | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. Example: `'ldap.mydomain.com'` |
-| `port`                          | **{check-circle}** Yes | Integer                       | The port to connect with on your LDAP server. Ignored when `hosts` is defined. Example: `389` or `636` (for SSL) |
-| `uid`                           | **{check-circle}** Yes | String                        | The LDAP attribute that maps to the username that users use to sign in. Should be the attribute, not the value that maps to the `uid`. Does not affect the GitLab username (see [attributes section](#attribute-configuration-settings)). Example: `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
-| `base`                          | **{check-circle}** Yes | String                        | Base where we can search for users. Example: `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
-| `encryption`                    | **{check-circle}** Yes | String                        | Encryption method (the `method` key is deprecated in favor of `encryption`). It can have one of three values: `'start_tls'`, `'simple_tls'`, or `'plain'`. `simple_tls` corresponds to 'Simple TLS' in the LDAP library. `start_tls` corresponds to StartTLS, not to be confused with regular TLS. If you specify `simple_tls`, usually it's on port 636, while `start_tls` (StartTLS) would be on port 389. `plain` also operates on port 389. |
-| `hosts`                         | **{dotted-circle}** No | Array of strings and integers | An array of host and port pairs to open connections. Each configured server should have an identical data set. This is not meant to configure multiple distinct LDAP servers, but to configure failover. Hosts are tried in the order they are configured. Example: `[['ldap1.mydomain.com', 636], ['ldap2.mydomain.com', 636]]` |
-| `bind_dn`                       | **{dotted-circle}** No | String                        | The full DN of the user you bind with. Example: `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
-| `password`                      | **{dotted-circle}** No | String                        | The password of the bind user. |
-| `verify_certificates`           | **{dotted-circle}** No | Boolean                       | Defaults to `true`. Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. If set to `false`, no validation of the LDAP server's SSL certificate is performed. |
-| `timeout`                       | **{dotted-circle}** No | Integer                       | Defaults to `10`. Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of `0` means there is no timeout. |
-| `active_directory`              | **{dotted-circle}** No | Boolean                       | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. |
-| `allow_username_or_email_login` | **{dotted-circle}** No | Boolean                       | Defaults to `false`. If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. |
-| `block_auto_created_users`      | **{dotted-circle}** No | Boolean                       | Defaults to `false`. To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator . |
-| `user_filter`                   | **{dotted-circle}** No | String                        | Filter LDAP users. Follows the format of [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html). GitLab does not support `omniauth-ldap`'s custom filter syntax. Examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
-| `lowercase_usernames`           | **{dotted-circle}** No | Boolean                       | If enabled, GitLab converts the name to lower case. |
-| `retry_empty_result_with_codes` | **{dotted-circle}** No | Array                         | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
+| `label`                         | {{< icon name="check-circle" >}} Yes | String                        | A human-friendly name for your LDAP server. It is displayed on your sign-in page. Example: `'Paris'` or `'Acme, Ltd.'` |
+| `host`                          | {{< icon name="check-circle" >}} Yes | String                        | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. Example: `'ldap.mydomain.com'` |
+| `port`                          | {{< icon name="check-circle" >}} Yes | Integer                       | The port to connect with on your LDAP server. Ignored when `hosts` is defined. Example: `389` or `636` (for SSL) |
+| `uid`                           | {{< icon name="check-circle" >}} Yes | String                        | The LDAP attribute that maps to the username that users use to sign in. Should be the attribute, not the value that maps to the `uid`. Does not affect the GitLab username (see [attributes section](#attribute-configuration-settings)). Example: `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
+| `base`                          | {{< icon name="check-circle" >}} Yes | String                        | Base where we can search for users. Example: `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
+| `encryption`                    | {{< icon name="check-circle" >}} Yes | String                        | Encryption method (the `method` key is deprecated in favor of `encryption`). It can have one of three values: `'start_tls'`, `'simple_tls'`, or `'plain'`. `simple_tls` corresponds to 'Simple TLS' in the LDAP library. `start_tls` corresponds to StartTLS, not to be confused with regular TLS. If you specify `simple_tls`, usually it's on port 636, while `start_tls` (StartTLS) would be on port 389. `plain` also operates on port 389. |
+| `hosts`                         | {{< icon name="dotted-circle" >}} No | Array of strings and integers | An array of host and port pairs to open connections. Each configured server should have an identical data set. This is not meant to configure multiple distinct LDAP servers, but to configure failover. Hosts are tried in the order they are configured. Example: `[['ldap1.mydomain.com', 636], ['ldap2.mydomain.com', 636]]` |
+| `bind_dn`                       | {{< icon name="dotted-circle" >}} No | String                        | The full DN of the user you bind with. Example: `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
+| `password`                      | {{< icon name="dotted-circle" >}} No | String                        | The password of the bind user. |
+| `verify_certificates`           | {{< icon name="dotted-circle" >}} No | Boolean                       | Defaults to `true`. Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. If set to `false`, no validation of the LDAP server's SSL certificate is performed. |
+| `timeout`                       | {{< icon name="dotted-circle" >}} No | Integer                       | Defaults to `10`. Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of `0` means there is no timeout. |
+| `active_directory`              | {{< icon name="dotted-circle" >}} No | Boolean                       | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. |
+| `allow_username_or_email_login` | {{< icon name="dotted-circle" >}} No | Boolean                       | Defaults to `false`. If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. |
+| `block_auto_created_users`      | {{< icon name="dotted-circle" >}} No | Boolean                       | Defaults to `false`. To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator . |
+| `user_filter`                   | {{< icon name="dotted-circle" >}} No | String                        | Filter LDAP users. Follows the format of [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html). GitLab does not support `omniauth-ldap`'s custom filter syntax. Examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
+| `lowercase_usernames`           | {{< icon name="dotted-circle" >}} No | Boolean                       | If enabled, GitLab converts the name to lower case. |
+| `retry_empty_result_with_codes` | {{< icon name="dotted-circle" >}} No | Array                         | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
 
 <!-- markdownlint-enable MD056 -->
 
@@ -322,9 +336,9 @@ pairs. The following settings are all optional:
 
 The examples below illustrate how to set `ca_file` and `ssl_version` in `tls_options`:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -352,7 +366,9 @@ The examples below illustrate how to set `ca_file` and `ssl_version` in `tls_opt
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -388,7 +404,9 @@ The examples below illustrate how to set `ca_file` and `ssl_version` in `tls_opt
 For more information, see
 [how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -424,7 +442,9 @@ For more information, see
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -455,7 +475,9 @@ For more information, see
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Attribute configuration settings
 
@@ -480,9 +502,12 @@ you must do so in an `attributes` hash.
 
 ### LDAP sync configuration settings
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 These LDAP sync configuration settings are optional, excluding `group_base` which
 required when `external_groups` is configured:
@@ -494,14 +519,20 @@ required when `external_groups` is configured:
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | `'sshPublicKey'` or false if not set |
 
-NOTE:
+{{< alert type="note" >}}
+
 If Sidekiq is configured on a different server to the Rails server, you must add the LDAP configuration to every Sidekiq server as well for LDAP synchronisation to work.
+
+{{< /alert >}}
 
 ### Use multiple LDAP servers
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you have users on multiple LDAP servers, you can configure GitLab to use them. To add additional LDAP servers:
 
@@ -514,9 +545,9 @@ If you have users on multiple LDAP servers, you can configure GitLab to use them
 The following example shows how to configure three LDAP servers with
 minimal configuration:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -558,7 +589,9 @@ minimal configuration:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -602,7 +635,9 @@ minimal configuration:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -652,7 +687,9 @@ minimal configuration:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -697,7 +734,9 @@ minimal configuration:
 For more information about the various LDAP options, see the `ldap` setting in
 [`gitlab.yml.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 This example results in a sign-in page with the following tabs:
 
@@ -711,9 +750,9 @@ To limit all GitLab access to a subset of the LDAP users on your LDAP server, fi
 configured `base`. However, to further filter users if
 necessary, you can set up an LDAP user filter. The filter must comply with [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -731,7 +770,9 @@ necessary, you can set up an LDAP user filter. The filter must comply with [RFC 
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -756,7 +797,9 @@ necessary, you can set up an LDAP user filter. The filter must comply with [RFC 
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -782,7 +825,9 @@ necessary, you can set up an LDAP user filter. The filter must comply with [RFC 
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -804,7 +849,9 @@ necessary, you can set up an LDAP user filter. The filter must comply with [RFC 
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To limit access to the nested members of an Active Directory group, use the following syntax:
 
@@ -859,9 +906,9 @@ This can lead to several confusing issues such as creating links or namespaces w
 GitLab can automatically lowercase usernames provided by the LDAP server by enabling
 the configuration option `lowercase_usernames`. By default, this configuration option is `false`.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -879,7 +926,9 @@ the configuration option `lowercase_usernames`. By default, this configuration o
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -904,7 +953,9 @@ the configuration option `lowercase_usernames`. By default, this configuration o
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -930,7 +981,9 @@ the configuration option `lowercase_usernames`. By default, this configuration o
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yaml`:
 
@@ -952,7 +1005,9 @@ the configuration option `lowercase_usernames`. By default, this configuration o
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Disable LDAP web sign in
 
@@ -964,9 +1019,9 @@ checks like custom 2FA.
 When LDAP web sign in is disabled, users don't see an **LDAP** tab on the sign-in page.
 This does not disable using LDAP credentials for Git access.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -980,7 +1035,9 @@ This does not disable using LDAP credentials for Git access.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -1003,7 +1060,9 @@ This does not disable using LDAP credentials for Git access.
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -1025,7 +1084,9 @@ This does not disable using LDAP credentials for Git access.
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yaml`:
 
@@ -1045,7 +1106,9 @@ This does not disable using LDAP credentials for Git access.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Provide smart card authentication for GitLab
 
@@ -1070,9 +1133,9 @@ The supported configuration items for the encrypted file are:
 - `bind_dn`
 - `password`
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. If initially your LDAP configuration in `/etc/gitlab/gitlab.rb` looked like:
 
@@ -1106,12 +1169,16 @@ The supported configuration items for the encrypted file are:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the LDAP password. For more information,
 read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#ldap-password).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. If initially your LDAP configuration in `docker-compose.yml` looked like:
 
@@ -1154,7 +1221,9 @@ read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secre
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. If initially your LDAP configuration in `/home/git/gitlab/config/gitlab.yml` looked like:
 
@@ -1192,7 +1261,9 @@ read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secre
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Updating LDAP DN and email
 

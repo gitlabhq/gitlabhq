@@ -1,6 +1,6 @@
 ---
-redirect_to: 'analytics_dashboards.md'
-remove_date: '2025-04-17'
+redirect_to: analytics_dashboards.md
+remove_date: "2025-04-17"
 ---
 
 <!-- markdownlint-disable -->

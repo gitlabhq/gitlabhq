@@ -66,12 +66,15 @@ It includes these labels, which are added to the merge request:
 
 A member of the Technical Writing team adds the [`~Technical Writing` team label](../labels/_index.md#team-labels).
 
-NOTE:
+{{< alert type="note" >}}
+
 With the exception of `/doc/development/documentation`,
 technical writers do not review content in the `doc/development` directory.
 Any Maintainer can merge content in the `doc/development` directory.
 If you would like a technical writer review of content in the `doc/development` directory,
 ask in the `#docs` Slack channel.
+
+{{< /alert >}}
 
 ## Post-merge reviews
 

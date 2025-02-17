@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: User account
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -73,13 +76,20 @@ The new email address is added as a secondary email address.
 You can use secondary email addresses to reset passwords but not to authenticate.
 You can update your [primary email address](#change-your-primary-email).
 
-NOTE:
+{{< alert type="note" >}}
+
 [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,
 [project imports](../project/import/_index.md), and [group migrations](../group/import/_index.md).
 
+{{< /alert >}}
+
 ## Delete email addresses from your user profile
 
-> - Automatic deletion of unverified secondary email addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151562) in GitLab 17.0.
+{{< history >}}
+
+- Automatic deletion of unverified secondary email addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151562) in GitLab 17.0.
+
+{{< /history >}}
 
 You can delete a secondary email address from your account. You cannot delete your
 primary email address.
@@ -89,16 +99,19 @@ sent to the primary email address instead.
 
 Unverified secondary email addresses are automatically deleted after three days.
 
-NOTE:
+{{< alert type="note" >}}
+
 Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
 the deleted email address.
+
+{{< /alert >}}
 
 To delete an email address from your account:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
-1. Select **Delete** (**{remove}**) and confirm you want to **Remove**.
+1. Select **Delete** ({{< icon name="remove" >}}) and confirm you want to **Remove**.
 
 You can also [use the API to delete a secondary email address](../../api/user_email_addresses.md#delete-an-email-address).
 
@@ -106,8 +119,11 @@ You can also [use the API to delete a secondary email address](../../api/user_em
 
 You can make your user profile visible to only you and GitLab administrators.
 
-NOTE:
+{{< alert type="note" >}}
+
 A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#prevent-users-from-making-their-profiles-private) this setting, forcing all profiles to be made public.
+
+{{< /alert >}}
 
 To make your profile private:
 
@@ -122,10 +138,13 @@ The following is hidden from your user profile page (`https://gitlab.example.com
 - Date when account was created
 - Tabs for activity, groups, contributed projects, personal projects, starred projects, snippets
 
-NOTE:
+{{< alert type="note" >}}
+
 Making your user profile page private does not hide all your public resources from
 the REST or GraphQL APIs. For example, the email address associated with your commit
 signature is accessible unless you [use an automatically-generated private commit email](#use-an-automatically-generated-private-commit-email).
+
+{{< /alert >}}
 
 ### User visibility
 
@@ -146,7 +165,7 @@ the README file with information, it's included on your profile page.
 
 To create a new project and add its README to your profile:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name for your new project.
@@ -170,9 +189,13 @@ to match your username.
 
 ## Add external accounts to your user profile page
 
-> - Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default.
-> - Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
-> - Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../feature_flags.md) named `verify_mastodon_user`. Disabled by default.
+{{< history >}}
+
+- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default.
+- Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
+- Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../feature_flags.md) named `verify_mastodon_user`. Disabled by default.
+
+{{< /history >}}
 
 You can add links to certain other external accounts you might have, like Skype and X (formerly Twitter).
 They can help other users connect with you on other platforms.
@@ -333,8 +356,12 @@ blocked users don't appear in the followers list on user profiles.
 
 ### Disable following and being followed by other users
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/420620) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/420620) in GitLab 16.3.
+
+{{< /history >}}
 
 You can disable following and being followed by other users.
 
@@ -344,8 +371,11 @@ You can disable following and being followed by other users.
 1. Clear the **Enable follow users** checkbox.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 When this feature is being disabled, all current followed/following connections are deleted.
+
+{{< /alert >}}
 
 ## View a user's activity
 
@@ -414,7 +444,11 @@ GitLab administrators can
 
 ### Stay signed in indefinitely
 
-> - Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
+{{< history >}}
+
+- Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
+
+{{< /history >}}
 
 To remain signed in indefinitely, select the **Remember me** checkbox on the GitLab sign-in page.
 
@@ -442,11 +476,14 @@ When it expires or isn't available, GitLab:
 
 When both the `remember_user_token` and `_gitlab_session` cookies are gone or expired, you must sign in again.
 
-NOTE:
+{{< alert type="note" >}}
+
 When any session is signed out, or when a session is revoked
 from the [active sessions list](active_sessions.md), all **Remember me** tokens are revoked.
 While other sessions remain active, the **Remember me** feature doesn't restore
 a session if the browser is closed or the existing session expires.
+
+{{< /alert >}}
 
 ## Related topics
 

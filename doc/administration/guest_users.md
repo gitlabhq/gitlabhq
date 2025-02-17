@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Guest users
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Users assigned the Guest role have limited access and capabilities compared to other user roles. Their permissions are restricted and are designed to provide basic visibility and interaction without compromising sensitive project data. For more information, see [Roles and permissions](../user/permissions.md).
 
@@ -15,8 +18,11 @@ In GitLab Free and Premium, Guest users count towards the license seat usage.
 
 ## Unlimited seat usage
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 In GitLab Ultimate, users with the Guest role do not count towards the license seat usage. You can add Guest users to your GitLab instance without impacting your billable seats.
 

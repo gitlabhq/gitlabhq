@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: User SSH and GPG keys API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with SSH and GPG keys for users. For more information, see [SSH keys](../user/ssh.md) and [GPG keys](../user/project/repository/signed_commits/gpg.md).
 
@@ -143,7 +146,11 @@ Example response:
 
 ## Add an SSH key
 
-> - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+{{< history >}}
+
+- The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+
+{{< /history >}}
 
 Adds an SSH key for your user account.
 
@@ -195,12 +202,19 @@ Example response:
 
 ## Add an SSH key for a user
 
-> - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+{{< history >}}
+
+- The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+
+{{< /history >}}
 
 Adds an SSH key for a given user account.
 
-NOTE:
+{{< alert type="note" >}}
+
 This also adds an audit event.
+
+{{< /alert >}}
 
 Prerequisites:
 

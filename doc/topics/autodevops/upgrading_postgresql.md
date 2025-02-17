@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Upgrading PostgreSQL for Auto DevOps
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When `POSTGRES_ENABLED` is `true`, Auto DevOps provides an
 [in-cluster PostgreSQL database](customize.md#postgresql-database-support) for your application.
@@ -38,10 +41,13 @@ involves:
    any existing channel 1 database. For more information, see
    [Detected an existing PostgreSQL database](troubleshooting.md#detected-an-existing-postgresql-database).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have configured Auto DevOps to have staging,
 consider trying out the backup and restore steps on staging first, or
 trying this out on a review app.
+
+{{< /alert >}}
 
 ## Take your application offline
 
@@ -169,16 +175,22 @@ pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Retain     
 
 ## Install new PostgreSQL
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using the newer version of PostgreSQL deletes
 the older 0.7.1 PostgreSQL. To prevent the underlying data from being
 deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 You can also
 [scope](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable) the
 `AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1` and
 `POSTGRES_VERSION` variables to specific environments, for example, `staging`.
+
+{{< /alert >}}
 
 1. Set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`. This opts into using the
    newer 8.2.1-based PostgreSQL, and removes the older 0.7.1-based

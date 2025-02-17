@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Two-factor authentication
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.
@@ -90,13 +93,19 @@ in a safe place.
 
 ### Enable a one-time password authenticator using FortiAuthenticator
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-FLAG:
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
+
+{{< /alert >}}
 
 You can use FortiAuthenticator as an OTP provider in GitLab. Users must:
 
@@ -155,10 +164,17 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 ### Enable a one-time password authenticator using Cisco Duo
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
+
+{{< /history >}}
 
 You can use Cisco Duo as an OTP provider in GitLab.
 
@@ -221,14 +237,20 @@ On your GitLab server:
 
 ### Enable a one-time password authenticator using FortiToken Cloud
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-FLAG:
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available per user, an administrator can
 [enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
+
+{{< /alert >}}
 
 You can use FortiToken Cloud as an OTP provider in GitLab. Users must:
 
@@ -280,8 +302,12 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 ### Set up a WebAuthn device
 
-> - Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/396931) in GitLab 17.6. Feature flag `webauthn_without_totp` removed.
+{{< history >}}
+
+- Optional one-time password authentication for WebAuthn devices [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378844) in GitLab 15.10 [with a feature flag](../../../administration/feature_flags.md) named `webauthn_without_totp`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/396931) in GitLab 17.6. Feature flag `webauthn_without_totp` removed.
+
+{{< /history >}}
 
 WebAuthn is [supported by](https://caniuse.com/#search=webauthn) the following:
 
@@ -320,8 +346,11 @@ If this is the first time you have set up 2FA, you
 must [download recovery codes](#recovery-codes) so you can recover access to your
 account if you lose access.
 
-WARNING:
+{{< alert type="warning" >}}
+
 You can lose access to your account if you clear your browser data.
+
+{{< /alert >}}
 
 ## Recovery codes
 
@@ -329,8 +358,11 @@ Immediately after successfully enabling 2FA with an OTP authenticator, you're pr
 a set of generated recovery codes. If you ever lose access to your OTP authenticator, you can use one of
 these recovery codes to sign in to your account.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Each code can be used only once to sign in to your account.
+
+{{< /alert >}}
 
 You should copy and print the codes, or use **Download codes** to download them for storage in a safe
 place. If you choose to download them, the file is called `gitlab-recovery-codes.txt`.
@@ -353,8 +385,11 @@ To regenerate 2FA recovery codes, you need access to a desktop browser:
 1. In the **Disable two-factor authentication** section, select **Regenerate recovery codes**.
 1. On the dialog, enter your current password and select **Regenerate recovery codes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you regenerate 2FA recovery codes, save them. You can't use any previously created 2FA codes.
+
+{{< /alert >}}
 
 ## Sign in with two-factor authentication enabled
 
@@ -375,7 +410,11 @@ in.
 
 ## Disable two-factor authentication
 
-> - Ability to disable OTP authenticator and WebAuthn devices individually or simultaneously [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393419) in GitLab 17.6.
+{{< history >}}
+
+- Ability to disable OTP authenticator and WebAuthn devices individually or simultaneously [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393419) in GitLab 17.6.
+
+{{< /history >}}
 
 You can disable the OTP authenticator and WebAuthn devices individually or simultaneously. To disable them simultaneously:
 
@@ -389,9 +428,12 @@ This clears all your 2FA registrations, including mobile applications and WebAut
 
 ## Information for GitLab administrators
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 - Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/_index.md).
 - To ensure 2FA authorizes correctly with an OTP server, synchronize your GitLab

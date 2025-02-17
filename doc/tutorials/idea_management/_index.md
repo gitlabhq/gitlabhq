@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Set up a project for idea management'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -46,7 +49,7 @@ A project contains the issues that will be used to track ideas.
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details.
    - For **Project name**, enter `Idea management tutorial`.
@@ -77,9 +80,12 @@ handbook published with [GitLab Pages](../../user/project/pages/_index.md).
 
 ## Create scoped labels
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Next, you'll create labels to add to ideas to represent the status workflow.
 
@@ -95,10 +101,13 @@ used together.
 For example, if you add the `status::backlog` label to an issue that already has `status::in review`, the
 previous one is removed.
 
-NOTE:
+{{< alert type="note" >}}
+
 Scoped labels are available in the Premium and Ultimate tier.
 If you're on the Free tier, you can use regular labels instead.
 However, they aren't mutually exclusive.
+
+{{< /alert >}}
 
 To create each label:
 

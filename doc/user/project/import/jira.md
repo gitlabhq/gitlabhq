@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Import your Jira project issues to GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Using GitLab Jira importer, you can import your Jira issues to GitLab.com or to
 GitLab Self-Managed.
@@ -41,14 +44,17 @@ iterations of the GitLab Jira importer.
 
 ## Import Jira issues to GitLab
 
-NOTE:
+{{< alert type="note" >}}
+
 Importing Jira issues is done as an asynchronous background job, which
 may result in delays based on import queues load, system load, or other factors.
 Importing large projects may take several minutes depending on the size of the import.
 
+{{< /alert >}}
+
 To import Jira issues to a GitLab project:
 
-1. On the **{issues}** **Issues** page, select **Actions** (**{ellipsis_v}**) **> Import from Jira**.
+1. On the {{< icon name="issues" >}} **Issues** page, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Import from Jira**.
 
    ![Import issues from Jira button](img/jira/import_issues_from_jira_button_v16_3.png)
 

@@ -5,16 +5,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Dependency proxy for packages
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3610) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `packages_dependency_proxy_maven`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3610) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `packages_dependency_proxy_maven`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 The dependency proxy is in [beta](../../../../policy/development_stages_support.md#beta). Review the documentation carefully before you use this feature.
+
+{{< /alert >}}
 
 The GitLab dependency proxy for packages is a local proxy for frequently pulled packages.
 It is implemented as a pull-through cache that works at the project level.
@@ -57,19 +67,26 @@ Advanced caching support depends on how the upstream package registry
 responds to dependency proxy requests, and on
 which package format you use.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Maven
+{{< tab title="Maven" >}}
 
 | Package registry                                                                                                                         | Advanced caching supported? |
 |------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| [GitLab](../../maven_repository/_index.md)                                                                                                | **{check-circle}** Yes      |
-| [Maven Central](https://mvnrepository.com/repos/central)                                                                                 | **{check-circle}** Yes      |
-| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                           | **{check-circle}** Yes      |
-| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                   | **{check-circle}** Yes      |
-| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)    | **{dotted-circle}** No      |
 
-::EndTabs
+| [GitLab](../../maven_repository/_index.md)                                                                                                | {{< icon name="check-circle" >}} Yes      |
+
+| [Maven Central](https://mvnrepository.com/repos/central)                                                                                 | {{< icon name="check-circle" >}} Yes      |
+
+| [Artifactory](https://jfrog.com/integration/maven-repository/)                                                                           | {{< icon name="check-circle" >}} Yes      |
+
+| [Sonatype Nexus](https://help.sonatype.com/en/maven-repositories.html)                                                                   | {{< icon name="check-circle" >}} Yes      |
+
+| [GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)    | {{< icon name="dotted-circle" >}} No      |
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Permissions
 
@@ -85,15 +102,15 @@ The dependency proxy uses the [same permissions as the package registry](../_ind
 
 | Project visibility | Minimum [role](../../../permissions.md#roles) | Can read package files? | Can write package files? | Behavior |
 |--------------------|-------------------------------------------------------|-------------------------|--------------------------|----------|
-| Public             | Anonymous                                             | **{dotted-circle}** No  | **{dotted-circle}** No   | Request rejected. |
-| Public             | Guest                                                 | **{check-circle}** Yes  | **{dotted-circle}** No   | Package file returned from either the cache or the remote registry. |
-| Public             | Developer                                             | **{check-circle}** Yes  | **{check-circle}** Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
-| Internal           | Anonymous                                             | **{dotted-circle}** No  | **{dotted-circle}** No   | Request rejected |
-| Internal           | Guest                                                 | **{check-circle}** Yes  | **{dotted-circle}** No   | Package file returned from either the cache or the remote registry. |
-| Internal           | Developer                                             | **{check-circle}** Yes  | **{check-circle}** Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
-| Private            | Anonymous                                             | **{dotted-circle}** No  | **{dotted-circle}** No   | Request rejected |
-| Private            | Reporter                                              | **{check-circle}** Yes  | **{dotted-circle}** No   | Package file returned from either the cache or the remote registry. |
-| Private           | Developer                                             | **{check-circle}** Yes  | **{check-circle}** Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
+| Public             | Anonymous                                             | {{< icon name="dotted-circle" >}} No  | {{< icon name="dotted-circle" >}} No   | Request rejected. |
+| Public             | Guest                                                 | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No   | Package file returned from either the cache or the remote registry. |
+| Public             | Developer                                             | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
+| Internal           | Anonymous                                             | {{< icon name="dotted-circle" >}} No  | {{< icon name="dotted-circle" >}} No   | Request rejected |
+| Internal           | Guest                                                 | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No   | Package file returned from either the cache or the remote registry. |
+| Internal           | Developer                                             | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
+| Private            | Anonymous                                             | {{< icon name="dotted-circle" >}} No  | {{< icon name="dotted-circle" >}} No   | Request rejected |
+| Private            | Reporter                                              | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No   | Package file returned from either the cache or the remote registry. |
+| Private           | Developer                                             | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes   | Package file returned from either the cache or the remote registry. The file is published to the cache. |
 
 At a minimum, any user who can use the dependency proxy can also use the project's package registry.
 
@@ -122,9 +139,9 @@ To configure the client:
 
 1. Complete the configuration for your client:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle mvn
+{{< tab title="mvn" >}}
 
 [Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication) is accepted.
 However, you should use the [custom HTTP header authentication](../../maven_repository/_index.md#custom-http-header),
@@ -149,7 +166,9 @@ Where:
 By default, Maven Central is checked first through the [Super POM](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Super_POM).
 However, you might want to force `mvn` to check the GitLab endpoint first. To do this, follow the instructions from the [request forward](../../maven_repository/_index.md#additional-configuration-for-mvn).
 
-:::TabTitle gradle
+{{< /tab >}}
+
+{{< tab title="gradle" >}}
 
 Add a `repositories` section to your [`build.gradle`](https://docs.gradle.org/current/userguide/tutorial_using_tasks.html) file.
 
@@ -194,7 +213,9 @@ In this example:
 - `<project_id>` is the ID of the project to be used as a dependency proxy.
 - `REPLACE_WITH_NAME` is explained in the [Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication) section.
 
-:::TabTitle sbt
+{{< /tab >}}
+
+{{< tab title="sbt" >}}
 
 In your [`build.sbt`](https://www.scala-sbt.org/1.x/docs/Directories.html#sbt+build+definition+files), add the following lines:
 
@@ -210,7 +231,9 @@ In this example:
 - `<host>` is the host present in the `<endpoint url>` without the protocol scheme or the port. Example: `gitlab.example.com`.
 - `<name>` and `<token>` are explained in the [Basic HTTP authentication](../../maven_repository/_index.md#basic-http-authentication) section.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Configure the remote registry
 
@@ -226,9 +249,9 @@ To set those parameters:
 1. Expand **Package registry**.
 1. Under **Dependency Proxy**, complete the form for your package format:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Maven
+{{< tab title="Maven" >}}
 
 Any Maven package registry can be connected to the dependency proxy. You can
 authorize the connection with the Maven package registry username and password.
@@ -242,7 +265,9 @@ in the form:
 
 You must either set both the username and password, or leave both fields empty.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 
@@ -257,9 +282,9 @@ However, you might encounter one of the following responses:
 - `502 Bad Gateway` - The remote package registry could not fulfill the file request. Verify the [dependency proxy settings](#configure-the-remote-registry).
 - `504 Gateway Timeout` - The remote package registry timed out. Verify the [dependency proxy settings](#configure-the-remote-registry).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Maven
+{{< tab title="Maven" >}}
 
 ```shell
 curl --fail-with-body --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/<group id and artifact id>/<version>/<file_name>"
@@ -283,4 +308,6 @@ The request to manually pull a package is:
 curl --fail-with-body --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/com/my_company/my_package/1.2.3/my_package-1.2.3.pom"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

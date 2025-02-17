@@ -59,8 +59,11 @@ To install the GDK:
 
    This script clones the GitLab Development Kit (GDK) repository into a new subdirectory, and sets up necessary dependencies using the `asdf` version manager (including Ruby, Node.js, PostgreSQL, Redis, and more).
 
-   NOTE:
-   If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
+   {{< alert type="note" >}}
+
+If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
+
+   {{< /alert >}}
 
 1. For the message `Where would you like to install the GDK? [./gitlab-development-kit]`,
    press <kbd>Enter</kbd> to accept the default location.
@@ -137,10 +140,13 @@ For more advanced troubleshooting, continue to the [Troubleshoot GDK](#troublesh
 
 ## Troubleshoot GDK
 
-NOTE:
+{{< alert type="note" >}}
+
 For more advanced troubleshooting, see
 the [troubleshooting documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting)
 and the [#contribute channel on Discord](https://discord.com/channels/778180511088640070/997442331202564176).
+
+{{< /alert >}}
 
 If you encounter issues, go to the `gitlab-development-kit/gitlab`
 directory and run `gdk doctor`.

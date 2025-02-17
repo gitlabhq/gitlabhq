@@ -1,6 +1,6 @@
 ---
-redirect_to: '../../administration/license_file.md'
-remove_date: '2025-04-14'
+redirect_to: ../../administration/license_file.md
+remove_date: "2025-04-14"
 ---
 
 <!-- markdownlint-disable -->

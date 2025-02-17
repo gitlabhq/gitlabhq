@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Install and secure a single node GitLab instance'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In this tutorial you will learn how to install and securely configure a single
 node GitLab instance that can accommodate up to
@@ -155,9 +158,12 @@ they add an extra layer of security.
 1. Open a new file with your editor under `/etc/sysctl.d`, for example
    `/etc/sysctl.d/99-gitlab-hardening.conf`, and add the following.
 
-   NOTE:
-   The naming and source directory decide the order of processing, which is
+   {{< alert type="note" >}}
+
+The naming and source directory decide the order of processing, which is
    important because the last parameter processed might override earlier ones.
+
+   {{< /alert >}}
 
    ```plaintext
    ##

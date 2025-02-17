@@ -2,7 +2,7 @@
 stage: Monitor
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Documentation for developers interested in contributing features or bugfixes for GitLab Observability."
+description: Documentation for developers interested in contributing features or bugfixes for GitLab Observability.
 title: GitLab Observability development guidelines
 ---
 
@@ -111,8 +111,11 @@ You can reference the instructions for running the demo app [here](https://opent
             exporters: [otlphttp/gitlab]
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 For GDK and Docker to communicate you may need to set up a [loopback interface](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md#create-loopback-interface).
+
+{{< /alert >}}
 
 1. Save the configuration and start the demo app:
 

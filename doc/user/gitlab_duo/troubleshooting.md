@@ -19,13 +19,15 @@ you can also do the following:
 
 1. As administrator, run a health check for GitLab Duo.
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle In 17.5 and later
+   {{< tab title="In 17.5 and later" >}}
 
    In GitLab 17.5 and later, you can use the UI to run health checks and download a detailed report that helps identify and troubleshoot issues.
 
-   :::TabTitle In 17.4
+   {{< /tab >}}
+
+   {{< tab title="In 17.4" >}}
 
    In GitLab 17.4, you can run the health check Rake task to generate a detailed report that helps identify and troubleshoot issues.
 
@@ -33,7 +35,9 @@ you can also do the following:
    sudo gitlab-rails 'cloud_connector:health_check(root,report.json)'
    ```
 
-   :::TabTitle In 17.3 and earlier
+   {{< /tab >}}
+
+   {{< tab title="In 17.3 and earlier" >}}
 
    In GitLab 17.3 and earlier, you can download and run the `health_check` script to generate a detailed report that helps identify and troubleshoot issues.
 
@@ -57,7 +61,9 @@ you can also do the following:
              --skip [CHECK]         Skip specific check (options: access_data, token, license, host, features, end_to_end)
       ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Verify that the GitLab instance can reach the [required GitLab.com endpoints](setup.md).
    You can use command-line tools such as `curl` to verify the connectivity.

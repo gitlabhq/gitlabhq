@@ -5,9 +5,12 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Group migration by direct transfer
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 To use direct transfer, ensure your GitLab installation is accessible from
 [GitLab IP addresses](../user/gitlab_com/_index.md#ip-range) and has a public DNS entry.
+
+{{< /alert >}}
 
 [Group migration by direct transfer](../user/group/import/_index.md) is the
 evolution of migrating groups and projects using file exports. The goal is to have an easier way for the user to migrate a whole group,

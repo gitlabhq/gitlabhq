@@ -5,8 +5,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Issue Types (deprecated)
 ---
 
-WARNING:
+{{< alert type="warning" >}}
+
 We have deprecated Issue Types in favor of [Work Items and Work Item Types](work_items.md).
+
+{{< /alert >}}
 
 Sometimes when a new resource type is added it's not clear if it should be only an
 "extension" of Issue (Issue Type) or if it should be a new first-class resource type

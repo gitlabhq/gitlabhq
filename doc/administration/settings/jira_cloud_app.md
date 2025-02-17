@@ -5,12 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab for Jira Cloud app administration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This page contains administrator documentation for the GitLab for Jira Cloud app. For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md).
+
+{{< /alert >}}
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](../../integration/jira/development_panel.md).
 
@@ -48,8 +54,11 @@ To create an OAuth application on your GitLab Self-Managed instance:
    - If you're installing the app manually, enter `<instance_url>/-/jira_connect/oauth_callbacks` and replace `<instance_url>` with the URL of your instance.
 1. Clear the **Trusted** and **Confidential** checkboxes.
 
-   NOTE:
-   You must clear these checkboxes to avoid [errors](jira_cloud_app_troubleshooting.md#error-failed-to-sign-in-to-gitlab).
+   {{< alert type="note" >}}
+
+You must clear these checkboxes to avoid [errors](jira_cloud_app_troubleshooting.md#error-failed-to-sign-in-to-gitlab).
+
+   {{< /alert >}}
 
 1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
@@ -61,7 +70,11 @@ To create an OAuth application on your GitLab Self-Managed instance:
 
 ## Jira user requirements
 
-> - Support for the `org-admins` group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420687) in GitLab 16.6.
+{{< history >}}
+
+- Support for the `org-admins` group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420687) in GitLab 16.6.
+
+{{< /history >}}
 
 In your [Atlassian organization](https://admin.atlassian.com), you must ensure that the Jira user that is used to set up the GitLab for Jira Cloud app is a member of
 either:
@@ -83,7 +96,11 @@ If necessary:
 
 ## Install the GitLab for Jira Cloud app from the Atlassian Marketplace
 
-> - Introduced in GitLab 15.7.
+{{< history >}}
+
+- Introduced in GitLab 15.7.
+
+{{< /history >}}
 
 You can use the official GitLab for Jira Cloud app from the Atlassian Marketplace with your GitLab Self-Managed instance.
 
@@ -164,10 +181,13 @@ to check if Jira Cloud is linked to:
 
 ## Install the GitLab for Jira Cloud app manually
 
-WARNING:
+{{< alert type="warning" >}}
+
 In GitLab 17.5 and earlier, you might encounter an issue when you install the GitLab for Jira Cloud app manually.
 For more information, see [issue 505372](https://gitlab.com/gitlab-org/gitlab/-/issues/505372).
 This issue does not affect [installations from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
+
+{{< /alert >}}
 
 If you do not want to [use the official Atlassian Marketplace listing](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
 install the GitLab for Jira Cloud app manually.
@@ -421,7 +441,11 @@ For more information, see [issue 21319](https://gitlab.com/gitlab-org/gitlab/-/i
 
 ### Set an additional JWT audience
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498587) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498587) in GitLab 17.7.
+
+{{< /history >}}
 
 When GitLab receives a JWT token from Jira,
 GitLab verifies the token by checking the JWT audience.

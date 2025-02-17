@@ -5,19 +5,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deploy boards (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
 to add this functionality to the [agent](../clusters/agent/_index.md).
 
-FLAG:
+{{< /alert >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
+
+{{< /alert >}}
 
 GitLab deploy boards offer a consolidated view of the current health and
 status of each CI [environment](../../ci/environments/_index.md) running on [Kubernetes](https://kubernetes.io), displaying the status
@@ -25,9 +34,12 @@ of the pods in the deployment. Developers and other teammates can view the
 progress and status of a rollout, pod by pod, in the workflow they already use
 without any need to access Kubernetes.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have a Kubernetes cluster, you can Auto Deploy applications to production
 environments by using [Auto DevOps](../../topics/autodevops/_index.md).
+
+{{< /alert >}}
 
 ## Overview
 
@@ -84,12 +96,15 @@ To display the deploy boards for a specific [environment](../../ci/environments/
 
 1. Have a Kubernetes cluster up and running.
 
-   NOTE:
-   If you're using OpenShift, ensure that you're using the `Deployment` resource
+   {{< alert type="note" >}}
+
+If you're using OpenShift, ensure that you're using the `Deployment` resource
    instead of `DeploymentConfiguration`. Otherwise, the deploy boards don't render
    correctly. For more information, read the
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
    and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/-/issues/4584).
+
+   {{< /alert >}}
 
 1. [Configure GitLab Runner](../../ci/runners/_index.md) with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
    [`kubernetes`](https://docs.gitlab.com/runner/executors/kubernetes/) executor.
@@ -146,10 +161,13 @@ spec:
 
 The annotations are applied to the deployments, replica sets, and pods. By changing the number of replicas, like `kubectl scale --replicas=3 deploy APPLICATION_NAME -n ${KUBE_NAMESPACE}`, you can follow the instances' pods from the board.
 
-NOTE:
+{{< alert type="note" >}}
+
 The YAML file is static. If you apply it using `kubectl apply`, you must
 manually provide the project and environment slugs, or create a script to
 replace the variables in the YAML before applying.
+
+{{< /alert >}}
 
 ## Canary Deployments
 

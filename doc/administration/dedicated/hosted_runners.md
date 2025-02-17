@@ -1,18 +1,24 @@
 ---
 stage: Verify
 group: Hosted Runners
-description: Use hosted runners to run your CI/CD jobs on GitLab Dedicated.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use hosted runners to run your CI/CD jobs on GitLab Dedicated.
 title: Hosted runners for GitLab Dedicated
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
-**Status:** Limited availability
+{{< details >}}
 
-NOTE:
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+- Status: Limited availability
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 To use this feature, you must purchase a subscription for Hosted Runners for GitLab Dedicated. To participate in the limited availability of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
+
+{{< /alert >}}
 
 You can run your CI/CD jobs on GitLab-hosted [runners](../../ci/runners/_index.md). These runners are managed by GitLab and fully integrated with your GitLab Dedicated instance.
 GitLab-hosted runners for Dedicated are autoscaling [instance runners](../../ci/runners/runners_scope.md#instance-runners),
@@ -53,8 +59,11 @@ The following machine types are available for hosted runners on Linux Arm64.
 | X-Large  | `linux-xlarge-arm64`  | 16    | 64 GB  | 200 GB  |
 | 2X-Large | `linux-2xlarge-arm64` | 32    | 128 GB | 200 GB  |
 
-NOTE:
+{{< alert type="note" >}}
+
 The machine type and underlying processor type might change. Jobs optimized for a specific processor design might behave inconsistently.
+
+{{< /alert >}}
 
 Default runner tags are assigned upon creation. Administrators can subsequently [modify the tag settings](#configure-hosted-runners-in-gitlab) for their instance runners.
 
@@ -119,8 +128,11 @@ Prerequisites:
 
 - You must be an administrator.
 
-NOTE:
+{{< alert type="note" >}}
+
 Compute usage visualizations are not available, but an [epic](https://gitlab.com/groups/gitlab-com/gl-infra/gitlab-dedicated/-/epics/524) exists to add them for general availability.
+
+{{< /alert >}}
 
 To view hosted runners in GitLab:
 
@@ -141,8 +153,11 @@ Available configuration options include:
 - [Change the maximum job timeout](../../ci/runners/configure_runners.md#for-an-instance-runner).
 - [Set the runner to run tagged or untagged jobs](../../ci/runners/configure_runners.md#for-an-instance-runner-2).
 
-NOTE:
+{{< alert type="note" >}}
+
 Any changes to the runner description and the runner tags are not controlled by GitLab.
+
+{{< /alert >}}
 
 ### Disable hosted runners for groups or projects in GitLab
 

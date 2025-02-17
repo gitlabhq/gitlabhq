@@ -5,18 +5,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Conan packages in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Conan package registry for GitLab is under development and isn't ready for production use due to
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
 work and timelines to make it production ready.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../../development/fips_gitlab.md) is enabled.
+
+{{< /alert >}}
 
 Publish Conan packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -118,11 +127,14 @@ To authenticate to the package registry, you need one of the following:
   scope set to `read_package_registry`, `write_package_registry`, or both.
 - A [CI job token](#publish-a-conan-package-by-using-cicd).
 
-NOTE:
+{{< alert type="note" >}}
+
 Packages from private and internal projects are hidden if you are not
 authenticated. If you try to search or download a package from a private or internal
 project without authenticating, you receive the error `unable to find the package in remote`
 in the Conan client.
+
+{{< /alert >}}
 
 ### Add your credentials to the GitLab remote
 
@@ -144,9 +156,12 @@ conan user <gitlab_username or deploy_token_username> -r gitlab -p <personal_acc
 Now when you run commands with `--remote=gitlab`, your username and password are
 included in the requests.
 
-NOTE:
+{{< alert type="note" >}}
+
 Because your authentication with GitLab expires on a regular basis, you may
 occasionally need to re-enter your personal access token.
+
+{{< /alert >}}
 
 ### Set a default remote for your project (optional)
 
@@ -160,9 +175,12 @@ In a terminal, run this command:
 conan remote add_ref Hello/0.1@mycompany/beta gitlab
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The package recipe includes the version, so the default remote for
 `Hello/0.1@user/channel` doesn't work for `Hello/0.2@user/channel`.
+
+{{< /alert >}}
 
 If you don't set a default user or remote, you can still include the user and
 remote in your commands:
@@ -266,10 +284,13 @@ Prerequisites:
    conan install .. <options>
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If you try installing the package you created in this tutorial, the install command
 has no effect because the package already exists.
 Delete `~/.conan/data` to clean up the packages stored in the cache.
+
+{{< /alert >}}
 
 ## Remove a Conan package
 
@@ -284,14 +305,17 @@ There are two ways to remove a Conan package from the GitLab package registry.
   You must explicitly include the remote in this command, otherwise the package
   is removed only from your local system cache.
 
-  NOTE:
-  This command removes all recipe and binary package files from the
+  {{< alert type="note" >}}
+
+This command removes all recipe and binary package files from the
   package registry.
+
+  {{< /alert >}}
 
 - From the GitLab user interface:
 
   Go to your project's **Deploy > Package Registry**. Remove the
-  package by selecting **Remove repository** (**{remove}**).
+  package by selecting **Remove repository** ({{< icon name="remove" >}}).
 
 ## Search for Conan packages in the package registry
 
@@ -319,8 +343,11 @@ The scope of your search depends on your Conan remote configuration:
 - If you have a remote configured for a [project](#add-a-remote-for-your-project), your search includes all
   packages in the target project, as long as you have permission to access it.
 
-NOTE:
+{{< alert type="note" >}}
+
 The limit of the search results is 500 packages, and the results are sorted by the most recently published packages.
+
+{{< /alert >}}
 
 ## Fetch Conan package information from the package registry
 

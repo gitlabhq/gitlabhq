@@ -594,8 +594,11 @@ Limit  (cost=817.27..818.12 rows=1 width=4)
               Index Cond: (id = group_ids.id)
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Due to their complexity, using CTEs should be the last resort. Use CTEs only when simpler query changes don't produce a favorable execution plan.
+
+{{< /alert >}}
 
 ## `.find_or_create_by` is not atomic
 
@@ -862,5 +865,8 @@ PersonalAccessToken
   .update_all(revoked: true)
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Avoid updating large volumes of unbounded data. If there are no [application limits](application_limits.md) on the data, or you are unsure about the data volume, you should [update the data in batches](database/iterating_tables_in_batches.md).
+
+{{< /alert >}}

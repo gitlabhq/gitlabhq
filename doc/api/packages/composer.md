@@ -5,23 +5,32 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Composer API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This is the API documentation for [Composer Packages](../../user/packages/composer_repository/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the [Composer package manager client](https://getcomposer.org/)
 and is generally not meant for manual consumption.
+
+{{< /alert >}}
 
 For instructions on how to upload and install Composer packages from the GitLab
 package registry, see the [Composer package registry documentation](../../user/packages/composer_repository/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See the [Composer Package Registry documentation](../../user/packages/composer_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## Base repository request
 

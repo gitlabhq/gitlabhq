@@ -2,16 +2,23 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Set a merge request dependency to control the merge order of merge requests with related or dependent content."
+description: Set a merge request dependency to control the merge order of merge requests with related or dependent content.
 title: Merge request dependencies
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`. Disabled by default.
-> - Support for complex merge dependencies [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136775) in GitLab 16.7. Feature flag `remove_mr_blocking_constraints` removed.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`. Disabled by default.
+- Support for complex merge dependencies [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136775) in GitLab 16.7. Feature flag `remove_mr_blocking_constraints` removed.
+
+{{< /history >}}
 
 A single feature can span several merge requests, spread out across multiple projects,
 and the order in which the work merges can be significant. Use merge request dependencies
@@ -78,8 +85,11 @@ graph LR;
 Nested dependencies do not display in the GitLab UI, but UI support is
 proposed in [epic 5308](https://gitlab.com/groups/gitlab-org/-/epics/5308).
 
-NOTE:
+{{< alert type="note" >}}
+
 A merge request cannot depend on itself (self-referential), but it's possible to create circular dependencies.
+
+{{< /alert >}}
 
 ## View dependencies for a merge request
 
@@ -156,9 +166,13 @@ Prerequisites:
 1. Scroll to **Merge request dependencies** and select **Remove** next to the reference
    for each dependency you want to remove.
 
-   NOTE:
+   {{< alert type="note" >}}
+
    Merge request dependencies you do not have permission to view are shown as
    **1 inaccessible merge request**. You can still remove the dependency.
+
+   {{< /alert >}}
+
 1. Select **Save changes**.
 
 ## Troubleshooting

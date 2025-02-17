@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Geo with Object storage
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 > Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a flag](../../feature_flags.md) named `geo_object_storage_verification`. Enabled by default.
 
@@ -38,7 +41,11 @@ See [Object storage replication tests](geo_validation_tests.md#object-storage-re
 
 ## Enabling GitLab-managed object storage replication
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
+
+{{< /history >}}
 
 **Secondary** sites can replicate files stored on the **primary** site regardless of
 whether they are stored on the local file system or in object storage.

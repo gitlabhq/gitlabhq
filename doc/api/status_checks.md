@@ -1,13 +1,16 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: External Status Checks API
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Get project external status check services
 
@@ -53,9 +56,12 @@ You can create a new external status check service for a project using the follo
 POST /projects/:id/external_status_checks
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 External status checks send information about all applicable merge requests to the
 defined external service. This includes confidential merge requests.
+
+{{< /alert >}}
 
 | Attribute              | Type             | Required | Description                                    |
 |------------------------|------------------|----------|------------------------------------------------|
@@ -129,8 +135,12 @@ GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 
 ## Set status of an external status check
 
-> - Support for `failed` and `passed` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/353836) in GitLab 15.0
-> - Support for `pending` in GitLab 16.5 [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
+{{< history >}}
+
+- Support for `failed` and `passed` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/353836) in GitLab 15.0
+- Support for `pending` in GitLab 16.5 [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/413723) in GitLab 16.5
+
+{{< /history >}}
 
 For a single merge request, use the API to inform GitLab that a merge request has passed a check by an external service.
 To set the status of an external check, the personal access token used must belong to a user with at least the Developer role on the target project of the merge request.
@@ -151,12 +161,19 @@ POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 | `external_status_check_id` | integer | yes      | ID of an external status check                                                                    |
 | `status`                   | string  | no       | Set to `pending` to mark the check as pending, `passed` to pass the check, or `failed` to fail it |
 
-NOTE:
+{{< alert type="note" >}}
+
 `sha` must be the SHA at the `HEAD` of the merge request's source branch.
+
+{{< /alert >}}
 
 ## Retry failed status check for a merge request
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383200) in GitLab 15.7.
+
+{{< /history >}}
 
 For a single merge request, retry the specified failed external status check. Even
 though the merge request hasn't changed, this endpoint resends the current state of

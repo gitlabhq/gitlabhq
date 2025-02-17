@@ -5,16 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Dependency list export API
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Every call to this endpoint requires authentication.
 
 ## Create a pipeline-level dependency list export
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `merge_sbom_api`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425312) in GitLab 16.7. Feature flag `merge_sbom_api` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `merge_sbom_api`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425312) in GitLab 16.7. Feature flag `merge_sbom_api` removed.
+
+{{< /history >}}
 
 Create a new CycloneDX JSON export for all the project dependencies detected in a pipeline.
 

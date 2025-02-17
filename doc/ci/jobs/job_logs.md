@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: CI/CD job logs
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A job log displays the full execution history of a [CI/CD job](_index.md).
 
@@ -24,7 +27,11 @@ To view detailed information about the job and its log output, scroll through th
 
 ## View job logs in full screen mode
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
+
+{{< /history >}}
 
 You can view the contents of a job log in full screen mode by clicking **Show full screen**.
 
@@ -32,7 +39,11 @@ To use full screen mode, your web browser must also support it. If your web brow
 
 ## Expand and collapse job log sections
 
-> - Support for output of multi-line command bash shell output [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 behind the [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html), `FF_SCRIPT_SECTIONS`.
+{{< history >}}
+
+- Support for output of multi-line command bash shell output [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3486) in GitLab 16.5 behind the [GitLab Runner feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html), `FF_SCRIPT_SECTIONS`.
+
+{{< /history >}}
 
 Job logs are divided into sections that can be collapsed or expanded. Each section displays
 the duration.
@@ -75,7 +86,7 @@ In the example above:
   of letters, numbers, and the `_`, `.`, or `-` characters.
 - `\r\e[0K`: Escape sequence that prevents the section markers from displaying in the
   rendered (colored) job log. They are displayed when viewing the raw job log, accessed
-  in the upper-right corner of the job log by selecting **Show complete raw** (**{doc-text}**).
+  in the upper-right corner of the job log by selecting **Show complete raw** ({{< icon name="doc-text" >}}).
   - `\r`: carriage return (returns the cursor to the start of the line).
   - `\e[0K`: ANSI escape code to clear the line from the cursor position to the end of the line.
     (`\e[K` alone does not work; the `0` must be included).
@@ -161,12 +172,19 @@ For more details, see [Delete job logs](../../user/storage_management_automation
 
 ## Job log timestamps
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455582) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `parse_ci_job_timestamps`. Disabled by default.
-> - Feature flag `parse_ci_job_timestamps` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/464785) in GitLab 17.2.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455582) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `parse_ci_job_timestamps`. Disabled by default.
+- Feature flag `parse_ci_job_timestamps` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/464785) in GitLab 17.2.
+
+{{< /history >}}
 
 You can generate a timestamp in the [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html)
 for each line in a CI/CD job log. With job log timestamps, you can identify the duration

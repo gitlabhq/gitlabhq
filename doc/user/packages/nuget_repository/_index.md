@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: NuGet packages in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Publish NuGet packages in your project's package registry. Then, install the
 packages whenever you need to use them as a dependency.
@@ -38,9 +41,12 @@ When asking for versions of a given NuGet package name, the GitLab package regis
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Because of how NuGet handles credentials, the package registry rejects anonymous requests on the group-level endpoint.
 To work around this limitation, set up [authentication](#add-the-package-registry-as-a-source-for-nuget-packages).
+
+{{< /alert >}}
 
 ## Add the package registry as a source for NuGet packages
 
@@ -331,7 +337,11 @@ nuget push <package_file> -Source <source_name>
 
 ### Publish a package with the .NET CLI
 
-> - Publishing a package with `--api-key` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) in GitLab 16.1.
+{{< history >}}
+
+- Publishing a package with `--api-key` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) in GitLab 16.1.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -401,7 +411,11 @@ updated:
 
 ### Publish a NuGet package with Chocolatey CLI
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -431,9 +445,13 @@ the existing package is overwritten.
 
 ### Do not allow duplicate NuGet packages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293748) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `nuget_duplicates_option`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/419078) in GitLab 16.6. Feature flag `nuget_duplicates_option` removed.
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293748) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `nuget_duplicates_option`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/419078) in GitLab 16.6. Feature flag `nuget_duplicates_option` removed.
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
+{{< /history >}}
 
 To prevent users from publishing duplicate NuGet packages, you can use the [GraphQl API](../../../api/graphql/reference/_index.md#packagesettings) or the UI.
 
@@ -444,14 +462,20 @@ In the UI:
 1. In the **NuGet** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
-NOTE:
+{{< alert type="note" >}}
+
 If **Allow duplicates** is turned on, you can specify package names and versions that should not have duplicates in the **Exceptions** text box.
+
+{{< /alert >}}
 
 Your changes are automatically saved.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If the .nuspec file isn't located in the root of the package or the beginning of the archive, the package might
 not be recognized as a duplicate right away. However, it will be rejected later, and an error will be shown in the UI.
+
+{{< /alert >}}
 
 ## Install packages
 
@@ -463,10 +487,13 @@ To install a NuGet package from the package registry, you must first
 
 ### Install a package with the NuGet CLI
 
-WARNING:
+{{< alert type="warning" >}}
+
 By default, `nuget` checks the official source at `nuget.org` first. If you have
 a NuGet package in the package registry with the same name as a package at
 `nuget.org`, you must specify the source name to install the correct package.
+
+{{< /alert >}}
 
 Install the latest version of a package by running this command:
 
@@ -483,10 +510,13 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 
 ### Install a package with the .NET CLI
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you have a package in the package registry with the same name as a package at
 a different source, verify the order in which `dotnet` checks sources during
 install. This is defined in the `nuget.config` file.
+
+{{< /alert >}}
 
 Install the latest version of a package by running this command:
 
@@ -500,7 +530,11 @@ dotnet add package <package_id> \
 
 ### Install a package using NuGet v2 feed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416405) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416405) in GitLab 16.5.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -549,10 +583,17 @@ choco upgrade MyPackage -Source gitlab -Version 1.0.3
 
 ## Delete a package
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 Deleting a package is a permanent action that cannot be undone.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -588,7 +629,11 @@ nuget push My.Package.snupkg -Source <source_name>
 
 ### Use the package registry as a symbol server
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+
+{{< /history >}}
 
 GitLab can consume symbol files from the NuGet package registry,
 so you can use the package registry as a symbol server.
@@ -634,7 +679,11 @@ Note that:
 
 ## Supported CLI commands
 
-> - `nuget delete` and `dotnet nuget delete` commands [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+{{< history >}}
+
+- `nuget delete` and `dotnet nuget delete` commands [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+
+{{< /history >}}
 
 The GitLab NuGet repository supports the following commands for the NuGet CLI (`nuget`) and the .NET
 CLI (`dotnet`):

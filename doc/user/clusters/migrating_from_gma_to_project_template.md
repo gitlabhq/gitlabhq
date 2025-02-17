@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrate from GitLab Managed Apps to Cluster Management Projects (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The GitLab Managed Apps were deprecated in GitLab 14.0
 in favor of user-controlled Cluster Management projects.
@@ -107,8 +110,11 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
        `applications/cert-manager-legacy/helmfile.yaml`
        in your project's main Helmfile ([`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file)).
 
-       WARNING:
+       {{< alert type="warning" >}}
+
        Cert-manager v0.10 breaks when Kubernetes is upgraded to version 1.20 or later.
+
+       {{< /alert >}}
 
 1. After following all the previous steps, [run a pipeline manually](../../ci/pipelines/_index.md#run-a-pipeline-manually)
    and watch the `apply` job logs to see if any of your applications were successfully detected, installed, and whether they got any

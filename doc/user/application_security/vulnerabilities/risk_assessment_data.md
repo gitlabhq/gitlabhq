@@ -19,9 +19,13 @@ high severity and a low EPSS score.
 
 ## EPSS
 
-> - Introduced in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `epss_querying` (in issue [470835](https://gitlab.com/gitlab-org/gitlab/-/issues/470835)) and `epss_ingestion` (in issue [467672](https://gitlab.com/gitlab-org/gitlab/-/issues/467672)). Disabled by default.
-> - Renamed to `cve_enrichment_querying` and `cve_enrichment_ingestion` respectively and [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/481431) in GitLab 17.6.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11544) in GitLab 17.7. Feature flags `cve_enrichment_querying` and `cve_enrichment_ingestion` removed.
+{{< history >}}
+
+- Introduced in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `epss_querying` (in issue [470835](https://gitlab.com/gitlab-org/gitlab/-/issues/470835)) and `epss_ingestion` (in issue [467672](https://gitlab.com/gitlab-org/gitlab/-/issues/467672)). Disabled by default.
+- Renamed to `cve_enrichment_querying` and `cve_enrichment_ingestion` respectively and [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/481431) in GitLab 17.6.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11544) in GitLab 17.7. Feature flags `cve_enrichment_querying` and `cve_enrichment_ingestion` removed.
+
+{{< /history >}}
 
 The EPSS score provides an estimate of the likelihood a vulnerability in the CVE catalog will be
 exploited in the next 30 days. EPSS assigns each CVE a score between 0 to 1 (equivalent to 0% to
@@ -29,7 +33,11 @@ exploited in the next 30 days. EPSS assigns each CVE a score between 0 to 1 (equ
 
 ## KEV
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499407) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499407) in GitLab 17.7.
+
+{{< /history >}}
 
 The KEV catalog lists vulnerabilities that are known to have been exploited. You should prioritize
 the remediation of vulnerabilities in the KEV catalog above other vulnerabilities. Attacks using
@@ -115,8 +123,11 @@ Example output:
 
 ## Vulnerability Prioritizer
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 Use the [Vulnerability Prioritizer CI/CD component](https://gitlab.com/explore/catalog/components/vulnerability-prioritizer) to help prioritize a project's vulnerabilities (namely CVEs). The component outputs a prioritization report in the `vulnerability-prioritizer` job's output.
 

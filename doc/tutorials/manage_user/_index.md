@@ -5,9 +5,12 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Set up your organization'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In GitLab, you set up and manage your company's GitLab organization by:
 
@@ -48,7 +51,7 @@ You first create a group, Development, to serve as the parent group for the whol
 software development organization.
 
 1. Open GitLab Self-Managed.
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. In **Group name**, enter `Development`.
 1. Enter `development-group` for the group in **Group URL**. You see a message
@@ -213,7 +216,7 @@ Go back to the parent group and remove everyone except Alex Smith:
 
 1. On the left sidebar, select **Search or go to** and find the parent group.
 1. Select **Manage > Members**.
-1. On the member row you want to remove, select the vertical ellipsis (**{ellipsis_v}**)
+1. On the member row you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
    and then select **Remove member**.
 1. In the **Remove member** confirmation box, select the
    **Also remove direct user membership from subgroups and projects** checkbox.
@@ -374,7 +377,7 @@ that work, you are going to create a project in the Development parent group, an
 add different users to that project.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
-1. Select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter `Release 2.0` as the name of your project.

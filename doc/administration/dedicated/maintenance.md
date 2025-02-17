@@ -1,14 +1,17 @@
 ---
 stage: GitLab Dedicated
 group: Environment Automation
-description: Maintenance windows, release schedules, and emergency maintenance processes for GitLab Dedicated instances.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Maintenance windows, release schedules, and emergency maintenance processes for GitLab Dedicated instances.
 title: GitLab Dedicated maintenance and release schedule
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 GitLab performs regular maintenance to your GitLab Dedicated instance. This page outlines the maintenance windows and release upgrade schedule.
 
@@ -25,8 +28,11 @@ Maintenance is performed outside standard working hours:
 
 View your maintenance window in [Switchboard](tenant_overview.md#maintenance-windows), including upcoming and recent maintenance. You can postpone scheduled maintenance to another window in the same week by contacting your Customer Success Manager at least one week in advance.
 
-NOTE:
+{{< alert type="note" >}}
+
 The scheduled weekly maintenance window is separate from [emergency maintenance](#emergency-maintenance), which cannot be postponed.
+
+{{< /alert >}}
 
 ### Access during maintenance
 
@@ -36,8 +42,11 @@ Long-running connections may be interrupted during this period. To minimize disr
 
 Longer service interruptions are rare. If extended downtime is expected, GitLab provides advance notice.
 
-NOTE:
+{{< alert type="note" >}}
+
 Performance degradation or downtime during the scheduled maintenance window does not count against [the system Service Level Availability](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/).
+
+{{< /alert >}}
 
 ## Release rollout schedule
 
@@ -53,8 +62,11 @@ Upgrades occur in your selected [maintenance window](#maintenance-windows) accor
 
 For example, GitLab 16.9 released on 2024-02-15. Instances in the EMEA and Americas (Option 1) regions were then upgraded to 16.8 on 2024-02-20, 5 days after the 16.9 release.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a production change lock (PCL) is active during a scheduled upgrade, GitLab defers the upgrade to the first maintenance window after the PCL ends. For more information, including upcoming and current PCL periods, see [Production Change Lock](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#production-change-lock-pcl).
+
+{{< /alert >}}
 
 ## Emergency maintenance
 

@@ -1,8 +1,8 @@
 ---
 stage: Systems
 group: Distribution
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to install, configure, update, and maintain your GitLab instance.
 title: Administer GitLab
 ---
 

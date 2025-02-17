@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Pages redirects
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In GitLab Pages, you can configure rules to forward one URL to another using
 [Netlify style](https://docs.netlify.com/routing/redirects/#syntax-for-the-redirects-file)
@@ -19,22 +22,25 @@ are supported.
 
 | Feature                                           | Supported              | Example |
 |---------------------------------------------------|------------------------|---------|
-| [Redirects (`301`, `302`)](#redirects)            | **{check-circle}** Yes | `/wardrobe.html /narnia.html 302` |
-| [Rewrites (`200`)](#rewrites)                     | **{check-circle}** Yes | `/* / 200` |
-| [Splats](#splats)                                 | **{check-circle}** Yes | `/news/*  /blog/:splat` |
-| [Placeholders](#placeholders)                     | **{check-circle}** Yes | `/news/:year/:month/:date /blog-:year-:month-:date.html` |
-| Rewrites (other than `200`)                       | **{dotted-circle}** No | `/en/* /en/404.html 404` |
-| Query parameters                                  | **{dotted-circle}** No | `/store id=:id  /blog/:id  301` |
-| Force ([shadowing](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)) | **{dotted-circle}** No | `/app/  /app/index.html  200!` |
-| [Domain-level redirects](#domain-level-redirects) | **{check-circle}** Yes | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
-| Redirect by country or language                   | **{dotted-circle}** No | `/  /anz     302  Country=au,nz` |
-| Redirect by role                                  | **{dotted-circle}** No | `/admin/*  200!  Role=admin` |
+| [Redirects (`301`, `302`)](#redirects)            | {{< icon name="check-circle" >}} Yes | `/wardrobe.html /narnia.html 302` |
+| [Rewrites (`200`)](#rewrites)                     | {{< icon name="check-circle" >}} Yes | `/* / 200` |
+| [Splats](#splats)                                 | {{< icon name="check-circle" >}} Yes | `/news/*  /blog/:splat` |
+| [Placeholders](#placeholders)                     | {{< icon name="check-circle" >}} Yes | `/news/:year/:month/:date /blog-:year-:month-:date.html` |
+| Rewrites (other than `200`)                       | {{< icon name="dotted-circle" >}} No | `/en/* /en/404.html 404` |
+| Query parameters                                  | {{< icon name="dotted-circle" >}} No | `/store id=:id  /blog/:id  301` |
+| Force ([shadowing](https://docs.netlify.com/routing/redirects/rewrites-proxies/#shadowing)) | {{< icon name="dotted-circle" >}} No | `/app/  /app/index.html  200!` |
+| [Domain-level redirects](#domain-level-redirects) | {{< icon name="check-circle" >}} Yes | `http://blog.example.com/* https://www.example.com/blog/:splat 301` |
+| Redirect by country or language                   | {{< icon name="dotted-circle" >}} No | `/  /anz     302  Country=au,nz` |
+| Redirect by role                                  | {{< icon name="dotted-circle" >}} No | `/admin/*  200!  Role=admin` |
 
-NOTE:
+{{< alert type="note" >}}
+
 The [matching behavior test cases](https://gitlab.com/gitlab-org/gitlab-pages/-/blob/master/internal/redirects/matching_test.go)
 are a good resource for understanding how GitLab implements rule matching in
 detail. Community contributions are welcome for any edge cases that aren't included in
 this test suite!
+
+{{< /alert >}}
 
 ## Create redirects
 
@@ -102,7 +108,11 @@ and an [HTTP status code](#http-status-codes):
 
 ## Rewrites
 
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/619) in GitLab 15.2.
+{{< history >}}
+
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/619) in GitLab 15.2.
+
+{{< /history >}}
 
 Provide a status code of `200` to serve the content of the `to` path when the
 request matches the `from`:
@@ -116,10 +126,14 @@ rewrite the URL.
 
 ## Domain-level redirects
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/merge_requests/3395) in GitLab 16.9.
-> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1087) in GitLab 16.10.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1097) in GitLab 17.4. Feature flag `FF_ENABLE_DOMAIN_REDIRECT` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/merge_requests/3395) in GitLab 16.9.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1087) in GitLab 16.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1097) in GitLab 17.4. Feature flag `FF_ENABLE_DOMAIN_REDIRECT` removed.
+
+{{< /history >}}
 
 To create a domain-level redirect, add a domain-level path (beginning with `http://`
 or `https://`) to either:
@@ -182,11 +196,14 @@ Splats also match empty strings, so the previous rule redirects
 
 ### Rewrite all requests to a root `index.html`
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are using [GitLab Pages integration with Let's Encrypt](custom_domains_ssl_tls_certification/lets_encrypt_integration.md),
 you must enable it before adding this rule. Otherwise, the redirection breaks the Let's Encrypt
 integration. For more details, see
 [GitLab Pages issue 649](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/649).
+
+{{< /alert >}}
 
 Single page applications (SPAs) often perform their own routing using
 client-side routes. For these applications, it's important that _all_ requests

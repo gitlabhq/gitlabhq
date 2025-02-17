@@ -103,9 +103,12 @@ You can use various tools to generate HAR files:
 - [Fiddler](https://www.telerik.com/fiddler): Web debugging proxy
 - [GitLab HAR Recorder](https://gitlab.com/gitlab-org/security-products/har-recorder): Command line
 
-WARNING:
+{{< alert type="warning" >}}
+
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
 cookies. We recommend that you review the HAR file contents before adding them to a repository.
+
+{{< /alert >}}
 
 ### API security testing scanning with a HAR file
 
@@ -154,7 +157,11 @@ This example is a minimal configuration for API security testing. From here you 
 
 ## GraphQL Schema
 
-> - Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+{{< history >}}
+
+- Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+
+{{< /history >}}
 
 GraphQL is a query language for your API and an alternative to REST APIs.
 API security testing supports testing GraphQL endpoints multiple ways:
@@ -172,8 +179,11 @@ For details on how to enable introspection, see your GraphQL framework documenta
 
 The GraphQL support in API security testing is able to query a GraphQL endpoint for the schema.
 
-NOTE:
+{{< alert type="note" >}}
+
 The GraphQL endpoint must support introspection queries for this method to work correctly.
+
+{{< /alert >}}
 
 To configure API security testing to use a GraphQL endpoint URL that provides information about the target API to test:
 
@@ -279,10 +289,13 @@ When used with the GitLab API security testing scanner, Postman Collections must
 test with valid data. The API security testing scanner extracts all the API definitions and uses them to perform
 testing.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Postman Collection files may contain sensitive information such as authentication tokens, API keys,
 and session cookies. We recommend that you review the Postman Collection file contents before adding
 them to a repository.
+
+{{< /alert >}}
 
 ### API security testing scanning with a Postman Collection file
 
@@ -331,9 +344,13 @@ This is a minimal configuration for API security testing. From here you can:
 
 ### Postman variables
 
-> - Support for Postman Environment file format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-> - Support for multiple variable files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-> - Support for Postman variable scopes: Global and Environment was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+{{< history >}}
+
+- Support for Postman Environment file format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+- Support for multiple variable files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+- Support for Postman variable scopes: Global and Environment was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+
+{{< /history >}}
 
 #### Variables in Postman Client
 

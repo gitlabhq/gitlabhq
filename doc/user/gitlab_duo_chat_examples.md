@@ -1,6 +1,6 @@
 ---
-redirect_to: '../user/gitlab_duo_chat/examples.md'
-remove_date: '2025-06-11'
+redirect_to: ../user/gitlab_duo_chat/examples.md
+remove_date: "2025-06-11"
 ---
 
 <!-- markdownlint-disable -->

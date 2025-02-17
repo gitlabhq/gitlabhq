@@ -5,9 +5,12 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Scan a Docker container for vulnerabilities'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use [container scanning](../../user/application_security/container_scanning/_index.md) to check for vulnerabilities
 in container images stored in the [container registry](../../user/packages/container_registry/_index.md).
@@ -27,7 +30,7 @@ Container scanning configuration is added to the pipeline configuration of a pro
 
 To create the new project
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. In **Project name**, enter `Tutorial container scanning project`.
 1. In **Project URL**, select a namespace for the project.
@@ -37,7 +40,7 @@ To create the new project
 
 To provide something for container scanning to work on, create a `Dockerfile` with very minimal configuration:
 
-1. In your `Tutorial container scanning project` project, select **{plus}** > **New file**.
+1. In your `Tutorial container scanning project` project, select {{< icon name="plus" >}} > **New file**.
 1. Enter the filename `Dockerfile`, and provide the following contents for the file:
 
    ```Dockerfile
@@ -61,7 +64,7 @@ Now you're ready to create pipeline configuration. The pipeline configuration:
 
 To create the pipeline configuration:
 
-1. In the root directory of your project, select **{plus}** > **New file**.
+1. In the root directory of your project, select {{< icon name="plus" >}} > **New file**.
 1. Enter the filename `.gitlab-ci.yml`, and provide the following contents for the file:
 
    ```yaml

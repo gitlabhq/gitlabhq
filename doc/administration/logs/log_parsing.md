@@ -5,19 +5,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Parsing GitLab logs with `jq`
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 We recommend using log aggregation and search tools like Kibana and Splunk whenever possible,
 but if they are not available you can still quickly parse
 [GitLab logs](../logs/_index.md) in JSON format
 using [`jq`](https://stedolan.github.io/jq/).
 
-NOTE:
+{{< alert type="note" >}}
+
 Specifically for summarizing error events and basic usage statistics,
 the GitLab Support Team provides the specialised
 [`fast-stats` tool](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it).
+
+{{< /alert >}}
 
 ## What is JQ?
 

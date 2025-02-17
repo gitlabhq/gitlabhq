@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Issues API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Interact with [GitLab Issues](../user/project/issues/_index.md) using the REST API.
 
@@ -20,10 +23,13 @@ By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 Read more on [pagination](rest/_index.md#pagination).
 
-NOTE:
+{{< alert type="note" >}}
+
 The `references.relative` attribute is relative to the group or project of the issue being requested.
 When an issue is fetched from its project, the `relative` format is the same as the `short` format.
 When requested across groups or projects, it's expected to be the same as the `full` format.
+
+{{< /alert >}}
 
 ## List issues
 
@@ -249,13 +255,18 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform
 to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ## List group issues
 
@@ -457,12 +468,17 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ## List project issues
 
@@ -670,12 +686,17 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ## Single issue
 
@@ -841,13 +862,18 @@ property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform
 to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated, and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ## Single project issue
 
@@ -1007,12 +1033,17 @@ property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ## New issue
 
@@ -1159,12 +1190,17 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ### Rate limits
 
@@ -1339,12 +1375,17 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
+{{< /alert >}}
 
 ## Delete an issue
 
@@ -1546,12 +1587,17 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ## Clone an issue
 
@@ -1815,12 +1861,17 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ]
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The `epic_iid` attribute is deprecated and [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5.
 Use `iid` of the `epic` attribute instead.
+{{< /alert >}}
 
 ### Unsubscribe from an issue
 
@@ -2023,14 +2074,20 @@ Example response:
 }
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+{{< /alert >}}
 
 ## Promote an issue to an epic
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Promotes an issue to an epic by adding a comment with the `/promote`
 [quick action](../user/project/quick_actions.md).

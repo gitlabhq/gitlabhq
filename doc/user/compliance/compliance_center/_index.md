@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Compliance center
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
-> - [Available at project level](https://gitlab.com/gitlab-org/gitlab/-/issues/441350) in GitLab 17.5.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
+- [Available at project level](https://gitlab.com/gitlab-org/gitlab/-/issues/441350) in GitLab 17.5.
+
+{{< /history >}}
 
 The compliance center is the central location for compliance teams to manage their compliance standards adherence reporting, violations reporting, and compliance frameworks for their group.
 

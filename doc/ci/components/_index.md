@@ -5,15 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: CI/CD components
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
-> - [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
-> - [Moved](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/130824) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.6.
-> - [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experimental feature](../../policy/development_stages_support.md#experiment) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
+- [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
+- [Moved](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/130824) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.6.
+- [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+
+{{< /history >}}
 
 A CI/CD component is a reusable single pipeline configuration unit. Use components
 to create a small part of a larger pipeline, or even to compose a complete pipeline configuration.
@@ -40,7 +47,11 @@ blog post.
 
 ## Component project
 
-> - The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436565) from 10 to 30 in GitLab 16.9.
+{{< history >}}
+
+- The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436565) from 10 to 30 in GitLab 16.9.
+
+{{< /history >}}
 
 A component project is a GitLab project with a repository that hosts one or more components.
 All components in the project are versioned together, with a maximum of 30 components per project.
@@ -86,8 +97,11 @@ The repository must contain:
   - In sub-directories containing `template.yml` files as entry points, for components
     that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
 
-NOTE:
+{{< alert type="note" >}}
+
 Optionally, each component can also have its own `README.md` file that provides more detailed information, and can be linked from the top-level `README.md` file. This helps to provide a better overview of your component project and how to use it.
+
+{{< /alert >}}
 
 You should also:
 
@@ -165,11 +179,14 @@ the component's configuration.
 To use GitLab.com components on a GitLab Self-Managed instance, you must
 [mirror the component project](#use-a-gitlabcom-component-on-gitlab-self-managed).
 
-WARNING:
+{{< alert type="warning" >}}
+
 If a component requires the use of tokens, passwords, or other sensitive data to function,
 be sure to audit the component's source code to verify that the data is only used to
 perform actions that you expect and authorize. You should also use tokens and secrets
 with the minimum permissions, access, or scope required to complete the action.
+
+{{< /alert >}}
 
 ### Component versions
 
@@ -193,7 +210,11 @@ might not be published in the CI/CD catalog, but could be used for testing.
 
 #### Semantic version ranges
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450835) in GitLab 16.11
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450835) in GitLab 16.11
+
+{{< /history >}}
 
 When [referencing a CI/CD catalog component](#component-versions), you can use a
 special format to specify the latest [semantic version](#semantic-versioning) in a range.
@@ -339,8 +360,11 @@ create-release:
 After committing and pushing changes, the pipeline tests the component, then creates
 a release if the earlier jobs pass.
 
-NOTE:
+{{< alert type="note" >}}
+
 Authentication is necessary if the project is private.
+
+{{< /alert >}}
 
 #### Test a component against sample files
 
@@ -550,13 +574,20 @@ In other cases, CI/CD variables might still be preferred. For example:
 
 ## CI/CD Catalog
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.1.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.7.
-> - [Made Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 16.1.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/development_stages_support.md#beta) in GitLab 16.7.
+- [Made Generally Available](https://gitlab.com/gitlab-org/gitlab/-/issues/454306) in GitLab 17.0.
+
+{{< /history >}}
 
 The [CI/CD Catalog](https://gitlab.com/explore/catalog) is a list of projects with published CI/CD components you can use
 to extend your CI/CD workflow.
@@ -659,7 +690,11 @@ is published to the CI/CD catalog.
 
 #### Semantic versioning
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) in GitLab 16.10.
+
+{{< /history >}}
 
 When tagging and [releasing new versions](#publish-a-new-release) of components to the Catalog,
 you must use [semantic versioning](https://semver.org). Semantic versioning is the standard
@@ -672,21 +707,28 @@ For example, `1.0.0`, `2.3.4`, and `1.0.0-alpha` are all valid semantic versions
 To remove a component project from the catalog, turn off the [**CI/CD Catalog resource**](#set-a-component-project-as-a-catalog-project)
 toggle in the project settings.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This action destroys the metadata about the component project and its versions published
 in the catalog. The project and its repository still exist, but are not visible in the catalog.
+
+{{< /alert >}}
 
 To publish the component project in the catalog again, you need to [publish a new release](#publish-a-new-release).
 
 ### Verified component creators
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433443) in GitLab 16.11
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433443) in GitLab 16.11
+
+{{< /history >}}
 
 Some CI/CD components are badged with an icon to show that the component was created
 and is maintained by users verified by GitLab:
 
-- GitLab-maintained (**{tanuki-verified}**): Components that are created and maintained by GitLab.
-- GitLab Partner (**{partner-verified}**): Components that are independently created
+- GitLab-maintained ({{< icon name="tanuki-verified" >}}): Components that are created and maintained by GitLab.
+- GitLab Partner ({{< icon name="partner-verified" >}}): Components that are independently created
   and maintained by a GitLab-verified partner.
 
   GitLab partners can contact a member of the GitLab Partner Alliance to have their
@@ -695,12 +737,15 @@ and is maintained by users verified by GitLab:
   creates an internal request issue on behalf of the verified partner (GitLab team members only):
   `https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request`.
 
-  WARNING:
+  {{< alert type="warning" >}}
+
   GitLab Partner-created components are provided **as-is**, without warranty of any kind.
   An end user's use of a GitLab Partner-created component is at their own risk and
   GitLab shall have no indemnification obligations nor any liability of any type
   with respect to the end user's use of the component. The end user's use of such content
   and any liability related thereto shall be between the publisher of the content and the end user.
+
+  {{< /alert >}}
 
 ## Convert a CI/CD template to a component
 
@@ -722,9 +767,12 @@ You can learn more by following a practical example for [migrating the Go CI/CD 
 
 ## Use a GitLab.com component on GitLab Self-Managed
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The CI/CD catalog of a fresh install of a GitLab instance starts with no published CI/CD components.
 To populate your instance's catalog, you can:

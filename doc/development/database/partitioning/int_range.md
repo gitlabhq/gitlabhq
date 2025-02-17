@@ -5,7 +5,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Int range partitioning
 ---
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132148) in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132148) in GitLab 16.8.
+
+{{< /history >}}
 
 ## Description
 
@@ -44,9 +48,12 @@ CREATE TABLE merge_request_diff_files (
 PARTITION BY RANGE(merge_request_diff_id);
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The primary key of a partitioned table must include the partition key as
 part of the primary key definition.
+
+{{< /alert >}}
 
 And we might have a list of partitions for the table, such as:
 
@@ -147,8 +154,11 @@ background migration. This includes forcing any remaining jobs to
 execute, and copying data that may have been missed, due to dropped or
 failed jobs.
 
-WARNING:
+{{< alert type="warning" >}}
+
 A required stop must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully.
+
+{{< /alert >}}
 
 Once again, continuing the example, this migration would look like:
 

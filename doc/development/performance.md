@@ -256,10 +256,13 @@ Currently supported profiling targets are:
 - Puma worker
 - Sidekiq
 
-NOTE:
+{{< alert type="note" >}}
+
 The Puma master process is not supported.
 Sending SIGUSR2 to it triggers restarts. In the case of Puma,
 take care to only send the signal to Puma workers.
+
+{{< /alert >}}
 
 This can be done via `pkill -USR2 puma:`. The `:` distinguishes between `puma
 4.3.3.gitlab.2 ...` (the master process) from `puma: cluster worker 0: ...` (the

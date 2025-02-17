@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Maintenance Mode
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state. The internal state includes the PostgreSQL database, but especially files, Git repositories, and Container repositories.
 
@@ -60,8 +63,11 @@ An error is displayed when a user tries to perform a write operation that isn't 
 
 ![Maintenance Mode banner and error message](img/maintenance_mode_error_message_v17.6.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 In some cases, the visual feedback from an action could be misleading. For example, when starring a project, the **Star** button changes to show the **Unstar** action. However, this is only the frontend update, and it doesn't take into account the failed status of the POST request. These visual bugs are to be fixed [in follow-up iterations](https://gitlab.com/gitlab-org/gitlab/-/issues/295197).
+
+{{< /alert >}}
 
 ### Administrator functions
 
@@ -114,7 +120,11 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 
 ### GraphQL API
 
-> - The `GeoRegistriesUpdate` mutation addition in the allowlist was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124259) in GitLab 16.2.
+{{< history >}}
+
+- The `GeoRegistriesUpdate` mutation addition in the allowlist was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124259) in GitLab 16.2.
+
+{{< /history >}}
 
 `POST /api/graphql` requests are allowed but mutations are blocked with the error message `You cannot perform write operations on a read-only instance`.
 
@@ -134,9 +144,12 @@ After Maintenance Mode is disabled, new jobs are picked up again. Jobs that were
 in the `running` state before enabling Maintenance Mode resume and their logs start
 updating again.
 
-NOTE:
+{{< alert type="note" >}}
+
 You should restart previously `running` pipelines after Maintenance Mode
 is turned off.
+
+{{< /alert >}}
 
 ### Deployments
 

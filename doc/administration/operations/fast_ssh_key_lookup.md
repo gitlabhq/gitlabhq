@@ -2,17 +2,23 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure a faster SSH authorization method for GitLab instances with many users."
+description: Configure a faster SSH authorization method for GitLab instances with many users.
 title: Fast lookup of SSH keys
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 For standard (non-deploy key) users, you can also use [SSH certificates](ssh_certificates.md).
 They are faster than database lookups but are not a drop-in replacement for the `authorized_keys` file.
+
+{{< /alert >}}
 
 When the number of users grows, SSH operations become slow because OpenSSH performs a
 linear search through the `authorized_keys` file to authenticate users.
@@ -26,9 +32,12 @@ SSH keys. It is faster because the lookup is indexed in the GitLab database.
 
 ## Fast lookup is required for Geo
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), by default Linux package installations
 manage an `authorized_keys` file that is located in the

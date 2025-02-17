@@ -5,19 +5,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Cluster management project (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The cluster management project was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 To manage cluster applications, use the [GitLab agent](agent/_index.md)
 with the [Cluster Management Project Template](management_project_template.md).
 
-FLAG:
+{{< /alert >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.
+
+{{< /alert >}}
 
 A project can be designated as the management project for a cluster.
 A management project can be used to run deployment jobs with

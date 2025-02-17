@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project-level CI/CD variables API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## List project variables
 
@@ -95,7 +98,11 @@ Example response:
 
 ## Create a variable
 
-> - `masked_and_hidden` and `hidden` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4.
+{{< history >}}
+
+- `masked_and_hidden` and `hidden` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4.
+
+{{< /history >}}
 
 Create a new variable. If a variable with the same `key` already exists, the new variable
 must have a different `environment_scope`. Otherwise, GitLab returns a message similar to:

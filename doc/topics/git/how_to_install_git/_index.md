@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How to install Git on your local machine."
+description: How to install Git on your local machine.
 title: Install Git
 ---
 
@@ -18,9 +18,9 @@ With SSH, you can authenticate to the GitLab remote server without entering your
 
 ## Install and update Git
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle macOS
+{{< tab title="macOS" >}}
 
 Though a version of Git is supplied by macOS, you should install the latest version of Git. A common way to
 install Git is with [Homebrew](https://brew.sh/index.html).
@@ -42,7 +42,9 @@ Keep Git up to date by periodically running the following command:
 brew update && brew upgrade git
 ```
 
-:::TabTitle Ubuntu Linux
+{{< /tab >}}
+
+{{< tab title="Ubuntu Linux" >}}
 
 Though a version of Git is supplied by Ubuntu, you should install the latest version of Git. The latest version is
 available using a Personal Package Archive (PPA).
@@ -69,7 +71,9 @@ Keep Git up to date by periodically running the following command:
 sudo apt-get update && sudo apt-get install git
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Configure Git
 
@@ -81,9 +85,9 @@ You can configure your Git identity locally or globally:
 - Locally: Use for the current project only.
 - Globally: Use for all current and future projects.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Local setup
+{{< tab title="Local setup" >}}
 
 Configure your Git identity locally to use it for the current project only.
 
@@ -107,7 +111,9 @@ The full name and email address should match the ones you use in GitLab.
    git config --local --list
    ```
 
-:::TabTitle Global setup
+{{< /tab >}}
+
+{{< tab title="Global setup" >}}
 
 Configure your Git identity globally to use it for all current and future projects on your machine.
 
@@ -131,7 +137,9 @@ The full name and email address should match the ones you use in GitLab.
    git config --global --list
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Check Git configuration settings
 

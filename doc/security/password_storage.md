@@ -5,16 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Password and OAuth token storage
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab administrators can configure how passwords and OAuth tokens are stored.
 
 ## Password storage
 
-> - PBKDF2+SHA512 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360658) in GitLab 15.2 [with flags](../administration/feature_flags.md) named `pbkdf2_password_encryption` and `pbkdf2_password_encryption_write`. Disabled by default.
-> - Feature flags [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101691) in GitLab 15.6 and PBKDF2+SHA512 was made available to all GitLab instances running in [FIPS mode](../development/fips_gitlab.md).
+{{< history >}}
+
+- PBKDF2+SHA512 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360658) in GitLab 15.2 [with flags](../administration/feature_flags.md) named `pbkdf2_password_encryption` and `pbkdf2_password_encryption_write`. Disabled by default.
+- Feature flags [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101691) in GitLab 15.6 and PBKDF2+SHA512 was made available to all GitLab instances running in [FIPS mode](../development/fips_gitlab.md).
+
+{{< /history >}}
 
 GitLab stores user passwords in a hashed format to prevent passwords from being
 stored as plain text.
@@ -39,8 +46,12 @@ library to hash user passwords. Created password hashes have these attributes:
 
 ## OAuth access token storage
 
-> - PBKDF2+SHA512 introduced in GitLab 15.3 [with flag](../administration/feature_flags.md) named `hash_oauth_tokens`.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.5.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.6.
+{{< history >}}
+
+- PBKDF2+SHA512 introduced in GitLab 15.3 [with flag](../administration/feature_flags.md) named `hash_oauth_tokens`.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.5.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.6.
+
+{{< /history >}}
 
 OAuth access tokens are stored in the database in PBKDF2+SHA512 format. As with PBKDF2+SHA512 password storage, access token values are [stretched](https://en.wikipedia.org/wiki/Key_stretching) 20,000 times to harden against brute-force attacks.

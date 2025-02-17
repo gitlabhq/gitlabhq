@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Subgroups
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can organize GitLab [groups](../_index.md) into subgroups. You can use subgroups to:
 
@@ -64,12 +67,12 @@ To view the subgroups of a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select the **Subgroups and projects** tab.
 1. Select the subgroup you want to view.
-   To view nested subgroups, expand (**{chevron-down}**) a subgroup.
+   To view nested subgroups, expand ({{< icon name="chevron-down" >}}) a subgroup.
 
 ### Private subgroups in public parent groups
 
-In the hierarchy list, public groups with private subgroups have an expand option (**{chevron-down}**),
-which indicates the group has nested subgroups. All users can view the expand option (**{chevron-down}**), but only direct or inherited members of the private subgroup can view the private group.
+In the hierarchy list, public groups with private subgroups have an expand option ({{< icon name="chevron-down" >}}),
+which indicates the group has nested subgroups. All users can view the expand option ({{< icon name="chevron-down" >}}), but only direct or inherited members of the private subgroup can view the private group.
 
 If you prefer to keep information about the presence of nested subgroups private,
 you should add private subgroups only to private parent groups.
@@ -84,8 +87,11 @@ Prerequisites:
     subgroups even if group creation is
     [disabled by an Administrator](../../../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups) in the user's settings.
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot host a GitLab Pages subgroup website with a top-level domain name. For example, `subgroupname.example.io`.
+
+{{< /alert >}}
 
 To create a subgroup:
 
@@ -119,9 +125,13 @@ For more information, view the [permissions table](../../permissions.md#group-me
 
 ## Subgroup membership
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 When you add a member to a group, that member is also added to all subgroups of that group.
 The member's permissions are inherited from the group into all subgroups.

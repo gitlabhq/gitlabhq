@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project webhooks
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Manage [project webhooks](../user/project/integrations/webhooks.md) by using the REST API. Project webhooks are different
 to [system hooks](system_hooks.md), which are system-wide, and [group webhooks](group_webhooks.md).
@@ -86,7 +89,11 @@ Example response:
 
 ## Get a list of project webhook events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
+
+{{< /history >}}
 
 Get a list of events for a specific project webhook in the past 7 days from start date.
 
@@ -357,7 +364,11 @@ Example response:
 
 ## Resend a project webhook event
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130) in GitLab 17.4.
+
+{{< /history >}}
 
 Resend a specific project webhook event.
 
@@ -386,7 +397,11 @@ Example response:
 
 ## Add a webhook to a project
 
-> - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+
+{{< /history >}}
 
 Add a webhook to a specified project.
 
@@ -425,7 +440,11 @@ Supported attributes:
 
 ## Edit a project webhook
 
-> - `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+{{< history >}}
+
+- `name` and `description` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.
+
+{{< /history >}}
 
 Edit a project webhook for a specified project.
 
@@ -485,8 +504,12 @@ is returned.
 
 ## Trigger a test project webhook
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656) in GitLab 16.11.
-> - Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147656) in GitLab 16.11.
+- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150066) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+
+{{< /history >}}
 
 Trigger a test project webhook for a specified project.
 
@@ -518,7 +541,11 @@ Example response:
 
 ## Set a custom header
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+{{< /history >}}
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id/custom_headers/:key
@@ -537,7 +564,11 @@ On success, this endpoint returns the response code `204 No Content`.
 
 ## Delete a custom header
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /projects/:id/hooks/:hook_id/custom_headers/:key
@@ -555,7 +586,11 @@ On success, this endpoint returns the response code `204 No Content`.
 
 ## Set a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id/url_variables/:key
@@ -574,7 +609,11 @@ On success, this endpoint returns the response code `204 No Content`.
 
 ## Delete a URL variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /projects/:id/hooks/:hook_id/url_variables/:key

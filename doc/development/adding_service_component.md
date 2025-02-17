@@ -53,8 +53,11 @@ The first iteration should be to add the ability to connect and use the service 
 
 The first iteration should be opt-in, either through the `gitlab.yml` configuration or through [feature flags](feature_flags/_index.md). For these types of services it is often necessary to [bundle the service and its dependencies with GitLab](#bundling-a-service-with-gitlab) as part of the initial integration.
 
-NOTE:
+{{< alert type="note" >}}
+
 [ActionCable](https://docs.gitlab.com/omnibus/settings/actioncable.html) is an example of a service that has been added this way.
+
+{{< /alert >}}
 
 ## Bundling a service with GitLab
 

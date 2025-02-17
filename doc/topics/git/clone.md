@@ -60,10 +60,13 @@ the number of times you must manually authenticate, making HTTPS a seamless expe
    cd <new directory>
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 On Windows, if you enter your password incorrectly multiple times and an `Access denied` message appears,
 add your namespace (username or group) to the path:
 `git clone https://namespace@gitlab.com/gitlab-org/gitlab.git`.
+
+{{< /alert >}}
 
 ### Clone using a token
 
@@ -232,12 +235,15 @@ Deeper integration between partial clone and sparse checkout is possible through
 `--filter=sparse:oid=<blob-ish>` filter spec. This mode of filtering uses a format similar to a
 `.gitignore` file to specify which files to include when cloning and fetching.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Partial clone using `sparse` filters is still experimental. It might be slow and significantly increase
 [Gitaly](../../administration/gitaly/_index.md) resource utilization when cloning and fetching.
 [Filter all blobs and use sparse-checkout](#filter-by-object-type) instead, because
 [`git-sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) simplifies
 this type of partial clone use and overcomes its limitations.
+
+{{< /alert >}}
 
 For more details, see the Git documentation for
 [`rev-list-options`](https://git-scm.com/docs/git-rev-list#Documentation/git-rev-list.txt---filterltfilter-specgt).
@@ -275,10 +281,13 @@ For more details, see the Git documentation for
    git rev-list --all --quiet --objects --missing=print | wc -l
    ```
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Git integrations with `bash`, Zsh, etc and editors that automatically
    show Git status information often run `git fetch` which fetches the
    entire repository. Disabling or reconfiguring these integrations might be required.
+
+   {{< /alert >}}
 
 ### Remove partial clone filtering
 

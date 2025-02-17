@@ -1,14 +1,17 @@
 ---
 stage: Systems
 group: Distribution
-description: Linux, Helm, Docker, Operator, source, or scripts.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Linux, Helm, Docker, Operator, source, or scripts.
 title: Installation methods
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can install GitLab on several [cloud providers](cloud_providers.md),
 or use one of the following methods.

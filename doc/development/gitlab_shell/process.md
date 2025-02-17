@@ -27,9 +27,12 @@ Rails application:
 1. Update `GITLAB_SHELL_VERSION` in the Rails application to the **raw
    version**.
 
-   NOTE:
-   This can be done as a separate merge request, or in a merge request
+   {{< alert type="note" >}}
+
+This can be done as a separate merge request, or in a merge request
    that uses the latest GitLab Shell changes.
+
+   {{< /alert >}}
 
 ## Security releases
 

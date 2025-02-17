@@ -1,20 +1,27 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Get started with GitLab Duo Self-Hosted.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Get started with GitLab Duo Self-Hosted.
 title: GitLab Duo Self-Hosted
 ---
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
-> - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-> - Feature flag `ai_custom_model` removed in GitLab 17.8
-> - Generally available in GitLab 17.9
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Feature flag `ai_custom_model` removed in GitLab 17.8
+- Generally available in GitLab 17.9
+
+{{< /history >}}
 
 To maintain full control over your data privacy, security, and the deployment of large language models (LLMs) in your own infrastructure, use GitLab Duo Self-Hosted.
 
@@ -68,8 +75,11 @@ Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 The configuration for GitLab Duo Self-Hosted is different to the default configuration
 that uses GitLab external AI vendors.
 
-NOTE:
+{{< alert type="note" >}}
+
 Both of the following configuration types are for GitLab Self-Managed instances.
+
+{{< /alert >}}
 
 ### Self-hosted AI gateway and LLMs
 

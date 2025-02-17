@@ -2,21 +2,31 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use the Web IDE to edit multiple files in the GitLab UI, stage commits, and create merge requests."
+description: Use the Web IDE to edit multiple files in the GitLab UI, stage commits, and create merge requests.
 title: Web IDE
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
-> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 The Web IDE is an advanced editor with commit staging.
 You can use the Web IDE to make changes to multiple files directly from the GitLab UI.
@@ -51,7 +61,7 @@ To open the Web IDE from a merge request:
 The Web IDE opens new and modified files in separate tabs and displays changes side by side.
 To reduce load time, only 10 files with the most lines changed open automatically.
 
-The left **Explorer** sidebar adds a merge request icon (**{merge-request}**) next to new or modified files.
+The left **Explorer** sidebar adds a merge request icon ({{< icon name="merge-request" >}}) next to new or modified files.
 To view changes to a file, right-click the file and select **Compare with merge request base**.
 
 ## Open a file
@@ -102,7 +112,7 @@ To upload a file in the Web IDE:
    To create a new directory:
 
    - On the left **Explorer** sidebar, in the upper right,
-     select **New Folder** (**{folder-new}**).
+     select **New Folder** ({{< icon name="folder-new" >}}).
 
 1. Right-click the directory and select **Upload**.
 1. Select the file you want to upload.
@@ -218,22 +228,32 @@ You cannot sync user profiles or go back to an earlier version of synced setting
 When you perform actions in the Web IDE, notifications appear in the lower right.
 To view any notification you might have missed:
 
-1. On the bottom status bar, on the right, select the bell icon (**{notifications}**) for a list of notifications.
+1. On the bottom status bar, on the right, select the bell icon ({{< icon name="notifications" >}}) for a list of notifications.
 1. Select the notification you want to view.
 
 ## Extension marketplace
 
-DETAILS:
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-> - Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
-> - Feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
-> - Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- Offering: GitLab.com
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
+- Feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+- Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -290,8 +310,11 @@ For more information, see [VS Code issue 80170](https://github.com/microsoft/vsc
 
 ### Update the OAuth callback URL
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -316,8 +339,11 @@ To update the OAuth callback URL:
 
 ### Workhorse dependency
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 On GitLab Self-Managed, [Workhorse](../../../development/workhorse/_index.md) must be installed
 and running in front of the GitLab Rails server.

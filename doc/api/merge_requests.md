@@ -2,21 +2,28 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation for the REST API for merge requests in GitLab."
+description: Documentation for the REST API for merge requests in GitLab.
 title: Merge requests API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - `reference` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
-> - `merged_by` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
-> - `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
-> - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
-> - `approvals_before_merge` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
-> - `prepared_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
-> - `merge_after` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165092) in GitLab 17.5.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- `reference` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
+- `merged_by` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
+- `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
+- `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
+- `approvals_before_merge` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
+- `prepared_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
+- `merge_after` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165092) in GitLab 17.5.
+
+{{< /history >}}
 
 All API calls to non-public information require authentication.
 
@@ -890,8 +897,12 @@ to get the updated status. This affects the `has_conflicts` property, as it depe
 
 ### Merge status
 
-> - `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6.
-> - `detailed_merge_status` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
+{{< history >}}
+
+- `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6.
+- `detailed_merge_status` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
+
+{{< /history >}}
 
 Use `detailed_merge_status` instead of `merge_status` to account for all potential statuses.
 
@@ -1104,9 +1115,12 @@ Example response:
 
 Shows information about the merge request dependencies that must be resolved before merging.
 
-NOTE:
+{{< alert type="note" >}}
+
 If the user does not have access to the blocking merge request, no `blocking_merge_request`
 attribute is returned.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/blocks
@@ -1737,10 +1751,13 @@ Example response:
 
 ## Get single merge request changes
 
-WARNING:
+{{< alert type="warning" >}}
+
 This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
 and [is scheduled for removal](rest/deprecations.md) in API v5. Use the
 [List merge request diffs](#list-merge-request-diffs) endpoint instead.
+
+{{< /alert >}}
 
 Shows information about the merge request including its files and changes.
 
@@ -1876,9 +1893,13 @@ Example response:
 
 ## List merge request diffs
 
-> - `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
-> - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
+{{< history >}}
+
+- `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
+- `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
+
+{{< /history >}}
 
 List diffs of the files changed in a merge request.
 
@@ -1947,9 +1968,12 @@ Example response:
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
 Merge requests that exceed the diff limits return limited results.
+
+{{< /alert >}}
 
 ## Show merge request raw diffs
 
@@ -2008,9 +2032,12 @@ index e02d9eea1852f19fe5311acda6aa17465eeb422e..f32b38585398a18fea75c11d7b8ebb73
      before { authenticate_non_get! }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
 Merge requests that exceed the diff limits return limited results.
+
+{{< /alert >}}
 
 ## List merge request pipelines
 

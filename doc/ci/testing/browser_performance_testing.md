@@ -5,16 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Browser Performance Testing
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If your application offers a web interface and you're using
 [GitLab CI/CD](../_index.md), you can quickly determine the rendering performance
 impact of pending code changes in the browser.
 
-NOTE:
+{{< alert type="note" >}}
+
 You can automate this feature in your applications by using [Auto DevOps](../../topics/autodevops/_index.md).
+
+{{< /alert >}}
 
 ## Overview
 
@@ -47,7 +53,8 @@ between the source and target branches, and shows the information in the merge r
 For an example Browser Performance job, see
 [Configuring Browser Performance Testing](#configuring-browser-performance-testing).
 
-NOTE:
+{{< alert type="note" >}}
+
 If the Browser Performance report has no data to compare, such as when you add the
 Browser Performance job in your `.gitlab-ci.yml` for the very first time,
 the Browser Performance report widget doesn't display. It must have run at least
@@ -55,11 +62,17 @@ once on the target branch (`main`, for example), before it displays in a
 merge request targeting that branch. Additionally, the widget only displays if the
 job ran in the latest pipeline for the Merge request.
 
+{{< /alert >}}
+
 ![Browser Performance Widget](img/browser_performance_testing_v13_4.png)
 
 ## Configuring Browser Performance Testing
 
-> - Support for the `SITESPEED_DOCKER_OPTIONS` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134024) in GitLab 16.6.
+{{< history >}}
+
+- Support for the `SITESPEED_DOCKER_OPTIONS` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134024) in GitLab 16.6.
+
+{{< /history >}}
 
 This example shows how to run the [sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/)
 on your code by using GitLab CI/CD and [sitespeed.io](https://www.sitespeed.io)

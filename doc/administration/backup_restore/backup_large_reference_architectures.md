@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Back up and restore large reference architectures
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This document describes how to:
 
@@ -28,32 +31,38 @@ This document is intended for environments using:
 
 The [backup command](backup_gitlab.md) uses `pg_dump`, which is [not appropriate for databases over 100 GB](backup_gitlab.md#postgresql-databases). You must choose a PostgreSQL solution which has native, robust backup capabilities.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle AWS
+{{< tab title="AWS" >}}
 
 1. [Configure AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html) to back up RDS (and S3) data. For maximum protection, [configure continuous backups as well as snapshot backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/point-in-time-recovery.html).
 1. Configure AWS Backup to copy backups to a separate region. When AWS takes a backup, the backup can only be restored in the region the backup is stored.
 1. After AWS Backup has run at least one scheduled backup, then you can [create an on-demand backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/recov-point-create-on-demand-backup.html) as needed.
 
-:::TabTitle Google
+{{< /tab >}}
+
+{{< tab title="Google" >}}
 
 Schedule [automated daily backups of Google Cloud SQL data](https://cloud.google.com/sql/docs/postgres/backup-recovery/backing-up#schedulebackups).
 Daily backups [can be retained](https://cloud.google.com/sql/docs/postgres/backup-recovery/backups#retention) for up to one year, and transaction logs can be retained for 7 days by default for point-in-time recovery.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Configure backup of object storage data
 
 [Object storage](../object_storage.md), ([not NFS](../nfs.md)) is recommended for storing GitLab data, including [blobs](backup_gitlab.md#blobs) and [Container registry](backup_gitlab.md#container-registry).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle AWS
+{{< tab title="AWS" >}}
 
 Configure AWS Backup to back up S3 data. This can be done at the same time when [configuring the backup of PostgreSQL data](#configure-backup-of-postgresql-data).
 
-:::TabTitle Google
+{{< /tab >}}
+
+{{< tab title="Google" >}}
 
 1. [Create a backup bucket in GCS](https://cloud.google.com/storage/docs/creating-buckets).
 1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) which copy each GitLab object storage bucket to a backup bucket. You can create these jobs once, and [schedule them to run daily](https://cloud.google.com/storage-transfer/docs/schedule-transfer-jobs). However this mixes new and old object storage data, so files that were deleted in GitLab will still exist in the backup. This wastes storage after restore, but it is otherwise not a problem. These files would be inaccessible to GitLab users since they do not exist in the GitLab database. You can delete [some of these orphaned files](../../raketasks/cleanup.md#clean-up-project-upload-files-from-object-storage) after restore, but this clean up Rake task only operates on a subset of files.
@@ -98,15 +107,17 @@ Configure AWS Backup to back up S3 data. This can be done at the same time when 
    1. The example script does not delete old backups. You could implement clean up of old backups according to your desired retention policy.
 1. Ensure that backups are performed at the same time or later than Cloud SQL backups, to reduce data inconsistencies.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Configure backup of Git repositories
 
 Set up cronjobs to perform Gitaly server-side backups:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. [Configure a server-side backup destination in all Gitaly nodes](../gitaly/configure_gitaly.md#configure-server-side-backups).
 1. Configure [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage). Even though Gitaly backs up all Git data to its own object storage bucket, the `gitlab-backup` command also creates a `tar` file containing backup metadata. This `tar` file is required by the restore command.
@@ -146,7 +157,9 @@ Set up cronjobs to perform Gitaly server-side backups:
    0 2 2-31 * * /opt/gitlab/bin/gitlab-backup create REPOSITORIES_SERVER_SIDE=true SKIP=db INCREMENTAL=yes PREVIOUS_BACKUP=1708568263_2024_02_22_16.9.0-ce CRON=1
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. [Configure a server-side backup destination in all Gitaly nodes](../gitaly/configure_gitaly.md#configure-server-side-backups).
 1. [Configure Object storage buckets for backup-utility](https://docs.gitlab.com/charts/backup-restore/#object-storage). Even though Gitaly backs up all Git data to its own object storage bucket, the `backup-utility` command also creates a `tar` file containing backup metadata. This `tar` file is required by the restore command.
@@ -166,7 +179,9 @@ Set up cronjobs to perform Gitaly server-side backups:
    --repositories-server-side --skip db --skip repositories --skip uploads --skip builds --skip artifacts --skip pages --skip lfs --skip terraform_state --skip registry --skip packages --skip ci_secure_files
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Configure backup of configuration files
 
@@ -257,9 +272,9 @@ Before restoring a backup:
 
 ### Restore object storage data
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle AWS
+{{< tab title="AWS" >}}
 
 Each bucket exists as a separate backup within AWS and each backup can be restored to an existing or
 new bucket.
@@ -277,19 +292,23 @@ new bucket.
 1. You can move on to [Restore PostgreSQL data](#restore-postgresql-data) while the restore job is
    running.
 
-:::TabTitle Google
+{{< /tab >}}
+
+{{< tab title="Google" >}}
 
 1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) to transfer backed up data to the GitLab buckets.
 1. You can move on to [Restore PostgreSQL data](#restore-postgresql-data) while the transfer jobs are
    running.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Restore PostgreSQL data
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle AWS
+{{< tab title="AWS" >}}
 
 1. [Restore the AWS RDS database using built-in tooling](https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-rds.html),
    which creates a new RDS instance.
@@ -304,7 +323,9 @@ new bucket.
 
 1. Before moving on, wait until the new RDS instance is created and ready to use.
 
-:::TabTitle Google
+{{< /tab >}}
+
+{{< tab title="Google" >}}
 
 1. [Restore the Google Cloud SQL database using built-in tooling](https://cloud.google.com/sql/docs/postgres/backup-recovery/restoring).
 1. If you restore to a new database instance, then reconfigure GitLab to point to the new database:
@@ -317,7 +338,9 @@ new bucket.
 
 1. Before moving on, wait until the Cloud SQL instance is ready to use.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Restore Git repositories
 
@@ -326,9 +349,9 @@ First, as part of [Restore object storage data](#restore-object-storage-data), y
 - Restored a bucket containing the Gitaly server-side backups of Git repositories.
 - Restored a bucket containing the `*_gitlab_backup.tar` files.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. SSH into a GitLab Rails node, which is a node that runs Puma or Sidekiq.
 1. In your backup bucket, choose a `*_gitlab_backup.tar` file based on its timestamp, aligned with the PostgreSQL and object storage data that you restored.
@@ -385,7 +408,9 @@ First, as part of [Restore object storage data](#restore-object-storage-data), y
    If you are migrating GitLab to a new environment, you can run the same checks on the source GitLab instance to determine whether
    the integrity check result is preexisting or related to the backup and restore process.
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. SSH into a toolbox pod.
 1. In your backup bucket, choose a `*_gitlab_backup.tar` file based on its timestamp, aligned with the PostgreSQL and object storage data that you restored.
@@ -445,6 +470,8 @@ First, as part of [Restore object storage data](#restore-object-storage-data), y
    If you are migrating GitLab to a new environment, you can run the same checks on the source GitLab instance to determine whether
    the integrity check result is preexisting or related to the backup and restore process.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 The restoration should be complete.

@@ -122,9 +122,12 @@ requests that read the most data from the cache, we can just sort by
 
 ### The slow log
 
-NOTE:
+{{< alert type="note" >}}
+
 There is a [video showing how to see the slow log](https://youtu.be/BBI68QuYRH8) (GitLab internal)
 on GitLab.com
+
+{{< /alert >}}
 
 <!-- vale gitlab_base.Substitutions = NO -->
 
@@ -153,7 +156,11 @@ is run manually on an as-needed basis.
 
 ## N+1 calls problem
 
-> - Introduced in [`spec/support/helpers/redis_commands/recorder.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/redis_commands/recorder.rb) via [`f696f670`](https://gitlab.com/gitlab-org/gitlab/-/commit/f696f670005435472354a3dc0c01aa271aef9e32)
+{{< history >}}
+
+- Introduced in [`spec/support/helpers/redis_commands/recorder.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/redis_commands/recorder.rb) via [`f696f670`](https://gitlab.com/gitlab-org/gitlab/-/commit/f696f670005435472354a3dc0c01aa271aef9e32)
+
+{{< /history >}}
 
 `RedisCommands::Recorder` is a tool for detecting Redis N+1 calls problem from tests.
 

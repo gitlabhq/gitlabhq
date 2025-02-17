@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Maintenance Rake tasks
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides Rake tasks for general maintenance.
 
@@ -78,9 +81,12 @@ Gitaly
 
 ## Show GitLab license information
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This command shows information about your [GitLab license](../license.md) and
 how many seats are used. It is only available on GitLab Enterprise
@@ -300,8 +306,11 @@ clear it.
 
 To clear all exclusive leases:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Don't run it while GitLab or Sidekiq is running
+
+{{< /alert >}}
 
 ```shell
 sudo gitlab-rake gitlab:exclusive_lease:clear
@@ -378,12 +387,18 @@ Starting with GitLab 17.1, migrations are executed in an
 
 ## Rebuild database indexes
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-WARNING:
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature is experimental, and isn't enabled by default. Use caution when
 running in a production environment, and run during off-peak times.
+
+{{< /alert >}}
 
 Database indexes can be rebuilt regularly to reclaim space and maintain healthy
 levels of index bloat over time. Reindexing can also be run as a
@@ -448,7 +463,11 @@ To determine if there are any differences:
 
 ## Check the database for schema inconsistencies
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11.
+
+{{< /history >}}
 
 This Rake task checks the database schema for any inconsistencies and prints them in the terminal.
 This task is a diagnostic tool to be used under the guidance of GitLab Support.

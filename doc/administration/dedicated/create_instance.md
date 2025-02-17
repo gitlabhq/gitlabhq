@@ -1,14 +1,17 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-description: Create your GitLab Dedicated instance with Switchboard.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Create your GitLab Dedicated instance with Switchboard.
 title: Create your GitLab Dedicated instance
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 The instructions on this page guide you through the onboarding and initial setup of your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/), the GitLab Dedicated portal.
 
@@ -35,8 +38,11 @@ complete your onboarding to create a new instance.
 
 ### Encrypted Data At Rest (BYOK)
 
-NOTE:
+{{< alert type="note" >}}
+
 To enable BYOK, you must do it before onboarding. If enabled, it is not possible to later disable BYOK.
+
+{{< /alert >}}
 
 You can opt to encrypt your GitLab data at rest with AWS KMS keys, which must be made accessible to GitLab Dedicated infrastructure. Due to key rotation requirements, GitLab Dedicated only supports keys with AWS-managed key material (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin) origin type).
 
@@ -185,8 +191,11 @@ information required to create your GitLab Dedicated instance.
 1. Summary: Confirm that the information you've provided in the previous steps is accurate
    before initiating the creation of your instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 Some configuration settings (like the option to bring your own keys and your tenant name) are permanent and cannot be changed once your instance has been created.
+
+{{< /alert >}}
 
 It can take up to 3 hours to create the GitLab Dedicated instance. When the setup is complete, you will receive a confirmation email.
 
@@ -198,8 +207,11 @@ To access and configure your GitLab Dedicated instance:
 1. In the **Access your GitLab Dedicated instance** banner, select **View credentials**.
 1. Copy the tenant URL and temporary root credentials for your instance.
 
-   NOTE:
-   For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
+   {{< alert type="note" >}}
+
+For security, you can retrieve the temporary root credentials from Switchboard only once. Be sure to store these credentials securely (for example, in a password manager) before leaving Switchboard.
+
+   {{< /alert >}}
 
 1. Go to the tenant URL for your GitLab Dedicated instance and sign in with your temporary root credentials.
 1. [Change your temporary root password](../../user/profile/user_passwords.md#change-your-password) to a new secure password.
@@ -216,5 +228,8 @@ Also plan ahead if you need the following GitLab Dedicated features:
 
 To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../dedicated/configure_instance/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../admin_area.md).
+
+{{< /alert >}}

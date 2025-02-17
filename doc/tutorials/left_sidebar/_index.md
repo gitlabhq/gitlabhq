@@ -5,12 +5,19 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Use the left sidebar to navigate GitLab'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9044) in GitLab 16.0.
-> - In 16.0 through 16.5, you can turn the sidebar off by selecting your avatar and turning off the **New navigation** toggle.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9044) in GitLab 16.0.
+- In 16.0 through 16.5, you can turn the sidebar off by selecting your avatar and turning off the **New navigation** toggle.
+
+{{< /history >}}
 
 Follow this tutorial to learn how to use the new left sidebar to navigate the UI.
 
@@ -22,8 +29,11 @@ merge requests, and to-do items.
 
 ![Top of sidebar](img/sidebar_top_v16_4.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have hidden the left sidebar, you can display it temporarily by hovering your cursor over the left edge of the GitLab window.
+
+{{< /alert >}}
 
 The next area of the left sidebar changes based on the information you're viewing. For example,
 you might be viewing a project, exploring projects or groups, or viewing your profile.
@@ -55,7 +65,7 @@ The left sidebar now shows project-specific options.
 You can pin menu items if you tend to use them frequently.
 
 1. Expand the sections until you are viewing the item you want to pin.
-1. Hover over and select the pin (**{thumbtack}**).
+1. Hover over and select the pin ({{< icon name="thumbtack" >}}).
 
    ![pin](img/pin_v16_0.png)
 
@@ -63,8 +73,11 @@ The item is displayed in the **Pinned** section:
 
 ![pinned item](img/pinned_v16_0.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 The items you pin while you're viewing a project are different than the items you pin while viewing a group.
+
+{{< /alert >}}
 
 ## Use a more focused view
 

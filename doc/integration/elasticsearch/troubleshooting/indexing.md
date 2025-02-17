@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Elasticsearch indexing
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with Elasticsearch indexing, you might encounter the following issues.
 
@@ -82,8 +85,11 @@ If the results:
 - Sync up, check that you are using [supported syntax](../../../user/search/advanced_search.md#syntax). Advanced search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
 - Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
 
-NOTE:
+{{< alert type="note" >}}
+
 The above instructions are not to be used for scenarios that only index a [subset of namespaces](../../advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
+
+{{< /alert >}}
 
 See [Elasticsearch Index Scopes](../../advanced_search/elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
@@ -159,16 +165,18 @@ while the indexing is running.
 If you are sure you've read the above caveats and want to proceed, then you
 should run the following Rake task to recreate the entire index from scratch.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 # WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
 sudo gitlab-rake gitlab:elastic:index
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 # WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
@@ -176,7 +184,9 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:index
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Improve Elasticsearch performance
 

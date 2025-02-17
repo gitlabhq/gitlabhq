@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab.com settings
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
@@ -42,7 +45,7 @@ Go to the current instance configuration to see the SSH host key fingerprints on
 GitLab.com.
 
 1. Sign in to GitLab.
-1. On the left sidebar, select **Help** (**{question-o}**) > **Help**.
+1. On the left sidebar, select **Help** ({{< icon name="question-o" >}}) > **Help**.
 1. On the Help page, select **Check the current instance configuration**.
 
 In the instance configuration, you see the **SSH host key fingerprints**:
@@ -113,9 +116,12 @@ are included when cloning.
 
 ## Delayed group deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 After May 08, 2023, all groups have delayed deletion enabled by default.
 
@@ -127,9 +133,12 @@ You can [view and restore groups marked for deletion](../group/_index.md#restore
 
 ## Delayed project deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 After May 08, 2023, all groups have delayed project deletion enabled by default.
 
@@ -172,8 +181,8 @@ Some settings for [GitLab Pages](../project/pages/_index.md) differ from the
 |:--------------------------------------------------|:-----------------------|
 | Domain name                                       | `gitlab.io`            |
 | IP address                                        | `35.185.44.232`        |
-| Support for custom domains                        | **{check-circle}** Yes |
-| Support for TLS certificates                      | **{check-circle}** Yes |
+| Support for custom domains                        | {{< icon name="check-circle" >}} Yes |
+| Support for TLS certificates                      | {{< icon name="check-circle" >}} Yes |
 | Maximum site size                                 | 1 GB                   |
 | Number of custom domains per GitLab Pages website | 150                    |
 
@@ -263,10 +272,13 @@ If you are near or over the repository size limit, you can either:
 - [Reduce your repository size with Git](../project/repository/repository_size.md#methods-to-reduce-repository-size).
 - [Purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/#can-i-buy-more-storage).
 
-NOTE:
+{{< alert type="note" >}}
+
 `git push` and GitLab project imports are limited to 5 GiB per request through
 Cloudflare. Imports other than a file upload are not affected by
 this limit. Repository limits apply to both public and private projects.
+
+{{< /alert >}}
 
 ## Default import sources
 
@@ -355,8 +367,12 @@ GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../admi
 
 ## Maximum number of reviewers and assignees
 
-> - Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
-> - Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
+{{< history >}}
+
+- Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
+- Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
+
+{{< /history >}}
 
 Merge requests enforce these maximums:
 
@@ -365,9 +381,12 @@ Merge requests enforce these maximums:
 
 ## GitLab.com-specific rate limits
 
-NOTE:
+{{< alert type="note" >}}
+
 See [Rate limits](../../security/rate_limits.md) for administrator
 documentation.
+
+{{< /alert >}}
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There

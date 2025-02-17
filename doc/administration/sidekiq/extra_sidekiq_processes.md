@@ -5,16 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Run multiple Sidekiq processes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab allows you to start multiple Sidekiq processes to process background jobs
 at a higher rate on a single instance. By default, Sidekiq starts one worker
 process and only uses a single core.
 
-NOTE:
+{{< alert type="note" >}}
+
 The information in this page applies only to Linux package installations.
+
+{{< /alert >}}
 
 ## Start multiple processes
 
@@ -82,7 +88,11 @@ for more details.
 
 #### Manage thread counts with concurrency field
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439687) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439687) in GitLab 16.9.
+
+{{< /history >}}
 
 In GitLab 16.9 and later, you can set the concurrency by setting `concurrency`. This value explicitly sets each process
 with this amount of concurrency.
@@ -122,10 +132,13 @@ processes:
 
 ## Troubleshoot using the CLI
 
-WARNING:
+{{< alert type="warning" >}}
+
 It's recommended to use `/etc/gitlab/gitlab.rb` to configure the Sidekiq processes.
 If you experience a problem, you should contact GitLab support. Use the command
 line at your own risk.
+
+{{< /alert >}}
 
 For debugging purposes, you can start extra Sidekiq processes by using the command
 `/opt/gitlab/embedded/service/gitlab-rails/bin/sidekiq-cluster`. This command

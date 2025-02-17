@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-3-using-the-gitlab-ci-events-folder/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-3-using-the-gitlab-ci-events-folder/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

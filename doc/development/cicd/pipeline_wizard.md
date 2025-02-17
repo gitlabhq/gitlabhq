@@ -156,11 +156,11 @@ In the root element of the template file, you can define the following propertie
 
 | Name          | Required               | Type   | Description                                                                                                                                                                                                              |
 |---------------|------------------------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | **{check-circle}** Yes | string | A unique template ID. This ID should follow a namespacing pattern, with a forward slash `/` as separator. Templates committed to GitLab source code should always begin with `gitlab`. For example: `gitlab/my-template` |
-| `title`       | **{check-circle}** Yes | string | The page title as displayed to the user. It becomes an `h1` heading above the wizard.                                                                                                                                    |
-| `description` | **{check-circle}** Yes | string | The page description as displayed to the user.                                                                                                                                                                           |
-| `filename`    | **{dotted-circle}** No | string | The name of the file that is being generated. Defaults to `.gitlab-ci.yml`.                                                                                                                                              |
-| `steps`       | **{check-circle}** Yes | list   | A list of [step definitions](#step-reference).                                                                                                                                                                           |
+| `id`          | {{< icon name="check-circle" >}} Yes | string | A unique template ID. This ID should follow a namespacing pattern, with a forward slash `/` as separator. Templates committed to GitLab source code should always begin with `gitlab`. For example: `gitlab/my-template` |
+| `title`       | {{< icon name="check-circle" >}} Yes | string | The page title as displayed to the user. It becomes an `h1` heading above the wizard.                                                                                                                                    |
+| `description` | {{< icon name="check-circle" >}} Yes | string | The page description as displayed to the user.                                                                                                                                                                           |
+| `filename`    | {{< icon name="dotted-circle" >}} No | string | The name of the file that is being generated. Defaults to `.gitlab-ci.yml`.                                                                                                                                              |
+| `steps`       | {{< icon name="check-circle" >}} Yes | list   | A list of [step definitions](#step-reference).                                                                                                                                                                           |
 
 ### `step` Reference
 
@@ -171,8 +171,8 @@ Steps include two properties:
 
 | Name       | Required               | Type | Description                                                                                                                                                                           |
 |------------|------------------------|------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `template` | **{check-circle}** Yes | map  | The raw YAML to deep-merge into the final `.gitlab-ci.yml`. This template section can contain variables denoted by a `$` sign that is replaced with the values from the input fields. |
-| `inputs`   | **{check-circle}** Yes | list | A list of [input definitions](#input-reference).                                                                                                                                      |
+| `template` | {{< icon name="check-circle" >}} Yes | map  | The raw YAML to deep-merge into the final `.gitlab-ci.yml`. This template section can contain variables denoted by a `$` sign that is replaced with the values from the input fields. |
+| `inputs`   | {{< icon name="check-circle" >}} Yes | list | A list of [input definitions](#input-reference).                                                                                                                                      |
 
 ### `input` Reference
 
@@ -191,9 +191,9 @@ are dependent on the widget being used:
 
 | Name     | Required               | Type   | Description                                                                                                                 |
 |----------|------------------------|--------|-----------------------------------------------------------------------------------------------------------------------------|
-| `label`  | **{check-circle}** Yes | string | The label for the input field.                                                                                              |
-| `widget` | **{check-circle}** Yes | string | The [widget](#widgets) type to use for this input.                                                                          |
-| `target` | **{dotted-circle}** No | string | The variable name inside the step's template that should be replaced with the value of the input field, for example `$FOO`. |
+| `label`  | {{< icon name="check-circle" >}} Yes | string | The label for the input field.                                                                                              |
+| `widget` | {{< icon name="check-circle" >}} Yes | string | The [widget](#widgets) type to use for this input.                                                                          |
+| `target` | {{< icon name="dotted-circle" >}} No | string | The variable name inside the step's template that should be replaced with the value of the input field, for example `$FOO`. |
 
 ### Widgets
 
@@ -203,14 +203,14 @@ Use as `widget: text`. This inserts a `string` in the YAML file.
 
 | Name              | Required               | Type    | Description           |
 |-------------------|------------------------|---------|-----------------------|
-| `label`           | **{check-circle}** Yes | string  | The label for the input field. |
-| `description`     | **{dotted-circle}** No | string  | Help text related to the input field. |
-| `required`        | **{dotted-circle}** No | boolean | Whether or not the user must provide a value before proceeding to the next step. `false` if not defined. |
-| `placeholder`     | **{dotted-circle}** No | string  | A placeholder for the input field. |
-| `pattern`         | **{dotted-circle}** No | string  | A regular expression that the user's input must match before they can proceed to the next step. |
-| `invalidFeedback` | **{dotted-circle}** No | string  | Help text displayed when the pattern validation fails. |
-| `default`         | **{dotted-circle}** No | string  | The default value for the field. |
-| `id`              | **{dotted-circle}** No | string  | The input field ID is usually autogenerated but can be overridden by providing this property. |
+| `label`           | {{< icon name="check-circle" >}} Yes | string  | The label for the input field. |
+| `description`     | {{< icon name="dotted-circle" >}} No | string  | Help text related to the input field. |
+| `required`        | {{< icon name="dotted-circle" >}} No | boolean | Whether or not the user must provide a value before proceeding to the next step. `false` if not defined. |
+| `placeholder`     | {{< icon name="dotted-circle" >}} No | string  | A placeholder for the input field. |
+| `pattern`         | {{< icon name="dotted-circle" >}} No | string  | A regular expression that the user's input must match before they can proceed to the next step. |
+| `invalidFeedback` | {{< icon name="dotted-circle" >}} No | string  | Help text displayed when the pattern validation fails. |
+| `default`         | {{< icon name="dotted-circle" >}} No | string  | The default value for the field. |
+| `id`              | {{< icon name="dotted-circle" >}} No | string  | The input field ID is usually autogenerated but can be overridden by providing this property. |
 
 #### List
 
@@ -218,14 +218,14 @@ Use as `widget: list`. This inserts a `list` in the YAML file.
 
 | Name              | Required               | Type    | Description           |
 |-------------------|------------------------|---------|-----------------------|
-| `label`           | **{check-circle}** Yes | string  | The label for the input field. |
-| `description`     | **{dotted-circle}** No | string  | Help text related to the input field. |
-| `required`        | **{dotted-circle}** No | boolean | Whether or not the user must provide a value before proceeding to the next step. `false` if not defined. |
-| `placeholder`     | **{dotted-circle}** No | string  | A placeholder for the input field. |
-| `pattern`         | **{dotted-circle}** No | string  | A regular expression that the user's input must match before they can proceed to the next step. |
-| `invalidFeedback` | **{dotted-circle}** No | string  | Help text displayed when the pattern validation fails. |
-| `default`         | **{dotted-circle}** No | list    | The default value for the list |
-| `id`              | **{dotted-circle}** No | string  | The input field ID is usually autogenerated but can be overridden by providing this property. |
+| `label`           | {{< icon name="check-circle" >}} Yes | string  | The label for the input field. |
+| `description`     | {{< icon name="dotted-circle" >}} No | string  | Help text related to the input field. |
+| `required`        | {{< icon name="dotted-circle" >}} No | boolean | Whether or not the user must provide a value before proceeding to the next step. `false` if not defined. |
+| `placeholder`     | {{< icon name="dotted-circle" >}} No | string  | A placeholder for the input field. |
+| `pattern`         | {{< icon name="dotted-circle" >}} No | string  | A regular expression that the user's input must match before they can proceed to the next step. |
+| `invalidFeedback` | {{< icon name="dotted-circle" >}} No | string  | Help text displayed when the pattern validation fails. |
+| `default`         | {{< icon name="dotted-circle" >}} No | list    | The default value for the list |
+| `id`              | {{< icon name="dotted-circle" >}} No | string  | The input field ID is usually autogenerated but can be overridden by providing this property. |
 
 #### Checklist
 
@@ -234,13 +234,13 @@ be checked before proceeding to the next step.
 
 | Name    | Required               | Type   | Description                                                                                                                                                                        |
 |---------|------------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `title` | **{dotted-circle}** No | string | A title above the checklist items.                                                                                                                                                  |
-| `items` | **{dotted-circle}** No | list   | A list of items that need to be checked. Each item corresponds to one checkbox, and can be a string or [checklist item](#checklist-item). |
+| `title` | {{< icon name="dotted-circle" >}} No | string | A title above the checklist items.                                                                                                                                                  |
+| `items` | {{< icon name="dotted-circle" >}} No | list   | A list of items that need to be checked. Each item corresponds to one checkbox, and can be a string or [checklist item](#checklist-item). |
 
 ##### Checklist Item
 
 | Name   | Required               | Type    | Description                             |
 |--------|------------------------|---------|-----------------------------------------|
-| `text` | **{check-circle}** Yes | string  | A title above the checklist items.      |
-| `help` | **{dotted-circle}** No | string  | Help text explaining the item.          |
-| `id`   | **{dotted-circle}** No | string  | The input field ID is usually autogenerated but can be overridden by providing this property. |
+| `text` | {{< icon name="check-circle" >}} Yes | string  | A title above the checklist items.      |
+| `help` | {{< icon name="dotted-circle" >}} No | string  | Help text explaining the item.          |
+| `id`   | {{< icon name="dotted-circle" >}} No | string  | The input field ID is usually autogenerated but can be overridden by providing this property. |

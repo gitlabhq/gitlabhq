@@ -2,7 +2,7 @@
 stage: Plan
 group: Knowledge
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Development guidelines for GitLab Flavored Markdown (GLFM)."
+description: Development guidelines for GitLab Flavored Markdown (GLFM).
 title: GitLab Flavored Markdown (GLFM) development guidelines
 ---
 
@@ -24,9 +24,12 @@ Extensions from [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/)
 Various [extensions](../../user/markdown.md#differences-with-standard-markdown), such as math and multiline
 blockquotes are then added, creating GLFM.
 
-NOTE:
+{{< alert type="note" >}}
+
 In many places in the code, we use `gfm` or `GFM`. In those cases, we're usually
 referring to the Markdown in general, not specifically GLFM.
+
+{{< /alert >}}
 
 ## Basic flow
 

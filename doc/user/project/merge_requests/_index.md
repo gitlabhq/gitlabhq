@@ -2,16 +2,23 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Propose, review, and collaborate on changes to a project."
+description: Propose, review, and collaborate on changes to a project.
 title: Merge requests
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Sidebar actions menu [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127001) in GitLab 16.9. Feature flag `moved_mr_sidebar` removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Sidebar actions menu [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/373757) to also move actions on issues, incidents, and epics in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127001) in GitLab 16.9. Feature flag `moved_mr_sidebar` removed.
+
+{{< /history >}}
 
 A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
@@ -41,16 +48,19 @@ found to your merge request:
 | Commit message with an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically) like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
 | Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
 
-NOTE:
+{{< alert type="note" >}}
+
 Items marked with an asterisk (\*) also append an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically).
+
+{{< /alert >}}
 
 ## View merge requests
 
 You can view merge requests for your project, group, or yourself.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle You're participating in
+{{< tab title="You're participating in" >}}
 
 To view all merge requests on the homepage, use the <kbd>Shift</kbd> + <kbd>m</kbd>
 [keyboard shortcut](../../shortcuts.md), or:
@@ -62,7 +72,9 @@ or:
 1. On the left sidebar, select **Search or go to**.
 1. From the dropdown list, select **Merge requests**.
 
-:::TabTitle For a project
+{{< /tab >}}
+
+{{< tab title="For a project" >}}
 
 To view all merge requests for a project:
 
@@ -71,7 +83,9 @@ To view all merge requests for a project:
 
 Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>g</kbd> + <kbd>m</kbd>.
 
-:::TabTitle For all projects in a group
+{{< /tab >}}
+
+{{< tab title="For all projects in a group" >}}
 
 To view merge requests for all projects in a group:
 
@@ -80,13 +94,19 @@ To view merge requests for all projects in a group:
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Filter the list of merge requests
 
-> - Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
-> - Filtering by `merged-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
-> - Filtering by `merged-by` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142666) in GitLab 17.0. Feature flag `mr_merge_user_filter` removed.
+{{< history >}}
+
+- Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
+- Filtering by `merged-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
+- Filtering by `merged-by` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142666) in GitLab 17.0. Feature flag `mr_merge_user_filter` removed.
+
+{{< /history >}}
 
 To filter the list of merge requests:
 
@@ -110,8 +130,8 @@ To filter the list of merge requests:
    You can filter some attributes by **None** or **Any**.
 1. Repeat this process to filter by more attributes, joined by a logical
    `AND`.
-1. Select a **Sort direction**, either **{sort-lowest}** for descending order,
-   or **{sort-highest}** for ascending order.
+1. Select a **Sort direction**, either {{< icon name="sort-lowest" >}} for descending order,
+   or {{< icon name="sort-highest" >}} for ascending order.
 
 ### By environment or deployment date
 
@@ -122,9 +142,12 @@ you can type (or select from the dropdown list) the following:
 - Deployed-before
 - Deployed-after
 
-NOTE:
+{{< alert type="note" >}}
+
 Projects using a [fast-forward merge method](methods/_index.md#fast-forward-merge)
 do not return results, as this method does not create a merge commit.
+
+{{< /alert >}}
 
 When filtering by an environment, a dropdown list presents all environments that
 you can choose from.
@@ -223,9 +246,12 @@ If the user lacks the correct role, such as in a forked project, the source bran
 
 ### Update merge requests when target branch merges
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Merge requests are often chained together, with one merge request depending on
 the code added or changed in another merge request. To support keeping individual
@@ -282,11 +308,15 @@ For a web developer writing a webpage for your company's website:
 
 ## Filter activity in a merge request
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115383) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `mr_activity_filters`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387070) in GitLab 16.0.
-> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126998) in GitLab 16.3 by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132355) in GitLab 16.5. Feature flag `mr_activity_filters` removed.
-> - Filtering bot comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128473) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115383) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `mr_activity_filters`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387070) in GitLab 16.0.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126998) in GitLab 16.3 by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132355) in GitLab 16.5. Feature flag `mr_activity_filters` removed.
+- Filtering bot comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128473) in GitLab 16.9.
+
+{{< /history >}}
 
 To understand the history of a merge request, filter its activity feed to show you
 only the items that are relevant to you.
@@ -312,7 +342,7 @@ only the items that are relevant to you.
    - Merge request status
    - Tracking
 
-1. Optional. Select **Sort** (**{sort-lowest}**) to reverse the sort order.
+1. Optional. Select **Sort** ({{< icon name="sort-lowest" >}}) to reverse the sort order.
 
 Your selection persists across all merge requests. You can also change the
 sort order by clicking the sort button on the right.
@@ -333,7 +363,7 @@ create an issue to resolve them separately:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. In the merge request, in the top right, find the **Unresolved threads**
-   dropdown list, and select **Thread options** (**{ellipsis_v}**).
+   dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Resolve all with new issue**.
 1. Fill out the fields in the new issue, and select **Create issue**.
 
@@ -349,7 +379,7 @@ create an issue to resolve it separately:
 1. Select **Code > Merge requests** and find your merge request.
 1. In the merge request, find the thread you want to move.
 1. Below the last reply to the thread, next to **Resolve thread**, select
-   **Create issue to resolve thread** (**{issue-new}**).
+   **Create issue to resolve thread** ({{< icon name="issue-new" >}}).
 1. Fill out the fields in the new issue, and select **Create issue**.
 
 GitLab marks the thread as resolved, and adds a link from the merge request to
@@ -382,16 +412,26 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 ## Move notifications and to-dos
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
-> - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
+- [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
+
+{{< /alert >}}
 
 Enabling this feature flag moves the notifications and to-do item buttons to the upper right corner of the page.
 

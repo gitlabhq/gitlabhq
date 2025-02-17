@@ -48,8 +48,11 @@ Several factors can impact migration timelines:
 - Communicate conservative timelines externally while working to deliver faster
 - Prioritize system stability over speed of deployment
 
-NOTE:
+{{< alert type="note" >}}
+
 While some migrations can technically be completed quickly, we typically plan for longer timelines to ensure proper testing and staged rollouts. This approach helps maintain system stability and reliability.
+
+{{< /alert >}}
 
 ## Scope
 
@@ -89,8 +92,11 @@ Before starting a model migration:
 - Ensure you have access to testing environments and monitoring tools
 - Complete model evaluation using the [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md)
 
-NOTE:
+{{< alert type="note" >}}
+
 Documentation of model changes is crucial for tracking the impact of migrations and helping with future troubleshooting. Always create an issue to track these changes before beginning the migration process.
+
+{{< /alert >}}
 
 ## Migration Tasks
 
@@ -112,8 +118,11 @@ Note: While we're moving toward AI gateway holding the prompts, feature flag imp
 
 For implementing feature flags, refer to our [Feature Flags Development Guidelines](../feature_flags/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 Feature flag implementations will affect self-hosted cloud-connected customers. These customers won't receive the model upgrade until the feature flag is removed from the AI gateway codebase, as they won't have access to the new GitLab release.
+
+{{< /alert >}}
 
 ### Model Selection Implementation
 

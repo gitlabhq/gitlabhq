@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Geo synchronization and verification errors
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you notice replication or verification failures in `Admin > Geo > Sites` or the [Sync status Rake task](common.md#sync-status-rake-task), you can try to resolve the failures with the following general steps:
 
@@ -37,9 +40,12 @@ replication or verification for individual records synchronously or asynchronous
 
 #### Obtaining a Replicator instance
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions.
 Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 Before you can perform any sync or verify operations, you need to obtain a Replicator instance.
 
@@ -241,11 +247,18 @@ models that correspond to Geo registry tables that can be queried are:
 
 ### Resync and reverify multiple components
 
-> - Bulk resync and reverify [added](https://gitlab.com/gitlab-org/gitlab/-/issues/364729) in GitLab 16.5.
+{{< history >}}
 
-WARNING:
+- Bulk resync and reverify [added](https://gitlab.com/gitlab-org/gitlab/-/issues/364729) in GitLab 16.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions.
 Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 The following sections describe how to use internal application commands in the
 [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) to cause bulk
@@ -265,9 +278,12 @@ Alternatively,
 **on the secondary Geo site** to gather more information, or execute these operations manually using
 the snippets below.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions.
 Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ##### Sync all resources of one component that failed to sync
 
@@ -409,8 +425,11 @@ If you encounter these errors in your primary site `geo.log`, they're also refle
 1. In a Puma or Sidekiq node in the primary site, [open a Rails console](../../../operations/rails_console.md#starting-a-rails-console-session).
 1. Run the following snippet to find the affected artifacts containing the `File is not checksummable` message:
 
-NOTE:
+{{< alert type="note" >}}
+
 The example provided below uses `JobArtifact` blob type; however, the same solution applies to any blob type that Geo uses.
+
+{{< /alert >}}
 
 ```ruby
 
@@ -542,10 +561,13 @@ is [enabled on the secondary site](../../../packages/container_registry.md#enabl
 
 ### Message: `Synchronization failed - Error syncing repository`
 
-WARNING:
+{{< alert type="warning" >}}
+
 If large repositories are affected by this problem,
 their resync may take a long time and cause significant load on your Geo sites,
 storage and network systems.
+
+{{< /alert >}}
 
 The following error message indicates a consistency check error when syncing the repository:
 
@@ -704,8 +726,11 @@ to transfer each affected repository from the primary to the secondary site.
 
 ## Find repository check failures in a Geo secondary site
 
-NOTE:
+{{< alert type="note" >}}
+
 All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/issues/426659).
+
+{{< /alert >}}
 
 For GitLab 16.2 and earlier:
 
@@ -723,8 +748,11 @@ Repository check failures on a Geo secondary site do not necessarily imply a rep
 [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session)
 to enact the following, basic troubleshooting steps.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ### Get the number of repositories that failed the repository check
 
@@ -768,16 +796,18 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Clear Gitaly/Gitaly Cluster data.
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Gitaly
+   {{< tab title="Gitaly" >}}
 
    ```shell
    mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
    sudo gitlab-ctl reconfigure
    ```
 
-   :::TabTitle Gitaly Cluster
+   {{< /tab >}}
+
+   {{< tab title="Gitaly Cluster" >}}
 
    1. Optional. Disable the Praefect internal load balancer.
    1. Stop Praefect on each Praefect server:
@@ -814,17 +844,25 @@ to start again from scratch, there are a few steps that can help you:
 
    1. Optional. If you disabled it, reactivate the Praefect internal load balancer.
 
-   ::EndTabs
+      {{< /tab >}}
 
-   NOTE:
-   You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
+   {{< /tabs >}}
+
+   {{< alert type="note" >}}
+
+You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future
    as soon as you confirmed that you don't need it anymore, to save disk space.
+
+   {{< /alert >}}
 
 1. Optional. Rename other data folders and create new ones.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    You may still have files on the **secondary** site that have been removed from the **primary** site, but this
    removal has not been reflected. If you skip this step, these files are not removed from the Geo **secondary** site.
+
+   {{< /alert >}}
 
    Any uploaded content (like file attachments, avatars, or LFS objects) is stored in a
    subfolder in one of these paths:
@@ -856,8 +894,11 @@ to start again from scratch, there are a few steps that can help you:
 
 1. Reset the Tracking Database.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    If you skipped the optional step 3, be sure both `geo-postgresql` and `postgresql` services are running.
+
+   {{< /alert >}}
 
    ```shell
    gitlab-rake db:drop:geo DISABLE_DATABASE_ENVIRONMENT_CHECK=1   # on a secondary app node

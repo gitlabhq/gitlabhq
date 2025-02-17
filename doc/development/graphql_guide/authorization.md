@@ -32,18 +32,21 @@ system as throughout the rest of the application.
 
 Also see [authorizing resources in a mutation](../api_graphql_styleguide.md#authorizing-resources).
 
-NOTE:
+{{< alert type="note" >}}
+
 The best practice is to load only what the currently authenticated user is allowed to
 view with our existing finders first, without relying on authorization
 to filter the records. This minimizes database queries and unnecessary
 authorization checks of the loaded records. It also avoids situations,
 such as short pages, which can expose the presence of confidential resources.
 
+{{< /alert >}}
+
 See [`authorization_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/features/authorization_spec.rb)
 for examples of all the authorization schemes discussed here.
 
 <!--
-    NOTE: if you change this heading (or the location to this file), make sure to update
+if you change this heading (or the location to this file), make sure to update
           the referenced link in rubocop/cop/graphql/authorize_types.rb
 -->
 
@@ -317,8 +320,11 @@ class SomeType < BaseObject
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 We can optimize the authorization calls with `skip_type_authorization` in this case, because:
+
+{{< /alert >}}
 
 - We already authorize the discussions in `SomeResolver`
 - Permissions to read one note or all notes are the same for a discussion

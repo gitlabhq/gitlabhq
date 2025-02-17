@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Using PostgreSQL
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 As many applications depend on PostgreSQL as their database, you
 eventually need it in order for your tests to run. Below you are guided how to
@@ -95,9 +98,12 @@ sudo -u postgres psql -d template1
 Then create a user (in our case `runner`) which is used by your
 application. Change `$password` in the command below to a real strong password.
 
-NOTE:
+{{< alert type="note" >}}
+
 Be sure to not enter `template1=#` in the following commands, as that's part of
 the PostgreSQL prompt.
+
+{{< /alert >}}
 
 ```shell
 template1=# CREATE USER runner WITH PASSWORD '$password' CREATEDB;

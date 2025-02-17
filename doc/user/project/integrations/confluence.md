@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Confluence Workspace
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use a Confluence Cloud Workspace as your project wiki.
 
@@ -51,8 +54,11 @@ If the integration has been turned on for the group, you can still turn it off f
 
 ### For all projects on the instance
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 

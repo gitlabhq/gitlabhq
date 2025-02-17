@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Export issues to CSV
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Minimum role to export issues [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Minimum role to export issues [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can export issues from GitLab to a plain-text CSV
 ([comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values))
@@ -46,7 +53,7 @@ Prerequisites:
 1. In the dropdown list that appears, select the attributes to filter by.
    For more information about filter options, see
    [Filter the list of issues](managing_issues.md#filter-the-list-of-issues).
-1. In the upper right, select **Actions** (**{ellipsis_v}**) **> Export as CSV**.
+1. In the upper right, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Export as CSV**.
 1. In the dialog, verify that the email address is correct, then select **Export issues**.
 
 All matching issues are exported, including those not shown on the first page.

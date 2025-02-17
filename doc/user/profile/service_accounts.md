@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Service accounts
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A service account is a type of machine user that is not tied to an individual human
 user.
@@ -53,9 +56,13 @@ How you create an account differs depending on whether you are a:
 
 ### Top-level group Owners
 
-> - Introduced for GitLab.com in GitLab 16.3
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../../administration/feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172502) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
+{{< history >}}
+
+- Introduced for GitLab.com in GitLab 16.3
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../../administration/feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172502) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -82,8 +89,11 @@ Prerequisites:
 
 ### Administrators in GitLab Self-Managed
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -180,8 +190,11 @@ To delete a service account, [use the service accounts API to delete the service
 
 #### Administrators in GitLab Self-Managed
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 

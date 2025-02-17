@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab CI/CD artifacts reports types
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use [`artifacts:reports`](_index.md#artifactsreports) to:
 
@@ -28,9 +31,12 @@ pipeline features from each job.
 
 To browse the report output files, ensure you include the [`artifacts:paths`](_index.md#artifactspaths) keyword in your job definition.
 
-NOTE:
+{{< alert type="note" >}}
+
 Combined reports in parent pipelines using [artifacts from child pipelines](_index.md#needspipelinejob) is
 not supported. Track progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
+
+{{< /alert >}}
 
 ## `artifacts:reports:accessibility`
 
@@ -44,7 +50,11 @@ For more information, see [Accessibility testing](../testing/accessibility_testi
 
 ## `artifacts:reports:annotations`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+{{< /history >}}
 
 The `annotations` report is used to attach auxiliary data to a job.
 
@@ -93,8 +103,11 @@ The following is an example of what a job annotations report might look like:
 
 ## `artifacts:reports:api_fuzzing`
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The `api_fuzzing` report collects [API Fuzzing bugs](../../user/application_security/api_fuzzing/_index.md)
 as artifacts.
@@ -108,8 +121,11 @@ GitLab can display the results of one or more reports in:
 
 ## `artifacts:reports:browser_performance`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 The `browser_performance` report collects [Browser Performance Testing metrics](../testing/browser_performance_testing.md)
 as an artifact. This artifact is a JSON file output by the [Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance).
@@ -148,7 +164,11 @@ GitLab can display the results of coverage report in the merge request
 
 ## `artifacts:reports:codequality`
 
-> - Multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in GitLab 15.7.
+{{< history >}}
+
+- Multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in GitLab 15.7.
+
+{{< /history >}}
 
 The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.
@@ -163,8 +183,11 @@ The [`artifacts:expire_in`](_index.md#artifactsexpire_in) value is set to `1 wee
 
 ## `artifacts:reports:container_scanning`
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/_index.md).
 The collected Container Scanning report uploads to GitLab as an artifact.
@@ -178,8 +201,11 @@ GitLab can display the results of one or more reports in:
 
 ## `artifacts:reports:coverage_fuzzing`
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The `coverage_fuzzing` report collects [coverage fuzzing bugs](../../user/application_security/coverage_fuzzing/_index.md).
 The collected coverage fuzzing report uploads to GitLab as an artifact.
@@ -192,10 +218,17 @@ GitLab can display the results of one or more reports in:
 
 ## `artifacts:reports:cyclonedx`
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
+
+{{< /history >}}
 
 This report is a Software Bill of Materials describing the components of a project
 following the [CycloneDX](https://cyclonedx.org/docs/1.4) protocol format.
@@ -220,8 +253,11 @@ artifacts:
 
 ## `artifacts:reports:dast`
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/_index.md). The collected DAST
 report uploads to GitLab as an artifact.
@@ -235,8 +271,11 @@ GitLab can display the results of one or more reports in:
 
 ## `artifacts:reports:dependency_scanning`
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/_index.md).
 The collected Dependency Scanning report uploads to GitLab as an artifact.
@@ -315,8 +354,11 @@ concatenate them into a single file. Use either:
 
 ## `artifacts:reports:load_performance`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 The `load_performance` report collects [Load Performance Testing metrics](../testing/load_performance_testing.md).
 The report is uploaded to GitLab as an artifact.
@@ -328,8 +370,11 @@ GitLab cannot display the combined results of multiple `load_performance` report
 
 ## `artifacts:reports:metrics`
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.
@@ -339,8 +384,11 @@ GitLab can display the results of one or more reports in the merge request
 
 ## `artifacts:reports:requirements`
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
 artifact and existing [requirements](../../user/project/requirements/_index.md) are marked as Satisfied.
@@ -352,16 +400,26 @@ GitLab can display the results of one or more reports in the
 
 ## `artifacts:reports:repository_xray` (deprecated)
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
+
+{{< /history >}}
 
 The `repository_xray` report collects information about your repository for use by GitLab Duo Code Suggestions.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) in GitLab 17.6
 and is planned for removal in 18.0. Use [Enable Repository X-Ray](../../user/project/repository/code_suggestions/repository_xray.md#enable-repository-x-ray) instead.
+
+{{< /alert >}}
 
 <!--- end_remove -->
 

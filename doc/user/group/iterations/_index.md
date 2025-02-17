@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Iterations
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 An iteration in GitLab refers to a time-boxed workflow that groups issues to be worked on during
 a specific period of time, usually lasting 1-3 weeks.
@@ -89,11 +92,15 @@ When you use iterations for rapid cycles:
 
 ## Iteration cadences
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md), named `iteration_cadences`. Disabled by default.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/354977) in GitLab 15.0: All scheduled iterations must start on the same day of the week as the cadence start day. Start date of cadence cannot be edited after the first iteration starts.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/367493) in GitLab 15.4: A new automation start date can be selected for cadence. Upcoming iterations are scheduled to start on the same day of the week as the changed start date. Iteration cadences can be manually managed by turning off the automatic scheduling feature.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.5. Feature flag `iteration_cadences` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5077) in GitLab 14.1 [with a flag](../../../administration/feature_flags.md), named `iteration_cadences`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/354977) in GitLab 15.0: All scheduled iterations must start on the same day of the week as the cadence start day. Start date of cadence cannot be edited after the first iteration starts.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/367493) in GitLab 15.4: A new automation start date can be selected for cadence. Upcoming iterations are scheduled to start on the same day of the week as the changed start date. Iteration cadences can be manually managed by turning off the automatic scheduling feature.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/354878) in GitLab 15.5. Feature flag `iteration_cadences` removed.
+
+{{< /history >}}
 
 Iteration cadences are containers for iterations and can be used to automate iteration scheduling.
 You can use them to automate creating iterations every 1, 2, 3, or 4 weeks. You can also
@@ -101,8 +108,12 @@ configure iteration cadences to automatically roll over incomplete issues to the
 
 ### Create an iteration cadence
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -139,12 +150,15 @@ To manually manage the created cadence, see [Create an iteration manually](#crea
 To view all the iterations in a cadence, ordered by descending date, select that iteration cadence.
 From there you can create a new iteration or select an iteration to get a more detailed view.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a project has issue tracking
 [turned off](../../project/settings/_index.md#configure-project-features-and-permissions),
 to view the iterations list, enter its URL. To do so, add: `/-/cadences` to your project or group URL.
 For example `https://gitlab.com/gitlab-org/sample-data-templates/sample-gitlab-project/-/cadences`.
 [Issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009) tracks improving this.
+
+{{< /alert >}}
 
 ### Edit an iteration cadence
 
@@ -156,7 +170,7 @@ To edit an iteration cadence:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
-1. To the right of the cadence you want to edit, select the vertical ellipsis (**{ellipsis_v}**) and
+1. To the right of the cadence you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and
    then select **Edit cadence**.
 1. Edit the fields.
    - When you use automatic scheduling and edit the **Automation start date** field,
@@ -172,7 +186,7 @@ To edit an iteration cadence:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 1. To the right of the cadence for which you want to turn on or off automatic scheduling, select the
-   vertical ellipsis (**{ellipsis_v}**) and then select **Edit cadence**.
+   vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit cadence**.
 1. Select or clear the **Enable automatic scheduling** checkbox.
 1. If you're turning on automatic scheduling,
    complete the required fields **Automation start date**, **Duration**, and **Upcoming iterations**.
@@ -209,8 +223,12 @@ to satisfy the requirement that there are at least two upcoming iterations sched
 
 ### Delete an iteration cadence
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -222,7 +240,7 @@ To delete an iteration cadence:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
-1. To the right of the cadence you want to delete, select the vertical ellipsis (**{ellipsis_v}**) and then select **Delete cadence**.
+1. To the right of the cadence you want to delete, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete cadence**.
 1. Select **Delete cadence**.
 
 ### GitLab Automation Bot user
@@ -239,8 +257,12 @@ On GitLab.com, this is the `automation-bot1` user.
 
 ## Create an iteration manually
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 When an iteration cadence has automatic scheduling enabled, iterations are created on schedule.
 If you disable that option, you can create iterations manually.
@@ -256,14 +278,18 @@ To create an iteration:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 1. To the right of the cadence in which you want create an iteration, select the vertical ellipsis
-   (**{ellipsis_v}**) and then select **Add iteration**.
+   ({{< icon name="ellipsis_v" >}}) and then select **Add iteration**.
 1. Complete the fields.
 1. Select **Create iteration**. The iteration details page opens.
 
 ## Edit an iteration
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -274,15 +300,19 @@ To edit an iteration:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations** and select an iteration cadence.
 1. Select the iteration you want edit. The iteration details page opens.
-1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**) and then select **Edit**.
+1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
 1. Edit the fields:
    - You can edit **Title**, **Start date**, and **Due date** only if [automatic scheduling is disabled](#turn-on-and-off-automatic-scheduling-for-an-iteration-cadence) for the iteration cadence.
 1. Select **Save changes**.
 
 ## Delete an iteration
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -294,7 +324,7 @@ To delete an iteration:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations** and select an iteration cadence.
 1. Select the iteration you want edit. The iteration details page opens.
-1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**) and then select **Delete**.
+1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then select **Delete**.
 1. Select **Delete**.
 
 ## Iteration report

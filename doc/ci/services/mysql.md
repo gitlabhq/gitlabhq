@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Using MySQL
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Many applications depend on MySQL as their database, and you may
 need it for your tests to run.
@@ -18,9 +21,12 @@ If you want to use a MySQL container, you can use [GitLab Runner](../runners/_in
 
 This example shows you how to set a username and password that GitLab uses to access the MySQL container. If you do not set a username and password, you must use `root`.
 
-NOTE:
+{{< alert type="note" >}}
+
 Variables set in the GitLab UI are not passed down to the service containers.
 For more information, see [GitLab CI/CD variables](../variables/_index.md).
+
+{{< /alert >}}
 
 1. To specify a MySQL image, add the following to your `.gitlab-ci.yml` file:
 
@@ -72,10 +78,13 @@ GitLab Runner with the Shell executor.
 
 1. Choose a MySQL root password and type it twice when asked.
 
-   NOTE:
-   As a security measure, you can run `mysql_secure_installation` to
+   {{< alert type="note" >}}
+
+As a security measure, you can run `mysql_secure_installation` to
    remove anonymous users, drop the test database, and disable remote logins by
    the root user.
+
+   {{< /alert >}}
 
 1. Create a user by logging in to MySQL as root:
 

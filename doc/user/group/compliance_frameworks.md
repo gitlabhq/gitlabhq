@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Compliance frameworks
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can create a compliance framework that is a label to identify that your project has certain compliance
 requirements or needs additional oversight.
@@ -52,7 +55,11 @@ or deleted at the subgroup or project level. Project owners can choose a framewo
 
 ## Apply a compliance framework to a project
 
-> - Assigning multiple compliance frameworks [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13294) in GitLab 17.3.
+{{< history >}}
+
+- Assigning multiple compliance frameworks [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13294) in GitLab 17.3.
+
+{{< /history >}}
 
 You can apply multiple compliance frameworks to a project but cannot apply compliance frameworks to projects in personal namespaces.
 
@@ -67,7 +74,11 @@ has the correct permissions. The GitLab UI presents a read-only view to discoura
 
 ## Default compliance frameworks
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
+
+{{< /history >}}
 
 Group owners can set a default compliance framework. The default framework is applied to all the new and imported
 projects that are created in that group. It does not affect the framework applied to the existing projects. The

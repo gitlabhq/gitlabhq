@@ -17,10 +17,13 @@ Prerequisites:
   - HTTP Archive (HAR) of API requests to test
   - Postman Collection v2.0 or v2.1
 
-  WARNING:
+  {{< alert type="warning" >}}
+
   **Never** run fuzz testing against a production server. Not only can it perform *any* function that
   the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
   data. Only run fuzzing against a test server.
+
+  {{< /alert >}}
 
 To enable Web API fuzzing use the Web API fuzzing configuration form.
 
@@ -153,9 +156,12 @@ uses them to perform testing.
 
 For more details, including how to create a HAR file, see [HTTP Archive format](../create_har_files.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 HAR files may contain sensitive information such as authentication tokens, API keys, and session
 cookies. We recommend that you review the HAR file contents before adding them to a repository.
+
+{{< /alert >}}
 
 ### Configure Web API fuzzing with a HAR file
 
@@ -212,7 +218,11 @@ For details of API fuzzing configuration options, see [Available CI/CD variables
 
 ## GraphQL Schema
 
-> - Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+{{< history >}}
+
+- Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+
+{{< /history >}}
 
 GraphQL is a query language for your API and an alternative to REST APIs.
 API Fuzzing supports testing GraphQL endpoints multiple ways:
@@ -229,8 +239,11 @@ Introspection is enabled by default to allow tools like GraphiQL to work.
 
 The GraphQL support in API Fuzzing is able to query a GraphQL endpoint for the schema.
 
-NOTE:
+{{< alert type="note" >}}
+
 The GraphQL endpoint must support introspection queries for this method to work correctly.
+
+{{< /alert >}}
 
 To configure API Fuzzing to use an GraphQL endpoint URL that provides information about the target API to test:
 
@@ -336,10 +349,13 @@ When used with the GitLab API fuzzer, Postman Collections must contain definitio
 test with valid data. The API fuzzer extracts all the API definitions and uses them to perform
 testing.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Postman Collection files may contain sensitive information such as authentication tokens, API keys,
 and session cookies. We recommend that you review the Postman Collection file contents before adding
 them to a repository.
+
+{{< /alert >}}
 
 ### Configure Web API fuzzing with a Postman Collection file
 
@@ -397,9 +413,13 @@ For details of API fuzzing configuration options, see [Available CI/CD variables
 
 ### Postman variables
 
-> - Support for Postman Environment file format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-> - Support for multiple variable files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
-> - Support for Postman variable scopes: Global and Environment was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+{{< history >}}
+
+- Support for Postman Environment file format was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+- Support for multiple variable files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+- Support for Postman variable scopes: Global and Environment was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356312) in GitLab 15.1.
+
+{{< /history >}}
 
 #### Variables in Postman Client
 

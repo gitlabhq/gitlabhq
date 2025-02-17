@@ -1,13 +1,16 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Create a project
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You have different options to create a project. You can create a blank project, create a project
 from built-in or custom templates, or [create a project with `git push`](../../topics/git/project.md).
@@ -16,7 +19,7 @@ from built-in or custom templates, or [create a project with `git push`](../../t
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    1. **Project name**: Enter the name of your project.
@@ -41,7 +44,7 @@ Anyone can [contribute to built-in project templates](../../development/project_
 
 To create a project from a built-in template:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. From the list of templates:
@@ -56,10 +59,13 @@ To create a project from a built-in template:
    See the [viewing and access rights](../public_access.md) for users.
 1. Select **Create project**.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a user creates a project from a template, or [imports a project](settings/import_export.md#import-a-project-and-its-data),
 they are shown as the author of the imported items, which retain the original timestamp from the template or import.
 This can make items appear as if they were created before the user's account existed.
+
+{{< /alert >}}
 
 Imported objects are labeled as `By <username> on <timestamp>`.
 Before GitLab 17.1, the label was suffixed with `(imported from GitLab)`.
@@ -71,7 +77,7 @@ HIPAA Audit Protocol published by the U.S Department of Health and Human Service
 
 To create a project from the HIPAA Audit Protocol template:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Built-in** tab.
 1. Locate the **HIPAA Audit Protocol** template:
@@ -93,7 +99,7 @@ and [group](../group/custom_project_templates.md).
 
 To create a project from a custom template:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Instance** or **Group** tab.
 1. From the list of templates:
@@ -109,22 +115,32 @@ To create a project from a custom template:
 
 ## Create a project that uses SHA-256 hashing
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431864) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `support_sha256_repositories`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431864) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `support_sha256_repositories`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 You can select SHA-256 hashing for a project only when you create the project.
 Git does not support migrating to SHA-256 later, or migrating back to SHA-1.
 
 To create a project that uses SHA-256 hashing:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Enter the project details:
    - **Project name**: Enter the name of your project.
    - **Project slug**: Enter the path to your project. GitLab uses the slug as the URL path.

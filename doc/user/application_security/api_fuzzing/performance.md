@@ -106,8 +106,11 @@ apifuzzer_fuzz:
     FUZZAPI_EXCLUDE_PATHS: /api/large_response_json
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Excluding operations from testing could allow some vulnerabilities to go undetected.
+
+{{< /alert >}}
 
 ### Splitting a test into multiple jobs
 

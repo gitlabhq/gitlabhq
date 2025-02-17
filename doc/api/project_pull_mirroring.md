@@ -5,16 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Pull mirroring API
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can manage project [pull mirroring](../user/project/repository/mirror/pull.md) by using the REST API.
 
 ## Get a project's pull mirror details
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
-> - [Extended response](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168377) to include mirror configuration information in GitLab 17.5. The following configuration settings are included: `enabled`, `mirror_trigger_builds`, `only_mirror_protected_branches`, `mirror_overwrites_diverged_branches`, and `mirror_branch_regex`.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
+- [Extended response](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168377) to include mirror configuration information in GitLab 17.5. The following configuration settings are included: `enabled`, `mirror_trigger_builds`, `only_mirror_protected_branches`, `mirror_overwrites_diverged_branches`, and `mirror_branch_regex`.
+
+{{< /history >}}
 
 Return the details of a project's [pull mirror](../user/project/repository/mirror/_index.md).
 
@@ -75,7 +82,11 @@ Example response:
 
 ## Configure pull mirroring for a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
+
+{{< /history >}}
 
 Configure pull mirroring settings.
 
@@ -118,15 +129,22 @@ curl --request PUT \
 
 ## Configure pull mirroring for a project (deprecated)
 
-> - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
+{{< history >}}
 
-WARNING:
+- Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This configuration option was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6
 and is planned for removal in v5 of the API. Use the [new configuration and endpoint](project_pull_mirroring.md#configure-pull-mirroring-for-a-project) instead.
 This change is a breaking change.
+
+{{< /alert >}}
 
 Configure pull mirroring while [creating a new project](projects.md#create-a-project) or
 [updating an existing project](projects.md#edit-a-project) by using the API if the remote repository is accessible publicly or by

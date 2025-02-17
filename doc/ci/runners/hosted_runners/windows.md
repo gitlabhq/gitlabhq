@@ -5,10 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Hosted runners on Windows
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
 
 Hosted runners on Windows autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an

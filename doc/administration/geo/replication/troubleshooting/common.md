@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting common Geo errors
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 ## Basic troubleshooting
 
@@ -63,7 +66,11 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
-> - The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+{{< history >}}
+
+- The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+
+{{< /history >}}
 
 This Rake task can be run on a **Rails** node in the **primary** or **secondary**
 Geo sites:
@@ -669,9 +676,9 @@ Increasing the interval means that your Geo metrics are updated less frequently.
 
 The following example sets the job to run every 30 minutes. Adjust the cron schedule based on your needs.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Add or modify the following setting in `/etc/gitlab/gitlab.rb`:
 
@@ -685,7 +692,9 @@ The following example sets the job to run every 30 minutes. Adjust the cron sche
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -706,4 +715,6 @@ The following example sets the job to run every 30 minutes. Adjust the cron sche
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

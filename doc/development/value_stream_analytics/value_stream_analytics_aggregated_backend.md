@@ -5,12 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Aggregated Value Stream Analytics
 ---
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+{{< alert type="disclaimer" />}}
 
 This page provides a high-level overview of the aggregated backend for
 Value Stream Analytics (VSA).

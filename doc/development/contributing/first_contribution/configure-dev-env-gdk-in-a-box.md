@@ -37,8 +37,11 @@ If you prefer to use GDK locally without a VM, use the steps in [Install the GDK
 
 [View a demo video of this step](https://go.gitlab.com/b54mHb).
 
-NOTE:
+{{< alert type="note" >}}
+
 You might need to modify the system configuration (CPU cores and RAM) before starting the virtual machine.
+
+{{< /alert >}}
 
 1. Start the VM (you can minimize UTM or VirtualBox).
 1. In VS Code, select **Terminal > New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
@@ -79,7 +82,7 @@ You might need to modify the system configuration (CPU cores and RAM) before sta
 
 ## Shut down GDK
 
-You can select the power icon (**{power}**) to shut down
+You can select the power icon ({{< icon name="power" >}}) to shut down
 the virtual machine, or enter the `shutdown` command in the terminal.
 Use the password `debian`:
 

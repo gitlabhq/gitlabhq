@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting a GitLab installation
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page documents a collection of resources to help you troubleshoot a GitLab
 installation.
@@ -40,10 +43,13 @@ information useful for troubleshooting. However, if you are experiencing trouble
 GitLab instance, you should check your [support options](https://about.gitlab.com/support/)
 before referring to these documents.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The commands in the following documentation might result in data loss or
 other damage to a GitLab instance. They should be used only by experienced administrators
 who are aware of the risks.
+
+{{< /alert >}}
 
 - [Diagnostics tools](diagnostics_tools.md)
 - [Linux commands](linux_cheat_sheet.md)

@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrating from the DAST version 4 browser-based analyzer to DAST version 5
 ---
 
-> - The [DAST proxy-based analyzer](proxy-based.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
+{{< history >}}
+
+- The [DAST proxy-based analyzer](proxy-based.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
+
+{{< /history >}}
 
 [DAST version 5](browser/_index.md) replaces DAST version 4. This document serves as a guide to
 migrate from the DAST version 4 browser-based analyzer to DAST version 5.

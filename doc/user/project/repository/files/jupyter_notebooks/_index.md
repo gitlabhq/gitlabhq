@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "GitLab projects display Jupyter Notebook files as clean, human-readable files instead of raw files."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: GitLab projects display Jupyter Notebook files as clean, human-readable files instead of raw files.
 title: Jupyter Notebook files
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Jupyter Notebook](https://jupyter.org/) (previously, IPython Notebook) files are used for
 interactive computing in many fields. They contain a complete record of the
@@ -29,8 +32,12 @@ GitLab.
 
 ## Cleaner diffs and raw diffs
 
-> - [Reintroduced toggle](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85079) in GitLab 15.0 [with a flag](../../../../../administration/feature_flags.md) named `ipynb_semantic_diff`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95373) in GitLab 15.6. Feature flag `ipynb_semantic_diff` removed.
+{{< history >}}
+
+- [Reintroduced toggle](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85079) in GitLab 15.0 [with a flag](../../../../../administration/feature_flags.md) named `ipynb_semantic_diff`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95373) in GitLab 15.6. Feature flag `ipynb_semantic_diff` removed.
+
+{{< /history >}}
 
 When commits include changes to Jupyter Notebook files, GitLab:
 

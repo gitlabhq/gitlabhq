@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/'
-remove_date: '2025-07-19'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_size_limits/
+remove_date: "2025-07-19"
 ---
 
 <!-- markdownlint-disable -->

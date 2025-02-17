@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Burndown and burnup charts
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Burndown](#burndown-charts) and [burnup](#burnup-charts) charts show the progress of completing a milestone.
 
@@ -65,8 +68,11 @@ and you follow this workflow:
 A burndown chart is available for every project or group milestone that has been attributed a **start
 date** and a **due date**.
 
-NOTE:
+{{< alert type="note" >}}
+
 You're able to [promote project](_index.md#promote-a-project-milestone-to-a-group-milestone) to group milestones and still see the **burndown chart** for them, respecting license limitations.
+
+{{< /alert >}}
 
 The chart indicates the project's progress throughout that milestone (for issues assigned to it).
 
@@ -137,14 +143,24 @@ have weight assigned, because issues with no weight don't show on the chart.
 
 ## Roll up weights
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381879) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rollup_timebox_chart`. Disabled by default.
+- Offering: GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381879) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rollup_timebox_chart`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 With [tasks](../../tasks.md), a more granular planning is possible.
 If this feature is enabled, the weight of issues that have tasks is derived from the tasks in the

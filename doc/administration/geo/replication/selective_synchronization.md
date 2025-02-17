@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Selective synchronization
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Geo supports selective synchronization, which allows administrators to choose
 which projects should be synchronized by **secondary** sites.
@@ -16,8 +19,11 @@ former is ideal for replicating data belonging to a subset of users, while the
 latter is more suited to progressively rolling out Geo to a large GitLab
 instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 Geo's synchronization logic is outlined in the [documentation](../_index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
+
+{{< /alert >}}
 
 Selective synchronization:
 

@@ -2,16 +2,22 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-ignore_in_report: true
 title: Back up and Restore GitLab with `gitlab-backup-cli`
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11908) in GitLab 17.0. This feature is an [experiment](../../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11908) in GitLab 17.0. This feature is an [experiment](../../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+{{< /history >}}
 
 This tool is under development and is ultimately meant to replace [the Rake tasks used for backing up and restoring GitLab](backup_gitlab.md). You can follow the development of this tool in the epic: [Next Gen Scalable Backup and Restore](https://gitlab.com/groups/gitlab-org/-/epics/11577).
 
@@ -130,7 +136,11 @@ For example, if the backup directory name is `1714053314_2024_04_25_17.0.0-pre`,
 
 ## Backup metadata file (`backup_information.json`)
 
-> - Metadata version 2 was introduced in [GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149441).
+{{< history >}}
+
+- Metadata version 2 was introduced in [GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149441).
+
+{{< /history >}}
 
 `backup_information.json` is found in the backup directory, and it stores metadata about the backup. For example:
 
@@ -145,7 +155,11 @@ For example, if the backup directory name is `1714053314_2024_04_25_17.0.0-pre`,
 
 ## Restore a backup
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469247) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469247) in GitLab 17.6.
+
+{{< /history >}}
 
 Prerequisites:
 

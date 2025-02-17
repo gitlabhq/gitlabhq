@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project relations export API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - New application setting `bulk_import_enabled` introduced in GitLab 15.8. `bulk_import` feature flag removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- New application setting `bulk_import_enabled` introduced in GitLab 15.8. `bulk_import` feature flag removed.
+
+{{< /history >}}
 
 The project relations export API partially exports a project's structure as separate files for each
 top-level

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deploy to AWS from GitLab CI/CD
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab provides Docker images with the libraries and tools you need to deploy
 to AWS. You can reference these images in your CI/CD pipeline.
@@ -15,11 +18,14 @@ to AWS. You can reference these images in your CI/CD pipeline.
 If you're using GitLab.com and deploying to the [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (ECS),
 read about [deploying to ECS](ecs/deploy_to_aws_ecs.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are comfortable configuring a deployment yourself and just need to retrieve
 AWS credentials, consider using [ID tokens and OpenID Connect](../cloud_services/aws/_index.md).
 ID tokens are more secure than storing credentials in CI/CD variables, but do not
 work with the guidance on this page.
+
+{{< /alert >}}
 
 ## Authenticate GitLab with AWS
 
@@ -102,9 +108,12 @@ To deploy to your ECS cluster:
    | `CI_AWS_ECS_TASK_DEFINITION`   | If the task definition is in ECS, the name of the task definition tied to the service. |
    | `CI_AWS_ECS_TASK_DEFINITION_FILE` | If the task definition is a JSON file in GitLab, the filename, including the path. For example, `ci/aws/my_task_definition.json`. If the name of the task definition in your JSON file is the same name as an existing task definition in ECS, then a new revision is created when CI/CD runs. Otherwise, a brand new task definition is created, starting at revision 1. |
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    If you define both `CI_AWS_ECS_TASK_DEFINITION_FILE` and `CI_AWS_ECS_TASK_DEFINITION`,
    `CI_AWS_ECS_TASK_DEFINITION_FILE` takes precedence.
+
+   {{< /alert >}}
 
 1. Include this template in `.gitlab-ci.yml`:
 
@@ -129,11 +138,15 @@ Finally, your AWS ECS service is updated with the new revision of the
 task definition, making the cluster pull the newest version of your
 application.
 
-NOTE:
+{{< alert type="note" >}}
+
 ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
 set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The [`AWS/Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/AWS/Deploy-ECS.gitlab-ci.yml)
 template includes two templates: [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
 and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml). Do not include these templates on their own. Only include the
@@ -141,6 +154,8 @@ and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blo
 used only with the main template. They may move or change unexpectedly. Also, the job names within
 these templates may change. Do not override these job names in your own pipeline,
 because the override stops working when the name changes.
+
+{{< /alert >}}
 
 ## Deploy your application to EC2
 

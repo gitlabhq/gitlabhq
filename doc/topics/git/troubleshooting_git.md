@@ -1,8 +1,8 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Debugging tips for fixing problems in Git."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Debugging tips for fixing problems in Git.
 title: Troubleshooting Git
 ---
 
@@ -131,8 +131,11 @@ instructions in the [SSH troubleshooting](../../user/ssh_troubleshooting.md#pass
 If you're a GitLab administrator with server access, you can also prevent
 session timeouts by configuring SSH `keep-alive` on the client or the server.
 
-NOTE:
+{{< alert type="note" >}}
+
 Configuring both the client and the server is unnecessary.
+
+{{< /alert >}}
 
 **To configure SSH on the client side**:
 

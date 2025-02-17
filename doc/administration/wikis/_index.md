@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Wiki settings
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Adjust the wiki settings of your GitLab instance.
 
@@ -30,8 +33,11 @@ This setting is not available through the [**Admin** area settings](../settings/
 To configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 The value of the limit must be in bytes. The minimum value is 1024 bytes.
+
+{{< /alert >}}
 
 #### Through the Rails console
 
@@ -84,7 +90,11 @@ read the documentation on [reducing repository size](../../user/project/reposito
 
 ## Allow URI includes for AsciiDoc
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348687) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348687) in GitLab 16.1.
+
+{{< /history >}}
 
 Include directives import content from separate pages or external URLs,
 and display them as part of the content of the current document. To enable

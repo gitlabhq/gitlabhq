@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Requirements for Auto DevOps
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Before enabling [Auto DevOps](_index.md), we recommend you to prepare it for
 deployment. If you don't, you can use it to build and test your apps, and
@@ -48,9 +51,12 @@ You can choose the deployment method when enabling Auto DevOps or later:
 1. Choose the deployment strategy.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
 to minimize downtime and risk.
+
+{{< /alert >}}
 
 ## Auto DevOps base domain
 
@@ -113,9 +119,12 @@ To make full use of Auto DevOps with Kubernetes, you need:
      the Ingress manifest to be scraped by Prometheus using
      `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.
 
-     NOTE:
+     {{< alert type="note" >}}
+
      If your cluster is installed on bare metal, see
      [Auto DevOps Requirements for bare metal](#auto-devops-requirements-for-bare-metal).
+
+     {{< /alert >}}
 
 - **Base domain** (for [Auto Review Apps](stages.md#auto-review-apps) and
   [Auto Deploy](stages.md#auto-deploy))

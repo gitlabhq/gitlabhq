@@ -5,16 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Advanced SAST
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Introduced in GitLab 17.1 as an [experiment](../../../policy/development_stages_support.md) for Python.
-> - Support for Go and Java added in 17.2.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461859) from experiment to beta in GitLab 17.2.
-> - Support for JavaScript, TypeScript, and C# added in 17.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
-> - Support for Java Server Pages (JSP) added in GitLab 17.4.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 17.1 as an [experiment](../../../policy/development_stages_support.md) for Python.
+- Support for Go and Java added in 17.2.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461859) from experiment to beta in GitLab 17.2.
+- Support for JavaScript, TypeScript, and C# added in 17.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
+- Support for Java Server Pages (JSP) added in GitLab 17.4.
+
+{{< /history >}}
 
 GitLab Advanced SAST is a Static Application Security Testing (SAST) analyzer
 designed to discover vulnerabilities by performing cross-function and cross-file taint analysis.
@@ -154,9 +161,13 @@ You can set this variable anywhere you can configure CI/CD variables, including 
 
 ## Vulnerability code flow
 
-> - Introduced in GitLab 17.3 [with several flags](../../../administration/feature_flags.md). Enabled by default.
-> - Enabled on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7.
-> - Generally available in GitLab 17.7. All feature flags removed.
+{{< history >}}
+
+- Introduced in GitLab 17.3 [with several flags](../../../administration/feature_flags.md). Enabled by default.
+- Enabled on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7.
+- Generally available in GitLab 17.7. All feature flags removed.
+
+{{< /history >}}
 
 For specific types of vulnerabilities, GitLab Advanced SAST provides code flow information.
 A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.

@@ -1,6 +1,6 @@
 ---
-redirect_to: '_index.md'
-remove_date: '2025-02-03'
+redirect_to: _index.md
+remove_date: "2025-02-03"
 ---
 
 <!-- markdownlint-disable -->

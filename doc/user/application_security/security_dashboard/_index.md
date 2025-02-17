@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Security Dashboards and Security Center
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Security Dashboards
 
@@ -25,7 +28,11 @@ For an overview, see [Security Dashboard](https://www.youtube.com/watch?v=Uo-pDn
 
 ## Vulnerability metrics in the Value Streams Dashboard
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383697) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383697) in GitLab 16.0.
+
+{{< /history >}}
 
 You can view vulnerability metrics also in the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) comparison panel, which helps you understand security exposure in the context of your organization's software delivery workflows.
 
@@ -58,10 +65,10 @@ To view a project's security dashboard:
 1. Select **Secure > Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
-   - To view a specific time frame, use the time range handles (**{scroll-handle}**).
-   - To view a specific area of the chart, select the left-most icon (**{marquee-selection}**) and drag
+   - To view a specific time frame, use the time range handles ({{< icon name="scroll-handle" >}}).
+   - To view a specific area of the chart, select the left-most icon ({{< icon name="marquee-selection" >}}) and drag
      across the chart.
-   - To reset to the original range, select **Remove Selection** (**{redo}**).
+   - To reset to the original range, select **Remove Selection** ({{< icon name="redo" >}}).
 
 ![Project Security Dashboard](img/project_security_dashboard_v16_6.png)
 
@@ -73,7 +80,7 @@ chart:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security dashboard**.
-1. Select **Save chart as an image** (**{download}**).
+1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
 You will then be prompted to download the image in SVG format.
 
@@ -153,7 +160,7 @@ The Security Center displays a maximum of 100 projects, so you may need to use t
 1. Expand **Security**.
 1. Select **Settings**.
 1. Use the **Search your projects** text box to search for the project.
-1. Select **Remove project from dashboard** (**{remove}**).
+1. Select **Remove project from dashboard** ({{< icon name="remove" >}}).
 
 After you remove projects, the security dashboard and vulnerability report no longer show the vulnerabilities found in those projects' default branches.
 

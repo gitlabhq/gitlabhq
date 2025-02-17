@@ -5,18 +5,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab container registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use the integrated container registry to store container images for each GitLab project.
 
 To enable the container registry for your GitLab instance, see the [administrator documentation](../../../administration/packages/container_registry.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you pull container images from Docker Hub, you can use the
 [GitLab Dependency Proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
 rate limits and speed up your pipelines.
+
+{{< /alert >}}
 
 ## View the container registry
 
@@ -48,7 +54,7 @@ To download and run a container image hosted in the container registry:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Deploy > Container Registry**.
-1. Find the container image you want to work with and select **Copy image path** （**{copy-to-clipboard}**）.
+1. Find the container image you want to work with and select **Copy image path** （{{< icon name="copy-to-clipboard" >}}）.
 
 1. Use `docker run` with the copied link:
 
@@ -56,9 +62,12 @@ To download and run a container image hosted in the container registry:
    docker run [options] registry.example.com/group/project/image [arguments]
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You must [authenticate with the container registry](authenticate_with_container_registry.md) to download
 container images from a private repository.
+
+{{< /alert >}}
 
 For more information on running container images, see the [Docker documentation](https://docs.docker.com/get-started/).
 
@@ -161,7 +170,11 @@ this setting. However, disabling the container registry disables all container r
 
 ## Supported image types
 
-> - OCI conformance [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10345) in GitLab 16.6.
+{{< history >}}
+
+- OCI conformance [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10345) in GitLab 16.6.
+
+{{< /history >}}
 
 The container registry supports the [Docker V2](https://distribution.github.io/distribution/spec/manifest-v2-2/)
 and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md)
@@ -171,7 +184,11 @@ OCI support means that you can host OCI-based image formats in the registry, suc
 
 ## Container image signatures
 
-> - Container image signature display [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7856) in GitLab 17.1.
+{{< history >}}
+
+- Container image signature display [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7856) in GitLab 17.1.
+
+{{< /history >}}
 
 In the GitLab container registry, you can use the [OCI 1.1 manifest `subject` field](https://github.com/opencontainers/image-spec/blob/v1.1.0/manifest.md)
 to associate container images with [Cosign signatures](../../../ci/yaml/signing_examples.md).
@@ -201,6 +218,9 @@ For example:
 COSIGN_EXPERIMENTAL=1 cosign sign --registry-referrers-mode oci-1-1 <container image>
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 While the GitLab container registry supports the OCI 1.1 manifest `subject` field, it does not fully
 implement the [OCI 1.1 Referrers API](https://github.com/opencontainers/distribution-spec/blob/v1.1.0/spec.md#listing-referrers).
+
+{{< /alert >}}

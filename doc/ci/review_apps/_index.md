@@ -5,15 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Review apps
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Review apps are a collaboration tool that provide an environment to showcase product changes.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have a Kubernetes cluster, you can automate this feature in your applications
 by using [Auto DevOps](../../topics/autodevops/_index.md).
+
+{{< /alert >}}
 
 Review apps:
 
@@ -183,6 +189,6 @@ After you have the route mapping set up, it takes effect in the following locati
 
     ![View app file list in merge request widget](img/view_on_mr_widget_v11_5.png)
 
-- In the diff for a comparison or commit, by selecting **View** (**{external-link}**) next to the file.
+- In the diff for a comparison or commit, by selecting **View** ({{< icon name="external-link" >}}) next to the file.
 
-- In the blob file view, by selecting **View** (**{external-link}**) next to the file.
+- In the blob file view, by selecting **View** ({{< icon name="external-link" >}}) next to the file.

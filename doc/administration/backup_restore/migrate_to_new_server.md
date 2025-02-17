@@ -10,7 +10,8 @@ title: Migrate to a new server
 You can use GitLab backup and restore to migrate your instance to a new server. This section outlines a typical procedure for a GitLab deployment running on a single server.
 If you're running GitLab Geo, an alternative option is [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md). You must make sure all sites meet the [Geo requirements](../geo/_index.md#requirements-for-running-geo) before selecting Geo for the migration.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Avoid uncoordinated data processing by both the new and old servers, where multiple
 servers could connect concurrently and process the same data. For example, when using
 [incoming email](../incoming_email.md), if both GitLab instances are
@@ -18,6 +19,8 @@ processing email at the same time, then both instances miss some data.
 This type of problem can occur with other services as well, such as a
 [non-packaged database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server),
 a non-packaged Redis instance, or non-packaged Sidekiq.
+
+{{< /alert >}}
 
 Prerequisites:
 

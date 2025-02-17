@@ -5,8 +5,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Import/Export development documentation
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
+
+{{< /alert >}}
 
 General development guidelines and tips for the [Import/Export feature](../user/project/settings/import_export.md).
 

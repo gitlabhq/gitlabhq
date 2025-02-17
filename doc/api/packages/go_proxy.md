@@ -5,25 +5,34 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Go Proxy API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This is the API documentation for [Go Packages](../../user/packages/go_proxy/_index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to
 the GitLab Rails console can [enable](../../administration/feature_flags.md)
 this API for your GitLab instance.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the [Go client](https://maven.apache.org/)
 and is generally not meant for manual consumption.
 
+{{< /alert >}}
+
 For instructions on how to work with the Go Proxy, see the [Go Proxy package documentation](../../user/packages/go_proxy/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See the [Go Proxy package documentation](../../user/packages/go_proxy/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## List
 

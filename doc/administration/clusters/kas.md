@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Install the GitLab agent server for Kubernetes (KAS)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The agent server is a component installed together with GitLab. It is required to
 manage the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
@@ -114,8 +117,12 @@ gitlab_kas['env'] = {
 
 ##### Option 2 - automatic CIDR-based configuration
 
-> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/464) in GitLab 16.5.0.
-> - [Added](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/2183) multiple CIDR support to `OWN_PRIVATE_API_CIDR` in GitLab 17.8.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/464) in GitLab 16.5.0.
+- [Added](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/2183) multiple CIDR support to `OWN_PRIVATE_API_CIDR` in GitLab 17.8.1.
+
+{{< /history >}}
 
 You might not be able to set an exact IP address or hostname in the `OWN_PRIVATE_API_URL` variable if, for example,
 the KAS host is assigned an IP address and a hostname dynamically.
@@ -148,8 +155,12 @@ gitlab_kas['env'] = {
 
 ##### Option 3 - automatic configuration based on listener configuration
 
-> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/464) in GitLab 16.5.0.
-> - [Updated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/510) KAS to listen on and publish all non-loopback IP addresses and filter out IPv4 and IPv6 addresses based on the value of `private_api_listen_network`.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/464) in GitLab 16.5.0.
+- [Updated](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/510) KAS to listen on and publish all non-loopback IP addresses and filter out IPv4 and IPv6 addresses based on the value of `private_api_listen_network`.
+
+{{< /history >}}
 
 A KAS node can determine what IP addresses are available based on the `private_api_listen_network` and
 `private_api_listen_address` settings:
@@ -230,9 +241,13 @@ See [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitl
 
 ## Kubernetes API proxy cookie
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104504) in GitLab 15.10 [with feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
-> - Feature flags `kas_user_access` and `kas_user_access_project` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123479) in GitLab 16.1.
-> - Feature flags `kas_user_access` and `kas_user_access_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104504) in GitLab 15.10 [with feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
+- Feature flags `kas_user_access` and `kas_user_access_project` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123479) in GitLab 16.1.
+- Feature flags `kas_user_access` and `kas_user_access_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
+
+{{< /history >}}
 
 KAS proxies Kubernetes API requests to the GitLab agent with either:
 
@@ -247,11 +262,18 @@ to authenticate and authorize the user.
 
 ## Enable receptive agents
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+{{< /history >}}
 
 [Receptive agents](../../user/clusters/agent/_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters
 that cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.

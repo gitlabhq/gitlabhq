@@ -7,10 +7,13 @@ title: GitLab instrumentation for OpenTelemetry
 
 ## Enable OpenTelemetry tracing, metrics, and logs in GDK development
 
-NOTE:
+{{< alert type="note" >}}
+
 Currently the default GDK environment is not set up by default to properly
 collect and display OpenTelemetry data. Therefore, you should point the
 `OTEL_EXPORTER_*_ENDPOINT` ENV vars to a GitLab project:
+
+{{< /alert >}}
 
 1. Which has an Ultimate license, and where you have
 1. In which you have at least the Maintainer role

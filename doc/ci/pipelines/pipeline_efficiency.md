@@ -5,9 +5,12 @@ info: This page is maintained by Developer Relations, author @dnsmichi, see http
 title: Pipeline efficiency
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [CI/CD Pipelines](_index.md) are the fundamental building blocks for [GitLab CI/CD](../_index.md).
 Making pipelines more efficient helps you save developer time, which:

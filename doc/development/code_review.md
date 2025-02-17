@@ -99,8 +99,11 @@ To find a domain expert:
 
 ### Reviewer roulette
 
-NOTE:
+{{< alert type="note" >}}
+
 Reviewer roulette is an internal tool for use on GitLab.com, and not available for use on customer installations.
+
+{{< /alert >}}
 
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It makes
@@ -583,7 +586,7 @@ For example, when a merge request has both `backend` and `frontend` concerns, yo
 
 You can also use `workflow::ready for review` label. That means that your merge request is ready to be reviewed and any reviewer can pick it. It is recommended to use that label only if there isn't time pressure and make sure the merge request is assigned to a reviewer.
 
-When re-requesting a review, click the [**Re-request a review** icon](../user/project/merge_requests/reviews/_index.md#re-request-a-review) (**{redo}**) next to the reviewer's name, or use the `/request_review @user` quick action.
+When re-requesting a review, click the [**Re-request a review** icon](../user/project/merge_requests/reviews/_index.md#re-request-a-review) ({{< icon name="redo" >}}) next to the reviewer's name, or use the `/request_review @user` quick action.
 This ensures the merge request appears in the reviewer's **Reviews requested** section of their merge request homepage.
 
 When your merge request receives an approval from the first reviewer it can be passed to a maintainer. You should default to choosing a maintainer with [domain expertise](#domain-experts), and otherwise follow the Reviewer Roulette recommendation or use the label `ready for merge`.
@@ -630,8 +633,11 @@ experience, refactors the existing code). Then:
   "Looks good to me", or "Just a couple things to address."
 - Let the author know if changes are required following your review.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
+
+{{< /alert >}}
 
 ### Merging a merge request
 
@@ -679,8 +685,11 @@ when rebasing from the UI or with the [`/rebase` quick action](../user/project/q
 
 When ready to merge:
 
-WARNING:
+{{< alert type="warning" >}}
+
 **If the merge request is from a fork, also check the [additional guidelines for community contributions](#community-contributions).**
+
+{{< /alert >}}
 
 - Consider using the [Squash and merge](../user/project/merge_requests/squash_and_merge.md)
   feature when the merge request has a lot of commits.
@@ -713,9 +722,12 @@ Merge Results against the latest `main` at the time of the pipeline creation.
 
 ### Community contributions
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Review all changes thoroughly for malicious code before starting a
 [merged results pipeline](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project).**
+
+{{< /alert >}}
 
 When reviewing merge requests added by wider community contributors:
 

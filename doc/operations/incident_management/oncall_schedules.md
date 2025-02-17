@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: On-call Schedule Management
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use on-call schedule management to create schedules for responders to rotate on-call
 responsibilities. Maintain the availability of your software services by putting your teams on-call.
@@ -46,7 +49,7 @@ To update a schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > On-call Schedules**.
-1. Select **Edit schedule** (**{pencil}**).
+1. Select **Edit schedule** ({{< icon name="pencil" >}}).
 1. Edit the information.
 1. Select **Save changes**.
 
@@ -59,7 +62,7 @@ To delete a schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > On-call Schedules**.
-1. Select **Delete escalation policy** (**{remove}**).
+1. Select **Delete escalation policy** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete schedule**.
 
 ## Rotations
@@ -88,7 +91,7 @@ To edit a rotation:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > On-call Schedules**.
-1. In the **Rotations** section, select **Edit rotation** (**{pencil}**).
+1. In the **Rotations** section, select **Edit rotation** ({{< icon name="pencil" >}}).
 1. Edit the information.
 1. Select **Save changes**.
 
@@ -98,7 +101,7 @@ To delete a rotation:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > On-call Schedules**.
-1. In the **Rotations** section, select **Delete rotation** (**{remove}**).
+1. In the **Rotations** section, select **Delete rotation** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete rotation**.
 
 ## View schedule rotations

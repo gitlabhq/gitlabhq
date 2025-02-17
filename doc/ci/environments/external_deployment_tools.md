@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Track deployments of an external deployment tool
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 While GitLab offers a [built-in deployment solution](_index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
 GitLab can receive deployment events from these external tools and allows you to track the deployments within GitLab.
@@ -19,9 +22,12 @@ For example, the following features are available by setting up tracking:
 - [View environments and deployments](_index.md#view-environments-and-deployments).
 - [Track newly included merge requests per deployment](deployments.md#track-newly-included-merge-requests-per-deployment).
 
-NOTE:
+{{< alert type="note" >}}
+
 Some of the features are not available because GitLab can't authorize and leverage those external deployments, including
 [Protected Environments](protected_environments.md), [Deployment Approvals](deployment_approvals.md), [Deployment safety](deployment_safety.md), and [Deployment rollback](deployments.md#deployment-rollback).
+
+{{< /alert >}}
 
 ## How to set up deployment tracking
 
@@ -32,8 +38,11 @@ You can configure your tool to make a request to the GitLab [Deployment API](../
 - When a deployment succeeds, [update the deployment status to `success`](../../api/deployments.md#update-a-deployment).
 - When a deployment fails, [update the deployment status to `failed`](../../api/deployments.md#update-a-deployment).
 
-NOTE:
+{{< alert type="note" >}}
+
 You can create a [project access token](../../user/project/settings/project_access_tokens.md) for the GitLab API authentication.
+
+{{< /alert >}}
 
 ### Example: Track deployments of ArgoCD
 
@@ -82,7 +91,10 @@ Here is an example setup that creates a `success` deployment record in GitLab wh
    kubectl patch app <your-app-name> -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.gitlab":""}}}' --type merge
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If a deployment wasn't created as expected, you can troubleshoot with [`argocd-notifications` tool](https://argocd-notifications.readthedocs.io/en/stable/troubleshooting/).
 For example, `argocd-notifications template notify gitlab-deployment-status <your-app-name> --recipient gitlab:argocd-notifications`
 triggers API request immediately and renders an error message from GitLab API server if any.
+
+{{< /alert >}}

@@ -1,15 +1,22 @@
 ---
 stage: Foundations
 group: Global Search
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Advanced search
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Moved to GitLab Premium in 13.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 You can use advanced search for faster, more efficient search across the entire GitLab
 instance. Advanced search is based on Elasticsearch, a purpose-built full-text search
@@ -42,7 +49,11 @@ You can use advanced search in:
 
 <!-- Remember to also update the tables in `doc/drawers/advanced_search_syntax.md` -->
 
-> - Refining user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
+{{< history >}}
+
+- Refining user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
+
+{{< /history >}}
 
 Advanced search uses [`simple_query_string`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html),
 which supports both exact and fuzzy queries.

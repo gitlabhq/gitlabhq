@@ -5,23 +5,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Add a cluster using cluster certificates (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 To create and manage a new cluster use [Infrastructure as Code](../../infrastructure/iac/_index.md).
+
+{{< /alert >}}
 
 ## Disable a cluster
 
 When you successfully connect an existing cluster using cluster certificates, the cluster connection to GitLab becomes enabled. To disable it:
 
 1. Go to your:
-   - Project's **{cloud-gear}** **Operate > Kubernetes clusters** page, for a project-level cluster.
-   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - Project's {{< icon name="cloud-gear" >}} **Operate > Kubernetes clusters** page, for a project-level cluster.
+   - Group's {{< icon name="cloud-gear" >}} **Kubernetes** page, for a group-level cluster.
    - The **Admin** area's **Kubernetes** page, for an instance-level cluster.
 1. Select the name of the cluster you want to disable.
 1. Toggle **GitLab Integration** off (in gray).
@@ -50,9 +60,12 @@ To remove the Kubernetes cluster integration:
 
 ### Remove clusters by using the Rails console
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 

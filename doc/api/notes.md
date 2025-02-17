@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Notes API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Notes are comments on:
 
@@ -495,25 +498,34 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Epics
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
 [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
+{{< /alert >}}
+
 ### List all epic notes
 
 Gets a list of all notes for a single epic. Epic notes are comments users can post to an epic.
 
-NOTE:
+{{< alert type="note" >}}
+
 The epics notes API uses the epic ID instead of epic IID. If you use the epic's IID, GitLab returns either a 404
 error or notes for the wrong epic. It's different from the [issue notes API](#issues) and
 [merge requests notes API](#merge-requests).
+
+{{< /alert >}}
 
 ```plaintext
 GET /groups/:id/epics/:epic_id/notes

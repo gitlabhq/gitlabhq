@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Contributions calendar
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The contributions calendar displays a [user's events](#user-contribution-events) from the past 12 months.
 This includes contributions made in forked and [private](#show-private-contributions-on-your-user-profile-page) repositories.
@@ -16,8 +19,11 @@ This includes contributions made in forked and [private](#show-private-contribut
 
 The gradient color of the tiles represents the number of contributions made per day. The gradient ranges from blank (0 contributions) to dark blue (more than 30 contributions).
 
-NOTE:
+{{< alert type="note" >}}
+
 The contribution calendar only displays contributions from the last 12 months, but issue [24264](https://gitlab.com/gitlab-org/gitlab/-/issues/24264) proposes to change this to more than 12 months. General improvements to the user profile are proposed in issue [8488](https://gitlab.com/groups/gitlab-org/-/epics/8488).
+
+{{< /alert >}}
 
 ## User contribution events
 
@@ -85,7 +91,7 @@ GitLab provides RSS feeds of user activity. To subscribe to the
 RSS feed of a user's activity:
 
 1. Go to the [user's profile](_index.md#access-your-user-profile).
-1. In the upper-right corner, select the feed symbol (**{rss}**) to display the results as an RSS feed in Atom format.
+1. In the upper-right corner, select the feed symbol ({{< icon name="rss" >}}) to display the results as an RSS feed in Atom format.
 
 The URL of the result contains both a feed token, and
 the user's activity that you're authorized to view.

@@ -2,7 +2,7 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: 'Developer documentation for extending the merge request report widget with additional features.'
+description: Developer documentation for extending the merge request report widget with additional features.
 title: Merge request widgets
 ---
 
@@ -87,10 +87,13 @@ export default {
 To fetch data when the widget is mounted, pass the `:fetch-collapsed-data` property a function
 that performs an API call.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The function must return a `Promise` that resolves to the `response` object.
 The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
 important not to alter the status code and headers.
+
+{{< /alert >}}
 
 ```vue
 <script>
@@ -187,8 +190,11 @@ Each widget reports:
 When adding new widgets, the above events must be marked as `known`, and have metrics
 created, to be reportable.
 
-NOTE:
+{{< alert type="note" >}}
+
 Events that are only for EE should include `--ee` at the end of both shell commands below.
+
+{{< /alert >}}
 
 To generate these known events for a single widget:
 

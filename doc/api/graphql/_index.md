@@ -1,14 +1,17 @@
 ---
 stage: Foundations
 group: Import and Integrate
-description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Programmatic interaction with GitLab.
 title: GraphQL API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
 request the exact data you need, and therefore limit the number of requests you need.
@@ -221,15 +224,22 @@ time without notice.
 Fields behind a feature flag and disabled by default do not follow the
 deprecation and removal process. These fields can be removed at any time without notice.
 
-WARNING:
+{{< alert type="warning" >}}
+
 GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).
 GitLab might make immediate breaking changes to the GraphQL
 API to patch critical security or performance concerns if the deprecation
 process would pose significant risk.
 
+{{< /alert >}}
+
 ### Verify against the future breaking-change schema
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
+
+{{< /history >}}
 
 You can make calls against the GraphQL API as if all deprecated items were already removed.
 This way, you can verify API calls ahead of a [breaking-change release](#deprecation-and-removal-process)
@@ -359,10 +369,13 @@ GraphQL mutations can be detected as spam. If a mutation is detected as spam and
   Only [Google reCAPTCHA v2](https://developers.google.com/recaptcha/docs/display) is supported.
 - Resubmit the request with the `X-GitLab-Captcha-Response` and `X-GitLab-Spam-Log-Id` headers set.
 
-NOTE:
+{{< alert type="note" >}}
+
 The GitLab GraphiQL implementation doesn't permit passing of headers, so we must write
 this as a cURL query. `--data-binary` is used to properly handle escaped double quotes
 in the JSON-embedded query.
+
+{{< /alert >}}
 
 ```shell
 export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"

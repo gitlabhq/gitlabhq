@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Infrastructure as Code with OpenTofu and GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To manage your infrastructure with GitLab, you can use the integration with OpenTofu to define resources that you can version, reuse, and share:
 
@@ -57,9 +60,12 @@ For more information about templates, inputs, and how to use the OpenTofu CI/CD 
 
 ## Quickstart a Terraform project in pipelines
 
-WARNING:
+{{< alert type="warning" >}}
+
 The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
 See [the deprecation announcement](../../../update/deprecations.md#deprecate-terraform-cicd-templates) for more information.
+
+{{< /alert >}}
 
 The integration with GitLab and Terraform happens through GitLab CI/CD.
 Use an `include` attribute to add the Terraform template to your project and
@@ -97,8 +103,11 @@ to use one of these templates:
 - [The stable template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml) with a skeleton that you can built on top of.
 - [The advanced template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml) to fully customize your setup.
 
-NOTE:
+{{< alert type="note" >}}
+
 In each GitLab major release (for example, 15.0), the latest templates replace the older ones. This process can introduce breaking changes. You can [use an older version of the template](troubleshooting.md#use-an-older-version-of-the-template) if you need to.
+
+{{< /alert >}}
 
 ### Use a Terraform template (deprecated)
 

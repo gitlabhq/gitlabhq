@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Control how jobs run
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Before a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs can run in that pipeline. You can configure jobs to run depending on
@@ -56,7 +59,7 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 1. Go to the pipeline, job, [environment](../environments/deployments.md#configure-manual-deployments),
    or deployment view.
-1. Next to the manual job, select **Run** (**{play}**).
+1. Next to the manual job, select **Run** ({{< icon name="play" >}}).
 
 ### Specify variables when running manual jobs
 
@@ -64,7 +67,7 @@ When running manual jobs you can supply additional job specific variables.
 
 You can do this from the job page of the manual job you want to run with
 additional variables. To access this page, select the **name** of the manual job in
-the pipeline view, *not* **Run** (**{play}**).
+the pipeline view, *not* **Run** ({{< icon name="play" >}}).
 
 Define CI/CD variables here when you want to alter the execution of a job that uses
 [CI/CD variables](../variables/_index.md).
@@ -86,9 +89,12 @@ Users are prompted to confirm the action before the manual job runs, which provi
 
 ### Protect manual jobs
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use [protected environments](../environments/protected_environments.md)
 to define a list of users authorized to run a manual job. You can authorize only
@@ -157,10 +163,10 @@ timed rollout 10%:
   environment: production
 ```
 
-To stop the active timer of a delayed job, select **Unschedule** (**{time-out}**).
+To stop the active timer of a delayed job, select **Unschedule** ({{< icon name="time-out" >}}).
 This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
 
-To start a delayed job manually, select **Unschedule** (**{time-out}**) to stop the delay timer and then select **Run** (**{play}**).
+To start a delayed job manually, select **Unschedule** ({{< icon name="time-out" >}}) to stop the delay timer and then select **Run** ({{< icon name="play" >}}).
 Soon GitLab Runner starts the job.
 
 ## Parallelize large jobs
@@ -191,8 +197,11 @@ test:
 You can then go to the **Jobs** tab of a new pipeline build and see your RSpec
 job split into three separate jobs.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Test Boosters reports usage statistics to the author.
+
+{{< /alert >}}
 
 ### Run a one-dimensional matrix of parallel jobs
 
@@ -298,7 +307,11 @@ Quotes around the `dependencies` entry are required.
 
 ## Specify a parallelized job using needs with multiple parallelized jobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+
+{{< /history >}}
 
 You can use variables defined in [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) with multiple parallelized jobs.
 

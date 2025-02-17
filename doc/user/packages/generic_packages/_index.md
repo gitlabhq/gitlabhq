@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab generic packages repository
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the generic packages repository to publish and manage generic files, such as release binaries, in your project's package registry. This feature is particularly useful for storing and distributing artifacts that don't fit into specific package formats like npm or Maven.
 
@@ -67,9 +70,9 @@ Replace the placeholders in the URL with your specific values:
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Personal access token
+{{< tab title="Personal access token" >}}
 
 With HTTP headers:
 
@@ -87,7 +90,9 @@ curl --location --user "<username>:<personal_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
 
-:::TabTitle Project access token
+{{< /tab >}}
+
+{{< tab title="Project access token" >}}
 
 With HTTP headers:
 
@@ -105,7 +110,9 @@ curl --location --user "<project_access_token_username>:project_access_token" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/1.0.0/file.txt"
 ```
 
-:::TabTitle Deploy token
+{{< /tab >}}
+
+{{< tab title="Deploy token" >}}
 
 With HTTP headers:
 
@@ -125,7 +132,9 @@ curl --location --user "<deploy_token_username>:<deploy_token>" \
 
 Replace `<deploy_token_username>` with the username of your deploy token and `<deploy_token>` with your actual deploy token.
 
-:::TabTitle CI/CD job token
+{{< /tab >}}
+
+{{< tab title="CI/CD job token" >}}
 
 These examples are for a `.gitlab-ci.yml` file. GitLab CI/CD automatically provides the `CI_JOB_TOKEN`.
 
@@ -153,7 +162,9 @@ publish:
            "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/${CI_COMMIT_TAG}/file.txt"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Each request returns a response indicating success or failure. If your upload is successful, the response status is `201 Created`.
 
@@ -173,9 +184,9 @@ You should follow these best practices when you publish multiple files to the re
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle With a Bash script
+{{< tab title="With a Bash script" >}}
 
 Create a Bash script to iterate through files and upload them:
 
@@ -199,7 +210,9 @@ for file in "$DIRECTORY_PATH"/*; do
 done
 ```
 
-:::TabTitle With GitLab CI/CD
+{{< /tab >}}
+
+{{< tab title="With GitLab CI/CD" >}}
 
 For automated uploads in your CI/CD pipeline, you can iterate through your files and upload them:
 
@@ -219,7 +232,9 @@ upload_package:
       done
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Maintain directory structure
 
@@ -264,9 +279,9 @@ Replace the placeholders in the URL with your specific values:
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Personal access token
+{{< tab title="Personal access token" >}}
 
 With HTTP headers:
 
@@ -286,7 +301,9 @@ curl --user "<username>:<access_token>" \
      --output file.txt
 ```
 
-:::TabTitle Project access token
+{{< /tab >}}
+
+{{< tab title="Project access token" >}}
 
 With HTTP headers:
 
@@ -306,7 +323,9 @@ curl --user "<project_access_token_username>:<project_access_token>" \
      --output file.txt
 ```
 
-:::TabTitle Deploy token
+{{< /tab >}}
+
+{{< tab title="Deploy token" >}}
 
 With HTTP headers:
 
@@ -326,7 +345,9 @@ curl --user "<deploy_token_username>:<deploy_token>" \
      --output file.txt
 ```
 
-:::TabTitle CI/CD job token
+{{< /tab >}}
+
+{{< tab title="CI/CD job token" >}}
 
 These examples are for a `.gitlab-ci.yml` file. GitLab CI/CD automatically provides the `CI_JOB_TOKEN`.
 
@@ -358,7 +379,9 @@ download:
 
 Each request returns a response indicating success or failure. If your upload is successful, the response status is `201 Created`.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Download multiple files
 
@@ -377,9 +400,9 @@ You should follow these best practices when you download multiple files from the
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle With a Bash script
+{{< tab title="With a Bash script" >}}
 
 Create a bash script to download multiple files:
 
@@ -407,7 +430,9 @@ for file in "${files[@]}"; do
 done
 ```
 
-:::TabTitle With GitLab CI/CD
+{{< /tab >}}
+
+{{< tab title="With GitLab CI/CD" >}}
 
 For automated downloads in your CI/CD pipeline:
 
@@ -426,7 +451,9 @@ download_package:
       done
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Download an entire package
 
@@ -459,8 +486,12 @@ done
 
 ## Disable publishing duplicate package names
 
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+{{< history >}}
+
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
+{{< /history >}}
 
 By default, when you publish a package with the same name and version as an existing package, the new files are added to the existing package. You can disable publishing duplicate file names in the settings.
 
@@ -475,8 +506,11 @@ To disable publishing duplicate file names:
 1. In the **Generic** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
-NOTE:
+{{< alert type="note" >}}
+
 If **Allow duplicates** is turned on, you can specify package names and versions that should not have duplicates in the **Exceptions** text box.
+
+{{< /alert >}}
 
 ## Add a package retention policy
 

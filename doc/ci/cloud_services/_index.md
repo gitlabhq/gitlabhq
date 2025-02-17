@@ -5,15 +5,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Connect to cloud services
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [ID tokens](../yaml/_index.md#id_tokens) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [ID tokens](../yaml/_index.md#id_tokens) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 `CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
 and are scheduled to be removed in GitLab 17.0. Use [ID tokens](../yaml/_index.md#id_tokens) instead.
+
+{{< /alert >}}
 
 GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/developers/how-connect-works/) to
 give your build and deployment jobs access to cloud credentials and services.
@@ -35,11 +45,14 @@ ID tokens support cloud providers with OIDC, including:
 - GCP
 - HashiCorp Vault
 
-NOTE:
+{{< alert type="note" >}}
+
 Configuring OIDC enables JWT token access to the target environments for all pipelines.
 When you configure OIDC for a pipeline, you should complete a software supply chain security
 review for the pipeline, focusing on the additional access. For more information about supply chain attacks, see
 [How a DevOps Platform helps protect against supply chain attacks](https://about.gitlab.com/blog/2021/04/28/devops-platform-supply-chain-attacks/).
+
+{{< /alert >}}
 
 ## Use cases
 

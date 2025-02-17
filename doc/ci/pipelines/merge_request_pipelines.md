@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Merge request pipelines
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can configure your pipeline to run every time you make changes to the
 source branch in a merge request.
@@ -106,12 +109,15 @@ Run pipelines in fork project MRs to ensure that the post-merge pipeline passes 
 the parent project. Additionally, if you do not trust the fork project's runner,
 running the pipeline in the parent project uses the parent project's trusted runners.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Fork merge requests can contain malicious code that tries to steal secrets in the parent project
 when the pipeline runs, even before merge. As a reviewer, carefully check the changes
 in the merge request before triggering the pipeline. Unless you trigger the pipeline
 through the API or the [`/rebase` quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
 GitLab shows a warning that you must accept before the pipeline runs. Otherwise, **no warning displays**.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -130,16 +136,23 @@ To use the UI to run a pipeline in the parent project for a merge request from a
 
 ### Prevent pipelines from fork projects
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.
+
+{{< /history >}}
 
 To prevent users from running new pipelines for fork projects in the parent project
 use [the projects API](../../api/projects.md#edit-a-project) to disable the `ci_allow_fork_pipelines_to_run_in_parent_project`
 setting.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Pipelines created before the setting was disabled are not affected and continue to run.
 If you rerun a job in an older pipeline, the job uses the same context as when the
 pipeline was originally created.
+
+{{< /alert >}}
 
 ## Available predefined variables
 

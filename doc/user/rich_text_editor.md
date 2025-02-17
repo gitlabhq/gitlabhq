@@ -5,15 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Rich text editor
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371931) for editing issue descriptions in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382636) for [discussions](discussions/_index.md), and creating and editing issues and merge requests in GitLab 15.11 with the same flag.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407507) for epics in GitLab 16.1 with the same flag.
-> - Feature flag `content_editor_on_issues` enabled by default in GitLab 16.2.
-> - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371931) for editing issue descriptions in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382636) for [discussions](discussions/_index.md), and creating and editing issues and merge requests in GitLab 15.11 with the same flag.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407507) for epics in GitLab 16.1 with the same flag.
+- Feature flag `content_editor_on_issues` enabled by default in GitLab 16.2.
+- Feature flag `content_editor_on_issues` removed in GitLab 16.5.
+
+{{< /history >}}
 
 Rich text editor is available in:
 
@@ -85,7 +92,7 @@ list items, diagrams (or even another table!) in table cells.
 
 To insert a table:
 
-1. Select **Insert table** **{table}**.
+1. Select **Insert table** {{< icon name="table" >}}.
 1. From the dropdown list, select the dimensions of the new table.
 
 ![A table size selector with 3 rows and 3 columns.](img/rich_text_editor_02_v16_2.png)
@@ -94,7 +101,7 @@ To insert a table:
 
 Inside a table cell, you can use a menu to insert or delete rows or columns.
 
-To open the menu: In the upper-right corner of a cell, select the chevron **{chevron-down}**.
+To open the menu: In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}}.
 
 ![An active chevron menu showing table actions.](img/rich_text_editor_03_v16_2.png)
 
@@ -105,9 +112,9 @@ Select multiple cells and merge or split them.
 To merge selected cells into one:
 
 1. Select multiple cells - select one and drag your cursor.
-1. In the upper-right corner of a cell, select the chevron **{chevron-down}** **> Merge N cells**.
+1. In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} **> Merge N cells**.
 
-To split merged cells: In the upper-right corner of a cell, select the chevron **{chevron-down}** **> Split cell**.
+To split merged cells: In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} **> Split cell**.
 
 ## Insert diagrams
 
@@ -116,7 +123,7 @@ preview them live as you type the diagram code.
 
 To insert a diagram:
 
-1. On the top bar of a text box, select **{plus}** **More options** and then **Mermaid diagram** or **PlantUML diagram**.
+1. On the top bar of a text box, select {{< icon name="plus" >}} **More options** and then **Mermaid diagram** or **PlantUML diagram**.
 1. Enter the code for your diagram. The diagram preview appears in the text box.
 
 ![Mermaid diagrams in rich text editor](img/rich_text_editor_04_v16_2.png)

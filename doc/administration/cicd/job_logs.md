@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Job logs
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Job logs are sent by a runner while it's processing a job. You can see
 logs in places like job pages, pipelines, and email notifications.
@@ -30,15 +33,18 @@ The `ROOT_PATH` varies per environment:
 
 ## Changing the job logs local location
 
-NOTE:
+{{< alert type="note" >}}
+
 For Docker installations, you can change the path where your data is mounted.
 For the Helm chart, use object storage.
 
+{{< /alert >}}
+
 To change the location where the job logs are stored:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Optional. If you have existing job logs, pause continuous integration data
    processing by temporarily stopping Sidekiq:
@@ -80,7 +86,9 @@ To change the location where the job logs are stored:
    sudo rm -rf /var/opt/gitlab/gitlab-ci/builds
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Optional. If you have existing job logs, pause continuous integration data
    processing by temporarily stopping Sidekiq:
@@ -136,7 +144,9 @@ To change the location where the job logs are stored:
    sudo rm -rf /home/git/gitlab/builds
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Uploading logs to object storage
 
@@ -173,22 +183,30 @@ see [Delete job logs](../../user/storage_management_automation.md#delete-job-log
 Alternatively, you can delete job logs with shell commands. For example, to delete all job logs older than 60 days, run the following
 command from a shell in your GitLab instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 For the Helm chart, use the storage management tools provided with your object
 storage.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The following command permanently deletes the log files and is irreversible.
 
-::Tabs
+{{< /alert >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 find /var/opt/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
 
@@ -196,13 +214,17 @@ Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
 find /srv/gitlab/gitlab-rails/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 find /home/git/gitlab/shared/artifacts -name "job.log" -mtime +60 -delete
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 After the logs are deleted, you can find any broken file references by running
 the Rake task that checks the

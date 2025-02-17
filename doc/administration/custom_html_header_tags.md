@@ -6,11 +6,18 @@ description: Learn how to modify the HTML header tags of your GitLab instance.
 title: Custom HTML header tags
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153877) in GitLab 17.1.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153877) in GitLab 17.1.
+
+{{< /history >}}
 
 If you self-manage a GitLab instance in the EU, or any jurisdiction that
 requires a cookie consent banner, additional HTML header tags are needed to
@@ -38,9 +45,9 @@ must extend the `script_src` and `style_src`.
 
 To add a custom HTML header tag:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add your configuration. For example:
 
@@ -61,7 +68,9 @@ To add a custom HTML header tag:
 
 1. Save the file, and then [reconfigure](restart_gitlab.md#reconfigure-a-linux-package-installation) and [restart](restart_gitlab.md#restart-a-linux-package-installation) GitLab.
 
-:::TabTitle Self-compiled (Source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (Source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -87,4 +96,6 @@ To add a custom HTML header tag:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

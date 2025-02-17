@@ -15,10 +15,13 @@ title: Fine-grained permissions for CI/CD job tokens
   edit `tooling/ci/job_tokens/docs/templates/fine_grained_permissions.md.erb`.
 -->
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+{{< details >}}
+
+Tier: Free, Premium, Ultimate
+Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+Status: Experiment
+
+{{< /details >}}
 
 ## Available API endpoints
 

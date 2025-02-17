@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting GitLab for Jira Cloud app administration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When administering the GitLab for Jira Cloud app, you might encounter the following issues.
 
@@ -198,8 +201,11 @@ GitLab Support can then investigate the issue in the GitLab.com server logs.
 
 #### GitLab Support
 
-NOTE:
+{{< alert type="note" >}}
+
 These steps can only be completed by GitLab Support.
+
+{{< /alert >}}
 
 Each `GET` request made to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
 

@@ -2,13 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Understand merge conflicts, and learn how to fix them in Git projects."
+description: Understand merge conflicts, and learn how to fix them in Git projects.
 title: Merge conflicts
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Merge conflicts occur when two branches in a merge request, the source and target,
 have different changes to the same lines of code. In most cases, GitLab can merge changes together,

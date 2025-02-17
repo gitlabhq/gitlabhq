@@ -1,13 +1,16 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 'Tutorial: Update Git commit messages'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Occasionally, after you've made a few commits to your branch, you realize you need
 to update one or more commit messages. Perhaps you found a typo, or some automation warned you
@@ -57,7 +60,7 @@ disabled to authenticate from the CLI. Alternatively, you can [use an SSH key to
 The first step is to get a clone of the repository on your local machine:
 
 1. In GitLab, on your project's overview page, in the upper-right corner, select **Code**.
-1. In the dropdown list, copy the URL for your repository by selecting **{copy-to-clipboard}** next to:
+1. In the dropdown list, copy the URL for your repository by selecting {{< icon name="copy-to-clipboard" >}} next to:
    - **Clone with HTTPS** if your GitLab account uses basic username and password authentication.
    - **Clone with SSH** if you use SSH to authenticate with GitLab.
 1. Now switch to the CLI (Terminal, PowerShell, or similar) on your local machine, and go to

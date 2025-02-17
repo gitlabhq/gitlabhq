@@ -5,12 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Spamcheck anti-spam service
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 Spamcheck is available to all tiers, but only on instances using GitLab Enterprise Edition (EE). For [licensing reasons](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6259#note_726605397), it is not included in the GitLab Community Edition (CE) package. You can [migrate from CE to EE](../../update/package/convert_to_ee.md).
+
+{{< /alert >}}
 
 [Spamcheck](https://gitlab.com/gitlab-org/gl-security/security-engineering/security-automation/spam/spamcheck) is an anti-spam engine
 developed by GitLab originally to combat rising amount of spam in GitLab.com,
@@ -50,7 +56,8 @@ Spamcheck is only available for package-based installations:
    1. Leave **Spam Check API key** blank.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 In single-node instances, Spamcheck runs over `localhost`, and hence is running
 in an unauthenticated mode. If on multi-node instances where GitLab runs on one
 server and Spamcheck runs on another server listening over a public endpoint, it
@@ -59,6 +66,8 @@ front of the Spamcheck service that can be used along with an API key. One
 example would be to use `JWT` authentication for this and specifying a bearer
 token as the API key.
 [Native authentication for Spamcheck is in the works](https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/spam/spamcheck/-/issues/171).
+
+{{< /alert >}}
 
 ## Running Spamcheck over TLS
 

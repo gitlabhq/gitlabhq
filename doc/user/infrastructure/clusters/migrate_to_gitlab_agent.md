@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrate to the GitLab agent for Kubernetes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To connect your Kubernetes cluster with GitLab, you can use:
 
@@ -31,9 +34,12 @@ This workflow uses an agent to connect to your cluster. The agent:
 - Is not exposed to the internet.
 - Does not require full [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) access to GitLab.
 
-NOTE:
+{{< alert type="note" >}}
+
 The certificate-based integration was used for popular GitLab features like
 GitLab-managed Apps, GitLab-managed clusters, and Auto DevOps.
+
+{{< /alert >}}
 
 ## Find certificate-based clusters
 
@@ -43,8 +49,11 @@ Clusters defined in parent groups are not returned in this case. This behavior h
 
 Disabled clusters are returned as well to avoid accidentally leaving clusters behind.
 
-NOTE:
+{{< alert type="note" >}}
+
 The cluster discovery API does not work for personal namespaces.
+
+{{< /alert >}}
 
 ## Migrate generic deployments
 
@@ -58,8 +67,11 @@ To migrate generic deployments:
 
 ## Migrate from GitLab-managed clusters to Kubernetes resources
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 With GitLab-managed clusters, GitLab creates separate service accounts and namespaces for every branch and deploys by using these resources.
 

@@ -2,7 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Connect and use GitLab Duo in JetBrains IDEs."
+description: Connect and use GitLab Duo in JetBrains IDEs.
 title: JetBrains troubleshooting
 ---
 

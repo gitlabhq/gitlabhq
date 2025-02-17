@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Sign-in restrictions
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can use **Sign-in restrictions** to customize authentication restrictions for web interfaces as well as Git over HTTP(S).
 
@@ -183,7 +186,11 @@ see [Email notification for unknown sign-ins](../../user/profile/notifications.m
 
 ## Sign-in information
 
-> - **Sign-in text** setting [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+{{< history >}}
+
+- **Sign-in text** setting [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/410885) in GitLab 17.0.
+
+{{< /history >}}
 
 All users that are not logged in are redirected to the page represented by the configured
 **Home page URL** if value is not empty.

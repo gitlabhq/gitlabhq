@@ -165,9 +165,9 @@ For example:
 ```markdown
 **Related topics**:
 
-- You can specify a [fallback cache key](../caching/index.md#use-a-fallback-cache-key)
+- You can specify a [fallback cache key](../caching/_index.md#use-a-fallback-cache-key)
   to use if the specified `cache:key` is not found.
-- You can [use multiple cache keys](../caching/index.md#use-multiple-caches) in a single job.
-- See the [common `cache` use cases](../caching/index.md#common-use-cases-for-caches) for more
+- You can [use multiple cache keys](../caching/_index.md#use-multiple-caches) in a single job.
+- See the [common `cache` use cases](../caching/_index.md#common-use-cases-for-caches) for more
   `cache:key` examples.
 ```

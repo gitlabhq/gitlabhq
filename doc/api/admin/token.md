@@ -2,14 +2,17 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation for the REST API that exposes token information."
+description: Documentation for the REST API that exposes token information.
 title: Token information API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Experiment
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
 
 Use this API to retrieve details about arbitrary tokens and to revoke them. Unlike other APIs that expose token information, this API allows you to retrieve details or revoke tokens without knowing the specific type of token.
 
@@ -23,17 +26,21 @@ Prerequisites:
 
 ## Get information on a token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `admin_agnostic_token_finder`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490572) in GitLab 17.8. Feature flag `admin_agnostic_token_finder` removed.
-> - [Feed tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821) in GitLab 17.6.
-> - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985) in GitLab 17.7.
-> - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932) in GitLab 17.7.
-> - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987) in GitLab 17.7.
-> - [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174030) in GitLab 17.7.
-> - [CI/CD Job Tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175234) in GitLab 17.9.
-> - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431) in GitLab 17.9.
-> - [GitLab session cookies added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178022) in GitLab 17.9.
-> - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177077) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165157) in GitLab 17.5 [with a flag](../../administration/feature_flags.md) named `admin_agnostic_token_finder`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490572) in GitLab 17.8. Feature flag `admin_agnostic_token_finder` removed.
+- [Feed tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169821) in GitLab 17.6.
+- [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172985) in GitLab 17.7.
+- [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172932) in GitLab 17.7.
+- [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173987) in GitLab 17.7.
+- [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174030) in GitLab 17.7.
+- [CI/CD Job Tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175234) in GitLab 17.9.
+- [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177431) in GitLab 17.9.
+- [GitLab session cookies added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178022) in GitLab 17.9.
+- [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177077) in GitLab 17.9.
+
+{{< /history >}}
 
 Gets information for a given token. This endpoint supports the following tokens:
 
@@ -107,17 +114,24 @@ Example response:
 
 ## Revoke a token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `api_admin_token_revoke`. Disabled by default.
-> - [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178211) in GitLab 17.9.
-> - [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179066) in GitLab 17.9.
-> - [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035) in GitLab 17.9.
-> - [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763) in GitLab 17.9.
-> - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170421) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `api_admin_token_revoke`. Disabled by default.
+- [Cluster agent tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178211) in GitLab 17.9.
+- [Runner authentication tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179066) in GitLab 17.9.
+- [OAuth application secrets added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179035) in GitLab 17.9.
+- [Incoming email tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180763) in GitLab 17.9.
+- [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Revokes or resets a given token based on the token type. This endpoint supports the following token types:
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Vulnerability Page
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
 including:
@@ -34,15 +37,22 @@ the top of the vulnerability's page.
 
 ## Explaining a vulnerability
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
-> - Promoted to [beta](../../../policy/development_stages_support.md#beta) status in GitLab 16.2.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10642) in GitLab 17.2.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
+- Promoted to [beta](../../../policy/development_stages_support.md#beta) status in GitLab 16.2.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10642) in GitLab 17.2.
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+
+{{< /history >}}
 
 GitLab can help you with a vulnerability by using a large language model to:
 
@@ -67,7 +77,7 @@ To explain the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Vulnerability report**.
-1. Optional. To remove the default filters, select **Clear** (**{clear}**).
+1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
 1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
@@ -94,14 +104,21 @@ The following data is shared with third-party AI APIs:
 
 ## Vulnerability Resolution
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
-> - Changed to beta in GitLab 17.3.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
+- Changed to beta in GitLab 17.3.
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+
+{{< /history >}}
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
@@ -127,7 +144,7 @@ To resolve the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Vulnerability report**.
-1. Optional. To remove the default filters, select **Clear** (**{clear}**).
+1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
 1. In the dropdown list that appears, select **Activity**, then select **Vulnerability Resolution available** in the **GitLab Duo (AI)** category.
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
@@ -225,9 +242,12 @@ The following data is shared with third-party AI APIs:
 
 ## Vulnerability Resolution in a merge request
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6 with a flag named [`resolve_vulnerability_in_mr`](https://gitlab.com/gitlab-org/gitlab/-/issues/482753). Disabled by default.
 > [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175150) in GitLab 17.7.
@@ -240,7 +260,7 @@ To resolve the vulnerability finding:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Merge requests**.
 1. Select a merge request.
-   - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon (**{tanuki-ai}**).
+   - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon ({{< icon name="tanuki-ai" >}}).
 1. Select the supported findings to open the security finding dialog.
 1. In the lower-right corner, select **Resolve with AI**.
 
@@ -265,9 +285,12 @@ Vulnerability Resolution in a merge request sometimes cannot generate a suggeste
 
 ## Vulnerability code flow
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 For specific types of vulnerabilities, GitLab Advanced SAST provides [code flow](../sast/gitlab_advanced_sast.md#vulnerability-code-flow) information.
 A vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable line of code (sink), through all assignments, manipulation, and sanitization.
@@ -311,7 +334,11 @@ stateDiagram
 
 ## Vulnerability is no longer detected
 
-> - A link to the commit that resolved the vulnerability was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372799) and made [generally available on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178748) in GitLab 17.9. Feature flag `vulnerability_representation_information` removed.
+{{< history >}}
+
+- A link to the commit that resolved the vulnerability was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372799) and made [generally available on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178748) in GitLab 17.9. Feature flag `vulnerability_representation_information` removed.
+
+{{< /history >}}
 
 A vulnerability may be no longer detected because of changes made deliberately to remediate it or
 as a side effect of other changes. When a security scan runs and a vulnerability is no longer
@@ -326,9 +353,13 @@ You can find a link to the commit that resolved the vulnerability at the top or 
 
 ## Vulnerability dismissal reasons
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `dismissal_reason`.
-> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/393005) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124397) in GitLab 16.2. Feature flag `dismissal_reason` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4942) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `dismissal_reason`.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/393005) in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124397) in GitLab 16.2. Feature flag `dismissal_reason` removed.
+
+{{< /history >}}
 
 When you dismiss a vulnerability you must choose one of the following reasons:
 
@@ -346,8 +377,12 @@ When you dismiss a vulnerability you must choose one of the following reasons:
 
 ## Change the status of a vulnerability
 
-> - The permission allowing users with the `Developer` role to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/424133) in GitLab 16.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) in GitLab 17.0.
-> - The **Comment** text box was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/451480) in GitLab 17.9.
+{{< history >}}
+
+- The permission allowing users with the `Developer` role to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/424133) in GitLab 16.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) in GitLab 17.0.
+- The **Comment** text box was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/451480) in GitLab 17.9.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -398,7 +433,7 @@ To link a vulnerability to existing GitLab issues:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability's description.
-1. In the **Linked issues** section, select the plus icon (**{plus}**).
+1. In the **Linked issues** section, select the plus icon ({{< icon name="plus" >}}).
 1. For each issue to be linked, either:
    - Paste a link to the issue.
    - Enter the issue's ID (prefixed with a hash `#`).
@@ -494,10 +529,13 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 ## Enable security training for vulnerabilities
 
-NOTE:
+{{< alert type="note" >}}
+
 Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
 any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/index.html).
 GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
+
+{{< /alert >}}
 
 Security training helps your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.
 

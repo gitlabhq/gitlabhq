@@ -1,6 +1,6 @@
 ---
-redirect_to: '../mobile_devops/_index.md'
-remove_date: '2025-04-24'
+redirect_to: ../mobile_devops/_index.md
+remove_date: "2025-04-24"
 ---
 
 <!-- markdownlint-disable -->

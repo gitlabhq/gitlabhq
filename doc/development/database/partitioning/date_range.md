@@ -55,9 +55,12 @@ CREATE TABLE audit_events (
 PARTITION BY RANGE(created_at);
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The primary key of a partitioned table must include the partition key as
 part of the primary key definition.
+
+{{< /alert >}}
 
 And we might have a list of partitions for the table, such as:
 
@@ -169,8 +172,11 @@ background migration. This includes forcing any remaining jobs to
 execute, and copying data that may have been missed, due to dropped or
 failed jobs.
 
-WARNING:
+{{< alert type="warning" >}}
+
 A required stop must occur between steps 2 and 3 to allow the background migration from step 2 to complete successfully.
+
+{{< /alert >}}
 
 Once again, continuing the example, this migration would look like:
 

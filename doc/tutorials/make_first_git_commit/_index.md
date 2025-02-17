@@ -88,7 +88,7 @@ Here's an overview of what we're going to do:
 
 To start, create a sample project in GitLab.
 
-1. In GitLab, on the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. In GitLab, on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. For **Project name**, enter `My sample project`. The project slug is generated for you.
    This slug is the URL you can use to access the project after it's created.
 1. Ensure **Initialize repository with a README** is selected.
@@ -240,10 +240,13 @@ to the default branch (`main`).
    git push
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 For this tutorial, you merge your branch directly to the default branch for your
 repository. In GitLab, you typically use a [merge request](../../user/project/merge_requests/_index.md)
 to merge your branch.
+
+{{< /alert >}}
 
 ### View your changes in GitLab
 

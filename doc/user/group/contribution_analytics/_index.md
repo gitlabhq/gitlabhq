@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Contribution analytics
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Contribution analytics provide an overview of the
 [contribution events](../../profile/contributions_calendar.md#user-contribution-events) made by your group's members.
@@ -49,15 +52,15 @@ To do this, hover over the bar with the member's name.
 
 You can zoom in on a bar chart to display only a subset of group members.
 
-To do this, select the sliders (**{status-paused}**) below the chart and slide them along the axis.
+To do this, select the sliders ({{< icon name="status-paused" >}}) below the chart and slide them along the axis.
 
 ### Sort contributions
 
 Contributions per group member are also displayed in tabular format.
 The table columns include the members' names and the number of contributions for different events.
 
-To sort the table by a column, select the column header or the chevron (**{chevron-lg-down}**
-for descending order, **{chevron-lg-up}** for ascending order).
+To sort the table by a column, select the column header or the chevron ({{< icon name="chevron-lg-down" >}}
+for descending order, {{< icon name="chevron-lg-up" >}} for ascending order).
 
 ## Change the time period
 

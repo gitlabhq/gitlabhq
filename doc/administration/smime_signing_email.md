@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Signing outgoing email with S/MIME
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Notification emails sent by GitLab can be signed with S/MIME for improved
 security.
@@ -29,9 +32,12 @@ files must be provided:
 Optionally, you can also provide a bundle of CA certs (PEM-encoded) to be
 included on each signature. This is typically an intermediate CA.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Be mindful of the access levels for your private keys and visibility to
 third parties.
+
+{{< /alert >}}
 
 For Linux package installations:
 

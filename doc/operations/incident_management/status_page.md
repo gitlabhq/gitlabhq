@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Status Page
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 With a GitLab Status Page, you can create and deploy a static website to communicate
 efficiently to users during an incident. The Status Page landing page displays an
@@ -88,9 +91,12 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
 1. On the left sidebar, select **Build > Pipelines**.
 1. To deploy the Status Page to S3, select **New pipeline**.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Consider limiting who can access issues in this project, as any user who can view
 the issue can potentially [publish comments to your GitLab Status Page](#publish-comments-on-incidents).
+
+{{< /alert >}}
 
 ### Sync incidents to the Status Page
 
@@ -153,9 +159,12 @@ After publication, you can access the incident's details page by selecting the
 
 To publish an update to the Incident, update the incident issue's description.
 
-WARNING:
+{{< alert type="warning" >}}
+
 When referenced issues are changed (such as title or confidentiality) the incident
 they were referenced in is not updated.
+
+{{< /alert >}}
 
 ### Publish comments on incidents
 
@@ -167,9 +176,12 @@ To publish comments to the Status Page Incident:
   reaction (`:microphone:` 🎤) to the comment.
 - Any files attached to the comment (up to 5000 per issue) are also published.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Anyone with access to view the Issue can add an emoji reaction to a comment, so
 consider limiting access to issues to team members only.
+
+{{< /alert >}}
 
 ### Update the incident status
 

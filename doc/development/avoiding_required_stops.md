@@ -71,10 +71,13 @@ zero-downtime upgrades. However, the **contract** phase will likely introduce
 a required stop when a migration/code change is introduced that requires
 that background migrations have completed before running or loading.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you're considering adding or removing a migration, or introducing code that
 assumes that migrations have completed in a given release, first review
 the database-related documentation on [required stops](database/required_stops.md).
+
+{{< /alert >}}
 
 #### Examples
 

@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Documentation for the REST API for Git branches in GitLab."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Documentation for the REST API for Git branches in GitLab.
 title: Branches API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This API operates on [repository branches](../user/project/repository/branches/_index.md).
 
@@ -18,8 +21,11 @@ See also [Protected branches API](protected_branches.md).
 
 Get a list of repository branches from a project, sorted by name alphabetically.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint can be accessed without authentication if the repository is publicly accessible.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/repository/branches
@@ -81,8 +87,11 @@ Example response:
 
 Get a single project repository branch.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint can be accessed without authentication if the repository is publicly accessible.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/repository/branches/:branch
@@ -206,8 +215,11 @@ Example response:
 
 Delete a branch from the repository.
 
-NOTE:
+{{< alert type="note" >}}
+
 In the case of an error, an explanation message is provided.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /projects/:id/repository/branches/:branch
@@ -228,17 +240,23 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Deleting a branch does not completely erase all related data.
 Some information persists to maintain project history and to support recovery processes.
 For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
+
+{{< /alert >}}
 
 ## Delete merged branches
 
 Deletes all branches that are merged into the project's default branch.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Protected branches](../user/project/repository/branches/protected.md) are not deleted as part of this operation.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /projects/:id/repository/merged_branches

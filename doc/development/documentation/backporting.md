@@ -21,8 +21,11 @@ follow the [standard process to contribute to documentation](_index.md).
 
 ## Backport documentation changes to older releases
 
-WARNING:
+{{< alert type="warning" >}}
+
 You should only rarely consider backporting documentation to older stable releases. Legitimate reasons to backport documentation include legal issues, emergency security fixes, and fixes to content that might prevent users from upgrading or cause data loss.
+
+{{< /alert >}}
 
 To backport documentation changes in documentation releases older than the
 current stable branch:

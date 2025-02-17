@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Elasticsearch
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This page describes how to enable advanced search. When enabled,
 advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
@@ -17,9 +20,12 @@ To enable advanced search, you must:
 1. [Install an Elasticsearch or AWS OpenSearch cluster](#install-an-elasticsearch-or-aws-opensearch-cluster).
 1. [Enable advanced search](#enable-advanced-search).
 
-NOTE:
+{{< alert type="note" >}}
+
 Advanced search stores all projects in the same Elasticsearch indices.
 However, private projects appear in search results only to users who have access.
+
+{{< /alert >}}
 
 ## Elasticsearch glossary
 
@@ -51,15 +57,22 @@ Running the search cluster on the same server as GitLab might lead to performanc
 For a search cluster with a single node, the cluster status is always yellow because the primary shard is allocated.
 The cluster cannot assign replica shards to the same node as primary shards.
 
-NOTE:
+{{< alert type="note" >}}
+
 Before you use a new Elasticsearch cluster in production, see
 [important Elasticsearch configuration](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
+
+{{< /alert >}}
 
 ### Version requirements
 
 #### Elasticsearch
 
-> - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+{{< history >}}
+
+- Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+
+{{< /history >}}
 
 Advanced search works with the following versions of Elasticsearch.
 
@@ -256,10 +269,13 @@ use AWS OpenSearch Service with IAM credentials on your GitLab instance:
    1. In **AWS access key** and **AWS secret access key**,
       enter your access keys for authentication.
 
-      NOTE:
+      {{< alert type="note" >}}
+
       For GitLab deployments on EC2 instances, you do not have to enter access keys.
       Your GitLab instance obtains these keys automatically from the
       [AWS Instance Metadata Service (IMDS)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html).
+
+      {{< /alert >}}
 
 1. Select **Save changes**.
 
@@ -283,7 +299,11 @@ the master username and password on your GitLab instance:
 
 ### Upgrade to a new Elasticsearch major version
 
-> - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+{{< history >}}
+
+- Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+
+{{< /history >}}
 
 When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
 
@@ -329,8 +349,11 @@ sudo yum install libicu-devel
 
 ##### macOS
 
-NOTE:
+{{< alert type="note" >}}
+
 You must first [install Homebrew](https://brew.sh/).
+
+{{< /alert >}}
 
 To install on macOS, run:
 
@@ -364,10 +387,13 @@ PREFIX=/usr sudo -E make install
 
 After installation, be sure to [enable Elasticsearch](#enable-advanced-search).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you see an error such as `Permission denied - /home/git/gitlab-elasticsearch-indexer/` while indexing, you
 may need to set the `production -> elasticsearch -> indexer_path` setting in your `gitlab.yml` file to
 `/usr/local/bin/gitlab-elasticsearch-indexer`, which is where the binary is installed.
+
+{{< /alert >}}
 
 ### View indexing errors
 
@@ -391,11 +417,14 @@ To enable advanced search:
 1. Optional. [Check indexing status](#check-indexing-status).
 1. After the indexing is complete, select the **Search with Elasticsearch enabled** checkbox, then select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 When your Elasticsearch cluster is down while Elasticsearch is enabled,
 you might have problems updating documents such as issues because your
 instance queues a job to index the change, but cannot find a valid
 Elasticsearch cluster.
+
+{{< /alert >}}
 
 For GitLab instances with more than 50 GB of repository data, see [Index large instances efficiently](#index-large-instances-efficiently).
 
@@ -403,7 +432,11 @@ For GitLab instances with more than 50 GB of repository data, see [Index large i
 
 #### From the user interface
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271532) in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271532) in GitLab 17.3.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -511,11 +544,14 @@ The following Elasticsearch settings are available:
 | `Code indexing concurrency` | Maximum number of Elasticsearch code indexing background jobs allowed to run concurrently. This only applies to repository indexing operations. |
 | `Retry on failure` | Maximum number of possible retries for Elasticsearch search requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/486935) in GitLab 17.6. |
 
-WARNING:
+{{< alert type="warning" >}}
+
 Increasing the values of `Maximum bulk request size (MiB)` and `Bulk request concurrency` can negatively impact
 Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
 in your Sidekiq logs. For more information, see
 [issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
+
+{{< /alert >}}
 
 ### Limit the amount of namespace and project data to index
 
@@ -527,16 +563,23 @@ Advanced search only provides cross-group code/commit search (global) if all nam
 
 If you do not specify any namespace or project, [only project records are indexed](#all-project-records-are-indexed).
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you have already indexed your instance, you must regenerate the index to delete all existing data
 for filtering to work correctly. To do this, run the Rake tasks `gitlab:elastic:recreate_index` and
 `gitlab:elastic:clear_index_status`. Afterwards, removing a namespace or a project from the list deletes the data
 from the Elasticsearch index as expected.
 
+{{< /alert >}}
+
 #### All project records are indexed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
+
+{{< /history >}}
 
 When you select the **Limit the amount of namespace and project data to index** checkbox:
 
@@ -711,8 +754,12 @@ To abandon an unfinished reindexing job and resume indexing:
 
 ## Index integrity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112369) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `search_index_integrity`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.4. Feature flag `search_index_integrity` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112369) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `search_index_integrity`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.4. Feature flag `search_index_integrity` removed.
+
+{{< /history >}}
 
 Index integrity detects and fixes missing repository data.
 This feature is automatically used when code searches
@@ -726,7 +773,11 @@ advanced search, which means adding or changing the way content is indexed.
 
 ### Migration dictionary files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+
+{{< /history >}}
 
 Every migration has a corresponding dictionary file in the `ee/elastic/docs/` folder with the following information:
 
@@ -938,7 +989,11 @@ To update the shard size for an index, change the setting and trigger [zero-down
 
 ##### Indices with database data
 
-> - `gitlab:elastic:estimate_shard_sizes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11.
+{{< history >}}
+
+- `gitlab:elastic:estimate_shard_sizes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11.
+
+{{< /history >}}
 
 For indices that contain database data:
 
@@ -980,11 +1035,14 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Indexing a large instance generates a lot of Sidekiq jobs.
 Make sure to prepare for this task by having a
 [scalable setup](../../administration/reference_architectures/_index.md) or by creating
 [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
+
+{{< /alert >}}
 
 If [enabling advanced search](#enable-advanced-search) causes problems
 due to large volumes of data being indexed:
@@ -1019,8 +1077,11 @@ due to large volumes of data being indexed:
 
    You can expect a 20% decrease in indexing time. After the indexing is complete, you can set `refresh_interval` and `number_of_replicas` back to their desired values.
 
-   NOTE:
-   This step is optional but may help significantly speed up large indexing operations.
+   {{< alert type="note" >}}
+
+This step is optional but may help significantly speed up large indexing operations.
+
+   {{< /alert >}}
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -1069,10 +1130,13 @@ due to large volumes of data being indexed:
    Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
    The above example indexes all projects from ID `1001` up to (and including) ID `2000`.
 
-   NOTE:
-   Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
+   {{< alert type="note" >}}
+
+Sometimes the project indexing jobs queued by `gitlab:elastic:index_projects`
    can get interrupted. This may happen for many reasons, but it's always safe
    to run the indexing task again.
+
+   {{< /alert >}}
 
    You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
    indexer to "forget" all progress, so it retries the indexing process from the
@@ -1169,9 +1233,12 @@ However, some larger installations may wish to tune the merge policy settings:
 
 ## Index large instances with dedicated Sidekiq nodes or processes
 
-WARNING:
+{{< alert type="warning" >}}
+
 Most instances should not need to configure this. The steps below use an advanced setting of Sidekiq called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 Be sure to fully understand about the implication of using routing rules to avoid losing jobs entirely.
+
+{{< /alert >}}
 
 Indexing a large instance can be a lengthy and resource-intensive process that has the potential
 of overwhelming Sidekiq nodes and processes. This negatively affects the GitLab performance and
@@ -1197,14 +1264,20 @@ For the steps below, consider the entry of `sidekiq['routing_rules']`:
 
 At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
 
-NOTE:
+{{< alert type="note" >}}
+
 Routing rules (`sidekiq['routing_rules']`) must be the same across all GitLab nodes (especially GitLab Rails and Sidekiq nodes).
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 When starting multiple processes, the number of processes cannot exceed the number of CPU
 cores you want to dedicate to Sidekiq. Each Sidekiq process can use only one CPU core, subject
 to the available workload and concurrency settings. For more details, see how to
 [run multiple Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
+
+{{< /alert >}}
 
 ### Single node, two processes
 
@@ -1241,9 +1314,12 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
 1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
 
-NOTE:
+{{< alert type="note" >}}
+
 It is important to run the Rake task immediately after reconfiguring GitLab.
 After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
+
+{{< /alert >}}
 
 ### Two nodes, one process for each
 
@@ -1311,9 +1387,12 @@ To handle these queue groups on two nodes:
    sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 It is important to run the Rake task immediately after reconfiguring GitLab.
 After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
+
+{{< /alert >}}
 
 ## Reverting to Basic Search
 

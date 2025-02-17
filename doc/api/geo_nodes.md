@@ -5,14 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Geo Nodes API (deprecated)
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-WARNING:
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Geo Nodes API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0
 and is planned for removal in v5 of the API. Use the [Geo Sites API](geo_sites.md) instead.
 This change is a breaking change.
+
+{{< /alert >}}
 
 To interact with Geo node endpoints, you must authenticate yourself as an
 administrator.
@@ -954,5 +960,8 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
+
+{{< /alert >}}

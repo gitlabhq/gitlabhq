@@ -1,8 +1,8 @@
 ---
 stage: Create
 group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Common commands and workflows.
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 title: File management
 ---
 
@@ -116,9 +116,12 @@ To add a large file into your Git repository and track it with Git LFS:
    The `.gitattributes` file must be included in your commit.
    It if isn't included, Git does not track the ISO file with Git LFS.
 
-   NOTE:
-   Ensure the files you're changing are not listed in a `.gitignore` file.
+   {{< alert type="note" >}}
+
+Ensure the files you're changing are not listed in a `.gitignore` file.
    If they are, Git commits the change locally but doesn't push it to your upstream repository.
+
+   {{< /alert >}}
 
 1. Commit both files to your local copy of the repository:
 
@@ -134,9 +137,12 @@ To add a large file into your Git repository and track it with Git LFS:
 
 1. Create a merge request.
 
-NOTE:
+{{< alert type="note" >}}
+
 When you add a new file type to Git LFS tracking, existing files of this type
 are not converted to Git LFS. Only files of this type, added after you begin tracking, are added to Git LFS. Use `git lfs migrate` to convert existing files to use Git LFS.
+
+{{< /alert >}}
 
 ### Stop tracking a file
 
@@ -167,9 +173,12 @@ To stop tracking a file with Git LFS:
 1. Create a merge request and request a review.
 1. Merge the request into the target branch.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you delete an object tracked by Git LFS, without tracking it with `git lfs untrack`,
 the object shows as `modified` in `git status`.
+
+{{< /alert >}}
 
 ### Stop tracking all files of a single type
 
@@ -228,8 +237,11 @@ To configure file locks for a specific file type:
 
 1. Push the `.gitattributes` file to the remote repository for the changes to take effect.
 
-   NOTE:
-   After a file type is registered as lockable, it is automatically marked as read-only.
+   {{< alert type="note" >}}
+
+After a file type is registered as lockable, it is automatically marked as read-only.
+
+   {{< /alert >}}
 
 #### Configure file locks without LFS
 
@@ -250,33 +262,41 @@ To lock or unlock a file with exclusive file locking:
 1. Open a terminal window in your repository directory.
 1. Run one of the following commands:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Lock a file
+   {{< tab title="Lock a file" >}}
 
    ```shell
    git lfs lock path/to/file.png
    ```
 
-   :::TabTitle Unlock a file
+   {{< /tab >}}
+
+   {{< tab title="Unlock a file" >}}
 
    ```shell
    git lfs unlock path/to/file.png
    ```
 
-   :::TabTitle Unlock a file by ID
+   {{< /tab >}}
+
+   {{< tab title="Unlock a file by ID" >}}
 
    ```shell
    git lfs unlock --id=123
    ```
 
-   :::TabTitle Force unlock a file
+   {{< /tab >}}
+
+   {{< tab title="Force unlock a file" >}}
 
    ```shell
    git lfs unlock --id=123 --force
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 ### View locked files
 
@@ -299,8 +319,11 @@ LFS-Locked files
 
 You can also [view and remove existing locks](../../user/project/file_lock.md) from the GitLab UI.
 
-NOTE:
+{{< alert type="note" >}}
+
 When you rename an exclusively-locked file, the lock is lost. You must lock it again to keep it locked.
+
+{{< /alert >}}
 
 ### Lock and edit a file
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Set up Geo for two single-node sites (with external PostgreSQL services)
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances and external PostgreSQL databases like RDS, Azure Database, or Google Cloud SQL.
 
@@ -280,10 +283,13 @@ After the initial replication process is complete, follow the steps to
 
 Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
-NOTE:
+{{< alert type="note" >}}
+
 Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
 Any change that requires access to the **Admin** area should be made in the primary site, because the
 secondary site is a read-only copy.
+
+{{< /alert >}}
 
 #### Add the secondary site
 
@@ -395,8 +401,11 @@ site **Geo Sites** dashboard in your browser.
 
 ## Configure the tracking database
 
-NOTE:
+{{< alert type="note" >}}
+
 This step is optional in case you also want to have your tracking database set up externally on another server.
+
+{{< /alert >}}
 
 **Secondary** sites use a separate PostgreSQL installation as a tracking
 database to keep track of replication status and automatically recover from
@@ -417,12 +426,15 @@ to grant additional roles to your tracking database user (by default, this is
 Additional roles are needed for the installation of extensions during installation and upgrades. As an alternative,
 [ensure the extensions are installed manually, and read about the problems that may arise during future GitLab upgrades](../../../install/postgresql_extensions.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you want to use Amazon RDS as a tracking database, make sure it has access to
 the secondary database. Unfortunately, just assigning the same security group is not enough as
 outbound rules do not apply to RDS PostgreSQL databases. Therefore, you need to explicitly add an inbound
 rule to the read-replica's security group allowing any TCP traffic from
 the tracking database on port 5432.
+
+{{< /alert >}}
 
 ### Create the tracking database
 

@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Credentials inventory for GitLab.com
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297441) on GitLab.com in GitLab 17.5.
+- Tier: Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/297441) on GitLab.com in GitLab 17.5.
+
+{{< /history >}}
 
 As a GitLab.com top-level group owner, you are responsible for the overall security of your groups and projects.
 To assist, GitLab provides an inventory of all the credentials that can be used to access your groups and projects.

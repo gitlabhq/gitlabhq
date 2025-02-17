@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How to create, clone, and use GitLab repositories."
+description: How to create, clone, and use GitLab repositories.
 title: Repository
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 is where you store your code, make changes, and track changes using version control.
@@ -40,7 +43,7 @@ To add or upload a file from the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the directory you want to upload the file to.
-1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
+1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **Upload file**.
 1. Drop or upload your file.
 1. Enter a commit message.
 1. Optional. To create a merge request with your changes, in **Target branch**, enter a branch name

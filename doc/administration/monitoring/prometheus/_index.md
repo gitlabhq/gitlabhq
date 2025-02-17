@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Monitoring GitLab with Prometheus
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 [Prometheus](https://prometheus.io) is a powerful time-series monitoring service, providing a flexible
 platform for monitoring GitLab and other software products.
@@ -60,10 +63,13 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 
 ### Changing the port and address Prometheus listens on
 
-WARNING:
+{{< alert type="warning" >}}
+
 Although possible, it's not recommended to change the port Prometheus listens
 on, as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
+
+{{< /alert >}}
 
 To access Prometheus from outside the GitLab server,
 change the address/port that Prometheus
@@ -172,8 +178,11 @@ ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`
 
 ### Using an external Prometheus server
 
-WARNING:
+{{< alert type="warning" >}}
+
 Prometheus and most exporters don't support authentication. We don't recommend exposing them outside the local network.
+
+{{< /alert >}}
 
 A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server.
 
@@ -314,10 +323,13 @@ To use an external Prometheus server:
            - 1.1.1.1:5001
    ```
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    The `gitlab-rails` job in the snippet assumes that GitLab is reachable through HTTPS. If your
    deployment doesn't use HTTPS, the job configuration is adapted to use the `http` scheme and port
    80.
+
+   {{< /alert >}}
 
 1. Reload the Prometheus server.
 
@@ -372,8 +384,11 @@ For a more fully featured dashboard, Grafana can be used and has
 
 Below are some sample Prometheus queries that can be used.
 
-NOTE:
+{{< alert type="note" >}}
+
 These are only examples and may not work on all setups. Further adjustments may be required.
+
+{{< /alert >}}
 
 - **% CPU utilization:** `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
 - **% Memory available:** `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`

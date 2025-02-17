@@ -13,21 +13,25 @@ This SDK is for instrumenting web sites and applications to send data for the Gi
 
 Add the NPM package to your package JSON using your preferred package manager:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle yarn
+{{< tab title="yarn" >}}
 
 ```shell
 yarn add @gitlab/application-sdk-browser
 ```
 
-:::TabTitle npm
+{{< /tab >}}
+
+{{< tab title="npm" >}}
 
 ```shell
 npm i @gitlab/application-sdk-browser
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Then, for browser usage import the client SDK:
 
@@ -190,8 +194,11 @@ glClient.refreshLinkClickTracking();
 
 ### `trackError`
 
-NOTE:
+{{< alert type="note" >}}
+
 `trackError` is supported on the Browser SDK, but the resulting events are not used or available.
+
+{{< /alert >}}
 
 Used to capture errors. This works only when the `errorTracking` plugin is enabled. The [plugin](#plugins) is enabled by default.
 

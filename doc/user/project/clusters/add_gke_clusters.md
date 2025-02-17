@@ -5,16 +5,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Connect GKE clusters through cluster certificates (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 Use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md)
 to create a cluster hosted on Google Kubernetes Engine (GKE).
+
+{{< /alert >}}
 
 Through GitLab, you can create new and connect existing clusters
 hosted on Google Kubernetes Engine (GKE).
@@ -32,7 +42,11 @@ To create a new GKE cluster from GitLab, use [Infrastructure as Code](../../infr
 
 ## Create a new cluster on GKE through cluster certificates
 
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -61,9 +75,9 @@ To create new Kubernetes clusters to your project, group, or instance, through
 cluster certificates:
 
 1. Go to your:
-   - Project's **{cloud-gear}** **Operate > Kubernetes clusters** page, for a project-level
+   - Project's {{< icon name="cloud-gear" >}} **Operate > Kubernetes clusters** page, for a project-level
      cluster.
-   - Group's **{cloud-gear}** **Kubernetes** page, for a group-level cluster.
+   - Group's {{< icon name="cloud-gear" >}} **Kubernetes** page, for a group-level cluster.
    - The **Admin** area's **Kubernetes** page, for an instance-level cluster.
 1. Select **Integrate with a cluster certificate**.
 1. Under the **Create new cluster** tab, select **Google GKE**.

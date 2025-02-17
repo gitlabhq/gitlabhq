@@ -5,10 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Hosted runners on macOS
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
 
 Hosted runners on macOS provide an on-demand macOS environment, fully integrated with GitLab [CI/CD](../../_index.md).
 You can use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS).

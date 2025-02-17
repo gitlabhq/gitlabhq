@@ -2,17 +2,24 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Workspaces are virtual sandbox environments for creating and managing your GitLab development environments."
+description: Workspaces are virtual sandbox environments for creating and managing your GitLab development environments.
 title: Workspaces
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
+
+{{< /history >}}
 
 A workspace is a virtual sandbox environment for your code in GitLab.
 You can use workspaces to create and manage isolated development environments for your GitLab projects.
@@ -38,7 +45,11 @@ A running workspace remains accessible to the user even if user permissions are 
 
 ### Manage workspaces from a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
+
+{{< /history >}}
 
 To manage workspaces from a project:
 
@@ -48,9 +59,12 @@ To manage workspaces from a project:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.
 
-WARNING:
+{{< alert type="warning" >}}
+
 When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
 in that workspace. The data cannot be recovered.
+
+{{< /alert >}}
 
 ### Deleting resources associated with a workspace
 
@@ -66,7 +80,11 @@ To clean up orphaned resources, an administrator must manually delete the worksp
 
 ## Manage workspaces at the agent level
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419281) in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419281) in GitLab 16.8.
+
+{{< /history >}}
 
 To manage all workspaces associated with an agent:
 
@@ -76,9 +94,12 @@ To manage all workspaces associated with an agent:
 1. Select the **Workspaces** tab.
 1. From the list, you can restart, stop, or terminate an existing workspace.
 
-WARNING:
+{{< alert type="warning" >}}
+
 When you terminate a workspace, GitLab deletes any unsaved or uncommitted data
 in that workspace. The data cannot be recovered.
+
+{{< /alert >}}
 
 ### Identify an agent from a running workspace
 
@@ -102,7 +123,11 @@ Workspaces support both GitLab default devfile and custom devfiles.
 
 ### GitLab default devfile
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171230) in GitLab 17.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171230) in GitLab 17.8.
+
+{{< /history >}}
 
 A GitLab default devfile is available for all projects when you create a workspace.
 This devfile contains:
@@ -212,7 +237,11 @@ For more information, see the [VS Code documentation](https://code.visualstudio.
 
 ## Workspace add-ons
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385157) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385157) in GitLab 17.2.
+
+{{< /history >}}
 
 The GitLab Workflow extension for VS Code is configured by default in workspaces.
 
@@ -224,11 +253,18 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 
 ## Extension marketplace
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
-> - Feature flag `allow_extensions_marketplace_in_workspace` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454669) in GitLab 17.6.
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
+- Feature flag `allow_extensions_marketplace_in_workspace` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454669) in GitLab 17.6.
+
+{{< /history >}}
 
 You can use the
 [extension marketplace](../project/web_ide/_index.md#extension-marketplace) in workspaces
@@ -238,8 +274,12 @@ The extension marketplace connects to the [Open VSX Registry](https://open-vsx.o
 
 ## Personal access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
-> - `api` permission [added](https://gitlab.com/gitlab-org/gitlab/-/issues/385157) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
+- `api` permission [added](https://gitlab.com/gitlab-org/gitlab/-/issues/385157) in GitLab 17.2.
+
+{{< /history >}}
 
 When you [create a workspace](configuration.md#create-a-workspace), you get a personal access token
 with `write_repository` and `api` permissions.
@@ -278,7 +318,11 @@ To delete the provisioned volume, you must terminate the workspace.
 
 ## Automatic workspace stop and termination
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+
+{{< /history >}}
 
 By default, a workspace automatically:
 

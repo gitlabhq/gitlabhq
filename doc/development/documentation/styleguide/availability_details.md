@@ -1,8 +1,8 @@
 ---
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
-description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: Writing styles, markup, formatting, and other standards for GitLab Documentation.
 title: Product availability details
 ---
 
@@ -64,8 +64,11 @@ The possibilities are:
 **Tier:** Ultimate with GitLab Duo Enterprise
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab Dedicated always includes an Ultimate subscription.
+
+{{< /alert >}}
 
 ### Status
 

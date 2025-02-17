@@ -5,26 +5,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Conan API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This is the API documentation for [Conan Packages](../../user/packages/conan_repository/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the [Conan package manager client](https://docs.conan.io/en/latest/)
 and is generally not meant for manual consumption.
+
+{{< /alert >}}
 
 For instructions on how to upload and install Conan packages from the GitLab
 package registry, see the [Conan package registry documentation](../../user/packages/conan_repository/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See each route for details on how credentials are expected to be passed. Undocumented authentication methods might be removed in the future.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../development/fips_gitlab.md) is enabled.
 These endpoints will all return 404 Not Found.
+{{< /alert >}}
 
 ## Route prefix
 

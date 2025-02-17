@@ -31,6 +31,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Custom permissions
 ---
 
 <!--
@@ -43,14 +44,15 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
   edit `tooling/custom_roles/docs/templates/custom_abilities.md.erb`.
 -->
 
-# Custom permissions
-
 You can create a [custom role](../custom_roles.md) by adding one or more custom permissions to a base role.
 
-NOTE:
+{{< alert type="note" >}}
+
 Some permissions depend on other permissions.
 For example, the `admin_vulnerability` permission requires you to also include the `read_vulnerability` permission.
 Any dependencies are noted in the `Description` column for each permission.
+
+{{< /alert >}}
 <% custom_abilities_by_feature_category.sort.each do |category, abilities| %>
 
 ## <%= "#{humanize(category)}" %>

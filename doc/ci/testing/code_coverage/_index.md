@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Code coverage
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Configure code coverage to track and visualize how much of your source code is covered by tests. You can:
 
@@ -56,30 +59,36 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 <!-- markdownlint-disable MD056 -->
 <!-- Verify regex patterns on docs.gitlab.com as escape characters render differently than in `.md` files rendered via GitLab code browser -->
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Python and Ruby
+{{< tab title="Python and Ruby" >}}
 
 | Tool       | Language | Command        | Regex pattern |
 |------------|----------|----------------|---------------|
 | pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/` |
 | Simplecov  | Ruby     | `rspec spec`   | `/\(\d+.\d+\%\) covered/` |
 
-:::TabTitle C/C++ and Rust
+{{< /tab >}}
+
+{{< tab title="C/C++ and Rust" >}}
 
 | Tool      | Language | Command           | Regex pattern |
 |-----------|----------|-------------------|---------------|
 | gcovr     | C/C++    | `gcovr`           | `/^TOTAL.*\s+(\d+\%)$/` |
 | tarpaulin | Rust     | `cargo tarpaulin` | `/^\d+.\d+% coverage/` |
 
-:::TabTitle Java and JVM
+{{< /tab >}}
+
+{{< tab title="Java and JVM" >}}
 
 | Tool      | Language    | Command                            | Regex pattern |
 |-----------|-------------|------------------------------------|---------------|
 | JaCoCo    | Java/Kotlin | `./gradlew test jacocoTestReport`  | `/Total.*?([0-9]{1,3})%/` |
 | Scoverage | Scala       | `sbt coverage test coverageReport` | `/(?i)total.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
 
-:::TabTitle Node.js
+{{< /tab >}}
+
+{{< tab title="Node.js" >}}
 
 | Tool | Command                              | Regex pattern |
 |------|--------------------------------------|---------------|
@@ -87,21 +96,27 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | nyc  | `nyc npm test`                       | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
 | jest | `jest --ci --coverage`               | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
 
-:::TabTitle PHP
+{{< /tab >}}
+
+{{< tab title="PHP" >}}
 
 | Tool    | Command                                  | Regex pattern |
 |---------|------------------------------------------|---------------|
 | pest    | `pest --coverage --colors=never`         | `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/` |
 | phpunit | `phpunit --coverage-text --colors=never` | `/^\s*Lines:\s*\d+.\d+\%/` |
 
-:::TabTitle Go
+{{< /tab >}}
+
+{{< tab title="Go" >}}
 
 | Tool              | Command          | Regex pattern |
 |-------------------|------------------|---------------|
 | go test (single)  | `go test -cover` | `/coverage: \d+.\d+% of statements/` |
 | go test (project) | `go test -coverprofile=cover.profile && go tool cover -func cover.profile` | `/total:\s+\(statements\)\s+\d+.\d+%/` |
 
-:::TabTitle .NET and PowerShell
+{{< /tab >}}
+
+{{< tab title=".NET and PowerShell" >}}
 
 | Tool      | Language   | Command | Regex pattern |
 |-----------|------------|---------|---------------|
@@ -109,14 +124,18 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | dotnet test ([MSBuild](https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md)) | .NET | `dotnet test` | `/Total\s*\|*\s(\d+(?:\.\d+)?)/` |
 | Pester    | PowerShell | None    | `/Covered (\d+\.\d+%)/` |
 
-:::TabTitle Elixir
+{{< /tab >}}
+
+{{< tab title="Elixir" >}}
 
 | Tool        | Command            | Regex pattern |
 |-------------|--------------------|---------------|
 | excoveralls | None               | `/\[TOTAL\]\s+(\d+\.\d+)%/` |
 | mix         | `mix test --cover` | `/\d+.\d+\%\s+\|\s+Total/` |
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 <!-- vale gitlab_base.Spelling = YES -->
 <!-- markdownlint-enable MD056 -->
@@ -167,8 +186,12 @@ For language-specific configuration details see:
 
 ### Coverage reports from child pipelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363557) and feature flag `ci_child_pipeline_coverage_reports` removed in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363557) and feature flag `ci_child_pipeline_coverage_reports` removed in GitLab 15.2.
+
+{{< /history >}}
 
 Coverage reports generated in child pipelines are included in the parent pipeline's coverage report. For example:
 
@@ -181,8 +204,11 @@ child_test_pipeline:
 
 ## Add a coverage check approval rule
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 You can require specific users or a group to approve merge requests that reduce the project's test coverage.
 
@@ -227,8 +253,11 @@ To view the code coverage history for a project:
 
 ### For a group
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 To view the code coverage history for all projects in a group:
 

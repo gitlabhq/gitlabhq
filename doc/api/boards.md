@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project issue boards API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Every API call to [issue boards](../user/project/issue_board.md) must be authenticated.
 
@@ -425,11 +428,14 @@ POST /projects/:id/boards/:board_id/lists
 | `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
 | `milestone_id` | integer | no | The ID of a milestone. Premium and Ultimate only. |
 
-NOTE:
+{{< alert type="note" >}}
+
 Label, assignee and milestone arguments are mutually exclusive,
 that is, only one of them are accepted in a request.
 Check the [issue board documentation](../user/project/issue_board.md)
 for more information regarding the required license for each list type.
+
+{{< /alert >}}
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5"

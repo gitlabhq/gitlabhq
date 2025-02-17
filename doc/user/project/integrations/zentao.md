@@ -7,14 +7,20 @@ title: ZenTao (deprecated)
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-01' -->
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7
 and is planned for removal in 18.0.
 This change is a breaking change.
+
+{{< /alert >}}
 
 [ZenTao](https://www.zentao.net/) is a web-based project management platform.
 

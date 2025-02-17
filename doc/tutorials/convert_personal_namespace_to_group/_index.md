@@ -5,9 +5,12 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Convert a personal namespace into a group'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 If you've started out with a personal [namespace](../../user/namespace/_index.md), but find
 that you've outgrown its capabilities, you can switch to a group namespace instead.
@@ -35,7 +38,7 @@ rename the `alex` namespace to `alex-user`, and `alex-group` namespace to the no
 
 ## Create a group
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.
    Don't worry about the actual path, this is only temporary. You change this URL to the username of the personal namespace in the [final step](#rename-the-new-group-namespace-to-the-original-username).

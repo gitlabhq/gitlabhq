@@ -5,10 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Processing specific job classes
 ---
 
-WARNING:
+{{< alert type="warning" >}}
+
 These are advanced settings. While they are used on GitLab.com, most GitLab
 instances should only add more processes that listen to all queues. This is the
 same approach described in the [Reference Architectures](../reference_architectures/_index.md).
+
+{{< /alert >}}
 
 Most GitLab instances should have [all processes to listen to all queues](extra_sidekiq_processes.md#start-multiple-processes).
 
@@ -19,14 +22,21 @@ lowers the load on Redis, which is important on very large-scale deployments.
 
 ## Routing rules
 
-> - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) introduced in GitLab 15.4.
-> - Queue selectors [replaced by routing rules](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 17.0.
+{{< history >}}
 
-NOTE:
+- [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) introduced in GitLab 15.4.
+- Queue selectors [replaced by routing rules](https://gitlab.com/gitlab-org/gitlab/-/issues/390787) in GitLab 17.0.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 Mailer jobs cannot be routed by routing rules, and always go to the
 `mailers` queue. When using routing rules, ensure that at least one process is
 listening to the `mailers` queue. Typically this can be placed alongside the
 `default` queue.
+
+{{< /alert >}}
 
 We recommend most GitLab instances using routing rules to manage their Sidekiq
 queues. This allows administrators to choose single queue names for groups of

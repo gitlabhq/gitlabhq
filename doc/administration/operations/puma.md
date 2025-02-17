@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure the bundled Puma instance of the GitLab package
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Puma is a fast, multi-threaded, and highly concurrent HTTP 1.1 server for
 Ruby applications. It runs the core Rails application that provides the user-facing
@@ -80,8 +83,11 @@ RSS limit set through `per_worker_max_memory_mb`.
 
 The default Puma [timeout is 60 seconds](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/rack_timeout.rb).
 
-NOTE:
+{{< alert type="note" >}}
+
 The `puma['worker_timeout']` setting does not set the maximum request duration.
+
+{{< /alert >}}
 
 To change the worker timeout to 600 seconds:
 
@@ -101,11 +107,14 @@ To change the worker timeout to 600 seconds:
 
 ## Disable Puma clustered mode in memory-constrained environments
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature
 is not ready for production use. If you want to use this feature, you should test
 outside of production first. See the [known issues](#puma-single-mode-known-issues)
 for additional details.
+
+{{< /alert >}}
 
 In a memory-constrained environment with less than 4 GB of RAM available, consider disabling Puma
 [clustered mode](https://github.com/puma/puma#clustered-mode).
@@ -152,10 +161,13 @@ steps below:
 1. Generate an SSL certificate key-pair for the address where Puma will
    listen. For the example below, this is `127.0.0.1`.
 
-   NOTE:
-   If using a self-signed certificate from a custom Certificate Authority (CA),
+   {{< alert type="note" >}}
+
+If using a self-signed certificate from a custom Certificate Authority (CA),
    follow [the documentation](https://docs.gitlab.com/omnibus/settings/ssl/#install-custom-public-certificates)
    to make them trusted by other GitLab components.
+
+   {{< /alert >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -175,7 +187,8 @@ steps below:
    sudo gitlab-ctl reconfigure
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 In addition to the Unix socket, Puma also listens over HTTP on port 8080 for
 providing metrics to be scraped by Prometheus. It is not currently possible to
 make Prometheus scrape them over HTTPS, and support for it is being discussed
@@ -183,9 +196,15 @@ make Prometheus scrape them over HTTPS, and support for it is being discussed
 Hence, it is not technically possible to turn off this HTTP listener without
 losing Prometheus metrics.
 
+{{< /alert >}}
+
 ### Using an encrypted SSL key
 
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7799) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7799) in GitLab 16.1.
+
+{{< /history >}}
 
 Puma supports the use of an encrypted private SSL key, which can be
 decrypted at runtime. The following instructions illustrate how to
@@ -249,9 +268,12 @@ configure this:
 
 ## Switch from Unicorn to Puma
 
-NOTE:
+{{< alert type="note" >}}
+
 For Helm-based deployments, see the
 [`webservice` chart documentation](https://docs.gitlab.com/charts/charts/gitlab/webservice/).
+
+{{< /alert >}}
 
 Puma is the default web server and Unicorn is no longer supported.
 

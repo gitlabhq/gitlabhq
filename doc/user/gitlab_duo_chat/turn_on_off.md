@@ -50,9 +50,12 @@ In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in beta. To enable
 1. To make sure GitLab Duo Chat works immediately, you must
    [manually synchronize your subscription](#manually-synchronize-your-subscription).
 
-NOTE:
+{{< alert type="note" >}}
+
 Usage of GitLab Duo Chat beta is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using GitLab Duo Chat](../gitlab_duo/data_usage.md).
+
+{{< /alert >}}
 
 ### Manually synchronize your subscription
 

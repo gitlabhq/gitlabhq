@@ -5,20 +5,30 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Feature flag user lists API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205409) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.10.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
+
+{{< /history >}}
 
 API for accessing GitLab feature flag user lists.
 
 Users with at least the Developer [role](../user/permissions.md) can access the feature flag user lists API.
 
-NOTE:
+{{< alert type="note" >}}
+
 `GET` requests return twenty results at a time because the API results
 are [paginated](rest/_index.md#pagination). You can change this value.
+
+{{< /alert >}}
 
 ## List all feature flag user lists for a project
 

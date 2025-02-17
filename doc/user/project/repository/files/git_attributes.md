@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Define custom Git attributes for your GitLab project to set options for file handling, display, locking, and storage."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Define custom Git attributes for your GitLab project to set options for file handling, display, locking, and storage.
 title: Git attributes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab supports defining custom Git attributes in a `.gitattributes` file in the
 root directory of your repository. Use the `.gitattributes` file to declare changes
@@ -62,11 +65,18 @@ syntax highlighting files and diffs. For more information, see
 
 ## Custom merge drivers
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Configuring custom merge drivers through GitLab introduced in GitLab 15.10.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Configuring custom merge drivers through GitLab introduced in GitLab 15.10.
+
+{{< /history >}}
 
 GitLab Self-Managed administrators can define [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver)
 in a GitLab configuration file, then use the custom merge drivers in a Git `.gitattributes` file. Custom merge drivers are not supported on GitLab.com.
@@ -84,9 +94,9 @@ GitLab.
 
 How to configure a custom merge driver depends on the type of installation.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`.
 1. Add configuration similar to the following:
@@ -104,7 +114,9 @@ How to configure a custom merge driver depends on the type of installation.
    }
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `gitaly.toml`.
 1. Add configuration similar to the following:
@@ -115,7 +127,9 @@ How to configure a custom merge driver depends on the type of installation.
    value = "true"
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 In this example, during a merge, Git uses the `driver` value as the command to execute. In
 this case, because we are using [`true`](https://man7.org/linux/man-pages/man1/true.1.html)

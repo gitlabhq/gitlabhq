@@ -5,16 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrating to the new runner registration workflow
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="disclaimer" />}}
 
 In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register
 runners. The legacy workflow that uses registration tokens is deprecated and will be removed in GitLab 18.0.
@@ -65,10 +63,13 @@ To avoid a broken workflow, you must:
 1. Replace the registration token in your runner registration workflow with the
    authentication token.
 
-WARNING:
+{{< alert type="warning" >}}
+
 In GitLab 17.0 and later, runner registration tokens are disabled.
 To use stored runner registration tokens to register new runners,
 you must [enable the tokens](../../administration/settings/continuous_integration.md#allow-runner-registrations-tokens).
+
+{{< /alert >}}
 
 ## Using registration tokens after GitLab 17.0
 
@@ -211,9 +212,12 @@ data:
   runner-token: "REDACTED"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
 you can set it to any string - it will be ignored when `runner-token` is present.
+
+{{< /alert >}}
 
 ## Known issues
 

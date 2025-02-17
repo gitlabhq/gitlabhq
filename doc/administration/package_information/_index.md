@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Package information
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The Linux package is bundled with all dependencies required for GitLab
 to function correctly. More details can be found
@@ -71,10 +74,13 @@ To view a diff between your configuration file and the latest version, run:
 sudo gitlab-ctl diff-config
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you are pasting the output of this command into your
 `/etc/gitlab/gitlab.rb` configuration file, omit any leading `+` and `-`
 characters on each line.
+
+{{< /alert >}}
 
 ## Init system detection
 

@@ -19,9 +19,12 @@ In this CI/CD example, the release is triggered by one of the following events:
 You can use this method if you prefer to create the Git tag manually, and create a release as a
 result.
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not provide Release notes when you create the Git tag in the UI. Providing release notes
 creates a release, resulting in the pipeline failing.
+
+{{< /alert >}}
 
 Key points in the following _extract_ of an example `.gitlab-ci.yml` file:
 
@@ -67,10 +70,13 @@ release_job:
     ref: '$CI_COMMIT_SHA'                          # The tag is created from the pipeline SHA.
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Environment variables set in `before_script` or `script` are not available for expanding
 in the same job. Read more about
 [potentially making variables available for expanding](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6400).
+
+{{< /alert >}}
 
 ## Create release metadata in a custom script
 

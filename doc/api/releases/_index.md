@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Releases API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to manipulate [release entries](../../user/project/releases/_index.md).
 
@@ -403,7 +406,11 @@ Example response:
 
 ## Download a release asset
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+
+{{< /history >}}
 
 Download a release asset file by making a request with the following format:
 
@@ -425,7 +432,11 @@ curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.ex
 
 ### Get the latest release
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+
+{{< /history >}}
 
 Latest release information is accessible through a permanent API URL.
 
@@ -593,9 +604,12 @@ Example response:
 
 ### Group milestones
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Group milestones associated with the project may be specified in the `milestones`
 array for [Create a release](#create-a-release) and [Update a release](#update-a-release)
@@ -604,9 +618,12 @@ adding milestones for ancestor groups raises an error.
 
 ## Collect release evidence
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Creates an evidence for an existing release.
 
@@ -633,7 +650,11 @@ Example response:
 
 ## Update a release
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+
+{{< /history >}}
 
 Updates a release. Developer level access to the project is required to update a release.
 
@@ -832,7 +853,11 @@ Additionally, if a [release is requested from the API](#list-releases), for each
 
 ## Historical releases
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+
+{{< /history >}}
 
 A release with a `released_at` attribute set to a past date is labeled
 as an **Historical release** [in the UI](../../user/project/releases/_index.md#historical-releases).

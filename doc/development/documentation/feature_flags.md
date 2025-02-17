@@ -1,8 +1,8 @@
 ---
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
-description: "GitLab development - how to document features deployed behind feature flags"
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: GitLab development - how to document features deployed behind feature flags
 title: Document features deployed behind feature flags
 ---
 
@@ -81,10 +81,13 @@ This feature is available for testing, but not ready for production use.
 
 This note renders on the GitLab documentation site as:
 
-FLAG:
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 ## History examples
 

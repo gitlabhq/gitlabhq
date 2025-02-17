@@ -5,16 +5,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Set up GitLab Duo with Amazon Q
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Preview/Beta
+{{< details >}}
 
-> - Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
-> - Feature flag `amazon_q_integration` removed in GitLab 17.8.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+- Status: Preview/Beta
 
-NOTE:
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
+- Feature flag `amazon_q_integration` removed in GitLab 17.8.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
+
+{{< /alert >}}
 
 To use GitLab Duo with Amazon Q, you can [request access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
 
@@ -69,8 +79,11 @@ Now, create an AWS identity provider:
 Next, you must create an IAM role that trusts the IAM identity provider and can
 access Amazon Q.
 
-NOTE:
+{{< alert type="note" >}}
+
 After you set up the IAM role, you cannot change the AWS account that's associated with the role.
+
+{{< /alert >}}
 
 1. In the AWS IAM console, select **Access Management > Roles > Create role**.
 1. Select **Web identity**.

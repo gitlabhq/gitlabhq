@@ -52,9 +52,9 @@ The `subclass` in the error message can be any of the following:
 All integrations are created automatically for every project you have.
 To avoid getting this error, you must remove all EE-only integration records from your database.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 sudo gitlab-rails runner "Integration.where(type_new: ['Integrations::Github']).delete_all"
@@ -63,7 +63,9 @@ sudo gitlab-rails runner "Integration.where(type_new: ['Integrations::GoogleClou
 sudo gitlab-rails runner "Integration.where(type_new: ['Integrations::GoogleCloudPlatform::WorkloadIdentityFederation']).delete_all"
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 bundle exec rails runner "Integration.where(type_new: ['Integrations::Github']).delete_all" production
@@ -72,7 +74,9 @@ bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleClou
 bundle exec rails runner "Integration.where(type_new: ['Integrations::GoogleCloudPlatform::WorkloadIdentityFederation']).delete_all" production
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Variables environment scopes
 

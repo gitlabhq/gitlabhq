@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Create a push mirror to passively receive changes from an upstream repository."
+description: Create a push mirror to passively receive changes from an upstream repository.
 title: Push mirroring
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A _push mirror_ is a downstream repository that [mirrors](_index.md) the commits made
 to the upstream repository. Push mirrors passively receive copies of the commits made to the
@@ -101,7 +104,7 @@ The mirrored repository is listed. For example:
 https://*****:*****@github.com/<your_github_group>/<your_github_project>.git
 ```
 
-The repository pushes shortly thereafter. To force a push, select **Update now** (**{retry}**).
+The repository pushes shortly thereafter. To force a push, select **Update now** ({{< icon name="retry" >}}).
 
 ## Set up a push mirror from GitLab to AWS CodeCommit
 
@@ -116,8 +119,11 @@ these tools to create a deployment:
 - GitLab CI/CD pipelines.
 - The AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
+
+{{< /alert >}}
 
 To set up a mirror from GitLab to AWS CodeCommit:
 
@@ -152,9 +158,12 @@ To set up a mirror from GitLab to AWS CodeCommit:
 1. Select the **Security credentials** tab.
 1. Under **HTTPS Git credentials for AWS CodeCommit**, select **Generate credentials**.
 
-   NOTE:
-   This Git user ID and password is specific to communicating with CodeCommit. Do
+   {{< alert type="note" >}}
+
+This Git user ID and password is specific to communicating with CodeCommit. Do
    not confuse it with the IAM user ID or AWS keys of this user.
+
+   {{< /alert >}}
 
 1. Copy or download the special Git HTTPS user ID and password.
 1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repository.

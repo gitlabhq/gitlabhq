@@ -5,15 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Change your time zone
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 Users can set their [time zone in their profile](../user/profile/_index.md#set-your-time-zone).
 New users do not have a default time zone and must
 explicitly set it before it displays on their profile.
 On GitLab.com, the default time zone is UTC.
+
+{{< /alert >}}
 
 The default time zone in GitLab is UTC, but you can change it to your liking.
 
@@ -29,9 +35,9 @@ To update the time zone of your GitLab instance:
 
 1. Change the time zone, for example to `America/New_York`.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -46,7 +52,9 @@ To update the time zone of your GitLab instance:
    sudo gitlab-ctl restart
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -67,7 +75,9 @@ To update the time zone of your GitLab instance:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -86,7 +96,9 @@ To update the time zone of your GitLab instance:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -106,4 +118,6 @@ To update the time zone of your GitLab instance:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

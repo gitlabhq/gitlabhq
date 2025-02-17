@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Web exporter (dedicated metrics server)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When [monitoring GitLab with Prometheus](_index.md), GitLab runs various collectors that
 sample the application for data related to usage, load and performance. GitLab can then make
@@ -15,9 +18,12 @@ this data available to a Prometheus scraper by running one or more Prometheus ex
 A Prometheus exporter is an HTTP server that serializes metric data into a format the
 Prometheus scraper understands.
 
-NOTE:
+{{< alert type="note" >}}
+
 This page is about web application metrics.
 To export background job metrics, learn how to [configure the Sidekiq metrics server](../../sidekiq/_index.md#configure-the-sidekiq-metrics-server).
+
+{{< /alert >}}
 
 We provide two mechanisms by which web application metrics can be exported:
 
@@ -57,7 +63,11 @@ Metrics can now be served and scraped from `localhost:8083/metrics`.
 
 ## Enable HTTPS
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
+
+{{< /history >}}
 
 To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 

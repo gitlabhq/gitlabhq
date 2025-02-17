@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group service accounts API
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with service accounts for your groups. For more information, see [Service accounts](../user/profile/service_accounts.md).
 
@@ -17,7 +20,11 @@ Prerequisites:
 
 ## List all service account users
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+
+{{< /history >}}
 
 Lists all service account users in a specified top-level group.
 
@@ -61,13 +68,20 @@ Example response:
 
 ## Create a service account user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
-> - Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
+- Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+
+{{< /history >}}
 
 Creates a service account user in a given top-level group.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint only works on top-level groups.
+
+{{< /alert >}}
 
 ```plaintext
 POST /groups/:id/service_accounts
@@ -99,12 +113,19 @@ Example response:
 
 ## Delete a service account user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+
+{{< /history >}}
 
 Deletes a service account user from a given top-level group.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint only works on top-level groups.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /groups/:id/service_accounts/:user_id
@@ -126,12 +147,19 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Create a personal access token for a service account user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+
+{{< /history >}}
 
 Creates a personal access token for an existing service account user in a given top-level group.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint only works on top-level groups.
+
+{{< /alert >}}
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens
@@ -172,12 +200,19 @@ Example response:
 
 ## Rotate a personal access token for a service account user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+
+{{< /history >}}
 
 Rotates a personal access token for an existing service account user in a given top-level group. This creates a new token valid for one week and revokes any existing tokens.
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint only works on top-level groups.
+
+{{< /alert >}}
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate

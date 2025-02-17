@@ -109,9 +109,12 @@ move the `issue_type` to a separate table: `work_item_types`. The migration proc
 to `work_item_types` will involve creating the set of WITs for all root-level groups as described in
 [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6536).
 
-NOTE:
+{{< alert type="note" >}}
+
 At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
 We will investigate the possibility of defining new WITs at subgroup levels at a later iteration.
+
+{{< /alert >}}
 
 ## Introducing `work_item_types` table
 

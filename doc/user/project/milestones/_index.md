@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Milestones
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal
 in a certain period of time, such as a program increment or upcoming release.
@@ -121,8 +124,12 @@ The sidebar on the milestone view shows the following:
 
 ## Create a milestone
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can create a milestone either in a project or a group.
 
@@ -143,8 +150,12 @@ To create a milestone:
 
 ## Edit a milestone
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -155,14 +166,18 @@ To edit a milestone:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Milestones**.
 1. Select a milestone's title.
-1. In the upper-right corner, select **Milestone actions** (**{ellipsis_v}**) and then select **Edit**.
+1. In the upper-right corner, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
 1. Edit the title, start date, due date, or description.
 1. Select **Save changes**.
 
 ## Close a milestone
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -173,13 +188,17 @@ To close a milestone:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Milestones**.
 1. Either:
-   - Next to the milestone you want to close, select **Milestone actions** (**{ellipsis_v}**) > **Close**.
+   - Next to the milestone you want to close, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Close**.
    - Select the milestone title, and then select **Close**.
 
 ## Delete a milestone
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -190,13 +209,17 @@ To delete a milestone:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Milestones**.
 1. Either:
-   - Next to the milestone you want to delete, select **Milestone actions** (**{ellipsis_v}**) > **Delete**.
-   - Select the milestone title, and then select **Milestone actions** (**{ellipsis_v}**) > **Delete**.
+   - Next to the milestone you want to delete, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+   - Select the milestone title, and then select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. Select **Delete milestone**.
 
 ## Promote a project milestone to a group milestone
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 If you are expanding the number of projects in a group, you might want to share the same milestones
 among this group's projects.
@@ -208,8 +231,11 @@ name into a single group milestone.
 All issues and merge requests that were previously assigned to one of these project
 milestones become assigned to the new group milestone.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This action cannot be reversed and the changes are permanent.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -220,8 +246,8 @@ To promote a project milestone:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Milestones**.
 1. Either:
-   - Next to the milestone you want to promote, select **Milestone actions** (**{ellipsis_v}**) > **Promote**.
-   - Select the milestone title, and then select **Milestone actions** (**{ellipsis_v}**) > **Promote**.
+   - Next to the milestone you want to promote, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.
+   - Select the milestone title, and then select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.
 1. Select **Promote Milestone**.
 
 ## Assign a milestone to an issue or merge request
@@ -277,9 +303,12 @@ of the below topic into "Special milestone filters" -->
 
 #### "Upcoming" and "Started" filters (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) in GitLab 17.7
 and is [planned for change](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in 18.0.
+
+{{< /alert >}}
 
 The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
 The new behavior of both the filters is outlined in

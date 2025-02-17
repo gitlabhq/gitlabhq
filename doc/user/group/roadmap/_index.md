@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Roadmap
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Epics in a group containing a start date or due date can be visualized in a form
 of a timeline.
@@ -39,12 +42,12 @@ When you hover over an epic bar, a popover appears with the epic's title, start 
 weight completed.
 
 You can expand epics that contain child epics to show their child epics in the roadmap.
-You can select the chevron (**{chevron-down}**) next to the epic title to expand and collapse the
+You can select the chevron ({{< icon name="chevron-down" >}}) next to the epic title to expand and collapse the
 child epics.
 
 On top of the milestone bars, you can see their title. When you point to a
 milestone bar or title, a popover appears with its title, start date, and due
-date. You can also select the chevron (**{chevron-down}**) next to the **Milestones**
+date. You can also select the chevron ({{< icon name="chevron-down" >}}) next to the **Milestones**
 heading to toggle the list of the milestone bars.
 
 ![roadmap view](img/roadmap_view_v14_3.png)
@@ -53,11 +56,18 @@ From an epic, you can also [view the roadmap filtered to this epic's descendants
 
 ## Sort and filter the roadmap
 
-> - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
-> - Sorting by title, created date, and last updated date [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460492) in GitLab 17.0.
+{{< history >}}
 
-NOTE:
+- Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
+- Sorting by title, created date, and last updated date [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460492) in GitLab 17.0.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 Filtering roadmaps by milestone might not be available to you. Be sure to review this section's history for details.
+
+{{< /alert >}}
 
 When you want to explore a roadmap, there are several ways to make it easier by sorting epics or
 filtering them by what's important for you.
@@ -102,7 +112,11 @@ In the future, you can quickly load the filtered roadmap using the bookmark.
 
 ### Roadmap settings
 
-> - Labels visible on roadmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385231) in GitLab 15.9.
+{{< history >}}
+
+- Labels visible on roadmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385231) in GitLab 15.9.
+
+{{< /history >}}
 
 When you enable the roadmap settings sidebar, you can use it to refine epics shown in the roadmap.
 
@@ -121,7 +135,11 @@ shared using URL parameters.
 
 ## Timeline duration
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/198062) from GitLab Ultimate to GitLab Premium in 12.9.
+
+{{< /history >}}
 
 ### Date range presets
 
@@ -177,15 +195,22 @@ due dates.
 
 ## Blocked epics
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33587) in GitLab 15.5: View blocking epics when hovering over the "blocked" icon.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33587) in GitLab 15.5: View blocking epics when hovering over the "blocked" icon.
+
+{{< /history >}}
 
 If an epic is [blocked by another epic](../epics/linked_epics.md#blocking-epics), an icon appears next to its title to indicate its blocked status.
 
-When you hover over the blocked icon (**{entity-blocked}**), a detailed information popover is displayed.
+When you hover over the blocked icon ({{< icon name="entity-blocked" >}}), a detailed information popover is displayed.
 
 ![Blocked epics](img/roadmap_blocked_icon_v15_5.png)
 

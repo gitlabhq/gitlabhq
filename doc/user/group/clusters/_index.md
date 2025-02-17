@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group-level Kubernetes clusters (certificate-based) (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
 use the [GitLab agent](../../clusters/agent/_index.md).
+
+{{< /alert >}}
 
 Similar to [project-level](../../project/clusters/_index.md) and
 [instance-level](../../instance/clusters/_index.md) Kubernetes clusters,
@@ -95,9 +101,12 @@ The domain should have a wildcard DNS configured to the Ingress IP address. [Mor
 
 ## Environment scopes
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
@@ -155,9 +164,12 @@ The result is:
 
 ## Cluster environments
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 For a consolidated view of which CI [environments](../../../ci/environments/_index.md)
 are deployed to the Kubernetes cluster, see the documentation for

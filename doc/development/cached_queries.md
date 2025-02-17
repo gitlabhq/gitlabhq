@@ -92,7 +92,7 @@ below the query. You can see multiple duplicate cached queries in this modal win
 
 ![Performance Bar Cached Queries Modal](img/performance_bar_cached_queries_v13_6.png)
 
-Select the ellipsis (**{ellipsis_h}**) to expand the actual stack trace:
+Select the ellipsis ({{< icon name="ellipsis_h" >}}) to expand the actual stack trace:
 
 ```ruby
 [

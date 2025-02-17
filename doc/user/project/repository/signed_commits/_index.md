@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Why you should sign your GitLab commits cryptographically, and how to verify signed commits."
+description: Why you should sign your GitLab commits cryptographically, and how to verify signed commits.
 title: Signed commits
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you add a digital signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. A digital signature is a cryptographic output
@@ -66,11 +69,18 @@ using the [Web Commits API](../../../../api/web_commits.md#get-public-signing-ke
 
 ### Use gitmailmap with verified commits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 The [`gitmailmap`](https://git-scm.com/docs/gitmailmap) feature allows users to map author names and email addresses.
 GitLab uses these email addresses to provide links to the commit author.

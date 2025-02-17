@@ -18,10 +18,13 @@ Some tests are designed to be run against specific environments, or in specific 
 | `pipeline`   | Match a pipeline                 | `Array` or `Static` |
 | `job`        | Match a job                      | `Array` or `Static` |
 
-WARNING:
+{{< alert type="warning" >}}
+
 You cannot specify `:production` and `{ <switch>: 'value' }` simultaneously.
 These options are mutually exclusive. If you want to specify production, you
 can control the `tld` and `domain` independently.
+
+{{< /alert >}}
 
 ## Examples
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Activate GitLab Enterprise Edition (EE)
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When you install a new GitLab instance without a license, only Free features
 are enabled. To enable more features in GitLab Enterprise Edition (EE), activate
@@ -75,7 +78,7 @@ some functionality is locked.
 ## Verify your GitLab edition
 
 To verify the edition, sign in to GitLab and select
-**Help** (**{question-o}**) > **Help**. The GitLab edition and version are listed
+**Help** ({{< icon name="question-o" >}}) > **Help**. The GitLab edition and version are listed
 at the top of the page.
 
 If you are running GitLab Community Edition (CE), you can upgrade your installation to GitLab

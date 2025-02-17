@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Web API Fuzz Testing
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Web API fuzzing performs fuzz testing of API operation parameters. Fuzz testing sets operation
 parameters to unexpected values in an effort to cause unexpected behavior and errors in the API
@@ -66,8 +69,11 @@ When experiencing a behavior not working as expected, consider providing context
 - Full job console output.
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+
+{{< /alert >}}
 
 ## Glossary
 

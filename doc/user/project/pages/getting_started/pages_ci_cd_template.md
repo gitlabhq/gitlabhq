@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Create a GitLab Pages website from a CI/CD template
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab provides `.gitlab-ci.yml` templates for the most popular Static Site Generators (SSGs).
 You can create your own `.gitlab-ci.yml` file from one of these templates, and run
@@ -19,7 +22,7 @@ Your GitLab repository should contain files specific to an SSG, or plain HTML. A
 these steps, you may have to do additional configuration for the Pages site to generate properly.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. From the **Add** (**{plus}**) dropdown list, select **New file**.
+1. From the **Add** ({{< icon name="plus" >}}) dropdown list, select **New file**.
 1. From the **Select a template type** dropdown list, select `.gitlab-ci.yml`.
 1. From the **Apply a template** dropdown list, in the **Pages** section, select the name of your SSG.
 1. In the **Commit message** box, type the commit message.

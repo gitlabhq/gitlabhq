@@ -2,12 +2,15 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Developer information explaining terminology and features used in merge requests."
+description: Developer information explaining terminology and features used in merge requests.
 title: Merge request concepts
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 The documentation below is the single source of truth for the merge request terminology and functionality.
+
+{{< /alert >}}
 
 The merge request is made up of several different key components and ideas that encompass the overall merge request experience. These concepts sometimes have competing and confusing terminology or overlap with other concepts. This page covers the following concepts:
 

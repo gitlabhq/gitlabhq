@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Moving repositories managed by GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can move all repositories managed by GitLab to another file system or another server.
 
@@ -125,9 +128,12 @@ To move all snippets by using the API:
 
 #### Move all groups
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To move all groups by using the API:
 
@@ -175,9 +181,12 @@ We look at three scenarios:
 - The target directory contains an outdated copy of the repositories.
 - How to deal with thousands of repositories.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Each of the approaches we list can or does overwrite data in the target directory
 `/mnt/gitlab/repositories`. Do not mix up the source and the target.
+
+{{< /alert >}}
 
 ### Recommended approach in all cases
 
@@ -223,9 +232,12 @@ If you want to compress the data before it goes over the network
 
 ### The target directory contains an outdated copy of the repositories: use `rsync`
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
+
+{{< /alert >}}
 
 If the target directory already contains a partial or outdated copy of the repositories it may be wasteful to copy all
 the data again with `tar`. In this scenario it is better to use `rsync` for Gitaly targets (use
@@ -244,9 +256,12 @@ If you want to see progress, replace `-a` with `-av`.
 
 #### Single `rsync` to another server
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
+
+{{< /alert >}}
 
 For Gitaly targets (use [recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets), if the
 `git` user on your source system has SSH access to the target server you can send the repositories over the network with

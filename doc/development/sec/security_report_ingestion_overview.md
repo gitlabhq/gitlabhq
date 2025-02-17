@@ -5,8 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Security report ingestion overview
 ---
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `Vulnerability::Feedback` model is currently undergoing deprecation and should be actively avoided in all further development. It is currently maintained with feature parity to enable revert should any issues arise, but is intended to be removed in 16.0. Any interactions relating to the Feedback model are superseded by the `StateTransition`, `IssueLink`, and `MergeRequestLink` models. You can find out more on [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).
+
+{{< /alert >}}
 
 ## Commonly used terms
 

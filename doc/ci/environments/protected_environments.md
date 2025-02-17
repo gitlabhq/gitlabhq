@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Protected environments
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Environments](_index.md) can be used for both testing and
 production reasons.
@@ -19,8 +22,11 @@ unauthorized users.
 By default, a protected environment ensures that only people with the
 appropriate privileges can deploy to it, keeping the environment safe.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab administrators can use all environments, including protected environments.
+
+{{< /alert >}}
 
 To protect, update, or unprotect an environment, you need to have at least the
 Maintainer role.
@@ -213,8 +219,12 @@ and are protected at the same time.
 
 ### Configure group-level memberships
 
-> - Operators are required to have Owner+ role from the original Maintainer+ role and this role change is introduced from GitLab 15.3 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) named `group_level_protected_environment_settings_permission`. Enabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) in GitLab 15.4.
+{{< history >}}
+
+- Operators are required to have Owner+ role from the original Maintainer+ role and this role change is introduced from GitLab 15.3 [with a flag](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) named `group_level_protected_environment_settings_permission`. Enabled by default.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/369873) in GitLab 15.4.
+
+{{< /history >}}
 
 To maximize the effectiveness of group-level protected environments,
 [group-level memberships](../../user/group/_index.md) must be correctly
@@ -260,7 +270,11 @@ To protect a group-level environment, make sure your environments have the corre
 
 #### Using the UI
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1.
+
+{{< /history >}}
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.

@@ -5,13 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Identity verification
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `identity_verification`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.11. Feature flag `identity_verification` removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95722) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `identity_verification`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371389) in GitLab 16.11. Feature flag `identity_verification` removed.
+
+{{< /history >}}
 
 Identity verification provides multiple layers of GitLab account security.
 Depending on your [risk score](../integration/arkose.md), you might be required to perform up to

@@ -185,7 +185,11 @@ Include in the MR description:
       - Optionally, you can also use your own `user_id`, or the `user_id` of a user with a long history within the project or group being used to generate the query plan.
   - That means that no query plan should return 0 records or less records than the provided limit (if a limit is included). If a query is used in batching, a proper example batch with adequate included results should be identified and provided.
 
-    NOTE: The `UPDATE` statement always returns 0 records. To identify the rows it updates, we need to check the following lines below.
+    {{< alert type="note" >}}
+
+    The `UPDATE` statement always returns 0 records. To identify the rows it updates, we need to check the following lines below.
+
+    {{< /alert >}}
 
     For example, the `UPDATE` statement returns 0 records, but we can see that it updates 1 row from the line starting with `-> Index scan`.:
 

@@ -1,6 +1,6 @@
 ---
-redirect_to: '../../../development/internal_analytics/browser_sdk.md'
-remove_date: '2025-04-17'
+redirect_to: ../../../development/internal_analytics/browser_sdk.md
+remove_date: "2025-04-17"
 ---
 
 <!-- markdownlint-disable -->

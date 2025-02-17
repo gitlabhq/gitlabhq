@@ -122,8 +122,11 @@ end
 Validating the foreign key scans the whole table and makes sure that each relation is correct.
 Fortunately, this does not lock the source table (`users`) while running.
 
-NOTE:
+{{< alert type="note" >}}
+
 When using [batched background migrations](batched_background_migrations.md), foreign key validation should happen in the next GitLab release.
+
+{{< /alert >}}
 
 Migration file for validating the foreign key:
 
@@ -215,11 +218,14 @@ add the migration as expected for other installations. The below block
 demonstrates how to create the second migration for the previous
 asynchronous example.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Verify that the foreign key is valid in production before merging a second
 migration with `validate_foreign_key`. If the second migration is deployed
 before the validation has been executed, the foreign key is validated
 synchronously when the second migration executes.
+
+{{< /alert >}}
 
 ```ruby
 # in db/post_migrate/

@@ -1,14 +1,17 @@
 ---
 stage: Fulfillment
 group: Provision
-description: Create user accounts in GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Create user accounts in GitLab.
 title: Create users
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can create user accounts in GitLab in different ways:
 
@@ -70,18 +73,21 @@ Users are created when they:
 
 ## Create users through the Rails console
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions.
 Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 To create a user through the Rails console:
 
 1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Run the command according to your GitLab version:
 
-  ::Tabs
+  {{< tabs >}}
 
-  :::TabTitle 16.10 and earlier
+  {{< tab title="16.10 and earlier" >}}
 
   ```ruby
   u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
@@ -90,7 +96,9 @@ To create a user through the Rails console:
   u.save!
   ```
 
-  :::TabTitle 16.11 through 17.6
+  {{< /tab >}}
+
+  {{< tab title="16.11 through 17.6" >}}
 
   ```ruby
   u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
@@ -99,7 +107,9 @@ To create a user through the Rails console:
   u.save!
   ```
 
-  :::TabTitle 17.7 and later
+  {{< /tab >}}
+
+  {{< tab title="17.7 and later" >}}
 
   ```ruby
   u = Users::CreateService.new(nil,
@@ -113,4 +123,6 @@ To create a user through the Rails console:
   ).execute
   ```
 
-  ::EndTabs
+  {{< /tab >}}
+
+  {{< /tabs >}}

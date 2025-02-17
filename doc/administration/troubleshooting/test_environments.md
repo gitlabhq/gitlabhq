@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Apps for a testing environment
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This is the GitLab Support Team's collection of information regarding testing environments,
 for use while troubleshooting. It is listed here for transparency, and it may be useful
@@ -15,9 +18,12 @@ for users with experience with these tools. If you are currently having an issue
 GitLab, you may want to check your [support options](https://about.gitlab.com/support/)
 first, before attempting to use this information.
 
-NOTE:
+{{< alert type="note" >}}
+
 This page was initially written for Support Engineers, so some of the links
 are only available internally at GitLab.
+
+{{< /alert >}}
 
 ## Docker
 

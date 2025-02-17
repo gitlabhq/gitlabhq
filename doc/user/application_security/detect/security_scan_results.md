@@ -19,9 +19,12 @@ efficient triaging, analysis, and remediation.
 
 ## Merge request
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Output of all enabled application security tools is shown in a merge request widget. You can use
 this information to manage the risk of any issues identified in the source branch.

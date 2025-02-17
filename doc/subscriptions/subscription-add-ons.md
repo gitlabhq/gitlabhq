@@ -1,14 +1,17 @@
 ---
 stage: Fulfillment
 group: Provision
-description: Seat assignment, GitLab Duo add-on
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Seat assignment, GitLab Duo add-on
 title: GitLab Duo add-ons
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can purchase GitLab Duo seats to give users in your organization access to more GitLab features. GitLab Duo is only available for Premium and Ultimate customers.
 Access to features provided by GitLab Duo is managed through seat assignment. GitLab Duo can be assigned to any user in your group namespace or instance.
@@ -18,7 +21,7 @@ Access to features provided by GitLab Duo is managed through seat assignment. Gi
 To purchase GitLab Duo Pro seats, you can use the Customers Portal, or you can contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/). To purchase GitLab Duo Enterprise, contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
 
 1. Sign in to the [GitLab Customers Portal](https://customers.gitlab.com/).
-1. On the subscription card, select the vertical ellipsis (**{ellipsis_v}**).
+1. On the subscription card, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Buy GitLab Duo Pro**.
 1. Enter the number of seats for GitLab Duo.
 1. Review the **Purchase summary** section.
@@ -101,7 +104,7 @@ Prerequisites:
      after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
-        synchronize subscription (**{retry}**).
+        synchronize subscription ({{< icon name="retry" >}}).
 1. By **Seat utilization**, select **Assign seats**.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
@@ -197,16 +200,19 @@ Prerequisites:
      after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
-        synchronize subscription (**{retry}**).
+        synchronize subscription ({{< icon name="retry" >}}).
 1. By **Seat utilization**, select **Assign seats**.
 1. To filter by users assigned to a GitLab Duo seat, in the **Filter users** bar, select **Assigned seat**, then select **Yes**.
 1. User list is filtered to only users assigned a GitLab Duo seat.
 
 ## Start GitLab Duo Pro trial
 
-DETAILS:
-**Tier:** Premium
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ### On GitLab.com
 
@@ -246,9 +252,12 @@ The trial automatically synchronizes to your instance within 24 hours. After the
 
 ## Start GitLab Duo Enterprise trial
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ### On GitLab.com
 

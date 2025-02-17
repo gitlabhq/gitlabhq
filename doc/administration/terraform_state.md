@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Terraform state administration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab can be used as a backend for [Terraform](../user/infrastructure/_index.md) state
 files. The files are encrypted before being stored. This feature is enabled by default.
@@ -93,9 +96,12 @@ For self-compiled installations:
 
 ## Using object storage
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Instead of storing Terraform state files on disk, we recommend the use of
 [one of the supported object storage options](object_storage.md#supported-object-storage-providers).
@@ -118,10 +124,13 @@ The following settings are:
 
 ### Migrate to object storage
 
-WARNING:
+{{< alert type="warning" >}}
+
 It's not possible to migrate Terraform state files from object storage back to local storage,
 so proceed with caution. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/350187)
 to change this behavior.
+
+{{< /alert >}}
 
 To migrate Terraform state files to object storage:
 
@@ -167,9 +176,9 @@ This section describes the earlier configuration format.
 
 See [the available connection settings for different providers](object_storage.md#configure-the-connection-settings).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines; replacing with
    the values you want:
@@ -185,8 +194,11 @@ See [the available connection settings for different providers](object_storage.m
    }
    ```
 
-   NOTE:
-   If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
+  {{< alert type="note" >}}
+
+  If you are using AWS IAM profiles, be sure to omit the AWS access key and secret access key/value pairs.
+
+  {{< /alert >}}
 
    ```ruby
    gitlab_rails['terraform_state_object_store_connection'] = {
@@ -199,7 +211,9 @@ See [the available connection settings for different providers](object_storage.m
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
    lines:
@@ -220,7 +234,9 @@ See [the available connection settings for different providers](object_storage.m
 1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Find a Terraform state file path
 

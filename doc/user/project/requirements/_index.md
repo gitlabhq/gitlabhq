@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Requirements management
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 With requirements, you can set criteria to check your products against. They can be based on users,
 stakeholders, system, software, or anything else you find important to capture.
@@ -19,11 +22,14 @@ If an industry standard *requires* that your application has a certain feature o
 [create a requirement](#create-a-requirement) to reflect this.
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 
-NOTE:
+{{< alert type="note" >}}
+
 Requirements and [test cases](../../../ci/test_cases/_index.md) are being
 [migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
 [Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
 For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
+
+{{< /alert >}}
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Requirements Management](https://www.youtube.com/watch?v=uSS7oUNSEoU).
@@ -36,7 +42,11 @@ For a more in-depth walkthrough see [GitLab Requirements Traceability Walkthroug
 
 ## Create a requirement
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 A paginated list of requirements is available in each project, and there you
 can create a new requirement.
@@ -62,13 +72,17 @@ You can view a requirement from the list by selecting it.
 
 ![requirement view](img/requirement_view_v13_5.png)
 
-To edit a requirement while viewing it, select the **Edit** icon (**{pencil}**)
+To edit a requirement while viewing it, select the **Edit** icon ({{< icon name="pencil" >}})
 next to the requirement title.
 
 ## Edit a requirement
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can edit requirements even if they don't have the Reporter role.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can edit requirements even if they don't have the Reporter role.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can edit a requirement from the requirements list page.
 
@@ -78,15 +92,19 @@ Prerequisites:
 
 To edit a requirement:
 
-1. From the requirements list, select the **Edit** icon (**{pencil}**).
+1. From the requirements list, select the **Edit** icon ({{< icon name="pencil" >}}).
 1. Update the title and description in text input field. You can also mark a
    requirement as satisfied in the edit form by using the checkbox **Satisfied**.
 1. Select **Save changes**.
 
 ## Archive a requirement
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can archive requirements even if they don't have the Reporter role.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can archive requirements even if they don't have the Reporter role.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can archive an open requirement while
 you're in the **Open** tab.
@@ -95,14 +113,18 @@ Prerequisites:
 
 - You must have at least the Planner role or be the author or assignee of the requirement.
 
-To archive a requirement, select **Archive** (**{archive}**).
+To archive a requirement, select **Archive** ({{< icon name="archive" >}}).
 
 As soon as a requirement is archived, it no longer appears in the **Open** tab.
 
 ## Reopen a requirement
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can re-open requirements even if they don't have the Reporter role.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424961) in GitLab 16.11: Authors and assignees can re-open requirements even if they don't have the Reporter role.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can view the list of archived requirements in the **Archived** tab.
 
@@ -227,7 +249,11 @@ in a project, you must replace `requirements` in above configs with `requirement
 
 ## Import requirements from a CSV file
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You must have at least the Planner role.
 
@@ -248,8 +274,8 @@ To import requirements:
 
 1. In a project, go to **Plan > Requirements**.
    - For a project with requirements, in the
-     upper-right corner, select the vertical ellipsis (**{ellipsis_v}**),
-     then select **Import requirements** (**{import}**).
+     upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}),
+     then select **Import requirements** ({{< icon name="import" >}}).
    - For a project without requirements, in the middle of the page, select **Import CSV**.
 1. Select the file and select **Import requirements**.
 
@@ -290,7 +316,11 @@ For GitLab.com, it is set to 10 MB.
 
 ## Export requirements to a CSV file
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can export GitLab requirements to a
 [CSV file](https://en.wikipedia.org/wiki/Comma-separated_values) sent to your default notification
@@ -307,8 +337,8 @@ Prerequisites:
 To export requirements:
 
 1. In a project, go to **Plan > Requirements**.
-1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**),
-   then select **Export as CSV** (**{export}**).
+1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}),
+   then select **Export as CSV** ({{< icon name="export" >}}).
 
    A confirmation modal appears.
 

@@ -98,13 +98,16 @@ the relevant EE and JH modules by the name of the receiver module.
 If reviewing the corresponding JH file is needed, it should be found at
 [JH repository](https://jihulab.com/gitlab-cn/gitlab).
 
-NOTE:
+{{< alert type="note" >}}
+
 In some cases, JH does need to override something we don't need, and in that
 case it is ok to also add `prepend_mod` for the modules. When we do this,
 also add a comment mentioning it, and a link to the JH module using it.
 This way we know where it's used and when we might not need it anymore,
 and we do not remove them only because we're not using it, accidentally
 breaking JH. An example of this:
+
+{{< /alert >}}
 
 ```ruby
 # Added for JiHu

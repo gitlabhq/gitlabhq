@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deploy keys
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use deploy keys to access repositories that are hosted in GitLab. In most cases, you use deploy keys
 to access a repository from an external host, like a build server or Continuous Integration (CI) server.
@@ -111,9 +114,12 @@ name and permissions. If the deploy key is enabled in more than one project, you
 
 ## Create a public deploy key
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -146,7 +152,7 @@ To grant a public deploy key access to a project:
 1. Select **Publicly accessible deploy keys**.
 1. In the key's row, select **Enable**.
 1. To grant read-write permission to the public deploy key:
-   1. In the key's row, select **Edit** (**{pencil}**).
+   1. In the key's row, select **Edit** ({{< icon name="pencil" >}}).
    1. Select the **Grant write permissions to this key** checkbox.
 
 ### Edit project access permissions of a deploy key
@@ -160,7 +166,7 @@ To edit the project access permissions of a deploy key:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
-1. In the key's row, select **Edit** (**{pencil}**).
+1. In the key's row, select **Edit** ({{< icon name="pencil" >}}).
 1. Select or clear the **Grant write permissions to this key** checkbox.
 
 ## Revoke project access of a deploy key
@@ -177,7 +183,7 @@ To disable a deploy key:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
-1. Select **Disable** (**{cancel}**).
+1. Select **Disable** ({{< icon name="cancel" >}}).
 
 What happens to the deploy key when it is disabled depends on the following:
 

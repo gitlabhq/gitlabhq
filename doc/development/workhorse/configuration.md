@@ -223,9 +223,9 @@ You can also set the `GITLAB_WORKHORSE_SENTRY_ENVIRONMENT` environment variable 
 use the Sentry environment feature to separate staging, production and
 development.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```ruby
 gitlab_workhorse['env'] = {
@@ -234,14 +234,18 @@ gitlab_workhorse['env'] = {
 }
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```plaintext
 export GITLAB_WORKHORSE_SENTRY_DSN='https://foobar'
 export GITLAB_WORKHORSE_SENTRY_ENVIRONMENT='production'
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Distributed tracing
 
@@ -299,8 +303,11 @@ that can be trusted. For example:
 trusted_cidrs_for_propagation = ["10.0.0.0/8", "127.0.0.1/32"]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `-propagateCorrelationID` flag must be used for the `trusted_cidrs_for_propagation` option to work.
+
+{{< /alert >}}
 
 ### Trusted proxies
 

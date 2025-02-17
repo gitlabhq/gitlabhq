@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: PostgreSQL replication and failover for Linux package installations
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you're a Free user of GitLab Self-Managed, consider using a cloud-hosted solution.
 This document doesn't cover self-compiled installations.
@@ -81,9 +84,12 @@ You also need to take into consideration the underlying network topology, making
 sure you have redundant connectivity between all Database and GitLab instances
 to avoid the network becoming a single point of failure.
 
-NOTE:
+{{< alert type="note" >}}
+
 PostgreSQL 12 is shipped with Linux package installations. Clustering for PostgreSQL 12 is supported only with
 Patroni, and thus Patroni becomes mandatory for replication and failover. See the [Patroni](#patroni) section for further details.
+
+{{< /alert >}}
 
 ### Database node
 
@@ -836,8 +842,11 @@ before making changes as **_some of the options carry a risk of potential data
 loss if not fully understood_**. The [replication mode](https://patroni.readthedocs.io/en/latest/replication_modes.html)
 configured determines the amount of tolerable data loss.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Replication is not a backup strategy! There is no replacement for a well-considered and tested backup solution.
+
+{{< /alert >}}
 
 Linux package installations default [`synchronous_commit`](https://www.postgresql.org/docs/11/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) to `on`.
 
@@ -893,11 +902,14 @@ Stopping or restarting the Patroni service on the leader node triggers an automa
 
 ### Manual failover procedure for Patroni
 
-WARNING:
+{{< alert type="warning" >}}
+
 In GitLab 16.5 and earlier, PgBouncer nodes do not automatically fail over alongside
 Patroni nodes. PgBouncer services
 [must be restarted manually](../postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 for a successful switchover.
+
+{{< /alert >}}
 
 While Patroni supports automatic failover, you also have the ability to perform
 a manual one, where you have two slightly different options:
@@ -992,8 +1004,11 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    gitlab-ctl patroni members
    ```
 
-   NOTE:
-   On a Geo secondary site, the Patroni leader node is called `standby leader`.
+   {{< alert type="note" >}}
+
+On a Geo secondary site, the Patroni leader node is called `standby leader`.
+
+   {{< /alert >}}
 
 1. Stop Patroni **only on replicas**.
 
@@ -1014,10 +1029,13 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    sudo gitlab-ctl pg-upgrade
    ```
 
-   NOTE:
-   `gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
+   {{< alert type="note" >}}
+
+`gitlab-ctl pg-upgrade` tries to detect the role of the node. If for any reason the auto-detection
    does not work or you believe it did not detect the role correctly, you can use the `--leader` or
    `--replica` arguments to manually override it. Use `gitlab-ctl pg-upgrade --help` for more details on available options.
+
+   {{< /alert >}}
 
 1. Check the status of the leader and cluster. You can proceed only if you have a healthy leader:
 
@@ -1044,15 +1062,21 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
 If issues are encountered upgrading the replicas,
 [there is a troubleshooting section](../postgresql/replication_and_failover_troubleshooting.md#postgresql-major-version-upgrade-fails-on-a-patroni-replica) that might be the solution.
 
-NOTE:
+{{< alert type="note" >}}
+
 Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the same considerations as
 `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
 then reverting the leader, and finally reverting the replicas.
 
+{{< /alert >}}
+
 ### Near-zero-downtime upgrade of PostgreSQL in a Patroni cluster
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 Patroni enables you to run a major PostgreSQL upgrade without shutting down the cluster. However, this
 requires additional resources to host the new Patroni nodes with the upgraded PostgreSQL. In practice, with this
@@ -1167,8 +1191,11 @@ To dump the current database from the existing cluster, run these commands on th
 The `pg_dump` and `pg_dumpall` commands are in `/opt/gitlab/embedded/bin`. In these commands,
 `EXISTING_CLUSTER_LEADER` is the host address of the leader node of the existing cluster.
 
-NOTE:
+{{< alert type="note" >}}
+
 The `gitlab-psql` user must be able to authenticate the existing leader from the new leader node.
+
+{{< /alert >}}
 
 #### Replicate data from the existing cluster
 

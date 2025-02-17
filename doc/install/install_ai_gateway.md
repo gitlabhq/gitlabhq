@@ -1,8 +1,8 @@
 ---
 stage: AI-Powered
 group: AI Framework
-description: Set up your self-hosted model GitLab AI gateway
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Set up your self-hosted model GitLab AI gateway
 title: Install the GitLab AI gateway
 ---
 
@@ -34,8 +34,11 @@ Find the GitLab official Docker image at:
 
 Use the image tag that corresponds to your GitLab version. For example, if your GitLab version is `v17.9.0`, use the `self-hosted-17.9.0-ee` tag. It is critical to ensure that the image version matches your GitLab version to avoid compatibility issues. Nightly builds are available to have access to newer features, but backwards compatibility is not guaranteed.
 
-NOTE:
+{{< alert type="note" >}}
+
 Using the `:latest` tag is **not recommended** as it can cause incompatibility if your GitLab version lags behind or jumps ahead of the AI Gateway release. Always use an explicit version tag.
+
+{{< /alert >}}
 
 ### Start a Container from the Image
 

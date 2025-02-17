@@ -13,8 +13,11 @@ When a security incident occurs, you should primarily follow the processes defin
 
 Using this guide, you should feel confident in handling security incidents related to GitLab. Where necessary, the guide links to other parts of GitLab documentation.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Use the suggestions/recommendations mentioned in this guide at your own risk.
+
+{{< /alert >}}
 
 ## Common security incident scenarios
 

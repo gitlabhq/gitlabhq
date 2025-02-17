@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Pages access control
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can enable Pages access control on your project
 if your administrator has [enabled the access control feature](../../../administration/pages/_index.md#access-control)
@@ -48,7 +51,11 @@ can access the website.
 
 ## Restrict Pages access to project members for the group and its subgroups
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254962) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254962) in GitLab 17.9.
+
+{{< /history >}}
 
 You can configure a setting for the group to restrict Pages access to only project members.
 When enabled, all projects in the group and its subgroups become visible only to members.

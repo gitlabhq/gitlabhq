@@ -5,10 +5,13 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Set up product analytics in a GitLab Pages website project'
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Experiment
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
 
 Understanding how your users engage with your website or application is important for making data-driven decisions.
 By identifying the most and least used features by your users, your team can decide where and how to spend their time effectively.
@@ -41,7 +44,7 @@ Here, you'll create a project for a plain HTML website.
 
 To create a project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Pages/Plain HTML** template.
 1. In the **Project name** text box, enter a name (for example `My website`).

@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/remote_development/decisions/100_new_agent_authorization_strategy/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/remote_development/decisions/100_new_agent_authorization_strategy/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

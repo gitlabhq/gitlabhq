@@ -1,16 +1,19 @@
 ---
 stage: Create
 group: Code Review
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use this tutorial to build a protected workflow for your GitLab project."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use this tutorial to build a protected workflow for your GitLab project.
 title: 'Tutorial: Build a protected workflow for your project'
 ---
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When your team starts a new project, they need a workflow that balances efficiency
 with appropriate reviews. In GitLab, you can create user groups, combine those
@@ -40,7 +43,7 @@ example project named "Excelsior", and creates a minimal approval workflow for t
 Before setting up Excelsior Project, you should create a group to own
 the project. Here, you'll set up the Engineering group:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. For **Group name**, enter `Engineering`.
 1. For the **Group URL**, enter `engineering`.
@@ -134,7 +137,7 @@ To create the new `excelsior` project:
 1. On the left sidebar, select **Search or go to** and
    search for `engineering`. Select the group named `Engineering`.
 1. On the overview page for the `engineering` group, on the left sidebar, at the top,
-   select **Create new** (**{plus}**) and **In this group > New project/repository**.
+   select **Create new** ({{< icon name="plus" >}}) and **In this group > New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter `Excelsior`. The **Project slug** should
@@ -160,15 +163,18 @@ the right subgroup. This example sets up four rules:
 - Frontend engineers should review changes to frontend files.
 - Backend engineers should review changes to backend files.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab Free supports only optional reviews. To make reviews required, you need
 GitLab Premium or Ultimate.
+
+{{< /alert >}}
 
 To add a CODEOWNERS file to your `excelsior` project:
 
 1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
-1. Next to the branch name, select the plus icon (**{plus}**), then **New file**:
+1. Next to the branch name, select the plus icon ({{< icon name="plus" >}}), then **New file**:
    ![Create a new file in the project](img/new_file_v16_2.png)
 1. For **Filename**, enter `CODEOWNERS`. This will create a file named `CODEOWNERS`
    in the root directory of your project.

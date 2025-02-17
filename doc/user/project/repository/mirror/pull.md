@@ -2,15 +2,22 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Create a pull mirror to pull changes from a remote repository into GitLab, and keep your copy of it up-to-date."
+description: Create a pull mirror to pull changes from a remote repository into GitLab, and keep your copy of it up-to-date.
 title: Pull from a remote repository
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Moved to GitLab Premium in 13.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 You can use the GitLab interface to browse the content and activity of a repository,
 even if it isn't hosted on GitLab. Create a pull [mirror](_index.md) to copy the
@@ -34,10 +41,13 @@ local repository, GitLab stops updating the branch. This prevents data loss.
 Deleted branches and tags in the upstream repository are not reflected in the
 downstream repository.
 
-NOTE:
+{{< alert type="note" >}}
+
 Items deleted from the downstream pull mirror repository, but still in the upstream repository,
 are restored upon the next pull. For example: a branch deleted _only_ in the mirrored repository
 reappears after the next pull.
+
+{{< /alert >}}
 
 ## How pull mirroring works
 
@@ -73,9 +83,12 @@ Prerequisites:
 1. Expand **Mirroring repositories**.
 1. Enter the **Git repository URL**.
 
-   NOTE:
-   To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
+   {{< alert type="note" >}}
+
+To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
    or `https://gitlab.com/gitlab-org/gitlab.git`.
+
+   {{< /alert >}}
 
 1. In **Mirror direction**, select **Pull**.
 1. In **Authentication method**, select your authentication method. For more information, see
@@ -88,18 +101,29 @@ Prerequisites:
 
 ### Overwrite diverged branches
 
-> - Moved to GitLab Premium in 13.9.
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 To always update your local branches with remote versions, even if they have
 diverged from the remote, select **Overwrite diverged branches** when you
 create a mirror.
 
-WARNING:
+{{< alert type="warning" >}}
+
 For mirrored branches, enabling this option results in the loss of local changes.
+
+{{< /alert >}}
 
 ### Trigger pipelines for mirror updates
 
-> - Moved to GitLab Premium in 13.9.
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 You can configure your mirror to automatically trigger pipelines when
 the remote repository updates branches or tags. Before you enable this feature:
@@ -111,7 +135,11 @@ the remote repository updates branches or tags. Before you enable this feature:
 
 ## Trigger an update by using the API
 
-> - moved to GitLab Premium in 13.9.
+{{< history >}}
+
+- moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 Pull mirroring uses polling to detect new branches and commits added upstream,
 often minutes afterwards. You can notify GitLab using an
@@ -123,7 +151,11 @@ For more information, read
 
 ## Fix hard failures when mirroring
 
-> - Moved to GitLab Premium in 13.9.
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 After 14 consecutive unsuccessful retries, the mirroring process is marked as a hard failure
 and mirroring attempts stop. This failure is visible in either the:

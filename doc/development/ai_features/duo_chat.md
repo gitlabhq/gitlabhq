@@ -244,9 +244,12 @@ LangSmith integration works with any tools, including [Prompt Library](https://g
 
 ### Use tracing with LangSmith
 
-NOTE:
+{{< alert type="note" >}}
+
 Tracing is available in Development and Testing environment only.
 It's not available in Production environment.
+
+{{< /alert >}}
 
 1. Access [LangSmith](https://smith.langchain.com/) and create an account
    1. Optional: [Create an Access Request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=Individual_Bulk_Access_Request) to be added to the GitLab organization in LangSmith.
@@ -504,8 +507,11 @@ Please, see the video ([internal link](https://drive.google.com/file/d/1X6CARf0g
 
 ### (Deprecated) Issue and epic experiments
 
-NOTE:
+{{< alert type="note" >}}
+
 This section is deprecated in favor of the [development seed file](testing_and_validation.md#seed-project-and-group-resources-for-testing-and-evaluation).
+
+{{< /alert >}}
 
 If you would like to use the evaluation framework (as described [here](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md?ref_type=heads#evaluation-on-issueepic))
 you can import the required groups and projects using this Rake task:
@@ -522,8 +528,11 @@ desired.
 
 #### (Deprecated) Epic and issue fixtures
 
-NOTE:
+{{< alert type="note" >}}
+
 This section is deprecated in favor of the [development seed file](testing_and_validation.md#seed-project-and-group-resources-for-testing-and-evaluation).
+
+{{< /alert >}}
 
 The fixtures are the replicas of the _public_ issues and epics from projects and groups _owned by_ GitLab.
 The internal notes were excluded when they were sampled. The fixtures have been committed into the canonical `gitlab` repository.

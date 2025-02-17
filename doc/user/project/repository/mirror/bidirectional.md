@@ -2,18 +2,28 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Create bidirectional mirrors to push and pull changes between two Git repositories."
+description: Create bidirectional mirrors to push and pull changes between two Git repositories.
 title: Bidirectional mirroring
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Moved to GitLab Premium in 13.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 Bidirectional mirroring may cause conflicts.
+
+{{< /alert >}}
 
 Bidirectional [mirroring](_index.md) configures two repositories to both pull from,
 and push to, each other. There is no guarantee that either repository can update
@@ -65,9 +75,12 @@ To test the integration, select **Test** and confirm GitLab doesn't return an er
 
 ## Prevent conflicts by using a pre-receive hook
 
-WARNING:
+{{< alert type="warning" >}}
+
 This solution negatively affects the performance of Git push operations, because
 they are proxied to the upstream Git repository.
+
+{{< /alert >}}
 
 In this configuration, one Git repository acts as the authoritative upstream, and
 the other as downstream. This server-side `pre-receive` hook accepts a push only
@@ -144,15 +157,25 @@ This sample has a few limitations:
 
 ## Mirror with Perforce Helix with Git Fusion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Moved to GitLab Premium in 13.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- Moved to GitLab Premium in 13.9.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 Bidirectional mirroring should not be used as a permanent configuration. Refer to
 [Migrating from Perforce Helix](../../import/perforce.md) for alternative migration approaches.
+
+{{< /alert >}}
 
 [Git Fusion](https://www.perforce.com/manuals/git-fusion/#Git-Fusion/section_avy_hyc_gl.html) provides a Git interface
 to [Perforce Helix](https://www.perforce.com/products). GitLab can use the Perforce Helix

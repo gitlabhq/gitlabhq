@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Fork a Git repository when you want to contribute changes back to an upstream repository you don't have permission to contribute to directly."
+description: Fork a Git repository when you want to contribute changes back to an upstream repository you don't have permission to contribute to directly.
 title: Forks
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A fork is a personal copy of another Git repository, placed in the namespace of your choice.
 Your copy contains the upstream repository's content, including all branches, tags,
@@ -27,11 +30,15 @@ use a personal fork of a public repository.
 
 ## Create a fork
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24894) in GitLab 16.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24894) in GitLab 16.6.
+
+{{< /history >}}
 
 To fork an existing project in GitLab:
 
-1. On the project's homepage, in the upper-right corner, select **Fork** (**{fork}**).
+1. On the project's homepage, in the upper-right corner, select **Fork** ({{< icon name="fork" >}}).
 1. Optional. Edit the **Project name**.
 1. For **Project URL**, select the [namespace](../../namespace/_index.md)
    your fork should belong to.
@@ -70,8 +77,12 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 ### From the UI
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -82,7 +93,7 @@ To update your fork from the GitLab UI:
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my projects**.
 1. Select the fork you want to update.
-1. Below the dropdown list for branch name, find the **Forked from** (**{fork}**)
+1. Below the dropdown list for branch name, find the **Forked from** ({{< icon name="fork" >}})
    information box to determine if your fork is ahead, behind, or both. In this example,
    the fork is behind the upstream repository:
 
@@ -114,9 +125,12 @@ To update your fork from the command line, follow the instruction in
 
 ### With repository mirroring
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 
@@ -129,8 +143,11 @@ A fork can be configured as a mirror of the upstream if all these conditions are
 This method updates your fork once per hour, with no manual `git pull` required.
 For instructions, read [Configure pull mirroring](mirror/pull.md#configure-pull-mirroring).
 
-WARNING:
+{{< alert type="warning" >}}
+
 With mirroring, before approving a merge request, you are asked to sync. You should automate it.
+
+{{< /alert >}}
 
 ## Merge changes back upstream
 
@@ -147,10 +164,13 @@ Prerequisites:
 
 - You must be a project owner to unlink a fork.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you remove a fork relationship, you can't send merge requests to the source.
 If anyone has forked your repository, their fork also loses the relationship.
 To restore the fork relationship, [use the API](../../../api/project_forks.md#create-a-fork-relationship-between-projects).
+
+{{< /alert >}}
 
 To remove a fork relationship:
 

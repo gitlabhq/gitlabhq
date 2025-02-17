@@ -2,25 +2,35 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type."
+description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
 title: Code Suggestions
 ---
 
-DETAILS:
-**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**LLMs:** For code completion, Fireworks AI-hosted [`Qwen2.5 7B`](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b) and Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko). For code generation, Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
+{{< details >}}
 
-> - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
-> - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
-> - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
-> - Subscription changed to require GitLab Duo Pro on February 15, 2024.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-> - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
+- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- LLMs: For code completion, Fireworks AI-hosted [`Qwen2.5 7B`](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b) and Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko). For code generation, Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
 
-NOTE:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
+- [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
+- [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
+- Subscription changed to require GitLab Duo Pro on February 15, 2024.
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
+
+{{< /alert >}}
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -57,7 +67,11 @@ To use Code Suggestions:
 
 ## View multiple code suggestions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1325) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1325) in GitLab 17.1.
+
+{{< /history >}}
 
 For a code completion suggestion in VS Code, multiple suggestion options
 might be available. To view all available suggestions:
@@ -151,17 +165,24 @@ For more information, see [epic 57](https://gitlab.com/groups/gitlab-org/editor-
 
 ### Using open files as context
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `advanced_context_resolver`. Disabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab Workflow for VS Code 4.20.0.
-> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
-> - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
-> - Feature flags `advanced_context_resolver` and `code_suggestions_context` enabled on GitLab.com in GitLab 17.2.
-> - Feature flags `advanced_context_resolver` and `code_suggestions_context` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161538) in GitLab 17.4.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `advanced_context_resolver`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab Workflow for VS Code 4.20.0.
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
+- [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
+- Feature flags `advanced_context_resolver` and `code_suggestions_context` enabled on GitLab.com in GitLab 17.2.
+- Feature flags `advanced_context_resolver` and `code_suggestions_context` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161538) in GitLab 17.4.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 As well as using files from your repository, Code Suggestions can use the files
 open in tabs in your IDE as context.
@@ -183,9 +204,9 @@ Prerequisites:
 
 To confirm that files open in tabs are being used as context:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Visual Studio Code
+{{< tab title="Visual Studio Code" >}}
 
 1. On the top bar, go to **Code > Settings > Extensions**.
 1. Search for GitLab Workflow in the list, and select the gear icon.
@@ -193,7 +214,9 @@ To confirm that files open in tabs are being used as context:
 1. In your **User** settings, under **GitLab › Duo Code Suggestions: Open Tabs Context**,
    select **Use the contents of open tabs as context**.
 
-:::TabTitle JetBrains IDEs
+{{< /tab >}}
+
+{{< tab title="JetBrains IDEs" >}}
 
 1. Go to your IDE's top menu bar and select **Settings**.
 1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
@@ -201,7 +224,9 @@ To confirm that files open in tabs are being used as context:
 1. Under **Code Completion**, select **Send open tabs as context**.
 1. Select **OK** or **Save**.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Use files open in tabs as context
 
@@ -284,7 +309,11 @@ Other supported IDEs offer slower response times and will return the generated c
 
 ### Direct and indirect connections
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
+
+{{< /history >}}
 
 By default, code completion requests are sent from the IDE directly to the AI gateway to minimize the latency.
 For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
@@ -298,9 +327,9 @@ Prerequisites:
 
 - You must be an administrator for the GitLab Self-Managed instance.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle In 17.4 and later
+{{< tab title="In 17.4 and later" >}}
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -310,7 +339,9 @@ Prerequisites:
    - To disable direct connections for all users, select **Indirect connections through the GitLab self-managed instance**.
 1. Select **Save changes**.
 
-:::TabTitle In 17.3 and earlier
+{{< /tab >}}
+
+{{< tab title="In 17.3 and earlier" >}}
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -319,7 +350,9 @@ Prerequisites:
    - To enable direct connections and minimize latency for code completion requests, clear the **Disable direct connections for code suggestions** checkbox.
    - To disable direct connections, select the **Disable direct connections for code suggestions** checkbox.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Feedback
 

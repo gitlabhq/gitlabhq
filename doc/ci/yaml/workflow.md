@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab CI/CD `workflow` keyword
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the [`workflow`](_index.md#workflow) keyword to control when pipelines are created.
 
@@ -160,10 +163,13 @@ build-job:
 
 ## `workflow:rules` templates (Deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `workflow:rules` templates were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/456394)
 in GitLab 17.0 and are planned for removal in 18.0. This change is a breaking change.
 To configure `workflow:rules` in your pipeline, add the keyword explicitly. See the examples above for options.
+
+{{< /alert >}}
 
 GitLab provides templates that set up `workflow: rules`
 for common scenarios. These templates help prevent duplicate pipelines.

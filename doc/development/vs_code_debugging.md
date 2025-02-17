@@ -85,8 +85,11 @@ The examples below contain launch configurations for `rails-web` and `rails-back
    }
    ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 The VS Code Ruby extension might have issues finding the correct Ruby installation and the appropriate `rdbg` command. In this case, add `"rdbgPath": "/home/user/.asdf/shims/` (in the case of asdf) to the launch configuration above.
+
+{{< /alert >}}
 
 ## Debugging
 
@@ -98,4 +101,4 @@ To start debugging, do one of the following:
 
 - Press <kbd>F5</kbd>.
 - Run the `Debug: Start Debugging` command.
-- Open the [Run and Debug view](https://code.visualstudio.com/docs/editor/debugging#_run-and-debug-view), select one of the launch profiles, then select **Play** (**{play}**).
+- Open the [Run and Debug view](https://code.visualstudio.com/docs/editor/debugging#_run-and-debug-view), select one of the launch profiles, then select **Play** ({{< icon name="play" >}}).

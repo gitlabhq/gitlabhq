@@ -5,18 +5,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Host the GitLab product documentation
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you are not able to access the GitLab product documentation at `docs.gitlab.com`,
 you can host the documentation yourself instead.
 
-NOTE:
+{{< alert type="note" >}}
+
 The local help of your instance does not include all the docs (for example, it
 doesn't include docs for GitLab Runner or GitLab Operator), and it's not
 searchable or browsable. It's intended to only support direct links to specific
 pages from within your instance.
+
+{{< /alert >}}
 
 ## Documentation self-hosting options
 
@@ -114,11 +120,14 @@ To host the product documentation site with GitLab Pages:
 
 ### Self-host the product documentation on your own web server
 
-NOTE:
+{{< alert type="note" >}}
+
 The website you create must be hosted under a subdirectory that matches
 your installed GitLab version (for example, `17.8/`). The
 [Docker images](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/container_registry/8244403)
 use this version by default.
+
+{{< /alert >}}
 
 Because the product documentation site is static, you can take the contents of
 `/usr/share/nginx/html` from inside the container, and use your own web server to host

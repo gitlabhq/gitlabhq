@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Health check
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to required services. These probes report on the status of the
@@ -120,10 +123,13 @@ This check is being exempt from Rack Attack.
 
 ## Liveness
 
-WARNING:
+{{< alert type="warning" >}}
+
 In GitLab [12.4](https://about.gitlab.com/upcoming-releases/)
 the response body of the Liveness check was changed
 to match the example below.
+
+{{< /alert >}}
 
 Checks whether the application server is running.
 This probe is used to know if Rails Controllers

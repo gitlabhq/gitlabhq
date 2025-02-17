@@ -2,12 +2,14 @@
 stage: none
 group: Contributor Success
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-ignore_in_report: true
 title: GitLab Early Access Program
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 Last status update 2024-10-02.
+
+{{< /alert >}}
 
 These features may not be ready for production use and follow the [Experimental or Beta policy](../development_stages_support.md) of GitLab.
 

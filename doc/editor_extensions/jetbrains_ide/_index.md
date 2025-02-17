@@ -2,7 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Connect and use GitLab Duo in JetBrains IDEs."
+description: Connect and use GitLab Duo in JetBrains IDEs.
 title: GitLab plugin for JetBrains IDEs
 ---
 
@@ -24,11 +24,18 @@ Some features in the plugin are in experiment or beta status. To use them, you m
 
 ## Integrate with 1Password CLI
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/291) in GitLab Duo 2.1 for GitLab 16.11 and later.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/291) in GitLab Duo 2.1 for GitLab 16.11 and later.
+
+{{< /history >}}
 
 You can configure the plugin to use 1Password secret references for authentication, instead of hard-coding personal access tokens.
 

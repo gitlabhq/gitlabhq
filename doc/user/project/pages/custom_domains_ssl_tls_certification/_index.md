@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Pages custom domains
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains).
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains).
+
+{{< /history >}}
 
 You can use custom domains:
 
@@ -22,8 +29,11 @@ To use one or more custom domain names:
 - Add a [custom **root domain** or a **subdomain**](#set-up-a-custom-domain).
 - Add [SSL/TLS certification](#adding-an-ssltls-certificate-to-pages).
 
-WARNING:
+{{< alert type="warning" >}}
+
 You cannot verify the [most popular public email domains](../../../group/access_and_permissions.md#restrict-group-access-by-domain).
+
+{{< /alert >}}
 
 ## Set up a custom domain
 
@@ -96,7 +106,8 @@ server running on your instance).
 
 ![DNS `A` record pointing to GitLab.com Pages server](img/dns_add_new_a_record_v11_2.png)
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you use your root domain for your GitLab Pages website
 **only**, and if your domain registrar supports this feature, you can
 add a DNS apex `CNAME` record instead of an `A` record. The main
@@ -104,6 +115,8 @@ advantage of doing so is that when GitLab Pages IP on GitLab.com
 changes for whatever reason, you don't need to update your `A` record.
 There may be a few exceptions, but **this method is not recommended**
 as it most likely doesn't work if you set an [`MX` record](dns_concepts.md#mx-record) for your root domain.
+
+{{< /alert >}}
 
 ##### For subdomains
 
@@ -161,17 +174,20 @@ After you have added all the DNS records:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit** (**{pencil}**).
-1. In **Verification status**, select **Retry verification** (**{retry}**).
+1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
+1. In **Verification status**, select **Retry verification** ({{< icon name="retry" >}}).
 
 ![Verify your domain](img/retry_domain_verification_v12_0.png)
 
 As soon as your domain becomes active, your website is available through your domain name.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Considering GitLab instances with domain verification enabled,
 if the domain can't be verified for 7 days, it's removed
 from the GitLab project.
+
+{{< /alert >}}
 
 Additionally:
 
@@ -262,7 +278,7 @@ meet these requirements.
 
   1. On the left sidebar, select **Search or go to** and find your project.
   1. On the left sidebar, select **Deploy > Pages**.
-  1. Next to the domain name, select **Edit** (**{pencil}**).
+  1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
   1. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
   1. Select **Save changes**.
 
@@ -310,7 +326,7 @@ To edit a custom domain:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit** (**{pencil}**).
+1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 
 ## Delete a custom domain
 
@@ -320,7 +336,7 @@ To delete and remove a custom domain:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Remove domain** (**{remove}**)
+1. Next to the domain name, select **Remove domain** ({{< icon name="remove" >}})
 1. When prompted, select **Remove domain**.
 
 ## Troubleshooting

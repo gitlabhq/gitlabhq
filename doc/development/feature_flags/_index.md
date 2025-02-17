@@ -1,20 +1,28 @@
 ---
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
 title: Feature flags in the development of GitLab
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 This document explains how to contribute to the development and operations of the GitLab product.
 If you want to use feature flags to show and hide functionality in your own applications,
 view [this feature flags information](../../operations/feature_flags.md) instead.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/).
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 All newly-introduced feature flags should be [used with an actor](controls.md#percentage-based-actor-selection).
+{{< /alert >}}
 
 Design documents:
 
@@ -298,13 +306,19 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
 | `log_state_changes` | no       | Used to log the state of the feature flag                      |
 
-NOTE:
+{{< alert type="note" >}}
+
 All validations are skipped when running in `RAILS_ENV=production`.
+
+{{< /alert >}}
 
 ## Create a new feature flag
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab Pages uses [a different process](../pages/_index.md#feature-flags) for feature flags.
+
+{{< /alert >}}
 
 The GitLab codebase provides [`bin/feature-flag`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/feature-flag),
 a dedicated tool to create new feature flag definitions.
@@ -363,8 +377,11 @@ request removing the feature flag or the merge request where the default value o
 the feature flag is set to enabled. If the feature contains any database migrations, it
 *should* include a changelog entry for the database changes.
 
-NOTE:
+{{< alert type="note" >}}
+
 To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feature-flag --ee`
+
+{{< /alert >}}
 
 ### Naming new flags
 
@@ -382,10 +399,13 @@ When choosing a name for a new feature flag, consider the following guidelines:
 
 ### Risk of a broken master (main) branch
 
-WARNING:
+{{< alert type="warning" >}}
+
 Feature flags **must** be used in the MR that introduces them. Not doing so causes a
 [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the `master` branch.
+
+{{< /alert >}}
 
 ### Optionally add a `.patch` file for automated removal of feature flags
 
@@ -484,7 +504,8 @@ if Feature.disabled?(:worker_feature_flag, project, type: :worker)
 end
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Don't use feature flags at application load time. For example, using the `Feature` class in
 `config/initializers/*` or at the class level could cause an unexpected error. This error occurs
 because a database that a feature flag adapter might depend on doesn't exist at load time
@@ -495,6 +516,8 @@ application reload when the feature flag changes. You must therefore ask SREs to
 Web/API/Sidekiq fleet on production, which takes time to fully rollout/rollback the changes. For
 these reasons, use environment variables (for example, `ENV['YOUR_FEATURE_NAME']`) or `gitlab.yml`
 instead.
+
+{{< /alert >}}
 
 Here's an example of a pattern that you should avoid:
 
@@ -645,8 +668,11 @@ Feature.enabled?(:feature_flag_user, user)
 
 #### Instance actor
 
-WARNING:
+{{< alert type="warning" >}}
+
 Instance-wide feature flags should only be used when a feature is tied in to an entire instance. Always prioritize other actors first.
+
+{{< /alert >}}
 
 In some cases, you may want a feature flag to be enabled for an entire instance and not based on an actor. A great example are the Admin settings, where it would be impossible to enable the Feature Flag based on a group or a project since they are both `undefined`.
 
@@ -660,7 +686,11 @@ Feature.enabled?(:feature_flag, :instance)
 
 #### Current request actor
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
+
+{{< /history >}}
 
 It is not recommended to use percentage of time rollout, as each call may return
 inconsistent results.
@@ -694,9 +724,12 @@ use `percentage_of_actors`.
 
 #### Use actors for verifying in production
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using production as a testing environment is not recommended. Use our testing
 environments for testing features that are not production-ready.
+
+{{< /alert >}}
 
 While the staging environment provides a way to test features in an environment
 that resembles production, it doesn't allow you to compare before-and-after
@@ -802,8 +835,11 @@ Usage and state of the feature flag is logged if either:
 When the state of a feature flag is logged, it can be identified by using the `"json.feature_flag_states": "feature_flag_name:1"` or `"json.feature_flag_states": "feature_flag_name:0"` condition in Kibana.
 You can see an example in [this](https://log.gprd.gitlab.net/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-7d%2Fd,to:now))&_a=(columns:!(json.feature_flag_states),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,field:json.feature_flag_states,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',key:json.feature_flag_states,negate:!f,params:(query:'optimize_where_full_path_in:1'),type:phrase),query:(match_phrase:(json.feature_flag_states:'optimize_where_full_path_in:1')))),hideChart:!f,index:'7092c4e2-4eb5-46f2-8305-a7da2edad090',interval:auto,query:(language:kuery,query:''),sort:!(!(json.time,desc)))) link.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only 20% of the requests log the state of the feature flags. This is controlled with the [`feature_flag_state_logs`](https://gitlab.com/gitlab-org/gitlab/-/blob/6deb6ecbc69f05a80d920a295dfc1a6a303fc7a0/config/feature_flags/ops/feature_flag_state_logs.yml) feature flag.
+
+{{< /alert >}}
 
 ## Changelog
 
@@ -852,8 +888,11 @@ When using the testing environment, all feature flags are enabled by default.
 Flags can be disabled by default in the [`spec/spec_helper.rb` file](https://gitlab.com/gitlab-org/gitlab/-/blob/b61fba42eea2cf5bb1ca64e80c067a07ed5d1921/spec/spec_helper.rb#L274).
 Add a comment inline to explain why the flag needs to be disabled. You can also attach the issue URL for reference if possible.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This does not apply to end-to-end (QA) tests, which [do not enable feature flags by default](#end-to-end-qa-tests). There is a different [process for using feature flags in end-to-end tests](../testing_guide/end_to_end/best_practices/feature_flags.md).
+
+{{< /alert >}}
 
 To disable a feature flag in a test, use the `stub_feature_flags`
 helper. For example, to globally disable the `ci_live_trace` feature
@@ -1038,9 +1077,12 @@ Deferring jobs can be useful during an incident where contentious behavior from
 worker instances are saturating infrastructure resources (such as database and database connection pool).
 The implementation can be found at [SkipJobs Sidekiq server middleware](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/sidekiq_middleware/skip_jobs.rb).
 
-NOTE:
+{{< alert type="note" >}}
+
 Jobs are deferred indefinitely as long as the feature flag is disabled. It is important to remove the
 feature flag after the worker is deemed safe to continue processing.
+
+{{< /alert >}}
 
 When set to false, 100% of the jobs are deferred. When you want processing to resume, you can
 use a **percentage of time** rollout. For example:
@@ -1072,5 +1114,8 @@ Instead of [deferring jobs](#deferring-sidekiq-jobs), jobs can be entirely dropp
 /chatops run feature delete drop_sidekiq_jobs_SlowRunningWorker
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Dropping feature flag (`drop_sidekiq_jobs_{WorkerName}`) takes precedence over deferring feature flag (`run_sidekiq_jobs_{WorkerName}`). When `drop_sidekiq_jobs` is enabled and `run_sidekiq_jobs` is disabled, jobs are entirely dropped.
+
+{{< /alert >}}

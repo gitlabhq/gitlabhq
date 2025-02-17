@@ -20,8 +20,11 @@ To submit a bug:
 - To report a suspected security vulnerability, follow the
   [disclosure process on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do **not** create publicly viewable issues for suspected security vulnerabilities.
+
+{{< /alert >}}
 
 ### Feature proposals
 

@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Your project's merge method determines whether to squash commits before merging, and if merge commits are created when work merges."
+description: Your project's merge method determines whether to squash commits before merging, and if merge commits are created when work merges.
 title: Merge methods
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The merge method you select for your project determines how the changes in your
 merge requests are merged into an existing branch.
@@ -216,7 +219,11 @@ considered equivalent to rebasing.
 
 ### Rebase without CI/CD pipeline
 
-> - Changed to [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350262) in GitLab 15.3. Feature flag `rebase_without_ci_ui` removed.
+{{< history >}}
+
+- Changed to [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350262) in GitLab 15.3. Feature flag `rebase_without_ci_ui` removed.
+
+{{< /history >}}
 
 To rebase a merge request's branch without triggering a CI/CD pipeline, select
 **Rebase without pipeline** from the merge request reports section.

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Epics
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 An epic in GitLab represents a significant body of work that can be broken down into smaller,
 manageable parts.
@@ -82,9 +85,13 @@ graph TD
 
 ### Child issues from different group hierarchies
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371081) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `epic_issues_from_different_hierarchies`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/373304) in GitLab 15.5.
-> - Feature flag `epic_issues_from_different_hierarchies` removed in GitLab 15.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371081) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `epic_issues_from_different_hierarchies`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/373304) in GitLab 15.5.
+- Feature flag `epic_issues_from_different_hierarchies` removed in GitLab 15.6.
+
+{{< /history >}}
 
 You can add issues from a different group hierarchy to an epic.
 To do it, paste the issue URL when
@@ -92,9 +99,12 @@ To do it, paste the issue URL when
 
 ## Roadmap in epics
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
 have a start or due date, you can go to a [roadmap](../roadmap/_index.md)
@@ -106,7 +116,7 @@ of the child epics from the epic.
 
 If your administrator [enabled the new look for epics](epic_work_items.md):
 
-- On the **Child items** section header, select **More actions** (**{ellipsis_v}**) **> View on a roadmap**.
+- On the **Child items** section header, select **More actions** ({{< icon name="ellipsis_v" >}}) **> View on a roadmap**.
 
 A roadmap filtered for the parent epic opens.
 

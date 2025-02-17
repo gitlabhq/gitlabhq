@@ -40,10 +40,13 @@ to a set of owners before the first version gets published to the catalog.
 The `README.md` file in the project repository must indicate the main owners of the project so that
 they can be contacted by the wider community if needed.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a set of project owners cannot be guaranteed or the components cannot be dogfooded, we strongly recommend
 not creating an official GitLab component project and instead let the wider community fulfill the demand
 in the catalog.
+
+{{< /alert >}}
 
 ## Development process
 

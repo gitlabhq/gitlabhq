@@ -1,8 +1,8 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-description: Available features and benefits.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Available features and benefits.
 title: GitLab Dedicated
 ---
 
@@ -113,8 +113,11 @@ When you add a custom hostname:
 
 To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
-NOTE:
+{{< alert type="note" >}}
+
 Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
+
+{{< /alert >}}
 
 ### Application
 
@@ -128,8 +131,11 @@ GitLab Dedicated uses the [advanced search functionality](../../integration/adva
 
 You can use [GitLab Pages](../../user/project/pages/_index.md) on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
 
-NOTE:
+{{< alert type="note" >}}
+
 Custom domains for GitLab Pages are not supported. For example, if you added a custom domain named `gitlab.my-company.com`, the URL to access the Pages site for your GitLab Dedicated instance would still be `tenant_name.gitlab-dedicated.site`.
+
+{{< /alert >}}
 
 You can control access to your Pages website with:
 
@@ -215,8 +221,11 @@ The following features are not supported:
 - [Mattermost](../../integration/mattermost/_index.md)
 - [Server-side Git hooks](../../administration/server_hooks.md)
 
-NOTE:
+{{< alert type="note" >}}
+
 Access to the underlying infrastructure is only available to GitLab team members. Due to the server-side configuration, there is a security concern with running arbitrary code on services, and the possible impact on the service SLA. As an alternative, use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
+
+{{< /alert >}}
 
 ### Operational features
 

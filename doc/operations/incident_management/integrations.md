@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Integrations
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab can accept alerts from any source via a webhook receiver. [Alert notifications](alerts.md)
 can [trigger paging](paging.md#paging) for on-call rotations or be used to [create incidents](manage_incidents.md#from-an-alert).
@@ -42,9 +45,12 @@ receive alert payloads in JSON format. You can always
 
 ### HTTP Endpoints
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
 unique HTTP endpoints to receive alerts from any external source in JSON format,
@@ -72,7 +78,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
       from your integration's **Send test alert** tab after the integration is created.
 
 The new HTTP Endpoint displays in the [integrations list](#integrations-list).
-You can edit the integration by selecting the **{settings}** settings icon on the right
+You can edit the integration by selecting the {{< icon name="settings" >}} settings icon on the right
 side of the integrations list.
 
 #### Map fields in custom alerts
@@ -110,9 +116,12 @@ can be a nested JSON object. For example:
 { "foo": { "bar": { "baz": 42 } } }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
+
+{{< /alert >}}
 
 ### Example request body
 
@@ -228,9 +237,12 @@ can be a nested JSON object. For example:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Ensure your requests are smaller than the
 [payload application limits](../../administration/instance_limits.md#generic-alert-json-payloads).
+
+{{< /alert >}}
 
 #### Prometheus severity options
 
@@ -348,9 +360,12 @@ curl --request POST \
   <username:password@url>
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
 using one of the above header options if your tooling supports it.
+
+{{< /alert >}}
 
 ## Response body
 
@@ -380,7 +395,7 @@ alert to confirm your integration works properly.
 1. Sign in as a user with at least the Developer role.
 1. Go to **Settings > Monitor** in your project.
 1. Select **Alerts** to expand the section.
-1. Select the **{settings}** settings icon on the right side of the integration in [the list](#integrations-list).
+1. Select the {{< icon name="settings" >}} settings icon on the right side of the integration in [the list](#integrations-list).
 1. Select the **Send test alert** tab to open it.
 1. Enter a test payload in the payload field (valid JSON is required).
 1. Select **Send**.
@@ -389,9 +404,12 @@ GitLab displays an error or success message, depending on the outcome of your te
 
 ## Automatic grouping of identical alerts
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab groups alerts based on their payload. When an incoming alert contains the same payload as another alert
 (excluding the `start_time` and `hosts` attributes), GitLab groups these alerts
@@ -418,16 +436,26 @@ You can also configure the associated [incident to be closed automatically](../i
 
 ## Link to your Opsgenie Alerts
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 We are building deeper integration with Opsgenie and other alerting tools through
 [HTTP endpoint integrations](#single-http-endpoint) so you can see alerts in
 the GitLab interface.
+
+{{< /alert >}}
 
 You can monitor alerts using a GitLab integration with [Opsgenie](https://www.atlassian.com/software/opsgenie).
 

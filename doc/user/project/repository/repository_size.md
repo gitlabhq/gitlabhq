@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "To remove unwanted large files from a Git repository and reduce its storage size, use the filter-repo command."
+description: To remove unwanted large files from a Git repository and reduce its storage size, use the filter-repo command.
 title: Repository size
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The size of a Git repository can significantly impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
@@ -69,9 +72,12 @@ This process:
 - Does not specify commit signatures.
 - Is irreversible.
 
-NOTE:
+{{< alert type="note" >}}
+
 Information about commits, including file content, is cached in the database, and remains visible
 even after they have been removed from the repository.
+
+{{< /alert >}}
 
 ### Clean up repository
 
@@ -86,9 +92,12 @@ This process:
 - Recalculates repository size on disk.
 - Is irreversible.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Removing internal Git references causes associated merge request commits, pipelines, and change
 details to become unavailable.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -116,10 +125,14 @@ GitLab sends an email notification with the recalculated repository size after t
 
 ### Remove blobs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
-> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472018) in GitLab 17.9. Feature flag `rewrite_history_ui` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472018) in GitLab 17.9. Feature flag `rewrite_history_ui` removed.
+
+{{< /history >}}
 
 A Git binary large object (blob) stores file contents without metadata.
 Each blob has a unique SHA hash that represents a specific version of a file in the repository.
@@ -136,8 +149,11 @@ This process:
 - Requires re-cloning of local repositories.
 - Is irreversible.
 
-NOTE:
+{{< alert type="note" >}}
+
 To replace strings with `***REMOVED***`, see [Redact information](../../../topics/git/undo.md#redact-information).
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -242,6 +258,9 @@ If you've reached the repository size limit:
 - If you still can't push changes, contact your GitLab administrator to temporarily [increase the limit for your project](../../../administration/settings/account_and_limit_settings.md#repository-size-limit).
 - As a last resort, create a new project and migrate your data.
 
-NOTE:
+{{< alert type="note" >}}
+
 Deleting files in a new commit doesn't reduce repository size immediately, as earlier commits and blobs still exist.
 To effectively reduce size, you must rewrite history using a tool like [`git filter-repo`](https://github.com/newren/git-filter-repo).
+
+{{< /alert >}}

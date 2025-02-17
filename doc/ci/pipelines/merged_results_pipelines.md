@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Merged results pipelines
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
+
+{{< /history >}}
 
 A merged results pipeline runs on the result of the source and target branches merged together.
 It is a type of [merge request pipeline](merge_request_pipelines.md).
@@ -46,10 +53,13 @@ Maintainer role:
 1. In the **Merge options** section, select **Enable merged results pipelines**.
 1. Select **Save changes**.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you select the checkbox but don't configure your pipeline to use
 merge request pipelines, your merge requests may become stuck in an
 unresolved state or your pipelines may be dropped.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

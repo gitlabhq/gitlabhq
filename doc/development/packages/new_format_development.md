@@ -65,8 +65,11 @@ As an MVC, we recommend beginning with a project-level endpoint. A typical itera
 
 Using instance-level endpoints requires [stricter naming conventions](#naming-conventions).
 
-NOTE:
+{{< alert type="note" >}}
+
 Composer package naming scope is Instance Level.
+
+{{< /alert >}}
 
 ### Naming conventions
 

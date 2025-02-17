@@ -112,8 +112,11 @@ def down
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This is a destructive operation with no possibility of rolling back. Make sure that the deduplication logic is tested thoroughly.
+
+{{< /alert >}}
 
 Replacing the old index with a unique index:
 
@@ -133,8 +136,11 @@ Milestone 3:
 
 1. Remove the advisory lock by removing the `prevent_concurrent_inserts` ActiveRecord callback method.
 
-NOTE:
+{{< alert type="note" >}}
+
 This milestone must be after a [required stop](required_stops.md).
+
+{{< /alert >}}
 
 ## Deduplicate strategy for large tables
 
@@ -156,5 +162,8 @@ Milestone 3:
 1. Replace the existing index with a unique index.
 1. Remove the advisory lock by removing the `prevent_concurrent_inserts` ActiveRecord callback method.
 
-NOTE:
+{{< alert type="note" >}}
+
 This milestone must be after a [required stop](required_stops.md).
+
+{{< /alert >}}

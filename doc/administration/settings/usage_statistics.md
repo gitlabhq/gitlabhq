@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Usage statistics
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
@@ -43,8 +46,11 @@ GitLab Enterprise Edition can receive paid features by registering with GitLab a
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
 tier. Instances on a paid tier are subject to our [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
-NOTE:
+{{< alert type="note" >}}
+
 Registration is not required for participation.
+
+{{< /alert >}}
 
 ### Available features
 
@@ -134,12 +140,15 @@ If your GitLab instance is behind a proxy, set the appropriate
 
 ## Enable or disable Service Ping
 
-NOTE:
+{{< alert type="note" >}}
+
 Whether you can disable Service Ping completely depends on the instance's tier and the specific license.
 For more information, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
 Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
 The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
+
+{{< /alert >}}
 
 ### Through the UI
 
@@ -156,9 +165,9 @@ To enable or disable Service Ping:
 To disable Service Ping and prevent it from being configured in the future through
 the **Admin** area.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -172,7 +181,9 @@ the **Admin** area.
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -190,7 +201,9 @@ the **Admin** area.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Enable or disable optional data in Service Ping
 
@@ -209,9 +222,9 @@ To enable or disable optional data in Service Ping:
 
 ### Through the configuration file
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -225,7 +238,9 @@ To enable or disable optional data in Service Ping:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -243,7 +258,9 @@ To enable or disable optional data in Service Ping:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Access the Service Ping payload
 

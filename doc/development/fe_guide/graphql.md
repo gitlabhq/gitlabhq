@@ -1315,11 +1315,14 @@ bundle exec rake gitlab:graphql:schema:dump
 You should run this task after pulling from upstream, or when rebasing your
 branch. This is run automatically as part of `gdk update`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you use the RubyMine IDE, and have marked the `tmp` directory as
 "Excluded", you should "Mark Directory As -> Not Excluded" for
 `gitlab/tmp/tests/graphql`. This will allow the **JS GraphQL** plugin to
 automatically find and index the schema.
+
+{{< /alert >}}
 
 #### Mocking Apollo Client
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Database Load Balancing
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 With Database Load Balancing, read-only queries can be distributed across
 multiple PostgreSQL nodes to increase performance.
@@ -95,12 +98,15 @@ nodes for each environment you want to balance:
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-NOTE:
+{{< alert type="note" >}}
+
 Adding the primary to the hosts list is optional, but recommended.
 This makes the primary eligible for load-balanced read queries, improving system performance
 when the primary has capacity for these queries.
 Very high-traffic instances may not have capacity on the primary for it to serve as a read replica.
 The primary will be used for write queries whether or not it is present in this list.
+
+{{< /alert >}}
 
 ### Service Discovery
 
@@ -159,7 +165,11 @@ upper limit on the time it takes to terminate all old database connections.
 
 ### Handling stale reads
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/327902) from GitLab Premium to GitLab Free in 14.0.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/327902) from GitLab Premium to GitLab Free in 14.0.
+
+{{< /history >}}
 
 To prevent reading from an outdated secondary the load balancer checks if it
 is in sync with the primary. If the data is recent enough, the

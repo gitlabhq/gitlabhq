@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deploy to Amazon Elastic Container Service
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This step-by-step guide helps you deploy a project hosted on GitLab.com to
 the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
@@ -42,7 +45,7 @@ For the first step here, you create a demo application from a project template.
 Use a GitLab project template to get started. As the name suggests, these projects provide a
 bare-bones application built on some well-known frameworks.
 
-1. In GitLab on the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. In GitLab on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**, where you can choose from a Ruby on Rails, Spring, or
    NodeJS Express project. For this guide, use the Ruby on Rails template.
 1. Give your project a name. In this example, it's named `ecs-demo`. Make it public so that you can
@@ -200,8 +203,11 @@ create a deployer user on AWS:
 1. Select **Create user**.
 1. Take note of the **Access key ID** and **Secret access key** of the created user.
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not share the secret access key in a public place. You must save it in a secure place.
+
+{{< /alert >}}
 
 ### Setup credentials in GitLab to let pipeline jobs access to ECS
 
@@ -237,9 +243,12 @@ Change a file in the project and see if it's reflected in the demo application o
 
 Congratulations! You successfully set up continuous deployment to ECS.
 
-NOTE:
+{{< alert type="note" >}}
+
 ECS deploy jobs wait for the rollout to complete before exiting. To disable this behavior,
 set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
+
+{{< /alert >}}
 
 ## Set up review apps
 

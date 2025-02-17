@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Manage incidents
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Ability to add an [incident](_index.md) to an iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347153) in GitLab 17.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Ability to add an [incident](_index.md) to an iteration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347153) in GitLab 17.0.
+
+{{< /history >}}
 
 This page collects instructions for all the things you can do with [incidents](incidents.md) or in relation to them.
 
@@ -19,9 +26,12 @@ You can create an incident manually or automatically.
 
 ## Add an incident to an iteration
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To add an incident to an [iteration](../../user/group/iterations/_index.md):
 
@@ -83,16 +93,23 @@ You are then credited with the alert's status change.
 
 ### Automatically, when an alert is triggered
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In the project settings, you can turn on [creating an incident automatically](alerts.md#trigger-actions-from-alerts)
 whenever an alert is triggered.
 
 ### Using the PagerDuty webhook
 
-> - [PagerDuty V3 Webhook](https://support.pagerduty.com/docs/webhooks) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383029) in GitLab 15.7.
+{{< history >}}
+
+- [PagerDuty V3 Webhook](https://support.pagerduty.com/docs/webhooks) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383029) in GitLab 15.7.
+
+{{< /history >}}
 
 You can set up a webhook with PagerDuty to automatically create a GitLab incident
 for each PagerDuty incident. This configuration requires you to make changes
@@ -127,7 +144,11 @@ To view an incident's [details page](incidents.md#incident-details), select it f
 
 ### Who can view an incident
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Whether you can view an incident depends on the [project visibility level](../../user/public_access.md) and
 the incident's confidentiality status:
@@ -167,9 +188,13 @@ You can also change the severity using the `/severity` [quick action](../../user
 
 ## Change status
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
-> - [Feature flag `incident_escalations`](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) removed in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5716) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `incident_escalations`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) in GitLab 14.10.
+- [Feature flag `incident_escalations`](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) removed in GitLab 15.1.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -184,9 +209,12 @@ To change the status of an incident:
 
 ### As an on-call responder
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 On-call responders can respond to [incident pages](paging.md#escalating-an-incident)
 by changing the status.
@@ -203,9 +231,12 @@ the alert status is independent and does not change when the incident status cha
 
 ## Change escalation policy
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -231,7 +262,7 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To close an incident, in the upper-right corner, select **Incident actions** (**{ellipsis_v}**) and then **Close incident**.
+To close an incident, in the upper-right corner, select **Incident actions** ({{< icon name="ellipsis_v" >}}) and then **Close incident**.
 
 When you close an incident that is linked to an [alert](alerts.md),
 the linked alert's status changes to **Resolved**.
@@ -266,12 +297,12 @@ Prerequisites:
 
 To delete an incident:
 
-1. In an incident, select **Incident actions** (**{ellipsis_v}**).
+1. In an incident, select **Incident actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete incident**.
 
 Alternatively:
 
-1. In an incident, select **Edit title and description** (**{pencil}**).
+1. In an incident, select **Edit title and description** ({{< icon name="pencil" >}}).
 1. Select **Delete incident**.
 
 ## Other actions

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: CI/CD analytics
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the CI/CD analytics page to view pipeline success rates and duration, and the history of [DevOps Research and Assessment (DORA) metrics](dora_metrics.md) over time.
 
@@ -25,10 +28,17 @@ pipelines and pipelines that failed with an invalid YAML. To filter pipelines ba
 
 ## DevOps Research and Assessment (DORA) metrics charts
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
 
-> - Time to restore service chart [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1.
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- Time to restore service chart [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1.
+
+{{< /history >}}
 
 CI/CD analytics also display metrics and charts for DORA metrics.
 The charts display the evolution of each DORA metric over time, for the last week, month, 90 days, or 180 days.
@@ -44,8 +54,11 @@ Prerequisites:
 
 ### For a group
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 To view CI/CD analytics for a group:
 

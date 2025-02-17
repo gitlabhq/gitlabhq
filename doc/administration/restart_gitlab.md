@@ -5,15 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: How to restart GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Depending on how you installed GitLab, there are different methods to restart
 its services.
 
-NOTE:
+{{< alert type="note" >}}
+
 A short downtime is expected for all methods.
+
+{{< /alert >}}
 
 ## Linux package installations
 

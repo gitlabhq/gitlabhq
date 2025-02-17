@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Connecting a Kubernetes cluster with GitLab
 ---
 
-> - Flux [recommended](https://gitlab.com/gitlab-org/gitlab/-/issues/357947#note_1253489000) as GitOps solution in GitLab 15.10.
+{{< history >}}
+
+- Flux [recommended](https://gitlab.com/gitlab-org/gitlab/-/issues/357947#note_1253489000) as GitOps solution in GitLab 15.10.
+
+{{< /history >}}
 
 You can connect your Kubernetes cluster with GitLab to deploy, manage,
 and monitor your cloud-native solutions.
@@ -31,11 +35,18 @@ and you can scale a single installation to multiple tenants.
 
 ## Receptive agents
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+{{< /history >}}
 
 Receptive agents allow GitLab to integrate with Kubernetes clusters that cannot establish a network connection
 to the GitLab instance, but can be connected to by GitLab. For example, this can occur when:

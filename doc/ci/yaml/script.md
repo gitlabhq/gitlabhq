@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Scripts and job logs
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use special syntax in [`script`](_index.md#script) sections to:
 
@@ -97,8 +100,12 @@ job2:
 
 ## Skip `after_script` commands if a job is canceled
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
+
+{{< /history >}}
 
 [`after_script`](_index.md) commands run if a job is canceled while the `before_script`
 or `script` section of that job are running.
@@ -129,12 +136,15 @@ job1:
 You can split long commands into multiline commands to improve readability with
 `|` (literal) and `>` (folded) [YAML multiline block scalar indicators](https://yaml-multiline.info/).
 
-WARNING:
+{{< alert type="warning" >}}
+
 If multiple commands are combined into one command string, only the last command's
 failure or success is reported.
 [Failures from earlier commands are ignored due to a bug](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25394).
 To work around this, run each command as a separate `script` item, or add an `exit 1`
 command to each command string.
+
+{{< /alert >}}
 
 You can use the `|` (literal) YAML multiline block scalar indicator to write
 commands over multiple lines in the `script` section of a job description.

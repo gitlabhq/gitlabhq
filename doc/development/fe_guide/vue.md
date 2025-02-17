@@ -242,9 +242,12 @@ return new Vue({
 });
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When adding an `id` attribute to mount a Vue application, make sure this `id` is unique
 across the codebase.
+
+{{< /alert >}}
 
 For more information on why we explicitly declare the data being passed into the Vue app,
 refer to our [Vue style guide](style/vue.md#basic-rules).
@@ -922,7 +925,11 @@ You should only apply to be a Vue.js expert when your own merge requests and you
 
 ## Vue 2 -> Vue 3 Migration
 
-> - This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
+{{< history >}}
+
+- This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
+
+{{< /history >}}
 
 We recommend to minimize adding certain features to the codebase to prevent increasing
 the tech debt for the eventual migration:

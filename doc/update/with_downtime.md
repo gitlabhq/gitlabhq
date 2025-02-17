@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Multi-node upgrades with downtime
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 While you can upgrade a multi-node GitLab deployment [with zero downtime](zero_downtime.md),
 there are a number of constraints. In particular, you can upgrade to only one minor release
@@ -43,9 +46,9 @@ At a high level, the process is:
 Before upgrade, you need to stop writes to the database. The process is different
 depending on your [reference architecture](../administration/reference_architectures/_index.md).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package
+{{< tab title="Linux package" >}}
 
 Shut down Puma and Sidekiq on all servers running these processes:
 
@@ -54,7 +57,9 @@ sudo gitlab-ctl stop sidekiq
 sudo gitlab-ctl stop puma
 ```
 
-:::TabTitle Cloud Native Hybrid
+{{< /tab >}}
+
+{{< tab title="Cloud Native Hybrid" >}}
 
 For [Cloud Native Hybrid](../administration/reference_architectures/_index.md#cloud-native-hybrid) environments:
 
@@ -70,7 +75,9 @@ kubectl get deploy -n <namespace> -l release=<helm release name> -l 'app in (pro
 kubectl scale deploy -n <namespace> -l release=<helm release name> -l 'app in (prometheus,webservice,sidekiq)' --replicas=0
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Upgrade the Consul nodes
 
@@ -196,18 +203,21 @@ Upgrade a standalone Redis server by [upgrading the GitLab package](package/_ind
 
 ## Upgrade Redis HA (using Sentinel)
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Follow [the zero-downtime instructions](zero_downtime.md)
 for upgrading your Redis HA cluster.
 
 ## Upgrade the Rails components
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package
+{{< tab title="Linux package" >}}
 
 All the Puma and Sidekiq processes were previously shut down. On each node:
 
@@ -286,7 +296,9 @@ They can be upgraded in parallel:
    sudo gitlab-ctl restart
    ```
 
-:::TabTitle Cloud Native Hybrid
+{{< /tab >}}
+
+{{< tab title="Cloud Native Hybrid" >}}
 
 Now that all stateful components are upgraded, you need to follow
 [GitLab chart upgrade steps](https://docs.gitlab.com/charts/installation/upgrade.html)
@@ -300,7 +312,9 @@ kubectl scale deploy -lapp=webservice,release=<helm release name> -n <namespace>
 kubectl scale deploy -lapp=prometheus,release=<helm release name> -n <namespace> --replicas=<value>
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Upgrade the Monitor node
 

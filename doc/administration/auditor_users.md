@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Auditor users
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Users with auditor access have read-only access to all groups, projects, and other resources except:
 
@@ -28,8 +31,11 @@ Situations where auditor access for users could be helpful include:
   you can create an account with auditor access and then share the credentials
   with those users to which you want to grant access.
 
-NOTE:
+{{< alert type="note" >}}
+
 An auditor user counts as a billable user and consumes a license seat.
+
+{{< /alert >}}
 
 ## Add a user with auditor access
 
@@ -65,7 +71,11 @@ If you are signed in with auditor access, you:
 
 ## Maintain auditor users using API
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
+
+{{< /history >}}
 
 Administrators can use the GitLab API to [create](../api/users.md#create-a-user) and
 [modify](../api/users.md#modify-a-user) auditor users.

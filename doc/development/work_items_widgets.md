@@ -156,9 +156,12 @@ Now you can update tests for existing files and write tests for the new files:
 1. `spec/frontend/work_items/graphql/resolvers_spec.js` or `ee/spec/frontend/work_items/graphql/resolvers_spec.js`.
 1. `spec/features/work_items/work_item_detail_spec.rb` or `ee/spec/features/work_items/work_item_detail_spec.rb`.
 
-NOTE:
+{{< alert type="note" >}}
+
 You may find some feature specs failing because of excessive SQL queries.
 To resolve this, update the mocked `Gitlab::QueryLimiting::Transaction.threshold` in `spec/support/shared_examples/features/work_items/rolledup_dates_shared_examples.rb`.
+
+{{< /alert >}}
 
 ## Steps to implement a new work item widget on frontend in the create view
 

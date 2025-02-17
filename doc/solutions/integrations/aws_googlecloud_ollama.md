@@ -5,9 +5,12 @@ info: This page is owned by the Solutions Architecture team.
 title: 'GitLab Duo Self-Hosted: Complete AWS/Google Cloud Deployment Guide with Ollama Integration'
 ---
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Pro or Enterprise
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Ultimate with GitLab Duo Pro or Enterprise
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The document describes the installation and integration of GitLab and GitLab Duo with a self-hosted Large Language Model (LLM) running a Mistral model on Ollama. The guide describes the setup using 3 different
 virtual machines and can be easily followed along on AWS or GCP. Of course, the process is applicable to different deployment platforms, too.
@@ -60,8 +63,11 @@ flowchart LR
 
 These components work together to realize the Self-Hosted AI functionality. This guide provides detailed instructions for building a complete self-hosted AI environment using Ollama as the LLM server.
 
-NOTE:
+{{< alert type="note" >}}
+
 While for a full production environment, the [official documentation](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) recommends more powerful GPU instances such as 1x NVIDIA A100 (40 GB), the g4dn.xlarge instance type should be sufficient for evaluation purposes with a small team of users.
+
+{{< /alert >}}
 
 #### Networking
 
@@ -205,8 +211,11 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
    Environment="OLLAMA_HOST=172.31.11.27"
    ```
 
-   NOTE:
-   Replace the IP address with your actual server's internal IP address.
+   {{< alert type="note" >}}
+
+Replace the IP address with your actual server's internal IP address.
+
+   {{< /alert >}}
 
 1. Reload and restart the service:
 
@@ -264,8 +273,11 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
 
 ![Enable Duo for root user](img/self_hosted_model/duo_enable_root.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 Enabling Duo for just the root user is sufficient for initial setup and testing. Additional users can be granted Duo access later if needed, within your seat license limitations.
+
+{{< /alert >}}
 
 ### Configure GitLab Duo Self-Hosted in GitLab
 

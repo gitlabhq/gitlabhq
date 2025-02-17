@@ -123,9 +123,12 @@ For example, if you set the goal to deliver four to ten user stories per iterati
 with a point value greater than three into two or more smaller stories.
 Ideally, your team should work toward splitting or combining stories until they weigh one or two.
 
-NOTE:
+{{< alert type="note" >}}
+
 Stakeholders should never use story points to measure the team's performance or
 [compare one team to another](https://towardsdatascience.com/why-story-points-are-a-horrible-metric-for-software-engineers-421bc8971f11).
+
+{{< /alert >}}
 
 ## Velocity and volatility
 

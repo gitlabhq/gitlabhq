@@ -5,9 +5,12 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Set up an analytics-powered website project'
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you work on a complex project (for example, a website), you likely collaborate with other people to build and maintain it.
 The way you collaborate and communicate in your team can make or break the project, so you want processes in place that help team members follow and achieve the common goal.
@@ -41,7 +44,7 @@ Here, you'll create a project for a Hugo website.
 
 To create a project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Pages/Hugo** template.
 1. In the **Project name** text box, enter a name (for example `My website`).

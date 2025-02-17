@@ -5,14 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Protected packages
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-> - The protection rule setting **Push protected up to access level** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.6. Feature flag `packages_protected_packages` removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- The protection rule setting **Push protected up to access level** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.6. Feature flag `packages_protected_packages` removed.
+
+{{< /history >}}
 
 By default, any user with at least the Developer role can create,
 edit, and delete packages. Add a package protection rule to restrict
@@ -30,7 +37,11 @@ When a package is protected, the default behavior enforces these restrictions on
 
 ## Protect a package
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140473) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140473) in GitLab 16.9.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -68,7 +79,11 @@ If at least one protection rule applies to the package, the package is protected
 
 ## Delete a package protection rule and unprotect a package
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140483) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140483) in GitLab 16.10.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -79,7 +94,7 @@ To unprotect a package:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
 1. Expand **Package registry**.
-1. Under **Protected packages**, next to the protection rule you want to delete, select **Delete** (**{remove}**).
+1. Under **Protected packages**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete**.
 
 The package protection rule is deleted, and does not appear in the settings.

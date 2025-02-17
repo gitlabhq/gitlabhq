@@ -1,14 +1,17 @@
 ---
 stage: none
 group: unassigned
-info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
 title: Use ChatOps to enable and disable feature flags
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 This document explains how to contribute to the development of the GitLab product.
 If you want to use feature flags to show and hide functionality in your own applications,
 view [this feature flags information](../../operations/feature_flags.md) instead.
+
+{{< /alert >}}
 
 To turn on/off features behind feature flags in any of the
 GitLab-provided environments, like staging and production, you need to

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Jira migration options
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You have several options to migrate your Jira projects to GitLab. Before you decide on a migration strategy,
 first decide if you even need to move your Jira issues to GitLab. In many cases, the Jira issue data is no longer
@@ -48,7 +51,7 @@ To import the Jira issue data from a CSV file into your GitLab project:
    1. In the new group, [create a new project](../_index.md#create-a-blank-project) to hold the migrated Jira issues.
 1. Import the Jira data into GitLab:
    1. In your new GitLab project, on the left sidebar, select **Plan > Issues**.
-   1. Select **Actions** (**{ellipsis_v}**) **> Import from Jira**.
+   1. Select **Actions** ({{< icon name="ellipsis_v" >}}) **> Import from Jira**.
    1. Follow the on-screen instructions to complete the import process.
 1. Verify the migration:
    1. Review the imported issues to ensure the project migrated to GitLab successfully.

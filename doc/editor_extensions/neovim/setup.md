@@ -2,7 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Connect and use GitLab Duo in Neovim."
+description: Connect and use GitLab Duo in Neovim.
 title: Install and set up the GitLab plugin for Neovim
 ---
 
@@ -15,9 +15,9 @@ Prerequisites:
 
 To install the extension, follow the installation steps for your chosen plugin manager:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle No plugin manager
+{{< tab title="No plugin manager" >}}
 
 Run this command to include this project with
 [`packadd`](https://neovim.io/doc/user/repeat.html#%3Apackadd) on startup:
@@ -26,7 +26,9 @@ Run this command to include this project with
 git clone https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim.git ~/.local/share/nvim/site/pack/gitlab/start/gitlab.vim
 ```
 
-:::TabTitle `lazy.nvim`
+{{< /tab >}}
+
+{{< tab title="`lazy.nvim`" >}}
 
 Add this plugin to your [lazy.nvim](https://github.com/folke/lazy.nvim) configuration:
 
@@ -52,7 +54,9 @@ Add this plugin to your [lazy.nvim](https://github.com/folke/lazy.nvim) configur
 }
 ```
 
-:::TabTitle `packer.nvim`
+{{< /tab >}}
+
+{{< tab title="`packer.nvim`" >}}
 
 Declare the plugin in your [packer.nvim](https://github.com/wbthomason/packer.nvim) configuration:
 
@@ -62,7 +66,9 @@ use {
 }
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Authenticate with GitLab
 

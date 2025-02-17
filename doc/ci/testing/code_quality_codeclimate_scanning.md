@@ -7,13 +7,19 @@ title: Configure CodeClimate-based Code Quality scanning (deprecated)
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 18.0.
 [Integrate the results from a supported tool directly](code_quality.md#import-code-quality-results-from-a-cicd-job) instead. This change is a breaking change.
+
+{{< /alert >}}
 
 Code Quality includes a built-in CI/CD template, `Code-Quality.gitlab-ci.yaml`.
 This template runs a scan based on the open source CodeClimate scanning engine.
@@ -54,10 +60,13 @@ To enable Code Quality, either:
 
   Code Quality now runs in pipelines.
 
-WARNING:
+{{< alert type="warning" >}}
+
 On GitLab Self-Managed, if a malicious actor compromises the Code Quality job definition they
 could execute privileged Docker commands on the runner host. Having proper access control policies
 mitigates this attack vector by allowing access only to trusted actors.
+
+{{< /alert >}}
 
 ## Disable CodeClimate-based scanning
 
@@ -168,9 +177,12 @@ Both the JSON and HTML files are output as job artifacts. The HTML file is conta
 To download the Code Quality report in _only_ HTML format, set `REPORT_FORMAT` to `html`, overriding
 the default definition of the `code_quality` job.
 
-NOTE:
+{{< alert type="note" >}}
+
 This does not create a JSON format file, so Code Quality results are not shown in the merge request
 widget, pipeline report, or changes view.
+
+{{< /alert >}}
 
 ```yaml
 include:
@@ -514,10 +526,13 @@ entrypoint = ["dockerd"]
 name = "docker:20.10.12-dind"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html), you can use
 the above Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
 in the `values.yaml` file.
+
+{{< /alert >}}
 
 To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:
 
@@ -545,10 +560,13 @@ For OpenShift, you should use the [GitLab Runner Operator](https://docs.gitlab.c
 To give the Docker daemon in the service container permissions to initialize its storage,
 you must mount the `/var/lib` directory as a volume mount.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
 If you opt for the `vfs` value, it might have a negative
 impact on [performance](https://docs.docker.com/storage/storagedriver/select-storage-driver/).
+
+{{< /alert >}}
 
 To configure permissions for the Docker daemon,
 

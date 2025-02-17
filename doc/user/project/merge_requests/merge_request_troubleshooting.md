@@ -2,13 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Troubleshooting help for merge requests."
+description: Troubleshooting help for merge requests.
 title: Merge request troubleshooting
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with merge requests, you might encounter the following issues.
 
@@ -35,18 +38,24 @@ merge request again.
 
 ## Rebase a merge request from the Rails console
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+
+{{< /details >}}
 
 In addition to the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics),
 users with access to the [Rails console](../../../administration/operations/rails_console.md)
 can rebase a merge request from the Rails console. Replace `<username>`,
 `<namespace/project>`, and `<iid>` with appropriate values:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Any command that changes data directly could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them in a test environment
 with a backup of the instance ready to be restored, just in case.
+
+{{< /alert >}}
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -57,19 +66,25 @@ MergeRequests::RebaseService.new(project: m.target_project, current_user: u).exe
 
 ## Fix incorrect merge request status
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If a merge request remains **Open** after its changes are merged,
 users with access to the [Rails console](../../../administration/operations/rails_console.md)
 can correct the merge request's status. Replace `<username>`, `<namespace/project>`,
 and `<iid>` with appropriate values:
 
-WARNING:
+{{< alert type="warning" >}}
+
 Any command that changes data directly could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them in a test environment
 with a backup of the instance ready to be restored, just in case.
+
+{{< /alert >}}
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -83,15 +98,21 @@ merge request to display an incorrect message: `merged into <branch-name>`.
 
 ## Close a merge request from the Rails console
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If closing a merge request doesn't work through the UI or API, try closing it in a
 [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -102,17 +123,23 @@ MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
 
 ## Delete a merge request from the Rails console
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If deleting a merge request doesn't work through the UI or API, try deleting it in a
 [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
-WARNING:
+{{< alert type="warning" >}}
+
 Any command that changes data directly could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them in a test environment
 with a backup of the instance ready to be restored, just in case.
+
+{{< /alert >}}
 
 ```ruby
 u = User.find_by_username('<username>')
@@ -157,8 +184,12 @@ greater than 1000. The cached value is rounded to thousands (or millions) and up
 
 ## Check out merge requests locally through the `head` ref
 
-> - Deleting `head` refs 14 days after a merge request closes or merges [enabled on GitLab Self-Managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130098) in GitLab 16.4.
-> - Deleting `head` refs 14 days after a merge request closes or merges [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/336070) in GitLab 16.6. Feature flag `merge_request_refs_cleanup` removed.
+{{< history >}}
+
+- Deleting `head` refs 14 days after a merge request closes or merges [enabled on GitLab Self-Managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130098) in GitLab 16.4.
+- Deleting `head` refs 14 days after a merge request closes or merges [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/336070) in GitLab 16.6. Feature flag `merge_request_refs_cleanup` removed.
+
+{{< /history >}}
 
 A merge request contains all the history from a repository, plus the additional
 commits added to the branch associated with the merge request. Here's a few

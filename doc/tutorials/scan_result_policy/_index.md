@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Set up a merge request approval policy'
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This tutorial shows you how to create and configure a [merge request approval policy](../../user/application_security/policies/merge_request_approval_policies.md). These policies can be set to take action based on scan results.
 For example, in this tutorial, you'll set up a policy that requires approval from two specified users if a vulnerability is detected in a merge request.
@@ -27,7 +30,7 @@ The namespace used for this tutorial must:
 
 ## Create a test project
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Complete the fields.
    - **Project name**: `sast-scan-result-policy`.
@@ -75,7 +78,7 @@ Nice work, you've created a merge request approval policy. To test it, create so
 
 1. On the left sidebar, select **Search or go to** and find the `sast-scan-result-policy` project.
 1. Select **Code > Repository**.
-1. From the **Add** (**{plus}**) dropdown list, select **New file**.
+1. From the **Add** ({{< icon name="plus" >}}) dropdown list, select **New file**.
 1. In the **Filename** field enter `main.ts`.
 1. In the file's content, copy the following:
 

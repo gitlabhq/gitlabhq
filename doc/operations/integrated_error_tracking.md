@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Integrated error tracking
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 This guide provides basic information on how to set up integrated error tracking for
 your project, using examples from different languages.
@@ -72,7 +75,7 @@ those errors are available in the GitLab UI. To view them:
 
    - Total number of occurrences.
    - Total users affected.
-   - First seen: the date and commit (**{commit}**).
+   - First seen: the date and commit ({{< icon name="commit" >}}).
    - Last seen date, shown as a relative date. To view the timestamp, hover over the date.
    - A bar graph of error frequency per hour. To view the total number of errors in a specific hour, hover over a bar.
    - A stack trace.
@@ -128,8 +131,11 @@ For more information, see the [Sentry SDK documentation](https://docs.sentry.io/
 
 ## Rotate generated DSN
 
-WARNING:
+{{< alert type="warning" >}}
+
 According to Sentry [it is safe to keep a DSN public](https://docs.sentry.io/concepts/key-terms/dsn-explainer/#dsn-utilization), but this opens up the possibility of junk events being sent to Sentry by malicious users. Therefore if possible you should keep the DSN secret. This doesn't apply to client-side applications where the DSN will be loaded and therefore stored on the user's device.
+
+{{< /alert >}}
 
 Prerequisites:
 

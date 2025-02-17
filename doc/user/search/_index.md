@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Searching in GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab has three types of search: **basic search**, [**advanced search**](advanced_search.md),
 and [**exact code search**](exact_code_search.md).
@@ -22,7 +25,11 @@ For code search, GitLab uses these types in this order:
 
 ## Specify a search type
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161999) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161999) in GitLab 17.4.
+
+{{< /history >}}
 
 To specify a search type, set the `search_type` URL parameter as follows:
 
@@ -35,8 +42,11 @@ For more information, see [issue 477333](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## Restrict search access
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -56,11 +66,18 @@ enable the `ops` feature flag `block_anonymous_global_searches`.
 
 ## Disable global search scopes
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179688) in GitLab 17.9.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179688) in GitLab 17.9.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -80,8 +97,12 @@ To disable one or more global search scopes:
 
 ## Global search validation
 
-> - Support for partial matches in issue search [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
+{{< history >}}
+
+- Support for partial matches in issue search [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
+
+{{< /history >}}
 
 Global search ignores and logs as abusive any search that includes:
 
@@ -136,8 +157,12 @@ The results are displayed. To filter the results, on the left sidebar, select a 
 
 ## Search for a project by full path
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
+
+{{< /history >}}
 
 You can search for a project by entering its full path (including the namespace it belongs to) in the search box.
 As you type the project path, [autocomplete suggestions](#autocomplete-suggestions) are displayed.
@@ -149,8 +174,12 @@ For example:
 
 ## Include archived projects in search results
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived` for project search. Disabled by default.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10957) in GitLab 16.6 for all search scopes.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived` for project search. Disabled by default.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10957) in GitLab 16.6 for all search scopes.
+
+{{< /history >}}
 
 By default, archived projects are excluded from search results.
 To include archived projects in search results:
@@ -171,7 +200,11 @@ To search for code in all GitLab, ask your administrator to enable [advanced sea
 
 ### View Git blame from code search
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
+
+{{< /history >}}
 
 After you find search results, you can view who made the last change to the line
 where the results were found.
@@ -181,7 +214,11 @@ where the results were found.
 
 ### Filter code search results by language
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
+
+{{< /history >}}
 
 To filter code search results by one or more languages:
 

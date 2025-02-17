@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Types of pipelines
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Multiple types of pipelines can run in a project, including:
 
@@ -65,7 +68,11 @@ For more information, see [merge request pipelines](merge_request_pipelines.md).
 
 ## Merged results pipeline
 
-> - The `merged results` label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132975) in GitLab 16.5.
+{{< history >}}
+
+- The `merged results` label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132975) in GitLab 16.5.
+
+{{< /history >}}
 
 A *merged results pipeline* runs on the result of the source and target branches merged together.
 It's a type of merge request pipeline.

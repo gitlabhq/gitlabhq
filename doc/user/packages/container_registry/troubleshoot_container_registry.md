@@ -76,9 +76,12 @@ The following procedure uses these sample project names:
    docker pull gitlab.example.com/org/build/sample_project/cr:v2.9.1
    ```
 
-   NOTE:
-   Use either a [personal access token](../../profile/personal_access_tokens.md) or a
+   {{< alert type="note" >}}
+
+Use either a [personal access token](../../profile/personal_access_tokens.md) or a
    [deploy token](../../project/deploy_tokens/_index.md) to authenticate your user account.
+
+   {{< /alert >}}
 
 1. Rename the images to match the new project name:
 

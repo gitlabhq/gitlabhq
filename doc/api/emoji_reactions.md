@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Emoji reactions API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
 
@@ -27,7 +30,11 @@ For information on using these endpoints with comments, see [Add reactions to co
 
 ### List an awardable's emoji reactions
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+
+{{< /history >}}
 
 Get a list of all emoji reactions for a specified awardable. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
@@ -92,7 +99,11 @@ Example response:
 
 ### Get single emoji reaction
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+
+{{< /history >}}
 
 Get a single emoji reaction from an issue, snippet, or merge request. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
@@ -209,14 +220,21 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 Comments (also known as notes) are a sub-resource of issues, merge requests, and snippets.
 
-NOTE:
+{{< alert type="note" >}}
+
 The examples below describe working with emoji reactions on an issue's comments, but can be
 adapted to comments on merge requests and snippets. Therefore, you have to replace
 `issue_iid` either with `merge_request_iid` or with the `snippet_id`.
 
+{{< /alert >}}
+
 ### List a comment's emoji reactions
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+
+{{< /history >}}
 
 Get all emoji reactions for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.
@@ -264,7 +282,11 @@ Example response:
 
 ### Get an emoji reaction for a comment
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+
+{{< /history >}}
 
 Get a single emoji reaction for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.

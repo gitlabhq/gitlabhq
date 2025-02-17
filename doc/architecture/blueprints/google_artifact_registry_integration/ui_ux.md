@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/google_artifact_registry_integration/ui_ux/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/google_artifact_registry_integration/ui_ux/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

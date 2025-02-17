@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Terraform helpers
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
 See [the deprecation announcement](../../../update/deprecations.md#deprecate-terraform-cicd-templates) for more information.
+
+{{< /alert >}}
 
 GitLab provides two helpers to ease your integration with the [GitLab-managed Terraform State](terraform_state.md).
 

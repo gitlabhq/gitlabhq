@@ -36,8 +36,11 @@ end
 This transaction involves two database tables. In case of an error, each `UPDATE`
 statement rolls back to the previous consistent state.
 
-NOTE:
+{{< alert type="note" >}}
+
 Avoid referencing the `ActiveRecord::Base` class and use `ApplicationRecord` instead.
+
+{{< /alert >}}
 
 ## Transaction and database locks
 

@@ -5,9 +5,12 @@ info: This page is maintained by Developer Relations, author @dnsmichi, see http
 title: CI/CD component examples
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Test a component
 
@@ -241,9 +244,12 @@ compile:
       - mybinaries
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You can also start with migrating one job, instead of all jobs. Follow the instructions below,
 and only migrate the `build` CI/CD job in the first iteration.
+
+{{< /alert >}}
 
 The CI/CD template migration involves the following steps:
 

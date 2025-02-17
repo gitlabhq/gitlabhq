@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Google Cloud Workload Identity Federation and IAM policies
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
+
+{{< /history >}}
 
 To use Google Cloud integrations like the
 [Google Artifact Management integration](../user/project/integrations/google_artifact_management.md),
@@ -93,10 +100,13 @@ To use the GitLab UI to set up the Workload Identity Federation:
 1. Locate the Google Cloud IAM integration and select **Configure**.
 1. Select **Guided setup** and follow the instructions.
 
-NOTE:
+{{< alert type="note" >}}
+
 Due to a known issue, the fields in the page for the Google Cloud IAM integration might not
 populate after you run the script in the guided setup. If the fields are empty, refresh the page.
 For more information, see [issue 448831](https://gitlab.com/gitlab-org/gitlab/-/issues/448831).
+
+{{< /alert >}}
 
 ### With the Google Cloud CLI
 
@@ -255,7 +265,7 @@ artifacts to the Google Artifact Registry from the GitLab project `gitlab-org/my
 1. In the **Display name** column, select your workload identity pool.
 
 1. In the **Providers** section, next to the workload identity provider you want to edit,
-   select **Edit** (**{pencil}**) to open **Provider details**.
+   select **Edit** ({{< icon name="pencil" >}}) to open **Provider details**.
 
 1. In the **Attribute mapping** section, select **Add mapping**.
 1. In the **Google N** text box, enter:

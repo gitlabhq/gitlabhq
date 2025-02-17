@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Purchase additional compute minutes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 [Compute minutes](../../ci/pipelines/compute_minutes.md) is the resource consumed
 when running [CI/CD pipelines](../../ci/_index.md) on GitLab instance runners. You can find

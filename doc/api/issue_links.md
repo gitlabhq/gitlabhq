@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Issue links API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to GitLab Free in 13.4.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to GitLab Free in 13.4.
+
+{{< /history >}}
 
 ## List issue relations
 
@@ -68,7 +75,11 @@ Parameters:
 
 ## Get an issue link
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
+
+{{< /history >}}
 
 Gets details about an issue link.
 

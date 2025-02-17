@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deployments
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you deploy a version of your code to an environment, you create a deployment.
 There is usually only one active deployment per environment.
@@ -43,10 +46,10 @@ deploy_prod:
 
 The `when: manual` action:
 
-- Exposes the **Run** (**{play}**) button for the job in the GitLab UI, with the text **Can be manually deployed to &lt;environment&gt;**.
+- Exposes the **Run** ({{< icon name="play" >}}) button for the job in the GitLab UI, with the text **Can be manually deployed to &lt;environment&gt;**.
 - Means the `deploy_prod` job must be triggered manually.
 
-You can find **Run** (**{play}**) in the pipelines, environments, deployments, and jobs views.
+You can find **Run** ({{< icon name="play" >}}) in the pipelines, environments, deployments, and jobs views.
 
 ## Track newly included merge requests per deployment
 
@@ -101,9 +104,12 @@ Archived deployments are still available, in the UI or by using the API, for aud
 Also, you can still fetch the deployed commit from the repository
 with specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after archive.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size)
 so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
+
+{{< /alert >}}
 
 ## Deployment rollback
 
@@ -133,10 +139,13 @@ To retry or roll back a deployment:
    - To retry a deployment, select **Re-deploy to environment**.
    - To roll back to a deployment, next to a previously successful deployment, select **Rollback environment**.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have [prevented outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) in your project,
 the rollback buttons might be hidden or disabled.
 In this case, see [job retries for rollback deployments](deployment_safety.md#job-retries-for-rollback-deployments).
+
+{{< /alert >}}
 
 ## Related topics
 

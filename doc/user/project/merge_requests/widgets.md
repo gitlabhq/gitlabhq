@@ -2,13 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Merge requests show the results of CI/CD pipelines and mergeability tests in a reports area."
+description: Merge requests show the results of CI/CD pipelines and mergeability tests in a reports area.
 title: Merge request widgets
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The **Overview** page of a merge request displays status updates from services
 that perform actions on your merge request. All subscription levels display a
@@ -28,9 +31,12 @@ If an application is successfully deployed to an
 [environment](../../../ci/environments/_index.md), the deployed environment and the link to the
 [review app](../../../ci/review_apps/_index.md) are both shown.
 
-NOTE:
+{{< alert type="note" >}}
+
 When the pipeline fails in a merge request but it can still merge,
 GitLab shows **Merge** in red.
+
+{{< /alert >}}
 
 ## Post-merge pipeline status
 
@@ -68,9 +74,12 @@ faster to preview proposed modifications.
 
 ## License compliance
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To view a list of licenses that detected for your project's dependencies,
 configure [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/_index.md)
@@ -80,9 +89,12 @@ for your project.
 
 ## External status checks
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you have configured [external status checks](status_checks.md) you can
 see the status of these checks in merge requests

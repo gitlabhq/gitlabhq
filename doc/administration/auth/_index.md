@@ -1,14 +1,17 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-description: Third-party authentication providers.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Third-party authentication providers.
 title: GitLab authentication and authorization
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab integrates with a number of [OmniAuth providers](../../integration/omniauth.md#supported-providers),
 and the following external authentication and authorization providers:
@@ -19,8 +22,11 @@ and the following external authentication and authorization providers:
 - [SAML for GitLab.com groups](../../user/group/saml_sso/_index.md)
 - [Smart card](smartcard.md)
 
-NOTE:
+{{< alert type="note" >}}
+
 UltraAuth has removed their software which supports OmniAuth integration. We have therefore removed all references to UltraAuth integration.
+
+{{< /alert >}}
 
 ## GitLab.com compared to GitLab Self-Managed
 

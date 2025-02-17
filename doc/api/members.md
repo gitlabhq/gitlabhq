@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group and project members API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with group and project members.
 
@@ -113,9 +116,13 @@ Example response:
 
 ## List all members of a group or project including inherited and invited members
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members, invited users, and permissions through ancestor groups.
 
@@ -129,10 +136,13 @@ Members from an invited group are returned if either:
 - The requester is also a member of the invited group.
 - The requester is a member of the shared group or project.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group members have shared membership in the shared group or project.
 This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
 then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
+
+{{< /alert >}}
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
@@ -277,17 +287,24 @@ Example response:
 
 ## Get a member of a group or project, including inherited and invited members
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to return members of the invited private group if the current user is a member of the shared group or project in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 Gets a member of a group or project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-and-invited-members) for details.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group members have shared membership in the shared group or project.
 This means that if the requester is a member of a shared group or project, but not a member of an invited private group,
 then using this endpoint the requester can get all the shared group or project members, including the invited private group members.
+
+{{< /alert >}}
 
 ```plaintext
 GET /groups/:id/members/all/:user_id
@@ -487,10 +504,17 @@ Example response:
 
 ## List indirect memberships for a billable member of a group
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386583) in GitLab 16.11.
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386583) in GitLab 16.11.
+
+{{< /history >}}
 
 Gets a list of indirect memberships for a billable member of a group.
 
@@ -541,7 +565,11 @@ Example response:
 
 ## Remove a billable member from a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217851) in GitLab 13.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217851) in GitLab 13.10.
+
+{{< /history >}}
 
 Removes a billable member from a group and its subgroups and projects.
 
@@ -549,9 +577,12 @@ The user does not need to be a group member to qualify for removal.
 For example, if the user was added directly to a project in the group, you can
 still use this API to remove them.
 
-NOTE:
+{{< alert type="note" >}}
+
 Member removal is handled asynchronously, so the changes complete within a few minutes.
 Asynchronous removal is being rolled out, and may not become available to all groups at the same time.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /groups/:id/billable_members/:user_id
@@ -569,7 +600,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Change membership state of a user in a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
+
+{{< /history >}}
 
 Changes the membership state of a user in a group.
 
@@ -652,8 +687,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
+
+{{< /alert >}}
 
 To enable **Manage Non-Billable Promotions**,
 you must first enable the `enable_member_promotion_management` application setting.
@@ -744,8 +782,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
+
+{{< /alert >}}
 
 To enable **Manage non-billable promotions**,
 you must first enable the `enable_member_promotion_management` application setting.

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Pages domains API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](../user/project/pages/_index.md).
 
@@ -371,7 +374,11 @@ Example response:
 
 ## Verify Pages domain
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21261) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21261) in GitLab 17.7.
+
+{{< /history >}}
 
 Verifies an existing project Pages domain.
 The user must have permissions to update Pages domains.

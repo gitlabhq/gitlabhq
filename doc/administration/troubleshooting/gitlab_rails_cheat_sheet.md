@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Rails Console Cheat Sheet
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This was the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for posterity,
@@ -21,19 +24,24 @@ our guide on [the Rails console](../operations/rails_console.md),
 and your [support options](https://about.gitlab.com/support/),
 before attempting the information pointed to from here.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Some of these scripts could be damaging if not run correctly,
 or under the right conditions. We highly recommend running them under the
 guidance of a Support Engineer, or running them in a test environment with a
 backup of the instance ready to be restored, just in case.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 As GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
 mentioned above, we recommend running these scripts under the supervision of a
 Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
+{{< /alert >}}
 
 ## Mirrors
 

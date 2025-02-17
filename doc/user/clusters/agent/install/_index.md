@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Installing the agent for Kubernetes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To connect a Kubernetes cluster to GitLab, you must install an agent in your cluster.
 
@@ -120,25 +123,38 @@ You must register an agent before you can install the agent in your cluster. To 
 1. GitLab generates an access token for the agent. You need this token to install the agent
    in your cluster.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Securely store the agent access token. A bad actor can use this token to access source code in the agent's configuration project, access source code in any public project on the GitLab instance, or even, under very specific conditions, obtain a Kubernetes manifest.
+
+   {{< /alert >}}
 
 1. Copy the command under **Recommended installation method**. You need it when you use
    the one-liner installation method to install the agent in your cluster.
 
 #### Option 2: GitLab connects to agent (receptive agent)
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
 
-NOTE:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 The GitLab Agent Helm Chart release does not fully support mTLS authentication.
 You should authenticate with the JWT method instead.
 Support for mTLS is tracked in
 [issue 64](https://gitlab.com/gitlab-org/charts/gitlab-agent/-/issues/64).
+
+{{< /alert >}}
 
 [Receptive agents](../_index.md#receptive-agents) allow GitLab to integrate with Kubernetes clusters that
 cannot establish a network connection to the GitLab instance, but can be connected to by GitLab.
@@ -183,13 +199,19 @@ If you do not know which one to choose, we recommend starting with Helm.
 
 To install a receptive agent, follow the steps in [GitLab connects to agent (receptive agent)](#option-2-gitlab-connects-to-agent-receptive-agent).
 
-NOTE:
+{{< alert type="note" >}}
+
 To connect to multiple clusters, you must configure, register, and install an agent in each cluster. Make sure to give each agent a unique name.
+
+{{< /alert >}}
 
 #### Install the agent with Helm
 
-WARNING:
+{{< alert type="warning" >}}
+
 For simplicity, the default Helm chart configuration sets up a service account for the agent with `cluster-admin` rights. You should not use this on production systems. To deploy to a production system, follow the instructions in [Customize the Helm installation](#customize-the-helm-installation) to create a service account with the minimum permissions required for your deployment and specify that during installation.
+
+{{< /alert >}}
 
 To install the agent on your cluster using Helm:
 
@@ -244,7 +266,11 @@ an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/cha
 
 ##### Use the agent behind an HTTP proxy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351867) in GitLab 15.0, the GitLab agent Helm chart supports setting environment variables.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351867) in GitLab 15.0, the GitLab agent Helm chart supports setting environment variables.
+
+{{< /history >}}
 
 To configure an HTTP proxy when using the Helm chart, you can use the environment variables `HTTP_PROXY`, `HTTPS_PROXY`,
 and `NO_PROXY`. Upper and lowercase are both acceptable.
@@ -259,9 +285,12 @@ helm upgrade --install gitlab-agent gitlab/gitlab-agent \
   ...
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 DNS rebind protection is disabled when either the `HTTP_PROXY` or the `HTTPS_PROXY` environment variable is set,
 and the domain DNS can't be resolved.
+
+{{< /alert >}}
 
 #### Advanced installation method
 
@@ -269,8 +298,11 @@ GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org
 
 ## Install multiple agents in your cluster
 
-NOTE:
+{{< alert type="note" >}}
+
 In most cases, you should run one agent per cluster and use the agent impersonation features (Premium and Ultimate only) to support multi-tenancy. If you must run multiple agents, we would love to hear from you about any issues you encounter. You can provide your feedback in [issue 454110](https://gitlab.com/gitlab-org/gitlab/-/issues/454110).
+
+{{< /alert >}}
 
 To install a second agent in your cluster, you can follow the [previous steps](#register-the-agent-with-gitlab) a second time. To avoid resource name collisions within the cluster, you must either:
 
@@ -313,12 +345,15 @@ For the best experience, the version of the agent installed in your cluster shou
 
 ### Update the agent version
 
-NOTE:
+{{< alert type="note" >}}
+
 Instead of using `--reuse-values`, you should specify all needed values.
 If you use `--reuse-values`, you might miss new defaults or use deprecated values.
 To retrieve previous `--set` arguments, use `helm get values <release name>`.
 You can save the values to a file with `helm get values gitlab-agent > agent.yaml`, and pass the file to Helm with `-f`:
 `helm upgrade gitlab-agent gitlab/gitlab-agent -f agent.yaml`. This safely replaces the behavior of `--reuse-values`.
+
+{{< /alert >}}
 
 To update the agent to the latest version, you can run:
 

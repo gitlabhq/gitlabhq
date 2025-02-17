@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Sidekiq
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Sidekiq is the background job processor GitLab uses to asynchronously run
 tasks. When things go wrong it can be difficult to troubleshoot. These
@@ -231,7 +234,7 @@ function in Rugged. In the stack, we can see `rev_parse` is being called by the 
 in [containerized environments](https://rbspy.github.io/using-rbspy/index.html#containers).
 It requires at least the `SYS_PTRACE` capability, otherwise it terminates with a `permission denied` error.
 
-::Tabs
+{{< tabs >}}
 
 ::: TabTitle Kubernetes
 
@@ -242,13 +245,15 @@ securityContext:
       - SYS_PTRACE
 ```
 
-:::TabTitle Docker
+{{< tab title="Docker" >}}
 
 ```shell
 docker run --cap-add SYS_PTRACE [...]
 ```
 
-:::TabTitle Docker Compose
+{{< /tab >}}
+
+{{< tab title="Docker Compose" >}}
 
 ```yaml
 services:
@@ -258,7 +263,9 @@ services:
       - SYS_PTRACE
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Process profiling with `perf`
 

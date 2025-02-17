@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Namespaces API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [Namespaces](../user/namespace/_index.md).
 
@@ -15,7 +18,11 @@ This API uses [Pagination](rest/_index.md#pagination) to filter results.
 
 ## List all namespaces
 
-> - `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
+{{< history >}}
+
+- `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
+
+{{< /history >}}
 
 Lists all namespaces available to the current user. If the user is an
 administrator, this endpoint returns all namespaces in the instance.

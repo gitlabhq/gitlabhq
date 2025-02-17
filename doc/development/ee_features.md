@@ -1345,10 +1345,13 @@ export default {
 </template>
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An EE component can be imported
 [asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
 its rendering within CE codebase relies on some check (e.g. a feature flag check).
+
+{{< /alert >}}
 
 Check `glFeatures` to ensure that the Vue components are guarded. The components render only when
 the license is present.
@@ -1377,8 +1380,11 @@ export default {
 </template>
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not use mixins unless ABSOLUTELY NECESSARY. Try to find an alternative pattern.
+
+{{< /alert >}}
 
 ##### Recommended alternative approach (named/scoped slots)
 

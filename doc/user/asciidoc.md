@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use AsciiDoc files in your GitLab project, and understand AsciiDoc syntax."
+description: Use AsciiDoc files in your GitLab project, and understand AsciiDoc syntax.
 title: AsciiDoc
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab uses the [Asciidoctor](https://asciidoctor.org) gem to convert AsciiDoc content to HTML5.
 Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual/) for a complete Asciidoctor reference.
@@ -204,10 +207,13 @@ v1.0, 2019-01-01
 
 ## Includes
 
-NOTE:
+{{< alert type="note" >}}
+
 [Wiki pages](project/wiki/_index.md#create-a-new-wiki-page) created with the AsciiDoc
 format are saved with the file extension `.asciidoc`. When working with AsciiDoc wiki
 pages, change the filename from `.adoc` to `.asciidoc`.
+
+{{< /alert >}}
 
 ```plaintext
 include::basics.adoc[]
@@ -228,9 +234,12 @@ inclusive of transitive dependencies. To customize the number of processed inclu
 the application setting `asciidoc_max_includes` with the
 [application settings API](../api/settings.md#available-settings).
 
-NOTE:
+{{< alert type="note" >}}
+
 The current maximum allowed value for `asciidoc_max_includes` is 64. If the value is
 too high, it might cause performance issues in some situations.
+
+{{< /alert >}}
 
 To use includes from separate pages or external URLs, enable the `allow-uri-read`
 in [application settings](../administration/wikis/_index.md#allow-uri-includes-for-asciidoc).

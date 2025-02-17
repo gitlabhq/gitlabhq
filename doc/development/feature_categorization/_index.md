@@ -112,8 +112,11 @@ class MyBackgroundMigrationJob < BatchedMigrationJob
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 [`RuboCop::Cop::BackgroundMigration::FeatureCategory`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/background_migration/feature_category.rb) cop ensures a valid `feature_category` is defined.
+
+{{< /alert >}}
 
 ## Rails controllers
 

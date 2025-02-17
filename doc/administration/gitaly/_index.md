@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Gitaly and Gitaly Cluster
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level RPC access to Git repositories.
 It is used by GitLab to read and write Git data.
@@ -121,8 +124,11 @@ your assumptions, resulting in performance degradation, instability, and even da
   [distributed reads](#distributed-reads), that depend on the gRPC interface and database
   to determine repository state.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Accessing Git repositories directly is done at your own risk and is not supported.
+
+{{< /alert >}}
 
 ## Gitaly
 
@@ -184,7 +190,11 @@ best suited by using Gitaly Cluster.
 
 ### Gitaly CLI
 
-> - `gitaly git` subcommand [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/7119) in GitLab 17.4.
+{{< history >}}
+
+- `gitaly git` subcommand [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/7119) in GitLab 17.4.
+
+{{< /history >}}
 
 The `gitaly` command is a command-line interface that provides additional subcommands for Gitaly administrators. For example,
 the Gitaly CLI is used to:
@@ -233,9 +243,12 @@ Using a Gitaly Cluster increases fault tolerance by:
 - Detecting Gitaly node failures.
 - Automatically routing Git requests to an available Gitaly node.
 
-NOTE:
+{{< alert type="note" >}}
+
 Technical support for Gitaly clusters is limited to GitLab Premium and Ultimate
 customers.
+
+{{< /alert >}}
 
 The following shows GitLab set up to access `storage-1`, a virtual storage provided by Gitaly
 Cluster:
@@ -266,9 +279,12 @@ The availability objectives for Gitaly clusters assuming a single node failure a
 
 Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/groups/gitlab-org/-/epics/8903).
 
-WARNING:
+{{< alert type="warning" >}}
+
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
 RPO and RTO discussed above.
+
+{{< /alert >}}
 
 ### Comparison to Geo
 
@@ -321,10 +337,13 @@ As with standard Gitaly storages, virtual storages can be sharded.
 
 ### Storage layout
 
-WARNING:
+{{< alert type="warning" >}}
+
 The storage layout is an internal detail of Gitaly Cluster and is not guaranteed to remain stable between releases.
 The information here is only for informational purposes and to help with debugging. Performing changes in the
 repositories directly on the disk is not supported and may lead to breakage or the changes being overwritten.
+
+{{< /alert >}}
 
 Gitaly Cluster's virtual storages provide an abstraction that looks like a single storage but actually consists of
 multiple physical storages. Gitaly Cluster has to replicate each operation to each physical storage. Operations
@@ -361,10 +380,14 @@ follow the [hashed storage](../repository_storage_paths.md#hashed-storage) schem
 
 #### Praefect-generated replica paths
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.0 [with a flag](../feature_flags.md) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.2.
-> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4809) in GitLab 15.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4941) in GitLab 15.6. Feature flag `gitaly_praefect_generated_replica_paths` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.0 [with a flag](../feature_flags.md) named `gitaly_praefect_generated_replica_paths`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitaly/-/issues/4218) in GitLab 15.2.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4809) in GitLab 15.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4941) in GitLab 15.6. Feature flag `gitaly_praefect_generated_replica_paths` removed.
+
+{{< /history >}}
 
 When Gitaly Cluster creates a repository, it assigns the repository a unique and permanent ID called the _repository ID_. The repository ID is
 internal to Gitaly Cluster and doesn't relate to any IDs elsewhere in GitLab. If a repository is removed from Gitaly Cluster and later moved
@@ -585,8 +608,11 @@ To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
 
 ### Migrate to Gitaly Cluster
 
-WARNING:
+{{< alert type="warning" >}}
+
 Some [known issues](#known-issues) exist in Gitaly Cluster. Review the following information before you continue.
+
+{{< /alert >}}
 
 Before migrating to Gitaly Cluster:
 

@@ -2,7 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code."
+description: Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code.
 title: Install and set up the GitLab Workflow extension for VS Code
 ---
 

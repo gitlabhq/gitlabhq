@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Auto DevOps
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The information in this documentation page describes common errors when using
 Auto DevOps, and any available workarounds.
@@ -115,11 +118,14 @@ If you receive this error, you can do one of the following actions:
   database by setting `AUTO_DEVOPS_POSTGRES_DELETE_V1` to a non-empty value and
   redeploying.
 
-  WARNING:
+  {{< alert type="warning" >}}
+
   Deleting the channel 1 PostgreSQL database permanently deletes the existing
   channel 1 database and all its data. See
   [Upgrading PostgreSQL](upgrading_postgresql.md)
   for more information on backing up and upgrading your database.
+
+  {{< /alert >}}
 
 - If you are not using the in-cluster database, you can set
   `POSTGRES_ENABLED` to `false` and re-deploy. This option is especially relevant to
@@ -129,9 +135,12 @@ If you receive this error, you can do one of the following actions:
   and persisted by Helm, regardless of whether or not your chart uses the
   variable.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Setting `POSTGRES_ENABLED` to `false` permanently deletes any existing
 channel 1 database for your environment.
+
+{{< /alert >}}
 
 ## `Error: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"`
 

@@ -5,19 +5,29 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: DAST on-demand scan
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 Do not run DAST scans against a production server. Not only can it perform *any* function that a user can, such
 as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data.
 Only run DAST scans against a test server.
 
+{{< /alert >}}
+
 ## On-demand scans
 
-> - Runner tags selection [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
-> - Browser based on-demand DAST scans available in GitLab 17.0 and later because [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
+{{< history >}}
+
+- Runner tags selection [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
+- Browser based on-demand DAST scans available in GitLab 17.0 and later because [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
+
+{{< /history >}}
 
 An on-demand DAST scan runs outside the DevOps lifecycle. Changes in your repository don't trigger
 the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,
@@ -109,7 +119,7 @@ To view details of an on-demand scan:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
-1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
+1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Edit**.
 
 ### Edit an on-demand scan
 
@@ -122,7 +132,7 @@ To edit an on-demand scan:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
-1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
+1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Edit**.
 1. Edit the saved scan's details.
 1. Select **Save scan**.
 
@@ -137,14 +147,18 @@ To delete an on-demand scan:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
-1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
+1. In the saved scan's row select **More actions** ({{< icon name="ellipsis_v" >}}), then select **Delete**.
 1. On the confirmation dialog, select **Delete**.
 
 ## Site profile
 
-> - Site profile features, scan method and file URL, were [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345837) in GitLab 15.6.
-> - GraphQL endpoint path feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378692) in GitLab 15.7.
-> - Additional variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177703) in GitLab 17.9.
+{{< history >}}
+
+- Site profile features, scan method and file URL, were [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/345837) in GitLab 15.6.
+- GraphQL endpoint path feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378692) in GitLab 15.7.
+- Additional variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177703) in GitLab 17.9.
+
+{{< /history >}}
 
 A site profile defines the attributes and configuration details of the deployed application,
 website, or API to be scanned by DAST.
@@ -225,12 +239,17 @@ Prerequisites:
 
 - If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a site profile is linked to a security policy, you cannot edit the profile from this page. See
 [Scan execution policies](../policies/scan_execution_policies.md) for more information.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 If a site profile's Target URL or Authenticated URL is updated, the request headers and password fields associated with that profile are cleared.
+{{< /alert >}}
 
 When a validated site profile's file, header, or meta tag is edited, the site's
 [validation status](#site-profile-validation) is revoked.
@@ -241,7 +260,7 @@ To edit a site profile:
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
-1. In the profile's row select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
+1. In the profile's row select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Edit**.
 1. Edit the fields then select **Save profile**.
 
 ### Delete a site profile
@@ -250,9 +269,12 @@ Prerequisites:
 
 - If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a site profile is linked to a security policy, a user cannot delete the profile from this page.
 See [Scan execution policies](../policies/scan_execution_policies.md) for more information.
+
+{{< /alert >}}
 
 To delete a site profile:
 
@@ -260,7 +282,7 @@ To delete a site profile:
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
-1. In the profile's row, select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
+1. In the profile's row, select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Delete**.
 1. Select **Delete** to confirm the deletion.
 
 ### Validate a site profile
@@ -315,9 +337,12 @@ To retry a site profile's failed validation:
 
 ### Revoke a site profile's validation status
 
-WARNING:
+{{< alert type="warning" >}}
+
 When a site profile's validation status is revoked, all site profiles that share the same URL also
 have their validation status revoked.
+
+{{< /alert >}}
 
 To revoke a site profile's validation status:
 
@@ -374,8 +399,12 @@ app.get('/dast-website-target', function(req, res) {
 
 ## Scanner profile
 
-> - Deprecated AJAX Spider option with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
-> - Renamed spider timeout to crawl timeout with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
+{{< history >}}
+
+- Deprecated AJAX Spider option with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
+- Renamed spider timeout to crawl timeout with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
+
+{{< /history >}}
 
 A scanner profile defines the configuration details of a security scanner.
 
@@ -422,9 +451,12 @@ Prerequisites:
 
 - If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a scanner profile is linked to a security policy, you cannot edit the profile from this page.
 For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
+
+{{< /alert >}}
 
 To edit a scanner profile:
 
@@ -432,7 +464,7 @@ To edit a scanner profile:
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.
-1. In the scanner's row, select the **More actions** (**{ellipsis_v}**) menu, then select **Edit**.
+1. In the scanner's row, select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Edit**.
 1. Edit the form.
 1. Select **Save profile**.
 
@@ -442,9 +474,12 @@ Prerequisites:
 
 - If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a scanner profile is linked to a security policy, a user cannot delete the profile from this
 page. For more information, see [Scan execution policies](../policies/scan_execution_policies.md).
+
+{{< /alert >}}
 
 To delete a scanner profile:
 
@@ -452,7 +487,7 @@ To delete a scanner profile:
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.
-1. In the scanner's row, select the **More actions** (**{ellipsis_v}**) menu, then select **Delete**.
+1. In the scanner's row, select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Delete**.
 1. Select **Delete**.
 
 ## Auditing

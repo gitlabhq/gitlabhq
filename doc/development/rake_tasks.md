@@ -49,9 +49,12 @@ project.
 
 #### Seeding issues for Insights charts
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can seed issues specifically for working with the
 [Insights charts](../user/project/insights/_index.md) with the
@@ -527,8 +530,11 @@ For information on updating audit event types documentation, see
 
 ## Update OpenAPI client for Error Tracking feature
 
-NOTE:
+{{< alert type="note" >}}
+
 This Rake task needs `docker` to be installed.
+
+{{< /alert >}}
 
 To update generated code for OpenAPI client located in
 `gems/error_tracking_open_api` run the following commands:

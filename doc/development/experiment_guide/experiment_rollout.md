@@ -32,10 +32,13 @@ This can be done via ChatOps:
 
 ## Notes on feature flags
 
-NOTE:
+{{< alert type="note" >}}
+
 We use the terms "enabled" and "disabled" here, even though it's against our
 [documentation style guide recommendations](../documentation/styleguide/word_list.md#enable)
 because these are the terms that the feature flag documentation uses.
+
+{{< /alert >}}
 
 You may already be familiar with the concept of feature flags in GitLab, but using
 feature flags in experiments is a bit different. While in general terms, a feature flag

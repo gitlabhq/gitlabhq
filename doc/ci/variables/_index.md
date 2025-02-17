@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab CI/CD variables
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 CI/CD variables are a type of environment variable. You can use them to:
 
@@ -131,8 +134,12 @@ all variables become available to the pipeline.
 
 ### For a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can have a maximum of 200 CI/CD variables.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, projects can have a maximum of 8000 CI/CD variables.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can have a maximum of 200 CI/CD variables.
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, projects can have a maximum of 8000 CI/CD variables.
+
+{{< /history >}}
 
 You can add CI/CD variables to a project's settings.
 
@@ -162,8 +169,12 @@ or in [job scripts](#use-cicd-variables-in-job-scripts).
 
 ### For a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can have a maximum of 200 CI/CD variables.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can have a maximum of 30000 CI/CD variables.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can have a maximum of 200 CI/CD variables.
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can have a maximum of 30000 CI/CD variables.
+
+{{< /history >}}
 
 You can make a CI/CD variable available to all projects in a group.
 
@@ -192,23 +203,29 @@ are recursively inherited.
 
 #### Environment scope
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 To set a group CI/CD variable to only be available for certain environments:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **Variables**.
-1. To the right of the variable, select **Edit** (**{pencil}**).
+1. To the right of the variable, select **Edit** ({{< icon name="pencil" >}}).
 1. For **Environment scope**, select **All (default)** (`*`), a specific [environment](../environments/_index.md#types-of-environments),
    or a wildcard [environment scope](../environments/_index.md#limit-the-environment-scope-of-a-cicd-variable).
 
 ### For an instance
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can make a CI/CD variable available to all projects and groups in a GitLab instance.
 
@@ -281,11 +298,14 @@ valid [secrets file](../../administration/backup_restore/troubleshooting_backup_
 
 ### Mask a CI/CD variable
 
-WARNING:
+{{< alert type="warning" >}}
+
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
 accessing variable values. To ensure security of sensitive information,
 consider using [external secrets](../secrets/_index.md) and [file type variables](#use-file-type-cicd-variables)
 to prevent commands such as `env`/`printenv` from printing secret variables.
+
+{{< /alert >}}
 
 You can mask a project, group, or instance CI/CD variable so the value of the variable
 does not display in job logs. When a masked CI/CD variable would be displayed in a job log,
@@ -332,8 +352,12 @@ Different versions of [GitLab Runner](../runners/_index.md) have different maski
 
 ### Hide a CI/CD variable
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `ci_hidden_variables`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165843) in GitLab 17.6. Feature flag `ci_hidden_variables` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `ci_hidden_variables`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165843) in GitLab 17.6. Feature flag `ci_hidden_variables` removed.
+
+{{< /history >}}
 
 In addition to masking, you can also prevent the value of CI/CD variables from being revealed
 in the **CI/CD** settings page. Hiding a variable is only possible when creating a new variable,
@@ -408,10 +432,13 @@ as a `--certificate-authority` option, which accepts a path to a file:
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Be careful when assigning the value of a file variable to another variable in GitLab 15.6 or older.
 The other variable takes the content of the file as its value, **not** the path to the file.
 In GitLab 15.7 and later, this behavior [was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) and the other variable now takes the path to the file as the value.
+
+{{< /alert >}}
 
 #### Use a `.gitlab-ci.yml` variable as a file type variable
 
@@ -726,7 +753,11 @@ job:
 
 ### Prevent CI/CD variable expansion
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
+
+{{< /history >}}
 
 Expanded variables treat values with the `$` character as a reference to another variable.
 CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,
@@ -746,7 +777,11 @@ To disable variable expansion for the variable:
 
 ## CI/CD variable precedence
 
-> - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
+{{< history >}}
+
+- Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
+
+{{< /history >}}
 
 You can use CI/CD variables with the same name in different places, but the values
 can overwrite each other. The type of variable and where they are defined determines
@@ -813,8 +848,11 @@ You can specify a pipeline variable when you:
 These variables have [higher precedence](#cicd-variable-precedence) and can override
 other defined variables, including [predefined variables](predefined_variables.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.
+
+{{< /alert >}}
 
 ### Restrict pipeline variables
 
@@ -832,8 +870,12 @@ use this setting for control over the environment the pipeline runs in.
 
 #### Set a minimum role for pipeline variables
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1.
-> - For GitLab.com, setting defaults [updated for all new projects in new namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) to `enabled` for `restrict_user_defined_variables` and `no_one_allowed` for `ci_pipeline_variables_minimum_override_role` in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1.
+- For GitLab.com, setting defaults [updated for all new projects in new namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) to `enabled` for `restrict_user_defined_variables` and `no_one_allowed` for `ci_pipeline_variables_minimum_override_role` in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -977,10 +1019,13 @@ export CI_PROJECT_TITLE="GitLab"
 
 ### Enable debug logging
 
-WARNING:
+{{< alert type="warning" >}}
+
 Debug logging can be a serious security risk. The output contains the content of
 all variables available to the job. The output is uploaded to the
 GitLab server and visible in job logs.
+
+{{< /alert >}}
 
 You can use debug logging to help troubleshoot problems with pipeline configuration
 or job scripts. Debug logging exposes job execution details that are usually hidden
@@ -1083,10 +1128,13 @@ Access to debug logging is restricted to [users with at least the Developer role
 - The [`.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file).
 - The CI/CD variables set in the GitLab UI.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you add `CI_DEBUG_TRACE` as a local variable to runners, debug logs generate and are visible
 to all users with access to job logs. The permission levels are not checked by the runner,
 so you should only use the variable in GitLab itself.
+
+{{< /alert >}}
 
 ### "argument list too long"
 

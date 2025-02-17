@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Convert a self-compiled CE instance to EE
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can convert an existing self-compiled instance from Community Edition (CE) to Enterprise Edition (EE).
 
@@ -78,9 +81,12 @@ sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 
 ### Install `gitlab-elasticsearch-indexer`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To install `gitlab-elasticsearch-indexer`, follow the
 [install instruction](../integration/advanced_search/elasticsearch.md#install-an-elasticsearch-or-aws-opensearch-cluster).

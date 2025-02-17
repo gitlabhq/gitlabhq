@@ -2,23 +2,29 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
+description: Learn how to install a GitLab instance on Google Cloud Platform.
 title: Installing GitLab on Google Cloud Platform
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official Linux package. You should customize it to accommodate your needs.
 
-NOTE:
+{{< alert type="note" >}}
+
 To deploy production-ready GitLab on
 Google Kubernetes Engine,
 you can follow Google Cloud Platform's
 [`Click to Deploy` steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
 It's an alternative to using a GCP VM, and uses
 the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
+
+{{< /alert >}}
 
 ## Prerequisites
 

@@ -1,13 +1,16 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 'Tutorial: Update Git remote URLs'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Update your Git remote URLs if:
 
@@ -15,9 +18,12 @@ Update your Git remote URLs if:
 - Your organization has moved your projects to a new GitLab instance with a new domain name.
 - The project was renamed to a new path in the same GitLab instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you don't have an existing local working copy from the old remote, then you don't need this tutorial.
 You can instead clone the project from the new GitLab URL.
+
+{{< /alert >}}
 
 This tutorial explains how to update the remote URL for your local repository without:
 

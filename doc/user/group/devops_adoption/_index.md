@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: DevOps adoption by group
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/367093) to the [Registration Features Program](../../../administration/settings/usage_statistics.md#registration-features-program) in GitLab 16.6.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/367093) to the [Registration Features Program](../../../administration/settings/usage_statistics.md#registration-features-program) in GitLab 16.6.
+
+{{< /history >}}
 
 DevOps adoption shows you how groups in your organization adopt and use GitLab features.
 This information is available for groups and [instances](../../../administration/analytics/dev_ops_reports.md).
@@ -100,4 +107,4 @@ To remove a subgroup from the DevOps adoption report:
 
 - From the **Add or remove subgroups** dropdown list, clear the subgroup you want to remove.
 - From the **Adoption by subgroup** table, in the row of the group you want to remove, select
-**Remove Group from the table** (**{remove}**).
+**Remove Group from the table** ({{< icon name="remove" >}}).

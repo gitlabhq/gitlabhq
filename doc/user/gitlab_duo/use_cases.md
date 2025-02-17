@@ -1,8 +1,8 @@
 ---
 stage: AI-powered
 group: AI Model Validation
-description: AI-powered features and functionality.
 info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
+description: AI-powered features and functionality.
 title: GitLab Duo use cases
 ---
 
@@ -13,8 +13,11 @@ Learn how to:
 - Use GitLab Duo Root Cause Analysis to troubleshoot failed jobs.
 - Solve security vulnerabilities.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+
+{{< /alert >}}
 
 ## Use GitLab Duo to solve development challenges
 
@@ -452,8 +455,11 @@ fun main() {
 
 ### Get Started with PowerShell
 
-NOTE:
+{{< alert type="note" >}}
+
 PowerShell support is [experimental](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages).
+
+{{< /alert >}}
 
 1. Use GitLab Duo Chat to ask how to get started with a PowerShell script that prints the file size of the current directory.
 

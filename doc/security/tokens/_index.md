@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab token overview
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This document lists tokens used in GitLab, their purpose and, where
 applicable, security guidance.
@@ -192,12 +195,15 @@ You can use the runners API to [rotate or revoke a runner authentication token](
 
 ## Runner registration tokens (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The ability to pass a runner registration token has been [deprecated](../../ci/runners/new_creation_workflow.md) and is
 planned for removal in GitLab 18.0, along with support for certain configuration arguments. This change is a breaking change. GitLab has implemented a new
 [GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
 a new method for registering runners and eliminates the
 runner registration token.
+
+{{< /alert >}}
 
 Runner registration tokens are used to
 [register](https://docs.gitlab.com/runner/register/) a
@@ -307,16 +313,16 @@ This table shows default scopes per token. For some tokens, you can limit scopes
 
 | Token name                  | API access                         | Registry access                    | Repository access |
 |-----------------------------|------------------------------------|------------------------------------|-------------------|
-| Personal access token       | **{check-circle}** Yes             | **{check-circle}** Yes             | **{check-circle}** Yes |
-| OAuth 2.0 token             | **{check-circle}** Yes             | **{dotted-circle}** No             | **{check-circle}** Yes |
-| Impersonation token         | **{check-circle}** Yes             | **{check-circle}** Yes             | **{check-circle}** Yes |
-| Project access token        | **{check-circle}** Yes<sup>1</sup> | **{check-circle}** Yes<sup>1</sup> | **{check-circle}** Yes<sup>1</sup> |
-| Group access token          | **{check-circle}** Yes<sup>2</sup> | **{check-circle}** Yes<sup>2</sup> | **{check-circle}** Yes<sup>2</sup> |
-| Deploy token                | **{dotted-circle}** No             | **{check-circle}** Yes             | **{check-circle}** Yes |
-| Deploy key                  | **{dotted-circle}** No             | **{dotted-circle}** No             | **{check-circle}** Yes |
-| Runner registration token   | **{dotted-circle}** No             | **{dotted-circle}** No             | **{check-circle-dashed}** Limited<sup>3</sup> |
-| Runner authentication token | **{dotted-circle}** No             | **{dotted-circle}** No             | **{check-circle-dashed}** Limited<sup>3</sup> |
-| Job token                   | **{check-circle-dashed}** Limited<sup>4</sup> | **{dotted-circle}** No  | **{check-circle}** Yes |
+| Personal access token       | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes |
+| OAuth 2.0 token             | {{< icon name="check-circle" >}} Yes             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle" >}} Yes |
+| Impersonation token         | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes |
+| Project access token        | {{< icon name="check-circle" >}} Yes<sup>1</sup> | {{< icon name="check-circle" >}} Yes<sup>1</sup> | {{< icon name="check-circle" >}} Yes<sup>1</sup> |
+| Group access token          | {{< icon name="check-circle" >}} Yes<sup>2</sup> | {{< icon name="check-circle" >}} Yes<sup>2</sup> | {{< icon name="check-circle" >}} Yes<sup>2</sup> |
+| Deploy token                | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle" >}} Yes             | {{< icon name="check-circle" >}} Yes |
+| Deploy key                  | {{< icon name="dotted-circle" >}} No             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle" >}} Yes |
+| Runner registration token   | {{< icon name="dotted-circle" >}} No             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle-dashed" >}} Limited<sup>3</sup> |
+| Runner authentication token | {{< icon name="dotted-circle" >}} No             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle-dashed" >}} Limited<sup>3</sup> |
+| Job token                   | {{< icon name="check-circle-dashed" >}} Limited<sup>4</sup> | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes |
 
 **Footnotes:**
 

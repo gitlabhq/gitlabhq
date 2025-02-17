@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Error Tracking settings API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Error Tracking project settings
 
@@ -43,13 +46,20 @@ Example response:
 
 ### Create Error Tracking settings
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393035/) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393035/) in GitLab 15.10.
+
+{{< /history >}}
 
 The API allows you to create Error Tracking settings for a project. Only for users with Maintainer role for
 the project.
 
-NOTE:
+{{< alert type="note" >}}
+
 This API is only available when used with [integrated error tracking](../operations/integrated_error_tracking.md).
+
+{{< /alert >}}
 
 ```plaintext
 PUT /projects/:id/error_tracking/settings

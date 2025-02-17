@@ -5,12 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group clusters API (certificate-based) (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /alert >}}
 
 Similarly to [project-level](../user/project/clusters/_index.md) and
 [instance-level](../user/instance/clusters/_index.md) Kubernetes clusters,
@@ -252,10 +258,13 @@ Parameters:
 | `platform_kubernetes_attributes[ca_cert]` | string         | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                   |
 | `environment_scope`                       | string         | no       | The associated environment to the cluster. Premium and Ultimate only.                      |
 
-NOTE:
+{{< alert type="note" >}}
+
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
 through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_existing_cluster.md) option or
 through the ["Add existing cluster to group"](#add-existing-cluster-to-group) endpoint.
+
+{{< /alert >}}
 
 Example request:
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Environments
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Environments connect GitLab to your infrastructure. An environment:
 
@@ -42,8 +45,12 @@ Deployments show up in this list only after a deployment job has created them.
 
 ### Environment URL
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
+
+{{< /history >}}
 
 The [environment URL](../yaml/_index.md#environmenturl) is displayed in a few
 places in GitLab:
@@ -121,9 +128,12 @@ To create a static environment, in your `.gitlab-ci.yml` file:
 1. In the job, define the environment `name` and `url`. If an
    environment of that name doesn't exist when the pipeline runs, it is created.
 
-NOTE:
+{{< alert type="note" >}}
+
 Some characters cannot be used in environment names. For more information about the
 `environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
+
+{{< /alert >}}
 
 For example, to create an environment named `staging`, with URL `https://staging.example.com`:
 
@@ -155,9 +165,12 @@ To create a dynamic environment, in your `.gitlab-ci.yml` file:
      environments with the same prefix.
    - `url`: Optional. Prefix the hostname with a related CI/CD variable like `$CI_ENVIRONMENT_SLUG`.
 
-NOTE:
+{{< alert type="note" >}}
+
 Some characters cannot be used in environment names. For more information about the
 `environment` keywords, see the [`.gitlab-ci.yml` keyword reference](../yaml/_index.md#environment).
+
+{{< /alert >}}
 
 In the following example, every time the `deploy_review_app` job runs the environment's name and
 URL are defined using unique values.
@@ -241,8 +254,11 @@ Note the following:
   for these jobs. This ensures that runners can fetch the repository even after a feature branch is
   deleted. For more information, see [Ref Specs for Runners](../pipelines/_index.md#ref-specs-for-runners).
 
-NOTE:
+{{< alert type="note" >}}
+
 For Windows runners, you should use the PowerShell `Add-Content` command to write to `.env` files.
+
+{{< /alert >}}
 
 ```powershell
 Add-Content -Path deploy.env -Value "DYNAMIC_ENVIRONMENT_URL=$DYNAMIC_ENVIRONMENT_URL"
@@ -274,8 +290,12 @@ Instead, you can use the [`deployment_tier` keyword](../yaml/_index.md#environme
 
 ### Rename an environment
 
-> - Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9.
-> - Renaming an environment with the API [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
+{{< history >}}
+
+- Renaming an environment by using the API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 15.9.
+- Renaming an environment with the API [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
+
+{{< /history >}}
 
 You cannot rename an environment.
 
@@ -332,9 +352,13 @@ GitLab validates the pipeline configuration at pipeline creation.
 
 ## Search environments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
-> - [Searching environments within a folder](https://gitlab.com/gitlab-org/gitlab/-/issues/373850) was introduced in GitLab 15.7 with [Feature flag `enable_environments_search_within_folder`](https://gitlab.com/gitlab-org/gitlab/-/issues/382108). Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382108) in GitLab 17.4. Feature flag `enable_environments_search_within_folder` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
+- [Searching environments within a folder](https://gitlab.com/gitlab-org/gitlab/-/issues/373850) was introduced in GitLab 15.7 with [Feature flag `enable_environments_search_within_folder`](https://gitlab.com/gitlab-org/gitlab/-/issues/382108). Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382108) in GitLab 17.4. Feature flag `enable_environments_search_within_folder` removed.
+
+{{< /history >}}
 
 To search environments by name:
 
@@ -376,10 +400,13 @@ an environment before it can be deleted.
 
 ### Stop an environment by using the UI
 
-NOTE:
+{{< alert type="note" >}}
+
 To trigger an `on_stop` action and manually stop an environment from the
 Environments view, the stop and deploy jobs must be in the same
 [`resource_group`](../yaml/_index.md#resource_group).
+
+{{< /alert >}}
 
 To stop an environment in the GitLab UI:
 
@@ -461,10 +488,13 @@ stop_review:
 
 You can set an environment to stop automatically after a certain time period.
 
-NOTE:
+{{< alert type="note" >}}
+
 Due to resource limitations, a background worker for stopping environments runs only once every
 hour. This means that environments may not be stopped after the exact time period specified, but are
 instead stopped when the background worker detects expired environments.
+
+{{< /alert >}}
 
 In your `.gitlab-ci.yml` file, specify the [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 keyword. Specify the time period in natural language, such as `1 hour and 30 minutes` or `1 day`.
@@ -524,7 +554,7 @@ To override an environment's expiration in the UI:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment name.
-1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
+1. in the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
 
 To override an environment's expiration in the `.gitlab-ci.yml`:
 
@@ -536,8 +566,12 @@ manually.
 
 ### Clean up stale environments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `stop_stale_environments`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112098) in GitLab 15.10. Feature flag `stop_stale_environments` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `stop_stale_environments`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112098) in GitLab 15.10. Feature flag `stop_stale_environments` removed.
+
+{{< /history >}}
 
 Clean up stale environments when you want to stop old environments in a project.
 
@@ -558,8 +592,12 @@ Protected environments are ignored and not stopped.
 
 ### Run a pipeline job when environment is stopped
 
-> - Feature flag `environment_stop_actions_include_all_finished_deployments` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435128) in GitLab 16.9. Disabled by default.
-> - Feature flag `environment_stop_actions_include_all_finished_deployments` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150932) in GitLab 17.0.
+{{< history >}}
+
+- Feature flag `environment_stop_actions_include_all_finished_deployments` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435128) in GitLab 16.9. Disabled by default.
+- Feature flag `environment_stop_actions_include_all_finished_deployments` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150932) in GitLab 17.0.
+
+{{< /history >}}
 
 You can define a stop job for the environment with an [`on_stop` action](../yaml/_index.md#environmenton_stop) in the environment's deploy job.
 
@@ -610,7 +648,11 @@ stop_review_app:
 
 ### Multiple stop actions for an environment
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/358911) in GitLab 15.0. [Feature flag `environment_multiple_stop_actions`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86685) removed.
+
+{{< /history >}}
 
 To configure multiple **parallel** stop actions on an environment, specify the
 [`on_stop`](../yaml/_index.md#environmenton_stop) keyword across multiple
@@ -619,10 +661,13 @@ To configure multiple **parallel** stop actions on an environment, specify the
 
 When an environment is stopped, the matching `on_stop` actions from only successful deployment jobs are run in parallel, in no particular order.
 
-NOTE:
+{{< alert type="note" >}}
+
 All `on_stop` actions for an environment must belong to the same pipeline. To use multiple `on_stop` actions in
 [downstream pipelines](../pipelines/downstream_pipelines.md), you must configure the environment actions in
 the parent pipeline. For more information, see [downstream pipelines for deployments](../pipelines/downstream_pipelines.md#advanced-example).
+
+{{< /alert >}}
 
 In the following example, for the `test` environment there are two deployment jobs:
 
@@ -735,9 +780,12 @@ to get alerts when there are critical issues that need immediate attention.
 
 ### View the latest alerts for environments
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you [set up an alert integration](../../operations/incident_management/integrations.md#configuration),
 alerts for environments are shown on the environments page. The alert with the highest
@@ -753,9 +801,12 @@ deployment tab from the environment page and select which deployment to roll bac
 
 ### Auto Rollback
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
 production. However, problematic code can still make it to production. For example, inefficient code
@@ -817,8 +868,11 @@ See [Deployment-only access to protected environments](protected_environments.md
 
 ## Web terminals (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /alert >}}
 
 If you deploy to your environments with the help of a deployment service (for example,
 the [Kubernetes integration](../../user/infrastructure/clusters/_index.md)), GitLab can open

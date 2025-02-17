@@ -83,7 +83,7 @@ Both have the `gitlab.com` and `gitlab-org/gitlab-vscode-extension` path.
 To fix this problem, check if your SSH URL is on a different host, or if it has extra segments in a path.
 If either is true, you can manually assign a Git repository to a GitLab project:
 
-1. In VS Code, on the left sidebar, select **GitLab Workflow** (**{tanuki}**).
+1. In VS Code, on the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
 1. Select the project marked `(no GitLab project)`, then select **Manually assign GitLab project**:
    ![Assign GitLab project manually](img/manually_assign_v15_3.png)
 1. Select the correct project from the list.

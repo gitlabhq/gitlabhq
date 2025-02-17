@@ -2,7 +2,7 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Create a GitLab workspaces proxy to authenticate and authorize workspaces in your cluster."
+description: Create a GitLab workspaces proxy to authenticate and authorize workspaces in your cluster.
 title: 'Tutorial: Set up GitLab agent and proxies'
 ---
 
@@ -12,10 +12,13 @@ This tutorial shows you how to:
 - Set up the GitLab workspaces proxy to authenticate and authorize [workspaces](_index.md)
   in your cluster.
 
-NOTE:
+{{< alert type="note" >}}
+
 You must complete the setup steps in this tutorial before you can configure a GitLab agent to support workspaces.
 After completing the tutorial, use [GitLab agent configuration](gitlab_agent_configuration.md) to configure
 your GitLab agent.
+
+{{< /alert >}}
 
 ## Before you begin
 
@@ -157,10 +160,13 @@ To generate certificates manually:
      --work-dir ~/.certbot/work
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You must renew your certificates when they expire.
 For example, Let's Encrypt certificates expire after three months.
 To automatically renew certificates, see [`cert-manager`](https://cert-manager.io/docs/).
+
+{{< /alert >}}
 
 ## Register a GitLab OAuth application
 

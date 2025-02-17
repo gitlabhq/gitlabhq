@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Using SSH keys with GitLab CI/CD
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab does not have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).
@@ -174,12 +177,15 @@ at the end of the last line of the SSH key before saving your changes.
 If you must connect to multiple servers, all the server host keys
 must be collected in the **Value** of the variable, one key per line.
 
-NOTE:
+{{< alert type="note" >}}
+
 By using a file type CI/CD variable instead of `ssh-keyscan` directly inside
 `.gitlab-ci.yml`, it has the benefit that you don't have to change `.gitlab-ci.yml`
 if the host domain name changes for some reason. Also, the values are predefined
 by you, meaning that if the host keys suddenly change, the CI/CD job doesn't fail,
 so there's something wrong with the server or the network.
+
+{{< /alert >}}
 
 Now that the `SSH_KNOWN_HOSTS` variable is created, in addition to the
 [content of `.gitlab-ci.yml`](#ssh-keys-when-using-the-docker-executor)

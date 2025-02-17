@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure PlantUML integration with GitLab Self-Managed."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure PlantUML integration with GitLab Self-Managed.
 title: PlantUML
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
 This integration is enabled on GitLab.com for all users and does not require any additional configuration.
@@ -271,10 +274,13 @@ PlantUML integration is ready and listening for requests on port `8005`:
 
 To change the Tomcat defaults, edit the `/opt/tomcat/conf/server.xml` file.
 
-NOTE:
+{{< alert type="note" >}}
+
 The default URL is different when using this approach. The Docker-based image
 makes the service available at the root URL, with no relative path. Adjust
 the configuration below accordingly.
+
+{{< /alert >}}
 
 Next, you can:
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting LDAP
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 If you are an administrator, use the following information to troubleshoot LDAP.
 
@@ -58,9 +61,12 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 
 #### Query LDAP
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following allows you to perform a search in LDAP using the rails console.
 Depending on what you're trying to do, it may make more sense to query [a user](#query-a-user-in-ldap)
@@ -155,7 +161,11 @@ investigate further.
 
 #### Users see an error "Invalid login or password."
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438144) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438144) in GitLab 16.10.
+
+{{< /history >}}
 
 If users see this error, it might be because they are trying to sign in using the **Standard** sign-in form instead of the **LDAP** sign-in form.
 
@@ -265,9 +275,12 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
 
 #### Sync all users
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The output from a manual [user sync](ldap_synchronization.md#user-sync) can show you what happens when
 GitLab tries to sync its users against LDAP. Enter the [rails console](#rails-console)
@@ -283,9 +296,12 @@ Next, [learn how to read the output](#example-console-output-after-a-user-sync).
 
 ##### Example console output after a user sync
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The output from a [manual user sync](#sync-all-users) is very verbose, and a
 single user's successful sync can look like this:
@@ -378,9 +394,12 @@ Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 
 ### Group memberships
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 #### Memberships not granted
 
@@ -503,9 +522,12 @@ that the GitLab node can connect to LDAP.
 
 #### Sync all groups
 
-NOTE:
+{{< alert type="note" >}}
+
 To sync all groups manually when debugging is unnecessary,
 [use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
+
+{{< /alert >}}
 
 The output from a manual [group sync](ldap_synchronization.md#group-sync) can show you what happens
 when GitLab syncs its LDAP group memberships against LDAP. Enter the [rails console](#rails-console)
@@ -554,9 +576,12 @@ and more DNs may be added, or existing entries modified, based on additional
 LDAP group lookups. The very last occurrence of this entry should indicate
 exactly which users GitLab believes should be added to the group.
 
-NOTE:
+{{< alert type="note" >}}
+
 10 is `Guest`, 20 is `Reporter`, 30 is `Developer`, 40 is `Maintainer`
 and 50 is `Owner`.
+
+{{< /alert >}}
 
 ```shell
 Resolved 'my_group' group member access: {"uid=john0,ou=people,dc=example,dc=com"=>30,
@@ -667,9 +692,12 @@ at least either:
 
 The following script updates the emails for all provided users so they aren't blocked or unable to access their accounts.
 
-NOTE:
+{{< alert type="note" >}}
+
 The following script requires that any new accounts with the new
 email address are removed first. Email addresses must be unique in GitLab.
+
+{{< /alert >}}
 
 Go to the [rails console](#rails-console) and then run:
 
@@ -746,8 +774,11 @@ You can solve this error in two ways.
 This solution is suitable when the LDAP servers are replicas of each other, and the affected users should be able to sign in using a configured LDAP server.
 For example, if a load balancer is now used to manage LDAP high availability and a separate secondary sign-in option is no longer needed.
 
-NOTE:
+{{< alert type="note" >}}
+
 If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
+
+{{< /alert >}}
 
 To [rename references to the LDAP server](../../raketasks/ldap.md#other-options) that is no longer configured, run:
 
@@ -941,9 +972,12 @@ adfind -h ad.example.org:636 -ssl -u "CN=GitLabSRV,CN=Users,DC=GitLab,DC=org" -u
 
 ### Rails console
 
-WARNING:
+{{< alert type="warning" >}}
+
 It is very easy to create, read, modify, and destroy data with the rails
 console. Be sure to run commands exactly as listed.
+
+{{< /alert >}}
 
 The rails console is a valuable tool to help debug LDAP problems. It allows you to
 directly interact with the application by running commands and seeing how GitLab

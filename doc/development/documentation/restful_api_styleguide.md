@@ -1,8 +1,8 @@
 ---
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
-description: 'Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.'
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: Writing styles, markup, formatting, and other standards for the GitLab RESTful APIs.
 title: Documenting REST API resources
 ---
 
@@ -242,10 +242,13 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 The following sections include a set of [cURL](https://curl.se/) examples
 you can use in the API documentation.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not use information for real users, URLs, or tokens. For documentation, refer to our
 relevant style guide sections on [Fake user information](styleguide/_index.md#fake-user-information),
 [Fake URLs](styleguide/_index.md#fake-urls), and [Fake tokens](styleguide/_index.md#fake-tokens).
+
+{{< /alert >}}
 
 ### Simple cURL command
 

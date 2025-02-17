@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project topics
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Topics are labels that you can assign to projects to help you organize and find them.
 A topic is typically a short name that describes the content or purpose of a project.
@@ -17,10 +20,13 @@ For example, you can create and assign the topics `python` and `hackathon` to al
 
 Topics assigned to a project are displayed in the **Project overview** and [**Projects**](working_with_projects.md#view-all-projects-for-the-instance) lists, below the project information description.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only users with access to the project can see the topics assigned to that project,
 but everyone (including unauthenticated users) can see the topics available on the GitLab instance.
 Do not include sensitive information in the name of a topic.
+
+{{< /alert >}}
 
 ## Explore topics
 
@@ -62,17 +68,17 @@ To subscribe to a topic:
 
 - From the **Explore topics** page:
 
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, expand the top-most chevron ({{< icon name="chevron-down" >}}).
   1. Select **Explore**.
   1. Select **Topics**.
   1. Select the topic you want to subscribe to.
-  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
+  1. In the upper-right corner, select **Subscribe to the new projects feed** ({{< icon name="rss" >}}).
 
 - From a project:
 
   1. On the left sidebar, select **Search or go to** and find your project.
   1. In the **Project overview** page, from the **Topics** list select the topic you want to subscribe to.
-  1. In the upper-right corner, select **Subscribe to the new projects feed** (**{rss}**).
+  1. In the upper-right corner, select **Subscribe to the new projects feed** ({{< icon name="rss" >}}).
 
 The results are displayed as an RSS feed in Atom format.
 The URL of the result contains a feed token and the list of projects that have the topic. You can add this URL to your feed reader.

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Akismet
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab uses [Akismet](https://akismet.com/) to prevent the creation of
 spam issues on public projects. Issues created through the web UI or the API can be submitted to
@@ -19,17 +22,23 @@ Detected spam is rejected, and an entry is added in the **Spam log** section of 
 
 Privacy note: GitLab submits the user's IP and user agent to Akismet.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab submits all issues to Akismet.
+
+{{< /alert >}}
 
 Akismet configuration is available to users on GitLab Self-Managed. Akismet is already enabled on
 GitLab SaaS (GitLab.com), where its configuration and management are handled by GitLab Inc.
 
 ## Configure Akismet
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To use Akismet:
 
@@ -48,9 +57,12 @@ To use Akismet:
 
 ## Train the Akismet filter
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To better differentiate between spam and ham, you can train the Akismet
 filter whenever there is a false positive or false negative.

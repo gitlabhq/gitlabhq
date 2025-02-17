@@ -1,20 +1,27 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Manage projects
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Most work in GitLab is done in a [project](_index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
 
 ## Project overview
 
-> - Project creation date [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19452) in GitLab 16.10.
+{{< history >}}
+
+- Project creation date [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19452) in GitLab 16.10.
+
+{{< /history >}}
 
 When you select a project, the **Project overview** page shows the project contents:
 
@@ -50,21 +57,28 @@ For users without permission to view the project's code, the overview page shows
 
 ### Access a project by using the project ID
 
-> - Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+{{< history >}}
+
+- Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
+{{< /history >}}
 
 You can access a project by using its ID instead of its name at `https://gitlab.example.com/projects/<id>`.
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`,
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
 
-NOTE:
+{{< alert type="note" >}}
+
 In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>` for this endpoint.
+
+{{< /alert >}}
 
 You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/_index.md).
 
 To copy the project ID:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy project ID**.
 
 ## View all projects for the instance
@@ -81,10 +95,17 @@ If you are not authenticated, the list shows public projects only.
 
 ## View projects you have contributed to
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 The **Contributed** tab displays projects where you have:
 
@@ -103,7 +124,11 @@ To view projects you have contributed to:
 
 ## View projects you are a member of
 
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Yours" to "Member" in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+{{< history >}}
+
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Yours" to "Member" in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+
+{{< /history >}}
 
 To view projects you are a member of:
 
@@ -111,8 +136,11 @@ To view projects you are a member of:
 1. Select **View all my projects**.
 1. Select the **Yours** tab.
 
-NOTE:
+{{< alert type="note" >}}
+
 This tab appears as **Member** when the `your_work_projects_vue` feature flag is enabled.
+
+{{< /alert >}}
 
 ## View personal projects
 
@@ -217,8 +245,12 @@ To star a project:
 
 ## Delete a project
 
-> - Default deletion behavior for projects on the Premium and Ultimate tier changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0.
-> - Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+{{< history >}}
+
+- Default deletion behavior for projects on the Premium and Ultimate tier changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0.
+- Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+{{< /history >}}
 
 You can mark a project to be deleted.
 After you delete a project:
@@ -245,13 +277,20 @@ You can also [delete projects using the Rails console](troubleshooting.md#delete
 
 ### Delayed project deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
-> - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
-> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
+- [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
+- Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -269,16 +308,26 @@ and use the Rails console to
 If the user who scheduled the project deletion loses access to the project (for example, by leaving the project, having their role downgraded, or being banned from the project) before the deletion occurs,
 the deletion job will instead restore and unarchive the project, so the project will no longer be scheduled for deletion.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
+
+   {{< /alert >}}
 
 ### Delete a project immediately
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Option to delete projects immediately from the **Admin** area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Option to delete projects immediately from the **Admin** area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+
+{{< /history >}}
 
 If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
 
@@ -300,11 +349,18 @@ To immediately delete a project marked for deletion:
 
 ### View projects pending deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
+
+{{< /history >}}
 
 To view a list of all projects that are pending deletion:
 
@@ -312,8 +368,11 @@ To view a list of all projects that are pending deletion:
 1. Select **View all my projects**.
 1. Select the **Pending deletion** tab.
 
-NOTE:
+{{< alert type="note" >}}
+
 This tab appears as **Inactive** when the `your_work_projects_vue` feature flag is enabled.
+
+{{< /alert >}}
 
 Each project in the list shows:
 
@@ -324,9 +383,12 @@ Each project in the list shows:
 
 ## Restore a project
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -342,7 +404,11 @@ To restore a project marked for deletion:
 
 ## Archive a project
 
-> - Pages removal [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343109) in GitLab 17.5.
+{{< history >}}
+
+- Pages removal [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343109) in GitLab 17.5.
+
+{{< /history >}}
 
 When you archive a project, some features become read-only.
 These features are still accessible, but not writable.
@@ -443,8 +509,12 @@ You can sort projects by:
 
 ### Filter projects by language
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385465) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `project_language_search`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110956) in GitLab 15.9. Feature flag `project_language_search` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385465) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `project_language_search`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110956) in GitLab 15.9. Feature flag `project_language_search` removed.
+
+{{< /history >}}
 
 You can filter projects by the programming language they use. To do this:
 
@@ -477,9 +547,12 @@ Prerequisites:
 
 - You must be an administrator or have the Maintainer or Owner role for the project.
 
-NOTE:
+{{< alert type="note" >}}
+
 When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
 [redirects when renaming repositories](repository/_index.md#repository-path-changes).
+
+{{< /alert >}}
 
 To rename a repository:
 
@@ -491,7 +564,11 @@ To rename a repository:
 
 ## Leave a project
 
-> - The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+{{< history >}}
+
+- The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
+{{< /history >}}
 
 When you leave a project:
 
@@ -507,14 +584,17 @@ Prerequisites:
 To leave a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave project**, then **Leave project** again.
 
 ## Add a compliance framework to a project
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can add compliance frameworks to projects in a group that has a [compliance framework](../group/compliance_frameworks.md).
 
@@ -536,9 +616,12 @@ Prerequisites:
 
 ## Project aliases
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab repositories are usually accessed with a namespace and a project name. When migrating
 frequently accessed repositories to GitLab, however, you can use project aliases to access those

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Upgrading Linux package instances
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Upgrading Linux package instances to a later version of GitLab requires several steps, many specific to Linux package
 installations.
@@ -95,9 +98,12 @@ sudo dnf install gitlab-ee
 sudo zypper install gitlab-ee
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 For the GitLab Community Edition, replace `gitlab-ee` with
 `gitlab-ce`.
+
+{{< /alert >}}
 
 #### Upgrade to a specific version
 
@@ -151,9 +157,12 @@ or upgrade command:
    sudo zypper install gitlab-ee=<version>-ee.0.sles12
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 For the GitLab Community Edition, replace `ee` with
 `ce`.
+
+{{< /alert >}}
 
 ### By using a downloaded package
 
@@ -188,8 +197,11 @@ To download and install or upgrade GitLab:
    zypper install <package_name>
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 For the GitLab Community Edition, replace `gitlab-ee` with `gitlab-ce`.
+
+{{< /alert >}}
 
 ## Upgrade the product documentation (optional)
 

@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use protected tags in Git to control who can create tags, and prevent accidental tag updates or deletion."
+description: Use protected tags in Git to control who can create tags, and prevent accidental tag updates or deletion.
 title: Protected tags
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Protected [tags](repository/tags/_index.md):
 
@@ -22,8 +25,11 @@ Each rule allows you to match either:
 
 This feature evolved out of [protected branches](repository/branches/protected.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 To create or delete a protected tag, you must be in the **Allowed to create or delete** list for that protected tag.
+
+{{< /alert >}}
 
 ## Configuring protected tags
 
@@ -42,9 +48,12 @@ Prerequisites:
    1. Select **Create wildcard**.
 1. In **Allowed to create** , select roles that may create protected tags.
 
-   NOTE:
-   In GitLab Premium and Ultimate, you can also add groups or individual users
+   {{< alert type="note" >}}
+
+In GitLab Premium and Ultimate, you can also add groups or individual users
    to **Allowed to create**.
+
+   {{< /alert >}}
 
 1. Select **Protect**.
 
@@ -108,9 +117,12 @@ graph LR
 To grant access to **Subgroup Y** members for **Project A**, you must share the project with the subgroup.
 Adding the subgroup directly to the protected tag settings is not effective and isn't applicable to subgroup members.
 
-NOTE:
+{{< alert type="note" >}}
+
 For a group to have protected tag permissions, the project must be directly shared with the group.
 Inherited project membership from parent groups is not sufficient for protected tag permissions.
+
+{{< /alert >}}
 
 ## Wildcard protected tags
 
@@ -158,7 +170,11 @@ Users can still create branches, but not tags, with the protected names.
 
 ## Allow deploy keys to create protected tags
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325415) in GitLab 15.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325415) in GitLab 15.11.
+
+{{< /history >}}
 
 You can permit a [deploy key](deploy_keys/_index.md) to create protected tags.
 
@@ -205,7 +221,7 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Tags**.
-1. Next to the tag you want to delete, select **Delete** (**{remove}**).
+1. Next to the tag you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.
 
 Protected tags can only be deleted by using GitLab either from the UI or API.

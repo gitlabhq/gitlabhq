@@ -7,16 +7,26 @@ title: Moderate users
 
 If you are assigned the Owner role for a group, you can [approve](manage.md#user-cap-for-groups), ban, or automatically remove dormant members.
 
-NOTE:
+{{< alert type="note" >}}
+
 This topic is specifically related to user moderation in groups. For information related to GitLab Self-Managed, see the [administration documentation](../../administration/moderate_users.md).
+
+{{< /alert >}}
 
 ## Ban and unban users
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+- Tier: Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+
+{{< /history >}}
 
 A group Owner can moderate user access by banning and unbanning users.
 You should ban a user when you want to block them from the group.
@@ -41,7 +51,7 @@ To manually ban a user:
 
 1. Go to the top-level group.
 1. On the left sidebar, select **Manage > Members**.
-1. Next to the member you want to ban, select the vertical ellipsis (**{ellipsis_v}**).
+1. Next to the member you want to ban, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. From the dropdown list, select **Ban member**.
 
 ### Unban a user
@@ -64,18 +74,24 @@ To unban a user:
 
 ## Automatically remove dormant members
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461339) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `group_remove_dormant_members`. Disabled by default.
 > [Released](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178851) as a [beta](../../policy/development_stages_support.md#beta) feature in GitLab 17.9.
 
-FLAG:
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -88,8 +104,11 @@ The following actions count as activity:
 - Visiting pages in GitLab, such as dashboards, projects, issues, merge requests, or settings.
 - Using the REST or GraphQL API in the scope of the group.
 
-NOTE:
+{{< alert type="note" >}}
+
 Activity has not been recorded for members added before 2025-01-22. These members will not be removed until 2025-04-22, even if they have been dormant for over 90 days.
+
+{{< /alert >}}
 
 To turn on automatic dormant member removal:
 

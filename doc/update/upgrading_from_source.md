@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Upgrading self-compiled instances
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Upgrading self-compiled instances to a later version of GitLab requires several steps, many specific to self-compiled
 installations.
@@ -162,8 +165,11 @@ than what you are running. You may also have to enable some
 extensions. For more information, see the
 [PostgreSQL requirements](../install/requirements.md#postgresql)
 
-WARNING:
+{{< alert type="warning" >}}
+
 GitLab 17.0 requires PostgreSQL 14. GitLab 17.5 is compatible with up to PostgreSQL 16.
+
+{{< /alert >}}
 
 To upgrade PostgreSQL, refer to its [documentation](https://www.postgresql.org/docs/11/upgrading.html).
 
@@ -225,7 +231,11 @@ There might be new configuration options available for
 
 #### New configuration for `database.yml`
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119139) in GitLab 16.0 to have `ci:` section in `config/database.yml.postgresql`.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119139) in GitLab 16.0 to have `ci:` section in `config/database.yml.postgresql`.
+
+{{< /history >}}
 
 There might be new configuration options available for
 [`database.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database.yml.postgresql).

@@ -34,10 +34,13 @@ own refs and configuration. Objects in A that are not in B remain in A. For this
 configuration to work, **objects must not be deleted from repository B** because
 repository A might need them.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not run `git prune` or `git gc` in object pool repositories, which are
 stored in the `@pools` directory. This can cause data loss in the regular
 repositories that depend on the object pool.
+
+{{< /alert >}}
 
 The danger lies in `git prune`, and `git gc` calls `git prune`. The
 problem is that `git prune`, when running in a pool repository, cannot

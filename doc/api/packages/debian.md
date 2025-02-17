@@ -5,27 +5,36 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Debian API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
 This is the API documentation for [Debian](../../user/packages/debian_repository/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the Debian related package clients such as [dput](https://manpages.debian.org/stable/dput-ng/dput.1.en.html)
 and [apt-get](https://manpages.debian.org/stable/apt/apt-get.8.en.html),
 and is generally not meant for manual consumption. This API is under development and is not ready
 for production use due to limited functionality.
 
+{{< /alert >}}
+
 For instructions on how to upload and install Debian packages from the GitLab
 package registry, see the [Debian registry documentation](../../user/packages/debian_repository/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See the [Debian registry documentation](../../user/packages/debian_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## Enable the Debian API
 
@@ -47,7 +56,11 @@ See [Authenticate to the Debian Package Repositories](../../user/packages/debian
 
 ## Upload a package file
 
-> - Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+{{< history >}}
+
+- Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+
+{{< /history >}}
 
 Upload a Debian package file:
 
@@ -246,7 +259,11 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a packages index by hash
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+
+{{< /history >}}
 
 Download a packages index by hash.
 
@@ -277,7 +294,11 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a Debian Installer packages index
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+
+{{< /history >}}
 
 Download a Debian Installer packages index.
 
@@ -307,7 +328,11 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a Debian Installer packages index by hash
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+
+{{< /history >}}
 
 Download a Debian Installer packages index by hash.
 
@@ -337,7 +362,11 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a source packages index
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+
+{{< /history >}}
 
 Download a source packages index.
 
@@ -366,7 +395,11 @@ This writes the downloaded file using the remote filename in the current directo
 
 ## Download a source packages index by hash
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+
+{{< /history >}}
 
 Download a source packages index by hash.
 

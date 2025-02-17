@@ -5,14 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure a new **secondary** site
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
 If not, [complete all prior stages](../setup/_index.md#using-linux-package-installations) before proceeding.
+
+{{< /alert >}}
 
 The basic steps of configuring a **secondary** site are to:
 
@@ -29,10 +35,13 @@ Prerequisites for **both primary and secondary sites**:
 - [Set up the database replication](../setup/database.md)
 - [Configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md)
 
-NOTE:
+{{< alert type="note" >}}
+
 **Do not** set up any custom authentication for the **secondary** site. This is handled by the **primary** site.
 Any change that requires access to the **Admin area** needs to be done in the
 **primary** site because the **secondary** site is a read-only replica.
+
+{{< /alert >}}
 
 ## Step 1. Manually replicate secret GitLab values
 
@@ -170,8 +179,11 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    for file in <ssh_host_key_path>/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
    ```
 
-   NOTE:
-   The output for private keys and public keys command should generate the same fingerprint.
+   {{< alert type="note" >}}
+
+The output for private keys and public keys command should generate the same fingerprint.
+
+   {{< /alert >}}
 
 1. Restart either `sshd` for OpenSSH or the `gitlab-sshd` service on **each Rails node on your secondary** site:
 

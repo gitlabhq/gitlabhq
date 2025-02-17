@@ -34,7 +34,7 @@ First, create a blank project where you can create your CI/CD pipeline and runne
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. The name must start with a lowercase or uppercase letter (`a-zA-Z`), digit (`0-9`), emoji, or underscore (`_`). It can also contain dots (`.`), pluses (`+`), dashes (`-`), or spaces.
@@ -54,7 +54,7 @@ In this file, you define:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Project overview**.
-1. Select the plus icon (**{plus}**), then select **New file**.
+1. Select the plus icon ({{< icon name="plus" >}}), then select **New file**.
 1. In the **Filename** field, enter `.gitlab-ci.yml`.
 1. In the large text box, paste this sample configuration:
 

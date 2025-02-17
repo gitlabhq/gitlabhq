@@ -2,20 +2,30 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How the GitLab UI helps you track merge requests from creation to merging."
-title: "Tutorial: Understand your merge requests on the Merge requests homepage"
+description: How the GitLab UI helps you track merge requests from creation to merging.
+title: 'Tutorial: Understand your merge requests on the Merge requests homepage'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13448) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `merge_request_dashboard`. Disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480854) on GitLab.com in GitLab 17.9.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13448) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `merge_request_dashboard`. Disabled by default.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480854) on GitLab.com in GitLab 17.9.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 This tutorial introduces you to the new user interface for managing merge requests.
 
@@ -48,9 +58,9 @@ GitLab shows the total number of **Active** merge requests on the left sidebar o
 
 ![The top left area of the ](img/homepage_totals_v17_9.png)
 
-- 31 open issues (**{issue-type-issue}**)
-- 8 active merge requests (**{merge-request-open}**)
-- 29 to-do items (**{todo-done}**)
+- 31 open issues ({{< icon name="issue-type-issue" >}})
+- 8 active merge requests ({{< icon name="merge-request-open" >}})
+- 29 to-do items ({{< icon name="todo-done" >}})
 
 ## The review process for merge requests
 

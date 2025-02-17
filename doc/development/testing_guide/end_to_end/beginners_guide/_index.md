@@ -33,8 +33,11 @@ For information about the distribution of tests per level in GitLab, see [Testin
 - Review how often the feature changes. Stable features that don't change very often might not be worth covering with end-to-end tests if they are already covered in lower level tests.
 - Finally, discuss the proposed test with the developers involved in implementing the feature and the lower-level tests.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Check the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) coverage project for previously written tests for this feature. To analyze code coverage, you must understand which application files implement specific features.
+
+{{< /alert >}}
 
 In this tutorial we're writing a login end-to-end test, even though it has been sufficiently covered by lower-level testing, because it's the first step for most end-to-end flows, and is easiest to understand.
 
@@ -54,8 +57,11 @@ In the first part of this tutorial we are testing login, which is owned by the M
 
 See the [`RSpec.describe` outer block](#the-outer-rspecdescribe-block)
 
-WARNING:
+{{< alert type="warning" >}}
+
 The outer `context` [was deprecated](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/550) in `13.2` in adherence to RSpec 4.0 specifications. Use `RSpec.describe` instead.
+
+{{< /alert >}}
 
 ### The outer `RSpec.describe` block
 
@@ -149,8 +155,11 @@ module QA
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 For more information on Flows, see [Flows](flows.md)
+
+{{< /alert >}}
 
 After [running the spec](#run-the-spec), our test should login and end; then we should answer the question "What do we test?"
 
@@ -331,8 +340,11 @@ Before submitting the test for code review, there are a few housecleaning tasks 
 1. Ensure that the relevant [RSpec metadata](../best_practices/rspec_metadata_tests.md) are added to the spec.
 1. Ensure the page object elements are named according to the [recommended naming convention](../style_guide.md#element-naming-convention).
 
-NOTE:
+{{< alert type="note" >}}
+
 For more information, see [End-to-end testing best practices](../best_practices/_index.md) and [End-to-end testing style guide](../style_guide.md).
+
+{{< /alert >}}
 
 ## End-to-end test merge request template
 

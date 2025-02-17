@@ -1,20 +1,26 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
 title: DAST browser-based analyzer
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9023) in GitLab 15.7 (GitLab DAST v3.0.50).
 
-WARNING:
+{{< alert type="warning" >}}
+
 The DAST version 4 browser-based analyzer is replaced by DAST version 5 in GitLab 17.0.
 For instructions on how to migrate to DAST version 5, see the [migration guide](../browser_based_4_to_5_migration_guide.md).
+
+{{< /alert >}}
 
 Browser-based DAST helps you identify security weaknesses (CWEs) in your web applications. After you
 deploy your web application, it becomes exposed to new types of attacks, many of which cannot be
@@ -28,10 +34,13 @@ deployed environments.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Dynamic Application Security Testing (DAST)](https://www.youtube.com/watch?v=nbeDUoLZJTo).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not run DAST scans against a production server. Not only can it perform *any* function that a
 user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
 modification or loss of production data. Only run DAST scans against a test server.
+
+{{< /alert >}}
 
 The DAST browser-based analyzer was built by GitLab to scan modern-day web applications for
 vulnerabilities. Scans run in a browser to optimize testing applications heavily dependent on

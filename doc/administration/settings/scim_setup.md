@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure SCIM for GitLab Self-Managed
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8902) in GitLab 15.8.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8902) in GitLab 15.8.
+
+{{< /history >}}
 
 You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
 
@@ -43,8 +50,11 @@ You can configure the following as an identity provider:
 - [Okta](#configure-okta).
 - [Microsoft Entra ID (formerly Azure Active Directory)](#configure-microsoft-entra-id-formerly-azure-active-directory)
 
-NOTE:
+{{< alert type="note" >}}
+
 Other identity providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
+
+{{< /alert >}}
 
 ### Configure Okta
 
@@ -84,7 +94,11 @@ To configure Okta for SCIM:
 
 ### Configure Microsoft Entra ID (formerly Azure Active Directory)
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143146) to Microsoft Entra ID terminology in GitLab 16.10.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143146) to Microsoft Entra ID terminology in GitLab 16.10.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -95,9 +109,12 @@ The SAML application created during [single sign-on](../../integration/saml.md) 
 [Azure Active Directory](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](../../user/group/saml_sso/example_saml_config.md#scim-mapping).
 
-NOTE:
+{{< alert type="note" >}}
+
 You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
 and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
+
+{{< /alert >}}
 
 To configure Microsoft Entra ID, you configure:
 
@@ -132,8 +149,11 @@ Under the **Mappings** section, first provision the groups:
    SCIM group provisioning is not supported in GitLab. Leaving group provisioning enabled does not break the SCIM user provisioning, but it causes errors in the
    Entra ID SCIM provisioning log that might be confusing and misleading.
 
-   NOTE:
-   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
+   {{< alert type="note" >}}
+
+Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
+
+   {{< /alert >}}
 
 1. Select **Save**.
 
@@ -161,9 +181,12 @@ Next, provision the users:
 
 ##### Configure attribute mappings
 
-NOTE:
+{{< alert type="note" >}}
+
 While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
 your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
+
+{{< /alert >}}
 
 While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
 attribute mappings. For an example, see [example configuration](../../user/group/saml_sso/example_saml_config.md#scim-mapping).
@@ -214,9 +237,12 @@ Under the **Settings** section:
 
 After you have configured the mappings and the settings, return to the app overview page and select **Start provisioning** to start automatic SCIM provisioning of users in GitLab.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Once synchronized, changing the field mapped to `id` and `externalId` might cause errors. These include
 provisioning errors, duplicate users, and might prevent existing users from accessing the GitLab group.
+
+{{< /alert >}}
 
 ## Remove access
 
@@ -228,8 +254,12 @@ To update the user SCIM identity, use the
 
 ### Reactivate access
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
+
+{{< /history >}}
 
 After a user is removed or deactivated through SCIM, you can reactivate that user by
 adding them to the SCIM identity provider.

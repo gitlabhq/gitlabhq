@@ -183,5 +183,8 @@ To reveal existing RuboCop exceptions in the code that have been excluded via
 
 This allows you to reveal existing RuboCop exceptions during your daily work cycle and fix them along the way.
 
-NOTE:
+{{< alert type="note" >}}
+
 Define `Include`s and permanent `Exclude`s in `.rubocop.yml` instead of `.rubocop_todo/**/*.yml`.
+
+{{< /alert >}}

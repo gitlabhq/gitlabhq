@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: PyPI packages in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The Python Package Index (PyPI) is the official third-party software repository for Python.
 Use the GitLab PyPI package registry to publish and share Python packages in your GitLab projects,
@@ -44,9 +47,9 @@ To authenticate with a GitLab token:
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle With a personal access token
+{{< tab title="With a personal access token" >}}
 
 ```yaml
 run:
@@ -60,7 +63,9 @@ run:
     - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
-:::TabTitle With a deploy token
+{{< /tab >}}
+
+{{< tab title="With a deploy token" >}}
 
 ```yaml
 run:
@@ -74,7 +79,9 @@ run:
     - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
-:::TabTitle With a CI/CD job token
+{{< /tab >}}
+
+{{< tab title="With a CI/CD job token" >}}
 
 ```yaml
 run:
@@ -88,7 +95,9 @@ run:
     - python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Authenticate for a group
 
@@ -171,9 +180,12 @@ When a PyPI package is not found in the package registry, the request is forward
 
 Administrators can disable this behavior in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 When you use the `--index-url` option, do not specify the port if it is a default
 port. `http` URLs default to 80, and `https` URLs default to 443.
+
+{{< /alert >}}
 
 ### Install from a project
 

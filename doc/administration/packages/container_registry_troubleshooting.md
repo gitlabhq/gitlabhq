@@ -125,9 +125,9 @@ level=error msg="response completed with error" err.code=unknown err.detail="une
 To resolve the error specify a `chunksize` value in the Registry configuration.
 Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -144,7 +144,9 @@ Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yml`:
 
@@ -159,7 +161,9 @@ Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Supporting older Docker clients
 
@@ -170,9 +174,9 @@ experience an error pushing images. See
 
 You can add a configuration option for backwards compatibility.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -182,7 +186,9 @@ You can add a configuration option for backwards compatibility.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit the YAML configuration file you created when you deployed the registry. Add the following snippet:
 
@@ -194,7 +200,9 @@ You can add a configuration option for backwards compatibility.
 
 1. Restart the registry for the changes to take affect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Docker connection error
 
@@ -221,9 +229,9 @@ For more information, see [Docker push through NGINX proxy fails trying to send 
 
 To resolve this issue, update your NGINX configuration to enable relative URLs in the registry:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -235,7 +243,9 @@ To resolve this issue, update your NGINX configuration to enable relative URLs i
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit the YAML configuration file you created when you deployed the registry. Add the following snippet:
 
@@ -246,7 +256,9 @@ To resolve this issue, update your NGINX configuration to enable relative URLs i
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-:::TabTitle Docker Compose
+{{< /tab >}}
+
+{{< tab title="Docker Compose" >}}
 
 1. Edit your `docker-compose.yaml` file:
 
@@ -271,15 +283,20 @@ To resolve this issue, update your NGINX configuration to enable relative URLs i
    sudo docker restart gitlab
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Enable the Registry debug server
 
 You can use the container registry debug server to diagnose problems. The debug endpoint can monitor metrics and health, as well as do profiling.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Sensitive information may be available from the debug endpoint.
 Access to the debug endpoint must be locked down in a production environment.
+
+{{< /alert >}}
 
 The optional debug server can be enabled by setting the registry debug address
 in your `gitlab.rb` configuration.

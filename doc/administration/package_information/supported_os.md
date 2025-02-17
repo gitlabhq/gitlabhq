@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Supported operating systems
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab officially supports long term support (LTS) versions of operating systems. Some operating systems, such as Ubuntu,
 have a clear distinction between LTS and non-LTS versions. However, there are other operating systems, openSUSE for
@@ -16,9 +19,12 @@ example, that don't follow the LTS concept.
 To avoid confusion, all the operating systems supported by GitLab are listed on the
 [installation page](https://about.gitlab.com/install/).
 
-NOTE:
+{{< alert type="note" >}}
+
 `amd64` and `x86_64` refer to the same 64-bit architecture. The names `arm64` and `aarch64` are also interchangeable
 and refer to the same architecture.
+
+{{< /alert >}}
 
 ## AlmaLinux
 
@@ -122,8 +128,11 @@ GitLab provides arm64/aarch64 packages for some supported operating systems.
 You can see if your operating system architecture is supported in the table
 above.
 
-WARNING:
+{{< alert type="warning" >}}
+
 [Known issues](https://gitlab.com/groups/gitlab-org/-/epics/4397) exist for running GitLab on ARM.
+
+{{< /alert >}}
 
 ## OS versions that are no longer supported
 
@@ -162,8 +171,11 @@ release for them can be found below:
 | Ubuntu 16.04     | [April 2021](https://ubuntu.com/info/release-end-of-life)                           | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.12&dist=ubuntu%2Fxenial) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.12&dist=ubuntu%2Fxenial) 13.12 |
 | Ubuntu 18.04     | [June 2023](https://ubuntu.com/info/release-end-of-life)                            | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_16.11&dist=ubuntu%2Fbionic) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=ggitlab-ee_16.11&dist=ubuntu%2Fbionic) 16.11 |
 
-NOTE:
+{{< alert type="note" >}}
+
 An exception to this deprecation policy is when we are unable to provide
 packages for the next version of the operating system. The most common reason
 for this our package repository provider, PackageCloud, not supporting newer
 versions and hence we can't upload packages to it.
+
+{{< /alert >}}

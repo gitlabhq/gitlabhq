@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use the Web Editor to create, upload, and edit text files directly in the GitLab UI."
+description: Use the Web Editor to create, upload, and edit text files directly in the GitLab UI.
 title: Web Editor
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use the Web Editor directly in the GitLab UI without
 cloning repositories locally or using the command line.
@@ -28,9 +31,12 @@ for Web Editor commits.
 
 For changes to multiple files, use the [Web IDE](../web_ide/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 To manage files in a [protected branch](branches/protected.md),
 you must have the appropriate [permissions](../../permissions.md).
+
+{{< /alert >}}
 
 ## Manage files
 
@@ -42,7 +48,7 @@ To create a text file in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the directory where you want to create the new file.
-1. Next to the directory name, select the plus icon (**{plus}**) > **New file**.
+1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **New file**.
 1. Next to the branch name, enter a filename and extension. For example, `my_file.md`.
 1. Add content to your file.
 1. Select **Commit changes**.
@@ -70,7 +76,7 @@ To create a text file from a template in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the directory where you want to create the new file.
-1. Next to the directory name, select the plus icon (**{plus}**) > **New file**.
+1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **New file**.
 1. In **Filename**, enter a name that GitLab provides a template for:
    - `.gitignore`
    - `.gitlab-ci.yml`
@@ -108,15 +114,22 @@ To edit a text file in the Web Editor:
      1. Select **Commit changes**.
      1. Fill out the fields and select **Create merge request**.
 
-NOTE:
+{{< alert type="note" >}}
+
 If someone edits and commits changes to the same file while your are editing,
 you can't commit your changes. The following error message is displayed:
 `Someone edited the file the same time you did. Please check out the file and
 make sure your change will not unintentionally remove theirs.`
 
+{{< /alert >}}
+
 #### Markdown preview
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
+
+{{< /history >}}
 
 To preview a Markdown file in the Web Editor:
 
@@ -163,7 +176,7 @@ To upload a file in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the directory where you want to upload the file.
-1. Next to the directory name, select the plus icon (**{plus}**) > **Upload file**.
+1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **Upload file**.
 1. Drop or upload the file your want to add.
 1. In the **Commit message** field, enter a reason for the commit.
 1. Choose one of the following options:
@@ -209,11 +222,14 @@ To delete a file in the Web Editor:
      1. Ensure the **Create a merge request for this change** checkbox is selected.
      1. Select **Commit changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 If someone edits and commits changes to the same file while your are editing,
 you can't commit your changes. The following error message is displayed:
 `Someone edited the file the same time you did. Please check out the file and
 make sure your change will not unintentionally remove theirs.`
+
+{{< /alert >}}
 
 ### Replace a file
 
@@ -257,7 +273,7 @@ To create a directory in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the directory where you want to create the new directory.
-1. Next to the directory name, select the plus icon (**{plus}**) > **New directory**.
+1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **New directory**.
 1. In the **Directory name** field, enter your directory name.
 1. In **Commit message**, enter a reason for the commit.
 1. Choose between the following options:
@@ -282,7 +298,7 @@ To create a directory in the Web Editor:
 To create a [branch](branches/_index.md) in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Next to the repository name, select the plus icon (**{plus}**) > **New branch**.
+1. Next to the repository name, select the plus icon ({{< icon name="plus" >}}) > **New branch**.
 1. Complete the fields.
 1. Select **Create branch**.
 
@@ -292,7 +308,7 @@ You can create [tags](tags/_index.md) to mark milestones such as
 production releases and release candidates. To create a tag in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Next to the repository name, select the plus icon (**{plus}**) > **New tag**.
+1. Next to the repository name, select the plus icon ({{< icon name="plus" >}}) > **New tag**.
 1. Complete the fields.
 1. Select **Create tag**.
 

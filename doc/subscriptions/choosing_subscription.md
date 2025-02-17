@@ -1,8 +1,8 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Options for accessing GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Options for accessing GitLab.
 title: GitLab plans
 ---
 
@@ -24,9 +24,12 @@ features for all users.
 On GitLab.com, you can apply a subscription to a top-level group
 namespace. You cannot apply a subscription to a personal namespace.
 
-NOTE:
+{{< alert type="note" >}}
+
 Subscriptions cannot be transferred between GitLab.com and GitLab Self-Managed.
 A new subscription must be purchased and applied as needed.
+
+{{< /alert >}}
 
 ## Choose a subscription tier
 

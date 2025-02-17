@@ -5,17 +5,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Web terminals (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 > - [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
-FLAG:
+{{< /alert >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `certificate_based_clusters`.
+
+{{< /alert >}}
 
 - Read more about the non-deprecated [Web Terminals accessible through the Web IDE](../../user/project/web_ide/_index.md).
 - Read more about the non-deprecated [Web Terminals accessible from a running CI job](../../ci/interactive_web_terminal/_index.md).
@@ -27,8 +36,11 @@ GitLab can store and use credentials for a Kubernetes cluster.
 GitLab uses these credentials to provide access to
 [web terminals](../../ci/environments/_index.md#web-terminals-deprecated) for environments.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only users with at least the [Maintainer role](../../user/permissions.md) for the project access web terminals.
+
+{{< /alert >}}
 
 ## How it works
 
@@ -65,11 +77,14 @@ detail below.
 
 ## Enabling and disabling terminal support
 
-NOTE:
+{{< alert type="note" >}}
+
 AWS Classic Load Balancers do not support web sockets.
 If you want web terminals to work, use AWS Network Load Balancers.
 Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
 for more information.
+
+{{< /alert >}}
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse must be configured to pass the `Connection` and `Upgrade` headers

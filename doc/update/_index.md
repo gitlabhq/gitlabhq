@@ -1,14 +1,17 @@
 ---
 stage: Systems
 group: Distribution
-description: Latest version instructions.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Latest version instructions.
 title: Upgrading GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Upgrading GitLab is a relatively straightforward process, but the complexity can increase based on:
 
@@ -63,14 +66,16 @@ To upgrade GitLab:
 Depending on the installation method and your GitLab version, there are multiple
 official ways to upgrade GitLab:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux packages (Omnibus)
+{{< tab title="Linux packages (Omnibus)" >}}
 
 As part of a GitLab upgrade, the [Linux package upgrade guide](package/_index.md) contains the specific steps to follow
 to upgrade a Linux package instance.
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 GitLab can be deployed into a Kubernetes cluster using Helm. For production deployments,
 the setup follows the [Cloud Native Hybrid](../administration/reference_architectures/_index.md#cloud-native-hybrid)
@@ -87,13 +92,17 @@ A full cloud-native deployment is [not supported](../administration/reference_ar
 for production. However, instructions on how to upgrade such an environment are in
 [a separate document](https://docs.gitlab.com/charts/installation/upgrade.html).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 GitLab provides official Docker images for both Community and Enterprise
 editions, and they are based on the Omnibus package. See how to
 [install GitLab using Docker](../install/docker/_index.md).
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 - [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md) -
   The guidelines for upgrading Community Edition and Enterprise Edition from source.
@@ -108,7 +117,9 @@ can still be found in the Git repository:
 - [Old upgrading guidelines for Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/tree/11-8-stable/doc/update)
 - [Old upgrading guidelines for Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/-/tree/11-8-stable-ee/doc/update)
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Pre-upgrade and post-upgrade checks
 
@@ -185,8 +196,11 @@ Below you can find some guides to help you change GitLab editions.
 
 ### Community to Enterprise Edition
 
-NOTE:
+{{< alert type="note" >}}
+
 The following guides are for subscribers of the Enterprise Edition only.
+
+{{< /alert >}}
 
 If you wish to upgrade your GitLab installation from Community to Enterprise
 Edition, follow the guides below based on the installation method:

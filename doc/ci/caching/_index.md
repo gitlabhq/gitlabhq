@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Caching in GitLab CI/CD
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A cache is one or more files a job downloads and saves. Subsequent jobs that use
 the same cache don't have to download the files again, so they execute more quickly.
@@ -98,7 +101,11 @@ the global fallback cache is fetched every time a cache is not found.
 
 ### Per-cache fallback keys
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110467) in GitLab 16.0
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110467) in GitLab 16.0
+
+{{< /history >}}
 
 Each cache entry supports up to five fallback keys with the [`fallback_keys` keyword](../yaml/_index.md#cachefallback_keys).
 When a job does not find a cache key, the job attempts to retrieve a fallback cache instead.
@@ -140,7 +147,11 @@ Fallback keys follow the same processing logic as `cache:key`:
 
 ### Global fallback key
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
+
+{{< /history >}}
 
 You can use the `$CI_COMMIT_REF_SLUG` [predefined variable](../variables/predefined_variables.md)
 to specify your [`cache:key`](../yaml/_index.md#cachekey). For example, if your
@@ -264,7 +275,11 @@ cache:
 
 ### Use a variable to control a job's cache policy
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371480) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371480) in GitLab 16.1.
+
+{{< /history >}}
 
 To reduce duplication of jobs where the only difference is the pull policy, you can use a [CI/CD variable](../variables/_index.md).
 
@@ -512,7 +527,11 @@ be overwritten because caches are restored before artifacts.
 
 #### Cache key names
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0.
+
+{{< /history >}}
 
 A suffix is added to the cache key, with the exception of the [global fallback cache key](#global-fallback-key).
 
@@ -526,7 +545,11 @@ and `feature`, then the following table represents the resulting cache keys:
 
 ##### Use the same cache for all branches
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361643) in GitLab 15.0.
+
+{{< /history >}}
 
 If you do not want to use [cache key names](#cache-key-names),
 you can have all branches (protected and unprotected) use the same cache.
@@ -637,8 +660,11 @@ You can clear the cache in the GitLab UI:
 
 On the next commit, your CI/CD jobs use a new cache.
 
-NOTE:
+{{< alert type="note" >}}
+
 Each time you clear the cache manually, the [internal cache name](#where-the-caches-are-stored) is updated. The name uses the format `cache-<index>`, and the index increments by one. The old cache is not deleted. You can manually delete these files from the runner storage.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

@@ -10,11 +10,18 @@ For more information, see also [Sharing projects and groups](../project/members/
 
 ## Group push rules
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
+
+{{< /history >}}
 
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
@@ -39,8 +46,12 @@ The group's new subgroups have push rules set for them based on either:
 
 ## Restrict Git access protocols
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/365357) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365601) in GitLab 15.1.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/365357) in GitLab 16.0.
+
+{{< /history >}}
 
 You can set the permitted protocols used to access a group's repositories to either SSH, HTTPS, or both. This setting
 is disabled when the [instance setting](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols) is
@@ -56,9 +67,12 @@ To change the permitted Git access protocols for a group:
 
 ## Restrict group access by IP address
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To ensure only people from your organization can access particular resources, you can restrict access to groups by IP
 address. This top-level group setting applies to:
@@ -117,11 +131,18 @@ To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com
 
 ## Restrict group access by domain
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Support for restricting group memberships to groups with a subset of the allowed email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/354791) in GitLab 15.1.1
+
+{{< /history >}}
 
 You can define an email domain allowlist at the top-level namespace to restrict which users can
 access a group and its projects. A user's primary email domain must match an entry in the allowlist
@@ -148,10 +169,13 @@ You cannot restrict the most popular public email domains, such as:
 
 When you share a group, both the source and target namespaces must allow the domains of the members' email addresses.
 
-NOTE:
+{{< alert type="note" >}}
+
 Removing a domain from the **Restrict membership by email** list does not remove existing users with that domain from the group or its projects.
 Also, if you share a group or project with another group, the target group can add more email domains to its list that are not in the list of the source group.
 Hence, this feature does not ensure that the current members always conform to the **Restrict membership by email** list.
+
+{{< /alert >}}
 
 ## Prevent users from requesting access to a group
 
@@ -166,16 +190,22 @@ your group.
 
 ## Prevent project forking outside group
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 By default, projects in a group can be forked.
 However, you can prevent the projects in a group from being forked outside of the current top-level group.
 
-NOTE:
+{{< alert type="note" >}}
+
 Prevent forking outside the top-level group when possible to reduce potential avenues for bad actors.
 However, if you expect a lot of external collaboration, allowing forks outside the top-level group might be unavoidable.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -195,9 +225,12 @@ Existing forks are not removed.
 
 ## Prevent members from being added to projects in a group
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
@@ -227,11 +260,18 @@ After you lock the membership for a group:
 
 ## Manage group memberships with LDAP
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - Support for custom roles for users synced in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435229) in GitLab 17.2.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- Support for custom roles for users synced in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435229) in GitLab 17.2.
+
+{{< /history >}}
 
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that are associated with GitLab groups.
 
@@ -250,16 +290,22 @@ For example:
 
 For more information on the administration of LDAP and group sync, refer to the [main LDAP documentation](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
 
-NOTE:
+{{< alert type="note" >}}
+
 When you add LDAP group syncing, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
+
+{{< /alert >}}
 
 You can use a workaround to [manage project access through LDAP groups](../project/working_with_projects.md#manage-project-access-through-ldap-groups).
 
 ### Create group links with a CN
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To create group links with LDAP group CN:
 
@@ -275,9 +321,12 @@ To create group links with LDAP group CN:
 
 ### Create group links with a filter
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To create group links with an LDAP user filter:
 
@@ -289,9 +338,12 @@ To create group links with an LDAP user filter:
 
 ### Override user permissions
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
@@ -305,7 +357,7 @@ LDAP user permissions can be manually overridden by an administrator. To overrid
 1. Optional. If the user you want to edit is displayed as having inherited membership,
    [filter the subgroup to show direct members](_index.md#filter-a-group) before
    overriding LDAP user permissions.
-1. In the row for the user you are editing, select the pencil (**{pencil}**) icon.
+1. In the row for the user you are editing, select the pencil ({{< icon name="pencil" >}}) icon.
 1. Select **Edit permissions** in the dialog.
 
 Now you can edit the user's permissions from the **Members** page.

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Linked epics
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Linked epics are a bi-directional relationship between any two epics and appear in a block below
 the epic description. You can link epics in different groups.
@@ -99,7 +102,11 @@ When you link epics for planning:
 
 ## Add a linked epic
 
-> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
+{{< history >}}
+
+- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -110,7 +117,7 @@ Prerequisites:
 To link one epic to another:
 
 1. In the **Linked epics** section of an epic,
-   select the add linked epic button (**{plus}**).
+   select the add linked epic button ({{< icon name="plus" >}}).
 1. Select the relationship between the two epics. Either:
 
    - **relates to**
@@ -142,7 +149,11 @@ The linked epics are then displayed on the epic grouped by relationship.
 
 ## Remove a linked epic
 
-> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
+{{< history >}}
+
+- Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -150,7 +161,7 @@ Prerequisites:
 
 To remove a linked epic:
 
-- In the **Linked epics** section of an epic, next to each epic, select **Remove** (**{close}**).
+- In the **Linked epics** section of an epic, next to each epic, select **Remove** ({{< icon name="close" >}}).
 
 The relationship is removed from both epics.
 
@@ -165,7 +176,11 @@ If you try to close a blocked epic using the "Close epic" button, a confirmation
 
 ## When using the new look for epics
 
-> - Linking epics to issues, tasks, and OKRs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.5. Your administrator must have [enabled the new look for epics](epic_work_items.md).
+{{< history >}}
+
+- Linking epics to issues, tasks, and OKRs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.5. Your administrator must have [enabled the new look for epics](epic_work_items.md).
+
+{{< /history >}}
 
 <!-- When epics as work items are GA, integrate this and below sections with the ones above. -->
 
@@ -232,6 +247,6 @@ Prerequisites:
 
 To remove a linked item:
 
-- In the **Linked items** section of an epic, next to each item, select **Remove** (**{close}**).
+- In the **Linked items** section of an epic, next to each item, select **Remove** ({{< icon name="close" >}}).
 
 The relationship is removed from both items.

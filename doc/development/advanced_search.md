@@ -75,9 +75,12 @@ source of security bugs so pay close attention to them!
 
 ### Architecture
 
-NOTE:
+{{< alert type="note" >}}
+
 We are migrating away from this architecture pattern in
 [this epic](https://gitlab.com/groups/gitlab-org/-/epics/13873).
+
+{{< /alert >}}
 
 The traditional setup, provided by `elasticsearch-rails`, is to communicate through its internal proxy classes.
 Developers would write model-specific logic in a module for the model to include in (for example, `SnippetsSearch`).
@@ -391,8 +394,11 @@ New scopes must be added to the following constants:
 - `ALLOWED_SCOPES` in `Gitlab::Search::AbuseDetection`
 - `search_tab_ability_map` method in `Search::Navigation`. Override in the EE version if needed
 
-NOTE:
+{{< alert type="note" >}}
+
 Global search can be disabled for a scope. You can do the following changes for disabling global search:
+
+{{< /alert >}}
 
 1. Add an application setting named `global_search_SCOPE_enabled` that defaults to `true` under the `search` jsonb accessor in [`app/models/application_setting.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/application_setting.rb).
 1. Add an entry in JSON schema validator file [`app/validators/json_schemas/application_setting_search.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schemas/application_setting_search.json)
@@ -743,8 +749,11 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
 filter on `namespace_visibility_level` based on permissions user has for each group.
 
-NOTE:
+{{< alert type="note" >}}
+
 Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+
+{{< /alert >}}
 
 ###### global
 
@@ -914,8 +923,11 @@ Filtering is applied for:
 - membership for direct membership to groups and projects or shared membership through direct access to a group
 - any feature access levels passed through `features`
 
-NOTE:
+{{< alert type="note" >}}
+
 Examples are shown for a logged in user. The JSON may be different for users with authorizations, admins, external, or anonymous users
+
+{{< /alert >}}
 
 ###### global
 
@@ -1224,8 +1236,11 @@ Create the following MRs and have them reviewed by a member of the Global Search
 
 ## Zero-downtime reindexing with multiple indices
 
-NOTE:
+{{< alert type="note" >}}
+
 This is not applicable yet as multiple indices functionality is not fully implemented.
+
+{{< /alert >}}
 
 Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 

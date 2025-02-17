@@ -5,17 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Geo
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Geo is the solution for widely distributed development teams and for providing
 a warm-standby as part of a disaster recovery strategy. Geo is **not** an out of the box HA solution.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Geo undergoes significant changes from release to release. Upgrades are
 supported and [documented](#upgrading-geo), but you should ensure that you're
 using the right version of the documentation for your installation.
+
+{{< /alert >}}
 
 To make sure you're using the right version of the documentation, go to [the Geo page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/geo/_index.md) and choose the appropriate release from the **Switch branch/tag** dropdown list. For example, [`v15.7.6-ee`](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.7.6-ee/doc/administration/geo/_index.md).
 
@@ -216,16 +222,23 @@ The following table lists basic ports that must be open between the **primary** 
 
 See the full list of ports used by GitLab in [Package defaults](../package_information/defaults.md)
 
-NOTE:
+{{< alert type="note" >}}
+
 [Web terminal](../../ci/environments/_index.md#web-terminals-deprecated) support requires your load balancer to correctly handle WebSocket connections.
 When using HTTP or HTTPS proxying, your load balancer must be configured to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the [web terminal](../integration/terminal.md) integration guide for more details.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are only using `HTTPS` for external/internal URLs, it is not necessary to open port 80 in the firewall.
+{{< /alert >}}
 
 #### Internal URL
 
@@ -263,8 +276,11 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 
 ## Known issues
 
-WARNING:
+{{< alert type="warning" >}}
+
 These known issues reflect only the latest version of GitLab. If you are using an older version, additional issues might exist.
+
+{{< /alert >}}
 
 - Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). You cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).

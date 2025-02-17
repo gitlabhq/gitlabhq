@@ -11,8 +11,11 @@ linter to manage most of our JavaScript style guidelines.
 In addition to the style guidelines set by Airbnb, we also have a few specific rules
 listed below.
 
-NOTE:
+{{< alert type="note" >}}
+
 You can run ESLint locally by running `yarn run lint:eslint:all` or `yarn run lint:eslint $PATH_TO_FILE`.
+
+{{< /alert >}}
 
 ## Avoid `forEach`
 
@@ -121,8 +124,11 @@ things.map(parseInt);
 things.map(Number);
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If the String could represent a non-integer (a number that includes a decimal), **do not** use `parseInt`. Consider `Number` or `parseFloat` instead.
+
+{{< /alert >}}
 
 ## CSS Selectors - Use `js-` prefix
 

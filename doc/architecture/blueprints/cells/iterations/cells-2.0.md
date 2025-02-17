@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-2.0/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-2.0/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

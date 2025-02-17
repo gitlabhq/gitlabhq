@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: reCAPTCHA
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab leverages [reCAPTCHA](https://www.google.com/recaptcha/about/)
 to protect against spam and abuse. GitLab displays the CAPTCHA form on the sign-up page
@@ -31,8 +34,11 @@ To use reCAPTCHA, first create a site and private key.
    1. Open `app/services/spam/spam_verdict_service.rb`.
    1. Change the first line of the `#execute` method to `return CONDITIONAL_ALLOW`.
 
-NOTE:
+{{< alert type="note" >}}
+
 Make sure you are viewing an issuable in a project that is public. If you're working with an issue, the issue is public.
+
+{{< /alert >}}
 
 ## Enable reCAPTCHA for user logins using the HTTP header
 

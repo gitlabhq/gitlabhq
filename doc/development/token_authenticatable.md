@@ -2,7 +2,7 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-title: 'Using the `TokenAuthenticatable` concern'
+title: Using the `TokenAuthenticatable` concern
 ---
 
 The `TokenAuthenticatable` module is a concern that provides token-based authentication functionality for `ActiveRecord` models.
@@ -46,8 +46,11 @@ end
 - `digest: true`: Stores the token's digest in the database.
   The `token_field_digest` column needs to exist.
 
-NOTE:
+{{< alert type="note" >}}
+
 By default, tokens are stored as-is (not encrypted).
+
+{{< /alert >}}
 
 ### Other options
 

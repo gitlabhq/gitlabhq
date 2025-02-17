@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Feature flags
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 With feature flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
@@ -21,9 +24,12 @@ For an example of feature flags in action, see [Eliminating risk with feature fl
 For a click-through demo, see [Feature Flags](https://tech-marketing.gitlab.io/static-demos/feature-flags/feature-flags-html.html).
 <!-- Demo published on 2023-07-13 -->
 
-NOTE:
+{{< alert type="note" >}}
+
 To contribute to the development of the GitLab product, view
 [this feature flag content](../development/feature_flags/_index.md) instead.
+
+{{< /alert >}}
 
 ## How it works
 
@@ -51,7 +57,7 @@ To create and enable a feature flag:
    and **Environments** (defaults to all environments).
 1. Select **Create feature flag**.
 
-To change these settings, select **Edit** (**{pencil}**)
+To change these settings, select **Edit** ({{< icon name="pencil" >}})
 next to any feature flag in the list.
 
 ## Maximum number of feature flags
@@ -81,7 +87,7 @@ flag controls. GitLab feature flags can have multiple strategies, and the suppor
 
 Strategies can be added to feature flags when [creating a feature flag](#create-a-feature-flag),
 or by editing an existing feature flag after creation by navigating to **Deploy > Feature flags**
-and selecting **Edit** (**{pencil}**).
+and selecting **Edit** ({{< icon name="pencil" >}}).
 
 ### All users
 
@@ -113,8 +119,11 @@ The rollout percentage can be from 0% to 100%.
 
 Selecting a consistency based on User IDs functions the same as the [percent of Users](#percent-of-users) rollout.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Selecting **Random** provides inconsistent application behavior for individual users.
+
+{{< /alert >}}
 
 ### Percent of Users
 
@@ -131,9 +140,12 @@ but not anonymous users.
 [Percent rollout](#percent-rollout) with a consistency based on **User IDs** has the same
 behavior. We recommend using percent rollout because it's more flexible than percent of users
 
-WARNING:
+{{< alert type="warning" >}}
+
 If the percent of users strategy is selected, then the Unleash client **must** be given a user
 ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
+
+{{< /alert >}}
 
 ### User IDs
 
@@ -144,9 +156,12 @@ Enter user IDs as a comma-separated list of values (for example,
 `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on).
 User IDs are identifiers for your application users. They do not need to be GitLab users.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The Unleash client **must** be given a user ID for the feature to be enabled for
 target users. See the [Ruby example](#ruby-application-example) below.
+
+{{< /alert >}}
 
 ### User List
 
@@ -171,8 +186,8 @@ To create a user list:
 1. Enter a name for the list.
 1. Select **Create**.
 
-You can view a list's User IDs by selecting **Edit** (**{pencil}**) next to it.
-When viewing a list, you can rename it by selecting **Edit** (**{pencil}**).
+You can view a list's User IDs by selecting **Edit** ({{< icon name="pencil" >}}) next to it.
+When viewing a list, you can rename it by selecting **Edit** ({{< icon name="pencil" >}}).
 
 #### Add users to a user list
 
@@ -180,7 +195,7 @@ To add users to a user list:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Feature flags**.
-1. Select **Edit** (**{pencil}**) next to the list you want to add users to.
+1. Select **Edit** ({{< icon name="pencil" >}}) next to the list you want to add users to.
 1. Select **Add Users**.
 1. Enter the user IDs as a comma-separated list of values. For example,
    `user@example.com, user2@example.com`, or `username1,username2,username3`, and so on.
@@ -192,14 +207,17 @@ To remove users from a user list:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Feature flags**.
-1. Select **Edit** (**{pencil}**) next to the list you want to change.
-1. Select **Remove** (**{remove}**) next to the ID you want to remove.
+1. Select **Edit** ({{< icon name="pencil" >}}) next to the list you want to change.
+1. Select **Remove** ({{< icon name="remove" >}}) next to the ID you want to remove.
 
 ## Search for Code References
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To remove the feature flag from the code during cleanup, find any project references to it.
 
@@ -208,7 +226,7 @@ To search for code references of a feature flag:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Feature flags**.
 1. Edit the feature flag you want to remove.
-1. Select **More actions** (**{ellipsis_v}**).
+1. Select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Search code references**.
 
 ## Disable a feature flag for a specific environment
@@ -217,7 +235,7 @@ To disable a feature flag for a specific environment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Feature flags**.
-1. For the feature flag you want to disable, select **Edit** (**{pencil}**).
+1. For the feature flag you want to disable, select **Edit** ({{< icon name="pencil" >}}).
 1. To disable the flag:
    - For each strategy it applies to, under **Environments**, delete the environment.
 1. Select **Save changes**.
@@ -379,9 +397,12 @@ this to GitLab on behalf of the client, which means the client can't override it
 
 ## Feature flag related issues
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can link related issues to a feature flag. In the feature flag **Linked issues** section,
 select the `+` button and input the issue reference number or the full URL of the issue.

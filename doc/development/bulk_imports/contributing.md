@@ -13,8 +13,11 @@ At a high level, to add a new relation to the direct transfer importer, you must
 1. Add a label for the newly created relation to display in the UI.
 1. Ensure sufficient test coverage.
 
-NOTE:
+{{< alert type="note" >}}
+
 To mitigate the risk of introducing bugs and performance issues, newly added relations should be put behind a feature flag.
+
+{{< /alert >}}
 
 ## Export from source
 
@@ -43,9 +46,12 @@ For example, let's say we have a new `Project` association called `documents`. T
 
 #### Add it to `import_export.yml` file
 
-NOTE:
+{{< alert type="note" >}}
+
 Associations listed in this file are imported from top to bottom. If you have an association that is order-dependent, put the dependencies before the
 associations that require them. For example, documents must be imported before merge requests, otherwise they are not valid.
+
+{{< /alert >}}
 
 1. Add your association to `tree.project` within the `import_export.yml`.
 
@@ -63,9 +69,12 @@ associations that require them. For example, documents must be imported before m
         - :user
    ```
 
-   NOTE:
-   If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
+   {{< alert type="note" >}}
+
+If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
    and imported in Enterprise Edition instances of GitLab.
+
+   {{< /alert >}}
 
    If your association doesn't need to include any sub-relations, then this is enough. But if it needs more sub-relations to be included (for example, notes),
    you must list them out. Let's say documents can have notes (with award emojis on notes) and award emojis (on documents), which we want to migrate. In this
@@ -281,8 +290,11 @@ We specified:
 - `minimum_source_version: '16.11.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore
   so this pipeline only runs if source version is 16.11 or later.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a relation is deprecated and need only to run the pipeline up to a certain version, we can specify `maximum_source_version` attribute.
+
+{{< /alert >}}
 
 #### Covering a pipeline with tests
 

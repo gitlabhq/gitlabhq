@@ -1,8 +1,8 @@
 ---
 stage: Foundations
 group: Import and Integrate
-description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Programmatic interaction with GitLab.
 title: REST API authentication
 ---
 
@@ -40,9 +40,12 @@ status code of `401`:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Deploy tokens can't be used with the GitLab public API. For details, see
 [Deploy Tokens](../../user/project/deploy_tokens/_index.md).
+
+{{< /alert >}}
 
 ## OAuth 2.0 tokens
 
@@ -63,10 +66,13 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 
 Read more about [GitLab as an OAuth 2.0 provider](../oauth2.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 All OAuth access tokens are valid for two hours after they are created. You can use the
 `refresh_token` parameter to refresh tokens. See [OAuth 2.0 token](../oauth2.md) documentation for
 how to request a new access token using a refresh token.
+
+{{< /alert >}}
 
 ## Personal/project/group access tokens
 
@@ -141,9 +147,9 @@ either the `private_token` parameter or the `PRIVATE-TOKEN` header.
 
 By default, impersonation is enabled. To disable impersonation:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit the `/etc/gitlab/gitlab.rb` file:
 
@@ -154,7 +160,9 @@ By default, impersonation is enabled. To disable impersonation:
 1. Save the file, and then [reconfigure](../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit the `config/gitlab.yml` file:
 
@@ -166,7 +174,9 @@ By default, impersonation is enabled. To disable impersonation:
 1. Save the file, and then [restart](../../administration/restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To re-enable impersonation, remove this configuration and reconfigure GitLab (Linux package
 installations) or restart GitLab (self-compiled installations).

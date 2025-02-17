@@ -1,14 +1,17 @@
 ---
+type: concepts, howto
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: concepts, howto
 title: 'Tutorial: Use Fortanix Data Security Manager (DSM) with GitLab'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use Fortanix Data Security Manager (DSM) as your secrets manager for GitLab CI/CD pipelines.
 

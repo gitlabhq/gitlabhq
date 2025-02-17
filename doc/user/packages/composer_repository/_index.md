@@ -5,15 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Composer packages in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Composer package registry for GitLab is under development and isn't ready for production use due to
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6817) details the remaining
 work and timelines to make it production ready.
+
+{{< /alert >}}
 
 Publish [Composer](https://getcomposer.org/) packages in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -108,8 +114,11 @@ A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` temp
 1. Above the file list, select **Set up CI/CD**. If this button is not available, select **CI/CD Configuration** and then **Edit**.
 1. From the **Apply a template** list, select **Composer**.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not save unless you want to overwrite the existing CI/CD file.
+
+{{< /alert >}}
 
 ## Publishing packages with the same name or version
 
@@ -282,10 +291,13 @@ To install a package:
    composer config --unset gitlab-domains
    ```
 
-   NOTE:
-   On GitLab.com, Composer uses the GitLab token from `auth.json` as a private token by default.
+   {{< alert type="note" >}}
+
+On GitLab.com, Composer uses the GitLab token from `auth.json` as a private token by default.
    Without the `gitlab-domains` definition in `composer.json`, Composer uses the GitLab token
    as basic-auth, with the token as a username and a blank password. This results in a 401 error.
+
+   {{< /alert >}}
 
 1. With the `composer.json` and `auth.json` files configured, you can install the package by running:
 
@@ -299,11 +311,14 @@ To install a package:
    composer req <package-name>:<package-version>
    ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
 consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your access token
 stored in a [GitLab CI/CD variable](../../../ci/variables/_index.md) or in
 [HashiCorp Vault](../../../ci/secrets/_index.md).
+
+{{< /alert >}}
 
 ### Install from source
 
@@ -331,9 +346,13 @@ You can install from source by pulling the Git repository directly. To do so, ei
 
 #### SSH access
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`. Disabled by default.
-> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329246) GitLab 16.5.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135467) in GitLab 16.6. Feature flag `composer_use_ssh_source_urls` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`. Disabled by default.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329246) GitLab 16.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135467) in GitLab 16.6. Feature flag `composer_use_ssh_source_urls` removed.
+
+{{< /history >}}
 
 When you install from source, the `composer` configures an
 access to the project's Git repository.

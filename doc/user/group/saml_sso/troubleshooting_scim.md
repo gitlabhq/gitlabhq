@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting SCIM
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This section contains possible solutions for problems you might encounter.
 
@@ -82,10 +85,13 @@ To change the identifier values to match, you can do one of the following:
   section.
 - Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
 
-  WARNING:
+  {{< alert type="warning" >}}
+
   This resets all users' roles in the top-level group and subgroups to the [configured default membership role](_index.md#configure-gitlab).
 - Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
   `NameId` or SCIM `externalId`.
+
+  {{< /alert >}}
 
 You must not:
 
@@ -107,9 +113,12 @@ When the SCIM app changes:
 
 ## SCIM app returns `"User has already been taken","status":409` error
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
@@ -143,9 +152,12 @@ To resolve this issue, you can do either of the following:
 
 ## Search Rails logs for SCIM requests
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
 [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/#using-kibana). Use the following filters based

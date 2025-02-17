@@ -1,14 +1,17 @@
 ---
 stage: CI
 group: Runner
-description: Runner Fleet.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Runner Fleet.
 title: GitLab Runner fleet configuration and best practices with the Kubernetes executor
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 This section provides a set of best practices to successfully set up GitLab Runner.
 

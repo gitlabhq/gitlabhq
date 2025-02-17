@@ -328,38 +328,38 @@ The Scalability::Frameworks team is making object storage and uploads more easy 
 
 | File                                                    | CarrierWave usage                                                                | Categorized         |
 |---------------------------------------------------------|----------------------------------------------------------------------------------|---------------------|
-| `app/models/project.rb`                                 | `include Avatarable`                                                             | **{check-circle}** Yes  |
-| `app/models/projects/topic.rb`                          | `include Avatarable`                                                             | **{check-circle}** Yes  |
-| `app/models/group.rb`                                   | `include Avatarable`                                                             | **{check-circle}** Yes  |
-| `app/models/user.rb`                                    | `include Avatarable`                                                             | **{check-circle}** Yes  |
-| `app/models/terraform/state_version.rb`                 | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/ci/job_artifact.rb`                         | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/ci/pipeline_artifact.rb`                    | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/pages_deployment.rb`                        | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/lfs_object.rb`                              | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/dependency_proxy/blob.rb`                   | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/dependency_proxy/manifest.rb`               | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/packages/composer/cache_file.rb`            | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/packages/package_file.rb`                   | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
-| `app/models/concerns/packages/debian/component_file.rb` | `include FileStoreMounter`                                                       | **{check-circle}** Yes  |
+| `app/models/project.rb`                                 | `include Avatarable`                                                             | {{< icon name="check-circle" >}} Yes  |
+| `app/models/projects/topic.rb`                          | `include Avatarable`                                                             | {{< icon name="check-circle" >}} Yes  |
+| `app/models/group.rb`                                   | `include Avatarable`                                                             | {{< icon name="check-circle" >}} Yes  |
+| `app/models/user.rb`                                    | `include Avatarable`                                                             | {{< icon name="check-circle" >}} Yes  |
+| `app/models/terraform/state_version.rb`                 | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/ci/job_artifact.rb`                         | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/ci/pipeline_artifact.rb`                    | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/pages_deployment.rb`                        | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/lfs_object.rb`                              | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/dependency_proxy/blob.rb`                   | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/dependency_proxy/manifest.rb`               | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/packages/composer/cache_file.rb`            | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/packages/package_file.rb`                   | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/concerns/packages/debian/component_file.rb` | `include FileStoreMounter`                                                       | {{< icon name="check-circle" >}} Yes  |
 | `ee/app/models/issuable_metric_image.rb`                | `include FileStoreMounter`                                                       |                     |
 | `ee/app/models/vulnerabilities/remediation.rb`          | `include FileStoreMounter`                                                       |                     |
 | `ee/app/models/vulnerabilities/export.rb`               | `include FileStoreMounter`                                                       |                     |
-| `app/models/packages/debian/project_distribution.rb`    | `include Packages::Debian::Distribution`                                         | **{check-circle}** Yes  |
-| `app/models/packages/debian/group_distribution.rb`      | `include Packages::Debian::Distribution`                                         | **{check-circle}** Yes  |
-| `app/models/packages/debian/project_component_file.rb`  | `include Packages::Debian::ComponentFile`                                        | **{check-circle}** Yes  |
-| `app/models/packages/debian/group_component_file.rb`    | `include Packages::Debian::ComponentFile`                                        | **{check-circle}** Yes  |
-| `app/models/merge_request_diff.rb`                      | `mount_uploader :external_diff, ExternalDiffUploader`                            | **{check-circle}** Yes  |
-| `app/models/note.rb`                                    | `mount_uploader :attachment, AttachmentUploader`                                 | **{check-circle}** Yes  |
-| `app/models/appearance.rb`                              | `mount_uploader :logo,         AttachmentUploader`                               | **{check-circle}** Yes  |
-| `app/models/appearance.rb`                              | `mount_uploader :header_logo,  AttachmentUploader`                               | **{check-circle}** Yes  |
-| `app/models/appearance.rb`                              | `mount_uploader :favicon,      FaviconUploader`                                  | **{check-circle}** Yes  |
+| `app/models/packages/debian/project_distribution.rb`    | `include Packages::Debian::Distribution`                                         | {{< icon name="check-circle" >}} Yes  |
+| `app/models/packages/debian/group_distribution.rb`      | `include Packages::Debian::Distribution`                                         | {{< icon name="check-circle" >}} Yes  |
+| `app/models/packages/debian/project_component_file.rb`  | `include Packages::Debian::ComponentFile`                                        | {{< icon name="check-circle" >}} Yes  |
+| `app/models/packages/debian/group_component_file.rb`    | `include Packages::Debian::ComponentFile`                                        | {{< icon name="check-circle" >}} Yes  |
+| `app/models/merge_request_diff.rb`                      | `mount_uploader :external_diff, ExternalDiffUploader`                            | {{< icon name="check-circle" >}} Yes  |
+| `app/models/note.rb`                                    | `mount_uploader :attachment, AttachmentUploader`                                 | {{< icon name="check-circle" >}} Yes  |
+| `app/models/appearance.rb`                              | `mount_uploader :logo,         AttachmentUploader`                               | {{< icon name="check-circle" >}} Yes  |
+| `app/models/appearance.rb`                              | `mount_uploader :header_logo,  AttachmentUploader`                               | {{< icon name="check-circle" >}} Yes  |
+| `app/models/appearance.rb`                              | `mount_uploader :favicon,      FaviconUploader`                                  | {{< icon name="check-circle" >}} Yes  |
 | `app/models/project.rb`                                 | `mount_uploader :bfg_object_map, AttachmentUploader`                             |                     |
-| `app/models/import_export_upload.rb`                    | `mount_uploader :import_file, ImportExportUploader`                              | **{check-circle}** Yes  |
-| `app/models/import_export_upload.rb`                    | `mount_uploader :export_file, ImportExportUploader`                              | **{check-circle}** Yes  |
+| `app/models/import_export_upload.rb`                    | `mount_uploader :import_file, ImportExportUploader`                              | {{< icon name="check-circle" >}} Yes  |
+| `app/models/import_export_upload.rb`                    | `mount_uploader :export_file, ImportExportUploader`                              | {{< icon name="check-circle" >}} Yes  |
 | `app/models/ci/deleted_object.rb`                       | `mount_uploader :file, DeletedObjectUploader`                                    |                     |
-| `app/models/design_management/action.rb`                | `mount_uploader :image_v432x230, DesignManagement::DesignV432x230Uploader`       | **{check-circle}** Yes  |
-| `app/models/concerns/packages/debian/distribution.rb`   | `mount_uploader :signed_file, Packages::Debian::DistributionReleaseFileUploader` | **{check-circle}** Yes  |
-| `app/models/bulk_imports/export_upload.rb`              | `mount_uploader :export_file, ExportUploader`                                    | **{check-circle}** Yes  |
+| `app/models/design_management/action.rb`                | `mount_uploader :image_v432x230, DesignManagement::DesignV432x230Uploader`       | {{< icon name="check-circle" >}} Yes  |
+| `app/models/concerns/packages/debian/distribution.rb`   | `mount_uploader :signed_file, Packages::Debian::DistributionReleaseFileUploader` | {{< icon name="check-circle" >}} Yes  |
+| `app/models/bulk_imports/export_upload.rb`              | `mount_uploader :export_file, ExportUploader`                                    | {{< icon name="check-circle" >}} Yes  |
 | `ee/app/models/user_permission_export_upload.rb`        | `mount_uploader :file, AttachmentUploader`                                       |                     |
 | `app/models/ci/secure_file.rb`                          | `include FileStoreMounter`                                                       |                     |

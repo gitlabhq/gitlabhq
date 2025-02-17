@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting two-factor authentication
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 ## Error: `HTTP Basic: Access denied. If a password was provided for Git authentication ...`
 
@@ -128,9 +131,12 @@ After signing in, immediately set up 2FA with a new device.
 
 ### Disable and reset 2FA on your account
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 If other methods are unavailable, create a support ticket to request
 a GitLab global administrator to disable 2FA for your account.

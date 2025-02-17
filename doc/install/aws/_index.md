@@ -6,20 +6,29 @@ description: Read through the GitLab installation methods.
 title: Installing a GitLab POC on Amazon Web Services (AWS)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page offers a walkthrough of a common configuration for GitLab on AWS using the official Linux package. You should customize it to accommodate your needs.
 
-NOTE:
+{{< alert type="note" >}}
+
 For organizations with 1,000 users or less, the recommended AWS installation method is to launch an EC2 single box [Linux package installation](https://about.gitlab.com/install/) and implement a snapshot strategy for backing up the data. See the [20 RPS or 1,000 user reference architecture](../../administration/reference_architectures/1k_users.md) for more information.
+
+{{< /alert >}}
 
 ## Getting started for production-grade GitLab
 
-NOTE:
+{{< alert type="note" >}}
+
 This document is an installation guide for a proof of concept instance. It is not a reference architecture, and it does not result in a highly available configuration.
 It's highly recommended to use the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) instead.
+
+{{< /alert >}}
 
 Following this guide exactly results in a proof of concept instance that roughly equates to a **scaled down** version of a **two availability zone implementation** of the **Non-HA** [40 RPS or 2,000 User Reference Architecture](../../administration/reference_architectures/2k_users.md). The 2K reference architecture is not HA because it is primarily intended to provide some scaling while keeping costs and complexity low. The [60 RPS or 3,000 User Reference Architecture](../../administration/reference_architectures/3k_users.md) is the smallest size that is GitLab HA. It has additional service roles to achieve HA, most notably it uses Gitaly Cluster to achieve HA for Git repository storage and specifies triple redundancy.
 
@@ -55,8 +64,11 @@ In addition to having a basic familiarity with [AWS](https://docs.aws.amazon.com
 - A domain name for the GitLab instance
 - An SSL/TLS certificate to secure your domain. If you do not already own one, you can provision a free public SSL/TLS certificate through [AWS Certificate Manager](https://aws.amazon.com/certificate-manager/)(ACM) for use with the [Elastic Load Balancer](#load-balancer) we create.
 
-NOTE:
+{{< alert type="note" >}}
+
 It can take a few hours to validate a certificate provisioned through ACM. To avoid delays later, request your certificate as soon as possible.
+
+{{< /alert >}}
 
 ## Architecture
 
@@ -349,8 +361,11 @@ We need a security group for our database that allows inbound traffic from the i
 
 ### Create the database
 
-WARNING:
+{{< alert type="warning" >}}
+
 Avoid using burstable instances (t class instances) for the database as this could lead to performance issues due to CPU credits running out during sustained periods of high load.
+
+{{< /alert >}}
 
 Now, it's time to create the database:
 
@@ -446,8 +461,11 @@ to these instances with SSH for actions that include making configuration change
 and performing upgrades. One way of doing this is by using a [bastion host](https://en.wikipedia.org/wiki/Bastion_host),
 sometimes also referred to as a jump box.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you do not want to maintain bastion hosts, you can set up [AWS Systems Manager Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html) for access to instances. This is beyond the scope of this document.
+
+{{< /alert >}}
 
 ### Create Bastion Host A
 
@@ -618,9 +636,12 @@ gitlab=# \q
 
 #### Set up Gitaly
 
-WARNING:
+{{< alert type="warning" >}}
+
 In this architecture, having a single Gitaly server creates a single point of failure. Use
 [Gitaly Cluster](../../administration/gitaly/praefect.md) to remove this limitation.
+
+{{< /alert >}}
 
 Gitaly is a service that provides high-level RPC access to Git repositories.
 It should be enabled and configured on a separate EC2 instance in one of the
@@ -645,8 +666,11 @@ Let's create an EC2 instance where we install Gitaly:
    1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisioned IOPS SSD (io1)`.
 1. Review all your settings and, if you're happy, select **Launch Instance**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance as above. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/). We do not recommend using EFS as it may negatively impact the performance of GitLab. You can review the [relevant documentation](../../administration/nfs.md#avoid-using-cloud-based-file-systems) for more details.
+
+{{< /alert >}}
 
 Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/configure_gitaly.md#run-gitaly-on-its-own-server). Perform the client setup steps from that document on the [GitLab instance we created](#install-gitlab) above.
 
@@ -699,8 +723,11 @@ HostKey /etc/ssh_static/ssh_host_ed25519_key
 
 Because we're not using NFS for shared storage, we use [Amazon S3](https://aws.amazon.com/s3/) buckets to store backups, artifacts, LFS objects, uploads, merge request diffs, container registry images, and more. Our documentation includes [instructions on how to configure object storage](../../administration/object_storage.md) for each of these data types, and other information about using object storage with GitLab.
 
-NOTE:
+{{< alert type="note" >}}
+
 Because we are using the [AWS IAM profile](#create-an-iam-role) we created earlier, be sure to omit the AWS access key and secret access key/value pairs when configuring object storage. Instead, use `'use_iam_profile' => true` in your configuration as shown in the object storage documentation linked above.
+
+{{< /alert >}}
 
 Remember to run `sudo gitlab-ctl reconfigure` after saving the changes to the `gitlab.rb` file.
 

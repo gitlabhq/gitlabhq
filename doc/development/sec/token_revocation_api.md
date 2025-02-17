@@ -43,11 +43,14 @@ All endpoints may return these responses:
 
 Returns the valid `type` values for use in the `revoke_tokens` endpoint.
 
-NOTE:
+{{< alert type="note" >}}
+
 These values match the concatenation of [the `secrets` analyzer's](../../user/application_security/secret_detection/pipeline/_index.md)
 [primary identifier](../integrations/secure.md#identifiers) by means
 of concatenating the `primary_identifier.type` and `primary_identifier.value`.
 For example, the value `gitleaks_rule_id_gitlab_personal_access_token` matches the following finding identifier:
+
+{{< /alert >}}
 
 ```json
 {"type": "gitleaks_rule_id", "name": "Gitleaks rule ID GitLab Personal Access Token", "value": "GitLab Personal Access Token"}

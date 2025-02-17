@@ -42,9 +42,12 @@ table.no-vertical-table-lines tr {
 }
 </style>
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you're using [GitLab CI/CD](../../../ci/_index.md), you can use Static Application Security
 Testing (SAST) to check your source code for known vulnerabilities. You can run SAST analyzers in
@@ -63,15 +66,15 @@ The following table lists the GitLab tiers in which each feature is available.
 
 | Feature                                                                                  | In Free & Premium      | In Ultimate            |
 |:-----------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | **{check-circle}** Yes | **{check-circle}** Yes |
-| Downloadable [SAST JSON report](#download-a-sast-report)                                 | **{check-circle}** Yes | **{check-circle}** Yes |
-| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | **{dotted-circle}** No | **{check-circle}** Yes |
-| New findings in [merge request widget](#merge-request-widget)                            | **{dotted-circle}** No | **{check-circle}** Yes |
-| New findings in [merge request changes view](#merge-request-changes-view)                | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Vulnerability Management](../vulnerabilities/_index.md)                                  | **{dotted-circle}** No | **{check-circle}** Yes |
-| [UI-based scanner configuration](#configure-sast-by-using-the-ui)                        | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Ruleset customization](customize_rulesets.md)                                           | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | **{dotted-circle}** No | **{check-circle}** Yes |
+| Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Downloadable [SAST JSON report](#download-a-sast-report)                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| New findings in [merge request widget](#merge-request-widget)                            | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| New findings in [merge request changes view](#merge-request-changes-view)                | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Vulnerability Management](../vulnerabilities/_index.md)                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [UI-based scanner configuration](#configure-sast-by-using-the-ui)                        | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Ruleset customization](customize_rulesets.md)                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
 ## Requirements
 
@@ -140,9 +143,12 @@ To learn more about SAST analyzers that are no longer supported, see [Analyzers 
 
 ## Advanced vulnerability tracking
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Source code is volatile; as developers make changes, source code may move within files or between files.
 Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/_index.md).
@@ -169,9 +175,13 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 
 ## Automatic vulnerability resolution
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
-> - Enabled by default in GitLab 15.10. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
+- Enabled by default in GitLab 15.10. On GitLab.com, [contact Support](https://about.gitlab.com/support/) if you need to disable the flag for your project.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2.
+
+{{< /history >}}
 
 To help you focus on the vulnerabilities that are still relevant, GitLab SAST automatically [resolves](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities when:
 
@@ -207,8 +217,11 @@ include:
 
 A FIPS-compliant image is only available for the GitLab Advanced SAST and Semgrep-based analyzer.
 
-WARNING:
+{{< alert type="warning" >}}
+
 To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers). If you use a FIPS-enabled image to run Advanced SAST or Semgrep in [a runner with non-root user](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html#run-with-non-root-user), you must update the `run_as_user` attribute under `runners.kubernetes.pod_security_context` to use the ID of `gitlab` user [created by the image](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/a5d822401014f400b24450c92df93467d5bbc6fd/Dockerfile.fips#L58), which is `1000`.
+
+{{< /alert >}}
 
 ## Vulnerability details
 
@@ -230,9 +243,12 @@ For more information, see:
 
 ## View SAST results
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In Ultimate, the [SAST report file](#download-a-sast-report) is processed by GitLab and the details are shown in the UI:
 
@@ -260,9 +276,13 @@ The results are compared using [Advanced Vulnerability Tracking](#advanced-vulne
 
 ### Merge request changes view
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
-> - Enabled by default in GitLab 16.8.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
+- Enabled by default in GitLab 16.8.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410191) in GitLab 16.9.
+
+{{< /history >}}
 
 SAST results display in the merge request **Changes** view. Lines containing SAST
 issues are marked by a symbol beside the gutter. Select the symbol to see the list of issues, then select an issue to see its details.
@@ -332,16 +352,22 @@ The method you can use depends on your GitLab license tier.
 
 #### Configure SAST with customizations
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 > [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
 
-NOTE:
+{{< alert type="note" >}}
+
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
 configuration file. If you have a complex GitLab configuration file it may not be parsed
 successfully, and an error may occur.
+
+{{< /alert >}}
 
 To enable and configure SAST with customizations:
 
@@ -361,10 +387,13 @@ Pipelines now include a SAST job.
 
 #### Configure SAST with default settings only
 
-NOTE:
+{{< alert type="note" >}}
+
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
 configuration file. If you have a complex GitLab configuration file it may not be parsed
 successfully, and an error may occur.
+
+{{< /alert >}}
 
 To enable and configure SAST with default settings:
 
@@ -559,10 +588,13 @@ See [Use security scanning tools with merge request pipelines](../detect/roll_ou
 SAST can be configured using the [`variables`](../../../ci/yaml/_index.md#variables) parameter in
 `.gitlab-ci.yml`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 All customization of GitLab security scanning tools should be tested in a merge request before
 merging these changes to the default branch. Failure to do so can give unexpected results,
 including a large number of false positives.
+
+{{< /alert >}}
 
 The following example includes the SAST template to override the `SEARCH_MAX_DEPTH`
 variable to `10` in all jobs. The template is [evaluated before](../../../ci/yaml/_index.md#include) the pipeline
@@ -900,9 +932,12 @@ For more details see [Semgrep documentation](https://semgrep.dev/docs/ignoring-f
 
 ## Running SAST in an offline environment
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 For instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the SAST job to

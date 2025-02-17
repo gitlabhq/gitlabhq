@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Publish npm packages to the GitLab package registry using semantic-release
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This guide demonstrates how to automatically publish npm packages to the [GitLab package registry](../../user/packages/npm_registry/_index.md) by using [semantic-release](https://github.com/semantic-release/semantic-release).
 

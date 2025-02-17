@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project snippets
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Snippet visibility level
 
@@ -20,11 +23,14 @@ Constants for snippet visibility levels are:
 - **Internal**: The snippet is visible for any authenticated user except [external users](../administration/external_users.md).
 - **Public**: The snippet can be accessed without any authentication.
 
-NOTE:
+{{< alert type="note" >}}
+
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+
+{{< /alert >}}
 
 ## List snippets
 

@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/security_policies_database_read_model/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/security_policies_database_read_model/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

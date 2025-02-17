@@ -1,6 +1,6 @@
 ---
-redirect_to: '../../development/internal_analytics/product_analytics.md'
-remove_date: '2025-03-20'
+redirect_to: ../../development/internal_analytics/product_analytics.md
+remove_date: "2025-03-20"
 ---
 
 <!-- markdownlint-disable -->

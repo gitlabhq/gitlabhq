@@ -103,8 +103,11 @@ GitLab enforces a limit of **15 indexes** per table. This limitation:
 - Reduces maintenance overhead
 - Prevents excessive disk space usage
 
-NOTE:
+{{< alert type="note" >}}
+
 If you need to add an index to a table that already has 15 indexes, consider:
+
+{{< /alert >}}
 
 - Removing unused indexes
 - Combining existing indexes
@@ -172,10 +175,13 @@ Use two MRs to create the index in a post-deployment migration and make the appl
 - The second MR makes application code changes. It should merge only after the first MR's
   post-deployment migrations are executed on GitLab.com.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you can use a feature flag, you might be able to use a single MR
 to make the code changes behind the feature flag. Include the post-deployment migration at the same time.
 After the post-deployment migration executes, you can enable the feature flag.
+
+{{< /alert >}}
 
 For GitLab.com, we execute post-deployment migrations throughout a single release through continuous integration:
 
@@ -534,9 +540,12 @@ def down
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
 In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
+
+{{< /alert >}}
 
 ### Verify the MR was deployed and the index exists in production
 

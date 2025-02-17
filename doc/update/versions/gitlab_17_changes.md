@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab 17 changes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains upgrade information for minor and patch versions of GitLab 17.
 Ensure you review these instructions for:
@@ -242,9 +245,12 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 
 ### OpenSSL 3 upgrade
 
-NOTE:
+{{< alert type="note" >}}
+
 Before upgrading to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
 to identify and assess the compatibility of your external integrations.
+
+{{< /alert >}}
 
 - The Linux package upgrades OpenSSL from v1.1.1w to v3.0.0.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
@@ -285,8 +291,11 @@ for more details.
 
 ## 17.5.0
 
-NOTE:
+{{< alert type="note" >}}
+
 The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
+
+{{< /alert >}}
 
 - S3 object storage access for the GitLab Runner distributed cache is now handled by the
   [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4987) instead of the MinIO client.

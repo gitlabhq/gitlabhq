@@ -1,8 +1,8 @@
 ---
 stage: none
 group: unassigned
-description: Education, Open Source, Startups.
 info: For help with this Community Programs page, see https://handbook.gitlab.com/handbook/marketing/developer-relations/community-programs/
+description: Education, Open Source, Startups.
 title: Community programs
 ---
 
@@ -29,8 +29,11 @@ To add a license to a project:
 
 Applicants must add the correct license to each project in their respective groups or namespaces. When you're sure you're using OSI-approved licenses for your projects, you can take your screenshots.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in an applicant's namespace must meet program requirements. Applicants submit materials related to one project in the applying namespace, and the open source program team uses that project to verify eligibility of the entire namespace.
+
+{{< /alert >}}
 
 ### Verification for Open Source Program
 
@@ -40,8 +43,11 @@ Next, take screenshots of your project to confirm that project's eligibility. Yo
 - [OSI-approved license contents](#screenshot-2-license-contents)
 - [Publicly visible settings](#screenshot-3-publicly-visible-settings)
 
-NOTE:
+{{< alert type="note" >}}
+
 Benefits of the GitLab Open Source Program apply to all projects in a GitLab namespace. All projects in an eligible namespace must meet program requirements.
+
+{{< /alert >}}
 
 #### Screenshot 1: License overview
 
@@ -72,8 +78,11 @@ To be eligible for the GitLab Open Source Program, projects must be publicly vis
 
 ![Publicly visible setting](img/publicly-visible_v14_0.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 Exceptions to this public visibility requirement apply in select circumstances (for example, in cases where a project in an applicant's namespace may hold sensitive data). Email `opensource@gitlab.com` with details of your use case to request written permission for exceptions.
+
+{{< /alert >}}
 
 ## GitLab for Startups
 

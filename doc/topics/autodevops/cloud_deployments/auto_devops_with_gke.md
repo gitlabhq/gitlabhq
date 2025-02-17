@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Auto DevOps to deploy an application to Google Kubernetes Engine
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In this tutorial, we'll help you to get started with [Auto DevOps](../_index.md)
 through an example of how to deploy an application to Google Kubernetes Engine (GKE).
@@ -43,12 +46,15 @@ or Google Drive, or create a new one.
 1. Ensure you've created a [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
    with Google Cloud Platform.
 
-NOTE:
+{{< alert type="note" >}}
+
 Every new Google Cloud Platform (GCP) account receives [$300 in credit](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new
 GCP accounts to get started with the GitLab integration with Google Kubernetes Engine.
 [Follow this link](https://cloud.google.com/partners?pcn_code=0014M00001h35gDQAQ#contact-form)
 and apply for credit.
+
+{{< /alert >}}
 
 ## Create a Kubernetes cluster
 
@@ -62,10 +68,13 @@ This project is where configuration for GitLab agent resides.
 Use a GitLab project template to get started. As the name suggests,
 those projects provide a bare-bones application built on some well-known frameworks.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+{{< /alert >}}
+
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. Select the **Ruby on Rails** template.
 1. Give your project a name, optionally a description, and make it public so that
@@ -160,9 +169,9 @@ The commit should trigger a pipeline. In the next section, we explain what each 
 When your pipeline runs, what is it doing?
 
 To view the jobs in the pipeline, select the pipeline's status badge. The
-**{status_running}** icon displays when pipeline jobs are running, and updates
-without refreshing the page to **{status_success}** (for success) or
-**{status_failed}** (for failure) when the jobs complete.
+{{< icon name="status_running" >}} icon displays when pipeline jobs are running, and updates
+without refreshing the page to {{< icon name="status_success" >}} (for success) or
+{{< icon name="status_failed" >}} (for failure) when the jobs complete.
 
 The jobs are separated into stages:
 
@@ -210,16 +219,16 @@ you to common environment tasks:
 
 ![Environments](img/guide_environments_v12_3.png)
 
-- **Open live environment** (**{external-link}**) - Opens the URL of the application deployed in production
-- **Monitoring** (**{chart}**) - Opens the metrics page where Prometheus collects data
+- **Open live environment** ({{< icon name="external-link" >}}) - Opens the URL of the application deployed in production
+- **Monitoring** ({{< icon name="chart" >}}) - Opens the metrics page where Prometheus collects data
   about the Kubernetes cluster and how the application
   affects it in terms of memory usage, CPU usage, and latency
-- **Deploy to** (**{play}** **{chevron-lg-down}**) - Displays a list of environments you can deploy to
-- **Terminal** (**{terminal}**) - Opens a [web terminal](../../../ci/environments/_index.md#web-terminals-deprecated)
+- **Deploy to** ({{< icon name="play" >}} {{< icon name="chevron-lg-down" >}}) - Displays a list of environments you can deploy to
+- **Terminal** ({{< icon name="terminal" >}}) - Opens a [web terminal](../../../ci/environments/_index.md#web-terminals-deprecated)
   session inside the container where the application is running
-- **Re-deploy to environment** (**{repeat}**) - For more information, see
+- **Re-deploy to environment** ({{< icon name="repeat" >}}) - For more information, see
   [Retrying and rolling back](../../../ci/environments/deployments.md#retry-or-roll-back-a-deployment)
-- **Stop environment** (**{stop}**) - For more information, see
+- **Stop environment** ({{< icon name="stop" >}}) - For more information, see
   [Stopping an environment](../../../ci/environments/_index.md#stopping-an-environment)
 
 GitLab displays the [deploy board](../../../user/project/deploy_boards.md) below the
@@ -228,10 +237,13 @@ Kubernetes cluster, color-coded to show their status. Hovering over a square on
 the deploy board displays the state of the deployment, and selecting the square
 takes you to the pod's logs page.
 
-NOTE:
+{{< alert type="note" >}}
+
 The example shows only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` CI/CD variable](../cicd_variables.md)
 in **Settings > CI/CD > Variables**.
+
+{{< /alert >}}
 
 ### Work with branches
 
@@ -276,13 +288,13 @@ To fix the broken test:
 1. In the left-hand directory of files, find the `test/controllers/welcome_controller_test.rb`
    file, and select it to open it.
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`
-1. On the left sidebar, select **Source Control** (**{merge}**).
+1. On the left sidebar, select **Source Control** ({{< icon name="merge" >}}).
 1. Write a commit message, and select **Commit**.
 
 Return to the **Overview** page of your merge request, and you should not only
 see the test passing, but also the application deployed as a
 [review application](../stages.md#auto-review-apps). You can visit it by selecting
-the **View app** **{external-link}** button to see your changes deployed.
+the **View app** {{< icon name="external-link" >}} button to see your changes deployed.
 
 After merging the merge request, GitLab runs the pipeline on the default branch,
 and then deploys the application to production.

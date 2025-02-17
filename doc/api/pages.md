@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Pages API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Endpoints for managing [GitLab Pages](../user/project/pages/_index.md).
 
@@ -15,7 +18,11 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 ## Unpublish Pages
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -37,7 +44,11 @@ curl --request 'DELETE' --header "PRIVATE-TOKEN: <your_access_token>" "https://g
 
 ## Get Pages settings for a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436932) in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436932) in GitLab 16.8.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -106,8 +117,12 @@ Example response:
 
 ## Update Pages settings for a project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 17.0.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147227) in GitLab 17.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/498658) the minimum required role from administrator access to the Maintainer role in GitLab 17.9
+
+{{< /history >}}
 
 Prerequisites:
 

@@ -1,20 +1,27 @@
 ---
 stage: Create
 group: Code Review
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use comments to discuss work, mention users, and suggest changes."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use comments to discuss work, mention users, and suggest changes.
 title: Comments and threads
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Paginated merge request discussions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
-> - Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
-> - Paginated merge request discussions [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
-> - Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
-> - Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `wiki_comments`. Disabled by default.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Paginated merge request discussions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
+- Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
+- Paginated merge request discussions [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
+- Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
+- Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `wiki_comments`. Disabled by default.
+
+{{< /history >}}
 
 GitLab encourages communication through comments, threads, and
 [suggesting changes for code](../project/merge_requests/reviews/suggestions.md).
@@ -56,11 +63,18 @@ mentions for yourself (the current, authenticated user) in a different color.
 
 ### Mentioning all members
 
-> - [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+{{< history >}}
 
-FLAG:
+- [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 Avoid mentioning `@all` in comments and descriptions. `@all` mentions more than
 just the participants of the project, issue, or merge request, but all members
@@ -103,8 +117,8 @@ To add a commit diff comment:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
-1. By the line you want to comment on, hover over the line number and select **Comment** (**{comment}**).
-   You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
+1. By the line you want to comment on, hover over the line number and select **Comment** ({{< icon name="comment" >}}).
+   You can select multiple lines by dragging the **Comment** ({{< icon name="comment" >}}) icon.
 1. Enter your comment.
 1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
    - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
@@ -117,11 +131,14 @@ The comment displays on the merge request's **Overview** tab.
 
 The comment is not displayed on your project's **Code > Commits** page.
 
-NOTE:
+{{< alert type="note" >}}
+
 When your comment contains a reference to a commit included in the merge request,
 it's converted to a link in the context of the merge request.
 For example, `28719b171a056960dfdc0012b625d0b47b123196` becomes `28719b17` that links to
 `https://gitlab.example.com/example-group/example-project/-/merge_requests/12345/diffs?commit_id=28719b171a056960dfdc0012b625d0b47b123196`.
+
+{{< /alert >}}
 
 ## Reply to a comment by sending email
 
@@ -142,7 +159,7 @@ Anyone with at least the Maintainer role can also edit a comment made by someone
 
 To edit a comment:
 
-1. On the comment, select **Edit comment** (**{pencil}**).
+1. On the comment, select **Edit comment** ({{< icon name="pencil" >}}).
 1. Make your edits.
 1. Select **Save changes**.
 
@@ -172,7 +189,7 @@ To lock an issue or merge request:
 1. For merge requests, select **Code > Merge requests**, and find your merge request.
 1. For issues, select **Plan > Issues**, and find your issue.
 1. In the upper-right corner, select **Merge request actions** or **Issue actions**
-   (**{ellipsis_v}**), then select **Lock discussion**.
+   ({{< icon name="ellipsis_v" >}}), then select **Lock discussion**.
 
 GitLab adds a system note to the page details.
 
@@ -181,11 +198,15 @@ reopen the issue or merge request.
 
 ## Add an internal note
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
-> - [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363045) permissions in GitLab 15.6 to at least the Reporter role. In GitLab 15.5 and earlier, issue or epic authors and assignees could also read and create internal notes.
-> - Internal comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
+- [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363045) permissions in GitLab 15.6 to at least the Reporter role. In GitLab 15.5 and earlier, issue or epic authors and assignees could also read and create internal notes.
+- Internal comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
+
+{{< /history >}}
 
 Use internal notes to protect information added to a _public_ issue, epic, or merge request.
 Internal notes differ from public comments:
@@ -238,9 +259,12 @@ To change the activity sort order:
 
 ## View description change history
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can see changes to the description listed in the history.
 
@@ -250,7 +274,7 @@ To compare the changes, select **Compare with previous version**.
 
 You can assign an issue to a user who made a comment.
 
-1. In the comment, select the **More Actions** (**{ellipsis_v}**) menu.
+1. In the comment, select the **More Actions** ({{< icon name="ellipsis_v" >}}) menu.
 1. Select **Assign to commenting user**:
    ![Assign to commenting user](img/quickly_assign_commenter_v16_6.png)
 1. To unassign the commenter, select the button again.
@@ -266,7 +290,7 @@ Prerequisites:
 
 To create a thread by replying to a comment:
 
-1. In the upper-right corner of the comment, select **Reply to comment** (**{reply}**)
+1. In the upper-right corner of the comment, select **Reply to comment** ({{< icon name="reply" >}})
    to display the reply section.
 1. Enter your reply.
 1. Select **Reply** or **Add comment now** (depending on where in the UI you are replying).
@@ -285,7 +309,7 @@ Prerequisites:
 To create a thread:
 
 1. Enter a comment.
-1. Below the comment, to the right of **Comment**, select the down arrow (**{chevron-down}**).
+1. Below the comment, to the right of **Comment**, select the down arrow ({{< icon name="chevron-down" >}}).
 1. From the list, select **Start thread**.
 1. Select **Start thread** again.
 
@@ -293,11 +317,15 @@ To create a thread:
 
 ## Resolve a thread
 
-> - Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `resolvable_issue_threads`. Disabled by default.
-> - Resolvable threads for issues [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
-> - Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
-> - Resolvable threads for tasks, objectives, and key results [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.3.
-> - Resolvable threads for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+{{< history >}}
+
+- Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `resolvable_issue_threads`. Disabled by default.
+- Resolvable threads for issues [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
+- Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
+- Resolvable threads for tasks, objectives, and key results [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.3.
+- Resolvable threads for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+
+{{< /history >}}
 
 You can resolve a thread when you want to finish a conversation.
 
@@ -310,7 +338,7 @@ To resolve a thread:
 
 1. Go to the thread.
 1. Do one of the following:
-   - In the upper-right corner of the original comment, select **Resolve thread** (**{check-circle}**).
+   - In the upper-right corner of the original comment, select **Resolve thread** ({{< icon name="check-circle" >}}).
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
 
@@ -322,15 +350,22 @@ such as:
 
 ## Summarize issue discussions with Duo Chat
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**LLM:** Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/development_stages_support.md#experiment).
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162122) in GitLab 17.4.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/development_stages_support.md#experiment).
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162122) in GitLab 17.4.
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+
+{{< /history >}}
 
 Generate a summary of discussions on an issue.
 

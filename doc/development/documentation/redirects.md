@@ -30,11 +30,14 @@ Add a redirect to ensure:
 Be sure to assign a technical writer to any merge request that moves, renames, or deletes a page.
 Technical Writers can help with any questions and can review your change.
 
-NOTE:
+{{< alert type="note" >}}
+
 When you change the filename of a page, the Google Analytics are removed
 from the content audit and the page views start from scratch.
 If you want to change the filename, edit the page first,
 so you can ensure the new page name is as accurate as possible.
+
+{{< /alert >}}
 
 ## Types of redirects
 
@@ -71,7 +74,7 @@ To redirect a page to another page in the same repository:
 
      <!-- markdownlint-disable -->
 
-     This document was moved to [another location](../newpath/to/file/index.md).
+     This document was moved to [another location](../newpath/to/file/_index.md).
 
      <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
      <!-- Redirects that point to other docs in the same project expire in three months. -->

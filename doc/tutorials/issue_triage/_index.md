@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Set up a project for issue triage'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -44,7 +47,7 @@ If you already have a project you're working in, proceed to
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details.
    - For **Project name**, enter `Issue triage tutorial`.
@@ -84,9 +87,12 @@ handbook published with [GitLab Pages](../../user/project/pages/_index.md).
 
 ## Create scoped labels
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Next, you'll create labels to add to issues to categorize them.
 
@@ -102,10 +108,13 @@ used together.
 For example, if you add the `type::feature` label to an issue that already has `type::bug`, the
 previous one is removed.
 
-NOTE:
+{{< alert type="note" >}}
+
 Scoped labels are available in the Premium and Ultimate tier.
 If you're on the Free tier, you can use regular labels instead.
 However, they aren't mutually exclusive.
+
+{{< /alert >}}
 
 To create each label:
 
@@ -141,7 +150,7 @@ To learn what happens when you sort by priority or label priority, see
 
 To prioritize a label:
 
-1. On the Labels page, next to a label you want to prioritize, select the star (**{star-o}**).
+1. On the Labels page, next to a label you want to prioritize, select the star ({{< icon name="star-o" >}}).
    This label now appears at the top of the label list, under **Prioritized labels**.
 1. To change the relative priority of these labels, drag them up and down the list.
    The labels higher in the list get higher priority.
@@ -185,7 +194,7 @@ You can create issues for bugs as you find them (hopefully not too many!).
 
 To create an issue from your **Issue triage (by severity)** board:
 
-1. On the **Open** list, select **Create new issue** (**{plus}**).
+1. On the **Open** list, select **Create new issue** ({{< icon name="plus" >}}).
    The **Open** list shows issues that don't fit any other board list.
 
    If you already know which severity label your issue should have, you can create it directly from that label list.

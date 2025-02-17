@@ -1,8 +1,8 @@
 ---
 stage: GitLab Dedicated
 group: US Public Sector Services
-description: Available features and benefits.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Available features and benefits.
 title: GitLab Dedicated for Government
 ---
 
@@ -23,8 +23,11 @@ GitLab Dedicated for Government is available in AWS GovCloud and meets US data r
 
 ### Advanced search
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
 
 GitLab Dedicated for Government uses [advanced search](../../user/search/advanced_search.md).
 
@@ -32,8 +35,11 @@ GitLab Dedicated for Government uses [advanced search](../../user/search/advance
 
 GitLab Dedicated for Government leverages modified versions of the [cloud native hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab matches you to the closest reference architecture size based on your number of users.
 
-NOTE:
+{{< alert type="note" >}}
+
 The published [reference architectures](../../administration/reference_architectures/_index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated for Government environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated for Government costs differ from standard reference architecture costs.
+
+{{< /alert >}}
 
 #### Disaster recovery
 
@@ -43,8 +49,11 @@ GitLab Dedicated regularly backs up all datastores, including databases and Git 
 
 #### Authentication and authorization
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
 
 GitLab Dedicated for Government supports instance-level [SAML OmniAuth](../../integration/saml.md). Your GitLab Dedicated instance acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) for GitLab to communicate with your IdP.
 
@@ -56,8 +65,11 @@ Data is encrypted at rest and in transit using the latest encryption standards.
 
 #### SMTP
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
 
 Email sent from GitLab Dedicated uses [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/). The connection to Amazon SES is encrypted.
 

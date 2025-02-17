@@ -2,11 +2,14 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Migrating to Dependency Scanning using SBOM
 ---
 
-# Migrating to Dependency Scanning using SBOM
+{{< history >}}
 
-> - The legacy [Dependency Scanning feature based on the Gemnasium analyzer](_index.md) was [deprecated](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) in GitLab 17.9 and planned for removal in 18.0.
+- The legacy [Dependency Scanning feature based on the Gemnasium analyzer](_index.md) was [deprecated](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) in GitLab 17.9 and planned for removal in 18.0.
+
+{{< /history >}}
 
 The Dependency Scanning feature is upgrading to the GitLab SBOM Vulnerability Scanner.
 As part of this change, the [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md) feature and the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
@@ -89,8 +92,11 @@ To migrate to the Dependency Scanning using SBOM method, perform the following s
 
 For multi-language projects, complete all relevant language-specific migration steps.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you decide to migrate from the CI/CD template to the CI/CD component, please review the [current limitations](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) for GitLab Self-Managed.
+
+{{< /alert >}}
 
 ## Language-specific instructions
 
@@ -485,8 +491,11 @@ Keep the following CI/CD variables as they are applicable to the new Dependency 
 - `DS_MAX_DEPTH`
 - `SECURE_ANALYZERS_PREFIX`
 
-NOTE:
+{{< alert type="note" >}}
+
 The `PIP_REQUIREMENTS_FILE` is replaced with `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` in the new Dependency Scanning analyzer.
+
+{{< /alert >}}
 
 ## Continue with the Gemnasium analyzer
 

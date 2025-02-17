@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Alerts
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Alerts are a critical entity in your incident management workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
 
@@ -48,12 +51,12 @@ Alerts contain one of the following icons:
 
 | Severity | Icon                    | Color (hexadecimal) |
 |----------|-------------------------|---------------------|
-| Critical | **{severity-critical}** | `#8b2615`           |
-| High     | **{severity-high}**     | `#c0341d`           |
-| Medium   | **{severity-medium}**   | `#fca429`           |
-| Low      | **{severity-low}**      | `#fdbc60`           |
-| Info     | **{severity-info}**     | `#418cd8`           |
-| Unknown  | **{severity-unknown}**  | `#bababa`           |
+| Critical | {{< icon name="severity-critical" >}} | `#8b2615`           |
+| High     | {{< icon name="severity-high" >}}     | `#c0341d`           |
+| Medium   | {{< icon name="severity-medium" >}}   | `#fca429`           |
+| Low      | {{< icon name="severity-low" >}}      | `#fdbc60`           |
+| Info     | {{< icon name="severity-info" >}}     | `#418cd8`           |
+| Unknown  | {{< icon name="severity-unknown" >}}  | `#bababa`           |
 
 <!-- vale gitlab_base.SubstitutionWarning = YES -->
 
@@ -137,9 +140,12 @@ When you [close an incident](manage_incidents.md#close-an-incident) that is link
 
 #### As an on-call responder
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 On-call responders can respond to [alert pages](paging.md#escalating-an-alert) by changing the alert status.
 
@@ -167,7 +173,7 @@ To assign an alert:
    ![Alert Details View Assignees](img/alert_details_assignees_v13_1.png)
 
 1. If the right sidebar is not expanded, select
-   **Expand sidebar** (**{chevron-double-lg-right}**) to expand it.
+   **Expand sidebar** ({{< icon name="chevron-double-lg-right" >}}) to expand it.
 
 1. On the right sidebar, locate the **Assignee**, and then select **Edit**.
    From the list, select each user you want to assign to the alert.
@@ -183,9 +189,12 @@ To add a to-do item, on the right sidebar, select **Add a to-do item**.
 
 ### Trigger actions from alerts
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Turn on creating [incidents](incidents.md) automatically whenever an alert is triggered.
 

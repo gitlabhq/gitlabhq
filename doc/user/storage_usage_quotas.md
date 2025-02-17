@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Storage
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 All projects on GitLab.com have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
@@ -19,9 +22,12 @@ Only the project's repository and LFS are included in the storage limit. The con
 
 ## View storage
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can view the following statistics for storage usage in projects and namespaces:
 
@@ -48,9 +54,12 @@ Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
 or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
 1 MiB is 2^20 bytes (1024 kibibytes), and 1 GiB is 2^30 bytes (1024 mebibytes).
 
-NOTE:
+{{< alert type="note" >}}
+
 Storage usage labels are being transitioned from `KB` to `KiB`, `MB` to `MiB`, and `GB` to `GiB`. During this transition,
 you might see references to `KB`, `MB`, and `GB` in the UI and documentation.
+
+{{< /alert >}}
 
 ## View project fork storage usage
 
@@ -81,7 +90,7 @@ The **Storage** tab of the **Usage Quotas** page displays the following:
 - Purchased storage available is running low.
 - Projects that are at risk of becoming read-only if purchased storage available is zero.
 - Projects that are read-only because purchased storage available is zero. Read-only projects are
-  marked with an information icon (**{information-o}**) beside their name.
+  marked with an information icon ({{< icon name="information-o" >}}) beside their name.
 
 The total storage includes the free and excess storage purchased.
 The remaining excess storage is expressed as a percentage and calculated as:
@@ -93,9 +102,9 @@ The following example describes an excess storage scenario for projects in a nam
 
 | Repository | Storage used | Excess storage | Quota  | Status               |
 |------------|--------------|----------------|--------|----------------------|
-| Red        | 10 GiB        | 0 GiB           | 10 GiB  | Read-only **{lock}** |
+| Red        | 10 GiB        | 0 GiB           | 10 GiB  | Read-only {{< icon name="lock" >}} |
 | Blue       | 8 GiB         | 0 GiB           | 10 GiB  | Not read-only        |
-| Green      | 10 GiB        | 0 GiB           | 10 GiB  | Read-only **{lock}** |
+| Green      | 10 GiB        | 0 GiB           | 10 GiB  | Read-only {{< icon name="lock" >}} |
 | Yellow     | 2 GiB         | 0 GiB           | 10 GiB  | Not read-only        |
 | **Totals** | **30 GiB**    | **0 GiB**       | -      | -                    |
 

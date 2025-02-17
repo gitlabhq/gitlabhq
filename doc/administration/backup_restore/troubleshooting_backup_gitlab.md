@@ -37,9 +37,12 @@ runner authentication, which is described in more detail in the following
 sections. After resetting the tokens, you should be able to visit your project
 and the jobs begin running again.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The steps in this section can potentially lead to **data loss** on the above listed items.
 Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
+
+{{< /alert >}}
 
 ### Verify that all values can be decrypted
 
@@ -50,8 +53,11 @@ You can determine if your database contains values that can't be decrypted by us
 
 You must directly modify GitLab data to work around your lost secrets file.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Be sure to create a full database backup before attempting any changes.
+
+{{< /alert >}}
 
 ### Disable user two-factor authentication (2FA)
 
@@ -118,9 +124,12 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
 
 1. Clear all tokens for projects, groups, and the entire instance:
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    The final `UPDATE` operation stops the runners from being able to pick
    up new jobs. You must register new runners.
+
+   {{< /alert >}}
 
    ```sql
    -- Clear project tokens
@@ -272,9 +281,12 @@ Problem: <class 'OSError: [Errno 36] File name too long:
 
 This problem stops the backup script from completing. To fix this problem, you must truncate the filenames causing the problem. A maximum of 246 characters, including the file extension, is permitted.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The steps in this section can potentially lead to **data loss**. All steps must be followed strictly in the order given.
 Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
+
+{{< /alert >}}
 
 Truncating filenames to resolve the error involves:
 
@@ -296,8 +308,11 @@ To fix these files, you must clean up all remote uploaded files that are in the 
 
 1. If you are sure you want to delete these files and remove all non-referenced uploaded files, run:
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    The following action is **irreversible**.
+
+   {{< /alert >}}
 
    ```shell
    bundle exec rake gitlab:cleanup:remote_upload_files RAILS_ENV=production DRY_RUN=false
@@ -417,8 +432,11 @@ Truncate the filenames in the `uploads` table:
 
 1. Validate that the new filenames from the previous query are the expected ones. If you are sure you want to truncate the records found in the previous step to 246 characters, run the following:
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    The following action is **irreversible**.
+
+   {{< /alert >}}
 
    ```sql
    CREATE TEMP TABLE uploads_with_long_filenames AS

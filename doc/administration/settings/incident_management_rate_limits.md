@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Incident management rate limits
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can limit the number of inbound alerts for [incidents](../../operations/incident_management/incidents.md)
 that can be created in a period of time. The inbound [incident management](../../operations/incident_management/_index.md)

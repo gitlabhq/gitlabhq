@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Syntax of `CODEOWNERS` file
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The `CODEOWNERS` file uses a syntax to define ownership rules.
 Each line in the file represents a rule, and specifies a file path pattern and one or more owners.
@@ -18,8 +21,11 @@ The key elements are:
 - **Comments**: Lines starting with `#` are ignored.
 - **Sections**: Optional groupings of rules, defined using `[Section name]`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If an entry is duplicated in a section, [the last entry is used](advanced.md#define-code-owners-for-specific-files-or-directories). Rules defined later in the file take precedence over earlier rules.
+
+{{< /alert >}}
 
 Here are some examples:
 
@@ -141,8 +147,12 @@ Examples:
 
 ### Set default Code Owner for a section
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115888) in GitLab 15.11. Feature flag `codeowners_default_owners` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115888) in GitLab 15.11. Feature flag `codeowners_default_owners` removed.
+
+{{< /history >}}
 
 If multiple file paths inside a section share the same ownership, define default
 Code Owners for the section.
@@ -209,9 +219,13 @@ section is marked as optional.
 
 ## Add a role as a Code Owner
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `codeowner_role_approvers`.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/497504) in GitLab 17.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512623) in GitLab 17.9 Feature flag `codeowner_role_approvers` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282438) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `codeowner_role_approvers`.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/497504) in GitLab 17.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512623) in GitLab 17.9 Feature flag `codeowner_role_approvers` removed.
+
+{{< /history >}}
 
 You can add or set a role for direct project members as Code Owners:
 
@@ -277,8 +291,11 @@ In this example:
 
   ![Merge request maintainers.](../img/merge_request_maintainers_v17_9.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-saml-group-memberships-lock).
+
+{{< /alert >}}
 
 If you encounter issues, refer to [User not shown as possible approver](troubleshooting.md#user-not-shown-as-possible-approver).
 
@@ -311,10 +328,13 @@ README.md @username
 internal/README.md
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When using globstar paths, be cautious of unintended matches.
 For example, `README.md` without a leading `/` matches any `README.md`
 file in any directory or subdirectory of the repository.
+
+{{< /alert >}}
 
 ### Directory paths
 

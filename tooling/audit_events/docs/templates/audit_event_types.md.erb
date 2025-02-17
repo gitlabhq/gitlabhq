@@ -1,9 +1,9 @@
 <% audit_event_types_by_feature_category = Gitlab::Audit::Type::Definition.definitions.map(&:last).group_by(&:feature_category) %>
 <% def boolean_to_docs(boolean) %>
 <%   if boolean %>
-<%     "**{check-circle}** Yes" %>
+<%     "{{< icon name=\"check-circle\" >}} Yes" %>
 <%   else %>
-<%     "**{dotted-circle}** No" %>
+<%     "{{< icon name=\"dotted-circle\" >}} No" %>
 <%   end %>
 <% end %>
 <% def humanize(feature_category) %>
@@ -20,6 +20,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+title: Audit event types
 ---
 
 <!--
@@ -32,13 +33,18 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
   edit `tooling/audit_events/docs/templates/audit_event_types.md.erb`.
 -->
 
-# Audit event types
+{{< details >}}
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172757) in GitLab 17.7, all audit events can be streamed.
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172757) in GitLab 17.7, all audit events can be streamed.
+
+{{< /history >}}
 
 Audit event types are used to filter streamed audit events:
 

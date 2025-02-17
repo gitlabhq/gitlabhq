@@ -1,6 +1,6 @@
 ---
-redirect_to: '../../editor_extensions/language_server/_index.md'
-remove_date: '2025-02-11'
+redirect_to: ../../editor_extensions/language_server/_index.md
+remove_date: "2025-02-11"
 ---
 
 <!-- markdownlint-disable -->

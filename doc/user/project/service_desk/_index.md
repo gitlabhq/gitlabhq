@@ -5,11 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Service Desk
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This feature is not under active development, but
 [community contributions](https://about.gitlab.com/community/contribute/) are welcome.
 To determine if the feature as it is meets your needs, explore the existing documentation or see the
@@ -18,6 +22,8 @@ to learn more about work that hasn't been done yet.
 The decision to deprioritize Service Desk has been made to
 focus on building and extending the work item framework which
 the Service Desk category will also benefit from long-term.
+
+{{< /alert >}}
 
 With Service Desk, your customers
 can email you bug reports, feature requests, or general feedback.
@@ -106,9 +112,9 @@ Service Desk and other reply-by-email features don't work.
 The workaround is to run the following commands in your GitLab installation
 to patch the affected files:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
@@ -116,7 +122,9 @@ patch -p1 -d /opt/gitlab/embedded/service/gitlab-rails < /tmp/mailroom.patch
 gitlab-ctl restart mailroom
 ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 ```shell
 curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
@@ -125,4 +133,6 @@ patch -p1 < /tmp/mailroom.patch
 gitlab-ctl restart mailroom
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

@@ -1,14 +1,17 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Seat usage, compute minutes, storage limits, renewal info.
 title: Troubleshooting GitLab subscription
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 When you purchase or use subscriptions for GitLab.com or GitLab Self-Managed, you might encounter the following issues.
 

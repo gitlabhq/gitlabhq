@@ -135,8 +135,11 @@ The relevant front-end code is located in the `app/assets/javascripts/packages_a
 └── utils.js
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You can check out this [discussion](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82777#note_1017875324) to see why we use the REST API instead of GraphQL.
+
+{{< /alert >}}
 
 The file `harbor_registry/pages/index.vue` only contains a single Vue router-view component, which goes to the `images list`, `image detail`, and `tags list` pages via `router.js`.
 

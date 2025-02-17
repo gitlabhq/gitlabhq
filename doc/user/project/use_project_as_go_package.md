@@ -1,15 +1,22 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use a project as a Go package
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Changed in [GitLab 17.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161162) to return 404 errors for unauthorized `go get` requests.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Changed in [GitLab 17.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161162) to return 404 errors for unauthorized `go get` requests.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -22,9 +29,12 @@ To use a project as a Go package, use the `go get` and `godoc.org` discovery req
 - [`go-import`](https://pkg.go.dev/cmd/go#hdr-Remote_import_paths)
 - [`go-source`](https://github.com/golang/gddo/wiki/Source-Code-Links)
 
-NOTE:
+{{< alert type="note" >}}
+
 If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
 You can find the HTTP credentials in `~/.netrc` (MacOS and Linux) or `~/_netrc` (Windows).
+
+{{< /alert >}}
 
 ## Authenticate Go requests to private projects
 

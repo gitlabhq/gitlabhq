@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project and group visibility
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Projects and groups in GitLab can be private, internal, or public.
 
@@ -28,17 +31,23 @@ Users with the Guest role cannot clone the project.
 
 Private groups can have only private subgroups and projects.
 
-NOTE:
+{{< alert type="note" >}}
+
 When you [share a private group with another group](project/members/sharing_projects_groups.md#invite-a-group-to-a-group),
 users who don't have access to the private group can view a list of users who have access to the inviting group
 through the endpoint `https://gitlab.com/groups/<inviting-group-name>/-/autocomplete_sources/members`.
 However, the name and path of the private group are masked, and the users' membership source is not displayed.
 
+{{< /alert >}}
+
 ## Internal projects and groups
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 For internal projects, any authenticated user, including users with the Guest role, can:
 
@@ -60,10 +69,13 @@ For public projects, any user, including unauthenticated users, can:
 
 Public groups can have public, internal, or private subgroups and projects.
 
-NOTE:
+{{< alert type="note" >}}
+
 If an administrator restricts the
 [**Public** visibility level](../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels),
 then the public access directory (`/public`) is visible only to authenticated users.
+
+{{< /alert >}}
 
 ## Change project visibility
 
@@ -116,9 +128,12 @@ Prerequisites:
 
 ## Restrict use of public or internal projects
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Administrators can restrict which visibility levels users can choose when they create a project or a snippet.
 This setting can help prevent users from publicly exposing their repositories by accident.

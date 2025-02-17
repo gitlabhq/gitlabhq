@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: External participants
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3758) in GitLab 17.0.
+
+{{< /history >}}
 
 External participants are users without a GitLab account that can interact with an issue or Service Desk ticket only by email.
 They get notified of public comments on an issue or ticket by [Service Desk emails](configure.md#customize-emails-sent-to-external-participants).
@@ -119,10 +126,17 @@ To see a list of all external participants:
 
 ### Add an external participant
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 Add an external participant using the `/add_email` [quick action](../quick_actions.md) when you want
 to include them in the conversation at any time.
@@ -149,10 +163,17 @@ You should see a success message and a new system note with the email address.
 
 ### Remove an external participant
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 Remove an external participant from an issue or Service Desk ticket using the `/remove_email`
 [quick action](../quick_actions.md) when they should stop receiving notifications.

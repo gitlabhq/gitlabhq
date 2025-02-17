@@ -5,13 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo authentication and authorization
 ---
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/506641) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/506641) in GitLab 17.9.
+
+{{< /history >}}
 
 GitLab Duo with Amazon Q uses a composite identity to authenticate requests.
 
-NOTE:
+{{< alert type="note" >}}
+
 Support for a composite identity in other areas of the product
 is proposed in [issue 511373](https://gitlab.com/gitlab-org/gitlab/-/issues/511373).
+
+{{< /alert >}}
 
 The token that authenticates requests is a composite of two identities:
 

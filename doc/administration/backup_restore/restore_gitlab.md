@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Restore GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides a command-line interface to restore your entire installation,
 and is flexible enough to fit your needs.
@@ -106,8 +109,11 @@ after copying over the GitLab secrets file from the original installation.
 Next, restore the backup, specifying the ID of the backup you wish to
 restore:
 
-WARNING:
+{{< alert type="warning" >}}
+
 The following command overwrites the contents of your GitLab database!
+
+{{< /alert >}}
 
 ```shell
 # NOTE: "_gitlab_backup.tar" is omitted from the name
@@ -128,9 +134,12 @@ GitLab version mismatch:
 Install the [correct GitLab version](https://packages.gitlab.com/gitlab/),
 and then try again.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The restore command requires [additional parameters](backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer) when
 your installation is using PgBouncer, for either performance reasons or when using it with a Patroni cluster.
+
+{{< /alert >}}
 
 Next, restart and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
 
@@ -376,12 +385,19 @@ To exclude specific tasks:
 
 ### Restore specific repository storages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412) that can cause data loss. The problem affects
 repositories that have been forked and use GitLab [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, **only restore backups by using GitLab
 17.2 or later**.
+
+{{< /alert >}}
 
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories from specific repository storages can be restored separately
@@ -404,12 +420,19 @@ For example:
 
 ### Restore specific repositories
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412) that can cause data loss. The problem affects
 repositories that have been forked and use GitLab [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, **only restore backups by using GitLab
 17.2 or later**.
+
+{{< /alert >}}
 
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you
@@ -417,10 +440,13 @@ specify a group path, all repositories in all projects in the group and
 descendent groups are included or skipped, depending on which option you used.
 Both the groups and projects must exist in the specified backup or on the target instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 The `REPOSITORIES_PATHS` and `SKIP_REPOSITORIES_PATHS` options apply only to Git repositories.
 They do not apply to project or group database entries. If you created a repositories backup
 with `SKIP=db`, by itself it cannot be used to restore specific repositories to a new instance.
+
+{{< /alert >}}
 
 For example, to restore all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
 and skip the **Project D** in **Group A** (`group-a/project-d`):

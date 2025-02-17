@@ -236,14 +236,18 @@ requirements.
    whether reviewing existing rows should be included as an immediate follow-up task
    to the merge request.
 
-   NOTE:
+   {{< alert type="note" >}}
+
    There isn't a way to know anything about our customers' data on their
    [GitLab Self-Managed instances](../../subscriptions/self_managed/_index.md), so keep
    that in mind for any data implications with your merge request.
-1. Consider self-managed functionality and upgrade paths. The change should consider both:
+
+   1. Consider self-managed functionality and upgrade paths. The change should consider both:
 
    - If additional work needs to be done for self-managed availability, and
    - If the change requires a [required stop](../database/required_stops.md) when upgrading GitLab versions.
+
+   {{< /alert >}}
 
    Upgrade stops are sometimes requested when a GitLab code change is dependent
    upon a background migration being already complete. Ideally, changes causing required

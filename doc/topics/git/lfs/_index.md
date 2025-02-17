@@ -1,8 +1,8 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use Git LFS to manage binary assets, like images and video, without bloating your Git repository's size."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use Git LFS to manage binary assets, like images and video, without bloating your Git repository's size.
 title: Git Large File Storage (LFS)
 ---
 
@@ -62,9 +62,12 @@ with the _upstream_ project after merge.
 
 ## Configure Git LFS for a project
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab enables Git LFS by default for both GitLab Self-Managed and GitLab SaaS.
 It offers both server settings and project-specific settings.
@@ -137,8 +140,11 @@ To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-f
 To completely expunge all history of a file, past and present,
 see [Handle sensitive information](../undo.md#handle-sensitive-information).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Expunging file history requires rewriting Git history. This action is destructive and irreversible.
+
+{{< /alert >}}
 
 ## Reduce repository size after removing large files
 

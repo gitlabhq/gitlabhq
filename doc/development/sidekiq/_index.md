@@ -153,8 +153,11 @@ can schedule helps mitigate the risk of overwhelming the system, which could lea
 
 This guidance applies both to .com and self-managed customers. A single worker scheduling thousands of jobs can easily disrupt the normal functioning of an SM instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 If Sidekiq only has 20 threads and the limit for a specific job is 200 then it will never be able to hit this 200 concurrency so it will not be limited.
+
+{{< /alert >}}
 
 ### Static Concurrency Limit
 
@@ -176,8 +179,11 @@ Alternatively, you can set a fixed limit directly:
 concurrency_limit -> { 250 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Keep in mind that using a static limit means any updates or changes require merging an MR and waiting for the next deployment to take effect.
+
+{{< /alert >}}
 
 ### Instance-Configurable Concurrency Limit
 
@@ -208,8 +214,11 @@ To determine an appropriate limit, you can use this PromQL query as a guide in [
 )
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The [concurrency limit may be momentarily exceeded](https://gitlab.com/gitlab-org/gitlab/-/issues/490936#note_2172737349) and should not be relied on as a strict limit.
+
+{{< /alert >}}
 
 ## Deferring Sidekiq workers
 

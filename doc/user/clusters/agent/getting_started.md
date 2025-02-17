@@ -142,8 +142,11 @@ To view your dashboard:
 
 ## Secure the deployment
 
-DETAILS:
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 So far, we've deployed an agent using the `.gitlab/agents/testing/config.yaml` file.
 This configuration enables user access using the service account configured for the agent deployment. User access is used by the dashboard for Kubernetes, and for local access.

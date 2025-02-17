@@ -88,19 +88,24 @@ if you need help finding the correct person or labels:
    - The issue should be assigned by a member of the maintaining group.
    - The milestone should be assigned by a member of the maintaining group.
 
-   NOTE:
-   Some overlap exists between project dependencies. When creating an issue for a
+   {{< alert type="note" >}}
+
+Some overlap exists between project dependencies. When creating an issue for a
    dependency that is part of a larger product, note the relationship in the issue
    body. For example: Projects built in the context of Omnibus GitLab have their
    runtime Go version managed by Omnibus, but "support" and compatibility should
    be a concern of the individual project. Issues in the parent project's dependencies
    issue should be about adding support for the updated Go version.
 
-   NOTE:
-   The upgrade issues must include [upgrade validation items](#upgrade-validation)
+   {{< /alert >}}
+
+   {{< alert type="note" >}}
+
+The upgrade issues must include [upgrade validation items](#upgrade-validation)
    in their definition of done. Creating a second [performance testing issue](#upgrade-validation)
    titled `Validate operation and performance at scale with Go <VERSION_NUMBER>`
    is strongly recommended to help with scheduling tasks and managing workloads.
+   {{< /alert >}}
 
 1. Schedule an update with the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues):
    - Title the issue `Support using Go version <VERSION_NUMBER>`.
@@ -110,9 +115,12 @@ if you need help finding the correct person or labels:
    - [Composition Analysis tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
    - [Container Security tracker](https://gitlab.com/gitlab-org/gitlab/-/issues).
 
-   NOTE:
-   Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
+   {{< alert type="note" >}}
+
+Updates to these Security analyzers should not block upgrades to Charts or Omnibus since
    the analyzers are built independently as separate container images.
+
+   {{< /alert >}}
 
 1. Schedule builder updates with Distribution projects:
    - Dependency and GitLab Development Kit issues created in previous steps should be set as blockers.
@@ -135,11 +143,14 @@ if you need help finding the correct person or labels:
        Update `BUILDER_IMAGE_REVISION` in `.gitlab-ci.yml` to match tag from builder.
        ```
 
-   NOTE:
-   If the component is not automatically upgraded for [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues)
+   {{< alert type="note" >}}
+
+If the component is not automatically upgraded for [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues)
    and [Cloud Native GitLab](https://gitlab.com/gitlab-org/charts/gitlab/-/issues),
    issues should be opened in their respective trackers titled `Updated bundled version of COMPONENT_NAME`
    and set as blocked by the component's upgrade issue.
+
+   {{< /alert >}}
 
 #### Known dependencies using Go
 

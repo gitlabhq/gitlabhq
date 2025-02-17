@@ -5,17 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Debian group distributions API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 > - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
 
 This is the reference documentation for the Debian group distributions API. This API is behind a
 feature flag that is disabled by default. To use this API, you must [enable it](#enable-the-debian-group-api).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is under development and is not meant for production use.
+
+{{< /alert >}}
 
 For more information about working with Debian packages, see the
 [Debian package registry documentation](../../user/packages/debian_repository/_index.md).

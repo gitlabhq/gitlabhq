@@ -5,15 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Dashboard for Kubernetes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [beta](../../policy/development_stages_support.md#beta).
-> - Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
-> - Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431746) to the environment details page in 16.10.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [beta](../../policy/development_stages_support.md#beta).
+- Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
+- Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431746) to the environment details page in 16.10.
+
+{{< /history >}}
 
 Use the dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
@@ -23,10 +30,14 @@ with CI/CD or GitOps.
 
 ## Configure a dashboard
 
-> - Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.
-> - Filtering resources by namespace [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3. Feature flag `kubernetes_namespace_for_environment` removed.
-> - Selecting the related Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`.
-> - Selecting the related Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
+{{< history >}}
+
+- Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.
+- Filtering resources by namespace [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127043) in GitLab 16.3. Feature flag `kubernetes_namespace_for_environment` removed.
+- Selecting the related Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`.
+- Selecting the related Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
+
+{{< /history >}}
 
 Configure a dashboard to use it for a given environment.
 You can configure dashboard for an environment that already exists, or
@@ -36,9 +47,9 @@ Prerequisites:
 
 - A GitLab agent for Kubernetes is [installed](../../user/clusters/agent/install/_index.md) and [`user_access`](../../user/clusters/agent/user_access.md) is configured for the environment's project or its parent group.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle The environment already exists
+{{< tab title="The environment already exists" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
@@ -49,7 +60,9 @@ Prerequisites:
 1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
 
-:::TabTitle The environment doesn't exist
+{{< /tab >}}
+
+{{< tab title="The environment doesn't exist" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
@@ -60,11 +73,17 @@ Prerequisites:
 1. Optional. From the **Flux resource** dropdown list, select a Flux resource.
 1. Select **Save**.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Configure a dashboard for a dynamic environment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467912) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467912) in GitLab 17.6.
+
+{{< /history >}}
 
 To configure a dashboard for a dynamic environment:
 
@@ -87,9 +106,13 @@ For more information, see the [CI/CD YAML syntax reference](../yaml/_index.md#en
 
 ## View a dashboard
 
-> - Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.
-> - Kubernetes watch API integration [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136831) in GitLab 16.7.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427762) in GitLab 17.1. Feature flag `k8s_watch_api` removed.
+{{< history >}}
+
+- Kubernetes watch API integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422945) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `k8s_watch_api`. Disabled by default.
+- Kubernetes watch API integration [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136831) in GitLab 16.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427762) in GitLab 17.1. Feature flag `k8s_watch_api` removed.
+
+{{< /history >}}
 
 View a dashboard to see the status of connected clusters.
 If the `k8s_watch_api` feature flag is enabled, the status of your
@@ -106,9 +129,13 @@ A list of pods is displayed. Select a pod to view its details.
 
 ### Flux sync status
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) in GitLab 16.3.
-> - Customizing the name of the Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`.
-> - Customizing the name of the Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) in GitLab 16.3.
+- Customizing the name of the Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`.
+- Customizing the name of the Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
+
+{{< /history >}}
 
 You can review the sync status of your Flux deployments from a dashboard.
 To display the deployment status, your dashboard must be able to retrieve the `Kustomization` and `HelmRelease` resources,
@@ -129,31 +156,43 @@ A dashboard displays one of the following status badges:
 
 ### Trigger Flux reconciliation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434248) in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434248) in GitLab 17.3.
+
+{{< /history >}}
 
 You can manually reconcile your deployment with its Flux resources.
 
 To trigger a reconciliation:
 
 1. On a dashboard, select the sync status badge of a Flux deployment.
-1. Select **Actions** (**{ellipsis_v}**) **> Trigger reconciliation** (**{retry}**).
+1. Select **Actions** ({{< icon name="ellipsis_v" >}}) **> Trigger reconciliation** ({{< icon name="retry" >}}).
 
 ### Suspend or resume Flux reconciliation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478380) in GitLab 17.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/478380) in GitLab 17.5.
+
+{{< /history >}}
 
 You can manually suspend or resume your Flux reconciliation from the UI.
 
 To suspend or resume reconciliation:
 
 1. On a dashboard, select the sync status badge of a Flux deployment.
-1. Select **Actions** (**{ellipsis_v}**), then choose one of the following:
-   - **Suspend reconciliation** (**{stop}**) to pause the Flux reconciliation.
-   - **Resume reconciliation** (**{play}**) to restart the Flux reconciliation.
+1. Select **Actions** ({{< icon name="ellipsis_v" >}}), then choose one of the following:
+   - **Suspend reconciliation** ({{< icon name="stop" >}}) to pause the Flux reconciliation.
+   - **Resume reconciliation** ({{< icon name="play" >}}) to restart the Flux reconciliation.
 
 ### View pod logs
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13793) in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13793) in GitLab 17.2.
+
+{{< /history >}}
 
 View pod logs when you want to quickly understand and troubleshoot issues across your environments from a configured dashboard. You can view logs for each container in a pod.
 
@@ -163,26 +202,37 @@ You can also view pod logs from the pod details.
 
 ### Delete a pod
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467653) in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467653) in GitLab 17.3.
+
+{{< /history >}}
 
 To restart a failed pod, delete it from the Kubernetes dashboard.
 
 To delete a pod:
 
 1. On the **Kubernetes overview** tab, find the pod you want to delete.
-1. Select **Actions** (**{ellipsis_v}**) **> Delete pod** (**{remove}**).
+1. Select **Actions** ({{< icon name="ellipsis_v" >}}) **> Delete pod** ({{< icon name="remove" >}}).
 
 You can also delete a pod from the pod details.
 
 ## Detailed dashboard
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11351) in GitLab 16.4, [with a flag](../../administration/feature_flags.md) named `k8s_dashboard`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424237) in GitLab 16.7 for a subset of users.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11351) in GitLab 16.4, [with a flag](../../administration/feature_flags.md) named `k8s_dashboard`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424237) in GitLab 16.7 for a subset of users.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 The detailed dashboard provides information about the following Kubernetes resources:
 

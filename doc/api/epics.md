@@ -5,16 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Epics API (deprecated)
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
 [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
+
+{{< /alert >}}
 
 Every API call to epic must be authenticated.
 
@@ -44,14 +50,20 @@ are paginated.
 
 Read more on [pagination](rest/_index.md#pagination).
 
-WARNING:
+{{< alert type="warning" >}}
+
 In [GitLab 12.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) and later,
 the `reference` attribute in responses is deprecated in favor of `references`.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 `references.relative` is relative to the group that the epic is being requested from. When an epic
 is fetched from its origin group, the `relative` format is the same as the `short` format.
 When an epic is requested across groups, the `relative` format is expected to be the same as the `full` format.
+
+{{< /alert >}}
 
 ## List epics for a group
 
@@ -274,10 +286,13 @@ Example response:
 
 Creates a new epic.
 
-NOTE:
+{{< alert type="note" >}}
+
 Starting with GitLab [11.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448), `start_date` and `end_date` should no longer be assigned
 directly, as they now represent composite values. You can configure it via the `*_is_fixed` and
 `*_fixed` fields instead.
+
+{{< /alert >}}
 
 ```plaintext
 POST /groups/:id/epics

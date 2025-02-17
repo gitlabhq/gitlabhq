@@ -152,9 +152,12 @@ To work around that, we have a special workflow rule, that overrides the
     GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 We don't directly override the `${GITLAB_DEPENDENCY_PROXY}` variable because group-level
 variables have higher precedence over `.gitlab-ci.yml` variables.
+
+{{< /alert >}}
 
 ## Common job definitions
 

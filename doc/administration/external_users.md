@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: External users
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In cases where it is desired that a user has access only to some internal or
 private projects, there is the option of creating **External Users**. This
@@ -32,8 +35,11 @@ always take into account the
 [project's visibility](../user/public_access.md#change-project-visibility) and [permissions settings](../user/project/settings/_index.md#configure-project-features-and-permissions)
 as well as the permission level of the user.
 
-NOTE:
+{{< alert type="note" >}}
+
 External users still count towards a license seat, unless the user has the [Guest role](../subscriptions/self_managed/_index.md#free-guest-users) in the Ultimate tier.
+
+{{< /alert >}}
 
 An administrator can flag a user as external by either of the following methods:
 

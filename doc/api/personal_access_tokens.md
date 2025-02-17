@@ -5,15 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Personal access tokens API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to interact with personal access tokens. For more information, see [Personal access tokens](../user/profile/personal_access_tokens.md).
 
 ## List all personal access tokens
 
-> - `created_after`, `created_before`, `last_used_after`, `last_used_before`, `revoked`, `search` and `state` filters were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362248) in GitLab 15.5.
+{{< history >}}
+
+- `created_after`, `created_before`, `last_used_after`, `last_used_before`, `revoked`, `search` and `state` filters were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362248) in GitLab 15.5.
+
+{{< /history >}}
 
 Lists all personal access tokens accessible by the authenticating user. For administrators, returns
 a list of all personal access tokens in the instance. For non-administrators, returns a list of the
@@ -81,8 +88,12 @@ Other possible response:
 
 ## Get details on a personal access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362239) in GitLab 15.1.
-> - `404` HTTP status code [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93650) in GitLab 15.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362239) in GitLab 15.1.
+- `404` HTTP status code [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93650) in GitLab 15.3.
+
+{{< /history >}}
 
 Gets details on a specified personal access token. Administrators can get details on any token.
 Non-administrators can only get details on own tokens.
@@ -112,7 +123,11 @@ Other possible responses:
 
 ### Self-inform
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373999) in GitLab 15.5
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373999) in GitLab 15.5
+
+{{< /history >}}
 
 Instead of getting details on a specific personal access token, you can also return details on
 the personal access token you used to authenticate the request. To return these details, you must
@@ -126,8 +141,11 @@ curl --request GET \
 
 ## Create a personal access token
 
-DETAILS:
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can create personal access tokens with the user tokens API. For more information, see the following endpoints:
 
@@ -136,8 +154,12 @@ You can create personal access tokens with the user tokens API. For more informa
 
 ## Rotate a personal access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
-> - `expires_at` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+- `expires_at` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6.
+
+{{< /history >}}
 
 Rotates a specified personal access token. This revokes the previous token and creates a new token
 that expires after one week. Administrators can revoke tokens for any user. Non-administrators can
@@ -192,7 +214,11 @@ Other possible responses:
 
 ### Self-rotate
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426779) in GitLab 16.10
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426779) in GitLab 16.10
+
+{{< /history >}}
 
 Instead of rotating a specific personal access token, you can also rotate the same personal access
 token you used to authenticate the request. To self-rotate a personal access token, you must:
@@ -208,7 +234,11 @@ curl --request POST \
 
 ### Automatic reuse detection
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395352) in GitLab 16.3
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395352) in GitLab 16.3
+
+{{< /history >}}
 
 When you rotate or revoke a token, GitLab automatically tracks the relationship between the old and
 new tokens. Each time a new token is generated, a connection is made to the previous token. These
@@ -250,8 +280,12 @@ Other possible responses:
 
 ### Self-revoke
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350240) in GitLab 15.0. Limited to tokens with `api` scope.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369103) in GitLab 15.4, any token can use this endpoint.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350240) in GitLab 15.0. Limited to tokens with `api` scope.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369103) in GitLab 15.4, any token can use this endpoint.
+
+{{< /history >}}
 
 Instead of revoking a specific personal access token, you can also revoke the same personal access
 token you used to authenticate the request. To self-revoke a personal access token, you must use
@@ -265,7 +299,11 @@ curl --request DELETE \
 
 ## List all token associations
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466046) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466046) in GitLab 17.4.
+
+{{< /history >}}
 
 Lists all groups, subgroups, and projects associated with the personal access token used to authenticate the request.
 

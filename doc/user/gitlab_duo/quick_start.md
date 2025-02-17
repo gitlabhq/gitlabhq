@@ -1,6 +1,6 @@
 ---
-redirect_to: '../get_started/getting_started_gitlab_duo.md'
-remove_date: '2025-02-21'
+redirect_to: ../get_started/getting_started_gitlab_duo.md
+remove_date: "2025-02-21"
 ---
 
 <!-- markdownlint-disable -->

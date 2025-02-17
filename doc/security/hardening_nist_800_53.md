@@ -5,9 +5,12 @@ info: All material changes to this page must be approved by the [FedRAMP Complia
 title: NIST 800-53 compliance
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This page provides a reference for GitLab administrators
 who want to configure GitLab Self-Managed instances to meet applicable

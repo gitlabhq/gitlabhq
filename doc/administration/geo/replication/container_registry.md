@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Container registry for a secondary site
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can set up a container registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site. This container registry replication is used only for disaster recovery purposes.
 
@@ -101,15 +104,20 @@ To be able to replicate new container images, the container registry must send n
    ]
    ```
 
-   NOTE:
-   Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
+   {{< alert type="note" >}}
+
+Replace `<example.com>` with the `external_url` defined in your primary site's `/etc/gitlab/gitlab.rb` file, and
    replace `<replace_with_a_secret_token>` with a case sensitive alphanumeric string
    that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
-   NOTE:
-   If you use an external Registry (not the one integrated with GitLab), you only need to specify
+   {{< /alert >}}
+
+   {{< alert type="note" >}}
+
+If you use an external Registry (not the one integrated with GitLab), you only need to specify
    the notification secret (`registry['notification_secret']`) in the
    `/etc/gitlab/gitlab.rb` file.
+   {{< /alert >}}
 
 1. For GitLab HA only. Edit `/etc/gitlab/gitlab.rb` on every web node:
 

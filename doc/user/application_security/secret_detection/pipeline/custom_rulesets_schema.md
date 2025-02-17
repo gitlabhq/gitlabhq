@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Custom rulesets schema
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use [different kinds of ruleset customizations](../pipeline/_index.md#customize-analyzer-rulesets)
 to customize the behavior of pipeline secret detection.
@@ -48,8 +51,11 @@ based on the kind of configuration you're making.
 
 #### `interpolate`
 
-WARNING:
+{{< alert type="warning" >}}
+
 To reduce the risk of leaking secrets, use this feature with caution.
+
+{{< /alert >}}
 
 The example below shows a configuration that uses the `$GITURL` environment variable to access a
 private repository. The variable contains a username and token
@@ -148,9 +154,12 @@ The `[secrets.ruleset.override]` section allows you to override attributes of a 
 | `name`        | The name of the rule.                                                                               |
 | `severity`    | The severity of the rule. Valid options are: `Critical`, `High`, `Medium`, `Low`, `Unknown`, `Info` |
 
-NOTE:
+{{< alert type="note" >}}
+
 Although `message` is still populated by the analyzers, it has been [deprecated](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/1d86d5f2e61dc38c775fb0490ee27a45eee4b8b3/vulnerability.go#L22)
 and replaced by `name` and `description`.
+
+{{< /alert >}}
 
 Configuration example:
 
@@ -165,7 +174,11 @@ Configuration example:
 
 ### Custom rule format
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/511321) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/511321) in GitLab 17.9.
+
+{{< /history >}}
 
 When creating custom rules, you can use both [Gitleaks' standard rule format](https://github.com/gitleaks/gitleaks?tab=readme-ov-file#configuration) and additional GitLab-specific fields. The following settings are available for each rule:
 

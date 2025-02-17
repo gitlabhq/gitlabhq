@@ -1,8 +1,8 @@
 ---
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
-description: 'Guidelines for deprecations and page removals'
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: Guidelines for deprecations and page removals
 title: Deprecations and removals
 ---
 
@@ -11,10 +11,13 @@ This process requires temporarily changing content to be "deprecated" or "remove
 
 If a feature is not generally available, you can delete the content outright instead of following these instructions.
 
-NOTE:
+{{< alert type="note" >}}
+
 REST API docs [have a separate deprecation style](../restful_api_styleguide.md#deprecations).
 The GraphQL API [has a separate deprecation process](../../../api/graphql/_index.md#deprecation-and-removal-process),
 and [style for the deprecation reason](../../api_graphql_styleguide.md#deprecation-reason-style-guide).
+
+{{< /alert >}}
 
 ## Features not actively being developed
 

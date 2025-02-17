@@ -5,7 +5,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: List partition
 ---
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96815) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96815) in GitLab 15.4.
+
+{{< /history >}}
 
 ## Description
 
@@ -160,8 +164,11 @@ class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.1]
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not forget to set the primary key explicitly in your model as `ActiveRecord` does not support composite primary keys.
+
+{{< /alert >}}
 
 ```ruby
 class Model < ApplicationRecord
@@ -238,10 +245,13 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.1]
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not forget to set the sequence name explicitly in your model because it will
 be owned by the routing table and `ActiveRecord` can't determine it. This can
 be cleaned up after the `table_name` is changed to the routing table.
+
+{{< /alert >}}
 
 ```ruby
 class Model < ApplicationRecord

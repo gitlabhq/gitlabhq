@@ -5,8 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: ClickHouse integration guidelines
 ---
 
-DETAILS:
-**Status:** Experiment
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
 
 This feature is an [experiment](../policy/development_stages_support.md).
 
@@ -30,8 +33,11 @@ When you run ClickHouse on a hosted server, various data points might impact the
 of builds that run on your instance each month, the selected hardware, the data center choice to host ClickHouse, and more.
 Regardless, the cost should not be significant.
 
-NOTE:
+{{< alert type="note" >}}
+
 ClickHouse is a secondary data store for GitLab. Only specific data is stored in ClickHouse for analytics purposes.
+
+{{< /alert >}}
 
 To create necessary user and database objects:
 
@@ -50,9 +56,9 @@ To create necessary user and database objects:
 
 ### Configure the GitLab connection to ClickHouse
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package
+{{< tab title="Linux package" >}}
 
 To provide GitLab with ClickHouse credentials:
 
@@ -71,7 +77,9 @@ To provide GitLab with ClickHouse credentials:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Save the ClickHouse password as a Kubernetes Secret:
 
@@ -106,7 +114,9 @@ To provide GitLab with ClickHouse credentials:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To verify that your connection is set up successfully:
 

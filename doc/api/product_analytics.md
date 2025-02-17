@@ -5,25 +5,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Product analytics API
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Beta
+{{< details >}}
 
-> - Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
-> - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
-> - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
-> - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
-> - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta in GitLab 17.5 [with a flag](../administration/feature_flags.md) named `product_analytics_features`.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+- `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
+- `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
+- `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
+- Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta in GitLab 17.5 [with a flag](../administration/feature_flags.md) named `product_analytics_features`.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is not ready for production use.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 Make sure to define the `cube_api_base_url` and `cube_api_key` application settings first using [the API](settings.md).
+
+{{< /alert >}}
 
 ## Send query request to Cube
 
@@ -43,8 +56,11 @@ POST /projects/:id/product_analytics/request/dry-run
 
 The body of the load request must be a valid Cube query.
 
-NOTE:
+{{< alert type="note" >}}
+
 When measuring `TrackedEvents`, you must use `TrackedEvents.*` for `dimensions` and `timeDimensions`. The same rule applies when measuring `Sessions`.
+
+{{< /alert >}}
 
 #### Tracked events example
 

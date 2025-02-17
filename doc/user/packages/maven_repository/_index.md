@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Maven packages in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Publish [Maven](https://maven.apache.org) artifacts in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -40,9 +43,9 @@ Update your configuration to authenticate to the Maven repository with HTTP.
 You must add the authentication details to the configuration file
 for your client.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 | Token type            | Name must be    | Token                                                                  |
 | --------------------- | --------------- | ---------------------------------------------------------------------- |
@@ -50,8 +53,11 @@ for your client.
 | Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
 | CI Job token          | `Job-Token`     | `${CI_JOB_TOKEN}`                                                      |
 
-NOTE:
+{{< alert type="note" >}}
+
 The `<name>` field must be named to match the token you chose.
+
+{{< /alert >}}
 
 Add the following section to your
 [`settings.xml`](https://maven.apache.org/settings.html) file.
@@ -74,7 +80,9 @@ Add the following section to your
 </settings>
 ```
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 | Token type            | Name must be    | Token                                                                  |
 | --------------------- | --------------- | ---------------------------------------------------------------------- |
@@ -82,8 +90,11 @@ Add the following section to your
 | Deploy token          | `Deploy-Token`  | Paste token as-is, or define an environment variable to hold the token |
 | CI Job token          | `Job-Token`     | `System.getenv("CI_JOB_TOKEN")`                                        |
 
-NOTE:
+{{< alert type="note" >}}
+
 The `<name>` field must be named to match the token you chose.
+
+{{< /alert >}}
 
 In [your `GRADLE_USER_HOME` directory](https://docs.gradle.org/current/userguide/directory_layout.html#dir:gradle_user_home),
 create a file `gradle.properties` with the following content:
@@ -132,15 +143,17 @@ file:
   }
   ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ##### Basic HTTP Authentication
 
 You can also use basic HTTP authentication to authenticate to the Maven package registry.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 | Token type            | Name must be                 | Token                                                                  |
 | --------------------- | ---------------------------- | ---------------------------------------------------------------------- |
@@ -169,7 +182,9 @@ Add the following section to your
 </settings>
 ```
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 | Token type            | Name must be                 | Token                                                                  |
 | --------------------- | ---------------------------- | ---------------------------------------------------------------------- |
@@ -223,7 +238,9 @@ Add a `repositories` section to your
   }
   ```
 
-:::TabTitle `sbt`
+{{< /tab >}}
+
+{{< tab title="`sbt`" >}}
 
 | Token type            | Name must be                 | Token                                                                  |
 |-----------------------|------------------------------|------------------------------------------------------------------------|
@@ -235,8 +252,11 @@ Authentication for [SBT](https://www.scala-sbt.org/index.html) is based on
 [basic HTTP Authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
 You must to provide a name and a password.
 
-NOTE:
+{{< alert type="note" >}}
+
 The name field must be named to match the token you chose.
+
+{{< /alert >}}
 
 To install a package from the Maven GitLab package registry by using `sbt`, you must configure
 a [Maven resolver](https://www.scala-sbt.org/1.x/docs/Resolvers.html#Maven+resolvers).
@@ -261,7 +281,9 @@ In this example:
   scheme or the port. Example: `gitlab.example.com`.
 - `<name>` and `<token>` are explained in the table above.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Naming convention
 
@@ -300,9 +322,9 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
 
 You must add publishing details to the configuration file for your client.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 No matter which endpoint you choose, you must have:
 
@@ -334,7 +356,9 @@ The relevant `repository` section of your `pom.xml` in Maven should look like th
 - The `<your_endpoint_url>` depends on which [endpoint](#endpoint-urls) you choose.
 - Replace `gitlab.example.com` with your domain name.
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 To publish a package by using Gradle:
 
@@ -409,21 +433,26 @@ To publish a package by using Gradle:
      }
      ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Publish a package
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using the `DeployAtEnd` option can cause an upload to be rejected with `400 bad request {"message":"Validation failed: Name has already been taken"}`. For more details,
 see [issue 424238](https://gitlab.com/gitlab-org/gitlab/-/issues/424238).
+
+{{< /alert >}}
 
 After you have set up the [authentication](#authenticate-to-the-package-registry)
 and [chosen an endpoint for publishing](#naming-convention),
 publish a Maven package to your project.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 To publish a package by using Maven:
 
@@ -445,7 +474,9 @@ The message should also show that the package was published to the correct locat
 Uploading to gitlab-maven: https://example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.jar
 ```
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 Run the publish task:
 
@@ -455,7 +486,9 @@ gradle publish
 
 Go to your project's **Packages and registries** page and view the published packages.
 
-:::TabTitle `sbt`
+{{< /tab >}}
+
+{{< tab title="`sbt`" >}}
 
 Configure the `publishTo` setting in your `build.sbt` file:
 
@@ -484,12 +517,17 @@ correct location:
 [info]  published my-project_2.12 to https://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/my-project_2.12/0.1.1-SNAPSHOT/my-project_2.12-0.1.1-SNAPSHOT.pom
 ```
 
-::EndTabs
+{{< /tab >}}
 
-NOTE:
+{{< /tabs >}}
+
+{{< alert type="note" >}}
+
 If you protect a Maven package before publishing it, the package will be rejected with a `403 Forbidden` error and an `Authorization failed` error message. 
 Ensure the Maven package is not protected when publishing. 
 For more information about package protection rules, see [how to protect a package](../../../user/packages/package_registry/package_protection_rules.md#protect-a-package).
+
+{{< /alert >}}
 
 ## Install a package
 
@@ -504,9 +542,9 @@ a package, the most recently-published package is retrieved.
 In case there are not enough permissions to read the most recently-published
 package than `403 Forbidden` is returning.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 To install a package by using `mvn install`:
 
@@ -544,8 +582,11 @@ You can also install packages by using the Maven [`dependency:get` command](http
    - `<gitlab endpoint url>` is the URL of the GitLab [endpoint](#endpoint-urls).
    - `<path to settings.xml>` is the path to the `settings.xml` file that contains the [authentication details](#edit-the-client-configuration).
 
-NOTE:
+{{< alert type="note" >}}
+
 The repository IDs in the command(`gitlab-maven`) and the `settings.xml` file must match.
+
+{{< /alert >}}
 
 The message should show that the package is downloading from the package registry:
 
@@ -553,7 +594,9 @@ The message should show that the package is downloading from the package registr
 Downloading from gitlab-maven: http://gitlab.example.com/api/v4/projects/PROJECT_ID/packages/maven/com/mycompany/mydepartment/my-project/1.0-SNAPSHOT/my-project-1.0-20200128.120857-1.pom
 ```
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 To install a package by using `gradle`:
 
@@ -581,7 +624,9 @@ To install a package by using `gradle`:
    gradle install
    ```
 
-:::TabTitle `sbt`
+{{< /tab >}}
+
+{{< tab title="`sbt`" >}}
 
 To install a package by using `sbt`:
 
@@ -597,11 +642,17 @@ To install a package by using `sbt`:
    sbt update
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Proxy downloads for Maven packages
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507768) in GitLab 17.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507768) in GitLab 17.8.
+
+{{< /history >}}
 
 The GitLab Maven package registry uses [remote included checksums](https://maven.apache.org/resolver/expected-checksums.html#remote-included-checksums).
 When you download a file, the registry proxies the file and sends both the file and its related checksums to Maven clients in a single request.
@@ -616,8 +667,11 @@ Due to technical constraints, when you use object storage, the Maven package reg
 setting in the object storage configuration for `packages`.
 Instead, proxy download is always enabled for Maven package registry downloads.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you don't use object storage, this behavior has no impact on your instance.
+
+{{< /alert >}}
 
 ## CI/CD integration for Maven packages
 
@@ -866,8 +920,12 @@ To delete older package versions, consider using the Packages API or the UI.
 
 ### Do not allow duplicate Maven packages
 
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+{{< history >}}
+
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
+{{< /history >}}
 
 To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/_index.md#packagesettings) or the UI.
 
@@ -878,19 +936,29 @@ In the UI:
 1. In the **Maven** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
-NOTE:
+{{< alert type="note" >}}
+
 If **Allow duplicates** is turned on, you can specify package names and versions that should not have duplicates in the **Exceptions** text box.
+
+{{< /alert >}}
 
 Your changes are automatically saved.
 
 ### Request forwarding to Maven Central
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85299) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`. Disabled by default.
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85299) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`. Disabled by default.
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 When a Maven package is not found in the package registry, the request is forwarded
 to [Maven Central](https://search.maven.org/).
@@ -947,9 +1015,9 @@ section to your `settings.xml`:
 After you have configured your repository to use the Package Repository for Maven,
 you can configure GitLab CI/CD to build new packages automatically.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 You can create a new package each time the default branch is updated.
 
@@ -1019,7 +1087,9 @@ user's home location. In this example:
 - The user is `root`, because the job runs in a Docker container.
 - Maven uses the configured CI/CD variables.
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 You can create a package each time the default branch
 is updated.
@@ -1041,7 +1111,9 @@ is updated.
 
 When the pipeline is successful, the Maven package is created.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Version validation
 
@@ -1091,20 +1163,24 @@ that you can use when performing tasks with GitLab CI/CD.
 
 The GitLab Maven repository supports the following CLI commands:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 - `mvn deploy`: Publish your package to the package registry.
 - `mvn install`: Install packages specified in your Maven project.
 - `mvn dependency:get`: Install a specific package.
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 - `gradle publish`: Publish your package to the package registry.
 - `gradle install`: Install packages specified in your Gradle project.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 
@@ -1123,21 +1199,25 @@ To resolve many common issues, try these steps:
 To improve performance, clients cache files related to a package. If you encounter issues, clear
 the cache with these commands:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `mvn`
+{{< tab title="`mvn`" >}}
 
 ```shell
 rm -rf ~/.m2/repository
 ```
 
-:::TabTitle `gradle`
+{{< /tab >}}
+
+{{< tab title="`gradle`" >}}
 
 ```shell
 rm -rf ~/.gradle/caches # Or replace ~/.gradle with your custom GRADLE_USER_HOME
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Review network trace logs
 
@@ -1152,8 +1232,11 @@ mvn deploy \
 -Dorg.slf4j.simpleLogger.log.org.apache.maven.wagon.providers.http.httpclient.wire=trace
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 When you set these options, all network requests are logged and a large amount of output is generated.
+
+{{< /alert >}}
 
 ### Verify your Maven settings
 

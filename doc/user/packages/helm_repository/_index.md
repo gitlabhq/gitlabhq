@@ -5,15 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Helm charts in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Helm chart registry for GitLab is under development and isn't ready for production use due to
 limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6366) details the remaining
 work and timelines to make it production ready.
+
+{{< /alert >}}
 
 Publish Helm packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -38,9 +44,12 @@ To authenticate to the Helm repository, you need either:
 
 ## Publish a package
 
-NOTE:
+{{< alert type="note" >}}
+
 You can publish Helm charts with duplicate names or versions. If duplicates exist, GitLab always
 returns the chart with the latest version.
+
+{{< /alert >}}
 
 Once built, a chart can be uploaded to the desired channel with `curl` or `helm cm-push`:
 
@@ -100,9 +109,12 @@ upload:
 
 ## Install a package
 
-NOTE:
+{{< alert type="note" >}}
+
 When requesting a package, GitLab considers only the 1000 most recent packages created.
 For each package, only the most recent package file is returned.
+
+{{< /alert >}}
 
 To install the latest version of a chart, use the following command:
 

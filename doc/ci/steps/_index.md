@@ -5,10 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: CI/CD steps
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
 
 Steps are reusable units of a job that when composed together replace the `script` used in a GitLab CI/CD job.
 While you are not required to use steps, the reusability, composability, testability, and independence
@@ -450,9 +453,12 @@ exec:
     - "echo ${PWD}"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Any dependency required by the executing step should also be installed by the step.
 For example, if a step calls `go`, it should first install it.
+
+{{< /alert >}}
 
 ##### Return an output
 

@@ -5,18 +5,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Audit event streaming for instances
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
-> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
-> - Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
-> - Custom HTTP headers UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361630) in GitLab 15.2 [with a flag](../feature_flags.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
-> - Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
-> - [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
-> - HTTP destination **Name** field [added](https://gitlab.com/gitlab-org/gitlab/-/issues/411357) in GitLab 16.3.
-> - Functionality for the **Active** checkbox [added](https://gitlab.com/gitlab-org/gitlab/-/issues/415268) in GitLab 16.5.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+- [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
+- Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
+- Custom HTTP headers UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361630) in GitLab 15.2 [with a flag](../feature_flags.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
+- Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
+- [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
+- HTTP destination **Name** field [added](https://gitlab.com/gitlab-org/gitlab/-/issues/411357) in GitLab 16.3.
+- Functionality for the **Active** checkbox [added](https://gitlab.com/gitlab-org/gitlab/-/issues/415268) in GitLab 16.5.
+
+{{< /history >}}
 
 Audit event streaming for instances, administrators can:
 
@@ -31,9 +38,12 @@ incoming data.
 
 Audit events are sent using the POST request method protocol supported by HTTP.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust
 the streaming destination.
+
+{{< /alert >}}
 
 Manage streaming destinations for an entire instance.
 
@@ -130,17 +140,21 @@ To delete only the custom HTTP headers for a streaming destination:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
-1. To the right of the item, select **Edit** (**{pencil}**).
+1. To the right of the item, select **Edit** ({{< icon name="pencil" >}}).
 1. Locate the **Custom HTTP headers** table.
 1. Locate the header that you wish to remove.
-1. To the right of the header, select **Delete** (**{remove}**).
+1. To the right of the header, select **Delete** ({{< icon name="remove" >}}).
 1. Select **Save** to update the streaming destination.
 
 ### Verify event authenticity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
-> - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
-> - Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
+- [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
+- Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
+
+{{< /history >}}
 
 Each streaming destination has a unique verification token (`verificationToken`) that can be used to verify the authenticity of the event. This
 token is either specified by the Owner or generated automatically when the event destination is created and cannot be changed.
@@ -161,12 +175,16 @@ To list streaming destinations for an instance and see the verification tokens:
 
 ### Update event filters
 
-> - Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415013) in GitLab 16.3.
+{{< history >}}
+
+- Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415013) in GitLab 16.3.
+
+{{< /history >}}
 
 When this feature is enabled, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
 
-A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+A streaming destination that has an event type filter set has a **filtered** ({{< icon name="filter" >}}) label.
 
 To update a streaming destination's event filters:
 
@@ -190,7 +208,11 @@ To override the `content-type` header default value for an instance streaming de
 
 ## Google Cloud Logging destinations
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131851) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131851) in GitLab 16.5.
+
+{{< /history >}}
 
 Manage Google Cloud Logging destinations for an entire instance.
 
@@ -269,8 +291,12 @@ To delete Google Cloud Logging streaming destinations to an instance:
 
 ## AWS S3 destinations
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138245) in GitLab 16.7 [with a flag](../feature_flags.md) named `allow_streaming_instance_audit_events_to_amazon_s3`. Disabled by default.
-> - [Feature flag `allow_streaming_instance_audit_events_to_amazon_s3`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137391) removed in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138245) in GitLab 16.7 [with a flag](../feature_flags.md) named `allow_streaming_instance_audit_events_to_amazon_s3`. Disabled by default.
+- [Feature flag `allow_streaming_instance_audit_events_to_amazon_s3`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137391) removed in GitLab 16.8.
+
+{{< /history >}}
 
 Manage AWS S3 destinations for entire instance.
 

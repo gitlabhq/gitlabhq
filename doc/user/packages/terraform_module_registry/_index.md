@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Terraform Module Registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Infrastructure registry and Terraform Module Registry [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/404075) into a single Terraform Module Registry feature in GitLab 15.11.
-> - Support for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140215) in GitLab 16.9.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Infrastructure registry and Terraform Module Registry [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/404075) into a single Terraform Module Registry feature in GitLab 15.11.
+- Support for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140215) in GitLab 16.9.
+
+{{< /history >}}
 
 With the Terraform Module Registry, you can use GitLab projects as a
 private registry for terraform modules. You can create and publish
@@ -19,7 +26,11 @@ projects.
 
 ## View Terraform modules
 
-> - Support for Readme files [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438060) in GitLab 17.2.
+{{< history >}}
+
+- Support for Readme files [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438060) in GitLab 17.2.
+
+{{< /history >}}
 
 To view Terraform modules in your project or group:
 
@@ -98,7 +109,11 @@ Example response:
 
 ### Using a CI/CD template (recommended)
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110493) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110493) in GitLab 15.9.
+
+{{< /history >}}
 
 You can use the [`Terraform-Module.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform-Module.gitlab-ci.yml)
 or the advanced [`Terraform/Module-Base.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Module-Base.gitlab-ci.yml)
@@ -160,8 +175,12 @@ For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML 
 
 ### Allow duplicate Terraform modules
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
+{{< /history >}}
 
 By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace.
 
@@ -174,8 +193,11 @@ To allow publishing duplicate module names:
 
 Your changes are automatically saved.
 
-NOTE:
+{{< alert type="note" >}}
+
 If **Allow duplicates** is turned on, you can specify module names that should not have duplicates in the **Exceptions** text box.
+
+{{< /alert >}}
 
 You can also allow publishing duplicate names by enabling `terraform_module_duplicates_allowed` in the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
 

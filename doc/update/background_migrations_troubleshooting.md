@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 <!-- Linked from lib/gitlab/database/migrations/batched_background_migration_helpers.rb -->
 
@@ -87,8 +90,11 @@ version and wait for the batched background migrations to finish.
 
 ## Background migrations remain in the Sidekiq queue
 
-WARNING:
+{{< alert type="warning" >}}
+
 The following operations can disrupt your GitLab performance. They run Sidekiq jobs that perform various database or file updates.
+
+{{< /alert >}}
 
 Run the following check. If the check returns non-zero and the count does not decrease over time, follow the rest of the steps in this section.
 
@@ -103,9 +109,9 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::BackgroundMi
 
 It is safe to re-execute the following commands, especially if you have 1000+ pending jobs which would likely overflow your runtime memory.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 # Start the rails console
@@ -117,7 +123,9 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 # Start the rails console
@@ -129,7 +137,9 @@ pending_job_classes = scheduled_queue.select { |job| job["class"] == "Background
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Background migrations stuck in 'pending' state
 
@@ -148,9 +158,9 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::Ba
 
 It is safe to re-attempt these migrations to clear them out from a pending status:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 # Start the rails console
@@ -164,7 +174,9 @@ Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
 end
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 # Start the rails console
@@ -178,7 +190,9 @@ Gitlab::Database::BackgroundMigrationJob.pending.find_each do |job|
 end
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Advanced search migrations are stuck
 

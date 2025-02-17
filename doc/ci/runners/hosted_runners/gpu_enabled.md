@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GPU-enabled hosted runners
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 GitLab provides GPU-enabled hosted runners to accelerate heavy compute workloads for ModelOps
 or HPC such as the training or deployment of Large Language Models (LLMs) as part of ModelOps workloads.

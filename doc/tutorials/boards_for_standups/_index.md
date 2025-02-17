@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Set up an issue board for a team stand-up'
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -49,7 +52,7 @@ Groups let you manage member access and share settings across projects.
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. Complete the fields:
    - In **Group name**, enter `Paperclip Software Factory`.
@@ -116,7 +119,7 @@ To create a group issue board:
 
 ### Add workflow lists to your board
 
-1. In the upper-right corner, select **Add list** (**{plus}**).
+1. In the upper-right corner, select **Add list** ({{< icon name="plus" >}}).
 1. From **New list**, select **Label**.
 1. From the **Value** dropdown list, select a workflow label.
 1. Select **Add to board**.
@@ -133,7 +136,7 @@ For example, you can show issues only from the current iteration or with specifi
 
 To configure your board:
 
-1. On your team stand-up board, select **Configure board** (**{settings}**).
+1. On your team stand-up board, select **Configure board** ({{< icon name="settings" >}}).
 1. Complete any of these fields to filter issues:
    - **Milestone**: to show issues from a specific milestone.
    - **Assignee**: to show issues assigned to specific team members.
@@ -153,7 +156,7 @@ You can create issues directly from your board during the team stand-up.
 
 To create an issue:
 
-1. On your team stand-up board, in the `workflow::ready for development` list, select **Create new issue** (**{plus}**).
+1. On your team stand-up board, in the `workflow::ready for development` list, select **Create new issue** ({{< icon name="plus" >}}).
 1. Complete the fields:
    - In **Title**, enter `Redesign user profile page`
    - From the **Projects** dropdown list, select **Paperclip Software Factory / Paperclip Assistant**

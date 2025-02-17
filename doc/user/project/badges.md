@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Badges
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Badges are a unified way to present condensed pieces of information about your projects.
 A badge consists of a small image and a URL that the image points to.
@@ -87,8 +90,11 @@ The following table shows the default test coverage limits and badge colors:
 | Low | 0 up to 75%  | <span style="color: #e05d44">■</span> `#e05d44` |
 | Unknown | No coverage | <span style="color: #9f9f9f">■</span> `#9f9f9f` |
 
-NOTE:
+{{< alert type="note" >}}
+
 *Up to* means up to, but not including, the upper bound.
+
+{{< /alert >}}
 
 ### Change the default limits
 
@@ -161,9 +167,12 @@ page of any project that belongs to the group.
 By adding a badge to a group, you add and enforce a project-level badge
 for all projects in the group.
 
-NOTE:
+{{< alert type="note" >}}
+
 While these badges appear as project-level badges in the codebase, they
 cannot be edited or deleted at the project level.
+
+{{< /alert >}}
 
 If you need individual badges for each project, either:
 
@@ -201,8 +210,11 @@ Then you can use the link to embed the badge in your HTML or Markdown pages.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
 
-NOTE:
+{{< alert type="note" >}}
+
 The pipeline status badge is based on specific Git revisions (branches). Ensure you select the appropriate branch to view the correct pipeline status.
+
+{{< /alert >}}
 
 ## Customize badges
 
@@ -282,7 +294,7 @@ To edit a badge in a project or group:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > General**.
 1. Expand **Badges**.
-1. Next to the badge you want to edit, select **Edit** (**{pencil}**).
+1. Next to the badge you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the **Name**, **Link**, or **Badge image URL**.
 1. Select **Save changes**.
 
@@ -293,11 +305,14 @@ To delete a badge in a project or group:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > General**.
 1. Expand **Badges**.
-1. Next to the badge you want to delete, select **Delete** (**{remove}**).
+1. Next to the badge you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete badge**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Badges associated with a group can be edited or deleted only at the [group level](#group-badges).
+
+{{< /alert >}}
 
 ## Placeholders
 
@@ -318,8 +333,11 @@ The following placeholders are available:
   project's repository
 - `%{latest_tag}`: Latest tag added to the project's repository
 
-NOTE:
+{{< alert type="note" >}}
+
 Placeholders allow badges to expose otherwise-private information, such as the
 default branch or commit SHA when the project is configured to have a private
 repository. This behavior is intentional, as badges are intended to be used publicly. Avoid
 using these placeholders if the information is sensitive.
+
+{{< /alert >}}

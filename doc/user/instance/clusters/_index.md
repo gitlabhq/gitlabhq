@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Instance Kubernetes clusters (certificate-based) (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5. To connect clusters to GitLab,
 use the [GitLab agent](../../clusters/agent/_index.md).
+
+{{< /alert >}}
 
 Similar to Kubernetes clusters for [projects](../../project/clusters/_index.md)
 and [groups](../../group/clusters/_index.md), instance Kubernetes clusters enable
@@ -36,9 +42,12 @@ match the [environment selector](../../../ci/environments/_index.md#limit-the-en
 
 ## Cluster environments
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 For a consolidated view of which CI [environments](../../../ci/environments/_index.md)
 are deployed to the Kubernetes cluster, see the documentation for

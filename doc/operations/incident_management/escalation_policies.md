@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Escalation policies
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Escalation policies protect your company from missed critical alerts. Escalation policies contain
 time-boxed steps that automatically page the next responder in the escalation step if the responder
@@ -51,7 +54,7 @@ To update an escalation policy:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Escalation Policies**.
-1. Select **Edit escalation policy** (**{pencil}**).
+1. Select **Edit escalation policy** ({{< icon name="pencil" >}}).
 1. Edit the information.
 1. Select **Save changes**.
 
@@ -61,5 +64,5 @@ To delete an escalation policy:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Escalation Policies**.
-1. Select **Delete escalation policy** (**{remove}**).
+1. Select **Delete escalation policy** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete escalation policy**.

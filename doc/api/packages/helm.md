@@ -5,24 +5,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Helm API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This is the API documentation for [Helm](../../user/packages/helm_repository/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the Helm-related package clients such as [Helm](https://helm.sh/)
 and [`helm-push`](https://github.com/chartmuseum/helm-push/#readme),
 and is generally not meant for manual consumption.
 
+{{< /alert >}}
+
 For instructions on how to upload and install Helm packages from the GitLab
 Package Registry, see the [Helm registry documentation](../../user/packages/helm_repository/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See the [Helm registry documentation](../../user/packages/helm_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## Download a chart index
 

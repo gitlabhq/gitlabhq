@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/decisions/001_modular_application_domain/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/decisions/001_modular_application_domain/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

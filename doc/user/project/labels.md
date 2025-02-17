@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Labels
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Labels are a way to categorize and filter issues, merge requests, and epics in GitLab.
 
@@ -35,10 +38,14 @@ You can use two types of labels in GitLab:
 
 ## Assign and unassign labels
 
-> - Real-time updates in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
-> - Real-time updates in the sidebar [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
-> - Real-time updates in the sidebar [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/357370) in GitLab 15.5.
-> - Real-time updates in the sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103199) in GitLab 15.6. Feature flag `realtime_labels` removed.
+{{< history >}}
+
+- Real-time updates in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
+- Real-time updates in the sidebar [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
+- Real-time updates in the sidebar [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/357370) in GitLab 15.5.
+- Real-time updates in the sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103199) in GitLab 15.6. Feature flag `realtime_labels` removed.
+
+{{< /history >}}
 
 You can assign labels to any issue, merge request, or epic.
 
@@ -104,7 +111,11 @@ the group's projects.
 
 ## Create a label
 
-> - Minimum role to create a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to create a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -127,7 +138,11 @@ To create a project label:
 
 ### Create a project label from an issue or merge request
 
-> - Minimum role to create a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to create a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can also create a new project label from an issue or merge request.
 Labels you create this way belong to the same project as the issue or merge request.
@@ -163,11 +178,18 @@ To create a group label:
 
 ### Create a group label from an epic
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Minimum role to create a group label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Minimum role to create a group label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can also create a new group label from an epic.
 Labels you create this way belong to the same group as the epic.
@@ -188,7 +210,11 @@ To do so:
 
 ## Edit a label
 
-> - Minimum role to edit a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to edit a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -200,7 +226,7 @@ To edit a **project** label:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Labels**.
-1. Next to the label you want to edit, select the vertical ellipsis (**{ellipsis_v}**), and then select **Edit**.
+1. Next to the label you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and then select **Edit**.
 1. Select **Save changes**.
 
 ### Edit a group label
@@ -209,16 +235,23 @@ To edit a **group** label:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Labels**.
-1. Next to the label you want to edit, select the vertical ellipsis (**{ellipsis_v}**), and then select **Edit**.
+1. Next to the label you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and then select **Edit**.
 1. Select **Save changes**.
 
 ## Delete a label
 
-> - Minimum role to delete a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
 
-WARNING:
+- Minimum role to delete a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 If you delete a label, it is permanently deleted. All references to the label are removed from the
 system and you cannot undo the deletion.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -230,7 +263,7 @@ To delete a **project** label:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Labels**.
-1. Next to the **Subscribe** button, select (**{ellipsis_v}**), and then select **Delete**.
+1. Next to the **Subscribe** button, select ({{< icon name="ellipsis_v" >}}), and then select **Delete**.
 
 ### Delete a group label
 
@@ -240,14 +273,18 @@ To delete a **group** label:
 1. Select **Manage > Labels**.
 1. Either:
 
-   - Next to the **Subscribe** button, select (**{ellipsis_v}**).
-   - Next to the label you want to edit, select **Edit** (**{pencil}**).
+   - Next to the **Subscribe** button, select ({{< icon name="ellipsis_v" >}}).
+   - Next to the label you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 
 1. Select **Delete**.
 
 ## Promote a project label to a group label
 
-> - Minimum role to promote a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to promote a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You might want to make a project label available for other
 projects in the same group. Then, you can promote the label to a group label.
@@ -256,8 +293,11 @@ If other projects in the same group have a label with the same title, they are a
 merged with the new group label. If a group label with the same title exists, it is
 also merged.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Promoting a label is a permanent action and cannot be reversed.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -268,7 +308,7 @@ To promote a project label to a group label:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Labels**.
-1. Next to the **Subscribe** button, select the three dots (**{ellipsis_v}**) and
+1. Next to the **Subscribe** button, select the three dots ({{< icon name="ellipsis_v" >}}) and
    select **Promote to group label**.
 
 All issues, merge requests, issue board lists, issue board filters, and label subscriptions
@@ -278,7 +318,11 @@ The new group label has the same ID as the previous project label.
 
 ## Promote a subgroup label to the parent group
 
-> - Minimum role to promote a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to promote a label [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 It's not possible to directly promote a group label to the parent group.
 To achieve this, use the following workaround.
@@ -309,7 +353,11 @@ to the same issues, MRs, and epics.
 
 ## Generate default project labels
 
-> - Minimum role to generate default labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to generate default labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 If a project or its parent group has no labels, you can generate a default set of project
 labels from the label list page.
@@ -338,9 +386,12 @@ The following labels are created:
 
 ## Scoped labels
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Teams can use scoped labels to annotate issues, merge requests, and epics with mutually exclusive
 labels. By preventing certain labels from being used together, you can create more complex workflows.
@@ -368,8 +419,11 @@ To filter issue, merge request, or epic lists by a given scope, enter
 For example, filtering by the `platform::*` label returns issues that have `platform::iOS`,
 `platform::Android`, or `platform::Linux` labels.
 
-NOTE:
+{{< alert type="note" >}}
+
 Filtering by scoped labels not available on the issues or merge requests dashboard pages.
+
+{{< /alert >}}
 
 ### Scoped labels examples
 
@@ -450,7 +504,11 @@ To subscribe to a label:
 
 ## Set label priority
 
-> - Minimum role to set label priority [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to set label priority [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Labels can have relative priorities, which are used when you sort issue and merge request lists
 by [label priority](issues/sorting_issue_lists.md#sorting-by-label-priority) and [priority](issues/sorting_issue_lists.md#sorting-by-priority).
@@ -458,9 +516,12 @@ by [label priority](issues/sorting_issue_lists.md#sorting-by-label-priority) and
 When prioritizing labels, you must do it from a project.
 It's not possible to do it from the group label list.
 
-NOTE:
+{{< alert type="note" >}}
+
 Priority sorting is based on the highest priority label only.
 [This discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/14523) considers changing this.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -470,7 +531,7 @@ To prioritize a label:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Labels**.
-1. Next to a label you want to prioritize, select the star (**{star-o}**).
+1. Next to a label you want to prioritize, select the star ({{< icon name="star-o" >}}).
 
 ![Labels prioritized](img/labels_prioritized_v13_5.png)
 
@@ -484,18 +545,28 @@ To learn what happens when you sort by priority or label priority, see
 
 ## Lock labels when a merge request is merged
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/development_stages_support.md). Disabled by default.
-> - Minimum role to lock labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Beta
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/development_stages_support.md). Disabled by default.
+- Minimum role to lock labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 To comply with certain auditing requirements, you can set a label to be locked.
 When a merge request with locked labels gets merged, nobody can remove them from the MR.
@@ -506,14 +577,17 @@ Prerequisites:
 
 - You must have at least the Planner role for the project or group.
 
-WARNING:
+{{< alert type="warning" >}}
+
 After you set a label as locked, nobody can undo it or delete the label.
+
+{{< /alert >}}
 
 To set a label to get locked on merge:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
 1. Select **Manage > Labels**.
-1. Next to the label you want to edit, select the vertical ellipsis (**{ellipsis_v}**), and then select **Edit**.
+1. Next to the label you want to edit, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and then select **Edit**.
 1. Select the **Lock label after a merge request is merged** checkbox.
 1. Select **Save changes**.
 

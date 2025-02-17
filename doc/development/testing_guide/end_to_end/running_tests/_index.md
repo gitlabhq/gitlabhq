@@ -17,12 +17,14 @@ bundle install
 bundle exec rspec <path/to/spec.rb>
 ```
 
-NOTE:
+{{< alert type="note" >}}
 
 - If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - You may be able to use the password pre-set for `root` in your GDK installation [See GDK help](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/14bd8b6eb875d72eb1b482e0ec00cbf8fc3ebf99/HELP#L62). If you have changed your `root` password from the default, export the password as `GITLAB_ADMIN_PASSWORD`.
 - By default the tests will run in a headless browser. If you'd like to watch the test execution, you can export `WEBDRIVER_HEADLESS=false`.
 - Tests that are tagged `:orchestrated` require special setup (e.g., custom GitLab configuration, or additional services such as LDAP). All [orchestrated tests can be run via `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md). There are also [setup instructions](running_tests_that_require_special_setup.md) for running some of those tests against GDK or another local GitLab instance.
+
+{{< /alert >}}
 
 ### Remote development
 
@@ -66,8 +68,11 @@ See the section above for situations that might require adjustment to the comman
     gitlab/gitlab-ee:nightly
    ```
 
-  NOTE:
-  If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
+  {{< alert type="note" >}}
+
+If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
+
+  {{< /alert >}}
 
 1. Once GitLab is up and accessible on `http://127.0.0.1`, in another shell tab, navigate to the `qa` directory of the checkout of the GitLab repository on your computer and run the following commands.
 
@@ -93,8 +98,11 @@ See the section above for situations that might require adjustment to the comman
    - [Ruby](https://rubyinstaller.org/downloads/). Refer to the [`.ruby-version` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.ruby-version)
      for the exact version of Ruby to install.
 
-   NOTE:
-   Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
+   {{< alert type="note" >}}
+
+Be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
+
+   {{< /alert >}}
 
 1. Use the following command to start an instance that you can visit at `http://127.0.0.1`. You might need to grant admin rights if asked:
 
@@ -179,8 +187,11 @@ bundle exec bin/qa Test::Instance::All http://localhost:3000 --disable-feature g
 
 This will instruct the QA framework to disable the `gitaly_enforce_requests_limits` feature flag ([via the API](../../../../api/features.md)) if not already disabled, run all the tests in the `Test::Instance::All` scenario, and then enable the feature flag again if it was enabled earlier.
 
-NOTE:
+{{< alert type="note" >}}
+
 You can also [toggle feature flags in the tests themselves](../best_practices/feature_flags.md).
+
+{{< /alert >}}
 
 Note also that the `--` separator isn't used because `--enable-feature` and `--disable-feature` are QA framework options, not `rspec` options.
 

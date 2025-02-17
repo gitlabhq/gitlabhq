@@ -5,11 +5,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Arkose Protect
 ---
 
-WARNING:
+{{< alert type="warning" >}}
+
 Arkose Protect is used on GitLab.com and is not supported for GitLab Self-Managed
 instances. The following documents the internal requirements for maintaining
 Arkose Protect on GitLab.com. While this feature is theoretically usable in GitLab Self-Managed instances, it
 is not recommended at the moment.
+
+{{< /alert >}}
 
 GitLab integrates [Arkose Protect](https://www.arkoselabs.com/platform/) to guard against
 malicious users from creating accounts.
@@ -117,7 +120,11 @@ This job is performed by the `Arkose::BlockedUsersReportWorker` class.
 
 ## Test your integration
 
-> - Requesting specific behaviors with Data Exchange [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435275) in GitLab 16.8 [with a flag](../administration/feature_flags.md) named `arkose_labs_signup_data_exchange`. Disabled by default.
+{{< history >}}
+
+- Requesting specific behaviors with Data Exchange [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435275) in GitLab 16.8 [with a flag](../administration/feature_flags.md) named `arkose_labs_signup_data_exchange`. Disabled by default.
+
+{{< /history >}}
 
 In staging and development environments only, you can suppress a challenge, or force one to appear.
 You can use this feature if you want to receive a specific risk band.

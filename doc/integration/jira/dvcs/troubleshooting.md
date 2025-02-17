@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Jira DVCS connector
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with the [Jira DVCS connector](_index.md), you might encounter the following issues.
 
@@ -102,7 +105,7 @@ resynchronize the information:
 
 1. In Jira, select **Jira Administration > Applications > DVCS accounts**.
 1. For the account (group or subgroup), select
-   **Refresh repositories** from the **{ellipsis_h}** (ellipsis) menu.
+   **Refresh repositories** from the {{< icon name="ellipsis_h" >}} (ellipsis) menu.
 1. For each project, next to the **Last activity** date:
    - To perform a *soft resync*, select the sync icon.
    - To complete a *full sync*, press `Shift` and select the sync icon.

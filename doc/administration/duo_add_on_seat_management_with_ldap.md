@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo add-on seat management with LDAP
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175101) in GitLab 17.8.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175101) in GitLab 17.8.
+
+{{< /history >}}
 
 GitLab administrators can configure automatic GitLab Duo add-on seat assignment based on LDAP group membership. When enabled, GitLab will automatically assign or remove add-on seats for users when they sign in, depending on their LDAP group memberships.
 

@@ -1,8 +1,8 @@
 ---
 stage: AI-powered
 group: AI Model Validation
-description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: AI-powered features and functionality.
 title: GitLab Duo data usage
 ---
 
@@ -73,7 +73,11 @@ GitLab is actively iterating on all our AI-assisted capabilities to improve the 
 
 ## Secret detection and redaction
 
-> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/632) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/632) in GitLab 17.9.
+
+{{< /history >}}
 
 GitLab Duo includes secret detection and redaction, powered by Gitleaks. It automatically
 detects and removes sensitive information like API keys, credentials, and tokens from your

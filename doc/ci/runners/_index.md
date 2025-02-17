@@ -43,9 +43,12 @@ Runners can be group, project, or instance runners. GitLab-hosted runners are in
 
 ### GitLab-hosted runners
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab-hosted runners are:
 
@@ -65,9 +68,12 @@ Choose GitLab-hosted runners when:
 
 ### Self-managed runners
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Self-managed runners are:
 

@@ -1,6 +1,6 @@
 ---
-redirect_to: 'container_repository_protection_rules.md'
-remove_date: '2025-02-28'
+redirect_to: container_repository_protection_rules.md
+remove_date: "2025-02-28"
 ---
 
 <!-- markdownlint-disable -->

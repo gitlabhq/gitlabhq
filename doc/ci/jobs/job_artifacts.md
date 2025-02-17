@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Job artifacts
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
@@ -192,9 +195,13 @@ job:
 
 ## View all job artifacts in a project
 
-> - Interface improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
-> - Performance improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/407475) in GitLab 16.0. Feature flag `artifacts_management_page` removed.
+{{< history >}}
+
+- Interface improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
+- Performance improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/407475) in GitLab 16.0. Feature flag `artifacts_management_page` removed.
+
+{{< /history >}}
 
 You can view all artifacts stored in a project from the **Build > Artifacts** page.
 This list displays all jobs and their associated artifacts. Expand an entry to access
@@ -210,13 +217,13 @@ You can download or delete individual artifacts from this list.
 
 You can download job artifacts from:
 
-- Any **Pipelines** list. On the right of the pipeline, select **Download artifacts** (**{download}**).
-- Any **Jobs** list. On the right of the job, select **Download artifacts** (**{download}**).
+- Any **Pipelines** list. On the right of the pipeline, select **Download artifacts** ({{< icon name="download" >}}).
+- Any **Jobs** list. On the right of the job, select **Download artifacts** ({{< icon name="download" >}}).
 - A job's detail page. On the right of the page, select **Download**.
-- A merge request **Overview** page. On the right of the latest pipeline, select **Artifacts** (**{download}**).
-- The [**Artifacts**](#view-all-job-artifacts-in-a-project) page. On the right of the job, select **Download** (**{download}**).
+- A merge request **Overview** page. On the right of the latest pipeline, select **Artifacts** ({{< icon name="download" >}}).
+- The [**Artifacts**](#view-all-job-artifacts-in-a-project) page. On the right of the job, select **Download** ({{< icon name="download" >}}).
 - The [artifacts browser](#browse-the-contents-of-the-artifacts-archive). On the top of the page,
-  select **Download artifacts archive** (**{download}**).
+  select **Download artifacts archive** ({{< icon name="download" >}}).
 
 [Report artifacts](../yaml/artifacts_reports.md) can only be downloaded from the **Pipelines** list
 or **Artifacts** page.
@@ -255,9 +262,12 @@ child pipelines have a job with the same name, the job artifacts from the parent
 
 ### With a CI/CD job token
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use a [CI/CD job token](ci_job_token.md) to authenticate with the [jobs artifacts API endpoint](../../api/job_artifacts.md)
 and fetch artifacts from a different pipeline. You must specify which job to retrieve artifacts from,
@@ -277,9 +287,9 @@ build_submodule:
 You can browse the contents of the artifacts from the UI without downloading the artifact locally,
 from:
 
-- Any **Jobs** list. On the right of the job, select **Browse** (**{folder-open}**).
+- Any **Jobs** list. On the right of the job, select **Browse** ({{< icon name="folder-open" >}}).
 - A job's detail page. On the right of the page, select **Browse**.
-- The **Artifacts** page. On the right of the job, select **Browse** (**{folder-open}**).
+- The **Artifacts** page. On the right of the job, select **Browse** ({{< icon name="folder-open" >}}).
 
 If [GitLab Pages](../../administration/pages/_index.md) is enabled globally, even if it is disabled in the project settings,
 you can preview some artifacts file extensions directly in your browser. If the project is internal or private,
@@ -289,11 +299,11 @@ The following extensions are supported:
 
 | File extension | GitLab.com             | Linux package with built-in NGINX |
 |----------------|------------------------|-----------------------------------|
-| `.html`        | **{check-circle}** Yes | **{check-circle}** Yes            |
-| `.json`        | **{check-circle}** Yes | **{check-circle}** Yes            |
-| `.xml`         | **{check-circle}** Yes | **{check-circle}** Yes            |
-| `.txt`         | **{dotted-circle}** No | **{check-circle}** Yes            |
-| `.log`         | **{dotted-circle}** No | **{check-circle}** Yes            |
+| `.html`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
+| `.json`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
+| `.xml`         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
+| `.txt`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes            |
+| `.log`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes            |
 
 ### From a URL
 
@@ -310,10 +320,13 @@ Replace `<full-project-path>` with a valid project path, you can find it in the 
 
 ## Delete job log and artifacts
 
-WARNING:
+{{< alert type="warning" >}}
+
 Deleting the job log and artifacts is a destructive action that cannot be reverted. Use with caution.
 Deleting certain files, including report artifacts, job logs, and metadata files, affects
 GitLab features that use these files as data sources.
+
+{{< /alert >}}
 
 You can delete a job's artifacts and log.
 
@@ -324,14 +337,18 @@ Prerequisites:
 To delete a job:
 
 1. Go to a job's detail page.
-1. In the upper-right corner of the job's log, select **Erase job log and artifacts** (**{remove}**).
+1. In the upper-right corner of the job's log, select **Erase job log and artifacts** ({{< icon name="remove" >}}).
 
 You can also delete individual artifacts from the [**Artifacts** page](#bulk-delete-artifacts).
 
 ### Bulk delete artifacts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/398581) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/398581) in GitLab 16.1.
+
+{{< /history >}}
 
 You can delete multiple artifacts at the same time:
 
@@ -360,7 +377,11 @@ With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to t
 
 ## Keep artifacts from most recent successful jobs
 
-> - Artifacts for [blocked](https://gitlab.com/gitlab-org/gitlab/-/issues/387087) or [failed](https://gitlab.com/gitlab-org/gitlab/-/issues/266958) pipelines changed to no longer be kept indefinitely in GitLab 16.7.
+{{< history >}}
+
+- Artifacts for [blocked](https://gitlab.com/gitlab-org/gitlab/-/issues/387087) or [failed](https://gitlab.com/gitlab-org/gitlab/-/issues/266958) pipelines changed to no longer be kept indefinitely in GitLab 16.7.
+
+{{< /history >}}
 
 By default artifacts are always kept for successful pipelines for the most recent commit on each ref.
 Any [`expire_in`](#with-an-expiry) configuration does not apply to the most recent artifacts.

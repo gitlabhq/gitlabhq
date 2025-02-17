@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Package defaults
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Unless configuration is specified in the `/etc/gitlab/gitlab.rb` file,
 the package assumes the defaults as noted below.
@@ -73,8 +76,11 @@ If you are using NFS (Network File System), files are carried
 over a network which requires, based on implementation, ports `111` and
 `2049` to be open.
 
-NOTE:
+{{< alert type="note" >}}
+
 In some cases, the GitLab Registry is automatically enabled by default. See [our documentation](../packages/container_registry.md) for more details.
+
+{{< /alert >}}
 
  [^Consul-notes]: If using additional Consul functionality, more ports may need to be opened. See the [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
 

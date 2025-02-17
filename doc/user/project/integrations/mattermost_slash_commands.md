@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Mattermost slash commands
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use [slash commands](gitlab_slack_application.md#slash-commands) to run common GitLab operations,
 like creating an issue, from a [Mattermost](https://mattermost.com/) chat environment.
@@ -55,7 +58,7 @@ To manually configure slash commands in Mattermost, you must:
 To enable custom slash commands from the Mattermost administrator console:
 
 1. Sign in to Mattermost as a user with administrator privileges.
-1. Next to your username, select the **{ellipsis_v}** **Settings** icon, and
+1. Next to your username, select the {{< icon name="ellipsis_v" >}} **Settings** icon, and
    select **System Console**.
 1. Select **Integration Management**, and set these values to `TRUE`:
    - **Enable Custom Slash Commands**
@@ -82,7 +85,7 @@ To create a slash command in Mattermost:
 
 1. [In the Mattermost browser tab](#enable-custom-slash-commands-in-mattermost),
    go to your team page.
-1. Select the **{ellipsis_v}** **Settings** icon, and select **Integrations**.
+1. Select the {{< icon name="ellipsis_v" >}} **Settings** icon, and select **Integrations**.
 1. On the left sidebar, select **Slash commands**.
 1. Select **Add Slash Command**.
 1. Provide a **Display Name** and **Description** for your new command.

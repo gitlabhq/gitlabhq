@@ -2,7 +2,7 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Create a GitLab workspaces proxy to authenticate and authorize workspaces in your cluster."
+description: Create a GitLab workspaces proxy to authenticate and authorize workspaces in your cluster.
 title: Troubleshooting workspaces
 ---
 

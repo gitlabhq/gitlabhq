@@ -5,20 +5,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Rails console
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 At the heart of GitLab is a web application
 [built using the Ruby on Rails framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
 The [Rails console](https://guides.rubyonrails.org/command_line.html#rails-console)
 provides a way to interact with your GitLab instance from the command line, and also grants access to the amazing tools built right into Rails.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The Rails console interacts directly with GitLab. In many cases,
 there are no handrails to prevent you from permanently modifying, corrupting
 or destroying production data. If you would like to explore the Rails console
 with no consequences, you are strongly advised to do so in a test environment.
+
+{{< /alert >}}
 
 The Rails console is for GitLab system administrators who are troubleshooting
 a problem or need to retrieve some data that can only be done through direct
@@ -30,27 +36,33 @@ Rails experience is useful but not required.
 
 The process for starting a Rails console session depends on the type of GitLab installation.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 sudo gitlab-rails console
 ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 ```shell
 docker exec -it <container-id> gitlab-rails console
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 sudo -u git -H bundle exec rails console -e production
 ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 ```shell
 # find the pod
@@ -60,7 +72,9 @@ kubectl get pods --namespace <namespace> -lapp=toolbox
 kubectl exec -it -c toolbox <toolbox-pod-name> -- gitlab-rails console
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 To exit the console, type: `quit`.
 
@@ -720,8 +734,11 @@ ApplicationSetting.current
 
 ### Open object in `irb`
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
 

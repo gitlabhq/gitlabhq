@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project import and export API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the project import and export API to import and export projects using file transfers.
 
@@ -150,7 +153,11 @@ ls *export.tar.gz
 
 ## Import a file
 
-> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+{{< history >}}
+
+- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+{{< /history >}}
 
 ```plaintext
 POST /projects/import
@@ -211,18 +218,27 @@ requests.post(url, headers=headers, data=data, files=files)
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#update-application-settings) or the [**Admin** area](../administration/settings/account_and_limit_settings.md).
 
+{{< /alert >}}
+
 ## Import a file from a remote object storage
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-FLAG:
+- Status: Beta
+
+{{< /details >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.
 On GitLab.com and GitLab Dedicated, this feature is available.
+
+{{< /alert >}}
 
 ```plaintext
 POST /projects/remote-import
@@ -268,8 +284,12 @@ The `Content-Type` header must be `application/gzip`.
 
 ## Import a single relation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) as a [beta](../policy/development_stages_support.md#beta) in GitLab 16.11 [with a flag](../administration/feature_flags.md) named `single_relation_import`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/455889) in GitLab 17.1. Feature flag `single_relation_import` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) as a [beta](../policy/development_stages_support.md#beta) in GitLab 16.11 [with a flag](../administration/feature_flags.md) named `single_relation_import`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/455889) in GitLab 17.1. Feature flag `single_relation_import` removed.
+
+{{< /history >}}
 
 This endpoint accepts a project export archive and a named relation (issues,
 merge requests, pipelines, or milestones) and re-imports that relation, skipping
@@ -315,7 +335,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Check relation import statuses
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) in GitLab 16.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425798) in GitLab 16.11.
+
+{{< /history >}}
 
 This endpoint fetches the status of any relation imports associated with a project. Because
 only one relation import can be scheduled at a time, you can use this endpoint to check whether
@@ -356,7 +380,11 @@ Status can be one of:
 
 ## Import a file from AWS S3
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350571) in GitLab 15.11. Feature flag `import_project_from_remote_file_s3` removed.
+{{< history >}}
+
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350571) in GitLab 15.11. Feature flag `import_project_from_remote_file_s3` removed.
+
+{{< /history >}}
 
 ```plaintext
 POST /projects/remote-import-s3
@@ -460,11 +488,16 @@ be populated with any occurrences of relations that failed to import due to eith
 - Unrecoverable errors.
 - Retries were exhausted. A typical example: query timeouts.
 
-NOTE:
+{{< alert type="note" >}}
+
 An element's `id` field in `failed_relations` references the failure record, not the relation.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 The `failed_relations` array is capped to 100 items.
+{{< /alert >}}
 
 ```json
 {

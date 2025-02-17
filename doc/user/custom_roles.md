@@ -5,16 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Custom roles
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Custom roles feature introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
-> - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
-> - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
-> - Ability to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Custom roles feature introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
+- Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
+- Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
+- Ability to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
+
+{{< /history >}}
 
 Custom roles allow an organization to create user roles with the precise privileges and permissions required for that organization's needs.
 
@@ -23,15 +30,21 @@ For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
-NOTE:
+{{< alert type="note" >}}
+
 Most custom roles are considered [billable users that use a seat](#billing-and-seat-usage). When you add a user to your group with a custom role and you are about to incur additional charges for having more seats than are included in your subscription, a warning is displayed.
+
+{{< /alert >}}
 
 ## Available permissions
 
 For more information on available permissions, see [custom permissions](custom_roles/abilities.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Depending on the permissions added to a lower base role such as Guest, a user with a custom role might be able to perform actions that are usually restricted to the Maintainer role or higher. For example, if a custom role is Guest plus a permissions to manage CI/CD variables, a user with this role can manage CI/CD variables added by other Maintainers or Owners for that group or project.
+
+{{< /alert >}}
 
 ## Create a custom role
 
@@ -93,7 +106,11 @@ To create a custom role, you can also [use the API](../api/graphql/reference/_in
 
 ## Edit a custom role
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437590) in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437590) in GitLab 17.0.
+
+{{< /history >}}
 
 After a custom role has been created, you can edit that custom role's name, description,
 and permissions. You cannot change the base role. If you need to change the base role,
@@ -107,7 +124,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Roles and permissions**.
-1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) for the custom role, then
    select **Edit role**.
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
@@ -120,7 +137,7 @@ Prerequisites:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.
-1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) for the custom role, then
    select **Edit role**.
 1. Modify the role as needed.
 1. Select **Save role** to update the role.
@@ -140,7 +157,7 @@ You can't remove a custom role from a group if there are members assigned that r
    - For SaaS, select **Search or go to** and find your group.
 1. Select **Settings > Roles and permissions**.
 1. Select **Custom Roles**.
-1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
+1. In the **Actions** column, select **Delete role** ({{< icon name="remove" >}}) and confirm.
 
 You can also [use the API](../api/graphql/reference/_index.md#mutationmemberroledelete) to delete a custom role. To use the API, you must provide the `id` of the custom role. If you do not know this `id`, you can find it by making an [API request on the group](../api/graphql/reference/_index.md#groupmemberroles) or an [API request on the instance](../api/graphql/reference/_index.md#querymemberroles).
 
@@ -271,11 +288,18 @@ and do not use a seat.
 
 ## Assign a custom role to an invited group
 
-> - Support for custom roles for invited groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443369) in GitLab 17.4 behind a feature flag named `assign_custom_roles_to_group_links_sm`. Disabled by default.
-> - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/471999) in GitLab 17.4.
+{{< history >}}
 
-FLAG:
+- Support for custom roles for invited groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443369) in GitLab 17.4 behind a feature flag named `assign_custom_roles_to_group_links_sm`. Disabled by default.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/471999) in GitLab 17.4.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 When a group is invited to another group with a custom role, the following rules determine each user's custom permissions in the new group:
 
@@ -322,7 +346,11 @@ You can sync users to custom roles with following authentication providers:
 
 ## Custom admin roles
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../administration/feature_flags.md) named `custom_ability_read_admin_dashboard`.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../administration/feature_flags.md) named `custom_ability_read_admin_dashboard`.
+
+{{< /history >}}
 
 Prerequisites:
 

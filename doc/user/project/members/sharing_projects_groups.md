@@ -5,13 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Sharing projects and groups
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 You can share by invitation:
 
@@ -32,10 +39,10 @@ The following table provides an overview of the group members that get access to
 
 | Group member source                                                 | Access to shared project |
 |---------------------------------------------------------------------|--------------------------|
-| Direct member of the group that is shared                           | **{check-circle}** Yes   |
-| Inherited member of the group that is shared                        | **{check-circle}** Yes   |
-| Direct member of a subgroup, but not of the group that is shared    | **{dotted-circle}** No   |
-| Inherited member of a subgroup, but not of the group that is shared | **{dotted-circle}** No   |
+| Direct member of the group that is shared                           | {{< icon name="check-circle" >}} Yes   |
+| Inherited member of the group that is shared                        | {{< icon name="check-circle" >}} Yes   |
+| Direct member of a subgroup, but not of the group that is shared    | {{< icon name="dotted-circle" >}} No   |
+| Inherited member of a subgroup, but not of the group that is shared | {{< icon name="dotted-circle" >}} No   |
 
 The [visibility level](../../public_access.md) of the group you're inviting must be at least as restrictive as that of the project.
 For example, you can invite:
@@ -83,10 +90,13 @@ unless one of the following applies:
 - The current user is a member of the invited group.
 - The current user is an Owner of the current group or the Maintainer/Owner of the current project.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group's name and membership source are masked from members who do not have access to the invited group.
 However, even if project Maintainers and Owners cannot access the private invited group, they can see the source of private invited group members.
 This behavior is intended to help project Maintainers and Owners to better manage the memberships of the projects they own.
+
+{{< /alert >}}
 
 ### Examples
 
@@ -103,9 +113,13 @@ For a project that was created by `Group 1`:
 
 ### Invite a group to a project
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051), and feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/364078) in GitLab 17.4.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- Feature flag `webui_members_inherited_users` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051), and feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/364078) in GitLab 17.4.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -199,8 +213,11 @@ When this setting is enabled:
 - It applies to all subgroups, unless overridden by a group Owner.
 - Groups already added to a project lose access to it.
 
-NOTE:
+{{< alert type="note" >}}
+
 After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group), you cannot disable this setting.
+
+{{< /alert >}}
 
 ## Sharing groups
 
@@ -226,10 +243,13 @@ unless one of the following applies:
 - The current user is a member of the invited group.
 - The current user is an Owner of the current group or the Maintainer/Owner of the current project.
 
-NOTE:
+{{< alert type="note" >}}
+
 The invited group's name and membership source are masked from members who do not have access to the invited group.
 However, even if group Owners cannot access the private invited group, they can see the source of private invited group members.
 This behavior is intended to help group Owners to better manage the memberships of the groups they own.
+
+{{< /alert >}}
 
 ### Examples
 
@@ -241,7 +261,11 @@ This behavior is intended to help group Owners to better manage the memberships 
 
 ### Invite a group to a group
 
-> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+{{< history >}}
+
+- Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+
+{{< /history >}}
 
 Similar to how you invite a group to a project, you can invite a group to another group.
 
@@ -267,7 +291,7 @@ To remove an invited group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select the **Groups** tab.
-1. To the right of the group you want to remove, select **Remove group** (**{remove}**).
+1. To the right of the group you want to remove, select **Remove group** ({{< icon name="remove" >}}).
 
 When you remove the invited group from your group:
 

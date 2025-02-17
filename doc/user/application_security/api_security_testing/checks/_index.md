@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: API security testing vulnerability checks
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) from **DAST API vulnerability checks** to **API security testing vulnerability checks** in GitLab 17.0.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) from **DAST API vulnerability checks** to **API security testing vulnerability checks** in GitLab 17.0.
+
+{{< /history >}}
 
 [API security testing](../_index.md) provides vulnerability checks that are used to
 scan for vulnerabilities in the API under test.

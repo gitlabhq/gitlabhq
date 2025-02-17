@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Policies
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Policies provide security and compliance teams with a way to enforce controls globally in
 their organization.
@@ -52,12 +55,19 @@ may require up to 10 minutes before the policy changes take effect.
 
 ## Deleting security policy projects
 
-> - The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Disabled by default.
-> - The deletion protection for groups that contain security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512043) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion_groups`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Disabled by default.
+- The deletion protection for groups that contain security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512043) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion_groups`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 To delete a security policy project or one of its parent groups, you must remove the link to it
 from all other projects or groups. Otherwise, an error message is displayed when you attempt
@@ -96,10 +106,13 @@ Policies enforced on an existing group or subgroup are automatically enforced in
 - The new subgroups and projects are included in the scope definition of the policy (for example, the scope includes all projects in this group).
 - The existing group or subgroup is already linked to the security policy project.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab.com users can enforce policies against their top-level group or across subgroups, but cannot
 enforce policies across GitLab.com top-level groups. GitLab Self-Managed administrators can enforce policies
 across multiple top-level groups in their instance.
+
+{{< /alert >}}
 
 The following example illustrates two groups and their structure:
 
@@ -138,9 +151,13 @@ Assuming no policies are enforced, consider the following examples:
 
 #### Scope
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
-> - Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
+- Scoping by group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468384) in GitLab 17.4.
+
+{{< /history >}}
 
 You can refine a policy's scope by:
 
@@ -239,9 +256,9 @@ The Owner role and custom roles with the `manage_security_policy_link` permissio
 
 | Organization unit | Group owner or group `manage_security_policy_link` permission | Subgroup owner or subgroup `manage_security_policy_link` permission | Project owner or project `manage_security_policy_link` permission |
 |-------------------|---------------------------------------------------------------|---------------------------------------------------------------------|-------------------------------------------------------------------|
-| Group             | **{check-circle}** Yes                                        | **{dotted-circle}** No                                              | **{dotted-circle}** No                                            |
-| Subgroup          | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{dotted-circle}** No                                            |
-| Project           | **{check-circle}** Yes                                        | **{check-circle}** Yes                                              | **{check-circle}** Yes                                            |
+| Group             | {{< icon name="check-circle" >}} Yes                                        | {{< icon name="dotted-circle" >}} No                                              | {{< icon name="dotted-circle" >}} No                                            |
+| Subgroup          | {{< icon name="check-circle" >}} Yes                                        | {{< icon name="check-circle" >}} Yes                                              | {{< icon name="dotted-circle" >}} No                                            |
+| Project           | {{< icon name="check-circle" >}} Yes                                        | {{< icon name="check-circle" >}} Yes                                              | {{< icon name="check-circle" >}} Yes                                            |
 
 #### Required permissions
 
@@ -252,8 +269,11 @@ To create and manage security policies:
   - You must be the project owner.
   - You must be a group member with permissions to create projects in the group.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you're not a group member, you may face limitations in adding or editing policies for your project. The ability to create and manage policies requires permissions to create projects in the group. Make sure you have the required permissions in the group, even when working with project-level policies.
+
+{{< /alert >}}
 
 ## Policy implementation
 
@@ -263,9 +283,12 @@ create subgroups. Ensuring separation of duties requires more granular permissio
 
 ### Enforce policies globally in your GitLab.com namespace
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -309,9 +332,12 @@ The high-level workflow for enforcing policies globally across all subgroups and
 
 ### Enforce policies globally in GitLab Dedicated or GitLab Self-Managed
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 

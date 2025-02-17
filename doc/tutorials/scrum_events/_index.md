@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Use GitLab to facilitate Scrum'
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
@@ -99,7 +102,7 @@ It will contain your boards, features (epics), story (issue) roll up, and labels
 
 To create a group:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../../user/reserved_names.md).
@@ -119,7 +122,7 @@ Your project will contain the stories that roll up to your parent group.
 
 To create a blank project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, enter the name of your project. See the
@@ -333,7 +336,7 @@ Use each list in your release planning board to represent the following time hor
 
 Next, create a new epic in the `priority::now` list:
 
-1. On the top of the **`priority::now`** list, select the **New epic** (**{plus}**) icon.
+1. On the top of the **`priority::now`** list, select the **New epic** ({{< icon name="plus" >}}) icon.
 1. Enter the new epic's title:
 
    ```plaintext
@@ -479,7 +482,7 @@ Provide all team members the appropriate time to contribute and collaborate.
    1. Select **Plan > Issue boards**.
    1. In the upper-left corner, select the dropdown list with the current board name.
    1. Select **Backlog**.
-1. In the list for the upcoming sprint, select **Create new issue** (**{plus-square}**).
+1. In the list for the upcoming sprint, select **Create new issue** ({{< icon name="plus-square" >}}).
 1. Enter the issue's title: `Release Planning`.
 1. Select **Create issue**.
 1. Open the issue and create a discussion thread for each story assigned to the upcoming sprint.

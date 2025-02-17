@@ -53,7 +53,11 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 
 ### Mermaid chart linting
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144328) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144328) in GitLab 16.10.
+
+{{< /history >}}
 
 [Mermaid](https://mermaid.js.org/) builds charts and diagrams from code.
 

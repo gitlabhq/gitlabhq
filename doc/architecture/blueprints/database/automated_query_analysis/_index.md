@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/automated_query_analysis/'
-remove_date: '2025-09-10'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/automated_query_analysis/
+remove_date: "2025-09-10"
 ---
 
 <!-- markdownlint-disable -->

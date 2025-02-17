@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: CI/CD pipelines
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 CI/CD pipelines are the fundamental component of GitLab CI/CD. Pipelines are configured
 in a `.gitlab-ci.yml` file by using [YAML keywords](../yaml/_index.md).
@@ -132,17 +135,24 @@ In this example:
 - `DEPLOY_ENVIRONMENT` is pre-filled in the **New pipeline** page with `canary` as the default value,
   and the message explains the other options.
 
-NOTE:
+{{< alert type="note" >}}
+
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_pipelines.md) can have prefilled variables not appear
 when running a pipeline manually. To workaround this issue,
 [change the compliance pipeline configuration](../../user/group/compliance_pipelines.md#prefilled-variables-are-not-shown).
 
+{{< /alert >}}
+
 #### Configure a list of selectable prefilled variable values
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
-> - The `options` keyword was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106038) in GitLab 15.7. Feature flag `run_pipeline_graphql` removed.
-> - The variables list sometimes did not populate correctly due to [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/386245), which was resolved in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
+- The `options` keyword was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106038) in GitLab 15.7. Feature flag `run_pipeline_graphql` removed.
+- The variables list sometimes did not populate correctly due to [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/386245), which was resolved in GitLab 15.9.
+
+{{< /history >}}
 
 You can define an array of CI/CD variable values the user can select from when running a pipeline manually.
 These values are in a dropdown list in the **New pipeline** page. Add the list of
@@ -196,7 +206,7 @@ For each `var` or `file_var`, a key and value are required.
 [Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
 allow you to require manual interaction before moving forward in the pipeline.
 
-You can do this straight from the pipeline graph. Select **Run** (**{play}**) to execute that particular job.
+You can do this straight from the pipeline graph. Select **Run** ({{< icon name="play" >}}) to execute that particular job.
 
 For example, your pipeline can start automatically, but require a manual action to
 [deploy to production](../environments/deployments.md#configure-manual-deployments).
@@ -207,7 +217,7 @@ In the example below, the `production` stage has a job with a manual action:
 #### Start all manual jobs in a stage
 
 If a stage contains only manual jobs, you can start all the jobs at the same time
-by selecting **Run all manual** (**{play}**) above the stage. If the stage contains
+by selecting **Run all manual** ({{< icon name="play" >}}) above the stage. If the stage contains
 non-manual jobs, the option is not displayed.
 
 ### Skip a pipeline
@@ -231,10 +241,13 @@ Users with the Owner role for a project can delete a pipeline:
 Deleting a pipeline does not automatically delete its [child pipelines](downstream_pipelines.md#parent-child-pipelines).
 See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more details.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Deleting a pipeline expires all pipeline caches, and deletes all immediately
 related objects, such as jobs, logs, artifacts, and triggers.
 **This action cannot be undone.**
+
+{{< /alert >}}
 
 ### Pipeline security on protected branches
 
@@ -267,14 +280,20 @@ page for additional security recommendations for securing your pipelines.
 
 ## Trigger a pipeline when an upstream project is rebuilt (deprecated)
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501460) in GitLab 17.6
 and is planned for removal in 19.0. Use [CI/CD jobs with pipeline trigger tokens](../triggers/_index.md#use-a-cicd-job) instead.
 This is a breaking change.
+
+{{< /alert >}}
 
 You can set up your project to automatically trigger a pipeline based on tags in a different project.
 When a new tag pipeline in the subscribed project finishes, it triggers a pipeline on your project's default branch,
@@ -377,8 +396,12 @@ in the merge request.
 
 ### Pipeline details
 
-> - Pipeline detail view [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/424403) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `new_pipeline_graph`. Disabled by default.
-> - Updated pipeline detail view [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426902) in GitLab 16.8.
+{{< history >}}
+
+- Pipeline detail view [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/424403) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `new_pipeline_graph`. Disabled by default.
+- Updated pipeline detail view [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426902) in GitLab 16.8.
+
+{{< /history >}}
 
 Select a pipeline to open the pipeline details page which shows every job in the pipeline.
 From this page you can cancel a running pipeline, retry failed jobs, or [delete a pipeline](#delete-a-pipeline).

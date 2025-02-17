@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab-managed Terraform/OpenTofu state
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
-> - Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
+- Support for state names that contain periods [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385597) in GitLab 16.0. Feature flag `allow_dots_on_tf_state_names` removed.
+
+{{< /history >}}
 
 OpenTofu uses state files to store details about your infrastructure configuration.
 With OpenTofu remote [backends](https://opentofu.org/docs/language/settings/backends/configuration/),
@@ -20,7 +27,8 @@ GitLab provides an [OpenTofu HTTP backend](https://opentofu.org/docs/language/se
 to securely store your state files with minimal configuration.
 The OpenTofu state backend provides automatic versioning and encryption of the state files managed by the GitLab instance.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **Disaster recovery planning**
 OpenTofu state files are encrypted with the lockbox Ruby gem when they are at rest on disk and in object storage with a key derived from the [db_key_base application setting](../../../development/application_secrets.md#secret-entries).
 [To decrypt a state file, GitLab must be available](https://gitlab.com/gitlab-org/gitlab/-/issues/335739).
@@ -29,6 +37,8 @@ Kubernetes clusters, or network components), you cannot access the state file ea
 Additionally, if GitLab serves up OpenTofu modules or other dependencies that are required to bootstrap GitLab,
 these will be inaccessible. To work around this issue, make other arrangements to host or back up these dependencies,
 or consider using a separate GitLab instance with no shared points of failure.
+
+{{< /alert >}}
 
 ## Prerequisites
 
@@ -47,7 +57,8 @@ Prerequisites:
 - To lock, unlock, and write to the state by using `tofu apply`, you must have at least the Maintainer role.
 - To read the state by using `tofu plan -lock=false`, you must have at least the Developer role.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Like any other job artifact, OpenTofu plan data is viewable by anyone with the Guest role on the repository.
 Neither OpenTofu nor GitLab encrypts the plan file by default. If your OpenTofu `plan.json` or `plan.cache`
 files include sensitive data like passwords, access tokens, or certificates, you should
@@ -55,6 +66,8 @@ encrypt the plan output or modify the project visibility settings. You should al
 [public pipelines](../../../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects)
 and set the [artifact's access flag to 'developer'](../../../ci/yaml/_index.md#artifactsaccess) (`access: 'developer'`).
 This setting ensures artifacts are accessible only to GitLab administrators and project members with at least the Developer role.
+
+{{< /alert >}}
 
 To configure GitLab CI/CD as a backend:
 
@@ -96,10 +109,13 @@ This configuration can lead to problems like [being unable to lock the state fil
 
 You can access the GitLab-managed OpenTofu state from your local machine.
 
-WARNING:
+{{< alert type="warning" >}}
+
 On clustered deployments of GitLab, you should not use local storage.
 A split state can occur across nodes, making subsequent OpenTofu executions
 inconsistent. Instead, use a remote storage resource.
+
+{{< /alert >}}
 
 1. Ensure the OpenTofu state has been
    [initialized for CI/CD](#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd).
@@ -108,7 +124,7 @@ inconsistent. Instead, use a remote storage resource.
    1. On the left sidebar, select **Search or go to** and find your project.
    1. Select **Operate > Terraform states**.
    1. Next to the environment you want to use, select **Actions**
-      (**{ellipsis_v}**) and select **Copy Terraform init command**.
+      ({{< icon name="ellipsis_v" >}}) and select **Copy Terraform init command**.
 
 1. Open a terminal and run this command on your local machine.
 
@@ -309,7 +325,7 @@ curl --header "Private-Token: <your_access_token>" --request DELETE "https://git
 If you have at least the Maintainer role, you can remove a state file.
 
 1. On the left sidebar, select **Operate > Terraform states**.
-1. In the **Actions** column, select **Actions** (**{ellipsis_v}**) and then **Remove state file and versions**.
+1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) and then **Remove state file and versions**.
 
 ### Remove a state file by using the API
 

@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Git server hooks
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/372991) from server hooks to Git server hooks in GitLab 15.6.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/372991) from server hooks to Git server hooks in GitLab 15.6.
+
+{{< /history >}}
 
 Git server hooks (not to be confused with [system hooks](system_hooks.md) or [file hooks](file_hooks.md)) run custom logic
 on the GitLab server. You can use them to run Git-related tasks such as:
@@ -36,11 +43,15 @@ If you don't have access to the `gitaly` command, alternatives to server hooks i
 
 ## Set server hooks for a repository
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle GitLab 15.11 and later
+{{< tab title="GitLab 15.11 and later" >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -75,7 +86,9 @@ To set server hooks for a repository:
 
 If you implemented the server hook code correctly, it should execute when the Git hook is next triggered.
 
-:::TabTitle GitLab 15.10 and earlier
+{{< /tab >}}
+
+{{< tab title="GitLab 15.10 and earlier" >}}
 
 To create server hooks for a repository:
 
@@ -106,7 +119,9 @@ To create server hooks for a repository:
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Server hooks on a Gitaly Cluster
 
@@ -166,11 +181,15 @@ subdirectories.
 
 ## Remove server hooks for a repository
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle GitLab 15.11 and later
+{{< tab title="GitLab 15.11 and later" >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -182,14 +201,18 @@ To remove server hooks, pass an empty tarball to `hook set` to indicate that the
 cat empty_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>
 ```
 
-:::TabTitle GitLab 15.10 and earlier
+{{< /tab >}}
+
+{{< tab title="GitLab 15.10 and earlier" >}}
 
 To remove server hooks:
 
 1. Go to the location of the repository on disk.
 1. Delete the server hooks in the `custom_hooks` directory.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Chained server hooks
 

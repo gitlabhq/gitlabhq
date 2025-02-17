@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: SAST analyzers
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+
+{{< /history >}}
 
 Static Application Security Testing (SAST) uses analyzers
 to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/_index.md#scanner), a third-party code analysis tool.
@@ -90,9 +97,12 @@ support the following features:
 
 ## Post analyzers
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Post analyzers enrich the report output by an analyzer. A post analyzer doesn't modify report
 content directly. Instead, it enhances the results with additional properties, including:
@@ -136,8 +146,11 @@ Prerequisites:
 
 - The custom Docker registry must provide images for all the official analyzers.
 
-NOTE:
+{{< alert type="note" >}}
+
 This variable affects all Secure analyzers, not just the analyzers for SAST.
+
+{{< /alert >}}
 
 To have GitLab download the analyzers' images from a custom Docker registry, define the prefix with
 the `SECURE_ANALYZERS_PREFIX` CI/CD variable.

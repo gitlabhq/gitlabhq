@@ -1,6 +1,6 @@
 ---
-redirect_to: 'synchronization_verification.md'
-remove_date: '2025-01-16'
+redirect_to: synchronization_verification.md
+remove_date: "2025-01-16"
 ---
 
 <!-- markdownlint-disable -->

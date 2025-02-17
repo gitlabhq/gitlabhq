@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Microsoft Teams notifications
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can integrate Microsoft Teams notifications with GitLab and display notifications about GitLab projects
 in Microsoft Teams. To integrate the services, you must:
@@ -19,10 +22,13 @@ in Microsoft Teams. To integrate the services, you must:
 
 ## Configure Microsoft Teams
 
-WARNING:
+{{< alert type="warning" >}}
+
 New Microsoft Teams integrations using Microsoft Connectors can no longer be created and
 existing integrations must be transitioned to workflow apps by December 2025.
 Microsoft [announced](https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/) the retirement of Microsoft Teams integrations using Microsoft Connectors.
+
+{{< /alert >}}
 
 To configure Microsoft Teams to listen for notifications from GitLab:
 

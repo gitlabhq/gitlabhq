@@ -104,10 +104,13 @@ Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
 
 By default, GDK is configured to run with multiple databases.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Switching back-and-forth between single and multiple databases in
 the same development instance is discouraged. Any data in the `ci`
 database will not be accessible in single database mode. For single database, you should use a separate development instance.
+
+{{< /alert >}}
 
 To configure GDK to use a single database:
 
@@ -126,10 +129,13 @@ To configure GDK to use a single database:
 To switch back to using multiple databases, set `gitlab.rails.databases.ci.enabled` to `true` and run `gdk reconfigure`.
 
 <!--
-NOTE: The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
+{{< alert type="note" >}}
+
+The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
       the following heading in the code, so if you make a change to this heading, make sure to update
       the corresponding documentation URL used in `spec/support/database/prevent_cross_joins.rb`.
 -->
+{{< /alert >}}
 
 ### Removing joins between `ci` and non `ci` tables
 
@@ -536,8 +542,11 @@ class Group < Namespace
 end
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
+
+{{< /alert >}}
 
 ```ruby
 class Group < Namespace
@@ -824,14 +833,20 @@ For this purpose, GitLab provides two Rake tasks, one for each database:
 - `gitlab:db:truncate_legacy_tables:main` will truncate the CI tables in Main database.
 - `gitlab:db:truncate_legacy_tables:ci` will truncate the Main tables in CI database.
 
-NOTE:
+{{< alert type="note" >}}
+
 These tasks can only be run when the tables in the database are
 [locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The examples in this section use `DRY_RUN=true`. This ensures no data is actually
 truncated. GitLab highly recommends to have a backup available before you run any of
 these tasks without `DRY_RUN=true`.
+
+{{< /alert >}}
 
 These tasks have the option to see what they do without actually changing the
 data:

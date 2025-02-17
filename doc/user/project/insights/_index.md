@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Insights
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Insights are interactive bar charts that display the number of items (for example, bugs created) per month.
 
@@ -57,7 +60,7 @@ To view annotations:
 
 Insights display data from the last 90 days. You can zoom in to display data only from a subset of the 90-day range.
 
-To do this, select the pause icons (**{status-paused}**) and slide them along the horizontal axis:
+To do this, select the pause icons ({{< icon name="status-paused" >}}) and slide them along the horizontal axis:
 
 - To change the start date, slide the left pause icon to the left or right.
 - To change the end date, slide the right pause icon to the left or right.
@@ -70,8 +73,12 @@ To exclude a dimension, from the legend below the chart, select the name of the 
 
 ### Drill down on charts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436704) to extend support to all `issuables` charts in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436704) to extend support to all `issuables` charts in GitLab 16.9.
+
+{{< /history >}}
 
 You can drill down into the data of all charts whose `query.data_source` is `issuables`.
 
@@ -253,7 +260,11 @@ monthlyBugsCreated:
 
 #### `query.data_source`
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
+
+{{< /history >}}
 
 Use `data_source` to define the data source that exposes the data.
 
@@ -377,13 +388,20 @@ The `period_field` is automatically set to:
 - `merged_at` if `query.issuable_state` is `merged`
 - `created_at` otherwise
 
-NOTE:
+{{< alert type="note" >}}
+
 Until [this bug](https://gitlab.com/gitlab-org/gitlab/-/issues/26911), is resolved,
 you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
+{{< /alert >}}
+
 #### `DORA` query parameters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
+
+{{< /history >}}
 
 Use DORA-specific queries with the `dora` data source to create a DORA chart definition.
 

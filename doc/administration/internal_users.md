@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Internal users
 ---
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
+
+{{< /history >}}
 
 GitLab uses internal users (sometimes referred to as "bots") to perform actions or functions that cannot be attributed
 to a regular user.

@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Azure Key Vault secrets in GitLab CI/CD
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3. Due to [issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) this feature did not work as expected.
-> - [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab Runner 16.6.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3. Due to [issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) this feature did not work as expected.
+- [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab Runner 16.6.
+
+{{< /history >}}
 
 You can use secrets stored in the [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/)
 in your GitLab CI/CD pipelines.

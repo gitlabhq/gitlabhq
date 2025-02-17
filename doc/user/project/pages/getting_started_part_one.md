@@ -5,16 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Pages default domain names and URLs
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 On this document, learn how to name your project for GitLab Pages
 according to your intended website's URL.
 
 ## GitLab Pages default domain names
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163523) unique domain URLs to be shorter in GitLab 17.4.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163523) unique domain URLs to be shorter in GitLab 17.4.
+
+{{< /history >}}
 
 If you use your own GitLab instance to deploy your site with GitLab Pages, verify your Pages
 wildcard domain with your sysadmin. This guide is valid for any GitLab instance, provided that you
@@ -54,15 +61,21 @@ redirecting the browser to these unique domain URLs. Browsers might cache this r
 For example, if the unique ID is `f85695`, the last example is
 `http(s)://product-manual-f85695.example.io/`.
 
-WARNING:
+{{< alert type="warning" >}}
+
 There are some known [limitations](introduction.md#subdomains-of-subdomains)
 regarding namespaces served under the general domain name and HTTPS.
 Make sure to read that section.
 
+{{< /alert >}}
+
 To understand Pages domains clearly, read the examples below.
 
-NOTE:
+{{< alert type="note" >}}
+
 The following examples imply you disabled the **Use unique domain** setting. If you did not, refer to the previous table, replacing `example.io` by `gitlab.io`.
+
+{{< /alert >}}
 
 ### Project website examples
 
@@ -104,8 +117,11 @@ The following examples imply you disabled the **Use unique domain** setting. If 
 
 ## URLs and base URLs
 
-NOTE:
+{{< alert type="note" >}}
+
 The `baseurl` option might be named differently in some static site generators.
+
+{{< /alert >}}
 
 Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not

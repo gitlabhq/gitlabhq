@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Log system
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab has an advanced log system where everything is logged, so you can analyze your instance using various system log
 files. The log system is similar to [audit events](../audit_event_reports.md).
@@ -86,25 +89,25 @@ except those captured by `runit`.
 
 | Log type                                        | Managed by logrotate    | Managed by svlogd/runit |
 |:------------------------------------------------|:------------------------|:------------------------|
-| [Alertmanager logs](#alertmanager-logs)         | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [crond logs](#crond-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Gitaly](#gitaly-logs)                          | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| [GitLab Exporter for Linux package installations](#gitlab-exporter) | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [GitLab Pages logs](#pages-logs)                | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| GitLab Rails                                    | **{check-circle}** Yes  | **{dotted-circle}** No  |
-| [GitLab Shell logs](#gitlab-shelllog)           | **{check-circle}** Yes  | **{dotted-circle}** No  |
-| [Grafana logs](#grafana-logs)                   | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [LogRotate logs](#logrotate-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| [NGINX](#nginx-logs)                            | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| [PgBouncer logs](#pgbouncer-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [PostgreSQL logs](#postgresql-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Praefect logs](#praefect-logs)                 | **{dotted-circle}** Yes | **{check-circle}** Yes  |
-| [Prometheus logs](#prometheus-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Puma](#puma-logs)                              | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| [Redis logs](#redis-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Registry logs](#registry-logs)                 | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Workhorse logs](#workhorse-logs)               | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [Alertmanager logs](#alertmanager-logs)         | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [crond logs](#crond-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Gitaly](#gitaly-logs)                          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| [GitLab Exporter for Linux package installations](#gitlab-exporter) | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [GitLab Pages logs](#pages-logs)                | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| GitLab Rails                                    | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
+| [GitLab Shell logs](#gitlab-shelllog)           | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
+| [Grafana logs](#grafana-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [LogRotate logs](#logrotate-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Mailroom](#mail_room_jsonlog-default)          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| [NGINX](#nginx-logs)                            | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| [PgBouncer logs](#pgbouncer-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [PostgreSQL logs](#postgresql-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Praefect logs](#praefect-logs)                 | {{< icon name="dotted-circle" >}} Yes | {{< icon name="check-circle" >}} Yes  |
+| [Prometheus logs](#prometheus-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Puma](#puma-logs)                              | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| [Redis logs](#redis-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Registry logs](#registry-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Workhorse logs](#workhorse-logs)               | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 
 ## `production_json.log`
 
@@ -214,11 +217,14 @@ The ActionCable connection or channel class is used as the `controller`.
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If an error occurs, an
 `exception` field is included with `class`, `message`, and
 `backtrace`. Previous versions included an `error` field instead of
 `exception.class` and `exception.message`. For example:
+
+{{< /alert >}}
 
 ```json
 {
@@ -345,15 +351,22 @@ associated SSH key can download the project in question by using a `git fetch` o
 - `params`: Key-value pairs passed in a query string or HTTP body (sensitive parameters, such as passwords and tokens, are filtered out)
 - `ua`: The User-Agent of the requester
 
-NOTE:
+{{< alert type="note" >}}
+
 As of [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4,
 the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119).
 Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
 process on Redis or external HTTP, not only the serialization process.
 
+{{< /alert >}}
+
 ## `application.log` (deprecated)
 
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111046) in GitLab 15.10.
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111046) in GitLab 15.10.
+
+{{< /history >}}
 
 This file is located at:
 
@@ -431,7 +444,11 @@ like this example:
 
 ## `kubernetes.log` (deprecated)
 
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /history >}}
 
 This file is located at:
 
@@ -464,13 +481,19 @@ only. For example:
 
 ## `audit_json.log`
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 GitLab Free tracks a small number of different audit events.
 GitLab Premium tracks many more.
+
+{{< /alert >}}
 
 This file is located at:
 
@@ -504,7 +527,11 @@ and as follows.
 
 ### `sidekiq.log`
 
-> - The default log format for Helm chart installations [changed from `text` to `json`](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3169) in GitLab 16.0 and later.
+{{< history >}}
+
+- The default log format for Helm chart installations [changed from `text` to `json`](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3169) in GitLab 16.0 and later.
+
+{{< /history >}}
 
 This file is located at:
 
@@ -730,7 +757,11 @@ are recorded in this file. For example:
 
 ## `ci_resource_groups_json.log`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
+
+{{< /history >}}
 
 This file is located at:
 
@@ -796,7 +827,11 @@ GraphQL queries are recorded in the file. For example:
 
 ## `clickhouse.log`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
+
+{{< /history >}}
 
 The `clickhouse.log` file logs information related to the
 [ClickHouse database client](../../integration/clickhouse.md) in GitLab.
@@ -822,7 +857,11 @@ Its name and path are configurable, so the name and path may not match the above
 
 ## `web_hooks.log`
 
-> - Introduced in GitLab 16.3.
+{{< history >}}
+
+- Introduced in GitLab 16.3.
+
+{{< /history >}}
 
 This file is located at:
 
@@ -870,9 +909,12 @@ are generated in a location based on your installation method:
 
 ## `database_load_balancing.log`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Contains details of GitLab [Database Load Balancing](../postgresql/database_load_balancing.md).
 This file is located at:
@@ -882,11 +924,18 @@ This file is located at:
 
 ## `zoekt.log`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
+
+{{< /history >}}
 
 This file logs information related to [exact code search](../../user/search/exact_code_search.md).
 This file is located at:
@@ -896,9 +945,12 @@ This file is located at:
 
 ## `elasticsearch.log`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This file logs information related to the Elasticsearch Integration, including
 errors during indexing or searching Elasticsearch. This file is located at:
@@ -970,9 +1022,12 @@ For example:
 
 ## `geo.log`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Geo stores structured log messages in a `geo.log` file. For Linux package installations,
 this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
@@ -1021,23 +1076,37 @@ can be used.
 
 ## `llm.log`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
+
+{{< /history >}}
 
 The `llm.log` file logs information related to
 [AI features](../../user/ai_features.md). Logging includes information about AI events.
 
 ### LLM input and output logging
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../feature_flags.md) named `expanded_ai_logging`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../feature_flags.md) named `expanded_ai_logging`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 LLM prompt input and response output can be logged by enabling the `expanded_ai_logging` feature flag.
 This flag is disabled by default and can only be enabled:
@@ -1054,11 +1123,18 @@ The log file is located at:
 
 ## `epic_work_item_sync.log`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.9.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.9.
+
+{{< /history >}}
 
 The `epic_work_item_sync.log` file logs information related to syncing and migrating epics as work items.
 
@@ -1069,11 +1145,18 @@ This file is located at:
 
 ## `secret_push_protection.log`
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137812) in GitLab 16.7.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137812) in GitLab 16.7.
+
+{{< /history >}}
 
 The `secret_push_protection.log` file logs information related to [Secret Push Protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
 
@@ -1238,8 +1321,11 @@ When [troubleshooting](../troubleshooting/_index.md) issues that aren't localize
 previously listed components, it's helpful to simultaneously gather multiple logs and statistics
 from a GitLab instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab Support often asks for one of these, and maintains the required tools.
+
+{{< /alert >}}
 
 ### Briefly tail the main logs
 

@@ -170,9 +170,12 @@ Your package should now publish to the package registry when the pipeline runs.
 
 ## Install a package
 
-NOTE:
+{{< alert type="note" >}}
+
 If multiple packages have the same name and version, the most recently-published
 package is retrieved when you install a package.
+
+{{< /alert >}}
 
 You can use one of two API endpoints to install packages:
 

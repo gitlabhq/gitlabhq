@@ -163,10 +163,13 @@ account of which repositories could be affected.
 For smaller version upgrades, it can be acceptable to delay updating libraries that are non-essential or where
 we are certain that the main application test suite would catch regressions under a new Ruby version.
 
-NOTE:
+{{< alert type="note" >}}
+
 Consult with the respective code owners whether it is acceptable to merge these changes ahead
 of updating the GitLab application. It might be best to get the necessary approvals
 but wait to merge the change until everything is ready.
+
+{{< /alert >}}
 
 ### Prepare the GitLab application MR
 
@@ -175,10 +178,13 @@ application with any necessary changes, similar to the gems and related systems.
 On top of that, update the documentation to reflect the version change in the installation
 and update instructions ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68363)).
 
-NOTE:
+{{< alert type="note" >}}
+
 Be especially careful with timing this merge request, since as soon as it is merged, all GitLab contributors
 will be affected by it and the changes will be deployed. You must ensure that this MR remains
 open until everything else is ready, but it can be useful to get approval early to reduce lead time.
+
+{{< /alert >}}
 
 ### Give developers time to upgrade (grace period)
 

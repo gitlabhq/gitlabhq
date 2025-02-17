@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Back up and restore overview
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Your GitLab instance contains critical data for your software development or organization.
 It is important to have a disaster recovery plan that includes regular backups for:
@@ -19,9 +22,12 @@ It is important to have a disaster recovery plan that includes regular backups f
 - **Migration**: Facilitate moving GitLab to new servers or environments.
 - **Testing and development**: Create copies for testing upgrades or new features without risk to production data.
 
-NOTE:
+{{< alert type="note" >}}
+
 This documentation applies to GitLab Community and Enterprise Edition.
 While data security is ensured for GitLab.com, you can't use these methods to export or back up your data from GitLab.com.
+
+{{< /alert >}}
 
 ## Back up GitLab
 

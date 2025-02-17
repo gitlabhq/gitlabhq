@@ -14,9 +14,12 @@ designed, as code can change often. To understand how a specific part of the
 feature works, view the code and the specs. The details here explain how the
 major components of the push rules feature work.
 
-NOTE:
+{{< alert type="note" >}}
+
 This document should be updated when parts of the codebase referenced in this
 document are updated, removed, or new parts are added.
+
+{{< /alert >}}
 
 ## Business logic
 
@@ -82,7 +85,10 @@ graph TD
   EE::Gitlab::Checks::PushRuleCheck --> EE::Gitlab::Checks::PushRules::FileSizeCheck
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `PushRuleCheck` only triggers checks in parallel if the
 `parallel_push_checks` feature flag is enabled. Otherwise tag or branch check
 runs first, then file size.
+
+{{< /alert >}}

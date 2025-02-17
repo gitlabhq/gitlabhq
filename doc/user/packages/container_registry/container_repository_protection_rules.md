@@ -5,13 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Protected container repositories
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `containers_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463669) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `containers_protected_containers`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/429074) in GitLab 17.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/480385) in GitLab 17.8. Feature flag `container_registry_protected_containers` removed.
+
+{{< /history >}}
 
 By default, any user with at least the Developer role can push and delete
 container images to or from container repositories. Protect a container repository to restrict
@@ -41,7 +48,11 @@ A container repository is protected if at least one protection rule matches.
 
 ## Create a container repository protection rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146523) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146523) in GitLab 16.10.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -64,7 +75,11 @@ The protection rule is created and the container repository is now protected.
 
 ## Delete a container repository protection rule
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146622) in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146622) in GitLab 17.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -75,7 +90,7 @@ To delete a protection rule:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
 1. Expand **Container registry**.
-1. Under **Protected container repositories**, next to the protection rule you want to delete, select **Delete** (**{remove}**).
+1. Under **Protected container repositories**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Delete**.
 
 The protection rule is deleted and the container repository is no longer protected.

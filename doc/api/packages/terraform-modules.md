@@ -5,15 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Terraform Module Registry API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This is the API documentation for the [Terraform Module Registry](../../user/packages/terraform_module_registry/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the [Terraform CLI](https://www.terraform.io/)
 and is generally not meant for manual consumption. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 For instructions on how to upload and install Terraform modules from the GitLab
 Terraform Module Registry, see the [Terraform Module Registry documentation](../../user/packages/terraform_module_registry/_index.md).

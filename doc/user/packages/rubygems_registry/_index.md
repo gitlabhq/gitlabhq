@@ -5,17 +5,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Ruby gems in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52147) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `rubygem_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52147) in GitLab 13.9 [with a flag](../../../administration/feature_flags.md) named `rubygem_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 You can publish Ruby gems to your project's package registry. Then, you can download them from the UI or with the API.
 
@@ -36,9 +46,9 @@ To do this, you can use:
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle With an access token
+{{< tab title="With an access token" >}}
 
 To authenticate with an access token:
 
@@ -54,7 +64,9 @@ In this example:
 - `<token>` must be the token value of either your personal access token or deploy token.
 - `<project_id>` is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
-:::TabTitle With a CI/CD job token
+{{< /tab >}}
+
+{{< tab title="With a CI/CD job token" >}}
 
 To authenticate with a CI/CD job token:
 
@@ -83,7 +95,9 @@ To authenticate with a CI/CD job token:
   https://gitlab.example.com/api/v4/projects/${env.CI_PROJECT_ID}/packages/rubygems: '${env.CI_JOB_TOKEN}'
   ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Push a Ruby gem
 

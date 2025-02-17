@@ -1,8 +1,8 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
 title: Customize analyzer settings
 ---
 
@@ -142,5 +142,8 @@ dast:
     DAST_PAGE_DOM_READY_TIMEOUT: "15s"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
+
+{{< /alert >}}

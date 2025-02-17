@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Service Desk
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
 In these issues, you can also see our friendly neighborhood [Support Bot](configure.md#support-bot-user).
@@ -43,8 +46,12 @@ For additional information see [External participants](external_participants.md)
 
 ### Create a Service Desk ticket in GitLab UI
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
+
+{{< /history >}}
 
 To create a Service Desk ticket from the UI:
 
@@ -88,8 +95,12 @@ To view Service Desk issues:
 
 #### Redesigned issue list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `service_desk_vue_list`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415385) in GitLab 16.10. Feature flag `service_desk_vue_list` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `service_desk_vue_list`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415385) in GitLab 16.10. Feature flag `service_desk_vue_list` removed.
+
+{{< /history >}}
 
 The Service Desk issue list more closely matches the regular issue list.
 Available features include:
@@ -138,8 +149,12 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 
 ### Special HTML formatting in HTML emails
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109811) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116809) in GitLab 15.11. Feature flag `service_desk_html_to_text_email_handler` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109811) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116809) in GitLab 15.11. Feature flag `service_desk_html_to_text_email_handler` removed.
+
+{{< /history >}}
 
 HTML emails show HTML formatting, such as:
 
@@ -150,9 +165,13 @@ HTML emails show HTML formatting, such as:
 
 ### Files attached to comments
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 16.6. Feature flag `service_desk_new_note_email_native_attachments` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 16.6. Feature flag `service_desk_new_note_email_native_attachments` removed.
+
+{{< /history >}}
 
 If a comment contains any attachments and their total size is less than or equal to 10 MB, these
 attachments are sent as part of the email. In other cases, the email contains links to the attachments.
@@ -161,8 +180,12 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
 ## Convert a regular issue to a Service Desk ticket
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
+
+{{< /history >}}
 
 Use the quick action `/convert_to_ticket external-issue-author@example.com` to convert any regular issue
 into a Service Desk ticket. This assigns the provided email address as the external author of the ticket
@@ -174,7 +197,11 @@ You can add a public comment on the ticket to let the end user know that the tic
 
 ## Privacy considerations
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
+
+{{< /history >}}
 
 Service Desk issues are [confidential](../issues/confidential_issues.md), so they are
 only visible to project members. The project owner can
@@ -195,7 +222,11 @@ displayed in the information note.
 
 ### Moving a Service Desk issue
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
+
+{{< /history >}}
 
 You can move a Service Desk issue the same way you
 [move a regular issue](../issues/managing_issues.md#move-an-issue) in GitLab.

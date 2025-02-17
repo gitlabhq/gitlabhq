@@ -5,14 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Version API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 We recommend you use the [Metadata API](metadata.md) instead of the Version API.
 It contains additional information and is aligned with the GraphQL metadata endpoint.
 As of GitLab 15.5, the Version API is a mirror of the Metadata API.
+
+{{< /alert >}}
 
 Retrieves version information for the GitLab instance. Responds with `200 OK` for
 authenticated users.

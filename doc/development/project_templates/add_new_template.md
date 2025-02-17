@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Contribute to built-in project templates
 ---
 
@@ -57,8 +57,11 @@ follow the vendoring process to create a working template.
 
 #### Standard template
 
-NOTE:
+{{< alert type="note" >}}
+
 See merge request [25318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25318) for an example.
+
+{{< /alert >}}
 
 To contribute a standard template:
 
@@ -73,8 +76,11 @@ To contribute a standard template:
 
 #### Enterprise template
 
-NOTE:
+{{< alert type="note" >}}
+
 See merge request [28187](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28187) for an example.
+
+{{< /alert >}}
 
 To contribute an Enterprise template:
 

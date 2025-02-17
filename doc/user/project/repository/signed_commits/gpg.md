@@ -2,20 +2,26 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Sign commits in your GitLab repository with GPG (GNU Privacy Guard) keys."
+description: Sign commits in your GitLab repository with GPG (GNU Privacy Guard) keys.
 title: Sign commits with GPG
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can sign the commits you make in a GitLab repository with a
 GPG ([GNU Privacy Guard](https://gnupg.org/)) key.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab uses the term GPG for all OpenPGP, PGP, and GPG-related material and
 implementations.
+
+{{< /alert >}}
 
 For GitLab to consider a commit verified:
 
@@ -42,7 +48,7 @@ To view a user's public GPG key, you can either:
 - Go to `https://gitlab.example.com/<USERNAME>.gpg`. GitLab displays the GPG key,
   if the user has configured one, or a blank page for users without a configured GPG key.
 - Go to the user's profile (such as `https://gitlab.example.com/<USERNAME>`). In the upper-right corner
-  of the user's profile, select **View public GPG keys** (**{key}**).
+  of the user's profile, select **View public GPG keys** ({{< icon name="key" >}}).
   This button is shown only if the user has configured the key.
 
 ## Configure commit signing
@@ -120,7 +126,7 @@ To add a GPG key to your user settings:
 1. Sign in to GitLab.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. Select **GPG Keys** (**{key}**).
+1. Select **GPG Keys** ({{< icon name="key" >}}).
 1. Select **Add new key**.
 1. In **Key**, paste your _public_ key.
 1. To add the key to your account, select **Add key**. GitLab shows the key's
@@ -232,7 +238,7 @@ To revoke a GPG key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. Select **GPG Keys** (**{key}**).
+1. Select **GPG Keys** ({{< icon name="key" >}}).
 1. Select **Revoke** next to the GPG key you want to delete.
 
 ## Remove a GPG key
@@ -247,8 +253,8 @@ To remove a GPG key from your account:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. Select **GPG Keys** (**{key}**).
-1. Select **Remove** (**{remove}**) next to the GPG key you want to delete.
+1. Select **GPG Keys** ({{< icon name="key" >}}).
+1. Select **Remove** ({{< icon name="remove" >}}) next to the GPG key you want to delete.
 
 If you must unverify both future and past commits,
 [revoke the associated GPG key](#revoke-a-gpg-key) instead.
@@ -302,5 +308,8 @@ If the password entry prompt doesn't appear:
    - Restart your terminal.
    - Run `source ~/.bashrc` or `source ~/.zshrc`.
 
-NOTE:
+{{< alert type="note" >}}
+
 The exact steps may vary depending on your operating system and shell configuration.
+
+{{< /alert >}}

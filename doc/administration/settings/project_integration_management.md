@@ -5,12 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Integration administration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This page contains administrator documentation for project and group integrations. For user documentation, see [Project integrations](../../user/project/integrations/_index.md).
+
+{{< /alert >}}
 
 Project and group administrators can configure and enable integrations.
 As an instance administrator, you can:
@@ -32,9 +38,12 @@ To configure default settings for an integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This may affect all or most of the groups and projects on your GitLab instance. Review the details
 below.
+
+{{< /alert >}}
 
 If this is the first time you are setting up instance-level settings for an integration:
 
@@ -89,10 +98,17 @@ To view projects in your instance that [use custom settings](../../user/project/
 
 ## Integration allowlist
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.7.
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.7.
+
+{{< /history >}}
 
 By default, project and group administrators can enable integrations.
 However, instance administrators can configure an allowlist to control

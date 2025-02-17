@@ -9,9 +9,12 @@ For working with internationalization (i18n),
 [GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most
 used tool for this task and there are many applications that help us work with it.
 
-NOTE:
+{{< alert type="note" >}}
+
 All `rake` commands described on this page must be run on a GitLab instance. This instance is
 usually the GitLab Development Kit (GDK).
+
+{{< /alert >}}
 
 ## Setting up the GitLab Development Kit (GDK)
 
@@ -1031,8 +1034,11 @@ A new language should only be added as an option in User Preferences once at lea
 strings have been translated and approved. Even though a larger number of strings may have been
 translated, only the approved translations display in the GitLab UI.
 
-NOTE:
+{{< alert type="note" >}}
+
 Languages with less than 2% of translations are not available in the UI.
+
+{{< /alert >}}
 
 Suppose you want to add translations for a new language, for example, French:
 

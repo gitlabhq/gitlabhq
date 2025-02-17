@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab keyboard shortcuts
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab has several keyboard shortcuts you can use to access its different
 features.
@@ -224,9 +227,12 @@ These shortcuts are available when editing a file with the
 
 ## Epics
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 These shortcuts are available when viewing [epics](group/epics/_index.md):
 
@@ -238,7 +244,11 @@ These shortcuts are available when viewing [epics](group/epics/_index.md):
 
 ## Disable keyboard shortcuts
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+
+{{< /history >}}
 
 To disable keyboard shortcuts:
 
@@ -249,7 +259,11 @@ To disable keyboard shortcuts:
 
 ## Enable keyboard shortcuts
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+
+{{< /history >}}
 
 To enable keyboard shortcuts:
 

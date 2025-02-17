@@ -2,7 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code."
+description: Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code.
 title: GitLab Workflow extension for VS Code
 ---
 
@@ -48,7 +48,7 @@ You can assign different keyboard shortcuts for **Accept Inline Suggestion**, **
 or **Accept Next Line Of Inline Suggestion**:
 
 1. In VS Code, run the `Preferences: Open Keyboard Shortcuts` command.
-1. Find the shortcut you want to edit, and select **Change keybinding** (**{pencil}**).
+1. Find the shortcut you want to edit, and select **Change keybinding** ({{< icon name="pencil" >}}).
 1. Assign your preferred shortcuts to **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion**,
    or **Accept Next Line Of Inline Suggestion**.
 1. Press <kbd>Enter</kbd> to save your changes.
@@ -83,7 +83,7 @@ In these cases, the extension adds a **(multiple projects)** label to show you m
 
 To select an account:
 
-1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. Expand **Issues and Merge Requests**.
 1. Select the line containing **(multiple projects)** to expand the list of accounts.
 1. Select your desired project:
@@ -95,7 +95,7 @@ The **Issues and Merge requests** list updates with your selected project's info
 
 To change your project selection:
 
-1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. Expand **Issues and Merge Requests** to show the project list.
 1. Right-click the project's name.
 1. Select **Clear selected project**.
@@ -164,7 +164,7 @@ To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-
 
 To view issues and merge requests for a specific project:
 
-1. On the menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. On the sidebar, expand **Issues and merge requests**.
 1. Select your desired project to expand it.
 1. Choose one of the following result types:
@@ -225,9 +225,12 @@ To open a file from your current GitLab project in the GitLab UI, with specific 
 
 ## View security findings
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -239,7 +242,7 @@ Prerequisites:
 
 To view security findings:
 
-1. On the vertical menu bar, select **GitLab Workflow** (**{tanuki}**) to display the extension sidebar.
+1. On the vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
 1. On the sidebar, expand **Security scanning**.
 1. Select either **New findings** or **Fixed findings**.
 1. Select a desired severity level.
@@ -247,12 +250,19 @@ To view security findings:
 
 ## Perform SAST scanning
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1675) in VS Code extension version 5.31.
+- Tier: Ultimate
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1675) in VS Code extension version 5.31.
+
+{{< /history >}}
 
 Static application security testing (SAST) in VS Code detects vulnerabilities in the active file.
 With early detection, you can remediate vulnerabilities before you merge your changes into the

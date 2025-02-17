@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Create and run your first GitLab CI/CD pipeline'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This tutorial shows you how to configure and run your first CI/CD pipeline in GitLab.
 
@@ -76,7 +79,7 @@ To create a `.gitlab-ci.yml` file in your project:
 1. Select **Code > Repository**.
 1. Above the file list, select the branch you want to commit to.
    If you're not sure, leave `master` or `main`.
-   Then select the plus icon (**{plus}**) and **New file**:
+   Then select the plus icon ({{< icon name="plus" >}}) and **New file**:
 
    ![The new file button to create a file in the current folder.](img/new_file_v13_6.png)
 

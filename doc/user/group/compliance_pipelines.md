@@ -7,14 +7,20 @@ title: Compliance pipelines (deprecated)
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
 and is planned for removal in 19.0. Use [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) instead.
 This change is a breaking change. For more information, see the [migration guide](#pipeline-execution-policies-migration).
+
+{{< /alert >}}
 
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
 pipeline configuration (for example, `.compliance-gitlab-ci.yml`) is run instead of the pipeline configuration (for example, `.gitlab-ci.yml`) of labeled
@@ -27,9 +33,12 @@ However, the compliance pipeline configuration can reference the `.gitlab-ci.yml
 - Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
   `.gitlab-ci.yml` file.
 
-NOTE:
+{{< alert type="note" >}}
+
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/414004), project pipelines must be included first at the top of compliance pipeline configuration
 to prevent projects overriding settings downstream.
+
+{{< /alert >}}
 
 For more information, see:
 
@@ -90,7 +99,11 @@ To ensure that the correct compliance pipeline is included in a project:
 
 ## Configure a compliance pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11, compliance frameworks moved to compliance center.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11, compliance frameworks moved to compliance center.
+
+{{< /history >}}
 
 To configure a compliance pipeline:
 

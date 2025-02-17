@@ -225,7 +225,7 @@ Renders the mount element needed to initialize the JavaScript used to display th
 
 [`initCascadingSettingsLockTooltips`](https://gitlab.com/gitlab-org/gitlab/-/blob/acb2ef4dbbd06f93615e8e6a1c0a78e7ebe20441/app/assets/javascripts/namespaces/cascading_settings/index.js#L4)
 
-Initializes the JavaScript needed to display the tooltip when hovering over the lock icon (**{lock}**).
+Initializes the JavaScript needed to display the tooltip when hovering over the lock icon ({{< icon name="lock" >}}).
 This function should be imported and called in the [page-specific JavaScript](fe_guide/performance.md#page-specific-javascript).
 
 ### Put it all together

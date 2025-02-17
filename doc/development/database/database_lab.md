@@ -1,10 +1,9 @@
 ---
+type: reference, howto
 stage: Data Access
 group: Database Frameworks
-type: reference, howto
-discretionary: yes
-description: Database access for engineers and related parties.
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+description: Database access for engineers and related parties.
 title: Database Lab and Postgres.ai
 ---
 
@@ -43,11 +42,14 @@ To access the DLE's services, you can:
 
 For more assistance, use the `#database` Slack channel.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you need only temporary access to a production replica, instead of a Database Lab
 clone, follow the runbook procedure for connecting to the
 [database console with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Database_Console_via_Teleport.md).
 This procedure is similar to [Rails console access with Teleport](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md#how-to-use-teleport-to-connect-to-rails-console).
+
+{{< /alert >}}
 
 ### Query testing
 
@@ -132,8 +134,11 @@ For information on testing migrations, review our
 
 ### Access the console with `psql`
 
-NOTE:
+{{< alert type="note" >}}
+
 You must have `AllFeaturesUser` [`psql` access](#access-database-lab-engine) to access the console with `psql`.
+
+{{< /alert >}}
 
 To access the database lab instances, you must:
 

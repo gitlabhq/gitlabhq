@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Install GitLab in a Docker container
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To install GitLab in a Docker container, use Docker Compose, Docker Engine, or Docker Swarm mode.
 
@@ -166,9 +169,12 @@ install, and upgrade your Docker-based GitLab installation:
        shm_size: '256m'
    ```
 
-   NOTE:
-   Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
+   {{< alert type="note" >}}
+
+Read the [Pre-configure Docker container](configuration.md#pre-configure-docker-container) section
    to see how the `GITLAB_OMNIBUS_CONFIG` variable works.
+
+   {{< /alert >}}
 
    Here is another `docker-compose.yml` example with GitLab running on a custom
    HTTP and SSH port. Notice that the `GITLAB_OMNIBUS_CONFIG` variables match the
@@ -273,8 +279,11 @@ and the password from the following command:
    /etc/gitlab/initial_root_password
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The password file is automatically deleted in the first container restart after 24 hours.
+
+{{< /alert >}}
 
 ### Install GitLab by using Docker Swarm mode
 

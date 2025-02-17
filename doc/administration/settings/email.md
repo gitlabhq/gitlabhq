@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Email
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can customize some of the content in emails sent from your GitLab instance.
 
@@ -17,9 +20,12 @@ The logo in the header of some emails can be customized, see the [logo customiza
 
 ## Include author name in email notification email body
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 By default, GitLab overrides the email address in notification emails with the email address
 of the issue, merge request, or comment author. Enable this setting to include the author's email
@@ -35,9 +41,12 @@ To include the author's email address in the email body:
 
 ## Enable multipart email
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab can send email in multipart format (HTML and plain text) or plain text only.
 
@@ -51,9 +60,12 @@ To enable multipart email:
 
 ## Custom hostname for private commit emails
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This configuration option sets the email hostname for [private commit emails](../../user/profile/_index.md#use-an-automatically-generated-private-commit-email).
  By default it is set to `users.noreply.YOUR_CONFIGURED_HOSTNAME`.
@@ -66,16 +78,22 @@ To change the hostname used in private commit emails:
 1. Enter the desired hostname in the **Custom hostname (for private commit emails)** field.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 After the hostname is configured, every private commit email using the previous hostname is not
 recognized by GitLab. This can directly conflict with certain [Push rules](../../user/project/repository/push_rules.md) such as
 `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 
+{{< /alert >}}
+
 ## Custom additional text
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can add additional text at the bottom of any email that GitLab sends. This additional text
 can be used for legal, auditing, or compliance reasons, for example.
@@ -102,13 +120,20 @@ To disable these notifications:
 
 ### Custom additional text in deactivation emails
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
-> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392761) in GitLab 16.5. Feature flag `deactivation_email_additional_text` removed.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392761) in GitLab 16.5. Feature flag `deactivation_email_additional_text` removed.
+
+{{< /history >}}
 
 You can add additional text at the bottom of the email that GitLab sends to users when their account
 is deactivated. This email text is separate from the [custom additional text](#custom-additional-text)
@@ -124,14 +149,24 @@ To add additional text to deactivation emails:
 
 ## Group and project access token expiry emails to inherited members
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of emails to inherited project and group members is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 In GitLab 17.7 and later, the following inherited group and project members can receive emails about group and project access tokens that are expiring soon, in addition to direct group and project members:
 

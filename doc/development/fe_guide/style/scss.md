@@ -28,13 +28,16 @@ that use non-design-system values should be avoided. Use classes with conforming
 
 Avoid [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/).
 
-NOTE:
+{{< alert type="note" >}}
+
 While migrating [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
 to the [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/css.md#utilities)
 utility classes, note both the classes for margin and padding differ. The size scale used at
 GitLab differs from the scale used in the Bootstrap library. For a Bootstrap padding or margin
 utility, you may need to double the size of the applied utility to achieve the same visual
 result (such as `ml-1` becoming `gl-ml-2`).
+
+{{< /alert >}}
 
 ### Tailwind CSS
 
@@ -108,8 +111,11 @@ Tailwind CSS autocomplete lists all available classes in your code editor.
 
 ##### VS Code
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are having trouble with slow autocomplete you may need to [increase the amount of memory the TS server is allowed to use](../type_hinting.md#vs-code-settings).
+
+{{< /alert >}}
 
 Install the [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 extension. For HAML and custom `*-class` prop support these are the recommended settings:

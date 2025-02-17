@@ -2,16 +2,23 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Configure `gitlab-sshd`, a lightweight alternative to OpenSSH, for your GitLab instance."
+description: Configure `gitlab-sshd`, a lightweight alternative to OpenSSH, for your GitLab instance.
 title: '`gitlab-sshd`'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2540) for use with Cloud Native GitLab in GitLab 15.1.
-> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5937) for use with Linux packages in GitLab 15.9.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/2540) for use with Cloud Native GitLab in GitLab 15.1.
+- [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5937) for use with Linux packages in GitLab 15.9.
+
+{{< /history >}}
 
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
 written in Go. It is provided as a part of the `gitlab-shell` package. It has a lower memory
@@ -41,9 +48,9 @@ If you are considering switching from OpenSSH to `gitlab-sshd`, consider these c
 
 To use `gitlab-sshd`:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 The following instructions enable `gitlab-sshd` on a different port than OpenSSH:
 
@@ -77,7 +84,9 @@ differ from the OpenSSH host keys. Consider disabling host key
 generation and copy the existing OpenSSH host keys into
 `/var/opt/gitlab/gitlab-sshd` if this is an issue.
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 The following instructions switch OpenSSH in favor of `gitlab-sshd`:
 
@@ -100,7 +109,9 @@ By default, `gitlab-sshd` listens for:
 
 You can [configure different ports in the Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/#configuration).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## PROXY protocol support
 
@@ -109,9 +120,9 @@ address of the proxy instead of the actual IP address of the client. `gitlab-ssh
 supports the [PROXY protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt) to
 obtain the real IP address.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 To enable the PROXY protocol:
 
@@ -132,7 +143,9 @@ To enable the PROXY protocol:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Set the [`gitlab.gitlab-shell.config` options](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/#installation-command-line-options). For example:
 
@@ -146,4 +159,6 @@ To enable the PROXY protocol:
 
 1. Perform a Helm upgrade.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

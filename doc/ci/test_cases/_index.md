@@ -6,9 +6,12 @@ description: Test cases in GitLab can help your teams create testing scenarios i
 title: Test cases
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Test cases in GitLab can help your teams create testing scenarios in their existing development platform.
 
@@ -21,15 +24,22 @@ while integrating with your development workflows, see
 [Streamline Software Development: Integrating Requirements, Testing, and Development Workflows](https://www.youtube.com/watch?v=wbfWM4y2VmM).
 <!-- Video published on 2024-02-21 -->
 
-NOTE:
+{{< alert type="note" >}}
+
 [Requirements](../../user/project/requirements/_index.md) and test cases are being
 [migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).
 [Issue 323790](https://gitlab.com/gitlab-org/gitlab/-/issues/323790) proposes to link requirements to test cases.
 For more information, see [Product Stage Direction - Plan](https://about.gitlab.com/direction/plan/).
 
+{{< /alert >}}
+
 ## Create a test case
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -64,7 +74,11 @@ To view a test case:
 
 ## Edit a test case
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can edit a test case's title and description.
 
@@ -77,14 +91,18 @@ Prerequisites:
 To edit a test case:
 
 1. [View a test case](#view-a-test-case).
-1. Select **Edit title and description** (**{pencil}**).
+1. Select **Edit title and description** ({{< icon name="pencil" >}}).
 1. Edit the test case's title or description.
 1. Select **Save changes**.
 
 ## Make a test case confidential
 
-> - Introduced for [new](https://gitlab.com/gitlab-org/gitlab/-/issues/422121) and [existing](https://gitlab.com/gitlab-org/gitlab/-/issues/422120) test cases in GitLab 16.5.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Introduced for [new](https://gitlab.com/gitlab-org/gitlab/-/issues/422121) and [existing](https://gitlab.com/gitlab-org/gitlab/-/issues/422120) test cases in GitLab 16.5.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 If you're working on a test case that contains private information, you can make it confidential.
 
@@ -102,7 +120,11 @@ or editing an existing one.
 
 ## Archive a test case
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 When you want to stop using a test case, you can archive it. You can [reopen an archived test case](#reopen-an-archived-test-case) later.
 
@@ -120,7 +142,11 @@ To view archived test cases:
 
 ## Reopen an archived test case
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 If you decide to start using an archived test case again, you can reopen it.
 

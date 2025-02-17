@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configuring PostgreSQL for scaling
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 In this section, you are guided through configuring a PostgreSQL database to
 be used with GitLab in one of our [reference architectures](../reference_architectures/_index.md).
@@ -39,9 +42,12 @@ Read more about [monitoring and logging setup for external Databases](external_m
 
 ### PostgreSQL replication and failover for Linux package installations
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This setup is for when you have installed GitLab using the
 [Linux **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee).

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Hosted runners on Linux
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Hosted runners on Linux for GitLab.com run on Google Cloud Compute Engine. Each job gets a fully isolated, ephemeral virtual machine (VM). The default region is `us-east1`.
 
@@ -39,11 +42,14 @@ GitLab offers the following machine type for hosted runners on Linux Arm64.
 | `saas-linux-medium-arm64` (Premium and Ultimate only) | 4     | 16 GB  | 50 GB   |
 | `saas-linux-large-arm64` (Premium and Ultimate only)  | 8     | 32 GB  | 100 GB  |
 
-NOTE:
+{{< alert type="note" >}}
+
 Users can experience network connectivity issues when they use Docker-in-Docker with hosted runners on Linux
 Arm. This issue occurs when the maximum transmission unit (MTU) value in Google Cloud and Docker don't match.
 To resolve this issue, set `--mtu=1400` in the client side Docker configuration.
 For more details, see [issue 473739](https://gitlab.com/gitlab-org/gitlab/-/issues/473739#workaround).
+
+{{< /alert >}}
 
 ## Container images
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Licenses API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In GitLab, there is an API endpoint available for working with various open
 source license templates. For more information on the terms of various
@@ -129,9 +132,12 @@ GET /templates/licenses/:key
 | `project`  | string | no       | The copyrighted project name |
 | `fullname` | string | no       | The full-name of the copyright holder |
 
-NOTE:
+{{< alert type="note" >}}
+
 If you omit the `fullname` parameter but authenticate your request, the name of
 the authenticated user replaces the copyright holder placeholder.
+
+{{< /alert >}}
 
 Example request:
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Build and push container images to the container registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Before you can build and push container images, you must [authenticate](authenticate_with_container_registry.md) with the container registry.
 
@@ -211,7 +214,10 @@ deploy:
   environment: production
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 This example explicitly calls `docker pull`. If you prefer to implicitly pull the container image using `image:`,
 and use either the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/) executor,
 make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work) is set to `always`.
+
+{{< /alert >}}

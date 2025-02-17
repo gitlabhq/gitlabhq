@@ -190,9 +190,12 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
 
 ## Secure the GitLab pipeline access
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The previously deployed agent is configured using the `.gitlab/agents/testing/config.yaml` file.
 By default, the configuration enables access to the clusters configured in the project where the GitLab pipelines run.

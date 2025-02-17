@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: API Security
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 API Security refers to the measures taken to secure and protect web Application Programming Interfaces (APIs) from unauthorized access, misuse, and attacks.
 APIs are a crucial component of modern application development as they allow applications to interact with each other and exchange data.

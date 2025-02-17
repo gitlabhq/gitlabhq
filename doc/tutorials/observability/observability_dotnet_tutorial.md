@@ -5,10 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Use GitLab Observability with a .NET application'
 ---
 
-FLAG:
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
 <!-- Update this note when observability_features flag is removed -->
+
+{{< /alert >}}
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a .NET Core application using GitLab Observability features.
 
@@ -24,7 +27,7 @@ To follow along this tutorial, you must have:
 
 First, create a GitLab project and a corresponding access token.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details.
    - In the **Project name** field, enter `dotnet-O11y-tutorial`.
@@ -199,7 +202,7 @@ Next, we'll create a .NET web application that we can instrument. For this tutor
    ```
 
 1. Find your project ID:
-   1. On the `dotnet-O11y-tutorial` project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+   1. On the `dotnet-O11y-tutorial` project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
    1. Select **Copy project ID**. Save the copied ID for later.
 
 1. Configure your application with instrumentation.

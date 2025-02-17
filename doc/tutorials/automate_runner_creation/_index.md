@@ -14,11 +14,14 @@ To automate runner creation and registration:
 1. [Automate GitLab Runner installation and registration](#automate-runner-installation-and-registration).
 1. [View runners with the same configuration](#view-runners-with-the-same-configuration).
 
-NOTE:
+{{< alert type="note" >}}
+
 The instructions in this tutorial describe runner creation and registration
 with runner authentication tokens, which have replaced the deprecated registration
 method that uses registration tokens. For more information, see
 [The new runner registration workflow](../../ci/runners/new_creation_workflow.md#the-new-runner-registration-workflow).
+
+{{< /alert >}}
 
 ## Before you begin
 
@@ -42,11 +45,18 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 
 ### Create a personal access token
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
@@ -61,16 +71,26 @@ For more information, see the history.
 
 ### Create a project or group access token
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 For more information, see the history.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 Project access tokens are treated as [internal users](../../administration/internal_users.md).
 If an internal user creates a project access token, that token is able to access
 all projects that have visibility level set to [Internal](../../user/public_access.md).
+
+{{< /alert >}}
 
 To create a project access token:
 
@@ -123,9 +143,9 @@ REST endpoint to create a runner:
 
 1. Use `curl` to invoke the endpoint to create a runner:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Project
+   {{< tab title="Project" >}}
 
    ```shell
    curl --silent --request POST --url "https://gitlab.example.com/api/v4/user/runners"
@@ -136,7 +156,9 @@ REST endpoint to create a runner:
      --header "PRIVATE-TOKEN: <project_access_token>"
    ```
 
-   :::TabTitle Group
+   {{< /tab >}}
+
+   {{< tab title="Group" >}}
 
    ```shell
    curl --silent --request POST --url "https://gitlab.example.com/api/v4/user/runners"
@@ -147,7 +169,9 @@ REST endpoint to create a runner:
      --header "PRIVATE-TOKEN: <group_access_token>"
    ```
 
-   :::TabTitle Shared
+   {{< /tab >}}
+
+   {{< tab title="Shared" >}}
 
    ```shell
    curl --silent --request POST --url "https://gitlab.example.com/api/v4/user/runners"
@@ -157,7 +181,9 @@ REST endpoint to create a runner:
      --header "PRIVATE-TOKEN: <personal_access_token>"
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Save the returned `token` value in a secure location or your secrets management
    solution. The `token` value is returned only once in the API response.

@@ -38364,6 +38364,9 @@ msgstr ""
 msgid "Not found."
 msgstr ""
 
+msgid "Not in use"
+msgstr ""
+
 msgid "Not permitted to create compliance control"
 msgstr ""
 
@@ -65105,9 +65108,6 @@ msgstr ""
 msgid "WorkItemCustomField|An error occurred while loading the custom field"
 msgstr ""
 
-msgid "WorkItemCustomField|An error occurred while saving the custom field"
-msgstr ""
-
 msgid "WorkItemCustomField|At least one option is required."
 msgstr ""
 
@@ -65124,6 +65124,9 @@ msgid "WorkItemCustomField|Remove"
 msgstr ""
 
 msgid "WorkItemCustomField|Type"
+msgstr ""
+
+msgid "WorkItemCustomField|Use on"
 msgstr ""
 
 msgid "WorkItems|An error occurred while fetching children"
@@ -65210,6 +65213,9 @@ msgid "WorkItem|All activity"
 msgstr ""
 
 msgid "WorkItem|An error occurred while getting work item counts."
+msgstr ""
+
+msgid "WorkItem|An error occurred while saving the custom field."
 msgstr ""
 
 msgid "WorkItem|Ancestor"
@@ -65408,6 +65414,9 @@ msgid "WorkItem|Epic"
 msgstr ""
 
 msgid "WorkItem|Epic will be moved to parent group %{groupName}."
+msgstr ""
+
+msgid "WorkItem|Error loading work item types"
 msgstr ""
 
 msgid "WorkItem|Existing %{workItemName}"
@@ -65660,6 +65669,9 @@ msgid "WorkItem|Select template"
 msgstr ""
 
 msgid "WorkItem|Select type"
+msgstr ""
+
+msgid "WorkItem|Select types"
 msgstr ""
 
 msgid "WorkItem|Select which type you would like to change this item to."

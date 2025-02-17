@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting SAML
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This page contains possible solutions for problems you might encounter when using:
 
@@ -74,9 +77,12 @@ Regardless of what browser you use, the process is similar to the following:
 
 ## Search Rails logs for a SAML sign-in
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can find detailed information about a SAML sign-in in the [`audit_json.log` file](../../../administration/logs/_index.md#audit_jsonlog).
 
@@ -340,9 +346,12 @@ initiated by the service provider and not only the identity provider.
 
 ### Message: `There is already a GitLab account associated with this email address.`
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account):
 
@@ -359,9 +368,12 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 
 ### Message: "SAML Name ID and email address do not match your user account"
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
@@ -406,9 +418,12 @@ For GitLab.com, alternatively, when users need to [link SAML to their existing G
 
 ### Users receive a 404
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 If the user receives a `404` after signing in successfully, check if you have IP restrictions configured. IP restriction settings are configured:
 
@@ -461,9 +476,12 @@ If a subset of users are receiving a `404` after signing in to the IdP, first ve
 
 ### 500 error after login
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML
 sign-in page, this could indicate that:
@@ -475,9 +493,12 @@ sign-in page, this could indicate that:
 
 ### 422 error after login
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you see a "422 error" in GitLab when you are redirected from the SAML
 sign-in page, you might have an incorrectly configured Assertion Consumer
@@ -505,9 +526,12 @@ To implement this workaround:
 
 ### User is blocked when signing in through SAML
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The following are the most likely reasons that a user is blocked when signing in through SAML:
 
@@ -524,9 +548,12 @@ Pay particular attention to the following 403 errors:
 
 ## Message: "The member's email address is not linked to a SAML account"
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](_index.md#sso-enforcement) enabled.
 

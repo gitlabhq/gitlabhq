@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Web Commits API
 ---
 
-DETAILS:
-**Tier:** Free
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442533) in GitLab 17.4.
+- Tier: Free
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442533) in GitLab 17.4.
+
+{{< /history >}}
 
 Use this API to retrieve information about commits created with the Web UI.
 

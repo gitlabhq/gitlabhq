@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: MLflow client compatibility
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
+
+{{< /history >}}
 
 [MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning experiment tracking.
 GitLab [Model experiment tracking](_index.md) and GitLab
@@ -40,7 +47,7 @@ To use MLflow client compatibility from a local environment:
 1. If the training code contains the call to `mlflow.set_tracking_uri()`, remove it.
 
 In the model registry, you can copy the tracking URI from the overflow menu in the top right
-by selecting the vertical ellipsis (**{ellipsis_v}**).
+by selecting the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 
 ## Model experiments
 
@@ -135,7 +142,11 @@ with mlflow.start_run():
 
 ### Loading a run
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509595) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509595) in GitLab 17.9.
+
+{{< /history >}}
 
 You can load a run from the GitLab model registry to, for example, make predictions.
 
@@ -154,8 +165,12 @@ model.predict(data=sample_input)
 
 ### Associating a run to a CI/CD job
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
+
+{{< /history >}}
 
 If your training code is being run from a CI/CD job, GitLab can use that information to enhance
 run metadata. To associate a run to a CI/CD job:

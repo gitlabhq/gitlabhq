@@ -9,9 +9,12 @@ This page details various database related operations that may relate to develop
 
 ## Disabling an index is not safe
 
-WARNING:
+{{< alert type="warning" >}}
+
 Previously, this section described a procedure to mark the index as invalid before removing it.
 It's no longer recommended, as [it is not safe](https://gitlab.com/groups/gitlab-org/-/epics/11543#note_1570734906).
+
+{{< /alert >}}
 
 There are certain situations in which you might want to disable an index before removing it:
 

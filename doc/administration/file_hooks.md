@@ -1,13 +1,16 @@
 ---
 stage: Foundations
 group: Import and Integrate
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: File hooks
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Use custom file hooks (not to be confused with [server hooks](server_hooks.md) or [system hooks](system_hooks.md)),
 to introduce custom integrations without modifying the GitLab source code.
@@ -17,11 +20,14 @@ in a file hook's code, and create many file hooks as you need. Each file hook is
 triggered by GitLab asynchronously in case of an event. For a list of events,
 see the [system hooks](system_hooks.md) and [webhooks](../user/project/integrations/webhook_events.md) documentation.
 
-NOTE:
+{{< alert type="note" >}}
+
 File hooks must be configured on the file system of the GitLab server. Only GitLab
 server administrators can complete these tasks. Explore
 [system hooks](system_hooks.md) or [webhooks](../user/project/integrations/webhooks.md)
 as an option if you do not have file system access.
+
+{{< /alert >}}
 
 Instead of writing and supporting your own file hook, you can also make changes
 directly to the GitLab source code and contribute back upstream. In this way, we can

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Repository storage
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab stores [repositories](../user/project/repository/_index.md) on repository storage. Repository
 storage is either:
@@ -15,10 +18,13 @@ storage is either:
 - Physical storage configured with a `gitaly_address` that points to a [Gitaly node](gitaly/_index.md).
 - [Virtual storage](gitaly/_index.md#virtual-storage) that stores repositories on a Gitaly Cluster.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Repository storage could be configured as a `path` that points directly to the directory where the repositories are
 stored. GitLab directly accessing a directory containing repositories is deprecated. You should configure GitLab to
 access repositories through a physical or virtual storage.
+
+{{< /alert >}}
 
 For more information on:
 
@@ -27,8 +33,12 @@ For more information on:
 
 ## Hashed storage
 
-> - Support for legacy storage, where repository paths were generated based on the project path, has been completely removed in GitLab 14.0.
-> - **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+{{< history >}}
+
+- Support for legacy storage, where repository paths were generated based on the project path, has been completely removed in GitLab 14.0.
+- **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
 
 Hashed storage stores projects on disk in a location based on a hash of the project's ID. This makes the folder
 structure immutable and eliminates the need to synchronize state from URLs to disk structure. This means that renaming a
@@ -137,9 +147,12 @@ project. Object pool repositories are stored similarly to regular repositories i
 "@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not run `git prune` or `git gc` in object pool repositories, which are stored in the `@pools` directory.
 This can cause data loss in the regular repositories that depend on the object pool.
+
+{{< /alert >}}
 
 ### Translate hashed object pool storage paths
 
@@ -244,10 +257,13 @@ By default, if repository weights have not been configured earlier:
 - `default` is weighted `100`.
 - All other storages are weighted `0`.
 
-NOTE:
+{{< alert type="note" >}}
+
 If all storage weights are `0` (for example, when `default` does not exist), GitLab attempts to
 create new repositories on `default`, regardless of the configuration or if `default` exists.
 See [the tracking issue](https://gitlab.com/gitlab-org/gitlab/-/issues/36175) for more information.
+
+{{< /alert >}}
 
 ## Move repositories
 

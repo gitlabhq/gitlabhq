@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Housekeeping
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab supports and automates housekeeping tasks in Git repositories to ensure
 that they can be served as efficiently as possible. Housekeeping tasks include:
@@ -18,10 +21,13 @@ that they can be served as efficiently as possible. Housekeeping tasks include:
 - Maintaining data structures that improve performance.
 - Updating object pools to improve object deduplication across forks.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not manually execute Git commands to perform housekeeping in Git
 repositories that are controlled by GitLab. Doing so may lead to corrupt
 repositories and data loss.
+
+{{< /alert >}}
 
 ## Housekeeping strategy
 
@@ -48,9 +54,13 @@ be slow.
 
 ### Heuristical housekeeping
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 14.9 for the [manual trigger](#manual-trigger) and the push-based trigger [with a flag](feature_flags.md) named `optimized_housekeeping`. Enabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/353607) in GitLab 14.10.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661) in GitLab 15.8. Feature flag `optimized_housekeeping` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 14.9 for the [manual trigger](#manual-trigger) and the push-based trigger [with a flag](feature_flags.md) named `optimized_housekeeping`. Enabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/353607) in GitLab 14.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107661) in GitLab 15.8. Feature flag `optimized_housekeeping` removed.
+
+{{< /history >}}
 
 The heuristical (or "opportunistic") housekeeping strategy analyzes the
 repository's state and executes housekeeping tasks only when it finds one or
@@ -130,7 +140,8 @@ information. Triggering housekeeping prunes unreachable objects with a grace per
 two weeks. When you manually trigger the pruning of unreachable objects, the grace period
 is reduced to 30 minutes.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If a concurrent process (like `git push`) has created an object but hasn't created
 a reference to the object yet, your repository can become corrupted if a reference
 to the object is added after the object is deleted. The grace period exists to
@@ -139,6 +150,8 @@ For example, if pushing many large objects frequently over a sometimes very slow
 then the risk that comes with pruning unreachable objects is much higher than in a corporate
 environment where the project can be accessed only from inside the company with a performant
 connection. Consider the project usage profile when using this option and select a quiet period.
+
+{{< /alert >}}
 
 To trigger a manual prune of unreachable objects:
 
@@ -182,9 +195,9 @@ the repository list to process.
 The following snippet enables daily background repository maintenance starting at
 23:00 for 1 hour for the `default` storage:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Self-compiled (source)
+{{< tab title="Self-compiled (source)" >}}
 
 ```toml
 [daily_maintenance]
@@ -202,7 +215,9 @@ maintenance:
 disabled = true
 ```
 
-:::TabTitle Linux package (Omnibus)
+{{< /tab >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```ruby
 gitaly['configuration'] = {
@@ -227,7 +242,9 @@ gitaly['configuration'] = {
 }
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 When the scheduled housekeeping is executed, you can see the following entries in
 your [Gitaly log](logs/_index.md#gitaly-logs):

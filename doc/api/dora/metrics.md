@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: DevOps Research and Assessment (DORA) key metrics API
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can also retrieve [DORA metrics](../../user/analytics/dora_metrics.md) with the [GraphQL API](../graphql/reference/_index.md).
 
@@ -102,5 +105,8 @@ parameter:
 | `lead_time_for_changes`    | The median number of seconds between the merge of the merge request (MR) and the deployment of the MR commits for all MRs deployed during the time period. |
 | `time_to_restore_service`  | The median number of seconds an incident was open during the time period. Available only for production environment. |
 
-NOTE:
+{{< alert type="note" >}}
+
 The API returns the `monthly` and `all` intervals by calculating the median of the daily median values. This can introduce a slight inaccuracy in the returned data.
+
+{{< /alert >}}

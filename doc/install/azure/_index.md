@@ -2,13 +2,16 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 'Learn how to spin up a pre-configured GitLab VM on Microsoft Azure.'
+description: Learn how to spin up a pre-configured GitLab VM on Microsoft Azure.
 title: Install GitLab on Microsoft Azure
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 For users of the Microsoft Azure business cloud, GitLab has a pre-configured offering in
 the [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/).
@@ -41,13 +44,16 @@ create a new VM:
 For the sake of this guide, let's create the VM from scratch, so
 select **Create**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Be aware that Azure incurs compute charges whenever your VM is
 active (known as "allocated"), even if you're using free trial
 credits.
 [how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
 See the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
 to learn how much resources can cost.
+
+{{< /alert >}}
 
 After you create the virtual machine, use the information in the following
 sections to configure it.
@@ -183,9 +189,12 @@ To set up the GitLab external URL:
    ssh -i <private key path> gitlab-azure@gitlab-prod.eastus.cloudapp.azure.com
    ```
 
-   NOTE:
-   If you need to reset your credentials, read
+   {{< alert type="note" >}}
+
+If you need to reset your credentials, read
    [how to reset SSH credentials for a user on an Azure VM](https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/linux/troubleshoot-ssh-connection#reset-ssh-credentials-for-a-user).
+
+   {{< /alert >}}
 
 1. Open `/etc/gitlab/gitlab.rb` with your editor.
 1. Find `external_url` and replace it with your own domain name. For the sake
@@ -272,10 +281,13 @@ To update GitLab to the latest version:
    and can take time to complete. During this time, the terminal shows various update tasks being
    completed in your terminal.
 
-   NOTE:
-   If you get an error like
+   {{< alert type="note" >}}
+
+If you get an error like
    `E: The repository 'https://packages.gitlab.com/gitlab/gitlab-ee/debian buster InRelease' is not signed.`,
    see the [troubleshooting section](#update-the-gpg-key-for-the-gitlab-repositories).
+
+   {{< /alert >}}
 
 1. After the update process is complete, a message like the
    following appears:
@@ -303,9 +315,12 @@ This section describes common errors you can encounter.
 
 ### Update the GPG key for the GitLab repositories
 
-NOTE:
+{{< alert type="note" >}}
+
 This is a temporary fix until the GitLab image is updated with the new
 GPG key.
+
+{{< /alert >}}
 
 The pre-configured GitLab image in Azure (provided by Bitnami) uses
 a GPG key [deprecated in April 2020](https://about.gitlab.com/blog/2020/03/30/gpg-key-for-gitlab-package-repositories-metadata-changing/).

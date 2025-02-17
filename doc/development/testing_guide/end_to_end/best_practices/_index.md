@@ -359,8 +359,11 @@ When you add a new test that requires administrator access, apply the RSpec meta
 
 When running tests locally or configuring a pipeline, the environment variable `QA_CAN_TEST_ADMIN_FEATURES` can be set to `false` to skip tests that have the `:requires_admin` tag.
 
-NOTE:
+{{< alert type="note" >}}
+
 If the _only_ action in the test that requires administrator access is to toggle a feature flag, use the `feature_flag` tag instead. More details can be found in [testing with feature flags](feature_flags.md).
+
+{{< /alert >}}
 
 ## Prefer `Commit` resource over `ProjectPush`
 
@@ -476,8 +479,11 @@ end
 
 We are creating custom negatable matchers in `qa/spec/support/matchers`.
 
-NOTE:
+{{< alert type="note" >}}
+
 We need to create custom negatable matchers only for the predicate methods we've added to the test framework, and only if we're using `not_to`. If we use `to have_no_*` a negatable matcher is not necessary but it increases code readability.
+
+{{< /alert >}}
 
 ### Why we need negatable matchers
 

@@ -1,8 +1,8 @@
 ---
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 stage: none
 group: unassigned
-description: 'Writing styles, markup, formatting, and other standards for GitLab Documentation.'
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: Writing styles, markup, formatting, and other standards for GitLab Documentation.
 title: Documentation Style Guide
 ---
 
@@ -758,8 +758,8 @@ page), use these phrases:
 
 | Option | Markdown                 | Displayed result       |
 |--------|--------------------------|------------------------|
-| No     | `**{dash-circle}** No` | **{dash-circle}** No |
-| Yes    | `**{check-circle-filled}** Yes` | **{check-circle-filled}** Yes |
+| No     | `{{< icon name="dash-circle" >}} No` | {{< icon name="dash-circle" >}} No |
+| Yes    | `{{< icon name="check-circle-filled" >}} Yes` | {{< icon name="check-circle-filled" >}} Yes |
 
 Do not use these SVG icons in API documentation.
 Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).
@@ -871,7 +871,7 @@ and edit.
 
 To link to another documentation (`.md`) file in the same repository:
 
-- Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/index.md)`.
+- Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/_index.md)`.
 - Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`MultiLineLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
 
 To link to a file outside of the documentation files, for example to link from development
@@ -1094,13 +1094,13 @@ To open either project or group settings:
 To create a project:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 ```
 
 To create a group:
 
 ```markdown
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 ```
 
 To open the **Admin** area:
@@ -1517,7 +1517,7 @@ the Markdown rendering engine used for GitLab documentation.
 ## GitLab SVG icons
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
-directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
+directly in the documentation. For example, `{{< icon name="tanuki" >}}` renders as: {{< icon name="tanuki" >}}.
 
 In most cases, you should avoid using the icons in text.
 However, you can use an icon when hover text is the only
@@ -1526,21 +1526,21 @@ often have hover text only.
 
 When you do use an icon, start with the hover text and follow it with the SVG reference in parentheses.
 
-- Avoid: `Select **{pencil}** **Edit**.` This generates as: Select **{pencil}** **Edit**.
-- Use instead: `Select **Edit** (**{pencil}**).` This generates as: Select **Edit** (**{pencil}**).
+- Avoid: `Select {{< icon name="pencil" >}} **Edit**.` This generates as: Select {{< icon name="pencil" >}} **Edit**.
+- Use instead: `Select **Edit** ({{< icon name="pencil" >}}).` This generates as: Select **Edit** ({{< icon name="pencil" >}}).
 
 Do not use words to describe the icon:
 
 - Avoid: `Select **Erase job log** (the trash icon).`
-- Use instead: `Select **Erase job log** (**{remove}**).` This generates as: Select **Erase job log** (**{remove}**).
+- Use instead: `Select **Erase job log** ({{< icon name="remove" >}}).` This generates as: Select **Erase job log** ({{< icon name="remove" >}}).
 
 When the button doesn't have any hover text, you can describe the icon.
 Follow up by creating a
 [UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Bug)
 to add hover text to the button to improve accessibility.
 
-- Avoid: `Select **{ellipsis_v}**.`
-- Use instead: `Select the vertical ellipsis (**{ellipsis_v}**).` This generates as: Select the vertical ellipsis (**{ellipsis_v}**).
+- Avoid: `Select {{< icon name="ellipsis_v" >}}.`
+- Use instead: `Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).` This generates as: Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 
 ## Videos
 
@@ -1686,8 +1686,11 @@ This is something to note.
 
 It renders on the GitLab documentation site as:
 
-NOTE:
+{{< alert type="note" >}}
+
 This is something to note.
+
+{{< /alert >}}
 
 ### Warning
 
@@ -1701,8 +1704,11 @@ This is something to be warned about.
 
 It renders on the GitLab documentation site as:
 
-WARNING:
+{{< alert type="warning" >}}
+
 This is something to be warned about.
+
+{{< /alert >}}
 
 ### Disclaimer
 
@@ -1719,12 +1725,7 @@ sole discretion of GitLab Inc.
 
 It renders on the GitLab documentation site as:
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+{{< alert type="disclaimer" />}}
 
 If all of the content on the page is not available, use the disclaimer about forward-looking statements once at the top of the page.
 
@@ -1775,8 +1776,11 @@ It renders on the GitLab documentation site as:
 
 On the docs site, you can format text so it's displayed as tabs.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not put version history bullets, topic headings, HTML, or tabs in tabs. Only use paragraphs, lists, alert boxes, and code blocks. Other styles might not render properly. When in doubt, keep things simple.
+
+{{< /alert >}}
 
 To create a set of tabs, follow this example:
 
@@ -1797,17 +1801,21 @@ Here's some other content in tab two.
 
 This code renders on the GitLab documentation site as:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Tab One
+{{< tab title="Tab One" >}}
 
 Here's some content in tab one.
 
-:::TabTitle Tab Two
+{{< /tab >}}
+
+{{< tab title="Tab Two" >}}
 
 Here's some other content in tab two.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 For tab titles, be brief and consistent. Ensure they are parallel, and start each with a capital letter.
 For example:
@@ -2020,9 +2028,9 @@ following snippet:
 
 It renders as:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -2036,7 +2044,9 @@ It renders as:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -2059,7 +2069,9 @@ It renders as:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -2078,7 +2090,9 @@ It renders as:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -2098,4 +2112,6 @@ It renders as:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}

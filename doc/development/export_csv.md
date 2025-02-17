@@ -16,5 +16,8 @@ This document lists the different implementations of CSV export in GitLab codeba
 | Polling (non-persistent state) | - Asynchronously processes the query with the background job.<br>- Frontend(FE) polls every few seconds to check if CSV file is ready. | - Asynchronous processing.<br>- Automatically downloads to local machine on completion.<br>- In-app solution. | - Non-persistable request - request expires when the user goes to a different page.<br>- API is processed for each polling request. | [Export Vulnerabilities](../user/application_security/vulnerability_report/_index.md#export-vulnerability-details)                                                                                            |
 | Polling (persistent state) (*) | - Asynchronously processes the query with background job.<br>- Backend (BE) maintains the export state<br>- FE polls every few seconds to check status.<br>- FE shows 'Download link' when export is ready.<br>- User can download or regenerate a new report. | - Asynchronous processing.<br>- No database calls made during the polling requests (HTTP 304 status is returned until export status changes).<br>- Does not require user to stay on page until export is complete.<br>- In-app solution.<br>- Can be expanded into a generic CSV feature (such as dashboard / CSV API). | - Requires to maintain export states in DB.<br>- Does not automatically download the CSV export to local machine, requires users to select 'Download'. | [Export Merge Commits Report](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43055)                                                                                                                   |
 
-NOTE:
+{{< alert type="note" >}}
+
 Export types marked as * are currently work in progress.
+
+{{< /alert >}}

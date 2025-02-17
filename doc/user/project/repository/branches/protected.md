@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Protected branches in GitLab restrict who can push to, merge, or modify a Git branch."
+description: Protected branches in GitLab restrict who can push to, merge, or modify a Git branch.
 title: Protected branches
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In GitLab, [permissions](../../../permissions.md) are fundamentally defined around the
 idea of having read or write permission to the repository and branches. To impose
@@ -28,7 +31,11 @@ The [default branch](default.md) for your repository is protected by default.
 
 ## Who can modify a protected branch
 
-> - Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **allowed** permission in GitLab 16.0.
+{{< history >}}
+
+- Branch push permission [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118532) to require GitLab administrators to also have the **allowed** permission in GitLab 16.0.
+
+{{< /history >}}
 
 When a branch is protected, the default behavior enforces these restrictions on the branch.
 
@@ -109,9 +116,12 @@ To protect a branch:
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
 
-   NOTE:
-   In GitLab Premium and Ultimate, you can also add groups or individual users
+   {{< alert type="note" >}}
+
+In GitLab Premium and Ultimate, you can also add groups or individual users
    to **Allowed to merge** and **Allowed to push and merge**.
+
+   {{< /alert >}}
 
 1. Select **Protect**.
 
@@ -119,12 +129,19 @@ The protected branch displays in the list of protected branches.
 
 ### For all projects in a group
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
+
+{{< /history >}}
 
 Group owners can create protected branches for a group. These settings are inherited
 by all projects in the group and can't be overridden by project settings.
@@ -166,9 +183,12 @@ to a protected branch:
    Allowed to push and merge: @group-x/subgroup-y
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When you assign a group to a protected branch, only direct members of that group are included.
 Members from parent groups are not automatically granted permissions to the protected branch.
+
+{{< /alert >}}
 
 #### Group inheritance and eligibility
 
@@ -215,9 +235,12 @@ To grant access to **Subgroup Y** members for **Project A**, you must share the 
 the subgroup. Adding the subgroup directly to the protected branch settings is not effective
 and isn't applicable to subgroup members.
 
-NOTE:
+{{< alert type="note" >}}
+
 For a group to have protected branch permissions, the project must be directly shared with the group.
 Inherited project membership from parent groups is not sufficient for protected branch permissions.
+
+{{< /alert >}}
 
 ## Protect multiple branches with wildcard rules
 
@@ -369,9 +392,12 @@ As the most permissive option determines the behavior, the resulting permissions
 
 ## Require Code Owner approval on a protected branch
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/_index.md).
 If a branch is protected by multiple rules, code owner approval is required if _any_ of
@@ -454,7 +480,7 @@ branches by using the GitLab web interface:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
-1. Next to the branch you want to delete, select **Delete** (**{remove}**).
+1. Next to the branch you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.
    Branch names [are case-sensitive](_index.md#name-your-branch).
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab package registry administration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To use GitLab as a private repository for a variety of common package managers, use the package registry.
 You can build and publish
@@ -64,9 +67,9 @@ can define specific rate limits for the Packages API. For more details, see [pac
 
 The package registry is enabled by default. To disable it:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -81,7 +84,9 @@ The package registry is enabled by default. To disable it:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -104,7 +109,9 @@ The package registry is enabled by default. To disable it:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -123,7 +130,9 @@ The package registry is enabled by default. To disable it:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -143,7 +152,9 @@ The package registry is enabled by default. To disable it:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Change the storage path
 
@@ -160,9 +171,9 @@ installation:
 
 To change the local storage path:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -176,7 +187,9 @@ To change the local storage path:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -197,7 +210,9 @@ To change the local storage path:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 If you already had packages stored in the old storage path, move everything
 from the old to the new location to ensure existing packages stay accessible:
@@ -229,46 +244,56 @@ The processing is done in a background worker and requires **no downtime**.
 
 1. Migrate the packages.
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo gitlab-rake "gitlab:packages:migrate"
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Track the progress and verify that all packages migrated successfully using
    the PostgreSQL console.
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus) 14.1 and earlier
+   {{< tab title="Linux package (Omnibus) 14.1 and earlier" >}}
 
    ```shell
    sudo gitlab-rails dbconsole
    ```
 
-   :::TabTitle Linux package (Omnibus) 14.2 and later
+   {{< /tab >}}
+
+   {{< tab title="Linux package (Omnibus) 14.2 and later" >}}
 
    ```shell
    sudo gitlab-rails dbconsole --database main
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    RAILS_ENV=production sudo -u git -H psql -d gitlabhq_production
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Verify that all packages migrated to object storage with the following SQL
    query. The number of `objectstg` should be the same as `total`:
@@ -283,18 +308,22 @@ The processing is done in a background worker and requires **no downtime**.
 
 1. Finally, verify that there are no files on disk in the `packages` directory:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo find /var/opt/gitlab/gitlab-rails/shared/packages -type f | grep -v tmp | wc -l
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo -u git find /home/git/gitlab/shared/packages -type f | grep -v tmp | wc -l
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}

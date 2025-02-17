@@ -5,22 +5,26 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Cells
 ---
 
-DETAILS:
-**Offering:** GitLab.com
-**Status:** Experiment
+{{< details >}}
 
-NOTE:
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 This feature is available for administrators of GitLab.com only. This feature is not available for GitLab Self-Managed or GitLab Dedicated instances.
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="disclaimer" />}}
+
+{{< alert type="note" >}}
+
 Cells 1.0 is in development. For more information about the state of cell development, see [epic 12383](https://gitlab.com/groups/gitlab-org/-/epics/12383).
+
+{{< /alert >}}
 
 This page explains how to configure the GitLab Rails console for cell functionality. For more information on the proposed design and terminology, see the design document for [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
 

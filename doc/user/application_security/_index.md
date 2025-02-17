@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Application security
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab can check your application for security vulnerabilities including:
 
@@ -54,8 +57,11 @@ Although in a major analyzer version you automatically get the latest versions o
 tools, there are some [known issues](https://gitlab.com/gitlab-org/gitlab/-/issues/9725) with this
 approach.
 
-NOTE:
+{{< alert type="note" >}}
+
 To get the most updated vulnerability information on existing vulnerabilities you may need to re-run the default branch's pipeline.
+
+{{< /alert >}}
 
 ## Security scanning
 
@@ -123,8 +129,12 @@ The [security report](../../development/integrations/secure.md#report) artifact 
 
 ## Security approvals in merge requests
 
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/397067) the License-Check feature in GitLab 16.0.
+{{< history >}}
+
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/397067) the License-Check feature in GitLab 16.0.
+
+{{< /history >}}
 
 You can enforce an additional approval for merge requests that would introduce one of the following
 security issues:

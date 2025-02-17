@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: User file uploads
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Users can upload files to:
 
@@ -18,13 +21,20 @@ GitLab generates direct URLs for these uploaded files with a random 32-character
 
 Files uploaded by users to GitLab issues, merge requests, and epics contain `/uploads/<32-character-id>` in the URL path.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Exercise caution in downloading files uploaded by unknown or untrusted sources, especially if the file is an executable or script.
+
+{{< /alert >}}
 
 ## Access control for uploaded files
 
-> - Enforced authorization checks became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352291) in GitLab 15.3. Feature flag `enforce_auth_checks_on_uploads` removed.
-> - Project settings in the user interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88567) in GitLab 15.3.
+{{< history >}}
+
+- Enforced authorization checks became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352291) in GitLab 15.3. Feature flag `enforce_auth_checks_on_uploads` removed.
+- Project settings in the user interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88567) in GitLab 15.3.
+
+{{< /history >}}
 
 Access to non-image files uploaded to:
 
@@ -58,13 +68,20 @@ To configure authentication settings for all media files:
 1. Expand **Visibility, project features, permissions**.
 1. Scroll to **Project visibility** and select **Require authentication to view media files**.
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot select this option for public projects.
+
+{{< /alert >}}
 
 ## Delete uploaded files
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92791) in GitLab 15.3.
-> - REST API [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) support in GitLab 17.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92791) in GitLab 15.3.
+- REST API [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) support in GitLab 17.2.
+
+{{< /history >}}
 
 You should delete an uploaded file when that file contains sensitive or confidential information. When you have deleted that file, users cannot access the file and the direct URL returns a 404 error.
 

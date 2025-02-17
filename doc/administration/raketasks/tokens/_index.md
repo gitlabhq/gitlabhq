@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Access token Rake tasks
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467416) in GitLab 17.2.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467416) in GitLab 17.2.
+
+{{< /history >}}
 
 ## Analyze token expiration dates
 
@@ -20,15 +27,17 @@ year after those tokens were created.
 To identify which tokens might have been affected by this migration, you can run a
 Rake task that analyses all access tokens and displays the top ten most common expiration dates:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    gitlab-rake gitlab:tokens:analyze
    ```
 
-   :::TabTitle Helm chart (Kubernetes)
+   {{< /tab >}}
+
+   {{< tab title="Helm chart (Kubernetes)" >}}
 
    ```shell
    # Find the toolbox pod
@@ -36,20 +45,26 @@ Rake task that analyses all access tokens and displays the top ten most common e
    kubectl exec -it <toolbox-pod-name> -- sh -c 'cd /srv/gitlab && bin/rake gitlab:tokens:analyze'
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    ```shell
    sudo docker exec -it <container_name> /bin/bash
    gitlab-rake gitlab:tokens:analyze
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:tokens:analyze
    ```
 
-   ::EndTabs
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 This task analyzes all the access tokens and groups them by expiration date.
 The left column shows the expiration date, and the right column shows how many tokens
@@ -94,15 +109,17 @@ Run the following Rake task to extend or remove expiration dates from tokens in 
 
 1. Run the tool:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    gitlab-rake gitlab:tokens:edit
    ```
 
-   :::TabTitle Helm chart (Kubernetes)
+   {{< /tab >}}
+
+   {{< tab title="Helm chart (Kubernetes)" >}}
 
    ```shell
    # Find the toolbox pod
@@ -110,20 +127,26 @@ Run the following Rake task to extend or remove expiration dates from tokens in 
    kubectl exec -it <toolbox-pod-name> -- sh -c 'cd /srv/gitlab && bin/rake gitlab:tokens:edit'
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    ```shell
    sudo docker exec -it <container_name> /bin/bash
    gitlab-rake gitlab:tokens:edit
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:tokens:edit
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
    After the tool starts, it shows the output from the [analyze step](#analyze-token-expiration-dates)
    plus an additional prompt about modifying the expiration dates:

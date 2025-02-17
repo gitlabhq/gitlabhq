@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Incoming email
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab has several features based on receiving incoming email messages:
 
@@ -46,12 +49,15 @@ Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, as well as the
 Microsoft Exchange Server [does not support sub-addressing](#microsoft-exchange-server),
 and Microsoft Office 365 [does not support sub-addressing by default](#microsoft-office-365).
 
-NOTE:
+{{< alert type="note" >}}
+
 If your provider or server supports email sub-addressing, we recommend using it.
 A dedicated email address only supports Reply by Email functionality.
 A catch-all mailbox supports the same features as sub-addressing,
 but sub-addressing is still preferred because only one email address is used,
 leaving a catch-all available for other purposes beyond GitLab.
+
+{{< /alert >}}
 
 ### Catch-all mailbox
 
@@ -71,10 +77,14 @@ this method only supports replies, and not the other features of incoming email.
 
 ## Accepted headers
 
-> - Accepting `Cc` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348572) in GitLab 16.5.
-> - Accepting `X-Original-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149874) in GitLab 17.0.
-> - Accepting `X-Forwarded-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168716) in GitLab 17.6.
-> - Accepting `X-Delivered-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170221) in GitLab 17.6.
+{{< history >}}
+
+- Accepting `Cc` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348572) in GitLab 16.5.
+- Accepting `X-Original-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149874) in GitLab 17.0.
+- Accepting `X-Forwarded-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168716) in GitLab 17.6.
+- Accepting `X-Delivered-To` headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170221) in GitLab 17.6.
+
+{{< /history >}}
 
 Email is processed correctly when a configured email address is present in one of the following headers
 (sorted in the order they are checked):
@@ -128,8 +138,11 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 
 ### Security concerns
 
-WARNING:
+{{< alert type="warning" >}}
+
 Be careful when choosing the domain used for receiving incoming email.
+
+{{< /alert >}}
 
 For example, suppose your top-level company domain is `hooli.com`.
 All employees in your company have an email address at that domain through Google
@@ -155,7 +168,8 @@ Alternatively, use a dedicated domain for GitLab email communications such as
 See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30366)
 for a real-world example of this exploit.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Use a mail server that has been configured to reduce
 spam.
 A Postfix mail server that is running on a default configuration, for example,
@@ -165,8 +179,12 @@ If the sender's address is spoofed, the reject notice is delivered to the spoofe
 `FROM` address, which can cause the mail server's IP or domain to appear on a block
 list.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 Users can use the incoming email features without having to use two-factor authentication (2FA) to authenticate themselves first. This applies even if you have [enforced two-factor authentication](../security/two_factor_authentication.md) for your instance.
+{{< /alert >}}
 
 ### Linux package installations
 
@@ -205,8 +223,12 @@ Reply by email should now be working.
    gem install gitlab-mail_room
    ```
 
-   NOTE: This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
+   {{< alert type="note" >}}
+
+This step is necessary to avoid thread deadlocks and to support the latest MailRoom features. See
    [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
+
+   {{< /alert >}}
 
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
    and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
@@ -371,8 +393,11 @@ incoming_email:
 
 Example configuration for Gmail/Google Workspace. Assumes mailbox `gitlab-incoming@gmail.com`.
 
-NOTE:
+{{< alert type="note" >}}
+
 `incoming_email_email` cannot be a Gmail alias account.
+
+{{< /alert >}}
 
 Example for Linux package installations:
 
@@ -539,9 +564,12 @@ incoming_email:
 
 ##### Dedicated email address
 
-NOTE:
+{{< alert type="note" >}}
+
 Supports [Reply by Email](reply_by_email.md) only.
 Cannot support [Service Desk](../user/project/service_desk/_index.md).
+
+{{< /alert >}}
 
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
@@ -607,10 +635,13 @@ Example configurations for Microsoft Office 365 with IMAP enabled.
 
 ##### Sub-addressing mailbox
 
-NOTE:
+{{< alert type="note" >}}
+
 As of September 2020 sub-addressing support
 [has been added to Office 365](https://support.microsoft.com/en-us/office/uservoice-pages-430e1a78-e016-472a-a10f-dc2a3df3450a). This feature is not
 enabled by default, and must be enabled through PowerShell.
+
+{{< /alert >}}
 
 This series of PowerShell commands enables [sub-addressing](#email-sub-addressing)
 at the organization level in Office 365. This allows all mailboxes in the organization
@@ -751,9 +782,12 @@ incoming_email:
 
 ##### Dedicated email address
 
-NOTE:
+{{< alert type="note" >}}
+
 Supports [Reply by Email](reply_by_email.md) only.
 Cannot support [Service Desk](../user/project/service_desk/_index.md).
+
+{{< /alert >}}
 
 This example for Linux package installations assumes the dedicated email address `incoming@office365.example.com`:
 
@@ -835,7 +869,11 @@ This example for Linux package installations assumes you're using the following 
 
 ##### Configure Microsoft Graph
 
-> - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
+{{< history >}}
+
+- Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
+
+{{< /history >}}
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -879,7 +917,11 @@ The Microsoft Graph API is not yet supported in self-compiled installations. See
 
 ### Use encrypted credentials
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+
+{{< /history >}}
 
 Instead of having the incoming email credentials stored in plaintext in the configuration files, you can optionally
 use an encrypted file for the incoming email credentials.
@@ -894,9 +936,9 @@ The supported configuration items for the encrypted file are:
 - `user`
 - `password`
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. If initially your incoming email configuration in `/etc/gitlab/gitlab.rb` looked like:
 
@@ -925,12 +967,16 @@ The supported configuration items for the encrypted file are:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 Use a Kubernetes secret to store the incoming email password. For more information,
 read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secrets.html#imap-password-for-incoming-emails).
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. If initially your incoming email configuration in `docker-compose.yml` looked like:
 
@@ -968,7 +1014,9 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. If initially your incoming email configuration in `/home/git/gitlab/config/gitlab.yml` looked like:
 
@@ -1003,7 +1051,9 @@ read about [Helm IMAP secrets](https://docs.gitlab.com/charts/installation/secre
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 
@@ -1016,9 +1066,9 @@ This issue was fixed in 16.6.1. See [issue 432257](https://gitlab.com/gitlab-org
 The workaround is to run the following commands in your GitLab installation
 to patch the affected files:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
@@ -1026,7 +1076,9 @@ patch -p1 -d /opt/gitlab/embedded/service/gitlab-rails < /tmp/mailroom.patch
 gitlab-ctl restart mailroom
 ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 ```shell
 curl --output /tmp/mailroom.patch --url "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137279.diff"
@@ -1035,7 +1087,9 @@ patch -p1 < /tmp/mailroom.patch
 gitlab-ctl restart mailroom
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Incoming emails are rejected by providers with email address limit
 

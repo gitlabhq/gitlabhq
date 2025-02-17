@@ -5,16 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Debian packages in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Experiment
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
 
 > - [Deployed behind a feature flag](../../feature_flags.md), disabled by default.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The Debian package registry for GitLab is under development and isn't ready for production use. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
 work and timelines to make it production ready. Support for [Debian packages is an experiment](../package_registry/supported_package_managers.md), and has known security vulnerabilities.
+
+{{< /alert >}}
 
 Publish Debian packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -40,8 +46,11 @@ Debian repository support is still a work in progress. It's gated behind a featu
 [GitLab administrators with access to the GitLab Rails console](../../../administration/feature_flags.md)
 can opt to enable it.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+
+{{< /alert >}}
 
 To enable it:
 
@@ -59,8 +68,11 @@ Feature.disable(:debian_packages)
 
 The Debian group repository is also behind a second feature flag that is disabled by default.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Understand the [stability and security risks of enabling features still in development](../../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
+
+{{< /alert >}}
 
 To enable it:
 
@@ -177,7 +189,11 @@ dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 
 ## Upload a package with explicit distribution and component
 
-> - Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+{{< history >}}
+
+- Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+
+{{< /history >}}
 
 When you don't have access to `.changes` file, you can directly upload a `.deb` by passing
 distribution `codename` and target `component` as parameters with

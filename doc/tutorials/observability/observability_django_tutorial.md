@@ -5,10 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Use GitLab Observability with a Django application'
 ---
 
-FLAG:
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
 <!-- Update this note when observability_features flag is removed -->
+
+{{< /alert >}}
 
 In this tutorial, we'll show you how to create, configure, instrument, and monitor a Django application using GitLab observability features.
 
@@ -28,7 +31,7 @@ To follow along this tutorial, you should have:
 First, create a GitLab project and a corresponding access token.
 This tutorial uses the project name `animals`.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details.
    - In the **Project name** field, enter `animals`.

@@ -5,13 +5,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Model registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9423) in GitLab 16.8 as an [experiment](../../../../policy/development_stages_support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `model_registry`. Disabled by default. To enable the feature, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `model_registry`.
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/14998) to general availability in GitLab 17.6.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9423) in GitLab 16.8 as an [experiment](../../../../policy/development_stages_support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `model_registry`. Disabled by default. To enable the feature, an administrator can [enable the feature flag](../../../../administration/feature_flags.md) named `model_registry`.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/14998) to general availability in GitLab 17.6.
+
+{{< /history >}}
 
 Model registry allows data scientists and developers to manage their machine learning
 models, along with all metadata associated with their creation: parameters, performance
@@ -66,14 +73,14 @@ To delete a model and all its associated versions:
 
 1. On the left sidebar, select **Deploy > Model registry**.
 1. Find the model you want to delete.
-1. In the most right column, select the vertical ellipsis (**{ellipsis_v}**) and **Delete model**.
+1. In the most right column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete model**.
 
 Alternatively you can delete models from the model details page:
 
 1. On the left sidebar, select **Deploy > Model registry**.
 1. Find the model you want to delete.
 1. Select the model name to view its details.
-1. Select the vertical ellipsis (**{ellipsis_v}**) and **Delete model**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete model**.
 1. Confirm the deletion.
 
 ### Delete a model version
@@ -85,7 +92,7 @@ To delete a model version:
 1. Select the model name to view its details.
 1. Select the **Versions** tab.
 1. Find the model version you want to delete
-1. In the most right column, select the vertical ellipsis (**{ellipsis_v}**) and **Delete model version**.
+1. In the most right column, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete model version**.
 
 Alternatively you can delete models from the model version details page:
 
@@ -94,7 +101,7 @@ Alternatively you can delete models from the model version details page:
 1. Select the model name to view its details.
 1. Select the **Versions** tab.
 1. Select the version name to view its details.
-1. Select the vertical ellipsis (**{ellipsis_v}**) and **Delete model version**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and **Delete model version**.
 1. Confirm the deletion.
 
 ### Add artifacts to a model version

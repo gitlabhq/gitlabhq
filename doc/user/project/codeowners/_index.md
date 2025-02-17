@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use Code Owners to define experts for your code base, and set review requirements based on file type or location."
+description: Use Code Owners to define experts for your code base, and set review requirements based on file type or location.
 title: Code Owners
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the Code Owners feature to define who has expertise for specific parts of your project's codebase.
 Define the owners of files and directories in a repository to:

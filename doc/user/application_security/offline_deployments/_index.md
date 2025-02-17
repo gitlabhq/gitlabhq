@@ -5,12 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Offline environments
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 To set up an offline environment, you must receive an [opt-out exemption of cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing) prior to purchase. For more details, contact your GitLab sales representative.
+
+{{< /alert >}}
 
 It's possible to run most of the GitLab security scanners when not connected to the internet.
 
@@ -135,9 +141,12 @@ This method requires a runner with access to both `gitlab.com` (including
 to be able to use the `docker` command inside the jobs. This runner can be installed in a DMZ or on
 a bastion, and used only for this specific project.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This template does not include updates for the container scanning analyzer. See
 [Container scanning offline directions](../container_scanning/_index.md#running-container-scanning-in-an-offline-environment).
+
+{{< /alert >}}
 
 #### Scheduling the updates
 

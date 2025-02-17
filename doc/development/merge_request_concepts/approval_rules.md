@@ -2,7 +2,7 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Developer documentation explaining the design and workflow of merge request approval rules."
+description: Developer documentation explaining the design and workflow of merge request approval rules.
 title: Approval rules development guidelines
 ---
 
@@ -18,10 +18,13 @@ can change often. The code should explain those things better. The components
 mentioned here are the major parts of the application for the approval rules
 feature to work.
 
-NOTE:
+{{< alert type="note" >}}
+
 This is a living document and should be updated accordingly when parts
 of the codebase touched in this document are changed or removed, or when new components
 are added.
+
+{{< /alert >}}
 
 ## Data Model
 

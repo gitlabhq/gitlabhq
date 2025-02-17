@@ -5,9 +5,12 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 title: 'Tutorial: Move your personal project to a group'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 If you created a project under a [personal namespace](../../user/namespace/_index.md),
 you can perform common tasks, like managing issues, merge requests,
@@ -43,7 +46,7 @@ Maintainer role for the group.
 
 If you don't have a group, create one:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. In **Group name**, enter a name for the group.
 1. In **Group URL**, enter a path for the group, which is used as the namespace.
 1. Choose the [visibility level](../../user/public_access.md).
@@ -71,11 +74,14 @@ You are redirected to the project's new page.
 If you have more than one personal project, you can repeat these steps for each
 project.
 
-NOTE:
+{{< alert type="note" >}}
+
 For more information about these migration steps,
 see [Transferring your project into another namespace](../../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace).
 A migration might result in follow-up work to update the project path in
 your related resources and tools, such as websites and package managers.
+
+{{< /alert >}}
 
 ### Work with your group
 

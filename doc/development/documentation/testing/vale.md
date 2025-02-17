@@ -102,9 +102,9 @@ The result types have these attributes:
 
 | Result type  | Displays in CI/CD job output | Displays in MR diff | Causes CI/CD jobs to fail | Vale rule link |
 |--------------|------------------------------|---------------------|---------------------------|----------------|
-| `error`      | **{check-circle}** Yes       | **{check-circle}** Yes | **{check-circle}** Yes | [Error-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+error+file%3A%5Edoc&snippets=false&utf8=✓) |
-| `warning`    | **{dotted-circle}** No       | **{check-circle}** Yes | **{dotted-circle}** No | [Warning-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+warning+file%3A%5Edoc&snippets=false&utf8=✓) |
-| `suggestion` | **{dotted-circle}** No       | **{dotted-circle}** No | **{dotted-circle}** No | [Suggestion-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+suggestion+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `error`      | {{< icon name="check-circle" >}} Yes       | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | [Error-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+error+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `warning`    | {{< icon name="dotted-circle" >}} No       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | [Warning-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+warning+file%3A%5Edoc&snippets=false&utf8=✓) |
+| `suggestion` | {{< icon name="dotted-circle" >}} No       | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | [Suggestion-level Vale rules](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=master&scope=blobs&search=level%3A+suggestion+file%3A%5Edoc&snippets=false&utf8=✓) |
 
 ## When to add a new Vale rule
 

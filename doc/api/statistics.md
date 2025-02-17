@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Application statistics API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use this API to retrieve statistics from your GitLab instance.
 
@@ -19,11 +22,14 @@ Prerequisites:
 
 Gets details on the current application statistics.
 
-NOTE:
+{{< alert type="note" >}}
+
 For values less than 10,000, this endpoint returns an exact count. For values of 10,000 and greater, this endpoint only returns approximate data when
 [TablesampleCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/tablesample_count_strategy.rb?ref_type=heads#L16)
 and [ReltuplesCountStrategy](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/count/reltuples_count_strategy.rb?ref_type=heads)
 strategies are used for calculations.
+
+{{< /alert >}}
 
 ```plaintext
 GET /application/statistics

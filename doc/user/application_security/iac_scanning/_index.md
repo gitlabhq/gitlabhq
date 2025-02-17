@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Infrastructure as Code scanning
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Infrastructure as Code (IaC) scanning runs in your CI/CD pipeline, checking your infrastructure
 definition files for known vulnerabilities. Identify vulnerabilities before they're committed to
@@ -65,11 +68,14 @@ Supported configuration formats:
 - AWS CloudFormation
 - Azure Resource Manager
 
-  NOTE:
-  IaC scanning can analyze Azure Resource Manager templates in JSON format.
+  {{< alert type="note" >}}
+
+IaC scanning can analyze Azure Resource Manager templates in JSON format.
   If you write templates in [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview),
   you must use the [Bicep CLI](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-cli) to
   convert your Bicep files into JSON before IaC scanning can analyze them.
+
+  {{< /alert >}}
 
 - Dockerfile
 - Google Deployment Manager
@@ -77,15 +83,21 @@ Supported configuration formats:
 - OpenAPI
 - Terraform
 
-  NOTE:
-  Terraform modules in a custom registry are not scanned for vulnerabilities.
+  {{< alert type="note" >}}
+
+Terraform modules in a custom registry are not scanned for vulnerabilities.
   For more information about the proposed feature, see [issue 357004](https://gitlab.com/gitlab-org/gitlab/-/issues/357004).
+
+  {{< /alert >}}
 
 ## Customize rules
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can customize the default IaC scanning rules provided with GitLab.
 
@@ -145,8 +157,11 @@ You can use [KICS annotations](https://docs.kics.io/latest/running-kics/#using_c
 - To skip scanning an entire file, you can add `# kics-scan ignore` as a comment at the top of the file.
 - To disable a specific rule in an entire file, you can add `# kics-scan disable=<kics_id>` as a comment at the top of the file.
 
-NOTE:
+{{< alert type="note" >}}
+
 This feature is only available for some types of IaC files. See the [KICS documentation](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) for a list of supported file types.
+
+{{< /alert >}}
 
 ### Override rules
 
@@ -184,9 +199,12 @@ In the following example `sast-ruleset.toml` file, rules are matched by the `typ
 
 ### Offline configuration
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 An offline environment has limited, restricted, or intermittent access to external resources through
 the internet. For instances in such an environment, IaC requires
@@ -250,9 +268,12 @@ To use a specific analyzer version:
 1. Add the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable, after the line that includes the
    `SAST-IaC.gitlab-ci.yml` template.
 
-   NOTE:
+   {{< alert type="note" >}}
+
    Only set this variable in a specific job. If you set it at the top level, the version you set is
    used for other SAST analyzers.
+
+   {{< /alert >}}
 
    Set the tag to:
 
@@ -295,8 +316,12 @@ include:
 
 ## Automatic vulnerability resolution
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2. Feature flag `sec_mark_dropped_findings_as_resolved` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368284) in GitLab 15.9 [with a project-level flag](../../../administration/feature_flags.md) named `sec_mark_dropped_findings_as_resolved`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375128) in GitLab 16.2. Feature flag `sec_mark_dropped_findings_as_resolved` removed.
+
+{{< /history >}}
 
 To help you focus on the vulnerabilities that are still relevant, IaC scanning automatically
 [resolves](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities when:

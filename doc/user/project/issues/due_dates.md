@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Due dates
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Minimum role to set due dates [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Minimum role to set due dates [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Use due dates in work items to track deadlines, and make sure features are
 shipped on time.
@@ -36,14 +43,14 @@ it is shown below the issue title:
 
 ![An issue with a due date in 2024.](img/overdue_issue_v17_9.png)
 
-Issue dates in the past are shown with a red icon (**{calendar-overdue}**).
+Issue dates in the past are shown with a red icon ({{< icon name="calendar-overdue" >}}).
 
 To view and sort issues containing due dates in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. To sort by due date, select the current sort method, then select **Due date**.
-1. Optional. To reverse the sort order, select **Sort direction** (**{sort-lowest}**).
+1. Optional. To reverse the sort order, select **Sort direction** ({{< icon name="sort-lowest" >}}).
 
 ## Set a due date for an issue
 
@@ -91,6 +98,6 @@ feed can be added to calendar applications.
    - [Issues in a specific project](managing_issues.md#issue-list)
    - Issues for all projects [in a group](../../group/_index.md)
 
-1. On the right, from the **Actions** (**{ellipsis_v}**) dropdown list, select **Subscribe to calendar** to display the `.ics` file.
+1. On the right, from the **Actions** ({{< icon name="ellipsis_v" >}}) dropdown list, select **Subscribe to calendar** to display the `.ics` file.
 1. Copy the full link to the page (including the full query string) and use it in your
    preferred calendar application.

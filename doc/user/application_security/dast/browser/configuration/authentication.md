@@ -1,8 +1,8 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
 title: Authentication
 ---
 
@@ -39,9 +39,12 @@ When choosing authentication credentials:
 
 ## Getting started
 
-NOTE:
+{{< alert type="note" >}}
+
 You should periodically confirming that the analyzer's authentication is still working, as this tends to break over
 time due to changes to the application.
+
+{{< /alert >}}
 
 To run a DAST authenticated scan:
 
@@ -542,8 +545,11 @@ Authentication failed because a home page should be displayed after login. Inste
 
 ### Configure the authentication report
 
-WARNING:
+{{< alert type="warning" >}}
+
 The authentication report can contain sensitive information such as the credentials used to perform the login.
+
+{{< /alert >}}
 
 An authentication report can be saved as a CI/CD job artifact to assist with understanding the cause of an authentication failure.
 

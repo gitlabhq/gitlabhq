@@ -1,6 +1,6 @@
 ---
-redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/decisions/001_use_ruby_push_check_approach_within_monolith/'
-remove_date: '2025-07-08'
+redirect_to: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/decisions/001_use_ruby_push_check_approach_within_monolith/
+remove_date: "2025-07-08"
 ---
 
 <!-- markdownlint-disable -->

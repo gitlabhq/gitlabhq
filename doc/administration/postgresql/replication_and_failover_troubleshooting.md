@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting PostgreSQL replication and failover for Linux package installations
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When working with PostgreSQL replication and failover, you might encounter the following issues.
 
@@ -106,8 +109,11 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
 
 ## Reset the Patroni state in Consul
 
-WARNING:
+{{< alert type="warning" >}}
+
 Resetting the Patroni state in Consul is a potentially destructive process. Make sure that you have a healthy database backup first.
+
+{{< /alert >}}
 
 As a last resort you can reset the Patroni state in Consul completely.
 

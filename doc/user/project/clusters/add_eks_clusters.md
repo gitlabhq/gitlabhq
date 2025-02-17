@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Connect EKS clusters through cluster certificates (deprecated)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was deprecated in GitLab 14.5. Use [Infrastructure as Code](../../infrastructure/iac/_index.md)
 to create new clusters.
+
+{{< /alert >}}
 
 Through GitLab, you can create new clusters and add existing clusters hosted on Amazon Elastic
 Kubernetes Service (EKS).
@@ -27,7 +33,11 @@ To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastr
 
 ### How to create a new cluster on EKS through cluster certificates (deprecated)
 
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+{{< history >}}
+
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -162,8 +172,11 @@ create another IAM role (**role B**) for GitLab authentication with AWS:
 
 After about 10 minutes, your cluster is ready to go.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you have [installed and configured](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html#get-started-kubectl) `kubectl` and you would like to manage your cluster with it, you must add your AWS external ID in the AWS configuration. For more information on how to configure AWS CLI, see [using an IAM role in the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html#cli-configure-role-xaccount).
+
+{{< /alert >}}
 
 #### Cluster settings
 
@@ -221,9 +234,12 @@ on the running pod.
 
 ## Additional requirements for self-managed instances
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you are using GitLab Self-Managed, you need to configure
 Amazon credentials. GitLab uses these credentials to assume an Amazon IAM role to create your cluster.
@@ -320,8 +336,11 @@ If the `Cluster` resource failed with the error
 `The provided role doesn't have the Amazon EKS Managed Policies associated with it.`,
 the role specified in **Role name** is not configured correctly.
 
-NOTE:
+{{< alert type="note" >}}
+
 This role should be the role you created by following the
 [EKS cluster IAM role](https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html) guide.
 In addition to the policies that guide suggests, you must also include the
 `AmazonEKSClusterPolicy` policy for this role in order for GitLab to manage the EKS cluster correctly.
+
+{{< /alert >}}

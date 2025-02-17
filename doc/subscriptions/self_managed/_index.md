@@ -1,14 +1,17 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Billable users, renewal and upgrade info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Billable users, renewal and upgrade info.
 title: GitLab Self-Managed subscription
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 After you subscribe to GitLab, you can manage the details of your self-managed subscription.
 If you experience any issues, see the [troubleshooting page](../gitlab_com/gitlab_subscription_troubleshooting.md).
@@ -21,10 +24,13 @@ To subscribe to GitLab for a GitLab Self-Managed instance:
 1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
    You must [add this code to your GitLab instance](../../administration/license.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
 instance, ensure you're purchasing enough seats to
 [cover your users](../../administration/admin_area.md#administering-users).
+
+{{< /alert >}}
 
 ## How GitLab bills for users
 
@@ -102,9 +108,12 @@ To view the number of users over subscription, go to the **Admin** area.
 
 ### Free Guest users
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance.
@@ -115,10 +124,13 @@ The user must not be assigned any other role, anywhere in the instance.
   can access your project.
 - A user's highest assigned role is updated asynchronously and may take some time to update.
 
-NOTE:
+{{< alert type="note" >}}
+
 If a user creates a project, they are assigned the Maintainer or Owner role.
 To prevent a user from creating projects, as an administrator, you can mark the user
 as [external](../../administration/external_users.md).
+
+{{< /alert >}}
 
 ## View users
 
@@ -259,7 +271,7 @@ You can also manually synchronize subscription data at any time.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.
-1. In the **Subscription details** section, select **Sync** (**{retry}**).
+1. In the **Subscription details** section, select **Sync** ({{< icon name="retry" >}}).
 
 A synchronization job is then queued. When the job finishes, the subscription
 details are updated.
@@ -379,8 +391,11 @@ This file contains the information GitLab uses to manually process
 or [renewals](#renew-your-subscription). If your instance is firewalled or an
 offline environment, you must provide GitLab with this information.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../../administration/license_file.md#submit-license-usage-data).
+
+{{< /alert >}}
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Subscription**.
@@ -400,8 +415,11 @@ The license usage file includes the following information:
   - Timestamp the count was recorded (UTC)
   - [Billable user](#billable-users) count
 
-NOTE:
+{{< alert type="note" >}}
+
 A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
+
+{{< /alert >}}
 
 ## Renew your subscription
 
@@ -461,7 +479,7 @@ You cannot manually renew your subscription more than 15 days before the subscri
 expires. To check when you can renew:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription**
+1. Select **Subscription actions** ({{< icon name="ellipsis_v" >}}), then select **Renew subscription**
    to view the date you can renew.
 
 To manually renew your subscription:
@@ -474,9 +492,13 @@ To manually renew your subscription:
 1. If renewing Premium or Ultimate products, in the **Seats** text box, enter the
    total number of user seats you'll need for the upcoming year.
 
-   NOTE:
+   {{< alert type="note" >}}
+
    Make sure this number is equal to, or greater than
    the number of [billable users](#billable-users) in the system at the time of renewal.
+
+   {{< /alert >}}
+
 1. Optional. If the maximum number of users in your instance exceeded the number
    you were licensed for in the previous subscription term, the
    [overage](../quarterly_reconciliation.md) is due when you renew.
@@ -531,10 +553,10 @@ You can use the Customers Portal to enable or disable automatic subscription ren
 1. Check the subscription card:
    - If the card displays **Expires on DATE**, your subscription is not
      set to automatically renew. To enable automatic renewal, in
-     **Subscription actions** (**{ellipsis_v}**), select **Turn on auto-renew**.
+     **Subscription actions** ({{< icon name="ellipsis_v" >}}), select **Turn on auto-renew**.
    - If the card displays **Auto-renews on DATE**, your subscription is set to
      automatically renew. To disable automatic renewal:
-     1. In **Subscription actions** (**{ellipsis_v}**), select **Cancel subscription**.
+     1. In **Subscription actions** ({{< icon name="ellipsis_v" >}}), select **Cancel subscription**.
      1. Select a reason for cancelling.
      1. Optional: In **Would you like to add anything?**, enter any relevant information.
      1. Select **Cancel subscription**.

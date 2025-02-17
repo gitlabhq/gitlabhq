@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Monorepo package management workflows
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use a monorepo project as a package registry to publish packages to multiple projects.
 
@@ -51,9 +54,12 @@ To publish a package for `MyProject`:
    NPM_TOKEN=<token> npm publish
    ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
 be committed to a repository.
+
+{{< /alert >}}
 
 You should see the package for `MyProject` published in your project's package registry.
 

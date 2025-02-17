@@ -5,22 +5,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Organization
 ---
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ui_for_organizations`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
-DISCLAIMER:
-This page contains information related to upcoming products, features, and functionality.
-It is important to note that the information presented is for informational purposes only.
-Please do not rely on this information for purchasing or planning purposes.
-The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
-sole discretion of GitLab Inc.
+{{< /alert >}}
 
-NOTE:
+{{< alert type="disclaimer" />}}
+
+{{< alert type="note" >}}
+
 Organization is in development.
+
+{{< /alert >}}
 
 Organization will be above the [top-level namespaces](../namespace/_index.md) for you to manage
 everything you do as a GitLab administrator, including:
@@ -39,10 +44,13 @@ To view the organizations you have access to:
 
 ## Create an organization
 
-NOTE:
+{{< alert type="note" >}}
+
 In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/) organizations can be only private.
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New organization**.
+{{< /alert >}}
+
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New organization**.
 1. In the **Organization name** text box, enter a name for the organization.
 1. In the **Organization URL** text box, enter a path for the organization.
 1. In the **Organization description** text box, enter a description for the organization. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).
@@ -70,8 +78,11 @@ In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/des
 
 ## View an organization's visibility level
 
-NOTE:
+{{< alert type="note" >}}
+
 In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/) organizations can be only private.
+
+{{< /alert >}}
 
 1. On the left sidebar, select **Organizations** and find your organization.
 1. Select **Settings > General**.
@@ -79,9 +90,12 @@ In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/des
 
 ## Switch organizations
 
-NOTE:
+{{< alert type="note" >}}
+
 Switching between organizations is not supported in [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/),
 but is supported in [Cells 1.5](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.5/).
+
+{{< /alert >}}
 
 To switch organizations:
 
@@ -94,7 +108,7 @@ To switch organizations:
 1. Optional. Filter the results:
    - To search for specific groups or projects, in the search box enter your search term (minimum three characters).
    - To view only groups or projects, from the **Display** dropdown list select an option.
-1. Optional. To sort the results by name, date created, or date updated, from the dropdown list select an option. Then select ascending (**{sort-lowest}**) or descending (**{sort-highest}**) order.
+1. Optional. To sort the results by name, date created, or date updated, from the dropdown list select an option. Then select ascending ({{< icon name="sort-lowest" >}}) or descending ({{< icon name="sort-highest" >}}) order.
 
 ## Create a group in an organization
 
@@ -125,8 +139,11 @@ To change a user's role:
 1. Find the user whose role you want to update.
 1. From the **Organization role** dropdown list, select a role.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you cannot select from the **Organization role** dropdown list, this user is the organization's only Owner. To change this user's role, first assign the Owner role to another user.
+
+{{< /alert >}}
 
 ## Supported Markdown for Organization description
 

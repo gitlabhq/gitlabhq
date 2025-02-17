@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Pages administration for self-compiled installations
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 Before attempting to enable GitLab Pages, first make sure you have
 [installed GitLab](../../install/installation.md) successfully.
+
+{{< /alert >}}
 
 This document explains how to configure GitLab Pages for self-compiled GitLab installations.
 
@@ -75,9 +81,12 @@ host that GitLab runs. For example, an entry would look like this:
 Where `example.io` is the domain to serve GitLab Pages from,
 and `192.0.2.1` is the IP address of your GitLab instance.
 
-NOTE:
+{{< alert type="note" >}}
+
 You should not use the GitLab domain to serve user pages. For more information
 see the [security section](#security).
+
+{{< /alert >}}
 
 ## Configuration
 
@@ -386,8 +395,11 @@ world. Custom domains and TLS are supported.
 
 ## NGINX caveats
 
-NOTE:
+{{< alert type="note" >}}
+
 The following information applies only to self-compiled installations.
+
+{{< /alert >}}
 
 Be extra careful when setting up the domain name in the NGINX configuration. You must
 not remove the backslashes.

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Reset user passwords
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can reset user passwords by using the UI, a Rake task, a Rails console, or the
 [Users API](../api/users.md#modify-a-user).
@@ -33,42 +36,50 @@ A confirmation is displayed.
 
 To reset a user password with a Rake task:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 ```shell
 sudo gitlab-rake "gitlab:password:reset"
 ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 ```shell
 bundle exec rake "gitlab:password:reset"
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 GitLab requests a username, a password, and confirmation of the password. When complete, the user password is updated.
 
 The Rake task can accept a username as an argument. For example, to reset the password for the user with username
 `sidneyjones`:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
   ```shell
   sudo gitlab-rake "gitlab:password:reset[sidneyjones]"
   ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
   ```shell
   bundle exec rake "gitlab:password:reset[sidneyjones]"
   ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Use a Rails console
 

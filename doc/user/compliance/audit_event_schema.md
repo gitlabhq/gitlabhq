@@ -7,25 +7,29 @@ title: Audit event schema and examples
 
 ## Audit event schema
 
-> - Documentation for an audit event streaming schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358149) in GitLab 15.3.
+{{< history >}}
+
+- Documentation for an audit event streaming schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358149) in GitLab 15.3.
+
+{{< /history >}}
 
 Audit events have a predictable schema in the body of the response.
 
 | Field            | Description                                                | Notes                                                                             | Streaming Only Field                                                                             |
 |------------------|------------------------------------------------------------|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| `author_id`      | User ID of the user who triggered the event                |                                                                                   | **{dotted-circle}** No    |
-| `author_name`    | Human-readable name of the author that triggered the event | Helpful when the author no longer exists                                          | **{check-circle}** Yes      |
-| `created_at`     | Timestamp when event was triggered                         |                                                                                   | **{dotted-circle}** No     |
-| `details`        | JSON object containing additional metadata                 | Has no defined schema but often contains additional information about an event    | **{dotted-circle}** No     |
-| `entity_id`      | ID of the audit event's entity                             |                                                                                   | **{dotted-circle}** No     |
-| `entity_path`    | Full path of the entity affected by the auditable event    |                                                                                   | **{check-circle}** Yes      |
-| `entity_type`    | String representation of the type of entity                | Acceptable values include `User`, `Group`, and `Key`. This list is not exhaustive | **{dotted-circle}** No      |
-| `event_type`     | String representation of the type of audit event           |                                                                                   | **{check-circle}** Yes      |
-| `id`             | Unique identifier for the audit event                      | Can be used for deduplication if required                                         | **{dotted-circle}** No     |
-| `ip_address`     | IP address of the host used to trigger the event           |                                                                                   | **{check-circle}** Yes      |
-| `target_details` | Additional details about the target                        |                                                                                   | **{check-circle}** Yes      |
-| `target_id`      | ID of the audit event's target                             |                                                                                   | **{check-circle}** Yes      |
-| `target_type`    | String representation of the target's type                 |                                                                                   | **{check-circle}** Yes      |
+| `author_id`      | User ID of the user who triggered the event                |                                                                                   | {{< icon name="dotted-circle" >}} No    |
+| `author_name`    | Human-readable name of the author that triggered the event | Helpful when the author no longer exists                                          | {{< icon name="check-circle" >}} Yes      |
+| `created_at`     | Timestamp when event was triggered                         |                                                                                   | {{< icon name="dotted-circle" >}} No     |
+| `details`        | JSON object containing additional metadata                 | Has no defined schema but often contains additional information about an event    | {{< icon name="dotted-circle" >}} No     |
+| `entity_id`      | ID of the audit event's entity                             |                                                                                   | {{< icon name="dotted-circle" >}} No     |
+| `entity_path`    | Full path of the entity affected by the auditable event    |                                                                                   | {{< icon name="check-circle" >}} Yes      |
+| `entity_type`    | String representation of the type of entity                | Acceptable values include `User`, `Group`, and `Key`. This list is not exhaustive | {{< icon name="dotted-circle" >}} No      |
+| `event_type`     | String representation of the type of audit event           |                                                                                   | {{< icon name="check-circle" >}} Yes      |
+| `id`             | Unique identifier for the audit event                      | Can be used for deduplication if required                                         | {{< icon name="dotted-circle" >}} No     |
+| `ip_address`     | IP address of the host used to trigger the event           |                                                                                   | {{< icon name="check-circle" >}} Yes      |
+| `target_details` | Additional details about the target                        |                                                                                   | {{< icon name="check-circle" >}} Yes      |
+| `target_id`      | ID of the audit event's target                             |                                                                                   | {{< icon name="check-circle" >}} Yes      |
+| `target_type`    | String representation of the target's type                 |                                                                                   | {{< icon name="check-circle" >}} Yes      |
 
 ### Audit event JSON schema
 
@@ -73,7 +77,11 @@ Audit events have a predictable schema in the body of the response.
 
 ### Headers
 
-> - `X-Gitlab-Audit-Event-Type` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86881) in GitLab 15.0.
+{{< history >}}
+
+- `X-Gitlab-Audit-Event-Type` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86881) in GitLab 15.0.
+
+{{< /history >}}
 
 Headers are formatted as follows:
 
@@ -91,7 +99,7 @@ Streaming audit events can be sent when authenticated users push, pull, or clone
 
 - [Using SSH](../ssh.md).
 - Using HTTP or HTTPS.
-- Using **Download** (**{download}**) in GitLab UI.
+- Using **Download** ({{< icon name="download" >}}) in GitLab UI.
 
 Audit events are not captured for users that are not signed in. For example, when downloading a public project.
 

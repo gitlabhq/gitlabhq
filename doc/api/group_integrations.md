@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group integrations API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328496) in GitLab 17.9.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328496) in GitLab 17.9.
+
+{{< /history >}}
 
 Use this API to work with external services that integrate with GitLab.
 
@@ -677,13 +684,19 @@ GET /groups/:id/integrations/external-wiki
 
 ## GitGuardian
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-FLAG:
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
 On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
+
+{{< /alert >}}
 
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
@@ -735,9 +748,12 @@ GET /groups/:id/integrations/git-guardian
 
 ## GitHub
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ### Set up GitHub
 
@@ -916,10 +932,13 @@ GET /groups/:id/integrations/hangouts-chat
 
 ## Google Artifact Management
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
 
 This feature is in [beta](../policy/experiment-beta-support.md).
 
@@ -958,10 +977,13 @@ GET /groups/:id/integrations/google-cloud-platform-artifact-registry
 
 ## Google Cloud Identity and Access Management (IAM)
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
 
 This feature is in [beta](../policy/experiment-beta-support.md).
 

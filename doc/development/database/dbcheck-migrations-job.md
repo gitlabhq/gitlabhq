@@ -2,7 +2,7 @@
 stage: Data Access
 group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-title: 'db:check-migrations job'
+title: db:check-migrations job
 ---
 
 This job runs on the test stage of a merge request pipeline. It checks:

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Enterprise users
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Enterprise users have user accounts that are administered by an organization that
 has [verified their email domain](#verified-domains-for-groups) and purchased a [GitLab subscription](../../subscriptions/_index.md).
@@ -119,8 +122,11 @@ The custom domain must match the email domain exactly. For example, if your emai
      add the certificate and key later.
 1. Select **Add Domain**.
 
-NOTE:
+{{< alert type="note" >}}
+
 A valid certificate is not required for domain verification. You can ignore error messages regarding the certificate if you are not using GitLab Pages.
+
+{{< /alert >}}
 
 #### 2. Get a verification code
 
@@ -135,12 +141,15 @@ After you have added all the DNS records:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Domain Verification**.
-1. On the domain table row, Select **Retry verification** (**{retry}**).
+1. On the domain table row, Select **Retry verification** ({{< icon name="retry" >}}).
 
 ![Verify your domain](../img/retry_domain_verification_v16_0.png)
 
-WARNING:
+{{< alert type="warning" >}}
+
 For GitLab instances with domain verification enabled, if the domain cannot be verified for 7 days, that domain is removed from the GitLab project.
+
+{{< /alert >}}
 
 > **Notes:**
 >
@@ -183,7 +192,11 @@ These enterprise user-specific actions are in addition to the standard
 
 ### Disable two-factor authentication
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
+
+{{< /history >}}
 
 Top-level group Owners can disable two-factor authentication (2FA) for enterprise users.
 
@@ -192,21 +205,31 @@ To disable 2FA:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
-1. Select **More actions** (**{ellipsis_v}**) and select **Disable two-factor authentication**.
+1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
 
 ### Enable the extension marketplace for the Web IDE and workspaces
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-> - Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
-> - Feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
-> - Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- Status: Beta
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
+- Feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+- Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 If you have the Owner role for a top-level group, you can enable the
 [extension marketplace](../project/web_ide/_index.md#extension-marketplace) for enterprise users.

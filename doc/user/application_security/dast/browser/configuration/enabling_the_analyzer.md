@@ -1,8 +1,8 @@
 ---
+type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
 title: Enabling the analyzer
 ---
 
@@ -35,9 +35,12 @@ To create the CI/CD job:
    - [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
      Latest version of the DAST template.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    The latest version of the template may include breaking changes. Use the
    stable template unless you need a feature provided only in the latest template.
+
+   {{< /alert >}}
 
    For more information about template versioning, see the
    [CI/CD documentation](../../../../../development/cicd/templates.md#latest-version).

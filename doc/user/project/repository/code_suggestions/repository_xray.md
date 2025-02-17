@@ -2,16 +2,23 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Repository X-Ray gives Code Suggestions more insight into your project's codebase and dependencies."
+description: Repository X-Ray gives Code Suggestions more insight into your project's codebase and dependencies.
 title: Repository X-Ray
 ---
 
-DETAILS:
-**Tier:** Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+
+{{< /history >}}
 
 Repository X-Ray automatically enriches:
 
@@ -28,12 +35,19 @@ By understanding the libraries and other dependencies in use, Repository X-Ray h
 tailor suggestions to match the coding patterns, styles, and technologies used in the project. This results
 in code suggestions that integrate more seamlessly and follow best practices for the given stack.
 
-NOTE:
+{{< alert type="note" >}}
+
 Repository X-Ray only enhances code generation requests and not code completion requests.
+
+{{< /alert >}}
 
 ## How Repository X-Ray works
 
-> - Maximum number of libraries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500365) in GitLab 17.6.
+{{< history >}}
+
+- Maximum number of libraries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500365) in GitLab 17.6.
+
+{{< /history >}}
 
 When you push a new commit to your project's default branch, Repository X-Ray triggers a background job.
 This job scans and parses the applicable configuration files in your repository.
@@ -46,8 +60,12 @@ When a code generation request is made, a maximum of 300 libraries from the pars
 
 ## Enable Repository X-Ray
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/476180) in GitLab 17.4 [with a flag](../../../feature_flags.md) named `ai_enable_internal_repository_xray_service`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483928) in GitLab 17.6. Feature flag `ai_enable_internal_repository_xray_service` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/476180) in GitLab 17.4 [with a flag](../../../feature_flags.md) named `ai_enable_internal_repository_xray_service`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483928) in GitLab 17.6. Feature flag `ai_enable_internal_repository_xray_service` removed.
+
+{{< /history >}}
 
 The Repository X-Ray service is automatically enabled if your project has access to [GitLab Duo Code Suggestions](_index.md).
 
@@ -80,9 +98,12 @@ The Repository X-Ray searches a maximum of two directory levels from the reposit
 
 ## Enable Repository X-Ray in your CI pipeline (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/500146) in GitLab 17.6
 and is planned for removal in 18.0. Use [Enable Repository X-Ray](#enable-repository-x-ray) instead.
+
+{{< /alert >}}
 
 Prerequisites:
 

@@ -1,8 +1,8 @@
 ---
 stage: none
 group: Tutorials
-description: Integrations with third-party services.
 info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+description: Integrations with third-party services.
 title: 'Tutorials: Extend with GitLab'
 ---
 

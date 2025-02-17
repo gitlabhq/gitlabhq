@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Create an issue
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you create an issue, you are prompted to enter the fields of the issue.
 If you know the values you want to assign to an issue, you can use
@@ -35,7 +38,7 @@ To create an issue:
 1. Either:
 
    - On the left sidebar, select **Plan > Issues**, and then, in the upper-right corner, select **New issue**.
-   - On the left sidebar, at the top, select the plus sign (**{plus}**) and then, under **In this project**,
+   - On the left sidebar, at the top, select the plus sign ({{< icon name="plus" >}}) and then, under **In this project**,
      select **New issue**.
 
 1. Complete the [fields](#fields-in-the-new-issue-form).
@@ -78,7 +81,7 @@ Prerequisites:
 
 To create an issue from another issue:
 
-1. In an existing issue, select **Issue actions** (**{ellipsis_v}**).
+1. In an existing issue, select **Issue actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **New related issue**.
 1. Complete the [fields](#fields-in-the-new-issue-form).
    The new issue form has a **Relate to issue #123** checkbox, where `123` is the ID of the
@@ -100,7 +103,7 @@ To create an issue from a project issue board:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issue boards**.
-1. At the top of a board list, select **Create new issue** (**{plus-square}**).
+1. At the top of a board list, select **Create new issue** ({{< icon name="plus-square" >}}).
 1. Enter the issue's title.
 1. Select **Create issue**.
 
@@ -108,7 +111,7 @@ To create an issue from a group issue board:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Issue boards**.
-1. At the top of a board list, select **Create new issue** (**{plus-square}**).
+1. At the top of a board list, select **Create new issue** ({{< icon name="plus-square" >}}).
 1. Enter the issue's title.
 1. Under **Projects**, select the project in the group that the issue should belong to.
 1. Select **Create issue**.
@@ -133,7 +136,7 @@ To email an issue to a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. At the bottom of the page, select **Email a new issue to this project**.
-1. To copy the email address, select **Copy** (**{copy-to-clipboard}**).
+1. To copy the email address, select **Copy** ({{< icon name="copy-to-clipboard" >}}).
 1. From your email client, send an email to this address.
    The subject is used as the title of the new issue, and the email body becomes the description.
    You can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md).
@@ -141,10 +144,13 @@ To email an issue to a project:
 A new issue is created, with your user as the author.
 You can save this address as a contact in your email client to use it again.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The email address you see is a private email address, generated just for you.
 **Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
 were you.
+
+{{< /alert >}}
 
 To regenerate the email address:
 
@@ -200,7 +206,11 @@ the appropriate project and followed up from there.
 
 ## Fields in the new issue form
 
-> - Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.
+{{< history >}}
+
+- Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.
+
+{{< /history >}}
 
 When you're creating a new issue, you can complete the following fields:
 

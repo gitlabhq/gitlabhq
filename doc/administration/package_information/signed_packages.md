@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Package Signatures
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Linux packages produced by GitLab are created using [Omnibus](https://github.com/chef/omnibus), for which GitLab
 has added DEB signing using `debsigs` in [our own fork](https://gitlab.com/gitlab-org/omnibus).

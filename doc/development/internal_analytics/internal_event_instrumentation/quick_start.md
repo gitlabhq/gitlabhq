@@ -387,9 +387,12 @@ Sometimes we want to send internal events when the component is rendered or load
 
 You can include additional properties with events to save additional data. When included you must define each additional property in the `additional_properties` field. It is possible to send the three built-in additional properties with keys `label` (string), `property` (string) and `value`(numeric) and [custom additional properties](quick_start.md#additional-properties) if the built-in properties are not sufficient.
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.
 Getting the URL from `window.location` does not pseudonymize project and namespace information [as documented](https://metrics.gitlab.com/identifiers).
+
+{{< /alert >}}
 
 For Vue Mixin:
 

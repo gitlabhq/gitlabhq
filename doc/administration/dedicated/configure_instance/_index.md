@@ -1,14 +1,17 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-description: Configure your GitLab Dedicated instance with Switchboard.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure your GitLab Dedicated instance with Switchboard.
 title: Configure GitLab Dedicated
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../../subscriptions/gitlab_dedicated/_index.md#available-features).
 
@@ -18,8 +21,11 @@ As a GitLab-managed solution, you cannot change any GitLab functionality control
 
 GitLab Dedicated engineers do not have direct access to your environment, except for [break glass situations](../../../subscriptions/gitlab_dedicated/_index.md#access-controls).
 
-NOTE:
+{{< alert type="note" >}}
+
 An instance refers to a GitLab Dedicated deployment, whereas a tenant refers to a customer.
+
+{{< /alert >}}
 
 ## Configure your instance using Switchboard
 
@@ -59,8 +65,11 @@ When you apply changes immediately:
 After the deployment job is complete, you receive an email notification. Check your spam folder if you do not see a notification in your main inbox.
 All users with access to view or edit your tenant in Switchboard receive a notification for each change. For more information, see [Manage Switchboard notification preferences](../configure_instance/users_notifications.md#manage-notification-preferences).
 
-NOTE:
+{{< alert type="note" >}}
+
 You only receive email notifications for changes made by a Switchboard tenant administrator. Changes made by a GitLab Operator (for example, a GitLab version update completed during a maintenance window) do not trigger email notifications.
+
+{{< /alert >}}
 
 ## Configuration change log
 
@@ -107,5 +116,8 @@ Configuration changes requested with a [support ticket](https://support.gitlab.c
 - May be postponed to the following week if GitLab needs to perform high-priority maintenance tasks.
 - Can't be applied outside the weekly maintenance window unless they qualify for [emergency support](https://about.gitlab.com/support/#how-to-engage-emergency-support).
 
-NOTE:
+{{< alert type="note" >}}
+
 Even if a change request meets the minimum lead time, it might not be applied during the upcoming maintenance window.
+
+{{< /alert >}}

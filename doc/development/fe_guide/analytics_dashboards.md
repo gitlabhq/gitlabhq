@@ -5,14 +5,21 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Analytics dashboards
 ---
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [experiment](../../policy/development_stages_support.md#experiment).
-> - Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [experiment](../../policy/development_stages_support.md#experiment).
+- Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
+
+{{< /history >}}
 
 Analytics dashboards provide a configuration-based [dashboard](https://design.gitlab.com/patterns/dashboards)
 structure, which is used to render and modify dashboard configurations created by GitLab or users.
 
-NOTE:
+{{< alert type="note" >}}
+
 Analytics dashboards is intended for Premium and Ultimate subscriptions.
+
+{{< /alert >}}
 
 ## Customizable dashboard framework
 
@@ -211,8 +218,11 @@ To add a new data source:
 1. Add your module to the list exports in [`data_sources/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/index.js).
 1. Add your data source to the schema's list of `Data` types in [`analytics_visualizations.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
 
-NOTE:
+{{< alert type="note" >}}
+
 Your data source must respect the filters so that all panels shows the same filtered data.
+
+{{< /alert >}}
 
 ### Adding a new visualization render type
 

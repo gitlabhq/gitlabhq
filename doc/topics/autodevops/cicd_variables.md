@@ -67,8 +67,11 @@ Use these variables to customize and deploy your build.
 
 ## Database variables
 
-WARNING:
+{{< alert type="warning" >}}
+
 From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/343988), `POSTGRES_ENABLED` is no longer set by default.
+
+{{< /alert >}}
 
 Use these variables to integrate CI/CD with PostgreSQL databases.
 
@@ -199,9 +202,12 @@ Add replica variables when you want to scale your deployments:
 1. Add a replica variable as a [project CI/CD variable](../../ci/variables/_index.md#for-a-project).
 1. To scale your application, redeploy it.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Do not scale your application using Kubernetes directly. Helm might not detect the change,
    and subsequent deployments with Auto DevOps can undo your changes.
+
+   {{< /alert >}}
 
 ### Custom replica variables
 
@@ -263,9 +269,12 @@ You can also enable manual deployment in your [project settings](requirements.md
 
 ## Deploy policy for canary environments
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use a [canary environment](../../user/project/canary_deployments.md) before
 deploying any changes to production.
@@ -277,9 +286,12 @@ If you set `CANARY_ENABLED`, GitLab creates two [manual jobs](../../ci/pipelines
 
 ## Incremental rollout to production
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use an incremental rollout to continuously deploy your application,
 starting with only a few pods. You can increase the number of pods
@@ -326,9 +338,12 @@ With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`:
 
 ## Timed incremental rollout to production
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use a timed incremental rollout to continuously deploy your application, starting with
 only a few pods.

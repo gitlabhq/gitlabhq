@@ -2,7 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Settings and commands in the GitLab Workflow extension for VS Code."
+description: Settings and commands in the GitLab Workflow extension for VS Code.
 title: GitLab Workflow extension settings and commands
 ---
 

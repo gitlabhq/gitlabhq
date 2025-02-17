@@ -5,21 +5,31 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Jobs API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## List project jobs
 
-> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
+{{< history >}}
+
+- Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
+
+{{< /history >}}
 
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination)
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination, but keyset-based
 pagination is strongly recommended when requesting consecutive pages of results.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/jobs
@@ -845,8 +855,11 @@ Example of response
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Prior to GitLab 17.0, this endpoint does not support trigger jobs.
+
+{{< /alert >}}
 
 ## Erase a job
 
@@ -909,9 +922,12 @@ Example of response
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You can't delete archived jobs with the API, but you can
 [delete job artifacts and logs from jobs completed before a specific date](../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts)
+
+{{< /alert >}}
 
 ## Run a job
 

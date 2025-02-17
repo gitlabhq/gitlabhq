@@ -2,10 +2,10 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Developer Certificate of Origin Version 1.1
 ---
-<!-- vale off -->
 
-# Developer Certificate of Origin Version 1.1
+<!-- vale off -->
 
 Copyright (C) 2004, 2006 The Linux Foundation and its contributors, 1 Letterman Drive, Suite D4700, San Francisco, CA 94129, USA
 

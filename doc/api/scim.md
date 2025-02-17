@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: SCIM API
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
+
+{{< /history >}}
 
 Use this API to manage SCIM identities in groups.
 
@@ -32,7 +39,11 @@ This API differs from the [internal group SCIM API](../development/internal_api/
 
 ## Get SCIM identities for a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+
+{{< /history >}}
 
 ```plaintext
 GET /groups/:id/scim/identities
@@ -74,7 +85,11 @@ curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/
 
 ## Get a single SCIM identity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
+
+{{< /history >}}
 
 ```plaintext
 GET /groups/:id/scim/:uid
@@ -105,7 +120,11 @@ Example response:
 
 ## Update `extern_uid` field for a SCIM identity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+
+{{< /history >}}
 
 Fields that can be updated are:
 
@@ -134,7 +153,11 @@ curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/sci
 
 ## Delete a single SCIM identity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+
+{{< /history >}}
 
 ```plaintext
 DELETE /groups/:id/scim/:uid

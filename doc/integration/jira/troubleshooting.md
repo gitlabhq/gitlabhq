@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Jira issues integration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with the [Jira issues integration](configure.md), you might encounter the following issues.
 
@@ -69,8 +72,11 @@ If the user can access the issue, Jira responds with a `200 OK` and the returned
 
 ### Verify GitLab can post a comment to a Jira issue
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 To help troubleshoot your Jira issues integration, you can check whether
 GitLab can post a comment to a Jira issue using the project's Jira
@@ -157,8 +163,11 @@ To resolve this issue, see
 
 ## Change all Jira projects to instance-level or group-level values
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 ### Change all projects on an instance
 
@@ -234,8 +243,11 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
 
 ## Update the integration password for all projects
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 To reset the Jira user's password for all projects with active Jira issues integrations,
 run the following in a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):

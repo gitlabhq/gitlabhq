@@ -5,22 +5,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Analytics dashboards
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - Introduced in GitLab 15.9 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
-> - `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
-> - `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
-> - `filters` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505317) in GitLab 17.9. Disabled by default.
-> - Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 15.9 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
+- `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
+- `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
+- `filters` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505317) in GitLab 17.9. Disabled by default.
+- Inline visualizations configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/509111) in GitLab 17.9.
+
+{{< /history >}}
 
 Analytics dashboards help you visualize the collected data.
 You can use built-in dashboards by GitLab or create your own dashboards with custom visualizations.
 
 ## Data sources
 
-> - Product analytics and custom visualization data sources [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
+{{< history >}}
+
+- Product analytics and custom visualization data sources [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
+
+{{< /history >}}
 
 A data source is a connection to a database or collection of data which can be used by your dashboard
 filters and visualizations to query and retrieve results.
@@ -51,8 +62,12 @@ Your dashboard files are versioned in source control with the rest of a project'
 
 ## Dashboard designer
 
-> - Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
+{{< history >}}
+
+- Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
+
+{{< /history >}}
 
 You can use the dashboard designer to:
 
@@ -66,15 +81,25 @@ You can use the dashboard designer to:
 
 ## Data explorer (deprecated)
 
-> - Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/470875) from "Visualization designer" to "Data explorer" in GitLab 17.6.
+{{< history >}}
 
-WARNING:
+- Introduced in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `combined_analytics_visualization_editor`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425048) in GitLab 16.7. Feature flag `combined_analytics_visualization_editor` removed.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/470875) from "Visualization designer" to "Data explorer" in GitLab 17.6.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 This feature is only compatible with the product analytics data source.
+
+{{< /alert >}}
 
 You can use the data explorer to explore available data.
 
@@ -94,13 +119,20 @@ To view a list of dashboards (both built-in and custom) for a project:
 
 ## View group dashboards
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416970) in GitLab 16.8.
-> - Feature flag `group_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439718) in GitLab 16.11.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416970) in GitLab 16.8.
+- Feature flag `group_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439718) in GitLab 16.11.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -122,8 +154,11 @@ Prerequisites:
 
 ### Group dashboards
 
-NOTE:
+{{< alert type="note" >}}
+
 [Issue 411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572) proposes connecting this feature to group-level dashboards.
+
+{{< /alert >}}
 
 To change the location of a group's custom dashboards:
 
@@ -141,13 +176,16 @@ dashboards are usually defined in the project where the analytics data is retrie
 However, you can also have a separate project for dashboards.
 This setup is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
 
-NOTE:
+{{< alert type="note" >}}
+
 You can share dashboards only between projects that are located in the same group.
+
+{{< /alert >}}
 
 To change the location of project dashboards:
 
 1. On the left sidebar, select **Search or go to** and find your project,
-   or select **Create new** (**{plus}**) and **New project/repository**
+   or select **Create new** ({{< icon name="plus" >}}) and **New project/repository**
    to create the project to store your dashboard files.
 1. On the left sidebar, select **Search or go to** and find the analytics project.
 1. Select **Settings > Analytics**.
@@ -185,8 +223,11 @@ To edit an existing custom dashboard:
 
 ## Create a custom visualization (deprecated)
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7.
+
+{{< /alert >}}
 
 To create a custom visualization:
 
@@ -202,13 +243,20 @@ After you save a visualization, you can add it to a new or existing custom dashb
 
 ### Generate a custom visualization with GitLab Duo
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com
-**Status:** Experiment
+{{< details >}}
 
-> - Introduced in GitLab 16.11 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in GitLab 16.11 as an [experiment](../../policy/development_stages_support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -238,8 +286,12 @@ Provide feedback on this experimental feature in [issue 455363](https://gitlab.c
 
 ### Visualization query builder
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14098) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `analytics_visualization_designer_filtering`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469461) in GitLab 17.2. Feature flag `analytics_visualization_designer_filtering` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14098) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `analytics_visualization_designer_filtering`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469461) in GitLab 17.2. Feature flag `analytics_visualization_designer_filtering` removed.
+
+{{< /history >}}
 
 You can use measures and dimensions to filter and refine the results of a custom visualization:
 
@@ -251,8 +303,11 @@ You can filter by custom event names with select measures:
 - `Tracked events count`
 - `Tracked events unique user count`
 
-NOTE:
+{{< alert type="note" >}}
+
 When you change or remove a measure then dependent dimensions may also be removed.
+
+{{< /alert >}}
 
 <!--- end_remove -->
 
@@ -328,11 +383,14 @@ To contribute, see [adding a new visualization render type](../../development/fe
 
 ### Define a chart visualization template
 
-NOTE:
+{{< alert type="note" >}}
+
 We recommend using visualization templates sparingly. Visualization templates can lead to long visualization
 selection lists in the dashboard editor UI if not managed, which may lead to visualizations being missed or duplicated.
 Generally, visualization templates should be reserved for visualizations that will be used identically
 across several dashboards.
+
+{{< /alert >}}
 
 If you need a visualization to be used by multiple dashboards, you might store them as separate template files.
 When added to a dashboard, the visualization template will be copied over to the dashboard. Visualization templates

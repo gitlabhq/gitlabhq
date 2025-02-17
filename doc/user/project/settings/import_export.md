@@ -1,13 +1,16 @@
 ---
 stage: Foundations
 group: Import and Integrate
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrate projects and groups by using file exports
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Migrating groups and projects by using [direct transfer](../../group/import/_index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
@@ -84,7 +87,11 @@ You can also make sure that all members were exported by checking the `project_m
 
 ### Compatibility
 
-> - Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389888) in GitLab 15.11.
+{{< history >}}
+
+- Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389888) in GitLab 15.11.
+
+{{< /history >}}
 
 Project file exports are in NDJSON format.
 
@@ -100,8 +107,11 @@ For example:
 
 ### Configure file exports as an import source
 
-DETAILS:
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Before you can migrate projects on GitLab Self-Managed using file exports, GitLab administrators must:
 
@@ -231,13 +241,20 @@ You can import a project and its data. The amount of data you can import depends
   [set maximum import file size](#set-maximum-import-file-size).
 - On GitLab.com, the value is [set to 5 GB](../../gitlab_com/_index.md#account-and-limit-settings).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Only import projects from sources you trust. If you import a project from an untrusted source, it
 may be possible for an attacker to steal your sensitive data.
 
+{{< /alert >}}
+
 #### Prerequisites
 
-> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+{{< history >}}
+
+- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+
+{{< /history >}}
 
 - You must have [exported the project and its data](#export-a-project-and-its-data).
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
@@ -249,7 +266,7 @@ may be possible for an attacker to steal your sensitive data.
 
 To import a project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. In **Import project from**, select **GitLab export**.
 1. Enter your project name and URL. Then select the file you exported previously.
@@ -273,15 +290,21 @@ Deploy keys aren't imported. To use deploy keys, you must enable them in your im
 
 #### Import large projects
 
-DETAILS:
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you have a larger project, consider [using a Rake task](../../../administration/raketasks/project_import_export.md#import-large-projects).
 
 ### Set maximum import file size
 
-DETAILS:
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Administrators can set the maximum import file size one of two ways:
 
@@ -302,13 +325,20 @@ To help avoid abuse, by default, users are rate limited to:
 
 ## Migrate groups by uploading an export file (deprecated)
 
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6.
+{{< history >}}
 
-WARNING:
+- [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6 and replaced by
 [migrating groups by direct transfer](../../group/import/_index.md). However, this feature is still recommended for migrating groups between
 offline systems. To follow progress on an alternative solution for [offline environments](../../application_security/offline_deployments/_index.md), see
 [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/8985).
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -348,7 +378,11 @@ The maximum import file size depends on whether you import to GitLab Self-Manage
 
 ### Compatibility
 
-> - Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383682) in GitLab 15.8.
+{{< history >}}
+
+- Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383682) in GitLab 15.8.
+
+{{< /history >}}
 
 Group file exports are in NDJSON format.
 
@@ -417,7 +451,7 @@ To export the contents of a group:
 
 To import the group:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Import group**.
 1. In the **Import group from file** section, enter a group name and accept or modify the associated group URL.
 1. Select **Choose file**.

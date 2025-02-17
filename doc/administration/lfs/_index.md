@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Configure Git LFS for GitLab Self-Managed."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Configure Git LFS for GitLab Self-Managed.
 title: GitLab Git Large File Storage (LFS) Administration
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This page contains information about configuring Git LFS on GitLab Self-Managed.
 For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/_index.md).
@@ -21,9 +24,9 @@ Prerequisites:
 
 LFS is enabled by default. To disable it:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -38,7 +41,9 @@ LFS is enabled by default. To disable it:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -61,7 +66,9 @@ LFS is enabled by default. To disable it:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -80,7 +87,9 @@ LFS is enabled by default. To disable it:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -100,23 +109,28 @@ LFS is enabled by default. To disable it:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Change local storage path
 
 Git LFS objects can be large in size. By default, they are stored on the server
 GitLab is installed on.
 
-NOTE:
+{{< alert type="note" >}}
+
 For Docker installations, you can change the path where your data is mounted.
 For the Helm chart, use
 [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
+{{< /alert >}}
+
 To change the default local storage path location:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -131,7 +145,9 @@ To change the default local storage path location:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -152,7 +168,9 @@ To change the default local storage path location:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Storing LFS objects in remote object storage
 
@@ -170,54 +188,66 @@ processing is done in the background and requires **no downtime**.
 1. [Configure the object storage](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 1. Migrate the LFS objects:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo gitlab-rake gitlab:lfs:migrate
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    ```shell
    sudo docker exec -t <container name> gitlab-rake gitlab:lfs:migrate
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Optional. Track the progress and verify that all job LFS objects migrated
    successfully using the PostgreSQL console.
    1. Open a PostgreSQL console:
 
-      ::Tabs
+      {{< tabs >}}
 
-      :::TabTitle Linux package (Omnibus)
+      {{< tab title="Linux package (Omnibus)" >}}
 
       ```shell
       sudo gitlab-psql
       ```
 
-      :::TabTitle Docker
+      {{< /tab >}}
+
+      {{< tab title="Docker" >}}
 
       ```shell
       sudo docker exec -it <container_name> /bin/bash
       gitlab-psql
       ```
 
-      :::TabTitle Self-compiled (source)
+      {{< /tab >}}
+
+      {{< tab title="Self-compiled (source)" >}}
 
       ```shell
       sudo -u git -H psql -d gitlabhq_production
       ```
 
-      ::EndTabs
+      {{< /tab >}}
+
+      {{< /tabs >}}
 
    1. Verify that all LFS files migrated to object storage with the following
       SQL query. The number of `objectstg` should be the same as `total`:
@@ -232,15 +262,17 @@ processing is done in the background and requires **no downtime**.
 
 1. Verify that there are no files on disk in the `lfs-objects` directory:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo find /var/opt/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp | wc -l
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    Assuming you mounted `/var/opt/gitlab` to `/srv/gitlab`:
 
@@ -248,25 +280,32 @@ processing is done in the background and requires **no downtime**.
    sudo find /srv/gitlab/gitlab-rails/shared/lfs-objects -type f | grep -v tmp | wc -l
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo find /home/git/gitlab/shared/lfs-objects -type f | grep -v tmp | wc -l
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 ### Migrating back to local storage
 
-NOTE:
+{{< alert type="note" >}}
+
 For the Helm chart, you should use
 [object storage](https://docs.gitlab.com/charts/advanced/external-object-storage/).
 
+{{< /alert >}}
+
 To migrate back to local storage:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Migrate the LFS objects:
 
@@ -288,7 +327,9 @@ To migrate back to local storage:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Migrate the LFS objects:
 
@@ -313,7 +354,9 @@ To migrate back to local storage:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Migrate the LFS objects:
 
@@ -341,15 +384,24 @@ To migrate back to local storage:
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Pure SSH transfer protocol
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11872) in GitLab 17.2.
-> - [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3845) for Helm chart (Kubernetes) in GitLab 17.3.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11872) in GitLab 17.2.
+- [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3845) for Helm chart (Kubernetes) in GitLab 17.3.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature is affected by [a known issue](https://github.com/git-lfs/git-lfs/issues/5880). If you clone a repository with multiple Git LFS objects using the pure SSH protocol, the client might crash due to a `nil` pointer reference.
+
+{{< /alert >}}
 
 [`git-lfs` 3.0.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#300-24-sep-2021)
 released support for using SSH as the transfer protocol instead of HTTP.
@@ -368,9 +420,9 @@ Prerequisites:
 
 To switch Git LFS to use pure SSH protocol:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -384,7 +436,9 @@ To switch Git LFS to use pure SSH protocol:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Export the Helm values:
 
@@ -408,7 +462,9 @@ To switch Git LFS to use pure SSH protocol:
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -426,7 +482,9 @@ To switch Git LFS to use pure SSH protocol:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab-shell/config.yml`:
 
@@ -445,7 +503,9 @@ To switch Git LFS to use pure SSH protocol:
    sudo service gitlab-shell restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Storage statistics
 
@@ -603,8 +663,11 @@ If you encounter this, follow these steps to diagnose and resolve the issue:
 
 1. Repeat the fork operation.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are using GitLab Helm Chart, use [extraEnv](https://docs.gitlab.com/charts/charts/globals.html#extraenv) to configure the environment variable `GITLAB_LFS_MAX_OID_TO_FETCH`.
+
+{{< /alert >}}
 
 ## Known limitations
 

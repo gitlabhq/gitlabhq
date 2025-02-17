@@ -5,7 +5,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Code Owners development guidelines
 ---
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219916) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219916) in GitLab 15.10.
+
+{{< /history >}}
 
 This document was created to help contributors understand the code design of
 [Code Owners](../../user/project/codeowners/_index.md). You should read this
@@ -16,9 +20,12 @@ designed, as code can change often. To understand how a specific part of the
 feature works, view the code and the specs. The details here explain how the
 major components of the Code Owners feature work.
 
-NOTE:
+{{< alert type="note" >}}
+
 This document should be updated when parts of the codebase referenced in this
 document are updated, removed, or new parts are added.
+
+{{< /alert >}}
 
 ## Business logic
 

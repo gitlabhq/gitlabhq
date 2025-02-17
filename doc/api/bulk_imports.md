@@ -5,18 +5,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group and project migration by direct transfer API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+
+{{< /history >}}
 
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
 [group migration by direct transfer](../user/group/import/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Migrating projects with this API is in [beta](../policy/development_stages_support.md#beta). This feature is not
 ready for production use.
+
+{{< /alert >}}
 
 ## Prerequisites
 
@@ -25,7 +35,11 @@ prerequisites for [migrating groups by direct transfer](../user/group/import/dir
 
 ## Start a new group or project migration
 
-> - `project_entity` source type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+{{< history >}}
+
+- `project_entity` source type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+
+{{< /history >}}
 
 Use this endpoint to start a new group or project migration. Specify:
 
@@ -384,7 +398,11 @@ curl --request GET \
 
 ## Get list of failed import records for group or project migration entity
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428016) in GitLab 16.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428016) in GitLab 16.6.
+
+{{< /history >}}
 
 ```plaintext
 GET /bulk_imports/:id/entities/:entity_id/failures
@@ -409,7 +427,11 @@ curl --request GET \
 
 ## Cancel a migration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438281) in GitLab 17.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438281) in GitLab 17.1.
+
+{{< /history >}}
 
 Cancel a direct transfer migration.
 

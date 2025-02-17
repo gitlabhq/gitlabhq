@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Docker to build Docker images
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use GitLab CI/CD with Docker to create Docker images.
 For example, you can create a Docker image of your application,
@@ -105,10 +108,13 @@ You can use the Docker executor to run jobs in a Docker container.
 
 The Docker daemon supports connections over TLS. TLS is the default in Docker 19.03.12 and later.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This task enables `--docker-privileged`, which effectively disables the container's security mechanisms and exposes your host to privilege
 escalation. This action can cause container breakout. For more information, see
 [runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities).
+
+{{< /alert >}}
 
 To use Docker-in-Docker with TLS enabled:
 
@@ -607,8 +613,11 @@ of this file. You can do this with a command like:
 kubectl create configmap docker-daemon --namespace gitlab-runner --from-file /tmp/daemon.json
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You must use the namespace that the Kubernetes executor for GitLab Runner uses to create job pods.
+
+{{< /alert >}}
 
 After the ConfigMap is created, you can update the `config.toml`
 file to mount the file to `/etc/docker/daemon.json`. This update
@@ -676,8 +685,11 @@ When using Docker-in-Docker, Docker downloads all layers of your image every tim
 
 ## Use the OverlayFS driver
 
-NOTE:
+{{< alert type="note" >}}
+
 The instance runners on GitLab.com use the `overlay2` driver by default.
+
+{{< /alert >}}
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver, which
 copies the file system on every run. You can avoid this disk-intensive operation by using a different driver, for example `overlay2`.

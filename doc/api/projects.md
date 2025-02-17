@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Projects API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The Projects API provides programmatic access to manage GitLab projects and configure their key settings. A project is a central hub for collaboration where you store code, track issues, and organize team activities.
 
@@ -319,9 +322,12 @@ target the upstream project by default.
 
 ### Templates for issues and merge requests
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/)
 can also see the `issues_template` and `merge_requests_template` parameters for managing
@@ -342,7 +348,11 @@ List projects.
 
 ### List all projects
 
-> - The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+{{< history >}}
+
+- The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+
+{{< /history >}}
 
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with _simple_ fields
@@ -589,9 +599,12 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
 ]
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 `last_activity_at` is updated based on [project activity](../user/project/working_with_projects.md#view-project-activity)
 and [project events](events.md). `updated_at` is updated whenever the project record is changed in the database.
+
+{{< /alert >}}
 
 You can filter by [custom attributes](custom_attributes.md) with:
 
@@ -622,8 +635,11 @@ Prerequisites:
 
 - To view [certain attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/520776fa8e5a11b8275b7c597d75246fcfc74c89/lib/api/entities/project.rb#L109-130), you must be an administrator or have the Owner role for the project.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only the projects in the user's (specified in `user_id`) namespace are returned. Projects owned by the user in any group or subgroups are not returned. An empty list is returned if a profile is set to private.
+
+{{< /alert >}}
 
 This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination)
 for selected `order_by` options.
@@ -1388,8 +1404,12 @@ Manage a project, including creation, deletion, and archival.
 
 ### Create a project
 
-> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+{{< history >}}
+
+- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+
+{{< /history >}}
 
 Creates a new project owned by the authenticated user.
 
@@ -1506,8 +1526,12 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 
 ### Create a project for a user
 
-> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+{{< history >}}
+
+- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+
+{{< /history >}}
 
 Create a project for a user.
 
@@ -1619,8 +1643,12 @@ settings with access control options can be one of:
 
 ### Edit a project
 
-> - `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
-> - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+{{< history >}}
+
+- `operations_access_level` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/385798) in GitLab 16.0.
+- `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
+
+{{< /history >}}
 
 Update an existing project.
 
@@ -2119,9 +2147,12 @@ Delete a project. This endpoint:
   The deletion happens after the number of days specified in the
   [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-WARNING:
+{{< alert type="warning" >}}
+
 The option to delete projects immediately from deletion protection settings in the **Admin** area was
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
+
+{{< /alert >}}
 
 ```plaintext
 DELETE /projects/:id
@@ -2137,9 +2168,12 @@ Supported attributes:
 
 ### Restore a project marked for deletion
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Restore a project that is marked for deletion.
 
@@ -2294,7 +2328,11 @@ Example response:
 
 #### List groups available for project transfer
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371006) in GitLab 15.4
+
+{{< /history >}}
 
 Retrieve a list of groups to which the user can transfer a project.
 
@@ -2375,7 +2413,11 @@ Example response:
 
 ### Download a project avatar
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144039) in GitLab 16.9.
+
+{{< /history >}}
 
 Download a project avatar. You can access this endpoint without authentication if the project is publicly accessible.
 
@@ -2397,7 +2439,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ### Remove a project avatar
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92604) in GitLab 15.4.
+
+{{< /history >}}
 
 To remove a project avatar, use a blank value for the `avatar` attribute.
 
@@ -2467,12 +2513,19 @@ Supported attributes:
 
 ## Real-time security scan
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479210) in GitLab 17.6. This feature is an [experiment](../policy/development_stages_support.md).
+- Tier: Ultimate
+- Offering: GitLab.com
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479210) in GitLab 17.6. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
 
 Returns SAST scan results for a single file in real-time.
 
@@ -2571,10 +2624,17 @@ Supported attributes:
 
 ## Secret push protection status
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160960) in GitLab 17.3.
+- Tier: Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160960) in GitLab 17.3.
+
+{{< /history >}}
 
 If you have at least the Developer role, the following requests could also return the `secret_push_protection_enabled` value.
 Note that some of these requests have stricter requirements about roles. Refer to the endpoints above for clarification.

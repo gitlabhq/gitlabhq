@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Connect a cluster to GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The [certificate-based Kubernetes integration with GitLab](../_index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
@@ -15,11 +18,18 @@ in GitLab 14.5. To connect your clusters, use the [GitLab agent](../../../cluste
 
 ## Cluster levels (deprecated)
 
-> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+{{< history >}}
 
-WARNING:
+- [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 The [concept of cluster levels was deprecated](../_index.md#cluster-levels)
 in GitLab 14.5.
+
+{{< /alert >}}
 
 Choose your cluster's level according to its purpose:
 
@@ -52,11 +62,18 @@ your cluster's level.
 
 ## Security implications for clusters connected with certificates
 
-> - Connecting clusters to GitLab through cluster certificates was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+{{< history >}}
 
-WARNING:
+- Connecting clusters to GitLab through cluster certificates was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 The whole cluster security is based on a model where [developers](../../../permissions.md)
 are trusted, so **only trusted users should be allowed to control your clusters**.
+
+{{< /alert >}}
 
 The use of cluster certificates to connect your cluster grants
 access to a wide set of functionalities needed to successfully

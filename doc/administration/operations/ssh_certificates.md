@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: User lookup via OpenSSH's AuthorizedPrincipalsCommand
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The default SSH authentication for GitLab requires users to upload their SSH
 public keys before they can use the SSH transport.
@@ -19,9 +22,12 @@ user, including ones that expire 24 hours after issuing.
 In such setups some external automated process is needed to constantly
 upload the new keys to GitLab.
 
-WARNING:
+{{< alert type="warning" >}}
+
 OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
 able to accept a fingerprint. Check the version of OpenSSH on your server.
+
+{{< /alert >}}
 
 ## Why use OpenSSH certificates?
 

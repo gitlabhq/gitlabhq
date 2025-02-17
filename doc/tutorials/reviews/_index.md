@@ -2,7 +2,7 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use merge request reviews to discuss and improve code before it is merged into your project."
+description: Use merge request reviews to discuss and improve code before it is merged into your project.
 title: 'Tutorial: Review a merge request'
 ---
 
@@ -41,7 +41,7 @@ To review a merge request:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Either:
    - Press <kbd>Shift</kbd> + <kbd>r</kbd> to go to your **Review requests** page.
-   - On the left sidebar, select **Merge requests** (**{merge-request}**) **> Review requests**.
+   - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) **> Review requests**.
 
 ## Understand the structure of merge requests
 
@@ -132,7 +132,7 @@ more information, scan through the issue descriptions.
   you can gain some idea of what aspects of the proposed changes need your attention.
 
   In this example, both Thomas and Nick are reviewers. Thomas has not yet reviewed
-  (**{dotted-circle}**) the merge request. Nick has reviewed and approved (**{check-circle}**):
+  ({{< icon name="dotted-circle" >}}) the merge request. Nick has reviewed and approved ({{< icon name="check-circle" >}}):
 
   ![f](img/reviewer_list_v17_0.png)
 
@@ -151,16 +151,19 @@ Now you're ready to read the proposed changes. For large merge requests,
 skim the changes before diving in. Build your understanding of what to
 expect before you begin to read changes line by line.
 
-NOTE:
+{{< alert type="note" >}}
+
 The diffs displayed in the **Changes** tab are dense with information. To learn
 how to get the most out of this page, see
 [Changes in merge requests](../../user/project/merge_requests/changes.md).
+
+{{< /alert >}}
 
 ### Skim changes for an overview
 
 When you first open the **Changes** page, focus on the broader details first:
 
-- **What files have changed?** Expand the file browser (**{file-tree}**) to see
+- **What files have changed?** Expand the file browser ({{< icon name="file-tree" >}}) to see
   the list of changed files. Are you familiar with these files? What part of the
   codebase are these files in?
 
@@ -308,7 +311,7 @@ First, write your comments you want to attach to specific lines or files:
 
 1. Select the **Changes** tab.
 1. When you find lines you want to ask questions about, or provide feedback on,
-   select **Add a comment to this line** (**{comment}**) in the gutter. This expands
+   select **Add a comment to this line** ({{< icon name="comment" >}}) in the gutter. This expands
    the diff lines and displays a comment box.
 1. You can also
    [select multiple lines](../../user/project/merge_requests/reviews/suggestions.md#multi-line-suggestions),
@@ -360,7 +363,7 @@ your review. It's time to think broadly, one last time.
    - If the changes need more work, select **Request changes**.
 
 If you [approve a merge request](../../user/project/merge_requests/approvals/_index.md#approve-a-merge-request)
-and are shown in the reviewer list, a green check mark **{check-circle-filled}**
+and are shown in the reviewer list, a green check mark {{< icon name="check-circle-filled" >}}
 displays next to your name.
 
 ## Perform cleanup tasks

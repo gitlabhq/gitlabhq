@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Jira issue management
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can [manage Jira issues directly in GitLab](configure.md).
 You can then refer to Jira issues by ID in GitLab commits and merge requests.
@@ -52,9 +55,12 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
 ### Require associated Jira issue for merge requests to be merged
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
@@ -70,7 +76,11 @@ Jira issue can't be merged. The merge request displays the message
 
 ## Customize Jira issue matching in GitLab
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112826) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112826) in GitLab 15.10.
+
+{{< /history >}}
 
 You can configure custom rules for how GitLab matches Jira issue keys by defining:
 

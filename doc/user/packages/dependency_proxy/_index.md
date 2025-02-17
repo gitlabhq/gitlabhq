@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Dependency proxy for container images
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The GitLab dependency proxy for container images is a local proxy you can use for your frequently-accessed
 upstream images.
@@ -33,8 +36,12 @@ For a list of planned additions, view the
 
 ## Enable or turn off the dependency proxy for a group
 
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+{{< history >}}
+
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
+{{< /history >}}
 
 To enable or turn off the dependency proxy for a group:
 
@@ -66,8 +73,12 @@ Prerequisites:
 
 ### Authenticate with the dependency proxy for container images
 
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
-> - Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
+{{< history >}}
+
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
+- Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
+
+{{< /history >}}
 
 Because the dependency proxy for container images is storing Docker images in a space associated with your group,
 you must authenticate with it.
@@ -75,8 +86,11 @@ you must authenticate with it.
 Follow the [instructions for using images from a private registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry),
 but instead of using `registry.example.com:5000`, use your GitLab domain with no port `gitlab.example.com`.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode) does not apply during authentication with the dependency proxy for container images. If you are an administrator with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope, that token works even though Admin Mode is enabled.
+
+{{< /alert >}}
 
 For example, to manually sign in:
 
@@ -364,10 +378,13 @@ see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).
 
 ### `exec format error` when running images from the dependency proxy
 
-NOTE:
+{{< alert type="note" >}}
+
 This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
 For self managed instances that are 16.2 or earlier, you can update your instance to 16.3
 or use the workaround documented below.
+
+{{< /alert >}}
 
 This error occurs if you try to use the dependency proxy on an ARM-based Docker install in GitLab 16.2 or earlier.
 The dependency proxy only supports the x86_64 architecture when pulling an image with a specific tag.

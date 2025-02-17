@@ -5,32 +5,48 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deleting a user account
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Users can be deleted from a GitLab instance, either by:
 
 - The user themselves.
 - An administrator.
 
-NOTE:
+{{< alert type="note" >}}
+
 Deleting a user deletes all projects in that user namespace.
+
+{{< /alert >}}
 
 ## Delete your own account
 
-> - Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
+{{< history >}}
 
-FLAG:
+- Delay between a user deleting their own account and deletion of the user record introduced in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. Enabled by default on GitLab.com.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+
+{{< /alert >}}
 
 On GitLab.com, it takes seven days from when you delete your own account to when your account is deleted. During this time:
 
 - That user is [blocked](../../../administration/moderate_users.md#block-a-user).
 - You cannot create a new account with the same username.
 
-  NOTE:
-  After the seven day time period is finished, any user can create a user account with that previously used username. Therefore, you should not assume that you will be able to create a new account with that username after the seven days, because it might be taken.
+  {{< alert type="note" >}}
+
+After the seven day time period is finished, any user can create a user account with that previously used username. Therefore, you should not assume that you will be able to create a new account with that username after the seven days, because it might be taken.
+
+  {{< /alert >}}
 
   You can [create a new account with the same email address](#create-a-new-account-with-the-same-email-address)
   if you remove that email address from your account first.
@@ -70,9 +86,12 @@ primary email address.
 
 ## Delete users and user contributions
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 As an administrator, to delete a user account:
 
@@ -85,9 +104,12 @@ As an administrator, to delete a user account:
    - **Delete user and contributions** to delete the user and their associated records. This option also removes all groups (and
      projects within these groups) where the user is the sole direct Owner of a group. Inherited ownership doesn't apply.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Using the **Delete user and contributions** option may result in removing more data than intended. See
 [associated records](#associated-records) for additional details.
+
+{{< /alert >}}
 
 ### Associated records
 
@@ -123,16 +145,25 @@ records are always removed.
 The deleting associated records option can be requested in the [API](../../../api/users.md#delete-a-user) as well as
 the **Admin** area.
 
-WARNING:
+{{< alert type="warning" >}}
+
 User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
+
+{{< /alert >}}
 
 ## Delete the root account on a self-managed instance
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-WARNING:
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [**Admin** area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
+
+{{< /alert >}}
 
 You can delete the root account using either the UI or the [GitLab Rails console](../../../administration/operations/rails_console.md).
 
@@ -155,8 +186,11 @@ To delete the root account:
 
 ### Use the GitLab Rails console
 
-WARNING:
+{{< alert type="warning" >}}
+
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+{{< /alert >}}
 
 Prerequisites:
 

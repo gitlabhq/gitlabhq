@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Pipeline editor
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The pipeline editor is the primary place to edit the GitLab CI/CD configuration in
 the `.gitlab-ci.yml` file in the root of your repository. To access the editor, go to **Build > Pipeline editor**.
@@ -34,9 +37,12 @@ this section displays a tip to help you fix the problem:
 
 ## Lint CI configuration
 
-NOTE:
+{{< alert type="note" >}}
+
 The **Lint** tab is replaced with the **Validate** tab in GitLab 15.3. The lint results are included
 in a successful [pipeline simulation](#simulate-a-cicd-pipeline).
+
+{{< /alert >}}
 
 To test the validity of your GitLab CI/CD configuration before committing the changes,
 you can use the CI lint tool:
@@ -53,7 +59,11 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 
 ## Simulate a CI/CD pipeline
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3.
+
+{{< /history >}}
 
 To look for pipeline syntax and logic issues, you can simulate the creation of a
 GitLab CI/CD pipeline in the **Validate** tab. A pipeline simulation can help find
@@ -62,11 +72,15 @@ simulations in the [CI Lint tool](../yaml/lint.md#simulate-a-pipeline).
 
 ## View included CI/CD configuration
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
+
+{{< /history >}}
 
 You can review configuration added with the [`include`](../yaml/_index.md#include)
-keyword in the pipeline editor. In the upper-right corner, select the file tree (**{file-tree}**)
+keyword in the pipeline editor. In the upper-right corner, select the file tree ({{< icon name="file-tree" >}})
 to see a list of all included configuration files. Selected files open in a new tab
 for review.
 
@@ -87,7 +101,11 @@ each job depends only on the previous stage being completed successfully.
 
 ## View full configuration
 
-> - **View merged YAML** tab [renamed to **Full configuration**](https://gitlab.com/gitlab-org/gitlab/-/issues/377404) in GitLab 16.0.
+{{< history >}}
+
+- **View merged YAML** tab [renamed to **Full configuration**](https://gitlab.com/gitlab-org/gitlab/-/issues/377404) in GitLab 16.0.
+
+{{< /history >}}
 
 To view the fully expanded CI/CD configuration as one combined file, go to the
 pipeline editor's **Full configuration** tab. This tab displays an expanded configuration

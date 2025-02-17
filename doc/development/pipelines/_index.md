@@ -293,8 +293,11 @@ We have dedicated jobs for each [testing level](../testing_guide/testing_levels.
 changes made in your merge request.
 If you want to force all the RSpec jobs to run regardless of your changes, you can add the `pipeline:run-all-rspec` label to the merge request.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
+
+{{< /alert >}}
 
 ### End-to-end jobs
 
@@ -446,22 +449,30 @@ appending `-jh` to the branch name. If a corresponding JH branch is found,
 as-if-jh pipeline grabs files from the respective branch, rather than from the
 default branch `main-jh`.
 
-NOTE:
+{{< alert type="note" >}}
+
 For now, CI will try to fetch the branch on the [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab), so it might take some time for the new JH branch to propagate to the mirror.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 While [GitLab JH validation](https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation) is a mirror of
 [GitLab JH mirror](https://gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab),
 it does not include any corresponding JH branch beside the default `main-jh`.
 This is why when we want to fetch corresponding JH branch we should fetch it
 from the main mirror, rather than the validation project.
+{{< /alert >}}
 
 #### How as-if-JH pipeline was configured
 
 The whole process looks like this:
 
-NOTE:
+{{< alert type="note" >}}
+
 We only run `sync-as-if-jh-branch` when there are dependencies changes.
+
+{{< /alert >}}
 
 ```mermaid
 flowchart TD
@@ -657,7 +668,11 @@ If these commands return `undercover: ✅ No coverage is missing in latest chang
 
 ### `pajamas_adoption` job
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141368) in GitLab 16.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141368) in GitLab 16.8.
+
+{{< /history >}}
 
 The `pajamas_adoption` job runs the [Pajamas Adoption Scanner](https://gitlab-org.gitlab.io/frontend/pajamas-adoption-scanner/) in merge requests to prevent regressions in the adoption of the [Pajamas Design System](https://design.gitlab.com/).
 

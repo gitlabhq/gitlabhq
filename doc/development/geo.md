@@ -333,9 +333,12 @@ Authorization: GL-Geo <access_key>:<JWT payload>
 The **primary** site uses the `access_key` field to look up the corresponding
 **secondary** site and decrypts the JWT payload.
 
-NOTE:
+{{< alert type="note" >}}
+
 JWT requires synchronized clocks between the machines involved, otherwise the
 **primary** site may reject the request.
+
+{{< /alert >}}
 
 ### File transfers
 

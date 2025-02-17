@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Labels API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Interact with [labels](../user/project/labels.md) using the REST API.
 
@@ -202,8 +205,11 @@ DELETE /projects/:id/labels/:label_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/bug"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An older endpoint `DELETE /projects/:id/labels` with `name` in the parameters is still available, but deprecated.
+
+{{< /alert >}}
 
 ## Edit an existing label
 
@@ -247,8 +253,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An older endpoint `PUT /projects/:id/labels` with `name` or `label_id` in the parameters is still available, but deprecated.
+
+{{< /alert >}}
 
 ## Promote a project label to a group label
 
@@ -283,8 +292,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An older endpoint `PUT /projects/:id/labels/promote` with `name` in the parameters is still available, but deprecated.
+
+{{< /alert >}}
 
 ## Subscribe to a label
 

@@ -8,8 +8,11 @@ title: Dependency Proxy
 The Dependency Proxy is a pull-through-cache for public registry images from DockerHub. This document describes how this
 feature is constructed in GitLab.
 
-NOTE:
+{{< alert type="note" >}}
+
 Support for private registry images is proposed in [issue 331741](https://gitlab.com/gitlab-org/gitlab/-/issues/331741).
+
+{{< /alert >}}
 
 ## Container registry
 

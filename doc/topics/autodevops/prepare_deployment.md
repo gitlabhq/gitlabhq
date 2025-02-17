@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Prepare Auto DevOps for deployment
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you enable Auto DevOps without setting the base domain and deployment
 strategy, GitLab can't deploy your application directly. Therefore, we
@@ -31,9 +34,12 @@ You can choose the deployment method when enabling Auto DevOps or later:
 1. Choose the deployment strategy.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Use the [blue-green deployment](../../ci/environments/incremental_rollouts.md#blue-green-deployment) technique
 to minimize downtime and risk.
+
+{{< /alert >}}
 
 ## Auto DevOps base domain
 

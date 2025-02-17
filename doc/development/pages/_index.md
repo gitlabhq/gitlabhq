@@ -2,7 +2,7 @@
 stage: Plan
 group: Knowledge
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "GitLab's development guidelines for GitLab Pages"
+description: GitLab's development guidelines for GitLab Pages
 title: Contribute to GitLab Pages development
 ---
 
@@ -243,8 +243,11 @@ make && go test ./ -run TestRedirect
 
 ### Feature flags
 
-WARNING:
+{{< alert type="warning" >}}
+
 All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#how-to-use-feature-flags).
+
+{{< /alert >}}
 
 Consider adding a [feature flag](../feature_flags/_index.md) for any non-trivial changes.
 Feature flags can make the release and rollback of these changes easier, avoiding

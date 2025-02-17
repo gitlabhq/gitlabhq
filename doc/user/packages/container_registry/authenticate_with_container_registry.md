@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Authenticate with the container registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To authenticate with the container registry, you can use a:
 
@@ -21,11 +24,14 @@ All of these authentication methods require the minimum scope:
 - For read (pull) access, to be `read_registry`.
 - For write (push) access, to be `write_registry` and `read_registry`.
 
-NOTE:
+{{< alert type="note" >}}
+
 [Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode)
 does not apply during authentication with the container registry. If you are an administrator
 with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope,
 that token works even though Admin Mode is enabled.
+
+{{< /alert >}}
 
 To authenticate, run the `docker login` command. For example:
 

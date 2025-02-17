@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Sign-up restrictions
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can enforce the following restrictions on sign ups:
 
@@ -52,16 +55,23 @@ To require administrator approval for new sign ups:
 If an administrator disables this setting, the users in pending approval state are
 automatically approved in a background job.
 
-NOTE:
+{{< alert type="note" >}}
+
 This setting doesn't apply to LDAP or OmniAuth users. To enforce approvals for new users
 signing up using OmniAuth or LDAP, set `block_auto_created_users` to `true` in the
 [OmniAuth configuration](../../integration/omniauth.md#configure-common-settings) or
 [LDAP configuration](../auth/ldap/_index.md#basic-configuration-settings).
 A [user cap](#user-cap) can also be used to enforce approvals for new users.
 
+{{< /alert >}}
+
 ## Confirm user email
 
-> - Soft email confirmation [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107302/diffs) from a feature flag to an application setting in GitLab 15.9.
+{{< history >}}
+
+- Soft email confirmation [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107302/diffs) from a feature flag to an application setting in GitLab 15.9.
+
+{{< /history >}}
 
 You can send confirmation emails during sign up and require that users confirm
 their email address before they are allowed to sign in.
@@ -81,12 +91,19 @@ The following settings are available:
 
 ## Turn on restricted access
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+
+{{< /history >}}
 
 Use restricted access to prevent overage fees.
 Overage fees occur when you exceed the number of licensed users in your subscription,
@@ -132,10 +149,13 @@ If an administrator increases or removes the user cap, users pending approval ar
 
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
-NOTE:
+{{< alert type="note" >}}
+
 For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
 is enabled or disabled, downtime might occur due to changes in the Rails configuration.
 You can set a user cap to enforce approvals for new users.
+
+{{< /alert >}}
 
 ### Set a user cap
 
@@ -183,11 +203,18 @@ the minimum number of characters a user must have in their password using the Gi
 
 ### Password complexity requirements
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
+
+{{< /history >}}
 
 By default, the only requirement for user passwords is [minimum password length](#minimum-password-length-limit).
 You can add additional complexity requirements. Changes to password complexity requirements apply to new passwords:
@@ -247,16 +274,26 @@ See the [documentation on setting up an LDAP user filter](../auth/ldap/_index.md
 
 ## Turn on administrator approval for role promotions
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
-> - Feature flag `member_promotion_management` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167757/) from `wip` to `beta` and enabled by default in GitLab 17.5.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
+- Feature flag `member_promotion_management` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167757/) from `wip` to `beta` and enabled by default in GitLab 17.5.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
+
+{{< /alert >}}
 
 To prevent existing users from being promoted into a billable role in a project or group,
 turn on administrator approval for role promotions. You can then approve or reject promotion requests

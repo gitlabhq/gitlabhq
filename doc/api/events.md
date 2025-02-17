@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Events API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Filter parameters
 
@@ -18,7 +21,11 @@ These options are in lowercase.
 
 ### Target types
 
-> - Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
+{{< history >}}
+
+- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../user/group/epics/epic_work_items.md).
+
+{{< /history >}}
 
 Available target types for the `target_type` parameter are:
 
@@ -280,8 +287,11 @@ Example response:
 
 ## List a Project's visible events
 
-NOTE:
+{{< alert type="note" >}}
+
 This endpoint has been around longer than the others. Documentation was formerly located in the [Projects API pages](projects.md).
+
+{{< /alert >}}
 
 Get a list of visible events for a particular project.
 

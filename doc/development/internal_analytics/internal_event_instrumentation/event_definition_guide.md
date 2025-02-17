@@ -5,8 +5,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Event definition guide
 ---
 
-NOTE:
+{{< alert type="note" >}}
+
 The event dictionary is a work in progress, and this process is subject to change.
+
+{{< /alert >}}
 
 This guide describes the event dictionary and how it's implemented.
 

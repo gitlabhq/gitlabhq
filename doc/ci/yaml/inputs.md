@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Define inputs for configuration added with `include`
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
-> - [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
+- [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
+
+{{< /history >}}
 
 Use inputs to increase the flexibility of CI/CD configuration files that are designed
 to be reused.
@@ -167,7 +174,11 @@ test_job:
 
 #### Array type
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407176) in GitLab 16.11.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407176) in GitLab 16.11.
+
+{{< /history >}}
 
 The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
 like [`!reference`](yaml_optimization.md#reference-tags) cannot be used.
@@ -207,7 +218,11 @@ spec:
 
 ## Set input values when using `include`
 
-> - `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
+{{< history >}}
+
+- `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
+
+{{< /history >}}
 
 Use [`include:inputs`](_index.md#includeinputs) to set the values for the parameters
 when the included configuration is added to the pipeline.
@@ -257,9 +272,9 @@ You can pass inputs to [downstream pipelines](../pipelines/downstream_pipelines.
 if the downstream pipeline's configuration file uses [`spec:inputs`](#define-input-parameters-with-specinputs).
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Parent-child pipeline
+{{< tab title="Parent-child pipeline" >}}
 
 ```yaml
 trigger-job:
@@ -273,7 +288,9 @@ trigger-job:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```
 
-:::TabTitle Multi-project pipeline
+{{< /tab >}}
+
+{{< tab title="Multi-project pipeline" >}}
 
 ```yaml
 trigger-job:
@@ -288,7 +305,9 @@ trigger-job:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Include the same file multiple times
 
@@ -484,7 +503,11 @@ my-other-job:
 
 ## Specify functions to manipulate input values
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+
+{{< /history >}}
 
 You can specify predefined functions in the interpolation block to manipulate the input value.
 The format supported is the following:
@@ -520,7 +543,11 @@ In this example, assuming the input uses the default value and `$MY_VAR` is an u
 
 #### `expand_vars`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
+
+{{< /history >}}
 
 Use `expand_vars` to expand [CI/CD variables](../variables/_index.md) in the input value.
 
@@ -546,7 +573,11 @@ would expand to `test my value`.
 
 #### `truncate`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+
+{{< /history >}}
 
 Use `truncate` to shorten the interpolated value. For example:
 

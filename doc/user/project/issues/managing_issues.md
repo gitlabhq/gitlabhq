@@ -5,15 +5,22 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Manage issues
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 After you create an issue, you can start working with it.
 
 ## Edit an issue
 
-> - Minimum role to edit an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to edit an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can edit an issue's title and description.
 
@@ -25,20 +32,27 @@ To edit an issue:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select the title of your issue to view it.
-1. To the right of the title, select **Edit title and description** (**{pencil}**).
+1. To the right of the title, select **Edit title and description** ({{< icon name="pencil" >}}).
 1. Edit the available fields.
 1. Select **Save changes**.
 
 ### Populate an issue with Issue Description Generation
 
-DETAILS:
-**Tier:** Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
-**Offering:** GitLab.com
-**Status:** Experiment
-**LLM:** Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/development_stages_support.md#experiment).
-> - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Offering: GitLab.com
+- Status: Experiment
+- LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/development_stages_support.md#experiment).
+- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+
+{{< /history >}}
 
 Generate a detailed description for an issue based on a short summary you provide.
 
@@ -54,7 +68,7 @@ Prerequisites:
 To generate an issue description:
 
 1. Create a new issue.
-1. Above the **Description** field, select **GitLab Duo** (**{tanuki-ai}**) **> Generate issue description**.
+1. Above the **Description** field, select **GitLab Duo** ({{< icon name="tanuki-ai" >}}) **> Generate issue description**.
 1. Write a short description and select **Submit**.
 
 The issue description is replaced with AI-generated text.
@@ -66,7 +80,11 @@ the large language model.
 
 ## Bulk edit issues from a project
 
-> - Minimum role to bulk edit issues from a project [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to bulk edit issues from a project [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can edit multiple issues at a time when you're in a project.
 
@@ -97,11 +115,18 @@ When bulk editing issues in a project, you can edit the following attributes:
 
 ### Bulk edit issues from a group
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Minimum role to bulk edit issues from a group [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Minimum role to bulk edit issues from a group [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can edit multiple issues across multiple projects when you're in a group.
 
@@ -128,7 +153,11 @@ When bulk editing issues in a group, you can edit the following attributes:
 
 ## Move an issue
 
-> - Minimum role to move an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to move an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 When you move an issue, it's closed and copied to the target project.
 The original issue is not deleted. A [system note](../system_notes.md), which indicates
@@ -152,9 +181,13 @@ You can also use the `/move` [quick action](../quick_actions.md) in a comment or
 
 ### Moving tasks when the parent issue is moved
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 17.3. Feature flag `move_issue_children` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `move_issue_children`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 16.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371252) in GitLab 17.3. Feature flag `move_issue_children` removed.
+
+{{< /history >}}
 
 When you move an issue to another project, all its child tasks are also moved to the target project
 and remain as child tasks of the moved issue.
@@ -163,15 +196,26 @@ copied to the target project.
 
 ### Bulk move issues
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Minimum role to bulk move issues [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Minimum role to bulk move issues [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 #### From the Issues page
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
+
+{{< /history >}}
 
 You can move multiple issues at the same time when you're in a project.
 You can't move tasks or test cases.
@@ -233,7 +277,11 @@ When you use ordered lists, unordered lists, or task lists in issue descriptions
 
 ### Delete a task list item
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -241,7 +289,7 @@ Prerequisites:
 
 In an issue description with task list items:
 
-1. Hover over a task list item and select the options menu (**{ellipsis_v}**).
+1. Hover over a task list item and select the options menu ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete**.
 
 The task list item is removed from the issue description.
@@ -249,8 +297,12 @@ Any nested task list items are moved up a nested level.
 
 ### Reorder list items in the issue description
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
-> - Minimum role to reorder list items in the issue description [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
+- Minimum role to reorder list items in the issue description [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 When you view an issue that has a list in the description, you can also reorder the list items.
 
@@ -263,14 +315,18 @@ Prerequisites:
 
 To reorder list items, when viewing an issue:
 
-1. Hover over the list item row to make the grip icon (**{grip}**) visible.
+1. Hover over the list item row to make the grip icon ({{< icon name="grip" >}}) visible.
 1. Select and hold the grip icon.
 1. Drag the row to the new position in the list.
 1. Release the grip icon.
 
 ## Close an issue
 
-> - Minimum role to close an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to close an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 When you decide that an issue is resolved or no longer needed, you can close it.
 The issue is marked as closed but is not deleted.
@@ -285,19 +341,23 @@ To close an issue, you can either:
 - From any other page in the GitLab UI:
   1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Plan > Issues**, then select your issue to view it.
-  1. In the upper-right corner, select **Issue actions** (**{ellipsis_v}**) and then **Close issue**.
+  1. In the upper-right corner, select **Issue actions** ({{< icon name="ellipsis_v" >}}) and then **Close issue**.
 
 You can also use the `/close` [quick action](../quick_actions.md) in a comment or description.
 
 ### Reopen a closed issue
 
-> - Minimum role to reopen a closed issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to reopen a closed issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
 - You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
 
-To reopen a closed issue, in the upper-right corner, select **Issue actions** (**{ellipsis_v}**) and then **Reopen issue**.
+To reopen a closed issue, in the upper-right corner, select **Issue actions** ({{< icon name="ellipsis_v" >}}) and then **Reopen issue**.
 A reopened issue is no different from any other open issue.
 
 You can also use the `/reopen` [quick action](../quick_actions.md) in a comment or description.
@@ -345,7 +405,11 @@ the list of issues that will be automatically closed.
 
 #### Default closing pattern
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/465391) work item (task, objective, or key result) references in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/465391) work item (task, objective, or key result) references in GitLab 17.3.
+
+{{< /history >}}
 
 To automatically close an issue, use the following keywords followed by the issue reference.
 
@@ -390,7 +454,11 @@ The default issue closing pattern regex:
 
 #### Disable automatic issue closing
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/240922) in GitLab 15.4: The referenced issue's project setting is checked instead of the project of the commit or merge request.
+
+{{< /history >}}
 
 You can disable the automatic issue closing feature on a per-project basis
 in the [project's settings](#disable-automatic-issue-closing).
@@ -416,9 +484,12 @@ Merge requests and commits in this project can still close another project's iss
 
 #### Customize the issue closing pattern
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -429,7 +500,11 @@ of your installation.
 
 ## Change the issue type
 
-> - Minimum role to change the issue type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to change the issue type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -439,7 +514,7 @@ To change issue type:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. To the right of the title, select **Edit title and description** (**{pencil}**).
+1. To the right of the title, select **Edit title and description** ({{< icon name="pencil" >}}).
 1. Edit the issue and select an issue type from the **Issue type** dropdown list:
 
    - Issue
@@ -449,7 +524,11 @@ To change issue type:
 
 ## Delete an issue
 
-> - Required role to delete an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Owner to Owner or Planner in GitLab 17.7.
+{{< history >}}
+
+- Required role to delete an issue [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Owner to Owner or Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -459,23 +538,30 @@ To delete an issue:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. In the upper-right corner, select **Issue actions** (**{ellipsis_v}**).
+1. In the upper-right corner, select **Issue actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete issue**.
 
 Alternatively:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select the title of your issue to view it.
-1. Select **Edit title and description** (**{pencil}**).
+1. Select **Edit title and description** ({{< icon name="pencil" >}}).
 1. Select **Delete issue**.
 
 ## Promote an issue to an epic
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Minimum role to promote an issue to an epic [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Minimum role to promote an issue to an epic [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 You can promote an issue to an [epic](../../group/epics/_index.md) in the immediate parent group.
 
@@ -509,22 +595,29 @@ To promote an issue to an epic:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. In the upper-right corner, select **Issue actions** (**{ellipsis_v}**).
+1. In the upper-right corner, select **Issue actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Promote to epic**.
 
 Alternatively, you can use the `/promote` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
 ## Promote an issue to an incident
 
-> - Quick actions to set issue type as incident upon creation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376760) in GitLab 15.8.
+{{< history >}}
+
+- Quick actions to set issue type as incident upon creation [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376760) in GitLab 15.8.
+
+{{< /history >}}
 
 You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
 
 ## Add an issue to an iteration
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To add an issue to an [iteration](../../group/iterations/_index.md):
 
@@ -550,7 +643,7 @@ To view all issues assigned to you:
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
-- On the left sidebar, at the top, select **Assigned issues** (**{issues}**).
+- On the left sidebar, at the top, select **Assigned issues** ({{< icon name="issues" >}}).
 
 ## Issue list
 
@@ -574,10 +667,14 @@ The following sections describe how to work with the issue list.
 
 ### Filter the list of issues
 
-> - Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
-> - Filtering by type was [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
-> - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
-> - Filtering by health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218711) in GitLab 15.5.
+{{< history >}}
+
+- Filtering by type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 13.10 [with a flag](../../../administration/feature_flags.md) named `vue_issues_list`. Disabled by default.
+- Filtering by type was [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
+- Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
+- Filtering by health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218711) in GitLab 15.5.
+
+{{< /history >}}
 
 To filter the list of issues:
 
@@ -602,7 +699,7 @@ To filter the list issues for text in a title or description:
 1. Select **Plan > Issues**.
 1. Above the list of issues, in the **Search or filter results** text box, enter the searched phrase.
 1. In the dropdown list that appears, select **Search within**, and then either **Titles** or **Descriptions**.
-1. Press <kbd>Enter</kbd> or select the search icon (**{search}**).
+1. Press <kbd>Enter</kbd> or select the search icon ({{< icon name="search" >}}).
 
 Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/current/textsearch-intro.html)
 to match meaningful and significant words to answer a query.
@@ -616,10 +713,14 @@ It's a limitation of PostgreSQL full text search.
 
 #### Filter with the OR operator
 
-> - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
-> - OR filtering for label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
+{{< history >}}
+
+- OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+- OR filtering for label was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
+
+{{< /history >}}
 
 You can use the OR operator (**is one of: `||`**) when you [filter the list of issues](#filter-the-list-of-issues) by:
 
@@ -640,15 +741,25 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 ### Open issues in a drawer
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+- Offering: GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 When this feature is enabled, when you select an issue from the list or issue board, it opens in a drawer.
 You can then edit the issue or create comments.
@@ -671,7 +782,7 @@ To copy the issue reference to your clipboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. On the right sidebar, next to **Reference**, select **Copy Reference** (**{copy-to-clipboard}**).
+1. On the right sidebar, next to **Reference**, select **Copy Reference** ({{< icon name="copy-to-clipboard" >}}).
 
 You can now paste the reference into another description or comment.
 
@@ -689,7 +800,7 @@ To copy the issue's email address:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
-1. On the right sidebar, next to **Issue email**, select **Copy Reference** (**{copy-to-clipboard}**).
+1. On the right sidebar, next to **Issue email**, select **Copy Reference** ({{< icon name="copy-to-clipboard" >}}).
 
 ## Assignees
 
@@ -704,7 +815,11 @@ themselves or another project member assigns them.
 
 ### Change assignee on an issue
 
-> - Minimum role to change assignee [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to change assignee [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -731,11 +846,18 @@ Up to five similar issues, sorted by most recently updated, are displayed below 
 
 ## Health status
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218618) in GitLab 15.4: health status is visible on issue cards in issue boards.
+
+{{< /history >}}
 
 To better track the risk in meeting your plans, you can assign a health status to each issue.
 You can use health status to signal to others in your organization whether issues are progressing
@@ -745,7 +867,11 @@ Incorporate a review of issue health status into your daily stand-up, project st
 
 ### Change health status of an issue
 
-> - Minimum role to change health status [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+{{< history >}}
+
+- Minimum role to change health status [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -776,9 +902,12 @@ You can also set and clear health statuses using the `/health_status` and `/clea
 
 ## Publish an issue
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If a status page application is associated with the project, you can use the `/publish`
 [quick action](../quick_actions.md) to publish the issue.

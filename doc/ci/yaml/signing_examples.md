@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use Sigstore for keyless signing and verification
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 The [Sigstore](https://www.sigstore.dev/) project provides a CLI called
 [Cosign](https://docs.sigstore.dev/quickstart/quickstart-cosign/) which can be used for keyless signing of container images built

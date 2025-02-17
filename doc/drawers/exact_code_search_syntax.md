@@ -1,11 +1,9 @@
 ---
 stage: Foundations
 group: Global Search
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-source: /doc/user/search/exact_code_search.md
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Syntax options
 ---
-
-# Syntax options
 
 <!-- Remember to also update the table in `doc/user/search/exact_code_search.md` -->
 

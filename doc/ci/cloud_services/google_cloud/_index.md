@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure OpenID Connect with GCP Workload Identity Federation
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
 and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../yaml/_index.md#id_tokens) instead.
+
+{{< /alert >}}
 
 This tutorial demonstrates authenticating to Google Cloud from a GitLab CI/CD job
 using a JSON Web Token (JWT) token and Workload Identity Federation. This configuration
@@ -25,9 +31,12 @@ This tutorial assumes you have a Google Cloud account and a Google Cloud project
 Your account must have at least the **Workload Identity Pool Admin** permission
 on the Google Cloud project.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you would prefer to use a Terraform module and a CI/CD template instead of this tutorial,
 see [How OIDC can simplify authentication of GitLab CI/CD pipelines with Google Cloud](https://about.gitlab.com/blog/2023/06/28/introduction-of-oidc-modules-for-integration-between-google-cloud-and-gitlab-ci/).
+
+{{< /alert >}}
 
 To complete this tutorial:
 

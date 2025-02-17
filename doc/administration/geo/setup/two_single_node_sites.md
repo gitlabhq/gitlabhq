@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Set up Geo for two single-node sites
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances with no external services set up.
 
@@ -62,10 +65,13 @@ Prerequisites:
 
 1. Create a password for the `gitlab` database user and update Rail to use the new password.
 
-   NOTE:
+   {{< alert type="note" >}}
+
    The values configured for the `gitlab_rails['db_password']` and `postgresql['sql_user_password']` settings need to match.
    However, only the `postgresql['sql_user_password']` value should be the MD5 encrypted password.
    Changes to this are being discussed in [Rethink how we handle PostgreSQL passwords in cookbooks](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5713).
+
+   {{< /alert >}}
 
    1. Generate a MD5 hash of the desired password:
 
@@ -156,10 +162,13 @@ Prerequisites:
       private addresses (which correspond to "internal address" for Google Cloud Platform) for
       `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
-      NOTE:
+      {{< alert type="note" >}}
+
       If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
       `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow
       Rails to connect through `127.0.0.1`. For more information, see [issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
+
+      {{< /alert >}}
 
       Depending on your network configuration, the suggested addresses might
       be incorrect. If your primary and secondary sites connect over a local
@@ -354,10 +363,13 @@ The script uses the default Linux package directories.
 If you changed the defaults, replace the directory and path
 names in the script below with your own names.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Run the replication script on only the secondary site.
 The script removes all PostgreSQL data before it runs `pg_basebackup`,
 which can lead to data loss.
+
+{{< /alert >}}
 
 To replicate the database:
 
@@ -375,9 +387,12 @@ To replicate the database:
 
 1. Execute the following command to back up and restore the database, and begin the replication.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Each Geo secondary site must have its own unique replication slot name.
    Using the same slot name between two secondaries breaks PostgreSQL replication.
+
+   {{< /alert >}}
 
    ```shell
    gitlab-ctl replicate-geo-database \
@@ -400,10 +415,13 @@ Follow the documentation to [configure fast lookup of authorized SSH keys](../..
 
 Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
-NOTE:
+{{< alert type="note" >}}
+
 Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
 Any change that requires access to the **Admin** area should be made in the primary site, because the
 secondary site is a read-only copy.
+
+{{< /alert >}}
 
 ### Manually replicate secret GitLab values
 

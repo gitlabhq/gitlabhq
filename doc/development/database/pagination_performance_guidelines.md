@@ -38,8 +38,11 @@ SELECT issues.* FROM issues ORDER BY created_at, id;
 
 This change makes the order distinct so we have "stable" sorting.
 
-NOTE:
+{{< alert type="note" >}}
+
 To make the query efficient, we need an index covering both columns: `(created_at, id)`. The order of the columns **should match** the columns in the `ORDER BY` clause.
+
+{{< /alert >}}
 
 ### Incremental sorting
 
@@ -144,8 +147,11 @@ LIMIT 20
 OFFSET 0
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The query requires an index on `issue_metrics` table with the following column configuration: `(project_id, first_mentioned_in_commit_at DESC, issue_id DESC)`.
+
+{{< /alert >}}
 
 ## Filtering
 
@@ -279,8 +285,11 @@ We might be tempted to add an index on `project_id`, `confidential`, and `iid` t
 
 On the other hand, if we implemented a special filter where we only show confidential issues, we need the index. Finding 20 confidential issues might require the database to scan hundreds of rows or, in the worst case, all issues in the project.
 
-NOTE:
+{{< alert type="note" >}}
+
 Be aware of the data distribution and the table access patterns (how features work) when introducing a new database index. Sampling production data might be necessary to make the right decision.
+
+{{< /alert >}}
 
 #### Columns in a different database table
 
@@ -385,5 +394,8 @@ The query now performs well for any number of `issue_assignees` records, however
 - The new database query is very specific to the assignee search and needs complex backend code to build it.
   - If the assignee is filtered by the user, then order by a different column, remove the `project_id` filter, etc.
 
-NOTE:
+{{< alert type="note" >}}
+
 Currently we're not doing these kinds of denormalization at GitLab.
+
+{{< /alert >}}

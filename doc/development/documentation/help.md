@@ -42,7 +42,11 @@ directory. For example:
 
 ### `_index.md` files
 
-> - Support for `_index.md` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144419) in GitLab 16.10.
+{{< history >}}
+
+- Support for `_index.md` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144419) in GitLab 16.10.
+
+{{< /history >}}
 
 The Hugo static site generator makes use of `_index.md` files. To allow for index pages to be
 named either `index.md` or `_index.md` in `/help`, GitLab maps requests for `index.md`, `index.html`, or `index`:

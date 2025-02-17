@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Optimize GitLab CI/CD configuration files
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can reduce complexity and duplicated configuration in your GitLab CI/CD configuration
 files by using:
@@ -168,7 +171,11 @@ You can see that the hidden jobs are conveniently used as templates, and
 
 ### YAML anchors for scripts
 
-> - Support for anchors with the [`stages`](../yaml/_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+{{< history >}}
+
+- Support for anchors with the [`stages`](../yaml/_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+
+{{< /history >}}
 
 You can use [YAML anchors](#anchors) with [script](_index.md#script), [`before_script`](_index.md#before_script),
 and [`after_script`](_index.md#after_script) to use predefined commands in multiple jobs:
@@ -440,7 +447,11 @@ There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-erro
 
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
 
-> - Support for `!reference` with the [`stages`](_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+{{< history >}}
+
+- Support for `!reference` with the [`stages`](_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+
+{{< /history >}}
 
 You can nest `!reference` tags up to 10 levels deep in `script`, `before_script`, and `after_script` sections. Use nested tags to define reusable sections when building more complex scripts. For example:
 

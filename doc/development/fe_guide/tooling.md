@@ -51,8 +51,11 @@ yarn run lint:eslint:all:fix
 
 If manual changes are required, a list of changes are sent to the console.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Limit use to global rule updates. Otherwise, the changes can lead to huge Merge Requests.
+
+{{< /alert >}}
 
 ### Disabling ESLint in new files
 
@@ -131,8 +134,11 @@ It is strongly encouraged that you:
 - Put in an **alternative path for developers** looking to use this function.
 - **Provide a link to the issue** that tracks the migration process.
 
-NOTE:
+{{< alert type="note" >}}
+
 Uses are detected if you import the deprecated function into another file. They are not detected when the function is used in the same file.
+
+{{< /alert >}}
 
 Running `$ yarn eslint` after this will give us the list of deprecated usages:
 

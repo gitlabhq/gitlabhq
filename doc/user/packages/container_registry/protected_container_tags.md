@@ -5,17 +5,27 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Protected container tags
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505455) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `container_registry_protected_tags`. Disabled by default.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505455) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `container_registry_protected_tags`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Control who can push and delete container tags in your project.
 
@@ -82,7 +92,7 @@ To delete a protection rule:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
 1. Expand **Container registry**.
-1. Under **Protected container tags**, next to the protection rule you want to delete, select **Delete** (**{remove}**).
+1. Under **Protected container tags**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. When prompted for confirmation, select **Delete**.
 
 The protection rule is deleted and matching tags are no longer protected.

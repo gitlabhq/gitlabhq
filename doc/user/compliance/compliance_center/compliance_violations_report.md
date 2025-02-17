@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Compliance violations report
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
-> - Ability to create and edit compliance frameworks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) in GitLab 16.0.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
+- Ability to create and edit compliance frameworks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) in GitLab 16.0.
+
+{{< /history >}}
 
 With the compliance violations report, you can see a high-level view of merge request activity for all projects in the group.
 
@@ -27,7 +34,11 @@ When you select a row in the compliance violations report, a drawer appears that
 
 ## View the compliance violations report
 
-> - Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
+{{< history >}}
+
+- Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -60,11 +71,11 @@ Each compliance violation has one of the following severities.
 
 | Icon                    | Severity level |
 |:------------------------|:---------------|
-| **{severity-critical}** | Critical       |
-| **{severity-high}**     | High           |
-| **{severity-medium}**   | Medium         |
-| **{severity-low}**      | Low            |
-| **{severity-info}**     | Info           |
+| {{< icon name="severity-critical" >}} | Critical       |
+| {{< icon name="severity-high" >}}     | High           |
+| {{< icon name="severity-medium" >}}   | Medium         |
+| {{< icon name="severity-low" >}}      | Low            |
+| {{< icon name="severity-info" >}}     | Info           |
 
 <!-- vale gitlab_base.SubstitutionWarning = YES -->
 
@@ -89,9 +100,13 @@ separation of duties is:
 
 ## Export a report of merge request compliance violations on projects in a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424447) in GitLab 16.5.
-> - [Feature flag `compliance_violation_csv_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142568) removed in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424447) in GitLab 16.5.
+- [Feature flag `compliance_violation_csv_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142568) removed in GitLab 16.9.
+
+{{< /history >}}
 
 Export a report of merge request compliance violations on merge requests belonging to projects in a group. Reports:
 

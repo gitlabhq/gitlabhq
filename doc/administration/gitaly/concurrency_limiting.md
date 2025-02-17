@@ -12,12 +12,15 @@ To avoid overwhelming the servers running Gitaly, you can limit concurrency of:
 
 These limits can be fixed, or set as adaptive.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Enabling limits on your environment should be done with caution and only
 in select circumstances, such as to protect against unexpected traffic.
 When reached, limits _do_ result in disconnects that negatively impact users.
 For consistent and stable performance, you should first explore other options such as
 adjusting node specifications, and [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
+
+{{< /alert >}}
 
 ## Limit RPC concurrency
 
@@ -72,16 +75,23 @@ repository. In the example above:
 - If a request waits in the queue for more than 1 second, it is rejected with an error.
 - If the queue grows beyond 10, subsequent requests are rejected with an error.
 
-NOTE:
+{{< alert type="note" >}}
+
 When these limits are reached, users are disconnected.
+
+{{< /alert >}}
 
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
 information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
 
 ## Limit pack-objects concurrency
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7891) in GitLab 15.11 [with a flag](../feature_flags.md) named `gitaly_pack_objects_limiting_remote_ip`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5772) in GitLab 16.0. Feature flag `gitaly_pack_objects_limiting_remote_ip` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7891) in GitLab 15.11 [with a flag](../feature_flags.md) named `gitaly_pack_objects_limiting_remote_ip`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5772) in GitLab 16.0. Feature flag `gitaly_pack_objects_limiting_remote_ip` removed.
+
+{{< /history >}}
 
 Gitaly triggers `git-pack-objects` processes when handling both SSH and HTTPS traffic to clone or pull repositories. These processes generate a `pack-file` and can
 consume a significant amount of resources, especially in situations such as unexpectedly high traffic or concurrent pulls from a large repository. On GitLab.com, we also
@@ -90,10 +100,13 @@ observe problems with clients that have slow internet connections.
 You can limit these processes from overwhelming your Gitaly server by setting pack-objects concurrency limits in the Gitaly configuration file. This setting limits the
 number of in-flight pack-object processes per remote IP address.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
 disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
 [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
+
+{{< /alert >}}
 
 Example configuration:
 
@@ -124,7 +137,11 @@ You can observe the behavior of this queue using Gitaly logs and Prometheus. For
 
 ## Adaptive concurrency limiting
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+
+{{< /history >}}
 
 Gitaly supports two concurrency limits:
 

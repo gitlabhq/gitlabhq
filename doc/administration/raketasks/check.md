@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Integrity check Rake task
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab provides Rake tasks to check the integrity of various components.
 See also the [check GitLab configuration Rake task](maintenance.md#check-gitlab-configuration).
@@ -286,11 +289,18 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 ## Reset encrypted tokens when they can't be recovered
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This operation is dangerous and can result in data-loss. Proceed with extreme caution.
 You must have knowledge about GitLab internals before you perform this operation.
+
+{{< /alert >}}
 
 In some cases, encrypted tokens can no longer be recovered and cause issues.
 Most often, runner registration tokens for groups and projects might be broken on very large instances.

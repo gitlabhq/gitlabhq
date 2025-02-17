@@ -5,14 +5,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Notification emails
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
-> - Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
-> - Enhanced email styling [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 15.0.
-> - Product marketing emails [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
+- Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
+- Enhanced email styling [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 15.0.
+- Product marketing emails [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/418137) in GitLab 16.6.
+
+{{< /history >}}
 
 Stay informed about what's happening in GitLab with email notifications.
 You can receive updates about activity in issues, merge requests, epics, and designs.
@@ -115,7 +122,7 @@ To select a notification level for a group, use either of these methods:
 Or:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
+1. Select the notification dropdown list, next to the bell icon ({{< icon name="notifications" >}}).
 1. Select the desired [notification level](#notification-levels).
 
 #### Change email address used for group notifications
@@ -144,7 +151,7 @@ To select a notification level for a project, use either of these methods:
 Or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
+1. Select the notification dropdown list, next to the bell icon ({{< icon name="notifications" >}}).
 1. Select the desired [notification level](#notification-levels).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -209,17 +216,27 @@ to change their user notification settings to **Watch** instead.
 ### Edit notification settings for issues, merge requests, and epics
 
 To toggle notifications on an issue, merge request, or epic: on the right sidebar,
-select the vertical ellipsis (**{ellipsis_v}**), then turn on or off the **Notifications** toggle.
+select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then turn on or off the **Notifications** toggle.
 
 #### Moved notifications
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
+- Offering: GitLab Self-Managed
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history. Enabling this feature flag moves the notifications and to-do item buttons to the upper-right corner of the page.
+
+{{< /alert >}}
 
 When you **turn on** notifications, you start receiving notifications on each update, even if you
 haven't participated in the discussion.
@@ -275,13 +292,20 @@ To always receive notifications on your own issues, merge requests, and so on, t
 
 ## Notifications for unknown sign-ins
 
-> - Listing the full name and username of the signed-in user [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225183) in GitLab 15.10.
-> - Geographic location [added](https://gitlab.com/gitlab-org/gitlab/-/issues/296128) in GitLab 17.5.
+{{< history >}}
 
-NOTE:
+- Listing the full name and username of the signed-in user [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225183) in GitLab 15.10.
+- Geographic location [added](https://gitlab.com/gitlab-org/gitlab/-/issues/296128) in GitLab 17.5.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 This feature is enabled by default for self-managed instances. Administrators may disable this feature
 through the [Sign-in restrictions](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
 The feature is always enabled on GitLab.com.
+
+{{< /alert >}}
 
 When a user successfully signs in from a previously unknown IP address or device,
 GitLab notifies the user by email. In this way, GitLab proactively alerts users of potentially
@@ -304,7 +328,11 @@ GitLab uses several methods to identify a known sign-in. All methods must fail f
 
 ## Notifications for attempted sign-ins using incorrect verification codes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
+
+{{< /history >}}
 
 GitLab sends you an email notification if it detects an attempt to sign in to your account using a wrong two-factor
 authentication (2FA) code. This can help you detect that a bad actor gained access to your username and password, and is trying
@@ -322,7 +350,11 @@ The participants are:
 
 ## Notifications on group or project access expiration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
+
+{{< /history >}}
 
 GitLab sends an email notification if a user's access to a group or project expires in seven days.
 This reminds group or project members to extend their access duration if they want to.
@@ -422,9 +454,12 @@ For example, an email with the reason `assigned` has this sentence in the footer
 
 #### On-call alerts notifications
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 An [on-call alert](../../operations/incident_management/oncall_schedules.md)
 notification email can have one of [the alert's](../../operations/incident_management/alerts.md) statuses:
@@ -436,9 +471,12 @@ notification email can have one of [the alert's](../../operations/incident_manag
 
 #### Incident escalation notifications
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 An [incident escalation](../../operations/incident_management/escalation_policies.md)
 notification email can have one of [the incident's](../../operations/incident_management/incidents.md) status:

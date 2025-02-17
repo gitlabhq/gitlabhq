@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project features and permissions
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 ## Configure project features and permissions
 
@@ -72,11 +75,18 @@ To turn this feature off and remove the **Analyze** item from the left sidebar:
 
 ## Turn off CVE identifier request in issues
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
+
+{{< /history >}}
 
 In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
 
@@ -101,8 +111,12 @@ Prerequisites:
 
 ### Turn off diff previews in project email notifications
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) in GitLab 17.1. Feature flag `diff_preview_in_email` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) in GitLab 17.1. Feature flag `diff_preview_in_email` removed.
+
+{{< /history >}}
 
 When you review code in a merge request and comment on a line of code, GitLab
 includes a few lines of the diff in the email notification to participants.
@@ -154,10 +168,17 @@ To set this default:
 
 ## Add additional webhook triggers for project access token expiration
 
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+{{< history >}}
 
-FLAG:
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
 
 GitLab sends multiple [expiry emails](project_access_tokens.md#project-access-token-expiry-emails) and triggers a related [webhook](../integrations/webhook_events.md#project-and-group-access-token-events) before a project token expires. By default, GitLab only triggers these webhooks 7 days before the token expires. When this feature is enabled, GitLab also triggers these webhooks 60 days and 30 days before the token expires.
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Object storage
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab supports using an object storage service for holding numerous types of data.
 It's recommended over NFS and
@@ -52,8 +55,11 @@ Most types of objects, such as CI artifacts, LFS files, and upload attachments
 can be saved in object storage by specifying a single credential for object
 storage with multiple buckets.
 
-NOTE:
+{{< alert type="note" >}}
+
 For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
+
+{{< /alert >}}
 
 Configuring the object storage using the consolidated form has a number of advantages:
 
@@ -124,9 +130,9 @@ Within each object type, three parameters can be defined:
 
 | Setting          | Required?              | Description                         |
 |------------------|------------------------|-------------------------------------|
-| `bucket`         | **{check-circle}** Yes\* | Bucket name for the object type. Not required if `enabled` is set to `false`. |
-| `enabled`        | **{dotted-circle}** No | Overrides the [common parameter](#configure-the-common-parameters).     |
-| `proxy_download` | **{dotted-circle}** No | Overrides the [common parameter](#configure-the-common-parameters).     |
+| `bucket`         | {{< icon name="check-circle" >}} Yes\* | Bucket name for the object type. Not required if `enabled` is set to `false`. |
+| `enabled`        | {{< icon name="dotted-circle" >}} No | Overrides the [common parameter](#configure-the-common-parameters).     |
+| `proxy_download` | {{< icon name="dotted-circle" >}} No | Overrides the [common parameter](#configure-the-common-parameters).     |
 
 For an example, see how to [use the consolidated form and Amazon S3](#full-example-using-the-consolidated-form-and-amazon-s3).
 
@@ -156,29 +162,32 @@ except for the storage types not supported by the consolidated form. When workin
 The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated form is not supported.
 You may get [ETag mismatch errors](#etag-mismatch) if you use it.
 
-NOTE:
+{{< alert type="note" >}}
+
 For the storage-specific form,
 [direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
 because it does not require a shared folder.
+
+{{< /alert >}}
 
 For storage types not
 supported by the consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|
-| [Backups](backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
-| [Container registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
-| [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |
-| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
-| [Secure Files](cicd/secure_files.md#using-object-storage) | **{check-circle}** Yes |
-| [Job artifacts](cicd/job_artifacts.md#using-object-storage) including archived job logs | **{check-circle}** Yes |
-| [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
-| [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
-| [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
-| [Packages](packages/_index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
-| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
-| [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
-| [Pages content](pages/_index.md#object-storage-settings) | **{check-circle}** Yes |
+| [Backups](backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | {{< icon name="dotted-circle" >}} No |
+| [Container registry](packages/container_registry.md#use-object-storage) (optional feature) | {{< icon name="dotted-circle" >}} No |
+| [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| {{< icon name="dotted-circle" >}} No |
+| [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | {{< icon name="dotted-circle" >}} No |
+| [Secure Files](cicd/secure_files.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
+| [Job artifacts](cicd/job_artifacts.md#using-object-storage) including archived job logs | {{< icon name="check-circle" >}} Yes |
+| [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | {{< icon name="check-circle" >}} Yes |
+| [Uploads](uploads.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
+| [Merge request diffs](merge_request_diffs.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
+| [Packages](packages/_index.md#use-object-storage) (optional feature) | {{< icon name="check-circle" >}} Yes |
+| [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | {{< icon name="check-circle" >}} Yes |
+| [Terraform state files](terraform_state.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
+| [Pages content](pages/_index.md#object-storage-settings) | {{< icon name="check-circle" >}} Yes |
 
 ## Configure the connection settings
 
@@ -317,8 +326,11 @@ It uses the first of these settings that has a value.
 The service account must have permission to access the bucket. For more information,
 see the [Cloud Storage authentication documentation](https://cloud.google.com/storage/docs/authentication).
 
-NOTE:
+{{< alert type="note" >}}
+
 To use bucket encryption with [customer-managed encryption keys](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys), use the [consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
+
+{{< /alert >}}
 
 #### GCS example
 
@@ -378,9 +390,9 @@ The following are the valid connection parameters for Azure. For more informatio
 | `azure_storage_access_key`   | Storage account access key used to access the container. This is typically a secret, 512-bit encryption key encoded in base64. This is optional for [Azure workload and managed identities](#azure-workload-and-managed-identities). | `czV2OHkvQj9FKEgrTWJRZVRoV21ZcTN0Nnc5eiRDJkYpSkBOY1JmVWpYbjJy\nNHU3eCFBJUQqRy1LYVBkU2dWaw==\n` |
 | `azure_storage_domain`       | Domain name used to contact the Azure Blob Storage API (optional). Defaults to `blob.core.windows.net`. Set this if you are using Azure China, Azure Germany, Azure US Government, or some other custom Azure domain. | `blob.core.windows.net` |
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
@@ -419,7 +431,9 @@ The following are the valid connection parameters for Azure. For more informatio
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
    [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
@@ -489,7 +503,9 @@ The following are the valid connection parameters for Azure. For more informatio
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -535,7 +551,9 @@ The following are the valid connection parameters for Azure. For more informatio
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 For self-compiled installations, Workhorse also needs to be configured with Azure
 credentials. This isn't needed in Linux package installations because the Workhorse
@@ -599,11 +617,17 @@ settings are populated from the previous settings.
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 #### Azure workload and managed identities
 
-> - [Introduced in GitLab 17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/242245)
+{{< history >}}
+
+- [Introduced in GitLab 17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/242245)
+
+{{< /history >}}
 
 To use [Azure workload identities](https://azure.github.io/azure-workload-identity/docs/) or [managed identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/), omit
 `azure_storage_access_key` from the configuration. When
@@ -619,9 +643,12 @@ assigned to it.
 
 ### Storj Gateway (SJ)
 
-NOTE:
+{{< alert type="note" >}}
+
 The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
 While an implementation [is planned](https://github.com/storj/roadmap/issues/40), you must [disable multi-threaded copying](#multi-threaded-copying) until completion.
+
+{{< /alert >}}
 
 The [Storj Network](https://www.storj.io/) provides an S3-compatible API gateway. Use the following configuration example:
 
@@ -643,8 +670,11 @@ For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/i
 
 ### Hitachi Vantara HCP
 
-NOTE:
+{{< alert type="note" >}}
+
 Connections to HCP may return an error stating `SignatureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
+
+{{< /alert >}}
 
 [HCP](https://docs.hitachivantara.com/r/en-us/content-platform-for-cloud-scale/2.6.x/mk-hcpcs008/getting-started/introducing-hcp-for-cloud-scale/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
 
@@ -668,9 +698,9 @@ gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_nam
 
 The following example uses AWS S3 to enable object storage for all supported services:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
@@ -718,7 +748,9 @@ The following example uses AWS S3 to enable object storage for all supported ser
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Helm chart (Kubernetes)
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
 
 1. Put the following content in a file named `object_storage.yaml` to be used as a
    [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals.html#connection):
@@ -789,7 +821,9 @@ The following example uses AWS S3 to enable object storage for all supported ser
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
    ```
 
-:::TabTitle Docker
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
 
 1. Edit `docker-compose.yml`:
 
@@ -841,7 +875,9 @@ The following example uses AWS S3 to enable object storage for all supported ser
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following lines:
 
@@ -918,7 +954,9 @@ The following example uses AWS S3 to enable object storage for all supported ser
    sudo service gitlab restart
    ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Migrate to object storage
 
@@ -1163,7 +1201,11 @@ When the consolidated form is:
 
 #### Google Cloud Storage encryption
 
-> - [Introduced in GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441782).
+{{< history >}}
+
+- [Introduced in GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441782).
+
+{{< /history >}}
 
 ETag mismatch errors occur also in Google Cloud Storage (GCS) when enabling [data encryption with customer-managed encryption keys (CMEK)](https://cloud.google.com/storage/docs/encryption/using-customer-managed-keys).
 

@@ -5,17 +5,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Manage cluster applications
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab provides a cluster management project template, which you use
 to create a project. The project includes cluster applications that integrate with GitLab
 and extend GitLab functionality. You can use the pattern shown in the project to extend
 your custom cluster applications.
 
-NOTE:
+{{< alert type="note" >}}
+
 The project template works on GitLab.com without modifications. If you're on a self-managed instance, you must modify the `.gitlab-ci.yml` file.
+
+{{< /alert >}}
 
 ## Use one project for the agent and your manifests
 
@@ -44,7 +50,7 @@ If you have already configured the agent and connected a cluster with GitLab:
 
 To create a project from the cluster management project template:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create from template**.
 1. From the list of templates, next to **GitLab Cluster Management**, select **Use template**.
 1. Enter the project details.

@@ -1,24 +1,30 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-title: 'Create a project with `git push`'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Create a project with `git push`
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use `git push` to add a local project repository to GitLab. After you add a repository,
 GitLab creates your project in your chosen namespace.
 
-NOTE:
+{{< alert type="note" >}}
+
 You cannot use `git push` to create projects with paths that were previously used or
 [renamed](../../user/project/working_with_projects.md#rename-a-repository).
 Previously used project paths have a redirect. Instead of creating a new project,
 the redirect causes push attempts to redirect requests to the renamed project location.
 To create a new project for a previously used or renamed project, use the UI
 or the [Projects API](../../api/projects.md#create-a-project).
+
+{{< /alert >}}
 
 Prerequisites:
 

@@ -1,8 +1,8 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Payment and company details.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Payment and company details.
 title: The Customers Portal
 ---
 
@@ -18,8 +18,11 @@ For more information, see [Customers that purchased through a reseller](#custome
 
 You can sign in to Customers Portal either with your GitLab.com account or a one-time sign-in link sent to your email (if you have not yet [linked your Customers Portal account to your GitLab.com account](#link-a-gitlabcom-account)).
 
-NOTE:
+{{< alert type="note" >}}
+
 If you registered for Customers Portal with your GitLab.com account, sign in with this account.
+
+{{< /alert >}}
 
 To sign in to Customers Portal using your GitLab.com account:
 
@@ -33,8 +36,11 @@ To sign in to Customers Portal with your email and to receive a one-time sign-in
 1. Provide the **Email** for your Customers Portal profile. You will receive an email with a one-time sign-in link.
 1. In the email you received, select **Sign in**.
 
-NOTE:
+{{< alert type="note" >}}
+
 The one-time sign-in link expires in 24 hours and can only be used once.
+
+{{< /alert >}}
 
 ## Confirm Customers Portal email address
 

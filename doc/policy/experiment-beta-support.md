@@ -1,6 +1,6 @@
 ---
-redirect_to: 'development_stages_support.md'
-remove_date: '2025-02-27'
+redirect_to: development_stages_support.md
+remove_date: "2025-02-27"
 ---
 
 <!-- markdownlint-disable -->

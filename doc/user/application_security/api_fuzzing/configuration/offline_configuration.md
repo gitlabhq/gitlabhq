@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Offline configuration
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 For instances in an environment with limited, restricted, or intermittent access to external resources through the internet, some adjustments are required for the Web API Fuzz testing job to successfully run.
 
@@ -24,7 +27,10 @@ For example, the below line sets a registry for the image `registry.gitlab.com/s
 
 `SECURE_ANALYZERS_PREFIX: "registry.gitlab.com/security-products"`
 
-NOTE:
+{{< alert type="note" >}}
+
 Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for all GitLab Secure templates.
+
+{{< /alert >}}
 
 For more information, see [Offline environments](../../offline_deployments/_index.md).

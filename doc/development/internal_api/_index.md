@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Internal API
 ---
 
@@ -465,7 +465,11 @@ Example response:
 
 ## GitLab agent endpoints
 
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
+{{< history >}}
+
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432773) in GitLab 16.7.
+
+{{< /history >}}
 
 The following endpoints are used by the GitLab agent server (`kas`)
 for various purposes.
@@ -842,9 +846,12 @@ Example response:
 
 ## Group SCIM API
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.
@@ -867,8 +874,11 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities in groups.
 
-NOTE:
+{{< alert type="note" >}}
+
 This API does not require the `Gitlab-Shell-Api-Request` header.
+
+{{< /alert >}}
 
 ### Get a list of SCIM provisioned users
 
@@ -887,8 +897,11 @@ Parameters:
 | `startIndex` | integer | no    | The 1-based index indicating where to start returning results from. A value of less than one is interpreted as 1. |
 | `count` | integer | no    | Desired maximum number of query results. |
 
-NOTE:
+{{< alert type="note" >}}
+
 Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
+
+{{< /alert >}}
 
 Example request filtering on a specific identifier:
 
@@ -1020,8 +1033,11 @@ Example response:
 
 Returns a `201` status code if successful.
 
-NOTE:
+{{< alert type="note" >}}
+
 After you create a group SCIM identity for a user, you can see that SCIM identity in the **Admin** area.
+
+{{< /alert >}}
 
 ### Update a single SCIM provisioned user
 
@@ -1093,11 +1109,18 @@ Returns an empty response with a `204` status code if successful.
 
 ## Instance SCIM API
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378599) in GitLab 15.8.
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378599) in GitLab 15.8.
+
+{{< /history >}}
 
 The instance SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/application/Users` and `/application/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.
@@ -1119,8 +1142,11 @@ This instance SCIM API is different to the [SCIM API](../../api/scim.md). The SC
 - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 - Gets, checks, updates, and deletes SCIM identities within groups.
 
-NOTE:
+{{< alert type="note" >}}
+
 This API does not require the `Gitlab-Shell-Api-Request` header.
+
+{{< /alert >}}
 
 ### Get a list of SCIM provisioned users
 
@@ -1138,8 +1164,11 @@ Parameters:
 | `startIndex` | integer | no    | The 1-based index indicating where to start returning results from. A value of less than one is interpreted as 1. |
 | `count` | integer | no    | Desired maximum number of query results. |
 
-NOTE:
+{{< alert type="note" >}}
+
 Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4) rather than GitLab pagination as used elsewhere. If records change between requests it is possible for a page to either be missing records that have moved to a different page or repeat records from a previous request.
+
+{{< /alert >}}
 
 Example request:
 

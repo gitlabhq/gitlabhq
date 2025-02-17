@@ -5,18 +5,25 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Epic boards
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Displaying total weight on the top of lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.11.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Displaying total weight on the top of lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364503) in GitLab 15.11.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+
+{{< /history >}}
 
 Epic boards build on the existing [epic tracking functionality](_index.md) and
 [labels](../../project/labels.md). Your epics appear as cards in vertical lists, organized by their assigned
 labels.
 
-On the top of each list, you can see the number of epics in the list (**{epic}**) and the total weight of all its epics (**{weight}**).
+On the top of each list, you can see the number of epics in the list ({{< icon name="epic" >}}) and the total weight of all its epics ({{< icon name="weight" >}}).
 
 <div class="video-fallback">
   See the video: <a href="https://www.youtube.com/watch?v=eQUnHwbKEkY">Epics and Issue Boards - Project Management</a>.
@@ -81,7 +88,11 @@ To delete the active epic board:
 
 ### Create a new list
 
-> - Creating a list between existing lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462515) in GitLab 17.5.
+{{< history >}}
+
+- Creating a list between existing lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462515) in GitLab 17.5.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -119,7 +130,7 @@ Prerequisites:
 
 To remove a list from an epic board:
 
-1. On the top of the list you want to remove, select the **List settings** icon (**{settings}**).
+1. On the top of the list you want to remove, select the **List settings** icon ({{< icon name="settings" >}}).
    The list settings sidebar opens on the right.
 1. Select **Remove list**.
 1. On the confirmation dialog, select **OK**.
@@ -133,7 +144,7 @@ Prerequisites:
 
 To create an epic from a list in epic board:
 
-1. On the top of a list, select the **New epic** (**{plus}**) icon.
+1. On the top of a list, select the **New epic** ({{< icon name="plus" >}}) icon.
 1. Enter the new epic's title.
 1. Select **Create epic**.
 
@@ -162,8 +173,8 @@ You can filter by the following:
 
 Epics on an epic board show a summary of their issues, weight, and progress.
 To see the number of open and closed issues and the completed and incomplete
-weight, hover over the issues icon **{issues}**, weight icon **{weight}**, or
-progress icon **{progress}**.
+weight, hover over the issues icon {{< icon name="issues" >}}, weight icon {{< icon name="weight" >}}, or
+progress icon {{< icon name="progress" >}}.
 
 ### Move epics and lists
 
@@ -181,7 +192,11 @@ You can't move the **Open** and **Closed** lists, but you can hide them when edi
 
 #### Move an epic to the start of the list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+
+{{< /history >}}
 
 When you have many epics, it's inconvenient to manually drag an epic from the bottom of a board list all
 the way to the top. You can move epics to the top of the list with a menu shortcut.
@@ -195,11 +210,15 @@ Prerequisites:
 To move an epic to the start of the list:
 
 1. In an epic board, hover over the card of the epic you want to move.
-1. Select **Card options** (**{ellipsis_v}**), then **Move to start of list**.
+1. Select **Card options** ({{< icon name="ellipsis_v" >}}), then **Move to start of list**.
 
 #### Move an epic to the end of the list
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+
+{{< /history >}}
 
 When you have many epics, it's inconvenient to manually drag an epic from the top of a board list all
 the way to the bottom. You can move epics to the bottom of the list with a menu shortcut.
@@ -213,7 +232,7 @@ Prerequisites:
 To move an epic to the end of the list:
 
 1. In an epic board, hover over the card of the epic you want to move.
-1. Select **Card options** (**{ellipsis_v}**), then **Move to end of list**.
+1. Select **Card options** ({{< icon name="ellipsis_v" >}}), then **Move to end of list**.
 
 #### Dragging epics between lists
 
@@ -234,7 +253,7 @@ Prerequisites:
 
 To edit the scope of an epic board:
 
-1. In the upper-right corner, select **Configure board** (**{settings}**).
+1. In the upper-right corner, select **Configure board** ({{< icon name="settings" >}}).
 1. Optional:
    - Edit the board's title.
    - Show or hide the Open and Closed columns.

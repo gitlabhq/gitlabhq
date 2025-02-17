@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group labels API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This API supports managing [group labels](../user/project/labels.md#types-of-labels).
 It allows users to list, create, update, and delete group labels. Furthermore, users can subscribe to and
@@ -178,8 +181,11 @@ Example response:
 }
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An older endpoint `PUT /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
+
+{{< /alert >}}
 
 ## Delete a group label
 
@@ -198,8 +204,11 @@ DELETE /groups/:id/labels/:label_id
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/labels/bug"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 An older endpoint `DELETE /groups/:id/labels` with `name` in the parameters is still available, but deprecated.
+
+{{< /alert >}}
 
 ## Subscribe to a group label
 

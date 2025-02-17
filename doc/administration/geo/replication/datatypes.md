@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Supported Geo data types
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to
 store relevant information.
@@ -152,11 +155,15 @@ Elasticsearch is not supported in Geo.
 
 The replication for some data types is behind a corresponding feature flag:
 
-> - They're deployed behind a feature flag, enabled by default.
-> - They're enabled on GitLab.com.
-> - They can't be enabled or disabled per-project.
-> - They are recommended for production use.
-> - For a GitLab Self-Managed instance, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types).
+{{< history >}}
+
+- They're deployed behind a feature flag, enabled by default.
+- They're enabled on GitLab.com.
+- They can't be enabled or disabled per-project.
+- They are recommended for production use.
+- For a GitLab Self-Managed instance, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types).
+
+{{< /history >}}
 
 #### Enable or disable replication (for some data types)
 
@@ -175,12 +182,15 @@ To enable, such as for package file replication:
 Feature.enable(:geo_package_file_replication)
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Features not on this list, or with **No** in the **Replicated** column,
 are not replicated to a **secondary** site. Failing over without manually
 replicating data from those features causes the data to be **lost**.
 To use those features on a **secondary** site, or to execute a failover
 successfully, you must replicate their data using some other means.
+
+{{< /alert >}}
 
 | Feature                                                                                                               | Replicated (added in GitLab version)                                          | Verified (added in GitLab version)                                            | GitLab-managed object storage replication (added in GitLab version)             | GitLab-managed object storage verification (added in GitLab version)            | Notes |
 |:----------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------|:------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:------|

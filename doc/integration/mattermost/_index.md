@@ -5,8 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Mattermost
 ---
 
-DETAILS:
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can run a [GitLab Mattermost](https://gitlab.com/gitlab-org/gitlab-mattermost)
 service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to install it. **However, Mattermost is a separate application from a separate company.** GitLab Support cannot help you with Mattermost-specific questions beyond the integration with GitLab. If you need help with Mattermost itself, see the [community support resources](#community-support-resources).
@@ -331,10 +334,13 @@ This setting can also be configured in `/var/opt/gitlab/mattermost/config.json`.
 
 ## Upgrading GitLab Mattermost
 
-NOTE:
+{{< alert type="note" >}}
+
 When upgrading the Mattermost version, it is essential to check the
 [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
 for Mattermost to address any changes or migrations that need to be performed.
+
+{{< /alert >}}
 
 GitLab Mattermost can be upgraded through the regular Linux package update process. When upgrading previous versions of
 GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to the Mattermost `config.json`
@@ -390,8 +396,11 @@ Below is a list of Mattermost version changes for GitLab 15.0 and later:
 | 15.1           | 6.7                |                                                                                          |
 | 15.0           | 6.6                |                                                                                          |
 
-NOTE:
+{{< alert type="note" >}}
+
 The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the Linux package uses a PostgreSQL database.
+
+{{< /alert >}}
 
 The Linux package bundles the [Mattermost Team Edition](https://docs.mattermost.com/about/editions-and-offerings.html#mattermost-team-edition), which is a free and open source edition and does not include its commercial features.
 To upgrade to the [Mattermost Enterprise Edition](https://docs.mattermost.com/about/editions-and-offerings.html#mattermost-enterprise-edition) see the Mattermost [documentation on upgrading](https://docs.mattermost.com/install/enterprise-install-upgrade.html#upgrading-to-enterprise-edition-in-gitlab-omnibus).

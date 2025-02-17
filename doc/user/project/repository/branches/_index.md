@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Understand how to name, manage, and protect Git branches."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Understand how to name, manage, and protect Git branches.
 title: Branches
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 A branch is a version of a project's working tree. Branches are the
 foundation of development in a project. When you create a new
@@ -52,7 +55,7 @@ On this page, you can:
 - [Delete merged branches](#delete-merged-branches).
 - See merge request links that point to the default branch.
 
-  Branches with merge requests that do not point to the default branch display the **{merge-request}** **New** merge request button.
+  Branches with merge requests that do not point to the default branch display the {{< icon name="merge-request" >}} **New** merge request button.
 
 - [View branch rules](branch_rules.md#view-branch-rules).
 - See latest pipeline status on the branch.
@@ -112,7 +115,7 @@ To create a branch from an issue:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues** and find your issue.
 1. Below the issue description, find the **Create merge request** dropdown list, and select
-   **{chevron-down}** to display the dropdown list.
+   {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**. A default **Branch name** is provided, based on the
    [default pattern](#configure-default-pattern-for-branch-names-from-issues) for
    this project. If desired, enter a different **Branch name**.
@@ -225,7 +228,7 @@ To compare branches in a repository:
      [Git command](../../../../topics/git/commands.md).
    <!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. Select **Compare** to show the list of commits, and changed files.
-1. Optional. To reverse the **Source** and **Target**, select **Swap revisions** (**{substitute}**).
+1. Optional. To reverse the **Source** and **Target**, select **Swap revisions** ({{< icon name="substitute" >}}).
 
 ## Delete merged branches
 
@@ -242,23 +245,33 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
-1. In the upper right corner of the page, select **More** **{ellipsis_v}**.
+1. In the upper right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 
-NOTE:
+{{< alert type="note" >}}
+
 Deleting a branch does not completely erase all related data.
 Some information persists to maintain project history and to support recovery processes.
 For more information, see [Handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
 
+{{< /alert >}}
+
 ## Configure workflows for target branches
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Enabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136431) in GitLab 16.7.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Enabled by default.
+- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136431) in GitLab 16.7.
+
+{{< /history >}}
 
 Some projects use multiple long-term branches for development, like `develop` and `qa`.
 In these projects, you might want to keep `main` as the default branch, but expect

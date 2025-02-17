@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Using GitLab CI/CD with a Bitbucket Cloud repository
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab CI/CD can be used with Bitbucket Cloud by:
 
@@ -26,7 +29,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 1. In GitLab, create a project:
 
-   1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+   1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
    1. Select **Run CI/CD for external repository**.
    1. Select **Repository by URL**.
    1. Complete the fields:

@@ -207,12 +207,17 @@ When a command outside of the supported list is used, `method_missing` will pass
 This ensures that anything unexpected behaves like it would before. In development or test environment, an error would be raised for early
 detection.
 
-NOTE:
+{{< alert type="note" >}}
+
 By tracking `gitlab_redis_multi_store_method_missing_total` counter and `Gitlab::Redis::MultiStore::MethodMissingError`,
 a developer will need to add an implementation for missing Redis commands before proceeding with the migration.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 Variable assignments within `pipelined` and `multi` blocks are not advised as the block should be idempotent. Refer to the [corrective fix MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137734) removing non-idempotent blocks which previously led to incorrect application behavior during a migration.
+{{< /alert >}}
 
 ##### Errors
 

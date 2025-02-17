@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Members of a project
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Members are the users and groups who have access to your project.
 
@@ -15,9 +18,13 @@ Each member gets a role, which determines what they can do in the project.
 
 ## Membership types
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
-> - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
-> - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `webui_members_inherited_users`. Disabled by default.
+- Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
+- Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+
+{{< /history >}}
 
 Users can become members of a group or project directly or indirectly.
 Indirect membership can be inherited, shared, or inherited shared.
@@ -70,8 +77,12 @@ In the above example:
 
 ## Add users to a project
 
-> - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
-> - Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+{{< history >}}
+
+- Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+- Access expiration date for direct members of subgroups and projects [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471051) in GitLab 17.4.
+
+{{< /history >}}
 
 Add users to a project so they become direct members and have permission
 to perform actions.
@@ -100,9 +111,12 @@ To add a user to a project:
    If you selected an access expiration date, the project member gets an email notification
    seven days before their access expires.
 
-   WARNING:
+   {{< alert type="warning" >}}
+
    Maintainers have full permissions until their role expires, including the ability to
    extend their own access expiration date.
+
+   {{< /alert >}}
 
 1. Select **Invite**.
    If you invited the user using their:
@@ -150,8 +164,11 @@ Instead of adding users one by one, you can [share a project with an entire grou
 You can import another project's direct members to your own project.
 Imported project members retain the same permissions as the project you import them from.
 
-NOTE:
+{{< alert type="note" >}}
+
 Only direct members of a project are imported. Inherited or shared members of a project are not imported.
+
+{{< /alert >}}
 
 Prerequisites:
 
@@ -266,7 +283,7 @@ To sort members:
 GitLab users can request to become a member of a project.
 
 1. On the left sidebar, select **Search or go to** and find the project you want to be a member of.
-1. In the top right, select the vertical ellipsis (**{ellipsis_v}**) and select **Request Access**.
+1. In the top right, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and select **Request Access**.
 
 An email is sent to the most recently active project Maintainers or Owners.
 Up to ten project Maintainers or Owners are notified.
@@ -307,13 +324,13 @@ The following table lists the membership and visibility rights of project member
 
 | Action | Direct project member | Inherited project member | Direct shared project member | Inherited shared project member |
 | --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
-| Generate boards | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| View issues of parent groups <sup>1</sup> | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| View labels of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| View milestones of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| Be shared into other groups | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |  **{dotted-circle}** No |
-| Be imported into other projects | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | **{dotted-circle}** No |
-| Share the project with other members | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| Generate boards | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| View issues of parent groups <sup>1</sup> | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| View labels of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| View milestones of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| Be shared into other groups | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |  {{< icon name="dotted-circle" >}} No |
+| Be imported into other projects | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Share the project with other members | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 
 **Footnotes:**
 
@@ -323,10 +340,10 @@ The following table lists the membership and visibility rights of group members.
 
 | Action | Direct group member | Inherited group member | Direct shared group member | Inherited shared group member |
 | --- | ------------------- | ---------------------- | -------------------------- | ----------------------------- |
-| Generate boards | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| View issues of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| View labels of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| View milestones of parent groups | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| Generate boards | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| View issues of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| View labels of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| View milestones of parent groups | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 
 In the following example, `User` is a:
 

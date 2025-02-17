@@ -1,14 +1,17 @@
 ---
 stage: Foundations
 group: Import and Integrate
-description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Programmatic interaction with GitLab.
 title: REST API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use the GitLab REST API to retrieve data by using any compatible REST API client.
 
@@ -237,8 +240,12 @@ In boolean arguments, you should only set `true` or `false` values (not `null`).
 
 ### Redirects
 
-> - Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578) in GitLab 16.7. Feature flag `api_redirect_moved_projects` removed.
+{{< history >}}
+
+- Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137578) in GitLab 16.7. Feature flag `api_redirect_moved_projects` removed.
+
+{{< /history >}}
 
 After [path changes](../../user/project/repository/_index.md#repository-path-changes) the
 REST API might respond with a message noting that the endpoint has moved. When this happens, used
@@ -273,8 +280,12 @@ For large collections, you should use keyset pagination
 
 ### Offset-based pagination
 
-> - The `users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
-> - The `users` endpoint enforces keyset-based pagination when the number of requested records is greater than 50,000 in GitLab 17.0.
+{{< history >}}
+
+- The `users` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/426547) for offset-based pagination in GitLab 16.5 and is planned for removal in 17.0. This change is a breaking change. Use keyset-based pagination for this endpoint instead.
+- The `users` endpoint enforces keyset-based pagination when the number of requested records is greater than 50,000 in GitLab 17.0.
+
+{{< /history >}}
 
 Sometimes, the returned result spans many pages. When listing resources, you can
 pass the following parameters:
@@ -290,8 +301,11 @@ In the following example, we list 50 [namespaces](../namespaces.md) per page:
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 There is a [max offset allowed limit](../../administration/instance_limits.md#max-offset-allowed-by-the-rest-api-for-offset-based-pagination) for offset pagination. You can change the limit in GitLab Self-Managed instances.
+
+{{< /alert >}}
 
 #### Pagination `Link` header
 
@@ -403,10 +417,13 @@ excludes already-retrieved records.
 The type of filter depends on the
 `order_by` option used, and we can have more than one additional filter.
 
-WARNING:
+{{< alert type="warning" >}}
+
 The `Links` header was removed to be aligned with the
 [W3C `Link` specification](https://www.w3.org/wiki/LinkHeader). The `Link`
 header should be used instead.
+
+{{< /alert >}}
 
 When the end of the collection is reached and there are no additional
 records to retrieve, the `Link` header is absent and the resulting array is

@@ -15,8 +15,11 @@ Ruby on Rails has cookie setting and retrieval [built-in to ActionController](ht
 
 You can [set cookies with options](https://api.rubyonrails.org/v7.1.3.4/classes/ActionDispatch/Cookies.html) such as `:path` , `:expires`, `:domain` , and `:httponly` . Do not change from the defaults for these options unless it is required for the functionality you are implementing.
 
-WARNING:
+{{< alert type="warning" >}}
+
 [Cookies set by GitLab are unset by default when users log out](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/sessions_controller.rb#L104). If you set a cookie with the `:domain` option, that cookie must be unset using the same `:domain` parameter. Otherwise the browser will not actually clear the cookie, and we risk persisting potentially-sensitive data which should have been cleared.
+
+{{< /alert >}}
 
 ## Cookies in Frontend Code
 

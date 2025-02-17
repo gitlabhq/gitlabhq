@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Manage Git access to projects by adding CA certificates to your top-level group, instead of individual groups."
+description: Manage Git access to projects by adding CA certificates to your top-level group, instead of individual groups.
 title: Manage group SSH certificates
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 You can control and manage Git access to your projects and groups with SSH certificates.
 
@@ -68,9 +71,13 @@ allowing repository access.
 
 ## Add a CA certificate to a top-level group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 16.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 17.7. Feature flag `ssh_certificates_rest_endpoints` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 16.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 17.7. Feature flag `ssh_certificates_rest_endpoints` removed.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -113,9 +120,13 @@ The user certificates can only be used to access the projects in the top-level g
 
 ## Enforce SSH certificates
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.7 [with a flag](../feature_flags.md) named `enforce_ssh_certificates_via_settings`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426235) in GitLab 16.9.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/488635) in GitLab 17.7. Feature flag `enforce_ssh_certificates_via_settings` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.7 [with a flag](../feature_flags.md) named `enforce_ssh_certificates_via_settings`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426235) in GitLab 16.9.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/488635) in GitLab 17.7. Feature flag `enforce_ssh_certificates_via_settings` removed.
+
+{{< /history >}}
 
 You can enforce the usage of SSH certificates and restrict users from authenticating using SSH
 keys and access tokens.
@@ -126,8 +137,11 @@ When SSH certificates are enforced:
 - It does not apply to service accounts, deploy keys, and other types of internal accounts.
 - Only SSH certificates added to the group by Owners are used to authenticate repository access.
 
-NOTE:
+{{< alert type="note" >}}
+
 Enforcing SSH certificates disables HTTPS access for regular users.
+
+{{< /alert >}}
 
 Prerequisites:
 

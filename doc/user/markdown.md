@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Flavored Markdown (GLFM)
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
 The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
@@ -26,9 +29,12 @@ You can use GitLab Flavored Markdown in the following areas:
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
-NOTE:
+{{< alert type="note" >}}
+
 As this Markdown specification is **valid for GitLab only**, you should
 [view these styles as they appear on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md).
+
+{{< /alert >}}
 
 We do our best to render the Markdown faithfully here, however the
 [GitLab documentation website](https://docs.gitlab.com) and the [GitLab handbook](https://handbook.gitlab.com)
@@ -127,7 +133,11 @@ Alt-H2
 
 ### Heading IDs and links
 
-> - Heading link generation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/440733) in GitLab 17.0.
+{{< history >}}
+
+- Heading link generation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/440733) in GitLab 17.0.
+
+{{< /history >}}
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#heading-ids-and-links).
 
@@ -513,7 +523,11 @@ CommonMark ignores the blank line and renders this as one list with paragraph sp
 
 ### Description lists
 
-> - Description lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26314) in GitLab 17.7.
+{{< history >}}
+
+- Description lists [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26314) in GitLab 17.7.
+
+{{< /history >}}
 
 A description list is a list of terms with corresponding descriptions.
 Each term can have multiple descriptions.
@@ -544,7 +558,11 @@ Fruits
 
 ### Task lists
 
-> - Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
+{{< history >}}
+
+- Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
+
+{{< /history >}}
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#task-lists).
 
@@ -636,11 +654,14 @@ Do not change to reference style links.
 
 Some text to show that the reference links can follow later.
 
-NOTE:
+{{< alert type="note" >}}
+
 Relative links do not allow the referencing of project files in a wiki
 page, or a wiki page in a project file. The reason: a wiki is always
 in a separate Git repository in GitLab. For example, `[I'm a reference-style link](style)`
 points the link to `wikis/style` only when the link is inside of a wiki Markdown file.
+
+{{< /alert >}}
 
 ### URL auto-linking
 
@@ -666,8 +687,12 @@ Almost any URL you put into your text is auto-linked:
 
 ## GitLab-specific references
 
-> - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
-> - Ability to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
+{{< history >}}
+
+- Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
+- Ability to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
+
+{{< /history >}}
 
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
@@ -737,7 +762,11 @@ For example:
 
 ### Show item title
 
-> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+{{< history >}}
+
+- Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+
+{{< /history >}}
 
 <!-- When epics as work items are generally available and `work_item_epics` flag is removed,
 refactor the link below and add a history note -->
@@ -753,8 +782,12 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are al
 
 ### Show item summary
 
-> - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
-> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+{{< history >}}
+
+- Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
+- Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+
+{{< /history >}}
 
 <!-- When epics as work items are generally available and `work_item_epics` flag is removed,
 refactor the link below and add a history note -->
@@ -780,8 +813,12 @@ references refresh.
 
 ### Comment preview on hover
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags.md) named `comment_tooltips`. Disabled by default.
-> - Feature flag removed in GitLab 17.6
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags.md) named `comment_tooltips`. Disabled by default.
+- Feature flag removed in GitLab 17.6
+
+{{< /history >}}
 
 Hovering over a link to a comment shows the author and first line of the comment.
 
@@ -927,8 +964,12 @@ entry and paste the spreadsheet:
 
 ### JSON tables
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
-> - Ability to use Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375177) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
+- Ability to use Markdown [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375177) in GitLab 17.9.
+
+{{< /history >}}
 
 To render tables with JSON code blocks, use the following syntax:
 
@@ -1163,8 +1204,12 @@ Here's an example video:
 
 ### Change image or video dimensions
 
-> - Support for images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
-> - Support for videos [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17139) in GitLab 15.9.
+{{< history >}}
+
+- Support for images [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
+- Support for videos [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17139) in GitLab 15.9.
+
+{{< /history >}}
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#change-the-image-or-video-dimensions).
 
@@ -1384,7 +1429,11 @@ In wikis, you can also add and edit diagrams created with the [diagrams.net edit
 
 ### Mermaid
 
-> - Support for Entity Relationship diagrams and mind maps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384386) in GitLab 16.0.
+{{< history >}}
+
+- Support for Entity Relationship diagrams and mind maps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384386) in GitLab 16.0.
+
+{{< /history >}}
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#mermaid).
 
@@ -1477,8 +1526,12 @@ For more information, see the [Kroki integration](../administration/integration/
 
 ## Math equations
 
-> - LaTeX-compatible fencing [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21757) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
-> - LaTeX-compatible fencing [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371180) in GitLab 15.8. Feature flag `markdown_dollar_math` removed.
+{{< history >}}
+
+- LaTeX-compatible fencing [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21757) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
+- LaTeX-compatible fencing [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371180) in GitLab 15.8. Feature flag `markdown_dollar_math` removed.
+
+{{< /history >}}
 
 [View this topic rendered in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#math).
 
@@ -2159,7 +2212,11 @@ This example links to `<wiki_root>/documentation.md`:
 
 ### diagrams.net editor
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
+
+{{< /history >}}
 
 In wikis, you can use the [diagrams.net](https://app.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
@@ -2174,7 +2231,7 @@ To create a diagram in the plain text editor:
 1. On the wiki page you want to edit, select **Edit**.
 1. In the text box, make sure you're using the plain text editor
    (the button on the bottom left says **Switch to rich text editing**).
-1. In the editor's toolbar, select **Insert or edit diagram** (**{diagram}**).
+1. In the editor's toolbar, select **Insert or edit diagram** ({{< icon name="diagram" >}}).
 1. Create the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
 
@@ -2186,7 +2243,7 @@ To edit a diagram in the plain text editor:
 1. In the text box, make sure you're using the plain text editor
    (the button on the bottom left says **Switch to rich text editing**).
 1. Position your cursor in the Markdown image reference that contains the diagram.
-1. Select **Insert or edit diagram** (**{diagram}**).
+1. Select **Insert or edit diagram** ({{< icon name="diagram" >}}).
 1. Edit the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
 
@@ -2200,7 +2257,7 @@ To create a diagram in the rich text editor:
 1. On the wiki page you want to edit, select **Edit**.
 1. In the text box, make sure you're using the rich text editor
    (the button on the bottom left says **Switch to plain text editing**).
-1. In the editor's toolbar, select **More options** (**{plus}**).
+1. In the editor's toolbar, select **More options** ({{< icon name="plus" >}}).
 1. In the dropdown list, select **Create or edit diagram**.
 1. Create the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
@@ -2213,7 +2270,7 @@ To edit a diagram in the rich text editor:
 1. In the text box, make sure you're using the rich text editor
    (the button on the bottom left says **Switch to plain text editing**).
 1. Select the diagram that you want to edit.
-1. In the floating toolbar, select **Edit diagram** (**{diagram}**).
+1. In the floating toolbar, select **Edit diagram** ({{< icon name="diagram" >}}).
 1. Edit the diagram in the [app.diagrams.net](https://app.diagrams.net/) editor.
 1. Select **Save & exit**.
 

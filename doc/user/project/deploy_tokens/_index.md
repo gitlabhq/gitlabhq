@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deploy tokens
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can use a deploy token to enable authentication of deployment tasks, independent of a user
 account. In most cases you use a deploy token from an external host, like a build server or CI/CD
@@ -41,9 +44,12 @@ You can create deploy tokens at either the project or group level:
 By default, a deploy token does not expire. You can optionally set an expiry date when you create
 it. Expiry occurs at midnight UTC on that date.
 
-WARNING:
+{{< alert type="warning" >}}
+
 You cannot use new or existing deploy tokens for Git operations and package registry operations if
 [external authorization](../../../administration/settings/external_authorization.md) is enabled.
+
+{{< /alert >}}
 
 ## Scope
 
@@ -59,8 +65,12 @@ A deploy token's scope determines the actions it can perform.
 
 ## GitLab deploy token
 
-> - Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
-> - [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
+{{< history >}}
+
+- Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
+- [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
+
+{{< /history >}}
 
 A GitLab deploy token is a special type of deploy token. If you create a deploy token named
 `gitlab-deploy-token`, the deploy token is automatically exposed to project CI/CD jobs as variables:
@@ -74,11 +84,14 @@ For example, to use a GitLab token to sign in to your GitLab container registry:
 echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` deploy token does not
 work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
 `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings > CI/CD > Variables** to the
 name and token of the group deploy token.
+
+{{< /alert >}}
 
 When `gitlab-deploy-token` is defined in a group, the `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD`
 CI/CD variables are available only to immediate child projects of the group.

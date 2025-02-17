@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Scheduled pipelines
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use scheduled pipelines to run GitLab CI/CD [pipelines](_index.md) at regular intervals.
 
@@ -47,7 +50,7 @@ The owner of a pipeline schedule can edit it:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline schedules**.
-1. Next to the schedule, select **Edit** (**{pencil}**) and fill in the form.
+1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}) and fill in the form.
 
 The user must have the Developer role or above for the project. If the user is
 not the owner of the schedule, they must first [take ownership](#take-ownership)
@@ -61,7 +64,7 @@ the next scheduled time:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline schedules**.
 1. On the right of the list, for
-   the pipeline you want to run, select **Run** (**{play}**).
+   the pipeline you want to run, select **Run** ({{< icon name="play" >}}).
 
 You can manually run scheduled pipelines once per minute.
 

@@ -21,10 +21,13 @@ We have a [Lookbook](https://github.com/allmarkedup/lookbook) in `http://gdk.tes
 Some of the components of our [Pajamas](https://design.gitlab.com) design system are
 available as a ViewComponent in `app/components/pajamas`.
 
-NOTE:
+{{< alert type="note" >}}
+
 We are still in the process of creating these components, so not every Pajamas component is available as ViewComponent.
 Reach out to the [Design Systems team](https://handbook.gitlab.com/handbook/engineering/development/dev/foundations/design-system/)
 if the component you are looking for is not yet available.
+
+{{< /alert >}}
 
 ### Available components
 
@@ -177,10 +180,13 @@ For the full list of options, see its
 
 The `Pajamas::CheckboxComponent` follows the [Pajamas Checkbox](https://design.gitlab.com/components/checkbox/) specification.
 
-NOTE:
+{{< alert type="note" >}}
+
 `Pajamas::CheckboxComponent` is used internally by the [GitLab UI form builder](haml.md#use-the-gitlab-ui-form-builder) and requires an instance of [ActionView::Helpers::FormBuilder](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html) to be passed as the `form` argument.
 It is preferred to use the [`gitlab_ui_checkbox_component`](haml.md#gitlab_ui_checkbox_component) method to render this ViewComponent.
 To use a checkbox without an instance of [ActionView::Helpers::FormBuilder](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html) use [CheckboxTagComponent](#checkbox-tag).
+
+{{< /alert >}}
 
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/checkbox_component.rb).
@@ -197,9 +203,12 @@ The `Pajamas::ToggleComponent` follows the [Pajamas Toggle](https://design.gitla
   Leverage this block to render a rich help text. To render a plain text help text, prefer the `help` parameter.
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 **The toggle ViewComponent is special as it depends on the Vue.js component.**
 To actually initialize this component, make sure to call the `initToggle` helper from `~/toggles`.
+
+{{< /alert >}}
 
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/pajamas/toggle_component.rb).

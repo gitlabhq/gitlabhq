@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Packages API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
+
+{{< /history >}}
 
 The API documentation of [GitLab Packages](../administration/packages/_index.md).
 
@@ -337,7 +344,11 @@ By default, the `GET` request returns 20 results, because the API is [paginated]
 
 ## List package pipelines
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
+
+{{< /history >}}
 
 Get a list of pipelines for a single package. The results are sorted by `id` in descending order.
 
@@ -430,9 +441,12 @@ deleting a package can introduce a [dependency confusion risk](../user/packages/
 
 ## Delete a package file
 
-WARNING:
+{{< alert type="warning" >}}
+
 Deleting a package file may corrupt your package making it unusable or unpullable from your package
 manager client. When deleting a package file, be sure that you understand what you're doing.
+
+{{< /alert >}}
 
 Delete a package file:
 

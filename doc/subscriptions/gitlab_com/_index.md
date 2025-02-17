@@ -1,17 +1,23 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Seat usage, compute minutes, storage limits, renewal info.
 title: GitLab.com subscription
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
 
-NOTE:
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 The GitLab SaaS subscription is being renamed to GitLab.com. During this transition, you might see references to GitLab SaaS and GitLab.com in the UI and documentation.
+
+{{< /alert >}}
 
 GitLab.com is the GitLab multi-tenant software-as-a-service (SaaS) offering.
 You don't need to install anything to use GitLab.com, you only need to
@@ -178,9 +184,12 @@ In this case, the user sees only the features available to that subscription.
 
 ### Free Guest users
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab.com.
@@ -212,8 +221,12 @@ This setting restricts groups from adding new billable users when there are no s
 
 ### Seat usage alerts
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `seat_flag_alerts`.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348481) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `seat_flag_alerts`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/362041) in GitLab 15.4. Feature flag `seat_flag_alerts` removed.
+
+{{< /history >}}
 
 If you have the Owner role for the top-level group, an alert notifies you
 of your total seat usage.
@@ -352,7 +365,7 @@ To change the group linked to a GitLab.com subscription:
    [linked](../customers_portal.md#link-a-gitlabcom-account) GitLab.com account.
 1. Do one of the following:
    - If the subscription is not linked to a group, select **Link subscription to a group**.
-   - If the subscription is already linked to a group, select **Subscription actions** (**{ellipsis_v}**) > **Change linked group**.
+   - If the subscription is already linked to a group, select **Subscription actions** ({{< icon name="ellipsis_v" >}}) > **Change linked group**.
 1. Select the desired group from the **New Namespace** dropdown list. For a group to appear here, you must have the Owner role for that group.
 1. If the [total number of users](#view-seat-usage) in your group exceeds the number of seats in your subscription,
    you are prompted to pay for the additional users. Subscription charges are calculated based on
@@ -409,9 +422,12 @@ Prerequisites:
 
 - You must have the Owner role.
 
-NOTE:
+{{< alert type="note" >}}
+
 Storage subscriptions **renew automatically each year**.
 You can [disable automatic subscription renewal](../self_managed/_index.md#enable-or-disable-automatic-subscription-renewal).
+
+{{< /alert >}}
 
 ### For your personal namespace
 

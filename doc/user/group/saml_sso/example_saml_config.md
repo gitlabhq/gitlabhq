@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Example group SAML and SCIM configurations
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team's collected knowledge.
 
@@ -26,8 +29,11 @@ This section includes relevant screenshots of the following example configuratio
 - [Okta](#okta)
 - [OneLogin](#onelogin)
 
-WARNING:
+{{< alert type="warning" >}}
+
 These screenshots are updated only as needed by GitLab Support. They are **not** official documentation.
+
+{{< /alert >}}
 
 If you are currently having an issue with GitLab, you may want to check your [support options](https://about.gitlab.com/support/).
 
@@ -79,9 +85,12 @@ If available, you can add user-friendly group names instead. When setting up Azu
 
 ### IdP links and certificate
 
-NOTE:
+{{< alert type="note" >}}
+
 Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint required by GitLab for configuring SAML, download the certificate and calculate the SHA1 certificate
 fingerprint.
+
+{{< /alert >}}
 
 ![Google Workspace Links and Certificate](img/GoogleWorkspace-linkscert_v14_10.png)
 

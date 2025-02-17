@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: To-Do List
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Your *To-Do List* is a chronological list of items waiting for your input.
 The items are known as *to-do items*.
@@ -20,7 +23,7 @@ needed, a to-do item appears in your To-Do List.
 
 To access your To-Do List:
 
-On the left sidebar, at the top, select **To-Do List** (**{task-done}**).
+On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
 
 ### Search the To-Do List
 
@@ -32,14 +35,21 @@ Also, you can sort them by [**Label priority**](project/labels.md#set-label-prio
 
 ## Actions that create to-do items
 
-> - Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
-> - Member access request notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) in GitLab 15.8.
-> - Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
-> - Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
+{{< history >}}
 
-FLAG:
+- Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
+- Member access request notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) in GitLab 15.8.
+- Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
+- Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 Many to-do items are created automatically.
 Some of the actions that add a to-do item to your To-Do List:
@@ -69,7 +79,11 @@ selected, you get a to-do item when you are eligible to approve a merge request.
 
 ## Create a to-do item
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
+
+{{< /history >}}
 
 You can manually add an item to your To-Do List.
 
@@ -83,7 +97,7 @@ You can manually add an item to your To-Do List.
    - [Objective or key result](okrs.md)
    - [Task](tasks.md)
 
-1. In the upper-right corner, select **Add a to-do item** (**{todo-add}**).
+1. In the upper-right corner, select **Add a to-do item** ({{< icon name="todo-add" >}}).
 
 ### Create a to-do item by mentioning someone
 
@@ -109,10 +123,10 @@ Hi, please message @frank :incoming_envelope:
 
 If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
 
-1. On the left sidebar, at the top, select **To-Do List** (**{task-done}**).
+1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
 1. At the top, select **Done**.
 1. [Find the to-do item](#search-the-to-do-list) you want to re-add.
-1. Next to this to-do item, select **Re-add this to-do item** **{redo}**.
+1. Next to this to-do item, select **Re-add this to-do item** {{< icon name="redo" >}}.
 
 The to-do item is now visible in the **To Do** tab of the To-Do List.
 
@@ -150,8 +164,8 @@ You can manually mark a to-do item as done.
 
 There are two ways to do this:
 
-- In the To-Do List, to the right of the to-do item, select **Mark as done** (**{check}**).
-- In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** (**{todo-done}**).
+- In the To-Do List, to the right of the to-do item, select **Mark as done** ({{< icon name="check" >}}).
+- In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** ({{< icon name="todo-done" >}}).
 
 ### Mark all to-do items as done
 
@@ -165,7 +179,7 @@ You can snooze to-do items to temporarily hide them from your main To-Do List. T
 
 To snooze a to-do item:
 
-1. In your To-Do List, next to the to-do item you want to snooze, select Snooze (**{clock}**).
+1. In your To-Do List, next to the to-do item you want to snooze, select Snooze ({{< icon name="clock" >}}).
 1. If you wish to snooze the to-do item until a specific time and date, select the
    `Until a specific time and date` option. Otherwise, choose one of the preset snooze durations:
    - For one hour

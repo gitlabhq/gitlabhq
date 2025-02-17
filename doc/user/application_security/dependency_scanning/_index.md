@@ -42,15 +42,21 @@ table.no-vertical-table-lines tr {
 }
 </style>
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The Dependency Scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and reaches
 end of support in GitLab 18.0. It is replaced with [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md)
 and the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning).
 For more information, see [issue 501038](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+
+{{< /alert >}}
 
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.
@@ -74,8 +80,11 @@ we encourage you to use all of our security scanners. For a comparison of these 
 
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
 
-WARNING:
+{{< alert type="warning" >}}
+
 Dependency Scanning does not support runtime installation of compilers and interpreters.
+
+{{< /alert >}}
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o)
@@ -643,9 +652,12 @@ A maximum of two directory levels from the repository's root is searched. For ex
 
 ### How multiple files are processed
 
-NOTE:
+{{< alert type="note" >}}
+
 If you've run into problems while scanning multiple files, contribute a comment to
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337056).
+
+{{< /alert >}}
 
 #### Python
 
@@ -735,10 +747,13 @@ To enable the analyzer, either:
 This method automatically prepares a merge request that includes the Dependency Scanning template
 in the `.gitlab-ci.yml` file. You then merge the merge request to enable Dependency Scanning.
 
-NOTE:
+{{< alert type="note" >}}
+
 This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
 If you have a complex GitLab configuration file it might not be parsed successfully, and an error
 might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
+
+{{< /alert >}}
 
 To enable Dependency Scanning:
 
@@ -784,8 +799,12 @@ Pipelines now include a Dependency Scanning job.
 
 #### Use CI/CD components
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/development_stages_support.md).
-> - The dependency scanning CI/CD component only supports Android projects.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/development_stages_support.md).
+- The dependency scanning CI/CD component only supports Android projects.
+
+{{< /history >}}
 
 Use [CI/CD components](../../../ci/components/_index.md) to perform Dependency Scanning of your
 application. For instructions, see the respective component's README file.
@@ -802,10 +821,13 @@ See [Use security scanning tools with merge request pipelines](../detect/roll_ou
 
 To customize Dependency Scanning, use [CI/CD variables](#available-cicd-variables).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Test all customization of GitLab analyzers in a merge request before merging these changes to the
 default branch. Failure to do so can give unexpected results, including a large number of false
 positives.
+
+{{< /alert >}}
 
 ### Overriding dependency scanning jobs
 
@@ -894,8 +916,11 @@ variables:
   HTTPS_PROXY: "https://squid-proxy:3128"
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
+
+{{< /alert >}}
 
 Alternatively we may use it in specific jobs, like Dependency Scanning:
 
@@ -980,7 +1005,11 @@ To authenticate with a private Maven repository:
 
 ### FIPS-enabled images
 
-> - Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
+{{< history >}}
+
+- Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
+
+{{< /history >}}
 
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the Gemnasium images. When FIPS mode is enabled in the GitLab instance, Gemnasium
@@ -1097,9 +1126,12 @@ You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security
 
 ## Offline environment
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 For instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for dependency scanning

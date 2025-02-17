@@ -1,8 +1,8 @@
 ---
 stage: Create
 group: Source Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Common commands and workflows.
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 title: Stage, commit, and push changes
 ---
 
@@ -75,9 +75,12 @@ you must [force an update](git_rebase.md#force-push-to-a-remote-branch).
 
 ## Push options
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When you push changes to a branch, you can use client-side
 [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt).
@@ -105,9 +108,12 @@ For server-side controls and enforcement of best practices, see
 
 You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 
-NOTE:
+{{< alert type="note" >}}
+
 Push options are not available for merge request pipelines. For more information,
 see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
+
+{{< /alert >}}
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|

@@ -5,16 +5,26 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab Duo with Amazon Q
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
-**Status:** Preview/Beta
+{{< details >}}
 
-> - Introduced as [beta](../../policy/development_stages_support.md#beta) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
-> - Feature flag `amazon_q_integration` removed in GitLab 17.8.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+- Status: Preview/Beta
 
-NOTE:
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced as [beta](../../policy/development_stages_support.md#beta) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
+- Feature flag `amazon_q_integration` removed in GitLab 17.8.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
 If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
+
+{{< /alert >}}
 
 At Re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
 With this integration, you can automate tasks and increase productivity.

@@ -1,14 +1,17 @@
 ---
 stage: GitLab Dedicated
 group: Environment Automation
-description: Maintenance procedures, including regular upgrades, zero-downtime deployments, and emergency maintenance protocols.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Maintenance procedures, including regular upgrades, zero-downtime deployments, and emergency maintenance protocols.
 title: Maintenance
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
 
 GitLab Dedicated instances receive regular maintenance to ensure security, reliability, and optimal performance.
 
@@ -56,8 +59,11 @@ The effects of an upgrade are usually unnoticeable. However, in rare cases, a ne
 
 If this unlikely sequence occurs, refreshing the page resolves any visual inconsistencies.
 
-NOTE:
+{{< alert type="note" >}}
+
 Implementing a caching proxy in your network further reduces this risk.
+
+{{< /alert >}}
 
 ## Emergency maintenance
 

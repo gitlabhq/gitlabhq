@@ -2,7 +2,7 @@
 stage: AI-Powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Documentation for the REST API for Duo Chat."
+description: Documentation for the REST API for Duo Chat.
 title: GitLab Duo Chat Completions API
 ---
 
@@ -10,16 +10,23 @@ The GitLab Duo Chat Completions API generates Chat responses. This API is for in
 
 ## Generate Chat responses
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133015) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `access_rest_chat`. Disabled by default. This feature is internal-only.
-> - [Added additional_context parameter](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162650) in GitLab 17.4 [with a flag](../administration/feature_flags.md) named `duo_additional_context`. Disabled by default. This feature is internal-only.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133015) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `access_rest_chat`. Disabled by default. This feature is internal-only.
+- [Added additional_context parameter](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162650) in GitLab 17.4 [with a flag](../administration/feature_flags.md) named `duo_additional_context`. Disabled by default. This feature is internal-only.
+
+{{< /history >}}
 
 ```plaintext
 POST /chat/completions
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 Requests to this endpoint are proxied to the
 [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
+
+{{< /alert >}}
 
 Supported attributes:
 

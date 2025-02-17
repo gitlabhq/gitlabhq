@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Modify global user settings
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can modify settings for every user in your GitLab instance.
 
@@ -28,9 +31,9 @@ To prevent new users from creating top-level groups:
   - The [Application settings API](../api/settings.md#update-application-settings).
 - In GitLab 15.4 and earlier, modify a configuration file:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -40,7 +43,9 @@ To prevent new users from creating top-level groups:
 
 1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yml` and uncomment the following line:
 
@@ -50,7 +55,9 @@ To prevent new users from creating top-level groups:
 
 1. [Restart GitLab](restart_gitlab.md#self-compiled-installations).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### For existing users
 
@@ -63,9 +70,9 @@ To prevent existing users from creating top-level groups, use either:
 
 By default, users can change their usernames. To prevent users from changing their usernames:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Linux package (Omnibus)
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
 
@@ -75,7 +82,9 @@ By default, users can change their usernames. To prevent users from changing the
 
 1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yml` and uncomment the following line:
 
@@ -85,7 +94,9 @@ By default, users can change their usernames. To prevent users from changing the
 
 1. [Restart GitLab](restart_gitlab.md#self-compiled-installations).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Prevent Guest users from promoting to a higher role
 

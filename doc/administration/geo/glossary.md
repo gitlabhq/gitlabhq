@@ -5,13 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Geo glossary
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-NOTE:
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
 We are updating the Geo documentation, user interface and commands to reflect these changes. Not all pages comply with
 these definitions yet.
+
+{{< /alert >}}
 
  These are the defined terms to describe all aspects of Geo. Using a set of clearly
  defined terms helps us to communicate efficiently and avoids confusion. The language

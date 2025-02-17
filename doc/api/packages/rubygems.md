@@ -5,24 +5,33 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Ruby gems API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This is the API documentation for [Ruby gems](../../user/packages/rubygems_registry/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the [Ruby gems and Bundler package manager clients](https://maven.apache.org/)
 and is generally not meant for manual consumption. This API is under development and is not ready
 for production use due to limited functionality.
 
+{{< /alert >}}
+
 For instructions on how to upload and install gems from the GitLab
 package registry, see the [Ruby gems registry documentation](../../user/packages/rubygems_registry/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See the [Ruby gems registry documentation](../../user/packages/rubygems_registry/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
+
+{{< /alert >}}
 
 ## Enable the Ruby gems API
 

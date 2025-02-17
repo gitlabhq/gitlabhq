@@ -1,6 +1,6 @@
 ---
-redirect_to: 'running_tests/running_tests_that_require_special_setup.md'
-remove_date: '2025-01-18'
+redirect_to: running_tests/running_tests_that_require_special_setup.md
+remove_date: "2025-01-18"
 ---
 
 <!-- markdownlint-disable -->

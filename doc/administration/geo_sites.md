@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Geo sites Admin area
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can configure various settings for GitLab Geo sites. For more information, see
 [Geo documentation](geo/_index.md).
@@ -82,11 +85,14 @@ The internal URL defaults to external URL. To change it:
 When enabled, the **Admin** area for Geo shows replication details for each site directly
 from the primary site's UI, and through the Geo secondary proxy, if enabled.
 
-WARNING:
+{{< alert type="warning" >}}
+
 We recommend using an HTTPS connection while configuring the Geo sites. To avoid
 breaking communication between **primary** and **secondary** sites when using
 HTTPS, customize your Internal URL to point to a load balancer with TLS
 terminated at the load balancer.
+
+{{< /alert >}}
 
 <!-- ## Troubleshooting
 

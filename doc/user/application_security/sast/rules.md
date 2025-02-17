@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: SAST rules
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab SAST uses a set of [analyzers](analyzers.md) to scan code for potential vulnerabilities.
 It automatically chooses which analyzers to run based on which programming languages are found in the repository.
@@ -28,8 +31,11 @@ GitLab SAST is designed to be used in its default configuration, but you can [co
 
 ### GitLab Advanced SAST
 
-DETAILS:
-**Tier:** Ultimate
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 GitLab creates, maintains, and supports the rules for [GitLab Advanced SAST](gitlab_advanced_sast.md).
 Its rules are custom-built to leverage the GitLab Advanced SAST scanning engine's cross-file, cross-function analysis capabilities.

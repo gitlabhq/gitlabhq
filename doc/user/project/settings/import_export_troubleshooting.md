@@ -1,13 +1,16 @@
 ---
 stage: Foundations
 group: Import and Integrate
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting file export project migrations
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you have problems with [migrating projects by using file exports](import_export.md), see the possible solutions below.
 
@@ -120,8 +123,11 @@ reduce the repository size for another import attempt:
 
 ### Workaround option 2
 
-NOTE:
+{{< alert type="note" >}}
+
 This workaround does not account for LFS objects.
+
+{{< /alert >}}
 
 Rather than attempting to push all changes at once, this workaround:
 

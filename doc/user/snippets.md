@@ -1,14 +1,17 @@
 ---
 stage: Create
 group: Source Code
-info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
-description: "Use snippets to store and share code, text, and files from your browser. Snippets support version control, commenting, and embedding."
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use snippets to store and share code, text, and files from your browser. Snippets support version control, commenting, and embedding.
 title: Snippets
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 With GitLab snippets, you can store and share bits of code and text with other users.
 You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
@@ -33,11 +36,14 @@ GitLab provides two types of snippets:
 - **Project snippets**: Always related to a specific project.
   Project snippets can be visible publicly, or to only project members.
 
-NOTE:
+{{< alert type="note" >}}
+
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
 [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+
+{{< /alert >}}
 
 ## Create snippets
 
@@ -47,15 +53,15 @@ You can create snippets in multiple ways, depending on whether you want to creat
    - **To create a personal snippet**, do one of the following:
      - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select
        **New snippet**.
-     - From a project: On the left sidebar, select **Create new** (**{plus}**). Below **In GitLab**, select **New snippet**.
-     - From any other page: On the left sidebar, select **Create new** (**{plus}**) and then **New snippet**.
+     - From a project: On the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
+     - From any other page: On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**.
      - From the `glab` CLI, using the
        [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
        For full instructions, see the command's documentation.
      - If you installed the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/_index.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - **To create a project snippet**: Go to your project's page. Select
-     **Create new** (**{plus}**). Below **In this project**, select **New snippet**.
+     **Create new** ({{< icon name="plus" >}}). Below **In this project**, select **New snippet**.
 1. In **Title**, add a title.
 1. Optional. In **Description**, describe the snippet.
 1. In **Files**, give your file an appropriate name and extension, such as `example.rb` or `index.html`.
@@ -224,9 +230,12 @@ which can encourage user collaboration.
 
 ## Mark snippet as spam
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Administrators on GitLab Self-Managed can mark snippets as spam.
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure GitLab Duo on a self-managed instance
 ---
 
-DETAILS:
-**Offering:** GitLab Self-Managed, GitLab Dedicated
-**Tier:** Premium, Ultimate
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway.
 To use GitLab Duo on a self-managed instance, you can do either of the following:
@@ -16,8 +19,11 @@ To use GitLab Duo on a self-managed instance, you can do either of the following
 - [Use LLMs from the supported list and self-host the AI gateway and LLMs](../../administration/gitlab_duo_self_hosted/_index.md).
   This option provides full control over your data and security.
 
-  NOTE:
-  You must have an Ultimate license with GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
+  {{< alert type="note" >}}
+
+You must have an Ultimate license with GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
+
+  {{< /alert >}}
 
 This page focuses on how to configure a self-managed instance if you're using the default, GitLab-hosted option.
 
@@ -69,11 +75,18 @@ To resolve this problem, try editing your Apache proxy settings:
 
 ## Run a health check for GitLab Duo
 
-DETAILS:
-**Status:** Beta
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3.
-> - [Download health check report added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032) in GitLab 17.5.
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3.
+- [Download health check report added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165032) in GitLab 17.5.
+
+{{< /history >}}
 
 You can determine if your instance meets the requirements to use GitLab Duo.
 When the health check completes, it displays a pass or fail result and the types of issues.

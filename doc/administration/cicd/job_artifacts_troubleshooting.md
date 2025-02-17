@@ -73,15 +73,17 @@ You can check the database to confirm if your instance has artifacts with the `u
 
 1. Start a database console:
 
-   ::Tabs
+   {{< tabs >}}
 
-   :::TabTitle Linux package (Omnibus)
+   {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
    sudo gitlab-psql
    ```
 
-   :::TabTitle Helm chart (Kubernetes)
+   {{< /tab >}}
+
+   {{< tab title="Helm chart (Kubernetes)" >}}
 
    ```shell
    # Find the toolbox pod
@@ -90,20 +92,26 @@ You can check the database to confirm if your instance has artifacts with the `u
    kubectl exec -it <toolbox-pod-name> -- /srv/gitlab/bin/rails dbconsole --include-password --database main
    ```
 
-   :::TabTitle Docker
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
 
    ```shell
    sudo docker exec -it <container_name> /bin/bash
    gitlab-psql
    ```
 
-   :::TabTitle Self-compiled (source)
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
 
    ```shell
    sudo -u git -H psql -d gitlabhq_production
    ```
 
-   ::EndTabs
+      {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Run the following query:
 
@@ -246,10 +254,13 @@ To change the number of job artifacts listed, change the number in `limit(50)`.
 
 ### Delete old builds and artifacts
 
-WARNING:
+{{< alert type="warning" >}}
+
 These commands remove data permanently. Before running them in a production environment,
 you should try them in a test environment first and make a backup of the instance
 that can be restored if needed.
+
+{{< /alert >}}
 
 #### Delete old artifacts for a project
 
@@ -358,10 +369,13 @@ they are not scheduled by a background queue.
 
 ### Delete old pipelines
 
-WARNING:
+{{< alert type="warning" >}}
+
 These commands remove data permanently. Before running them in a production environment,
 consider seeking guidance from a Support Engineer. You should also try them in a test environment first
 and make a backup of the instance that can be restored if needed.
+
+{{< /alert >}}
 
 Deleting a pipeline also removes that pipeline's:
 

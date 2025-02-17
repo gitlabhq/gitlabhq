@@ -2,13 +2,16 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Search for files in your GitLab repository directly from the GitLab user interface."
+description: Search for files in your GitLab repository directly from the GitLab user interface.
 title: File management
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The GitLab UI extends the history and tracking capabilities of Git with user-friendly
 features in your browser. You can:
@@ -76,9 +79,12 @@ To render an OpenAPI file:
 1. Select **Display rendered file**.
 1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
 
-NOTE:
+{{< alert type="note" >}}
+
 When `displayOperationId` is present in the query string and has _any_ value, it
 evaluates to `true`. This behavior matches the default behavior of Swagger.
+
+{{< /alert >}}
 
 ## View Git records for a file
 
@@ -90,7 +96,11 @@ Historical information about files in your repository is available in the GitLab
 
 ## Search for a file
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148025) to a dialog in GitLab 16.11.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148025) to a dialog in GitLab 16.11.
+
+{{< /history >}}
 
 Use the file finder to search directly from the GitLab UI for a file in your repository.
 The file finder uses fuzzy search and highlights results as you type.

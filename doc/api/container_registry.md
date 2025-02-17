@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Container registry API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Use these API endpoints to work with the [GitLab container registry](../user/packages/container_registry/_index.md).
 
@@ -116,7 +119,11 @@ Example response:
 
 ### Within a group
 
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336912) the `tags` and `tag_count` attributes in GitLab 15.0.
+{{< history >}}
+
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336912) the `tags` and `tag_count` attributes in GitLab 15.0.
+
+{{< /history >}}
 
 Get a list of registry repositories in a group.
 
@@ -226,12 +233,19 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### Within a project
 
-> - Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432470) in GitLab 16.10 for GitLab.com only.
+{{< history >}}
+
+- Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432470) in GitLab 16.10 for GitLab.com only.
+
+{{< /history >}}
 
 Get a list of tags for given registry repository.
 
-NOTE:
+{{< alert type="note" >}}
+
 Offset pagination is deprecated and keyset pagination is now the preferred pagination method.
+
+{{< /alert >}}
 
 ```plaintext
 GET /projects/:id/registry/repositories/:repository_id/tags
@@ -360,12 +374,15 @@ You can run this at most once an hour for a given container repository. This
 action doesn't delete blobs. To delete them and recycle disk space,
 [run the garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
-WARNING:
+{{< alert type="warning" >}}
+
 The number of tags deleted by this API is limited on GitLab.com
 because of the scale of the container registry there.
 If your container registry has a large number of tags to delete,
 only some of them are deleted, and you might need to call this API multiple times.
 To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
+
+{{< /alert >}}
 
 Examples:
 
@@ -416,8 +433,11 @@ the container registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
 [authentication token](https://distribution.github.io/distribution/spec/auth/token/).
 
-NOTE:
+{{< alert type="note" >}}
+
 These are different from project or personal access tokens in the GitLab application.
+
+{{< /alert >}}
 
 ### Obtain token from GitLab
 
@@ -437,7 +457,11 @@ $ curl  --request GET --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
 
 ### Delete image tags by reference
 
-> - Endpoint `v2/<name>/manifests/<tag>` [introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1091) and endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1094) in GitLab 16.4.
+{{< history >}}
+
+- Endpoint `v2/<name>/manifests/<tag>` [introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1091) and endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1094) in GitLab 16.4.
+
+{{< /history >}}
 
 ```plaintext
 DELETE http(s)://${CI_REGISTRY}/v2/${CI_REGISTRY_IMAGE}/tags/reference/${CI_COMMIT_SHORT_SHA}

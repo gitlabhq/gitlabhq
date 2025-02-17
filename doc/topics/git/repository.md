@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "To remove unwanted large files from a Git repository and reduce its storage size, use the filter-repo command."
+description: To remove unwanted large files from a Git repository and reduce its storage size, use the filter-repo command.
 title: Reduce repository size
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 The size of a Git repository can significantly impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
@@ -36,8 +39,11 @@ Prerequisites:
 - You must install [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md).
 - Optional. Install [`git-sizer`](https://github.com/github/git-sizer#getting-started).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Purging files is a destructive operation. Before proceeding, ensure you have a backup of the repository.
+
+{{< /alert >}}
 
 To purge files from a GitLab repository:
 
@@ -125,9 +131,12 @@ a copy of your repository, and download it.
    For more information about references, see
    [Git references used by Gitaly](../../development/gitaly.md#git-references-used-by-gitaly).
 
-   NOTE:
-   This step fails for [protected branches](../../user/project/repository/branches/protected.md) and
+   {{< alert type="note" >}}
+
+This step fails for [protected branches](../../user/project/repository/branches/protected.md) and
    [protected tags](../../user/project/protected_tags.md). To proceed, temporarily remove protections.
+
+   {{< /alert >}}
 
 1. Wait at least 30 minutes before the next step.
 1. Run the [clean up repository](../../user/project/repository/repository_size.md#clean-up-repository) process.

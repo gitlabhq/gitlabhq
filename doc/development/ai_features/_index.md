@@ -169,10 +169,13 @@ related to [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/clou
 This is the configuration that all self-managed customers use who do not self-host the AI gateway
 but rely on our cloud-hosted AI gateway instances instead.
 
-NOTE:
+{{< alert type="note" >}}
+
 This setup is challenging. There is [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463341)
 for discussing how to make it easier to test the customersDot integration locally.
 Until that is addressed, this setup process is time-consuming.
+
+{{< /alert >}}
 
 If you need to get customersDot working for your local GitLab Rails instance for
 any reason, reach out to `#s_fulfillment_engineering` in Slack. For questions around the integration of CDot with other systems to deliver AI use cases, reach out to `#g_cloud_connector`.
@@ -286,8 +289,11 @@ to send the response.
 
 The API requests to AI providers are handled in a background job. We therefore do not keep the request alive and the Frontend needs to match the request to the response from the subscription.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Determining the right response to a request can cause problems when only `userId` and `resourceId` are used. For example, when two AI features use the same `userId` and `resourceId` both subscriptions will receive the response from each other. To prevent this interference, we introduced the `clientSubscriptionId`.
+
+{{< /alert >}}
 
 To match a response on the `aiCompletionResponse` subscription, you can provide a `clientSubscriptionId` to the `aiAction` mutation.
 

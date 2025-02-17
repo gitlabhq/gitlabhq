@@ -1,6 +1,6 @@
 ---
-redirect_to: '../elasticsearch/troubleshooting/_index.md'
-remove_date: '2025-03-09'
+redirect_to: ../elasticsearch/troubleshooting/_index.md
+remove_date: "2025-03-09"
 ---
 
 <!-- markdownlint-disable -->

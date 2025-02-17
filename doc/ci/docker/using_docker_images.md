@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Run your CI/CD jobs in Docker containers
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can run your CI/CD jobs in Docker containers hosted on dedicated CI/CD build servers or your local machine.
 
@@ -98,7 +101,11 @@ The image name must be in one of the following formats:
 
 ## Extended Docker configuration options
 
-> - Introduced in GitLab and GitLab Runner 9.4.
+{{< history >}}
+
+- Introduced in GitLab and GitLab Runner 9.4.
+
+{{< /history >}}
 
 You can use a string or a map for the `image` or `services` entries:
 
@@ -138,7 +145,11 @@ When a CI job runs in a Docker container, the `before_script`, `script`, and `af
 
 ### Override the entrypoint of an image
 
-> - Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
+{{< history >}}
+
+- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
+
+{{< /history >}}
 
 Before explaining the available entrypoint override methods, let's describe
 how the runner starts. It uses a Docker image for the containers used in the
@@ -296,8 +307,11 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
   ```
 
-  NOTE:
-  If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
+  {{< alert type="note" >}}
+
+If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
+
+  {{< /alert >}}
 
   Create the Docker JSON configuration content as follows:
 
@@ -409,7 +423,11 @@ pulling from Docker Hub fails. Docker daemon tries to use the same credentials f
 
 ### Use Credential Helpers
 
-> - Introduced in GitLab Runner 12.0.
+{{< history >}}
+
+- Introduced in GitLab Runner 12.0.
+
+{{< /history >}}
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to sign in to a private container registry.
@@ -443,8 +461,11 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
      }
      ```
 
-     NOTE:
+     {{< alert type="note" >}}
+
      If you use `{"credsStore": "ecr-login"}`, set the region explicitly in the AWS shared configuration file (`~/.aws/config`). The region must be specified when the ECR Credential Helper retrieves the authorization token.
+
+     {{< /alert >}}
 
    - Or, if you're running self-managed runners,
      add the previous JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.

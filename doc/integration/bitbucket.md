@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Integrate your GitLab server with Bitbucket Cloud
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can set up Bitbucket.org as an OAuth 2.0 provider to use your Bitbucket.org
 account credentials to sign in to GitLab. You can also import your projects from
@@ -43,10 +46,13 @@ you to use.
      Leaving this field empty
      results in an `Invalid redirect_uri` message.
 
-     WARNING:
+     {{< alert type="warning" >}}
+
      To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
      vulnerability in which users' GitLab accounts could be compromised, append `/users/auth`
      to the end of the Bitbucket authorization callback URL.
+
+     {{< /alert >}}
 
    - **URL:** The URL to your GitLab installation, such as `https://gitlab.example.com`.
 
@@ -125,8 +131,11 @@ sign-in form. Select the icon to begin the authentication process. Bitbucket ask
 the user to sign in and authorize the GitLab application. If successful, the user
 is returned to GitLab and signed in.
 
-NOTE:
+{{< alert type="note" >}}
+
 For multi-node architectures, the Bitbucket provider configuration must also be included on the Sidekiq nodes to be able to import projects.
+
+{{< /alert >}}
 
 ## Bitbucket project import
 

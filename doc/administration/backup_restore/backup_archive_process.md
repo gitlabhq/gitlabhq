@@ -144,9 +144,12 @@ Because backups are created from live instances, files might be modified during 
 In this case, an [alternate strategy](backup_gitlab.md#backup-strategy-option) can be used to back up files. The `rsync` utility creates a copy of the
 files to back up and passes them to `tar` for archiving.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you are using this strategy, the machine running the backup Rake task must have
 sufficient storage for both the copied files and the compressed archive.
+
+{{< /alert >}}
 
 ## Backup ID
 

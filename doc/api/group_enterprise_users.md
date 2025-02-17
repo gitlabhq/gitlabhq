@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group enterprise users API
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 Use this API to interact with enterprise users accounts. For more information, see [enterprise users](../user/enterprise_user/_index.md).
 
@@ -19,7 +22,11 @@ Prerequisites:
 
 ## List all enterprise users
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438366) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438366) in GitLab 17.7.
+
+{{< /history >}}
 
 Lists all enterprise users for a given top-level group.
 
@@ -112,7 +119,11 @@ Example response:
 
 ## Get details on an enterprise user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176328) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176328) in GitLab 17.9.
+
+{{< /history >}}
 
 Gets details on a specified enterprise user.
 
@@ -194,7 +205,11 @@ Example response:
 
 ## Disable two-factor authentication for an enterprise user
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177943) in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177943) in GitLab 17.9.
+
+{{< /history >}}
 
 Disables two-factor authentication (2FA) for a specified enterprise user.
 

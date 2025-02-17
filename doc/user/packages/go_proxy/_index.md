@@ -5,18 +5,28 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Go proxy for GitLab
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
-**Status:** Experiment
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `go_proxy`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
 
-FLAG:
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `go_proxy`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 See [epic 3043](https://gitlab.com/groups/gitlab-org/-/epics/3043).
+
+{{< /alert >}}
 
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).
@@ -80,10 +90,13 @@ and add the following text. Replace the variables in `< >` with your values.
 
 If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
 
-WARNING:
+{{< alert type="warning" >}}
+
 If you use an environment variable called `NETRC`, Go uses its value
 as a filename and ignores `~/.netrc`. If you intend to use `~/.netrc` in
 the GitLab CI **do not use `NETRC` as an environment variable name**.
+
+{{< /alert >}}
 
 ```plaintext
 machine <url> login <username> password <token>

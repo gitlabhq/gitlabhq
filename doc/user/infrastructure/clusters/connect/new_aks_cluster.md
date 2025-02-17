@@ -33,7 +33,7 @@ Start by [importing the example project by URL](../../../project/import/repo_by_
 
 To import the project:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
 1. Select **Repository by URL**.
 1. For the **Git repository URL**, enter `https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-aks.git`.
@@ -87,7 +87,7 @@ See the [Azure Terraform provider](https://registry.terraform.io/providers/hashi
 After configuring your project, manually trigger the provisioning of your cluster. In GitLab:
 
 1. On the left sidebar, select **Build > Pipelines**.
-1. Next to **Play** (**{play}**), select the dropdown list icon (**{chevron-lg-down}**).
+1. Next to **Play** ({{< icon name="play" >}}), select the dropdown list icon ({{< icon name="chevron-lg-down" >}}).
 1. Select **Deploy** to manually trigger the deployment job.
 
 When the pipeline finishes successfully, you can view the new cluster:
@@ -128,4 +128,4 @@ To remove all resources:
    ```
 
 1. On the left sidebar, select **Build > Pipelines** and select the most recent pipeline.
-1. For the `destroy` job, select **Play** (**{play}**).
+1. For the `destroy` job, select **Play** ({{< icon name="play" >}}).

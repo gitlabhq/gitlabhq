@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Releases
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Create a release to capture a snapshot of your project that combines release notes, installation packages, and other assets for your users. Releases serve as a complete package of your project at a specific point in time, so your users can:
 
@@ -22,8 +25,11 @@ When you [create a release](#create-a-release), GitLab automatically:
 - Archives a snapshot of your code.
 - Generates release evidence (a JSON file for auditing and comparing releases).
 
-WARNING:
+{{< alert type="warning" >}}
+
 Deleting a Git tag associated with a release also deletes the release.
+
+{{< /alert >}}
 
 When you create a release, or after, you can:
 
@@ -91,8 +97,8 @@ GitLab provides an RSS feed of a project's releases, in Atom format. To view the
    1. Select **Deploy > Releases**.
 1. For all projects:
    1. Go to the **Project overview** page.
-   1. On the right sidebar, select **Releases** (**{rocket-launch}**).
-1. In the upper-right corner, select the feed symbol (**{rss}**).
+   1. On the right sidebar, select **Releases** ({{< icon name="rocket-launch" >}}).
+1. In the upper-right corner, select the feed symbol ({{< icon name="rss" >}}).
 
 ## Create a release
 
@@ -277,7 +283,11 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 ## Historical releases
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+
+{{< /history >}}
 
 You can create a release in the past using either the
 [Releases API](../../../api/releases/_index.md#historical-releases) or the UI. When you set
@@ -303,7 +313,11 @@ In the UI:
 
 ## Delete a release
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213862) in GitLab 15.2
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213862) in GitLab 15.2
+
+{{< /history >}}
 
 When you delete a release, its assets are also deleted. However, the associated
 Git tag is not deleted.
@@ -321,7 +335,7 @@ In the UI:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Releases**.
 1. In the upper-right corner of the release you want to delete, select **Edit this release**
-   (**{pencil}**).
+   ({{< icon name="pencil" >}}).
 1. On the **Edit Release** page, select **Delete**.
 1. Select **Delete release**.
 
@@ -353,10 +367,13 @@ Here is an example of milestones with no releases, one release, and two releases
 
 ![Milestones with and without Release associations](img/milestone_list_with_releases_v12_5.png)
 
-NOTE:
+{{< alert type="note" >}}
+
 A subgroup's project releases cannot be associated with a parent group's milestone. To learn
 more, read issue #328054,
 [Releases cannot be associated with a supergroup milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/328054).
+
+{{< /alert >}}
 
 ## Get notified when a release is created
 
@@ -422,7 +439,7 @@ To set a deploy freeze window in the UI, complete these steps:
 1. Select **Add deploy freeze** to open the deploy freeze modal.
 1. Enter the start time, end time, and time zone of the desired deploy freeze period.
 1. Select **Add deploy freeze** in the modal.
-1. After the deploy freeze is saved, you can edit it by selecting the edit button (**{pencil}**) and remove it by selecting the delete button (**{remove}**).
+1. After the deploy freeze is saved, you can edit it by selecting the edit button ({{< icon name="pencil" >}}) and remove it by selecting the delete button ({{< icon name="remove" >}}).
    ![Deploy freeze modal for setting a deploy freeze period](img/deploy_freeze_v14_3.png)
 
 If a project contains multiple freeze periods, all periods apply. If they overlap, the freeze covers the
@@ -444,7 +461,11 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 ### Publish releases without giving access to source code
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216485) in GitLab 15.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216485) in GitLab 15.6.
+
+{{< /history >}}
 
 You can make releases accessible to non-project members while keeping repository-related information, such as [source code](release_fields.md#source-code) and [release evidence](release_evidence.md), available only to project members. These settings are ideal for
 projects that use releases to give access to new versions of software, but do not want the source code to be publicly available.
@@ -469,11 +490,18 @@ and set **Maintainer** in the **Allowed to create** column.
 
 ## Release Metrics
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
+
+{{< /history >}}
 
 Group-level release metrics are available by navigating to **Group > Analytics > CI/CD**.
 These metrics include:

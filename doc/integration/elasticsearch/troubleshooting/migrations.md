@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting Elasticsearch migrations
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with Elasticsearch migrations, you might encounter the following issues.
 
@@ -40,8 +43,11 @@ with the IP address of your Elasticsearch host.
 
 For a single-node Elasticsearch cluster, the functional cluster health status is yellow (never green). The reason is that the primary shard is allocated, but replicas cannot be as no other node to which Elasticsearch can assign a replica exists. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Setting the number of replicas to `0` is discouraged (this is not allowed in the GitLab Elasticsearch Integration menu). If you are planning to add more Elasticsearch nodes (for a total of more than 1 Elasticsearch) the number of replicas needs to be set to an integer value larger than `0`. Failure to do so results in lack of redundancy (losing one node corrupts the index).
+
+{{< /alert >}}
 
 If you want to have a green status for your single-node Elasticsearch cluster, understand the risks and run the following query to set the number of replicas to `0`. The cluster no longer tries to create any shard replicas.
 

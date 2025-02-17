@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: CI/CD Admin area settings
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 The [**Admin** area](_index.md) has the instance settings for CI/CD-related features,
 including runners, job artifacts, and the package registry.
@@ -68,14 +71,18 @@ To enable a project runner for more than one project:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
-1. In the upper-right corner, select **Edit** (**{pencil}**).
+1. In the upper-right corner, select **Edit** ({{< icon name="pencil" >}}).
 1. Under **Restrict projects for this runner**, search for a project.
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.
 
 ### Disable runner version management
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
+
+{{< /history >}}
 
 By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
 
@@ -89,7 +96,11 @@ To disable your instance fetching this data:
 
 ### Restrict runner registration by all users in an instance
 
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
+{{< history >}}
+
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
+
+{{< /history >}}
 
 GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
 This setting does not affect the ability to create a runner from the UI or through an authenticated API call.
@@ -107,10 +118,13 @@ To restrict all users in an instance from registering runners:
    **Members of the group can register runners** checkboxes to remove runner registration from the UI.
 1. Select **Save changes**.
 
-NOTE:
+{{< alert type="note" >}}
+
 After you disable runner registration by members of a project, the registration
 token automatically rotates. The token is no longer valid and you must
 use the new registration token for the project.
+
+{{< /alert >}}
 
 ### Restrict runner registration by all members in a group
 
@@ -130,12 +144,19 @@ To restrict runner registration by members in a specific group:
 
 ### Allow runner registrations tokens
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11
+{{< history >}}
 
-WARNING:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 The ability to pass a runner registration token, and support for certain configuration arguments
 was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead.
 For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+
+{{< /alert >}}
 
 In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
 Users must use runner authentication tokens instead.
@@ -197,11 +218,14 @@ This setting is set per job and can be overridden in
 [`.gitlab-ci.yml`](../../ci/yaml/_index.md#artifactsexpire_in).
 To disable the expiration, set it to `0`. The default unit is in seconds.
 
-NOTE:
+{{< alert type="note" >}}
+
 Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
 artifacts, as described in the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
+
+{{< /alert >}}
 
 ### Keep the latest artifacts for all jobs in the latest successful pipelines
 
@@ -226,8 +250,11 @@ To disable the setting:
 When you disable the feature, the latest artifacts do not immediately expire.
 A new pipeline must run before the latest artifacts can expire and be deleted.
 
-NOTE:
+{{< alert type="note" >}}
+
 All application settings have a [customizable cache expiry interval](../application_settings_cache.md) which can delay the settings affect.
+
+{{< /alert >}}
 
 ### Disable the external redirect page for job artifacts
 
@@ -247,7 +274,7 @@ so you can view job artifact pages directly:
 ## Archive jobs
 
 You can archive old jobs to prevent them from being re-run individually. Archived jobs
-display a lock icon (**{lock}**) and **This job is archived** at the top of the job log.
+display a lock icon ({{< icon name="lock" >}}) and **This job is archived** at the top of the job log.
 
 To set the duration for which the jobs are considered as old and expired:
 
@@ -274,7 +301,11 @@ To set all new [CI/CD variables](../../ci/variables/_index.md) as
 
 ## Maximum includes
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
+
+{{< /history >}}
 
 The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set for the entire instance.
 The default is `150`.
@@ -286,7 +317,11 @@ The default is `150`.
 
 ## Maximum downstream pipeline trigger rate
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10.
+
+{{< /history >}}
 
 The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
 (for a given project, user, and commit) can be set for the entire instance.
@@ -311,11 +346,15 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 
 ## Set CI/CD limits
 
-> - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
-> - **Maximum number of instance-level CI/CD variables** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456845) in GitLab 17.1.
-> - **Maximum size of a dotenv artifact in bytes** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
-> - **Maximum number of variables in a dotenv artifact** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
-> - **Maximum number of jobs in a single pipeline** setting [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/287669) from GitLab Enterprise Edition to GitLab Community Edition in 17.6.
+{{< history >}}
+
+- **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
+- **Maximum number of instance-level CI/CD variables** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456845) in GitLab 17.1.
+- **Maximum size of a dotenv artifact in bytes** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
+- **Maximum number of variables in a dotenv artifact** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
+- **Maximum number of jobs in a single pipeline** setting [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/287669) from GitLab Enterprise Edition to GitLab Community Edition in 17.6.
+
+{{< /history >}}
 
 You can configure some [CI/CD limits](../instance_limits.md#cicd-limits)
 from the **Admin** area:
@@ -340,7 +379,11 @@ from the **Admin** area:
 
 ## Job token permissions
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/496647) in GitLab 17.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/496647) in GitLab 17.6.
+
+{{< /history >}}
 
 You can configure the [CI/CD job token access setting](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)
 for all projects from the **Admin** area.
@@ -367,7 +410,11 @@ To disable the banner:
 
 ## Disable the migrate from Jenkins banner
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470025) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470025) in GitLab 17.7.
+
+{{< /history >}}
 
 By default, a banner shows in merge requests in projects with the [Jenkins integration enabled](../../integration/jenkins.md) to prompt migration to GitLab CI/CD.
 
@@ -382,19 +429,29 @@ To disable the banner:
 
 ## Required pipeline configuration
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 17.0.
-> - [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) behind the `required_pipelines` feature flag in GitLab 17.4. Disabled by default.
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
 
-WARNING:
+{{< /details >}}
+
+{{< history >}}
+
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 17.0.
+- [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) behind the `required_pipelines` feature flag in GitLab 17.4. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
 and was removed in 17.0. From 17.4, it is available only behind the feature flag `required_pipelines`, disabled by default.
 Use [compliance pipelines](../../user/group/compliance_pipelines.md) instead. This change is a breaking change.
+
+{{< /alert >}}
 
 You can set a [CI/CD template](../../ci/examples/_index.md#cicd-templates)
 as a required pipeline configuration for all projects on a GitLab instance. You can
@@ -403,11 +460,14 @@ use a template from:
 - The default CI/CD templates.
 - A custom template stored in an [instance template repository](instance_template_repository.md).
 
-  NOTE:
-  When you use a configuration defined in an instance template repository,
+  {{< alert type="note" >}}
+
+When you use a configuration defined in an instance template repository,
   nested [`include:`](../../ci/yaml/_index.md#include) keywords
   (including `include:file`, `include:local`, `include:remote`, and `include:template`)
   [do not work](https://gitlab.com/gitlab-org/gitlab/-/issues/35345).
+
+  {{< /alert >}}
 
 The project CI/CD configuration merges into the required pipeline configuration when
 a pipeline runs. The merged configuration is the same as if the required pipeline configuration
@@ -427,9 +487,12 @@ To select a CI/CD template for the required pipeline configuration:
 
 ### Maven Forwarding
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
 
@@ -443,9 +506,12 @@ To disable forwarding Maven requests:
 
 ### npm Forwarding
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
 
@@ -459,9 +525,12 @@ To disable it:
 
 ### PyPI Forwarding
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
 

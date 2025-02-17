@@ -2,13 +2,16 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "Use repository mirroring to push or pull the contents of a Git repository into another repository."
+description: Use repository mirroring to push or pull the contents of a Git repository into another repository.
 title: Repository mirroring
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can _mirror_ a repository to and from external sources. You can select which repository
 serves as the source. Branches, tags, and commits are synced automatically.
@@ -103,14 +106,21 @@ To use this option, select **Only mirror protected branches** when you create a 
 
 ### Mirror specific branches
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - Mirroring branches matching a regex as an option in API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
-> - Option in the project setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102499) in GitLab 15.9.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- Mirroring branches matching a regex as an option in API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
+- Option in the project setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102499) in GitLab 15.9.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
+
+{{< /history >}}
 
 To mirror only branches with names matching an [re2 regular expression](https://github.com/google/re2/wiki/Syntax),
 enter a regular expression into the **Mirror specific branches** field. Branches with names that
@@ -126,8 +136,11 @@ You can also manually trigger an update:
 - According to [the pull mirroring interval limit](../../../../administration/instance_limits.md#pull-mirroring-interval)
   set by the administrator on GitLab Self-Managed instances.
 
-NOTE:
+{{< alert type="note" >}}
+
 [GitLab Silent Mode](../../../../administration/silent_mode/_index.md) disables both push and pull updates.
+
+{{< /alert >}}
 
 ### Force an update
 
@@ -145,7 +158,7 @@ Prerequisites:
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
-1. Select **Update now** (**{retry}**).
+1. Select **Update now** ({{< icon name="retry" >}}).
 
 ## Authentication methods for mirrors
 
@@ -186,7 +199,7 @@ needs this key to establish trust with your GitLab repository. To copy your SSH 
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories**.
-1. Identify the correct repository, and select **Copy SSH public key** (**{copy-to-clipboard}**).
+1. Identify the correct repository, and select **Copy SSH public key** ({{< icon name="copy-to-clipboard" >}}).
 1. Add the public SSH key to the other repository's configuration:
    - If the other repository is hosted on GitLab, add the public SSH key
      as a [deploy key](../../deploy_keys/_index.md).
@@ -198,9 +211,12 @@ If you must change the key at any time, you can remove and re-add the mirror
 to generate a new key. Update the other repository with the new
 key to keep the mirror running.
 
-NOTE:
+{{< alert type="note" >}}
+
 The generated keys are stored in the GitLab database, not in the file system. Therefore,
 SSH public key authentication for mirrors cannot be used in a pre-receive hook.
+
+{{< /alert >}}
 
 ### Verify a host key
 

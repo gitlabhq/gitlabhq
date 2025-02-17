@@ -68,14 +68,20 @@ variant, and 25% would be assigned the _blue_ variant:
 For an even distribution in this example, change the command to set it to 66% instead
 of 50.
 
-NOTE:
+{{< alert type="note" >}}
+
 To immediately stop running an experiment, use the
 `/chatops run feature set pill_color false` command.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 We strongly recommend using the `--actors` flag when using the ChatOps commands,
 as anything else may give odd behaviors due to how the caching of variant assignment is
 handled.
+
+{{< /alert >}}
 
 We can also implement this experiment in a HAML file with HTML wrappings:
 
@@ -134,17 +140,23 @@ results of the experience we've rendered to that context key. These concepts are
 somewhat abstract and hard to understand initially, but this approach enables us to
 communicate about experiments as something that's wider than just user behavior.
 
-NOTE:
+{{< alert type="note" >}}
+
 Using `actor:` uses cookies if the `current_user` is nil. If you don't need
 cookies though - meaning that the exposed functionality would only be visible to
 authenticated users - `{ user: current_user }` would be just as effective.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 The caching of variant assignment is done by using this context, and so consider
 your impact on the cache size when defining your experiment. If you use
 `{ time: Time.current }` you would be inflating the cache size every time the
 experiment is run. Not only that, your experiment would not be "sticky" and events
 wouldn't be resolvable.
+
+{{< /alert >}}
 
 ### Advanced experimentation
 
@@ -192,9 +204,12 @@ experiment(:pill_color, actor: current_user) do |e|
 end
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When passing a block to the `experiment` method, it is implicitly invoked as
 if `run` has been called.
+
+{{< /alert >}}
 
 #### Segmentation rules
 
@@ -226,9 +241,12 @@ defined. The first segmentation rule to produce a truthy result assigns the vari
 In our example, any user named `'Richard'`, regardless of account age, is always
 assigned the _red_ variant. If you want the opposite logic, flip the order.
 
-NOTE:
+{{< alert type="note" >}}
+
 Keep in mind when defining segmentation rules: after a truthy result, the remaining
 segmentation rules are skipped to achieve optimal performance.
+
+{{< /alert >}}
 
 #### Exclusion rules
 
@@ -299,13 +317,16 @@ is run), and we track an event for them, they are assigned a variant and see
 that variant if they ever encountered the experiment later, when an `:assignment`
 event would be tracked at that time for them.
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab tries to be sensitive and respectful of our customers regarding tracking,
 so our experimentation library allows us to implement an experiment without ever tracking identifying
 IDs. It's not always possible, though, based on experiment reporting requirements.
 You may be asked from time to time to track a specific record ID in experiments.
 The approach is largely up to the PM and engineer creating the implementation.
 No recommendations are provided here at this time.
+
+{{< /alert >}}
 
 ## Experiments in the client layer
 
@@ -364,5 +385,8 @@ export default {
 </template>
 ```
 
-NOTE:
+{{< alert type="note" >}}
+
 When there is no experiment data in the `window.gl.experiments` object for the given experiment name, the `control` slot is used, if it exists.
+
+{{< /alert >}}

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Reference architecture: Up to 20 RPS or 1,000 users'
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This reference architecture targets a peak load of 20 requests per second (RPS). Based on real data, this load typically corresponds to up to 1,000 users, which includes both manual and automated interactions.
 
@@ -75,10 +78,13 @@ monitor .[#7FFFD4,norank]--> redis
 
 Before starting, see the [requirements](_index.md#requirements) for reference architectures.
 
-WARNING:
+{{< alert type="warning" >}}
+
 **The node's specifications are based on high percentiles of both usage patterns and repository sizes in good health.**
 **However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads), it might *significantly* impact the performance of the environment.**
 If this applies to you, [further adjustments might be required](_index.md#scaling-an-environment). See the linked documentation and reach out to your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or our [Support team](https://about.gitlab.com/support/) for further guidance.
+
+{{< /alert >}}
 
 ## Testing methodology
 
@@ -107,9 +113,12 @@ or [external object storage service](../object_storage.md). It improves performa
 
 ## Configure advanced search
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
@@ -133,5 +142,8 @@ For environments that serve fewer users or a lower RPS, you can lower the node s
 
 Now you have a fresh GitLab environment with core functionality configured accordingly. You might want to configure additional optional GitLab features depending on your requirements. See [Steps after installing GitLab](../../install/next_steps.md) for more information.
 
-NOTE:
+{{< alert type="note" >}}
+
 Depending on your environment and requirements, additional hardware requirements or adjustments may be required to set up additional features. See the individual pages for more information.
+
+{{< /alert >}}

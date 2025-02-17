@@ -5,11 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Dynamic Application Security Testing (DAST)
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 The DAST proxy-based analyzer was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966)
 in GitLab 16.9 and [removed](https://gitlab.com/groups/gitlab-org/-/epics/11986) in GitLab 17.3.
 This change is a breaking change. For instructions on how to migrate from the DAST proxy-based
@@ -17,6 +21,8 @@ analyzer to DAST version 5, see the
 [proxy-based migration guide](proxy_based_to_browser_based_migration_guide.md). For instructions on
 how to migrate from the DAST version 4 browser-based analyzer to DAST version 5, see the
 [browser-based migration guide](browser_based_4_to_5_migration_guide.md).
+
+{{< /alert >}}
 
 Dynamic Application Security Testing (DAST) runs automated penetration tests to find vulnerabilities
 in your web applications and APIs as they are running. DAST automates a hacker's approach and
@@ -58,12 +64,15 @@ target branches.
 Detected vulnerabilities appear in [merge requests](../detect/security_scan_results.md#merge-request), the [pipeline security tab](../vulnerability_report/pipeline.md),
 and the [vulnerability report](../vulnerability_report/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 A pipeline may consist of multiple jobs, including SAST and DAST scanning. If any job
 fails to finish for any reason, the security dashboard doesn't show DAST scanner output. For
 example, if the DAST job finishes but the SAST job fails, the security dashboard doesn't show DAST
 results. On failure, the analyzer outputs an
 [exit code](../../../development/integrations/secure.md#exit-code).
+
+{{< /alert >}}
 
 ### List URLs scanned
 

@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Customize Auto DevOps
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 You can customize components of Auto DevOps to fit your needs. For example, you can:
 
@@ -96,9 +99,12 @@ For example, to build a Docker image based on based on the
 To pass complex values like spaces and newlines, use Base64 encoding.
 Complex, unencoded values can cause issues with character escaping.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Do not pass secrets as Docker build arguments. Secrets might persist in your image. For more information, see
 [this discussion of best practices with secrets](https://github.com/moby/moby/issues/13490).
+
+{{< /alert >}}
 
 ## Custom container image
 
@@ -301,10 +307,13 @@ You can configure many Auto DevOps jobs to run in an [offline environment](../..
 
 ## PostgreSQL database support
 
-WARNING:
+{{< alert type="warning" >}}
+
 Provisioning a PostgreSQL database by default was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387766)
 in GitLab 15.8 and will no longer be the default from 16.0. To enable database provisioning, set
 the associated [CI/CD variable](cicd_variables.md#database-variables).
+
+{{< /alert >}}
 
 To support applications that require a database,
 [PostgreSQL](https://www.postgresql.org/) is provisioned by default.

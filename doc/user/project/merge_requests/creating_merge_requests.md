@@ -2,21 +2,27 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How to create merge requests in GitLab."
+description: How to create merge requests in GitLab.
 title: Creating merge requests
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 GitLab provides many different ways to create a merge request, including by [using Git commands](../../../topics/git/merge.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 GitLab enforces [branch naming rules](../repository/branches/_index.md#name-your-branch)
 to prevent problems, and provides
 [branch naming patterns](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers)
 to streamline merge request creation.
+
+{{< /alert >}}
 
 ## From the merge request list
 
@@ -39,9 +45,9 @@ The new branch, and later its merge request, are marked as related to this issue
 After merging the merge request, the issue is closed automatically, unless
 [automatic issue closing is disabled](../issues/managing_issues.md#disable-automatic-issue-closing):
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Merge request and branch
+{{< tab title="Merge request and branch" >}}
 
 To create a branch and a merge request at the same time:
 
@@ -55,7 +61,9 @@ To create a branch and a merge request at the same time:
 1. Select a source branch or tag.
 1. Select **Create merge request**.
 
-:::TabTitle Branch only
+{{< /tab >}}
+
+{{< tab title="Branch only" >}}
 
 To create only a branch directly from an issue:
 
@@ -69,7 +77,9 @@ To create only a branch directly from an issue:
 1. Select a source branch or tag.
 1. Select **Create branch**.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 If your Git repository is empty, GitLab:
 
@@ -91,7 +101,11 @@ when the merge request merges.
 
 ## From a task
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477785) in GitLab 17.8.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477785) in GitLab 17.8.
+
+{{< /history >}}
 
 If your team breaks issues into [tasks](../../tasks.md), you can create a branch directly from the task to speed the process up.
 The new branch, and later its merge request, are marked as related to this task.
@@ -102,9 +116,9 @@ Prerequisites:
 
 - You must have at least a Developer role for the project containing the task.
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle Merge request and branch
+{{< tab title="Merge request and branch" >}}
 
 To create a branch and a merge request at the same time:
 
@@ -119,7 +133,9 @@ To create a branch and a merge request at the same time:
 1. Select a source branch or tag.
 1. Select **Create merge request**.
 
-:::TabTitle Branch only
+{{< /tab >}}
+
+{{< tab title="Branch only" >}}
 
 To create only a branch directly from a task:
 
@@ -134,7 +150,9 @@ To create only a branch directly from a task:
 1. Select a source branch or tag.
 1. Select **Create branch**.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 If your Git repository is empty, GitLab:
 
@@ -191,9 +209,12 @@ You can create a merge request from your fork to contribute back to the main pro
 
       ![Selecting branches](../repository/img/forking_workflow_branch_select_v15_9.png)
 
-   NOTE:
-   If your fork's visibility is more restricted than the parent repository, the target branch defaults
+   {{< alert type="note" >}}
+
+If your fork's visibility is more restricted than the parent repository, the target branch defaults
    to your fork's default branch. This prevents potential exposure of private information in your fork.
+
+   {{< /alert >}}
 
 1. Select **Compare branches and continue**.
 1. Select **Create merge request**. The merge request is created in the target repository,

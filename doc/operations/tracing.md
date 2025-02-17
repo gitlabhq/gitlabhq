@@ -1,6 +1,6 @@
 ---
-redirect_to: '../development/tracing.md'
-remove_date: '2025-03-10'
+redirect_to: ../development/tracing.md
+remove_date: "2025-03-10"
 ---
 
 <!-- markdownlint-disable -->

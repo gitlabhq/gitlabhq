@@ -7,14 +7,20 @@ title: 'Tutorial: Create a compliance pipeline (deprecated)'
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
 and is planned for removal in 18.0. Use [pipeline execution policy type](../../user/application_security/policies/pipeline_execution_policies.md) instead.
 This change is a breaking change. For more information, see the [migration guide](../../user/group/compliance_pipelines.md#pipeline-execution-policies-migration).
+
+{{< /alert >}}
 
 You can use [compliance pipelines](../../user/group/compliance_pipelines.md) to ensure specific
 compliance-related jobs are run on pipelines for all projects in a group. Compliance pipelines are applied
@@ -43,7 +49,7 @@ Compliance frameworks are configured in top-level groups. In this tutorial, you 
 
 To create the new group:
 
-1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
+1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. In the **Group name** field, enter `Tutorial group`.
 1. Select **Create group**.
@@ -112,7 +118,7 @@ compliance pipeline configuration in their pipelines.
 To create a new project for running the compliance pipeline configuration:
 
 1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
-1. Select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial project`.
 1. Select **Create project**.

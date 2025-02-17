@@ -5,11 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Harbor registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - **Harbor Registry** [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/439494) from the **Operate** menu section to **Deploy** in GitLab 17.0.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- **Harbor Registry** [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/439494) from the **Operate** menu section to **Deploy** in GitLab 17.0.
+
+{{< /history >}}
 
 You can integrate the [Harbor container registry](../../project/integrations/harbor.md) into GitLab and use Harbor as the container registry for your GitLab project to store images.
 
@@ -26,8 +33,11 @@ At the project level, in the upper-right corner, you can see **CLI Commands** wh
 corresponding commands to sign in, build images, and push images. **CLI Commands** is not shown at
 the group level.
 
-NOTE:
+{{< alert type="note" >}}
+
 Default settings for the Harbor integration at the project level are inherited from the group level.
+
+{{< /alert >}}
 
 ## Use images from the Harbor registry
 

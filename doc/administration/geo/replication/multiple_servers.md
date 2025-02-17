@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Geo for multiple nodes
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This document describes a minimal reference architecture for running Geo
 in a multi-node configuration. If your multi-node setup differs from the one
@@ -29,8 +32,11 @@ network topology of your deployment.
 The only external way to access the two Geo sites is by HTTPS at
 `gitlab.us.example.com` and `gitlab.eu.example.com` in the example above.
 
-NOTE:
+{{< alert type="note" >}}
+
 The **primary** and **secondary** Geo sites must be able to communicate to each other over HTTPS.
+
+{{< /alert >}}
 
 ## Redis and PostgreSQL for multiple nodes
 
@@ -42,8 +48,11 @@ For more information on setting up a multi-node PostgreSQL cluster and Redis clu
 - [Geo multi-node database replication](../setup/database.md#multi-node-database-replication)
 - [Redis multi-node documentation](../../redis/replication_and_failover.md)
 
-NOTE:
+{{< alert type="note" >}}
+
 It is possible to use cloud hosted services for PostgreSQL and Redis, but this is beyond the scope of this document.
+
+{{< /alert >}}
 
 ## Prerequisites: Two independently working GitLab multi-node sites
 
@@ -64,8 +73,11 @@ The following steps enable a GitLab site to serve as the Geo **primary** site.
 
 ### Step 1: Configure the **primary** frontend nodes
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not use [`geo_primary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
+
+{{< /alert >}}
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
@@ -92,13 +104,16 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfi
    sudo gitlab-ctl set-geo-primary-node
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 PostgreSQL and Redis should have already been disabled on the
 application nodes during typical GitLab multi-node setup. Connections
 from the application nodes to services on the backend nodes should
 have also been configured. See multi-node configuration documentation for
 [PostgreSQL](../../postgresql/replication_and_failover.md#configuring-the-application-nodes)
 and [Redis](../../redis/replication_and_failover.md#example-configuration-for-the-gitlab-application).
+
+{{< /alert >}}
 
 ## Configure the other GitLab site to be a Geo **secondary** site
 
@@ -128,9 +143,12 @@ documentation:
 - [Gitaly](../../gitaly/_index.md), which stores data that is
   synchronized from the Geo **primary** site.
 
-NOTE:
+{{< alert type="note" >}}
+
 [NFS](../../nfs.md) can be used in place of Gitaly but is not
 recommended.
+
+{{< /alert >}}
 
 ### Step 2: Configure the Geo tracking database on the Geo **secondary** site
 
@@ -192,8 +210,11 @@ After streaming replication is enabled in the secondary Geo site's read-replica 
 
 ### Step 4: Configure the frontend application nodes on the Geo **secondary** site
 
-NOTE:
+{{< alert type="note" >}}
+
 Do not use [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
+
+{{< /alert >}}
 
 In the minimal [architecture diagram](#architecture-overview) above, there are two
 machines running the GitLab application services. These services are enabled
@@ -268,17 +289,22 @@ then make the following modifications:
    registry['gid'] = 9002
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 If you had set up PostgreSQL cluster using the Linux package and had set
 `postgresql['sql_user_password'] = 'md5 digest of secret'`, keep in
 mind that `gitlab_rails['db_password']` and `geo_secondary['db_password']`
 contains the plaintext passwords. This is used to let the Rails
 nodes connect to the databases.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 Make sure that current node's IP is listed in
 `postgresql['md5_auth_cidr_addresses']` setting of the read-replica database to
 allow Rails on this node to connect to PostgreSQL.
+{{< /alert >}}
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 

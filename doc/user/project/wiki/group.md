@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group wikis
 ---
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you use GitLab groups to manage multiple projects, some of your documentation
 might span multiple groups. You can create group wikis, instead of [project wikis](_index.md),
@@ -58,7 +61,11 @@ All files in the wiki are available in this Git repository.
 
 ## Configure group wiki visibility
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
+
+{{< /history >}}
 
 Wikis are enabled by default in GitLab. Group [administrators](../../permissions.md)
 can enable or disable a group wiki through the group settings.

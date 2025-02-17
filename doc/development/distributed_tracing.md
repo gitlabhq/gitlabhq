@@ -224,9 +224,12 @@ This configuration string uses the Jaeger driver `opentracing://jaeger` with the
 | `sampler_param` | `0.01` | Use a ratio of `0.01` to configure the `probabilistic` sampler to randomly sample _1%_ of traces. |
 | `service_name` | `api` | Override the service name used by the Jaeger backend. This parameter takes precedence over the application-supplied value. |
 
-NOTE:
+{{< alert type="note" >}}
+
 The same `GITLAB_TRACING` value should to be configured in the environment
 variables for all GitLab processes, including Workhorse, Gitaly, Rails, and Sidekiq.
+
+{{< /alert >}}
 
 ### 3. Start the GitLab application
 
@@ -259,6 +262,9 @@ not set.
 
 By default, the Jaeger search UI is available at <http://localhost:16686/search>.
 
-NOTE:
+{{< alert type="note" >}}
+
 Don't forget that you must generate traces by using the application before
 they appear in the Jaeger UI.
+
+{{< /alert >}}

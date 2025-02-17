@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Troubleshooting application security
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When working with application security features, you might encounter the following issues.
 
@@ -26,10 +29,13 @@ From highest to lowest severity, the logging levels are:
 
 ### Debug-level logging
 
-WARNING:
+{{< alert type="warning" >}}
+
 Debug logging can be a serious security risk. The output may contain the content of
 environment variables and other secrets available to the job. The output is uploaded
 to the GitLab server and is visible in job logs.
+
+{{< /alert >}}
 
 To enable debug-level logging, add the following to your `.gitlab-ci.yml` file:
 
@@ -82,10 +88,13 @@ Select **new pipeline** to run a new pipeline.
 
 ## Getting warning messages `… report.json: no matching files`
 
-WARNING:
+{{< alert type="warning" >}}
+
 Debug logging can be a serious security risk. The output may contain the content of
 environment variables and other secrets available to the job. The output is uploaded
 to the GitLab server and visible in job logs.
+
+{{< /alert >}}
 
 This message is often followed by the [error `No files to upload`](../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload),
 and preceded by other errors or warnings that indicate why the JSON report wasn't generated. Check

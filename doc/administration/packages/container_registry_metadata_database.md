@@ -5,12 +5,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Container registry metadata database
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for GitLab Self-Managed.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/development_stages_support.md) for GitLab Self-Managed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+
+{{< /history >}}
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -126,7 +133,8 @@ A few factors affect the duration of the migration:
 - The number of registry instances running.
 - Network latency between the registry, PostgresSQL and your configured Object Storage.
 
-NOTE:
+{{< alert type="note" >}}
+
 The migration only targets tagged images. Untagged and unreferenced manifests, and the layers
 exclusively referenced by them, are left behind and become inaccessible. Untagged images
 were never visible through the GitLab UI or API, but they can become "dangling" and
@@ -134,14 +142,19 @@ left behind in the backend. After migration to the new registry, all images are 
 to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
 and layers that remain for longer than 24 hours.
 
+{{< /alert >}}
+
 Choose the one or three step method according to your registry installation.
 
 #### One-step migration
 
-WARNING:
+{{< alert type="warning" >}}
+
 The registry must be shut down or remain in `read-only` mode during the migration.
 Only choose this method if you do not need to write to the registry during the migration
 and your registry contains a relatively small amount of data.
+
+{{< /alert >}}
 
 1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
 
@@ -231,9 +244,12 @@ Follow this guide to migrate your existing container registry data.
 This procedure is recommended for larger sets of data or if you are
 trying to minimize downtime while completing the migration.
 
-NOTE:
+{{< alert type="note" >}}
+
 Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 At the slower speed, registries with over 100TB of data could take longer than 48 hours.
+
+{{< /alert >}}
 
 ##### Pre-import repositories (step one)
 
@@ -241,10 +257,13 @@ For larger instances, this command can take hours to days to complete, depending
 on the size of your registry. You may continue to use the registry as normal while
 step one is being completed.
 
-WARNING:
+{{< alert type="warning" >}}
+
 It is [not yet possible](https://gitlab.com/gitlab-org/container-registry/-/issues/1162)
 to restart the migration, so it's important to let the migration run to completion.
 If you must halt the operation, you have to restart this step.
+
+{{< /alert >}}
 
 1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
 
@@ -271,11 +290,14 @@ If you must halt the operation, you have to restart this step.
    sudo gitlab-ctl registry-database import --step-one
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 You should try to schedule the following step as soon as possible
 to reduce the amount of downtime required. Ideally, less than one week
 after step one completes. Any new data written to the registry between steps one and two,
 causes step two to take more time.
+
+{{< /alert >}}
 
 ##### Import all repository data (step two)
 
@@ -382,9 +404,12 @@ The registry must be enabled and the configuration section must have the databas
 
 1. The registry must stop if it's running. Type `y` to confirm and wait for the process to finish.
 
-NOTE:
+{{< alert type="note" >}}
+
 The `migrate up` command offers some extra flags that can be used to control how the migrations are applied.
 Run `sudo gitlab-ctl registry-database migrate up --help` for details.
+
+{{< /alert >}}
 
 ### Undo schema migrations
 
@@ -398,8 +423,11 @@ after this.
    sudo gitlab-ctl registry-database migrate down
    ```
 
-NOTE:
+{{< alert type="note" >}}
+
 The `migrate down` command offers some extra flags. Run `sudo gitlab-ctl registry-database migrate down --help` for details.
+
+{{< /alert >}}
 
 ## Online garbage collection monitoring
 

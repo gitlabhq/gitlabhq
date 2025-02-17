@@ -1,14 +1,17 @@
 ---
-description: "Automatic Let's Encrypt SSL certificates for GitLab Pages."
 stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Automatic Let's Encrypt SSL certificates for GitLab Pages.
 title: GitLab Pages Let's Encrypt certificates
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
 
 The GitLab Pages integration with Let's Encrypt (LE) allows you
 to use LE certificates for your Pages website with custom domains
@@ -18,10 +21,13 @@ GitLab does it for you, out-of-the-box.
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and
 open source Certificate Authority.
 
-WARNING:
+{{< alert type="warning" >}}
+
 This feature covers only certificates for **custom domains**, not the wildcard certificate required to run
 [Pages daemon](../../../../administration/pages/_index.md) (Self-managed, Free, Premium, and Ultimate only). Wildcard
 certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
+
+{{< /alert >}}
 
 ## Prerequisites
 
@@ -46,7 +52,7 @@ Once you've met the requirements, enable Let's Encrypt integration:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit** (**{pencil}**).
+1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 1. Turn on the **Automatic certificate management using Let's Encrypt** toggle.
 
    ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
@@ -71,8 +77,8 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit** (**{pencil}**).
-1. In **Verification status**, select **Retry verification** (**{retry}**).
+1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
+1. In **Verification status**, select **Retry verification** ({{< icon name="retry" >}}).
 1. If you're still getting the same error:
    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
    1. Make sure your domain **doesn't have** an `AAAA` DNS record.

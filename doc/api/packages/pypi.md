@@ -5,27 +5,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: PyPI API
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/_index.md).
 
-WARNING:
+{{< alert type="warning" >}}
+
 This API is used by the [PyPI package manager client](https://pypi.org/)
 and is generally not meant for manual consumption.
+
+{{< /alert >}}
 
 For instructions on how to upload and install PyPI packages from the GitLab
 Package Registry, see the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md).
 
-NOTE:
+{{< alert type="note" >}}
+
 These endpoints do not adhere to the standard API authentication methods.
 See the [PyPI package registry documentation](../../user/packages/pypi_repository/_index.md)
 for details on which headers and token types are supported. Undocumented authentication methods might be removed in the future.
 
-NOTE:
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 [Twine 3.4.2](https://twine.readthedocs.io/en/stable/changelog.html?highlight=FIPS#id28) or greater
 is recommended when [FIPS mode](../../development/fips_gitlab.md) is enabled.
+{{< /alert >}}
 
 ## Download a package file from a group
 
@@ -57,7 +68,11 @@ directory.
 
 ## Group-level simple API index
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
+
+{{< /history >}}
 
 Returns a list of packages in the group as an HTML file:
 
@@ -166,7 +181,11 @@ directory.
 
 ## Project-level simple API index
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
+
+{{< /history >}}
 
 Returns a list of packages in the project as an HTML file:
 

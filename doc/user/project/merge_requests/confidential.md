@@ -2,13 +2,16 @@
 stage: Create
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: "How to create a merge request for a confidential issue without leaking information publicly."
+description: How to create a merge request for a confidential issue without leaking information publicly.
 title: Merge requests for confidential issues
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Merge requests in a public repository are also public, even when you create a
 merge request for a [confidential issue](../issues/confidential_issues.md).
@@ -34,9 +37,12 @@ Users with the Developer role for the upstream public repository inherit those u
 permissions in your downstream private fork without action by you. These users can
 immediately push code to branches in your private fork to help fix the confidential issue.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Your private fork might expose confidential information if you create it in a different
 namespace than the upstream repository. The two namespaces might not contain the same users.
+
+{{< /alert >}}
 
 Prerequisites:
 

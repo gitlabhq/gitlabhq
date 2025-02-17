@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: GitLab application limits
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 GitLab, like most large applications, enforces limits in certain features to maintain a
 minimum quality of performance. Allowing some features to be limitless could affect security,
@@ -32,7 +35,7 @@ information that is relevant to them.
 
 To visit the instance configuration page:
 
-1. On the left sidebar, select **Help** (**{question-o}**) > **Help**.
+1. On the left sidebar, select **Help** ({{< icon name="question-o" >}}) > **Help**.
 1. On the Help page, select **Check the current instance configuration**.
 
 The direct URL is `<gitlab_url>/help/instance_configuration`. For GitLab.com,
@@ -143,7 +146,11 @@ Limit the maximum daily member invitations allowed per group hierarchy.
 
 ### Webhook rate limit
 
-> - [Limit changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89591) from per-hook to per-top-level namespace in GitLab 15.1.
+{{< history >}}
+
+- [Limit changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89591) from per-hook to per-top-level namespace in GitLab 15.1.
+
+{{< /history >}}
 
 Limit the number of times a webhook can be called per minute, per top-level namespace.
 This only applies to project and group webhooks.
@@ -166,8 +173,12 @@ Set the limit to `0` to disable it.
 
 ### Search rate limit
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) in GitLab 15.9 to include issue, merge request, and epic searches in the rate limit.
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/_index.md#disable-global-search-scopes) for authenticated requests.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104208) in GitLab 15.9 to include issue, merge request, and epic searches in the rate limit.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118525) in GitLab 16.0 to apply rate limits to [search scopes](../user/search/_index.md#disable-global-search-scopes) for authenticated requests.
+
+{{< /history >}}
 
 This setting limits search requests as follows:
 
@@ -184,7 +195,11 @@ This endpoint has been requested too many times. Try again later.
 
 ### Pipeline creation rate limit
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+
+{{< /history >}}
 
 This setting limits the request rate to the pipeline creation endpoints.
 
@@ -337,7 +352,11 @@ Blocked recursive webhook calls are logged in `auth.log` with the message `"Recu
 
 ## Import placeholder user limits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455903) in GitLab 17.4.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455903) in GitLab 17.4.
+
+{{< /history >}}
 
 The number of [placeholder users](../user/project/import/_index.md#placeholder-users) created during an import can be limited per top-level namespace.
 
@@ -360,7 +379,7 @@ The [minimum wait time between pull refreshes](../user/project/repository/mirror
 defaults to 300 seconds (5 minutes). For example, a pull refresh only runs once in a given 300 second period, regardless of how many times you trigger it.
 
 This setting applies in the context of pull refreshes invoked by using the [projects API](../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project),
-or when forcing an update by selecting **Update now** (**{retry}**) in **Settings > Repository > Mirroring repositories**.
+or when forcing an update by selecting **Update now** ({{< icon name="retry" >}}) in **Settings > Repository > Mirroring repositories**.
 This setting has no effect on the automatic 30 minute interval schedule used by Sidekiq for [pull mirroring](../user/project/repository/mirror/pull.md).
 
 To change this limit for a GitLab Self-Managed instance, run the following in the
@@ -380,7 +399,11 @@ header. Such emails don't create comments on issues or merge requests.
 
 ## Amount of data sent from Sentry through Error Tracking
 
-> - [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
+{{< history >}}
+
+- [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
+
+{{< /history >}}
 
 Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
 and to limit memory consumption.
@@ -563,7 +586,11 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
 
 ### Limit the number of schedule rules defined for security policy project
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335659) in GitLab 15.1.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335659) in GitLab 15.1.
+
+{{< /history >}}
 
 You can limit the total number of schedule rules per security policy project. This limit is
 checked each time policies with schedule rules are updated. If a new schedule rule would
@@ -583,7 +610,11 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/_index.md#gitlab-cicd).
 
 ### CI/CD variable limits
 
-> - Group and project variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+{{< history >}}
+
+- Group and project variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+
+{{< /history >}}
 
 The number of [CI/CD variables](../ci/variables/_index.md) that can be defined in project,
 group, and instance settings are all limited for the entire instance. These limits are checked
@@ -613,8 +644,12 @@ To update the `default` plan of one of these limits on a GitLab Self-Managed ins
 
 ### Maximum file size per type of artifact
 
-> - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
-> - `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
+{{< history >}}
+
+- `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+- `ci_max_artifact_size_lsif` limit [increased](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684) in GitLab 17.8.
+
+{{< /history >}}
 
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/_index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
@@ -698,7 +733,11 @@ of parallel Pages deployments permitted for a top-level namespace is 1000.
 
 ### Number of registered runners per scope
 
-> - Runner stale timeout [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155795) from 3 months to 7 days in GitLab 17.1.
+{{< history >}}
+
+- Runner stale timeout [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155795) from 3 months to 7 days in GitLab 17.1.
+
+{{< /history >}}
 
 The total number of registered runners is limited for groups and projects. Each time a new runner is registered,
 GitLab checks these limits against runners created or active in the last 7 days.
@@ -840,7 +879,11 @@ Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 
 ### Limit CI/CD job annotations
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+{{< /history >}}
 
 You can set a limit on the maximum number of [annotations](../ci/yaml/artifacts_reports.md#artifactsreportsannotations)
 per CI/CD job.
@@ -856,7 +899,11 @@ Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
 
 ### Limit CI/CD job annotations file size
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+{{< /history >}}
 
 You can set a limit on the maximum size of a CI/CD job [annotation](../ci/yaml/artifacts_reports.md#artifactsreportsannotations).
 
@@ -917,9 +964,12 @@ panel_groups:
 
 ## Environment Dashboard limits
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard) for the maximum number of displayed projects.
 
@@ -992,9 +1042,13 @@ Set the limit to `0` to disable it.
 
 ## Math rendering limits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132939) in GitLab 16.5.
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) the 50-node limit from Wiki and repository files.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) a group-level setting to allow disabling math rendering limits, and re-enabled by default the math limits for wiki and repository files in GitLab 16.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132939) in GitLab 16.5.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) the 50-node limit from Wiki and repository files.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) a group-level setting to allow disabling math rendering limits, and re-enabled by default the math limits for wiki and repository files in GitLab 16.9.
+
+{{< /history >}}
 
 GitLab imposes default limits when rendering math in Markdown fields. These limits provide better security and performance.
 
@@ -1125,8 +1179,12 @@ varies by file type:
 
 ## Maximum number of assignees and reviewers
 
-> - Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
-> - Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
+{{< history >}}
+
+- Maximum assignees [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368936) in GitLab 15.6.
+- Maximum reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366485) in GitLab 15.9.
+
+{{< /history >}}
 
 Issues and merge requests enforce these maximums:
 
@@ -1150,9 +1208,13 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 ## Changelog API limits
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
-> - [Enabled on GitLab.com and by default on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
+- [Enabled on GitLab.com and by default on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
+
+{{< /history >}}
 
 The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file) enforces the following limits:
 

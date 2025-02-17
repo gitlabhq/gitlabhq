@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Zero-downtime upgrades
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 With zero-downtime upgrades, it's possible to upgrade a live GitLab environment without having to
 take it offline. This guide will take you through the core process of performing
@@ -60,8 +63,11 @@ In addition to the above, please be aware of the following considerations:
 - Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components through a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
 - As a general guideline, the larger amount of data you have, the more time it will take for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
 
-NOTE:
+{{< alert type="note" >}}
+
 If you want to upgrade multiple releases or do not meet these requirements [upgrades with downtime](with_downtime.md) should be explored instead.
+
+{{< /alert >}}
 
 ## Upgrade order
 
@@ -114,10 +120,13 @@ Run through the following steps sequentially on each component's node to perform
 that the Gitaly process itself is not restarted as it has a built-in process to gracefully reload
 at the earliest opportunity. Note that any other component will still need to be restarted.
 
-NOTE:
+{{< alert type="note" >}}
+
 The upgrade process attempts to do a graceful handover to a new Gitaly process.
 Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
 In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
+
+{{< /alert >}}
 
 This process applies to both Gitaly Sharded and Cluster setups. Run through the following steps sequentially on each Gitaly node to perform the upgrade:
 
@@ -148,10 +157,13 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
 
 For Gitaly Cluster setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
-NOTE:
+{{< alert type="note" >}}
+
 The upgrade process attempts to do a graceful handover to a new Praefect process.
 Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
 In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
+
+{{< /alert >}}
 
 One additional step though for Praefect is that it will also need to run through its database migrations to upgrade its data.
 Migrations need to be run on only one Praefect node to avoid clashes. This is best done by selecting one of the
@@ -344,9 +356,12 @@ Run through the following steps sequentially on each component node to perform t
 
 ## Multi-node / HA deployment with Geo
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab Self-Managed
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 This section describes the steps required to upgrade live GitLab environment
 deployment with Geo.
@@ -357,8 +372,11 @@ for each secondary site. The required order is upgrading the primary first, then
 the secondaries. You must also run any post-deployment migrations on the primary _after_
 all secondaries have been updated.
 
-NOTE:
+{{< alert type="note" >}}
+
 The same [requirements and consideration](#requirements-and-considerations) apply for upgrading a live GitLab environment with Geo.
+
+{{< /alert >}}
 
 ### Primary site
 

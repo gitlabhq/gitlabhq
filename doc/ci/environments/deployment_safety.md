@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Deployment safety
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 [Deployment jobs](../jobs/_index.md#deployment-jobs) are a specific kind of CI/CD
 job. They can be more sensitive than other jobs in a pipeline,
@@ -72,7 +75,11 @@ For more information, see [Resource Group documentation](../resource_groups/_ind
 
 ## Prevent outdated deployment jobs
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5 to prevent outdated job runs.
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5 to prevent outdated job runs.
+
+{{< /history >}}
 
 The effective execution order of pipeline jobs can vary from run to run, which
 could cause undesired behavior. For example, a [deployment job](../jobs/_index.md#deployment-jobs)
@@ -89,7 +96,7 @@ When an older deployment job starts, it fails and is labeled:
 - `The deployment job is older than the latest deployment, and therefore failed.`
   when viewing the completed job.
 
-When an older deployment job is manual, the **Run** (**{play}**) button is disabled with a message
+When an older deployment job is manual, the **Run** ({{< icon name="play" >}}) button is disabled with a message
 `This deployment job does not run automatically and must be started manually, but it's older than the latest deployment, and therefore can't run.`.
 
 Job age is determined by the job start time, not the commit time, so a newer commit
@@ -97,8 +104,12 @@ can be prevented in some circumstances.
 
 ### Job retries for rollback deployments
 
-> - Rollback via job retry [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378359) in GitLab 15.6.
-> - Job retries for rollback deployments checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410427) in GitLab 16.3.
+{{< history >}}
+
+- Rollback via job retry [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378359) in GitLab 15.6.
+- Job retries for rollback deployments checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410427) in GitLab 16.3.
+
+{{< /history >}}
 
 You might need to quickly roll back to a stable, outdated deployment.
 By default, pipeline job retries for [deployment rollback](deployments.md#deployment-rollback) are enabled.

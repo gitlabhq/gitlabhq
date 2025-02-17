@@ -5,28 +5,41 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Secret push protection
 ---
 
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/development_stages_support.md) for GitLab Dedicated customers.
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta and made available on GitLab.com in GitLab 17.1.
-> - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_beta_release` and `pre_receive_secret_detection_push_check`.
-> - Feature flag `pre_receive_secret_detection_beta_release` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472418) in GitLab 17.4.
-> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/13107) in GitLab 17.5.
-> - Feature flag `pre_receive_secret_detection_push_check` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472419) in GitLab 17.7.
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
-Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab. The
-content of each [file or commit](#coverage) is checked for secrets when pushed to GitLab. By
-default, the push is blocked if a secret is found.
+{{< /details >}}
 
-Use [pipeline secret detection](../_index.md) together with secret push protection to further strengthen your security.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/development_stages_support.md) for GitLab Dedicated customers.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta and made available on GitLab.com in GitLab 17.1.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_beta_release` and `pre_receive_secret_detection_push_check`.
+- Feature flag `pre_receive_secret_detection_beta_release` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472418) in GitLab 17.4.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/13107) in GitLab 17.5.
+- Feature flag `pre_receive_secret_detection_push_check` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/472419) in GitLab 17.7.
+
+{{< /history >}}
+
+Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see the playlist [Get Started with Secret Push Protection](https://www.youtube.com/playlist?list=PL05JrBw4t0KoADm-g2vxfyR0m6QLphTv-).
 
-Regardless of the Git client, GitLab prompts a message when a push is
-blocked, including details of:
+Use [pipeline secret detection](../_index.md) together with secret push protection to further strengthen your security.
+
+## Secret push protection workflow
+
+Secret push protection takes place in the pre-receive hook. When you push changes to GitLab,
+push protection checks each [file or commit](#coverage) for secrets. By default, if a secret is detected,
+the push is blocked.
+
+<!-- To edit, import the SVG with draw.io -->
+![A flowchart showing how secret protection can block a push](img/spp_workflow_v17_9.svg)
+
+When a push is blocked, GitLab prompts a message that includes:
 
 - Commit ID containing the secret.
 - Filename and line containing the secret.
@@ -122,12 +135,19 @@ Secret push protection does not check a file in a commit when:
 
 ### Diff scanning
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `spp_scan_diffs`. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/480092) in GitLab 17.6.
+{{< history >}}
 
-FLAG:
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `spp_scan_diffs`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/480092) in GitLab 17.6.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
+
+{{< /alert >}}
 
 By default, secret push protection checks the content of each file modified in a commit. This can
 cause a [push to be blocked unexpectedly](#push-blocked-unexpectedly) even though your commits don't

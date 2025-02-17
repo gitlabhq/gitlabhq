@@ -1,16 +1,23 @@
 ---
 stage: Verify
 group: Pipeline Execution
-description: Calculations, quotas, purchase information.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Calculations, quotas, purchase information.
 title: Compute minutes
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-> - [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
+
+{{< /history >}}
 
 The amount of time that projects can use to run jobs on [instance runners](../runners/runners_scope.md#instance-runners)
 on GitLab.com is limited. This limit is tracked with a compute quota. [Project runners](../runners/runners_scope.md#project-runners)
@@ -43,7 +50,11 @@ In some cases, the quota limit is replaced by one of the following labels:
 
 ### View usage quota reports for a group
 
-> - Displaying instance runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
+{{< history >}}
+
+- Displaying instance runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -62,7 +73,11 @@ subgroups, sorted in descending order of compute usage.
 
 ### View usage quota reports for a personal namespace
 
-> - Displaying instance runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+{{< history >}}
+
+- Displaying instance runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+
+{{< /history >}}
 
 You can view the compute usage for your personal namespace:
 

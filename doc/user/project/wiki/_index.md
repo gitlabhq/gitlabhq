@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Wiki
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 If you don't want to keep your documentation in your repository, but you want
 to keep it in the same project as your code, you can use the wiki GitLab provides
@@ -42,8 +45,12 @@ To rename your wiki's default branch,see [Update the default branch name in your
 
 ## Create the wiki home page
 
-> - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
-> - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+{{< history >}}
+
+- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+- Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+
+{{< /history >}}
 
 When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific path
@@ -64,8 +71,12 @@ to be used as your wiki's home page. To create it:
 
 ## Create a new wiki page
 
-> - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
-> - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+{{< history >}}
+
+- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+- Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -73,7 +84,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** (**{ellipsis_v}**), then **New page** on this page, or any other wiki page.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **New page** on this page, or any other wiki page.
 1. Select a content format.
 1. Add a **Title** for your new page.
 1. Optional. Uncheck **Generate page path from title** and change the **Path** of the page.
@@ -93,7 +104,7 @@ locally:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** (**{ellipsis_v}**), then **Clone repository**.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Clone repository**.
 1. Follow the on-screen instructions.
 
 Files you add to your wiki locally must use one of the following
@@ -106,9 +117,13 @@ Files with unsupported extensions don't display when pushed to GitLab:
 
 ### Special characters in page paths
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133521) front matter based titles in GitLab 16.7 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Disabled by default.
-> - Feature flags [`wiki_front_matter`](https://gitlab.com/gitlab-org/gitlab/-/issues/435056) and [`wiki_front_matter_title`](https://gitlab.com/gitlab-org/gitlab/-/issues/428259) enabled by default in GitLab 17.2.
-> - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133521) front matter based titles in GitLab 16.7 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Disabled by default.
+- Feature flags [`wiki_front_matter`](https://gitlab.com/gitlab-org/gitlab/-/issues/435056) and [`wiki_front_matter_title`](https://gitlab.com/gitlab-org/gitlab/-/issues/428259) enabled by default in GitLab 17.2.
+- Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+
+{{< /history >}}
 
 Wiki pages are stored as files in a Git repository, and by default, the filename of
 a page is also its title. Certain characters in the filename have a special meaning:
@@ -163,7 +178,11 @@ Unsaved changes to a wiki page are preserved in local browser storage to prevent
 
 ### Create a table of contents
 
-> - Table of contents in the wiki sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/281570) in GitLab 17.2.
+{{< history >}}
+
+- Table of contents in the wiki sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/281570) in GitLab 17.2.
+
+{{< /history >}}
 
 Wiki pages with headings in their contents automatically display a table of contents
 section in the sidebar.
@@ -181,14 +200,18 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to delete.
-1. Select **Wiki actions** (**{ellipsis_v}**), then **Delete page**.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Delete page**.
 1. Confirm the deletion.
 
 ## Move or rename a wiki page
 
-> - Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `wiki_redirection`. Enabled by default.
-> - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
-> - Feature flags `wiki_redirection`, `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+{{< history >}}
+
+- Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `wiki_redirection`. Enabled by default.
+- Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+- Feature flags `wiki_redirection`, `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+
+{{< /history >}}
 
 In GitLab 17.1 and later, when you move or rename a page, a redirect is
 automatically set up from the old page to the new page. A list of redirects
@@ -210,22 +233,30 @@ Prerequisites:
 
 ## Export a wiki page
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `print_wiki`. Disabled by default.
-> - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
-> - Feature flag `print_wiki` removed in GitLab 16.6.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414691) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `print_wiki`. Disabled by default.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134251/) in GitLab 16.5.
+- Feature flag `print_wiki` removed in GitLab 16.6.
+
+{{< /history >}}
 
 You can export a wiki page as a PDF file:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to export.
-1. On the top right, select **Wiki actions** (**{ellipsis_v}**), then select **Print as PDF**.
+1. On the top right, select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then select **Print as PDF**.
 
 A PDF of the wiki page is created.
 
 ## Wiki page templates
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442228) in GitLab 16.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442228) in GitLab 16.10.
+
+{{< /history >}}
 
 You can create templates to use when creating new pages, or to apply
 to existing pages. Templates are wiki pages that are stored in the `templates/`
@@ -239,7 +270,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** (**{ellipsis_v}**), then **Templates**.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Templates**.
 1. Select **New Template**.
 1. Enter template title, format and content, as if creating a regular wiki page.
 
@@ -276,7 +307,7 @@ To view the changes for a wiki page:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to view history for.
-1. Select **Wiki actions** (**{ellipsis_v}**), then **Page history**.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history**.
 
 ### View changes between page versions
 
@@ -285,13 +316,17 @@ You can see the changes made in a version of a wiki page, similar to versioned d
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the wiki page you're interested in.
-1. Select **Wiki actions** (**{ellipsis_v}**), then **Page history** to see all page versions.
+1. Select **Wiki actions** ({{< icon name="ellipsis_v" >}}), then **Page history** to see all page versions.
 1. Select the commit message in the **Diff** column for the version you're interested in.
 
 ## Sidebar
 
-> - Searching by title in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156054) in GitLab 17.1.
-> - Limit of 15 items in the sidebar [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158084) in GitLab 17.2.
+{{< history >}}
+
+- Searching by title in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156054) in GitLab 17.1.
+- Limit of 15 items in the sidebar [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158084) in GitLab 17.2.
+
+{{< /history >}}
 
 Wiki pages display a sidebar that contains a list of pages in the wiki,
 displayed as a nested tree, with sibling pages listed in alphabetical order.
@@ -315,7 +350,7 @@ replaces the default sidebar navigation:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. In the upper-right corner of the page, select **Add custom sidebar** (**{settings}**).
+1. In the upper-right corner of the page, select **Add custom sidebar** ({{< icon name="settings" >}}).
 1. When complete, select **Save changes**.
 
 A `_sidebar` example, formatted with Markdown:
@@ -391,7 +426,11 @@ to disable the wiki but toggle it on (in blue).
 
 ## Rich text editor
 
-> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/398152) from content editor to rich text editor in GitLab 16.2.
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/398152) from content editor to rich text editor in GitLab 16.2.
+
+{{< /history >}}
 
 GitLab provides a rich text editing experience for GitLab Flavored Markdown in wikis.
 
@@ -447,17 +486,25 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 ### Recreate a project wiki with the Rails console
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
 
-WARNING:
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< alert type="warning" >}}
+
 This operation deletes all data in the wiki.
 
-WARNING:
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
 Any command that changes data directly could be damaging if not run correctly, or under the
 right conditions. We highly recommend running them in a test environment with a backup of the
 instance ready to be restored, just in case.
+{{< /alert >}}
 
 To clear all data from a project wiki and recreate it in a blank state:
 

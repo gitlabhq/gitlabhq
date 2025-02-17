@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: npm packages in the package registry
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Node Package Manager (npm) is the default package manager for JavaScript and Node.js. Developers use npm to share and reuse code, manage dependencies, and streamline project workflows. In GitLab, npm packages play a crucial role in the software development lifecycle.
 
@@ -46,15 +49,18 @@ Create or edit the `.npmrc` file in the same directory as your `package.json`. I
   //<domain_name>/api/v4/projects/<project_id>/packages/npm/:_authToken="${NPM_TOKEN}"
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
 be committed to a repository.
 
+{{< /alert >}}
+
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle For an instance
+{{< tab title="For an instance" >}}
 
 ```shell
 //<domain_name>/api/v4/packages/npm/:_authToken="${NPM_TOKEN}"
@@ -62,7 +68,9 @@ For example:
 
 Replace `<domain_name>` with your domain name. For example, `gitlab.com`.
 
-:::TabTitle For a group
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
 
 ```shell
 //<domain_name>/api/v4/groups/<group_id>/-/packages/npm/:_authToken="${NPM_TOKEN}"
@@ -73,7 +81,9 @@ Make sure to replace:
 - `<domain_name>` with your domain name. For example, `gitlab.com`.
 - `<group_id>` with the group ID from the group home page.
 
-:::TabTitle For a project
+{{< /tab >}}
+
+{{< tab title="For a project" >}}
 
 ```shell
 //<domain_name>/api/v4/projects/<project_id>/packages/npm/:_authToken="${NPM_TOKEN}"
@@ -84,7 +94,9 @@ Make sure to replace:
 - `<domain_name>` with your domain name. For example, `gitlab.com`.
 - `<project_id>` with the project ID from the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### With `npm config set`
 
@@ -102,9 +114,9 @@ are not supported.
 
 For example:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle For an instance
+{{< tab title="For an instance" >}}
 
 ```shell
 npm config set -- //<domain_name>/api/v4/packages/npm/:_authToken=<token>
@@ -115,7 +127,9 @@ Make sure to replace:
 - `<domain_name>` with your domain name. For example, `gitlab.com`.
 - `<token>` with your deploy token, group access token, project access token, or personal access token.
 
-:::TabTitle For a group
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
 
 ```shell
 npm config set -- //<domain_name>/api/v4/groups/<group_id>/-/packages/npm/:_authToken=<token>
@@ -127,7 +141,9 @@ Make sure to replace:
 - `<group_id>` with the group ID from the group home page.
 - `<token>` with your deploy token, group access token, project access token, or personal access token.
 
-:::TabTitle For a project
+{{< /tab >}}
+
+{{< tab title="For a project" >}}
 
 ```shell
 npm config set -- //<domain_name>/api/v4/projects/<project_id>/packages/npm/:_authToken=<token>
@@ -139,7 +155,9 @@ Make sure to replace:
 - `<project_id>` with the project ID from the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - `<token>` with your deploy token, group access token, project access token, or personal access token.
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Set up the registry URL
 
@@ -151,10 +169,13 @@ Before configuring the registry URL, it's important to understand the scope of d
 - `npm config set` command: This modifies the global npm configuration and affects all npm commands run on your system.
 - `publishConfig` in `package.json`: This configuration is specific to the package and only applies when publishing that package.
 
-WARNING:
+{{< alert type="warning" >}}
+
 Running `npm config set` changes the global npm configuration. The change affects all npm commands
 run on your system, regardless of the current working directory. Be cautious when using this method,
 especially on shared systems.
+
+{{< /alert >}}
 
 ### For publishing packages
 
@@ -167,9 +188,9 @@ https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/
 Replace `gitlab.example.com` with your GitLab instance's domain and `<project_id>` with your project's ID.
 To configure this URL, use one of these methods:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `.npmrc` file
+{{< tab title="`.npmrc` file" >}}
 
 Create or edit the `.npmrc` file in your project root:
 
@@ -178,7 +199,9 @@ Create or edit the `.npmrc` file in your project root:
 //gitlab.example.com/api/v4/projects/<project_id>/packages/npm/:_authToken="${NPM_TOKEN}"
 ```
 
-:::TabTitle `npm config`
+{{< /tab >}}
+
+{{< tab title="`npm config`" >}}
 
 Use the `npm config set` command:
 
@@ -186,7 +209,9 @@ Use the `npm config set` command:
 npm config set @scope:registry=https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/
 ```
 
-:::TabTitle `package.json`
+{{< /tab >}}
+
+{{< tab title="`package.json`" >}}
 
 Add a `publishConfig` section to your `package.json`:
 
@@ -198,7 +223,9 @@ Add a `publishConfig` section to your `package.json`:
 }
 ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Replace `@scope` with your package's scope.
 
@@ -207,9 +234,9 @@ Replace `@scope` with your package's scope.
 When you install packages, you can use project, group, or instance endpoints. The URL structure varies accordingly.
 To configure these URLs, use one of these methods:
 
-::Tabs
+{{< tabs >}}
 
-:::TabTitle `.npmrc` file
+{{< tab title="`.npmrc` file" >}}
 
 Create or edit the `.npmrc` file in your project root. Use the appropriate URL based on your needs:
 
@@ -231,7 +258,9 @@ Create or edit the `.npmrc` file in your project root. Use the appropriate URL b
   @scope:registry=https://gitlab.example.com/api/v4/packages/npm/
   ```
 
-:::TabTitle `npm config`
+{{< /tab >}}
+
+{{< tab title="`npm config`" >}}
 
 Use the `npm config set` command with the appropriate URL:
 
@@ -253,7 +282,9 @@ Use the `npm config set` command with the appropriate URL:
   npm config set @scope:registry=https://gitlab.example.com/api/v4/packages/npm/
   ```
 
-::EndTabs
+{{< /tab >}}
+
+{{< /tabs >}}
 
 Replace `gitlab.example.com`, `<project_id>`, `<group_id>`, and `@scope` with the appropriate values for your GitLab instance and package.
 
@@ -319,9 +350,12 @@ When publishing by using a CI/CD pipeline, you can use the
 to authenticate with your project's package registry. GitLab uses these variables to create a `.npmrc` file
 for authentication during execution of your CI/CD job.
 
-NOTE:
+{{< alert type="note" >}}
+
 When you generate the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port.
 `http` URLs default to `80`, and `https` URLs default to `443`.
+
+{{< /alert >}}
 
 In the GitLab project containing your `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
 
@@ -378,8 +412,12 @@ Prerequisites:
 
 ### Install from a group
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
+
+{{< /history >}}
 
 1. [Authenticate to the package registry](#authenticate-to-the-package-registry).
 1. Set the registry:
@@ -419,8 +457,12 @@ Prerequisites:
 
 ### Package forwarding to npmjs.com
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
-> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
+- Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
+
+{{< /history >}}
 
 When an npm package is not found in the package registry, GitLab responds with an HTTP redirect so the requesting client can resend the request to [npmjs.com](https://www.npmjs.com/).
 
@@ -432,7 +474,11 @@ Improvements are tracked in [epic 3608](https://gitlab.com/groups/gitlab-org/-/e
 
 ## Deprecate a package
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
+
+{{< /history >}}
 
 You can deprecate a package so that a deprecation warning displays when the package is fetched.
 
@@ -522,7 +568,11 @@ npm install @scope/package@my-tag              # Install a specific tag
 
 #### From CI/CD
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
+
+{{< /history >}}
 
 You can use a [`CI_JOB_TOKEN`](../../../ci/jobs/ci_job_token.md) or [deploy token](../../project/deploy_tokens/_index.md)
 to run `npm dist-tag` commands in a GitLab CI/CD job.
@@ -600,9 +650,12 @@ from a user that has access to all the groups or individual projects:
 @group-2:registry=https://gitlab.example.com/api/v4/packages/npm/
 ```
 
-WARNING:
+{{< alert type="warning" >}}
+
 Personal access tokens must be treated carefully. Read our [token security considerations](../../../security/tokens/_index.md#security-considerations)
 for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
+
+{{< /alert >}}
 
 ### `npm publish` targets default npm registry (`registry.npmjs.org`)
 

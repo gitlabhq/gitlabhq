@@ -1,12 +1,16 @@
 ---
 stage: Plan
 group: Optimize
-description: Instance, group, and project analytics.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Instance, group, and project analytics.
 title: Analyze GitLab usage
 ---
 
-> - Group-level analytics moved to GitLab Premium in 13.9.
+{{< history >}}
+
+- Group-level analytics moved to GitLab Premium in 13.9.
+
+{{< /history >}}
 
 GitLab provides different types of analytics insights for instances, groups, and [projects](../project/settings/_index.md#turn-off-project-analytics).
 
@@ -18,13 +22,13 @@ Use these features to gain insights into your overall software development lifec
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [Value Streams Dashboard](value_streams_dashboard.md) | Insights into DevSecOps trends, patterns, and opportunities for digital transformation improvements. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Value Stream Management Analytics](../group/value_stream_analytics/_index.md) | Insights into time-to-value through customizable stages. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| DevOps adoption [by group](../group/devops_adoption/_index.md) and [by instance](../../administration/analytics/dev_ops_reports.md) | Organization's maturity in DevOps adoption, with feature adoption over time and feature distribution by group. | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Usage trends](../../administration/analytics/usage_trends.md) | Overview of instance data and changes in data volume over time. | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Insights](../project/insights/_index.md) | Customizable reports to explore issues, merged merge requests, and triage hygiene. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Product analytics](../../development/internal_analytics/product_analytics.md) | Understanding how users behave and interact with your product.| **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Analytics dashboards](analytics_dashboards.md) | Built-in and customizable dashboards to visualize collected data. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Value Streams Dashboard](value_streams_dashboard.md) | Insights into DevSecOps trends, patterns, and opportunities for digital transformation improvements. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| [Value Stream Management Analytics](../group/value_stream_analytics/_index.md) | Insights into time-to-value through customizable stages. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| DevOps adoption [by group](../group/devops_adoption/_index.md) and [by instance](../../administration/analytics/dev_ops_reports.md) | Organization's maturity in DevOps adoption, with feature adoption over time and feature distribution by group. | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [Usage trends](../../administration/analytics/usage_trends.md) | Overview of instance data and changes in data volume over time. | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Insights](../project/insights/_index.md) | Customizable reports to explore issues, merged merge requests, and triage hygiene. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| [Product analytics](../../development/internal_analytics/product_analytics.md) | Understanding how users behave and interact with your product.| {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| [Analytics dashboards](analytics_dashboards.md) | Built-in and customizable dashboards to visualize collected data. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 
 ### Productivity analytics
 
@@ -32,10 +36,10 @@ Use these features to gain insights into the productivity of your team on issues
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [Issue analytics](../group/issues_analytics/_index.md) | Visualization of issues created each month. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Merge request analytics](merge_request_analytics.md) | Overview of merge requests, with mean time to merge, throughput, and activity details. | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
-| [Productivity analytics](productivity_analytics.md) | Merge request lifecycle, filterable down to author level. | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Code review analytics](code_review_analytics.md) | Open merge requests with information about merge request activity. | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
+| [Issue analytics](../group/issues_analytics/_index.md) | Visualization of issues created each month. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| [Merge request analytics](merge_request_analytics.md) | Overview of merge requests, with mean time to merge, throughput, and activity details. | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| [Productivity analytics](productivity_analytics.md) | Merge request lifecycle, filterable down to author level. | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| [Code review analytics](code_review_analytics.md) | Open merge requests with information about merge request activity. | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 
 ### Developer analytics
 
@@ -43,9 +47,9 @@ Use these features to gain insights into developer productivity and code coverag
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [Contribution analytics](../group/contribution_analytics/_index.md) | Overview of [contribution events](../profile/contributions_calendar.md) made by group members, with bar chart of push events, merge requests, and issues. | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No |
-| [Contributor analytics](../analytics/contributor_analytics.md) | Overview of commits made by project members, with line chart of number of commits. | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No |
-| [Repository analytics](../group/repositories_analytics/_index.md) | Programming languages used in the repository and code coverage statistics. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Contribution analytics](../group/contribution_analytics/_index.md) | Overview of [contribution events](../profile/contributions_calendar.md) made by group members, with bar chart of push events, merge requests, and issues. | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| [Contributor analytics](../analytics/contributor_analytics.md) | Overview of commits made by project members, with line chart of number of commits. | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| [Repository analytics](../group/repositories_analytics/_index.md) | Programming languages used in the repository and code coverage statistics. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 
 ### CI/CD analytics
 
@@ -53,8 +57,8 @@ Use these features to gain insights into CI/CD performance.
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [CI/CD analytics](ci_cd_analytics.md) | Pipeline duration and successes or failures. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
-| [DORA metrics](dora_metrics.md) | DORA metrics over time. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [CI/CD analytics](ci_cd_analytics.md) | Pipeline duration and successes or failures. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| [DORA metrics](dora_metrics.md) | DORA metrics over time. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 
 ### Security analytics
 
@@ -62,7 +66,7 @@ Use these features to gain insights into security vulnerabilities and metrics.
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [Security Dashboards](../application_security/security_dashboard/_index.md) | Collection of metrics, ratings, and charts for vulnerabilities detected by security scanners. | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
+| [Security Dashboards](../application_security/security_dashboard/_index.md) | Collection of metrics, ratings, and charts for vulnerabilities detected by security scanners. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 
 ## Glossary
 

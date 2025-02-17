@@ -5,9 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Multiple Kubernetes clusters for Auto DevOps
 ---
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, GitLab Self-Managed, GitLab Dedicated
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 When using Auto DevOps, you can deploy different environments to different Kubernetes clusters.
 
@@ -39,8 +42,11 @@ For deprecated, [certificate-based clusters](../../user/infrastructure/clusters/
 1. [Set the environment scope of each cluster](../../user/project/clusters/multiple_kubernetes_clusters.md#setting-the-environment-scope).
 1. For each cluster, [add a domain based on its Ingress IP address](../../user/project/clusters/gitlab_managed_clusters.md#base-domain).
 
-NOTE:
+{{< alert type="note" >}}
+
 [Cluster environment scope is not respected when checking for active Kubernetes clusters](https://gitlab.com/gitlab-org/gitlab/-/issues/20351). For a multi-cluster setup to work with Auto DevOps, you must create a fallback cluster with **Cluster environment scope** set to `*`. You can set any of the clusters you've already added as a fallback cluster.
+
+{{< /alert >}}
 
 ### Example configurations
 
