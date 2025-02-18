@@ -10,8 +10,8 @@ module Gitlab
 
         # If these versions or error messages are updated, the documentation should be updated as well.
 
-        RELEASE_CLI_REQUIRED_VERSION = '0.21.0'
-        GLAB_REQUIRED_VERSION = '1.52.0'
+        RELEASE_CLI_REQUIRED_VERSION = '0.22.0'
+        GLAB_REQUIRED_VERSION = '1.53.0'
         TROUBLE_SHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/_index.md', anchor: 'gitlab-cli-version-requirement')
 
         GLAB_COMMAND_CHECK_COMMAND = <<~BASH.freeze
@@ -73,7 +73,12 @@ module Gitlab
           command.concat(" --assets-links #{stringified_json(create_asset_links)}") if create_asset_links.present?
           command.concat(" --milestone \"#{config[:milestones].join(',')}\"") if config[:milestones].present?
           command.concat(" --name \"#{config[:name]}\"") if config[:name].present?
-          command.concat(" --notes \"#{config[:description]}\"") if config[:description].present?
+
+          if config[:description].present?
+            # More information: https://gitlab.com/gitlab-org/cli/-/issues/7762
+            command.concat(" --experimental-notes-text-or-file \"#{config[:description]}\"")
+          end
+
           command.concat(" --ref \"#{config[:ref]}\"") if config[:ref].present?
           command.concat(" --tag-message \"#{config[:tag_message]}\"") if config[:tag_message].present?
           command.concat(" --released-at \"#{config[:released_at]}\"") if config[:released_at].present?

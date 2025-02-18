@@ -44,37 +44,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
 
       subject { finder.execute }
 
-      where(:visibility, :role, :packages_visible) do
-        :private  | :maintainer | true
-        :private  | :developer  | true
-        :private  | :reporter   | true
-        :private  | :guest      | true
-        :private  | :anonymous  | false
-
-        :internal | :maintainer | true
-        :internal | :developer  | true
-        :internal | :reporter   | true
-        :internal | :guest      | true
-        :internal | :anonymous  | false
-
-        :public   | :maintainer | true
-        :public   | :developer  | true
-        :public   | :reporter   | true
-        :public   | :guest      | true
-        :public   | :anonymous  | true
-      end
-
-      with_them do
-        let(:expected_packages) { packages_visible ? [conan_package2, conan_package] : [] }
-        let(:user) { role == :anonymous ? nil : super() }
-
-        before do
-          project.update_column(:visibility_level, Gitlab::VisibilityLevel.string_options[visibility.to_s])
-          project.add_member(user, role) unless role == :anonymous
-        end
-
-        it { is_expected.to eq(expected_packages) }
-      end
+      it { is_expected.to eq([]) }
 
       context 'with project' do
         let(:finder) { described_class.new(user, params, project: project) }
@@ -158,13 +128,11 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
       subject { finder.execute }
 
       context 'with a valid query and user with permissions' do
-        before do
-          allow_next_instance_of(described_class) do |service|
-            allow(service).to receive(:can_access_project_package?).and_return(true)
-          end
+        before_all do
+          project.add_reporter(user)
         end
 
-        context "with conan_recipe as query" do
+        context 'with conan_recipe as query' do
           it 'returns the correct package' do
             [conan_package, conan_package2].each do |package|
               params = { query: package.conan_recipe }
@@ -174,7 +142,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
           end
         end
 
-        context "without version in query" do
+        context 'without version in query' do
           it 'returns the correct package' do
             [conan_package, conan_package2].each do |package|
               params = { query: package.conan_recipe.sub(package.version, '') }
@@ -183,27 +151,21 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
             end
           end
         end
+      end
 
-        context 'with a user without permissions' do
-          before do
-            allow_next_instance_of(described_class) do |service|
-              allow(service).to receive(:can_access_project_package?).and_return(false)
-            end
-          end
-
-          it 'returns an empty array' do
-            params = { query: conan_package.conan_recipe }
-            result = described_class.new(user, params).execute
-            expect(result).to be_empty
-          end
+      context 'with a user without permissions' do
+        it 'returns an empty array' do
+          params = { query: conan_package.conan_recipe }
+          result = described_class.new(user, params).execute
+          expect(result).to be_empty
         end
+      end
 
-        context 'with a specified project' do
-          it 'return the pacakge from the specified project' do
-            params = { query: private_package.conan_recipe }
-            result = described_class.new(user, params, project: private_project).execute
-            expect(result).to match_array([private_package])
-          end
+      context 'with a specified project' do
+        it 'return the package from the specified project' do
+          params = { query: private_package.conan_recipe }
+          result = described_class.new(user, params, project: private_project).execute
+          expect(result).to match_array([private_package])
         end
       end
     end

@@ -9,12 +9,6 @@ RSpec.describe ReleasesHelper, feature_category: :release_orchestration do
     end
   end
 
-  describe '#releases_help_page_path' do
-    it 'returns the correct link to the help page' do
-      expect(helper.releases_help_page_path).to include('user/project/releases/_index')
-    end
-  end
-
   context 'url helpers' do
     let(:project) { build(:project, namespace: create(:group)) }
     let(:release) { create(:release, project: project) }

@@ -1727,7 +1727,7 @@ class MergeRequest < ApplicationRecord
 
   # We use a heuristic of if there are pipeline created, being created, or a ci integration is setup
   def has_ci_enabled?
-    has_ci? || (Feature.enabled?(:change_ci_enabled_hurestic, self.project) ? pipeline_creating? : project.has_ci?)
+    has_ci? || pipeline_creating?
   end
 
   def pipeline_creating?

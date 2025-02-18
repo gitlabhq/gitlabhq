@@ -4231,17 +4231,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           expect(mr.has_ci_enabled?).to eq(true)
         end
       end
-
-      context 'when change_ci_enabled_hurestic is disabled and project does not have ci' do
-        before do
-          stub_feature_flags(change_ci_enabled_hurestic: false)
-          allow(mr.project).to receive(:has_ci?).and_return(false)
-        end
-
-        it 'returns true' do
-          expect(mr.has_ci_enabled?).to eq(true)
-        end
-      end
     end
 
     context 'when MR has_ci? is false' do
@@ -4260,32 +4249,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       context 'when pipeline has no creation request' do
         it 'returns false' do
           expect(mr.has_ci_enabled?).to eq(false)
-        end
-      end
-
-      context 'when change_ci_enabled_hurestic is disabled' do
-        before do
-          stub_feature_flags(change_ci_enabled_hurestic: false)
-        end
-
-        context 'when the project has ci enabled' do
-          before do
-            allow(mr.project).to receive(:has_ci?).and_return(true)
-          end
-
-          it 'returns true' do
-            expect(mr.has_ci_enabled?).to eq(true)
-          end
-        end
-
-        context 'when the project does not have ci enabled' do
-          before do
-            allow(mr.project).to receive(:has_ci?).and_return(false)
-          end
-
-          it 'returns false' do
-            expect(mr.has_ci_enabled?).to eq(false)
-          end
         end
       end
     end

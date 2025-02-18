@@ -9472,6 +9472,86 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_created_and_owned_by_banned_user' do
+    let_it_be(:other_project) { create(:project) }
+
+    subject(:results) { described_class.with_created_and_owned_by_banned_user }
+
+    context 'when project creator is not banned' do
+      let_it_be(:project_of_active_user) { create(:project, creator: create(:user)) }
+
+      it 'does not include the project' do
+        expect(results).to be_empty
+      end
+    end
+
+    context 'when project creator is banned' do
+      let_it_be(:banned_user) { create(:user, :banned) }
+      let_it_be(:project_of_banned_user) { create(:project, creator: banned_user) }
+
+      context 'when project creator is also an owner' do
+        let_it_be(:project_auth) do
+          project = project_of_banned_user
+          create(:project_authorization, :owner, user: project.creator, project: project)
+        end
+
+        it 'includes the banned user project' do
+          expect(results).to match_array([project_of_banned_user])
+        end
+      end
+
+      context 'when project creator is not an owner' do
+        it 'does not include the project' do
+          expect(results).not_to be_present
+        end
+      end
+    end
+  end
+
+  describe '.with_active_owners' do
+    subject(:results) { described_class.with_active_owners }
+
+    context 'when the project owner is active' do
+      let_it_be(:project) { create(:project) }
+
+      it 'includes the project' do
+        expect(results).to match_array([project])
+      end
+    end
+
+    context 'when the project owner is banned' do
+      let_it_be(:project) { create(:project) }
+
+      before_all do
+        project.owners.first.ban!
+      end
+
+      it 'does not include the project' do
+        expect(results).not_to be_present
+      end
+
+      context 'when the project has another active owner' do
+        before do
+          project.add_owner(create(:user))
+        end
+
+        it 'includes the project' do
+          expect(results).to match_array([project])
+        end
+      end
+
+      context 'when the project has an active owner that is not human' do
+        before do
+          project.add_owner(create(:user, :project_bot))
+        end
+
+        it 'does not include the project' do
+          expect(results).not_to be_present
+        end
+      end
+    end
+  end
+
   describe '#created_and_owned_by_banned_user?' do
     subject { project.created_and_owned_by_banned_user? }
 

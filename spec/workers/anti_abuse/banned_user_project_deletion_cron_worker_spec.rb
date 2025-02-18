@@ -8,6 +8,7 @@ RSpec.describe AntiAbuse::BannedUserProjectDeletionCronWorker, feature_category:
   let_it_be(:project) { create(:project, creator: user, owners: user) }
   let_it_be(:project2) { create(:project, creator: user, maintainers: user) }
   let_it_be(:project3) { create(:project, owners: user) }
+  let_it_be(:project4) { create(:project, creator: user, maintainers: user, owners: user_without_projects) }
   let(:worker) { described_class.new }
 
   def perform(time_travel: true)

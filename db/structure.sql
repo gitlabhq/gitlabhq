@@ -13429,7 +13429,8 @@ CREATE TABLE epic_user_mentions (
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
     note_id bigint,
-    group_id bigint
+    group_id bigint,
+    CONSTRAINT check_4865a37c73 CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE epic_user_mentions_id_seq
@@ -17682,7 +17683,8 @@ CREATE TABLE packages_conan_metadata (
     updated_at timestamp with time zone NOT NULL,
     package_username character varying(255) NOT NULL,
     package_channel character varying(255) NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_9cda5a20a8 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE packages_conan_metadata_id_seq
@@ -27209,9 +27211,6 @@ ALTER TABLE vulnerability_scanners
 
 ALTER TABLE vulnerability_finding_links
     ADD CONSTRAINT check_3dd0293472 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE epic_user_mentions
-    ADD CONSTRAINT check_4865a37c73 CHECK ((group_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY instance_type_ci_runners_e59bb2812d
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);

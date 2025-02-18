@@ -19,6 +19,7 @@ module Packages
       def execute
         return ::Packages::Conan::Package.none unless name.present?
         return ::Packages::Conan::Package.none if name == SQL_WILDCARD && version == SQL_WILDCARD
+        return ::Packages::Conan::Package.none unless project || project_from_path
 
         packages
       end
@@ -46,35 +47,26 @@ module Packages
       end
 
       def base
-        ::Packages::Conan::Package.for_projects(project || projects_available_in_current_context)
-      end
-
-      def projects_available_in_current_context
-        return ::Project.public_or_visible_to_user(current_user, project_min_access_level) unless username.present?
-
-        return project_from_path if can_access_project_package?
-
-        nil
+        ::Packages::Conan::Package.for_projects(project || project_from_path)
       end
 
       def project_from_path
-        Project.find_by_full_path(full_path)
+        return unless full_path
+
+        project = Project.find_by_full_path(full_path)
+
+        return unless Ability.allowed?(current_user, :read_package, project.packages_policy_subject)
+
+        project
       end
       strong_memoize_attr :project_from_path
 
       def full_path
+        return unless username
+
         ::Packages::Conan::Metadatum.full_path_from(package_username: username)
       end
-
-      def can_access_project_package?
-        Ability.allowed?(current_user, :read_package, project_from_path.try(:packages_policy_subject))
-      end
-
-      def project_min_access_level
-        return ::Gitlab::Access::GUEST if Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, current_user)
-
-        ::Gitlab::Access::REPORTER
-      end
+      strong_memoize_attr :full_path
     end
   end
 end

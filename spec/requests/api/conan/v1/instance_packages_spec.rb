@@ -21,7 +21,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   describe 'GET /api/v4/packages/conan/v1/conans/search' do
     let_it_be(:url) { '/packages/conan/v1/conans/search' }
 
-    it_behaves_like 'conan search endpoint'
+    it_behaves_like 'conan search endpoint', scope: :instance
 
     it_behaves_like 'conan FIPS mode' do
       let(:params) { { q: package.conan_recipe } }

@@ -409,6 +409,24 @@ Returns [`CiConfig`](#ciconfig).
 | <a id="queryciconfigsha"></a>`sha` | [`String`](#string) | Sha for the pipeline. |
 | <a id="queryciconfigskipverifyprojectsha"></a>`skipVerifyProjectSha` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. If the provided `sha` is found in the project's repository but is not associated with a Git reference (a detached commit), the verification fails and a validation error is returned. Otherwise, verification passes, even if the `sha` is invalid. Set to `true` to skip this verification process. |
 
+### `Query.ciDedicatedHostedRunnerUsage`
+
+Compute usage data for runners across namespaces on GitLab Dedicated. Defaults to the current year if no year or billing month is specified. Ultimate only.
+
+Returns [`CiDedicatedHostedRunnerUsageConnection`](#cidedicatedhostedrunnerusageconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querycidedicatedhostedrunnerusagebillingmonth"></a>`billingMonth` | [`Date`](#date) | First day of the month to retrieve data for. |
+| <a id="querycidedicatedhostedrunnerusagegrouping"></a>`grouping` | [`GroupingEnum`](#groupingenum) | Groups usage data by instance aggregate or root namespace. |
+| <a id="querycidedicatedhostedrunnerusageyear"></a>`year` | [`Int`](#int) | Year to retrieve data for. |
+
 ### `Query.ciMinutesUsage`
 
 Compute usage data for a namespace.
@@ -13464,6 +13482,29 @@ The edge type for [`CiConfigStage`](#ciconfigstage).
 | <a id="ciconfigstageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="ciconfigstageedgenode"></a>`node` | [`CiConfigStage`](#ciconfigstage) | The item at the end of the edge. |
 
+#### `CiDedicatedHostedRunnerUsageConnection`
+
+The connection type for [`CiDedicatedHostedRunnerUsage`](#cidedicatedhostedrunnerusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cidedicatedhostedrunnerusageconnectionedges"></a>`edges` | [`[CiDedicatedHostedRunnerUsageEdge]`](#cidedicatedhostedrunnerusageedge) | A list of edges. |
+| <a id="cidedicatedhostedrunnerusageconnectionnodes"></a>`nodes` | [`[CiDedicatedHostedRunnerUsage]`](#cidedicatedhostedrunnerusage) | A list of nodes. |
+| <a id="cidedicatedhostedrunnerusageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiDedicatedHostedRunnerUsageEdge`
+
+The edge type for [`CiDedicatedHostedRunnerUsage`](#cidedicatedhostedrunnerusage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cidedicatedhostedrunnerusageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cidedicatedhostedrunnerusageedgenode"></a>`node` | [`CiDedicatedHostedRunnerUsage`](#cidedicatedhostedrunnerusage) | The item at the end of the edge. |
+
 #### `CiGroupConnection`
 
 The connection type for [`CiGroup`](#cigroup).
@@ -21548,6 +21589,20 @@ CI/CD config variables.
 | <a id="ciconfigvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="ciconfigvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="ciconfigvariablevalueoptions"></a>`valueOptions` | [`[String!]`](#string) | Value options for the variable. |
+
+### `CiDedicatedHostedRunnerUsage`
+
+Compute usage data for hosted runners on GitLab Dedicated.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cidedicatedhostedrunnerusagebillingmonth"></a>`billingMonth` | [`String!`](#string) | Month of the usage data. |
+| <a id="cidedicatedhostedrunnerusagebillingmonthiso8601"></a>`billingMonthIso8601` | [`ISO8601Date!`](#iso8601date) | Timestamp of the billing month in ISO 8601 format. |
+| <a id="cidedicatedhostedrunnerusagecomputeminutes"></a>`computeMinutes` | [`Int!`](#int) | Total compute minutes used across all namespaces. |
+| <a id="cidedicatedhostedrunnerusagedurationseconds"></a>`durationSeconds` | [`Int!`](#int) | Total duration in seconds of runner usage. |
+| <a id="cidedicatedhostedrunnerusagerootnamespace"></a>`rootNamespace` | [`Namespace`](#namespace) | Namespace associated with the usage data. Null for instance aggregate data. |
 
 ### `CiDurationStatistics`
 
@@ -41550,6 +41605,15 @@ Values for sorting releases belonging to a group.
 | ----- | ----------- |
 | <a id="groupreleasesortreleased_at_asc"></a>`RELEASED_AT_ASC` | Released at by ascending order. |
 | <a id="groupreleasesortreleased_at_desc"></a>`RELEASED_AT_DESC` | Released at by descending order. |
+
+### `GroupingEnum`
+
+Values for grouping compute usage data.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="groupingenuminstance_aggregate"></a>`INSTANCE_AGGREGATE` | Aggregate usage data across all namespaces in the instance. |
+| <a id="groupingenumper_root_namespace"></a>`PER_ROOT_NAMESPACE` | Group data by individual root namespace. |
 
 ### `HealthStatus`
 

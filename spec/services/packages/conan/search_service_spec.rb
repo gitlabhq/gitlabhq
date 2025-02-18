@@ -40,7 +40,6 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
         ref(:project1) | 'beta/1.0.0@*hannel'                      | []
         # Instance package search
         nil | lazy { "*a/*@#{username}/stable" } | [ref(:alpha_1_2_0), ref(:alpha_1_2_1), ref(:alpha_2_0_0), ref(:beta_1_2_0)]
-        nil | '*a/*'                             | [ref(:alpha_1_2_0), ref(:alpha_1_2_1), ref(:alpha_2_0_0), ref(:beta_1_2_0), ref(:gamma_1_2_0)]
       end
       # rubocop:enable Layout/LineLength
 

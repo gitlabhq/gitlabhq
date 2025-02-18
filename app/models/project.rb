@@ -1019,6 +1019,25 @@ class Project < ApplicationRecord
     )
   end
 
+  scope :with_created_and_owned_by_banned_user, -> do
+    where_exists(
+      Users::BannedUser.joins(
+        'INNER JOIN project_authorizations ON project_authorizations.user_id = banned_users.user_id'
+      ).where('projects.creator_id = banned_users.user_id')
+        .where('project_authorizations.project_id = projects.id')
+        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
+    )
+  end
+
+  scope :with_active_owners, -> do
+    where_exists(
+      User.active.human.joins(
+        'INNER JOIN project_authorizations ON project_authorizations.user_id = users.id'
+      ).where('project_authorizations.project_id = projects.id')
+        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
+    )
+  end
+
   class << self
     # Searches for a list of projects based on the query given in `query`.
     #

@@ -20,6 +20,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('ModelVersionEdit', () => {
   let wrapper;
   let apolloProvider;
+  const editModelVersionMutationResolver = jest
+    .fn()
+    .mockResolvedValue(editModelVersionResponses.success);
 
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
@@ -31,7 +34,7 @@ describe('ModelVersionEdit', () => {
 
   const createWrapper = (
     modelVersionProp = modelWithVersion,
-    editModelVersionResolver = jest.fn().mockResolvedValue(editModelVersionResponses.success),
+    editModelVersionResolver = editModelVersionMutationResolver,
   ) => {
     const requestHandlers = [[editModelVersionMutation, editModelVersionResolver]];
     apolloProvider = createMockApollo(requestHandlers);
@@ -118,24 +121,17 @@ describe('ModelVersionEdit', () => {
       createWrapper();
       findMarkdownEditor().vm.$emit('input', 'A model version description');
       await Vue.nextTick();
-      jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
     });
 
     it('makes an edit model mutation upon confirm', () => {
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mutation: editModelVersionMutation,
-          variables: {
-            modelId: 'gid://gitlab/Ml::Model/1',
-            description: 'A model version description',
-            projectPath: 'some/project',
-            version: '1.0.4999',
-          },
-        }),
-      );
-      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledTimes(1);
+      expect(editModelVersionMutationResolver).toHaveBeenCalledWith({
+        modelId: 'gid://gitlab/Ml::Model/1',
+        description: 'A model version description',
+        projectPath: 'some/project',
+        version: '1.0.4999',
+      });
       expect(findGlAlert().exists()).toBe(false);
       const mockedShowPath =
         editModelVersionResponses.success.data.mlModelVersionEdit.modelVersion._links.showPath;
@@ -152,8 +148,6 @@ describe('ModelVersionEdit', () => {
         );
         findMarkdownEditor().vm.$emit('input', 'My model version description');
         await Vue.nextTick();
-        jest.spyOn(apolloProvider.defaultClient, 'mutate');
-
         await submitForm();
       });
 
@@ -176,8 +170,6 @@ describe('ModelVersionEdit', () => {
         );
         findMarkdownEditor().vm.$emit('input', 'My model version description');
         await Vue.nextTick();
-        jest.spyOn(apolloProvider.defaultClient, 'mutate');
-
         await submitForm();
       });
 

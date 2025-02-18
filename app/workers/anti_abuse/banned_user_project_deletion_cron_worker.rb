@@ -77,11 +77,7 @@ module AntiAbuse
     end
 
     def projects_query(user_ids)
-      Project.without_deleted.created_by(user_ids).id_in(owned_project_ids(user_ids)).select(:creator_id, :id)
-    end
-
-    def owned_project_ids(user_ids)
-      ProjectAuthorization.owned_by(user_ids).select(:project_id)
+      Project.created_by(user_ids).without_deleted.with_created_and_owned_by_banned_user.select(:creator_id, :id)
     end
 
     def log_event(project)

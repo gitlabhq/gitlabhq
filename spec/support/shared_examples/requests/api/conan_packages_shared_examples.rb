@@ -22,7 +22,7 @@ RSpec.shared_examples 'conan ping endpoint' do
   end
 end
 
-RSpec.shared_examples 'conan search endpoint' do
+RSpec.shared_examples 'conan search endpoint' do |scope: :project|
   using RSpec::Parameterized::TableSyntax
 
   subject { json_response['results'] }
@@ -43,10 +43,14 @@ RSpec.shared_examples 'conan search endpoint' do
       it { is_expected.to contain_exactly(package.conan_recipe) }
     end
 
-    context 'returns packages using a * wildcard' do
+    context 'when using a * wildcard' do
       let(:params) { { q: "#{package.name[0, 3]}*" } }
 
-      it { is_expected.to contain_exactly(package.conan_recipe) }
+      if scope == :project
+        it { is_expected.to contain_exactly(package.conan_recipe) }
+      else
+        it { is_expected.to be_blank }
+      end
     end
 
     context 'does not return non-matching packages' do
@@ -87,25 +91,29 @@ RSpec.shared_examples 'conan search endpoint' do
   context 'with a private project' do
     let(:params) { { q: "#{package.name[0, 3]}*" } }
 
-    where(:role, :packages_visible) do
-      :maintainer | true
-      :developer  | true
-      :reporter   | true
-      :guest      | true
-      :anonymous  | false
+    before do
+      project.update!(visibility: 'private')
     end
 
-    with_them do
+    context 'with anonymous access' do
       before do
-        project.update!(visibility: 'private')
         project.team.truncate
         user.project_authorizations.delete_all
-        project.add_member(user, role) unless role == :anonymous
 
         get api(url), params: params, headers: headers
       end
 
-      if params[:packages_visible]
+      it { is_expected.to be_blank }
+    end
+
+    context 'with a guest role' do
+      before do
+        project.add_guest(user)
+
+        get api(url), params: params, headers: headers
+      end
+
+      if scope == :project
         it { is_expected.to contain_exactly(package.conan_recipe) }
       else
         it { is_expected.to be_blank }
