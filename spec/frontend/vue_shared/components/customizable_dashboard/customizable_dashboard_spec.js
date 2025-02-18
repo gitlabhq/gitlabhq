@@ -210,7 +210,7 @@ describe('CustomizableDashboard', () => {
       expect(findDashboardDescription().findComponent(GlLink).exists()).toBe(false);
     });
 
-    it('does not render the `Beta` badge', () => {
+    it('does not render the `Experiment/Beta` badge', () => {
       expect(findExperimentBadge().exists()).toBe(false);
     });
   });
@@ -271,6 +271,16 @@ describe('CustomizableDashboard', () => {
 
     it('renders the `Beta` badge', () => {
       expect(findExperimentBadge().props().type).toBe('beta');
+    });
+  });
+
+  describe('when a dashboard is an experiment', () => {
+    beforeEach(() => {
+      createWrapper({}, { loadedDashboard: { ...betaDashboard, status: 'experiment' } });
+    });
+
+    it('renders the `Experiment` badge', () => {
+      expect(findExperimentBadge().props().type).toBe('experiment');
     });
   });
 

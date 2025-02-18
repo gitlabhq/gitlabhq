@@ -151,7 +151,7 @@ The [`AWS/Deploy-ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob
 template includes two templates: [`Jobs/Build.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml)
 and [`Jobs/Deploy/ECS.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy/ECS.gitlab-ci.yml). Do not include these templates on their own. Only include the
 `AWS/Deploy-ECS.gitlab-ci.yml` template. These other templates are designed to be
-used only with the main template. They may move or change unexpectedly. Also, the job names within
+used only with the main template. They may move or change unexpectedly. Also, the job names in
 these templates may change. Do not override these job names in your own pipeline,
 because the override stops working when the name changes.
 

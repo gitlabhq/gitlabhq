@@ -67,6 +67,15 @@ Dashboards support the following filters:
 - **Date range**: Date selector to filter data by date.
 - **Anonymous users**: Toggle to include or exclude anonymous users from the dataset.
 
+#### Dashboard status
+
+Dashboards with a `status` badge indicate their [development stage](../../policy/development_stages_support.md) and functionality. Dashboards without a `status` badge are fully developed and production-ready.
+
+The supported options are:
+
+- `experiment`
+- `beta`
+
 ### Panel
 
 Panels form the foundation of a dashboard and act as containers for your visualizations. Each panel is built using the GitLab standardized UI component called [GlDashboardPanel](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/dashboards-dashboards-panel--docs).
@@ -126,6 +135,15 @@ To create a built-in analytics dashboard:
    ```
 
    Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json) for a list of supported filters.
+
+1. Optional. Set the appropriate status of the dashboard if it is not production ready:
+
+   ```yaml
+   # cool_dashboard/dashboard.yaml
+   ---
+   title: My dashboard
+   status: experiment
+   ```
 
 1. Optional. Create visualization templates by creating a folder for your templates (for example `visualizations/`) in your dashboard directory and
    add configuration files for each template.

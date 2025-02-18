@@ -176,6 +176,10 @@ module API
           desc: 'Subfolder of the repository to be downloaded', documentation: { example: 'files/archives' }
         optional :include_lfs_blobs, type: Boolean, default: true,
           desc: 'Used to exclude LFS objects from archive'
+        optional :exclude_paths, type: Array[String],
+          coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+          default: [],
+          desc: 'Comma-separated list of paths to exclude from the archive'
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         check_archive_rate_limit!(current_user, user_project) do
@@ -184,7 +188,7 @@ module API
 
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
 
-        send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], include_lfs_blobs: params[:include_lfs_blobs]
+        send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
       rescue StandardError
         not_found!('File')
       end

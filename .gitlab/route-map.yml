@@ -1,3 +1,5 @@
 # Documentation
-- source: /doc/(.+?)\.md/  # doc/administration/build_artifacts.md
-  public: '\1.html'  # administration/build_artifacts.html
+- source: /doc/(.+?/)_index\.md/  # doc/administration/_index.md
+  public: '\1'                    # administration/
+- source: /doc/(.+?)\.md/         # doc/administration/page.md
+  public: '\1/'                   # administration/page/

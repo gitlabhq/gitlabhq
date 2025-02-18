@@ -13684,7 +13684,8 @@ CREATE TABLE external_status_checks_protected_branches (
     id bigint NOT NULL,
     external_status_check_id bigint NOT NULL,
     protected_branch_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_94f27f1988 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE external_status_checks_protected_branches_id_seq

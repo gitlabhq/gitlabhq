@@ -26,18 +26,19 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
     let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
     let(:path) { 'some/path' }
     let(:include_lfs_blobs) { true }
+    let(:exclude_paths) { [] }
     let(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: nil, path: path) }
     let(:cache_disabled) { false }
 
     subject do
-      described_class.send_git_archive(repository, ref: ref, format: format, append_sha: nil, path: path, include_lfs_blobs: include_lfs_blobs)
+      described_class.send_git_archive(repository, ref: ref, format: format, append_sha: nil, path: path, include_lfs_blobs: include_lfs_blobs, exclude_paths: exclude_paths)
     end
 
     before do
       allow(described_class).to receive(:git_archive_cache_disabled?).and_return(cache_disabled)
     end
 
-    def expected_archive_request(repository, metadata, path, include_lfs_blobs)
+    def expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths)
       Base64.encode64(
         Gitaly::GetArchiveRequest.new(
           repository: repository.gitaly_repository,
@@ -45,7 +46,8 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
           prefix: metadata['ArchivePrefix'],
           format: Gitaly::GetArchiveRequest::Format::ZIP,
           path: path,
-          include_lfs_blobs: include_lfs_blobs
+          include_lfs_blobs: include_lfs_blobs,
+          exclude: exclude_paths
         ).to_proto
       )
     end
@@ -62,7 +64,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
         'ArchivePath' => metadata['ArchivePath'],
-        'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs)
+        'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths)
       }.deep_stringify_keys)
     end
 
@@ -72,7 +74,17 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
       it 'sets the GetArchiveRequest header correctly' do
         _, _, params = decode_workhorse_header(subject)
 
-        expect(params).to include({ 'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs) })
+        expect(params).to include({ 'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths) })
+      end
+    end
+
+    context 'when exclude_paths is present' do
+      let(:exclude_paths) { %w[migrations test] }
+
+      it 'sets the GetArchiveRequest header correctly' do
+        _, _, params = decode_workhorse_header(subject)
+
+        expect(params).to include({ 'GetArchiveRequest' => expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths) })
       end
     end
 

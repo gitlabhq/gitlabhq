@@ -304,7 +304,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
     end
 
-    def expected_archive_request(repository, metadata, path, include_lfs_blobs)
+    def expected_archive_request(repository, metadata, path, include_lfs_blobs, exclude_paths = [])
       Base64.encode64(
         Gitaly::GetArchiveRequest.new(
           repository: repository.gitaly_repository,
@@ -312,7 +312,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           prefix: metadata['ArchivePrefix'],
           format: Gitaly::GetArchiveRequest::Format::TAR_GZ,
           path: path,
-          include_lfs_blobs: include_lfs_blobs
+          include_lfs_blobs: include_lfs_blobs,
+          exclude: exclude_paths
         ).to_proto
       )
     end
@@ -371,6 +372,20 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           expect(type).to eq('git-archive')
           expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
           expect(params['GetArchiveRequest']).to eq(expected_archive_request(project.repository, metadata, path, false))
+        end
+      end
+
+      context 'with exclude_paths present in params' do
+        it 'returns the correct GetArchiveRequest' do
+          get api("#{route}?exclude_paths=lib,test", current_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          type, params = workhorse_send_data
+
+          expect(type).to eq('git-archive')
+          expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
+          expect(params['GetArchiveRequest']).to eq(expected_archive_request(project.repository, metadata, path, true, %w[lib test]))
         end
       end
 

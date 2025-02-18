@@ -8,7 +8,7 @@ import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER, DASHBOARD_STATUS_BETA } from './constants';
+import { EVENT_LABEL_VIEWED_DASHBOARD_DESIGNER } from './constants';
 import GridstackWrapper from './gridstack_wrapper.vue';
 import AvailableVisualizationsDrawer from './dashboard_editor/available_visualizations_drawer.vue';
 import {
@@ -88,8 +88,8 @@ export default {
     showEditDashboardButton() {
       return this.editingEnabled && !this.editing;
     },
-    showBetaBadge() {
-      return this.dashboard.status === DASHBOARD_STATUS_BETA;
+    statusBadgeType() {
+      return this.dashboard?.status || null;
     },
     dashboardDescription() {
       return this.dashboard.description;
@@ -285,7 +285,7 @@ export default {
         </h2>
         <div v-else class="gl-flex gl-items-center">
           <h2 data-testid="dashboard-title" class="gl-my-0">{{ dashboard.title }}</h2>
-          <gl-experiment-badge v-if="showBetaBadge" class="gl-ml-3" type="beta" />
+          <gl-experiment-badge v-if="statusBadgeType" class="gl-ml-3" :type="statusBadgeType" />
         </div>
 
         <div

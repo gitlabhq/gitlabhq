@@ -165,12 +165,13 @@ Supported attributes:
 | `path`      | string         | no       | The subpath of the repository to download. If an empty string, defaults to the whole repository.  |
 | `sha`       | string         | no       | The commit SHA to download. A tag, branch reference, or SHA can be used. If not specified, defaults to the tip of the default branch. |
 | `include_lfs_blobs` | boolean | no | Determines whether LFS objects are included in the archive. Default is `true`. When set to `false`, LFS objects are excluded. |
+| `exclude_paths` | array | no | List of paths to exclude from the archive. |
 
 Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>&path=<path>"
+  --url "https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>&path=<path>&exclude_paths=<path1,path2>"
 ```
 
 ## Compare branches, tags or commits

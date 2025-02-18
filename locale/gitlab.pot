@@ -26543,6 +26543,9 @@ msgstr ""
 msgid "GithubImport|Import failed because of a GitHub error: %{original} (HTTP %{code})"
 msgstr ""
 
+msgid "GithubImport|Learn more about %{linkStart}Gitea personal access tokens%{linkEnd}."
+msgstr ""
+
 msgid "GithubImport|Namespace or group to import repository into does not exist."
 msgstr ""
 
@@ -46037,6 +46040,9 @@ msgstr ""
 msgid "ProjectsNew|Get started with one of our popular project templates."
 msgstr ""
 
+msgid "ProjectsNew|Gitea host URL"
+msgstr ""
+
 msgid "ProjectsNew|Group name"
 msgstr ""
 
@@ -46044,6 +46050,9 @@ msgid "ProjectsNew|Import"
 msgstr ""
 
 msgid "ProjectsNew|Import project"
+msgstr ""
+
+msgid "ProjectsNew|Import projects from Gitea"
 msgstr ""
 
 msgid "ProjectsNew|Include a Getting Started README"
@@ -46077,6 +46086,12 @@ msgid "ProjectsNew|Pick a group or namespace"
 msgstr ""
 
 msgid "ProjectsNew|Pick a group or namespace where you want to create this project."
+msgstr ""
+
+msgid "ProjectsNew|Please enter a valid Gitea host URL."
+msgstr ""
+
+msgid "ProjectsNew|Please enter a valid personal access token."
 msgstr ""
 
 msgid "ProjectsNew|Project Configuration"
